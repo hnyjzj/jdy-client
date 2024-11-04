@@ -25,7 +25,7 @@
     "@nuxt/eslint": "^0.6.0",
     "@nuxt/image": "^1.8.0",
     "@nuxtjs/color-mode": "^3.5.1",
-    "@pinia/nuxt": "^0.6.0",
+    "@pinia/nuxt": "^0.7.0",
     "@unocss/eslint-plugin": "^0.63.0",
     "@unocss/nuxt": "^0.63.0",
     "@vant/nuxt": "^1.0.6",
