@@ -20,8 +20,8 @@ const handleClick = () => {
   <div class="flex flex-col gap-[16px]">
     <template v-for="(item, index) in props.info" :key="index">
       <sale-cards :title="item.num" :tag-text="item.openType" :info="item">
-        <template #default="slotProps">
-          <template v-for="(result, ind) in slotProps" :key="ind">
+        <template #info>
+          <template v-for="(result, ind) in props.info" :key="ind">
             <div class="grid grid-cols-1 gap-[12px]">
               <div class="info">
                 <div class="part">
@@ -67,7 +67,7 @@ const handleClick = () => {
   --uno: 'grid grid-cols-5 gap-[12px] justify-items-center bg-[#F3F5FE] rounded-b-[24px] px-[40px] py-[8px] dark:bg-[rgba(243,245,254,0.1)]';
 }
 .info {
-  --uno: 'flex flex-col justify-items-center gap-[12px] px-[16px] color-[#3971F3] text-size-[14px] dark:color-[#fff]';
+  --uno: 'flex flex-col justify-items-center gap-[12px] px-[16px] text-nowrap color-[#3971F3] text-size-[14px] dark:color-[#fff]';
 
   .part {
     --uno: 'flex-center-between';
