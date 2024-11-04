@@ -1,23 +1,31 @@
+import type { AsyncData } from '#app'
+
 class Https {
-  BASE_URL: string = 'http://127.0.0.1:4523/m1/5347033-5018095-default'
+  BASE_URL: string = import.meta.env.VITE_BASE_URL || ''
   authToken: string = ''
   constructor() {}
 
   setAuthToken(token: string) {
-    window.sessionStorage.setItem('authToken', token)
+    // window.sessionStorage.setItem('authToken', token)
     this.authToken = token
   }
 
   //   middleware
-  fetchApi = async (url: string, opt: any) => {
+  async fetchApi<T>(url: string, opt: any) {
     try {
-      const { data, error, refresh } = await useFetch(this.BASE_URL + url, {
+      const res = await useFetch(this.BASE_URL + url, {
         onRequest({ options }) {
           // Set the request headers
-          options.headers = opt.headers || {}
           options.method = opt.method
           if (opt.method === 'POST') {
             options.body = opt.body
+          }
+          if (import.meta.server) {
+            console.log(options, 'server')
+          }
+          if (import.meta.client) {
+            options.headers = opt.headers || {}
+            console.log(options, 'client')
           }
         },
         onRequestError() {
@@ -30,8 +38,10 @@ class Https {
         onResponseError() {
           // Handle the response errors
         },
+        // ...opt,
       })
-      return { data, error, refresh }
+
+      return res as AsyncData<T, Error>
     }
     catch (error) {
       console.error('Fetch failed:', error)
@@ -39,25 +49,40 @@ class Https {
     }
   }
 
-  createHeaders = (isToken: boolean): HeadersInit => ({
-    'Content-Type': 'application/json',
-    ...(isToken ? { Token: window.localStorage.getItem('authToken') || this.authToken } : {}),
-  })
+  createHeaders = (isToken: boolean): HeadersInit => {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    }
+    const token = this.authToken
+    if (import.meta.client) {
+      if (isToken) {
+        const store = useUser()
+        this.authToken = store.userinfo.token
+        if (!this.authToken) {
+          navigateTo('/login')
+        }
+      }
 
-  get = async <T>(url: string, options: Record<string, any> = {}, isToken: boolean = false): Promise<T> => {
-    return this.fetchApi(url, {
+      headers.Authorization = `Bearer ${token}`
+    }
+
+    return headers
+  }
+
+  get = async <T>(url: string, options: Record<string, any> = {}, isToken: boolean = false) => {
+    return this.fetchApi<T>(url, {
       method: 'GET',
       headers: this.createHeaders(isToken),
       ...(options && { query: options }),
-    }) as Promise<T>
+    })
   }
 
-  post = async <T>(url: string, body: Record<string, any> = {}, isToken: boolean = false): Promise<T> => {
-    return this.fetchApi(url, {
+  post = async <T>(url: string, body: Record<string, any> = {}, isToken: boolean = false) => {
+    return this.fetchApi<T>(url, {
       method: 'POST',
       headers: this.createHeaders(isToken),
       body: JSON.stringify(body),
-    }) as Promise<T>
+    })
   }
 }
 export const https = new Https()

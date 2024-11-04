@@ -1,27 +1,41 @@
 export const useUser = defineStore('userStore', {
-  state: () => {
-    return {
-      num: 1,
-    }
-  },
+  state: () => ({
+    userinfo: {
+      token: '',
+      username: '',
+    },
+  }),
   getters: {
 
   },
   actions: {
     async increment() {
-      await https.post<Users>('/submit', { username: 'test' })
+    //   const res = await https.post<Users>('/submit', { username: 'test' })
+      //   const { data } = res
+      //   setTimeout(() => {
+      //     refresh()
+      //     execute()
+      //   }, 3000)
+
+      //   watchEffect(() => {
+      //     this.num = data.value
+      //   })
+
+    //   return res
     },
-  },
-  persist: {
-    storage: {
-      getItem(key) {
-        return window.localStorage.getItem(key)
-      },
-      setItem(key, value) {
-        window.localStorage.setItem(key, value)
-      },
+
+    async mockLogin() {
+      // 模拟登录
+      // 随机生成一个token
+      const res = await https.post<Users>('/login', { id: 'test', password: '123123' })
+
+      if (import.meta.client) {
+        this.userinfo = res.data.value.data
+      }
+      return res.data.value.status
     },
 
   },
+  persist: true,
 
 })
