@@ -20,20 +20,17 @@ class Https {
           if (opt.method === 'POST') {
             options.body = opt.body
           }
-          if (import.meta.server) {
-            console.log(options, 'server')
-          }
+
           if (import.meta.client) {
             options.headers = opt.headers || {}
-            console.log(options, 'client')
           }
         },
         onRequestError() {
           // Handle the request errors
         },
         onResponse() {
-          // Process the response data
-        //   console.log(response._data, 'response')
+        // Process the response data
+        // console.log(response._data, 'response')
         },
         onResponseError() {
           // Handle the response errors
