@@ -22,9 +22,9 @@ function changeNav(i: number) {
 <style lang="scss" scoped>
 .nav {
   border: 1px #2c86fe solid;
-  --uno: 'flex w-fit h-fit mx-auto rounded-full overflow-hidden';
+  --uno: 'flex w-fit h-fit mx-auto rounded-full overflow-hidden transition-all duration-500';
   .item {
-    --uno: 'text-14px text-center py-8px px-16px bg-[#fff] shrink-0';
+    --uno: 'text-14px text-center py-8px px-16px bg-[#fff] shrink-0 transition-all duration-500';
     &:not(:last-child) {
       border-right: 1px solid #2c86fe;
     }
