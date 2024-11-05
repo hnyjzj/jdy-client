@@ -1,5 +1,11 @@
 import type { AsyncData } from '#app'
 
+interface Request<T> {
+  code: number
+  message: string
+  data: T
+}
+
 class Https {
   BASE_URL: string = import.meta.env.VITE_BASE_URL || ''
   authToken: string = ''
@@ -38,7 +44,7 @@ class Https {
         // ...opt,
       })
 
-      return res as AsyncData<T, Error>
+      return res as AsyncData<Request<T>, Error>
     }
     catch (error) {
       console.error('Fetch failed:', error)

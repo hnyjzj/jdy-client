@@ -1,4 +1,4 @@
 interface Users {
-  status: string
-  data: { token: string, username: string }
+  token: string
+  username: string
 }

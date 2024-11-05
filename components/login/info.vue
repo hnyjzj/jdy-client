@@ -3,6 +3,7 @@ const store = useUser()
 
 const loginBtn = async () => {
   const res = await store.mockLogin()
+
   if (res) {
     navigateTo('/')
   }

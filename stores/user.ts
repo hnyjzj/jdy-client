@@ -27,12 +27,13 @@ export const useUser = defineStore('userStore', {
     async mockLogin() {
       // 模拟登录
       // 随机生成一个token
-      const res = await https.post<Users>('/login', { id: 'test', password: '123123' })
+      const res = await https.post<Users>('/auth/login', { phone: 'test', password: '123123' })
 
       if (import.meta.client) {
         this.userinfo = res.data.value.data
       }
-      return res.data.value.status
+
+      return res.data.value.code === HttpCode.SUCCESS
     },
 
   },
