@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<{
       <NuxtImg class="empty-icon" :src="props.img" height="120" />
       <div class="super">
         <div class="super-bg">
-          <icon name="jdy:crosspath" size="18" />
+          <icon name="i-icon:crosspath" size="18" />
         </div>
       </div>
     </div>

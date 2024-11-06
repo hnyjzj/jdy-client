@@ -22,7 +22,7 @@ const props = defineProps<{
       </template>
     </div>
     <!-- info -->
-    <slot :card-info="props.info" />
+    <slot name="info" />
   </div>
 </template>
 

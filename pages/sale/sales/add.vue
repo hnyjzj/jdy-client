@@ -34,7 +34,7 @@ const goodinfo = ref([
 
 <template>
   <div class="grid-12">
-    <div class="flex flex-col w-auto gap-[16px] col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
+    <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
       <div class="pt-[16px]">
         <sale-add-base />
       </div>

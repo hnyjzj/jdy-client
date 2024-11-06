@@ -51,7 +51,7 @@ const checked = ref<boolean>(true)
             <div>默认logo 不可修改</div>
           </div>
 
-          <div class="fixed left-0 bottom-0 box-border px-[16px] py-[12px] blur-bgc w-full border-t-solid b-t-[1px] border-color-[#E6E6E8] grid-12 ">
+          <div class="fixed left-0 bottom-0  px-[16px] py-[12px] blur-bgc w-full border-t-solid b-t-[1px] border-color-[#E6E6E8] grid-12 ">
             <div class="col-4">
               <common-button-rounded content="取消" color="#fff" />
             </div>

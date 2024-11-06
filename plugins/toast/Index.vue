@@ -22,6 +22,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   type: 'primary',
   duration: 3000,
+  ico: 'i-icon:succeed',
 })
 
 type Toasts = {
@@ -61,8 +62,6 @@ const toastStyle: { [key in types]: Toasts } = {
     iconBg: 'rgb(0, 85, 255, 0.8)',
   },
 }
-
-const iconName = props.ico || 'i-icon-succeed'
 </script>
 
 <template>
@@ -73,11 +72,9 @@ const iconName = props.ico || 'i-icon-succeed'
         uno-lg="flex-center-row w-60%"
       >
         <div class="icon">
-          <div
-            class="rounded-[4px] w-[24px] h-[24px]"
-            :class="iconName"
-            :style="{ backgroundColor: toastStyle[props.type].iconBg, color: toastStyle[props.type].color }"
-          />
+          <div class="rounded-[4px] w-[24px] h-[24px] text-lg flex-center-row" :style="{ backgroundColor: toastStyle[props.type].iconBg }">
+            <div class="color-[#fff]" :class="[props.ico || 'i-icon:succeed']" />
+          </div>
         </div>
         <div class="msg font-medium font-size-[14px]" :style="{ color: toastStyle[props.type].color }">
           {{ props.msg }}

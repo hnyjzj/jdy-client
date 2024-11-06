@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: '订金单列表',
+  title: '维修单列表',
 })
 
 // 测试数据。待删除
@@ -31,7 +31,7 @@ const depositList: SalesSlip[] = [
 ]
 
 const handleClick = async () => {
-// 跳转到订金详情页
+// 跳转到维修单详情页
   await navigateTo('/sale/repair/info')
 }
 </script>

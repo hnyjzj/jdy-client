@@ -1,5 +1,13 @@
 <script setup lang="ts">
+const store = useUser()
 
+const loginBtn = async () => {
+  const res = await store.mockLogin()
+
+  if (res) {
+    navigateTo('/')
+  }
+}
 </script>
 
 <template>
@@ -20,14 +28,16 @@
         密码
       </div>
       <div class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] ">
-        <input
-          type="password" class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="密码"
-        >
+        <form>
+          <input
+            type="password" autocomplete=" " class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="密码"
+          >
+        </form>
       </div>
     </div>
 
     <div class="text-size-[16px]  font-semibold offset-5 mt-[32px]">
-      <div class="ok ">
+      <div class="ok " @click="loginBtn()">
         登录
       </div>
     </div>

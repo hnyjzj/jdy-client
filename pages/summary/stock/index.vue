@@ -113,7 +113,7 @@ const option = ref({
       <product-manage-company />
       <product-filter-senior />
     </div>
-    <summary-stock-total :data="data" />
+    <summary-total :data="data" title="库存统计数据汇总" />
     <summary-stock-chart :option="option" />
   </div>
 </template>

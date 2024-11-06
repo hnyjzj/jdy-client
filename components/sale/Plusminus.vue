@@ -25,10 +25,10 @@ const handleClick = () => {
 <template>
   <div class="bg-[#F1F5FE] rounded-[60px] flex justify-center items-center" :style="`width: ${props.size}px; height: ${props.size}px;`" @click="handleClick">
     <template v-if="props.isAdd">
-      <icon name="jdy:add" size="20" class="color-[#3971F3]" />
+      <icon name="i-icon:add" size="20" color="#3971F3" />
     </template>
     <template v-else>
-      <icon name="jdy:subtract" size="20" class="color-[#3971F3]" />
+      <icon name="i-icon:subtract" size="20" color="#3971F3" />
     </template>
   </div>
 </template>
