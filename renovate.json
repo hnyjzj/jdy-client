@@ -2,7 +2,14 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "commitMessagePrefix": "deps:",
   "extends": [
-    "config:recommended"
+    ":automergeStableNonMajor",
+    ":preserveSemverRanges",
+    "config:recommended",
+    "group:allNonMajor",
+    "group:recommended",
+    "npm:unpublishSafe",
+    "schedule:automergeMonthly",
+    "schedule:monthly"
   ],
   "packageRules": [
     {
@@ -10,6 +17,14 @@
         "npm"
       ],
       "minimumReleaseAge": "1 days"
+    },
+    {
+      "groupName": "pinia",
+      "matchPackagePatterns": [
+        "^@pinia/",
+        "^pinia-*",
+        "^pinia/"
+      ]
     }
   ]
 }
