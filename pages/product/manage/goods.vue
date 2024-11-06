@@ -7,13 +7,13 @@ useSeoMeta({
 <template>
   <div class="">
     <div class="grid-12 w-full">
-      <div class="col-12 box-border sm:col-8 sm:offset-2 grid-12 px-[16px] py-[12px] box-border">
+      <div class="col-12  sm:col-8 sm:offset-2 grid-12 px-[16px] py-[12px] ">
         <div class="col-7  color-[#fff]">
           <product-filter-search />
         </div>
         <div class="col-5 flex-end color-[#fff]">
           <product-filter-senior />
-          <span class="bg-[#FF624C] text-size-[12px] rounded-full line-height-[20px] text-center color-[#fff] box-border min-w-[20px] flex justify-center items-center">
+          <span class="bg-[#FF624C] text-size-[12px] rounded-full line-height-[20px] text-center color-[#fff]  min-w-[20px] flex justify-center items-center">
             2
           </span>
         </div>
@@ -25,7 +25,7 @@ useSeoMeta({
         <product-manage-fold />
       </div>
 
-      <div class="fixed bottom-0 left-0 right-0 bg-[rgba(241,245,254,1)] px-[16px] py-[12px] grid-12 box-border">
+      <div class="fixed bottom-0 left-0 right-0 bg-[rgba(241,245,254,1)] px-[16px] py-[12px] grid-12 ">
         <div class="text-size-[14px] line-height-[20px] py-[8px] col-5">
           <span class="color-[#666] mr-[8px]">已选择</span><span class="color-[#3971F3]">2个商品</span>
         </div>

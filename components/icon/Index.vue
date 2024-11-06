@@ -9,17 +9,15 @@ const attrs = useAttrs()
 </script>
 
 <template>
-  <client-only>
-    <div
-      class="icon"
-      v-bind="attrs"
-      :style="{
-        '--color': props.color,
-        '--size': props.size ? `${props.size}px` : '16px',
-      }">
-      <div :class="props.name" />
-    </div>
-  </client-only>
+  <div
+    class="icon"
+    v-bind="attrs"
+    :style="{
+      '--color': props.color,
+      '--size': props.size ? `${props.size}px` : '16px',
+    }">
+    <div :class="props.name" />
+  </div>
 </template>
 
 <style lang="scss" scoped>
