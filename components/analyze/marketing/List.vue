@@ -4,7 +4,7 @@
 
 <template>
   <template v-for="i in 3" :key="i">
-    <div class="mt-[16px]">
+    <div class="mt-[16px]" @click="jump('/analyze/marketing/detail')">
       <common-fold title="开业活动大秒杀" from-color="rgba(255,255,255,0.6)" to-color="rgba(130,208,250,0.8)" :is-collapse="false">
         <template #title="t">
           <div class="flex pt-[4px]">

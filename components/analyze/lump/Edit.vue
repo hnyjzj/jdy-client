@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-[16px]">
+  <div class="mt-[16px] text-[14px]">
     <common-fold title="商品信息" from-color="rgba(71,126,245,0.6)" to-color="rgba(243,245,254,0.6)">
       <div class="p-[16px]">
         <div class="grid grid-cols-[30%_70%] items-center mb-[12px]">
@@ -7,7 +7,7 @@
           <div class="relative">
             <NuxtImg src="/images/empty/record.png" width="100" height="100" />
             <div class="absolute top-[50%] left-[38px] translate-y-[-50%]">
-              <icon name="jdy:camera" size="24" color="#666" />
+              <icon name="i-icon:camera" size="24" color="#666" />
             </div>
           </div>
         </div>

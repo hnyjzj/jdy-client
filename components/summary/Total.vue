@@ -1,7 +1,17 @@
 <script lang="ts" setup>
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   data: any[]
-}>()
+  /**
+   * 一行几列?
+   */
+  col?: number
+  /**
+   * 标题
+   */
+  title: string
+}>(), {
+  col: 4,
+})
 </script>
 
 <template>
@@ -11,9 +21,9 @@ const props = defineProps<{
     </div>
     <div class="flex items-center">
       <div class="label" />
-      <div>库存统计数据汇总</div>
+      <div>{{ props.title }}</div>
     </div>
-    <div class="box">
+    <div class="box" :style="`grid-template-columns: repeat(${props.col}, 1fr)`">
       <template v-for="(item, index) in props.data" :key="index">
         <div class="flex">
           <div class="obj">
@@ -37,7 +47,7 @@ const props = defineProps<{
     --uno: 'absolute top-12px right-16px';
   }
   .box {
-    --uno: 'mt-24px grid grid-cols-[1fr_1fr_1fr_1fr] gap-y-16px text-12px';
+    --uno: 'mt-24px grid gap-y-16px text-12px';
     place-items: center;
   }
   .obj {
