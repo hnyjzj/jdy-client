@@ -20,10 +20,10 @@
     },
     {
       "groupName": "pinia",
-      "matchPackagePatterns": [
-        "^@pinia/",
-        "^pinia-*",
-        "^pinia/"
+      "matchPackageNames": [
+        "/^@pinia//",
+        "/^pinia-*/",
+        "/^pinia//"
       ]
     }
   ]
