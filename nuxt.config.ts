@@ -19,7 +19,11 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     'nuxt-echarts',
   ],
-
+  app: {
+    head: {
+      viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
+    },
+  },
   css: ['~/assets/css/main.scss'],
   vite: {
     css: {
@@ -43,7 +47,7 @@ export default defineNuxtConfig({
     componentName: 'ColorScheme',
     classPrefix: '',
     classSuffix: '',
-    storage: 'localStorage', // or 'sessionStorage' or 'cookie'
+    storage: 'cookie', // or 'sessionStorage' or 'cookie'
     storageKey: 'nuxt-color-mode',
   },
   image: {

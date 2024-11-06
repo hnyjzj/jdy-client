@@ -105,7 +105,7 @@ const data = ref([
   .row {
     --uno: 'flex items-center flex-nowrap';
     .colitem {
-      --uno: 'w-[88px] h-64px lh-64px pl-16px shrink-0 text-14px';
+      --uno: 'w-[88px] h-64px lh-64px pl-16px shrink-0 text-14px text-color';
       border-top: 1px #e6e6e8 solid;
     }
   }

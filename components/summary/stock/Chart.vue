@@ -4,6 +4,9 @@ const props = defineProps<{
 }>()
 const chartBar = ref(['数据', '占比'])
 const selectChartBar = ref(0)
+async function goDetail() {
+  jump('/summary/stock/detail', { a: 1 })
+}
 </script>
 
 <template>
@@ -14,7 +17,7 @@ const selectChartBar = ref(0)
           <div class="text-[14px]">
             库存大类分布
           </div>
-          <div>
+          <div @click="goDetail">
             <span class="text-[rgba(96,98,102,1)]">详情</span>
             <van-icon name="arrow" color="rgba(96,98,102,1)" />
           </div>

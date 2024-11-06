@@ -12,7 +12,7 @@ const props = defineProps<{
 
 <template>
   <div>
-    <div class="chart flex flex-col bg-[#fff] rounded-[24px] overflow-hidden">
+    <div class="chart flex flex-col bg-[#fff] rounded-[24px] overflow-hidden dark:bg-[rgb(245,245,245,0.1)] border-solid border-[1px] border-[#EFF0F6] dark:border-[rgb(239,240,246,0.1)]">
       <template v-for="(item, index) in props.pics" :key="index">
         <common-header-theme :title="item.data" />
         <div class="grid grid-cols-2 gap-x-[12px] gap-y-[12px] px-[16px] py-[16px]" uno-lg="grid-cols-4 gap-[24px]" uno-md="grid-cols-3 gap-[24px]">
@@ -68,7 +68,7 @@ const props = defineProps<{
   --uno: 'flex flex-col gap-[12px] bg-[#fff] rounded-[24px] overflow-hidden border-solid border-1 border-[#EFF0F6] dark:bg-[rgb(245,245,245,0.1)] rounded-[24px] shadow-[0_10px_20px_-7px_rgb(0,0,0,0.1)] gap-[12px] overflow-hidden dark:border-[rgb(239,240,246,0.1)] px-[16px] py-[16px]';
 }
 .info {
-  --uno: 'flex flex-col gap-[8px] border-t-[1px] border-t-solid border-t-[rgba(230,230,232,1)] pt-[12px]';
+  --uno: 'flex flex-col gap-[8px] border-t-[1px] border-t-solid border-t-[rgba(230,230,232,1)] pt-[12px] dark:border-t-[rgba(230,230,232,0.1)]';
 
   .item {
     --uno: 'flex-center-between';

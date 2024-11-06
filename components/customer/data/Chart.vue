@@ -67,7 +67,7 @@ const option = ref({
     </div>
     <div>
       <template v-for="(item, index) in props.data.slice(1, 4)" :key="index">
-        <div class="flex">
+        <div class="flex mt-2">
           <div class="obj">
             <div class="flex items-center">
               <div class="mark" />
@@ -75,7 +75,7 @@ const option = ref({
                 {{ item.name }}
               </div>
             </div>
-            <div class="text-[16px] text-[#3971F3] font-semibold mt-2">
+            <div class="text-[16px] text-[#3971F3] font-semibold mt-1">
               {{ item.value }}个
             </div>
           </div>

@@ -17,7 +17,7 @@ const toggleFold = () => {
             <div
               class="flex-center-row gap-[2px] text-[12px] color-[#808089] dark:color-[#fff]" @click="toggleFold()">
               <div>点击{{ isFold ? '展开' : '收起' }}</div>
-              <icon name="jdy:down" class="w-[12px] h-[12px] dark:color-[#fff]" />
+              <icon name="i-icon:down" size="12px" class="dark:color-[#fff]" />
             </div>
           </common-header-gradient>
         </div>
@@ -96,6 +96,32 @@ const toggleFold = () => {
                     <nuxt-img src="images/sale/sales-list.png" class="w-[32px] h-[32px]" />
                     <div class="title">
                       维修单列表
+                    </div>
+                  </div>
+                </nuxt-link>
+              </div>
+            </div>
+            <!-- 收支单列表项 -->
+            <div class="flex flex-col gap-[16px] px-4">
+              <div class="text-[12px] font-semibold color-[#333] dark:color-[#fff]">
+                其他收支单
+              </div>
+              <!-- 分割线 -->
+              <div class="line" />
+              <div class="sector grid-rows-1">
+                <nuxt-link to="/sale/other/list">
+                  <div class="flex-center-row gap-[4px]">
+                    <nuxt-img src="images/sale/sales-list.png" class="w-[32px] h-[32px]" />
+                    <div class="title">
+                      其他收支单
+                    </div>
+                  </div>
+                </nuxt-link>
+                <nuxt-link to="/sale/other/info">
+                  <div class="flex-center-row gap-[4px]">
+                    <nuxt-img src="images/sale/sales-list.png" class="w-[32px] h-[32px]" />
+                    <div class="title">
+                      新增收支单
                     </div>
                   </div>
                 </nuxt-link>
