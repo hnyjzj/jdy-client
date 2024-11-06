@@ -1,12 +1,13 @@
 <script setup lang="ts">
+// 收支对账表
 useSeoMeta({
-  title: '维修单列表',
+  title: '收支对账表',
 })
 
-// 测试数据。待删除
-const depositList: SalesSlip[] = [
+// 测试数据。需删除替换
+const incomeList: SalesSlip[] = [
   {
-    num: 'WXD20242139129',
+    num: 'CZ-32493974',
     store: {
       name: '青青草原一号店',
       salesVolume: 100000,
@@ -24,29 +25,26 @@ const depositList: SalesSlip[] = [
     discountAmount: '100',
     oldDiscountAmount: '20',
     integral: '32',
-    openType: '自提',
+    openType: '线下开单',
     createTime: '2021-11-11 11:11:11',
     slipStatus: 2,
   },
 ]
 
 const handleClick = async () => {
-// 跳转到维修单详情页
-  await navigateTo('/sale/repair/info')
+// 跳转到详情页
+  await navigateTo('/finance/income/detail')
 }
 </script>
 
 <template>
   <div class="grid-12">
     <div class="flex flex-col gap-[16px] px-[16px] py-[16px] col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-      <!-- header -->
-      <!-- 搜索 -->
       <div class="flex flex-row gap-[12px]">
         <product-filter-search class="color-[#fff] flex-1" />
         <product-filter-senior class="color-[#fff]" />
       </div>
-      <!-- content -->
-      <sale-repair-list :info="depositList" @info="handleClick" />
+      <finance-income-list :info="incomeList" @click="handleClick" />
     </div>
   </div>
 </template>

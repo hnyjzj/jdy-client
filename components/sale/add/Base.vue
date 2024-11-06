@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const handleClick = async () => {
-  // 跳转到搜索商品页
+  // 跳转到搜索会员页
   await navigateTo('/sale/search/member')
 }
 </script>
@@ -19,7 +19,7 @@ const handleClick = async () => {
             </template>
           </common-frame>
           <div>
-            <sale-plusminus @button-click="handleClick()" />
+            <sale-plusminus @button-click="handleClick" />
           </div>
         </div>
       </div>

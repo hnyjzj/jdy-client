@@ -34,7 +34,6 @@ const saleList: SalesSlip[] = [
 
 const handleClick = async () => {
 // 跳转到详情页
-// this.$router.push({name: 'SalesOrder', params: {id: item.id}})
   await navigateTo('/sale/sales/order')
 }
 </script>

@@ -14,8 +14,8 @@ const handleClick = () => {
   <div class="flex flex-col gap-[16px]">
     <template v-for="(item, index) in props.info" :key="index">
       <sale-cards :title="item.num" :tag-text="item.openType" :info="item">
-        <template #default="slotProps">
-          <template v-for="(result, ind) in slotProps" :key="ind">
+        <template #info>
+          <template v-for="(result, ind) in props.info" :key="ind">
             <div class="grid grid-cols-1 gap-[12px]">
               <div class="info">
                 <div class="part">

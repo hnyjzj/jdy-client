@@ -1,18 +1,15 @@
 <script setup lang="ts">
-// 维修单列表
+// 其他收支单_列表_组件
 const props = defineProps<{
   info: SalesSlip[]
 }>()
 
-const emits = defineEmits(['sign', 'cancel', 'info'])
-const handleSign = () => {
-  emits('sign')
+const emits = defineEmits(['amend', 'delete'])
+const handleAmend = () => {
+  emits('amend')
 }
-const handleCancel = () => {
-  emits('cancel')
-}
-const handleClick = () => {
-  emits('info')
+const handleDelete = () => {
+  emits('delete')
 }
 </script>
 
@@ -22,7 +19,7 @@ const handleClick = () => {
       <sale-cards :title="item.num" :tag-text="item.openType" :info="item">
         <template #info>
           <template v-for="(result, ind) in props.info" :key="ind">
-            <div class="grid grid-cols-1 gap-[12px]">
+            <div class="grid grid-cols-1 gap-[12px] px-[16px]">
               <div class="info">
                 <div class="part">
                   <span class="part-left">所属门店</span>
@@ -43,17 +40,13 @@ const handleClick = () => {
               </div>
             </div>
           </template>
-          <div class="footer">
-            <div class="info font-semibold" @click="handleCancel">
-              撤销
+          <div class="grid grid-cols-3 gap-[12px] justify-items-center bg-[#F3F5FE] rounded-b-[24px] px-[40px] py-[8px] dark:bg-[rgba(243,245,254,0.1)]">
+            <div class="info font-semibold dark:border-[#4D4D4D] border-solid border-y-none border-l-none border-r-[2px] border-[rgba(230,230,232,0.3)]" @click="handleDelete">
+              删除
             </div>
             <div class="bg-[#E6E6E8] w-[1px] h-100%" />
-            <div class="info font-semibold" @click="handleSign">
-              标记
-            </div>
-            <div class="bg-[#E6E6E8] w-[1px] h-100%" />
-            <div class="info font-semibold" @click="handleClick">
-              详情
+            <div class="info font-semibold" @click="handleAmend">
+              修改
             </div>
           </div>
         </template>
@@ -63,11 +56,8 @@ const handleClick = () => {
 </template>
 
 <style scoped lang="scss">
-.footer {
-  --uno: 'grid grid-cols-5 gap-[12px] justify-items-center bg-[#F3F5FE] rounded-b-[24px] px-[40px] py-[8px] dark:bg-[rgba(243,245,254,0.1)]';
-}
-.info {
-  --uno: 'flex flex-col justify-items-center gap-[12px] px-[16px] text-nowrap color-[#3971F3] text-size-[14px] dark:color-[#fff]';
+  .info {
+  --uno: 'flex flex-col gap-[12px] color-[#3971F3] text-size-[14px] dark:color-[#fff]';
 
   .part {
     --uno: 'flex-center-between';

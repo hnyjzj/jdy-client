@@ -24,7 +24,7 @@ const currentSelected = defineModel<number>('currentSelected')
           currentSelected = item.value
         }"
       >
-        <span>
+        <span class="text-nowrap">
           {{ item.label }}
         </span>
         <template v-if="item.count">

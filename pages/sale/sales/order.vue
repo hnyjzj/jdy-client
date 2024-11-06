@@ -37,7 +37,7 @@ const toggleFold = () => {
 
 <template>
   <div class="grid-12">
-    <div class="col-12 flex flex-col gap-[16px] py-[16px]" uno-lg="col-8 offset-2">
+    <div class="col-12 flex flex-col gap-[16px] px-[16px] py-[16px]" uno-lg="col-8 offset-2">
       <sale-add-card title="标题" :list="list" />
       <!-- 切换 -->
       <div class="nav">
@@ -66,7 +66,7 @@ const toggleFold = () => {
       <!-- 结算信息 -->
       <sale-add-card title="结算信息" :list="list">
         <template #footer>
-          <div class="mx-[16px] py-[12px] border-t-[#E6E6E8] border-t-[1px] border-t-solid">
+          <div class="mx-[16px] py-[12px] border-t-solid border-t-[#E6E6E8] border-t-[1px]">
             <div class="flex flex-col items-end gap-[8px]">
               <div class="flex-center-row gap-[4px] text-[16px] font-semibold text-[#FF2F2F]">
                 <span>实付金额</span>

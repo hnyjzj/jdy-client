@@ -1,12 +1,13 @@
 <script setup lang="ts">
+// 其他收支单列表
 useSeoMeta({
-  title: '维修单列表',
+  title: '其他收支单列表',
 })
 
 // 测试数据。待删除
-const depositList: SalesSlip[] = [
+const otherList: SalesSlip[] = [
   {
-    num: 'WXD20242139129',
+    num: 'QTSZD1232141234',
     store: {
       name: '青青草原一号店',
       salesVolume: 100000,
@@ -24,15 +25,15 @@ const depositList: SalesSlip[] = [
     discountAmount: '100',
     oldDiscountAmount: '20',
     integral: '32',
-    openType: '自提',
+    openType: '预定中',
     createTime: '2021-11-11 11:11:11',
     slipStatus: 2,
   },
 ]
 
-const handleClick = async () => {
-// 跳转到维修单详情页
-  await navigateTo('/sale/repair/info')
+const handleAmend = async () => {
+// 携参跳转到详情页
+  await navigateTo('/sale/other/info')
 }
 </script>
 
@@ -46,7 +47,7 @@ const handleClick = async () => {
         <product-filter-senior class="color-[#fff]" />
       </div>
       <!-- content -->
-      <sale-repair-list :info="depositList" @info="handleClick" />
+      <sale-other-list :info="otherList" @amend="handleAmend" />
     </div>
   </div>
 </template>

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-// 销售明细列表
+// 收支账单列表
 const props = defineProps<{
   info: SalesSlip[]
 }>()
 
-const emits = defineEmits(['userClick'])
+const emits = defineEmits(['info'])
 const handleClick = () => {
-  emits('userClick')
+  emits('info')
 }
 </script>
 
@@ -30,14 +30,14 @@ const handleClick = () => {
                 <span class="part-right">{{ item.member.phone || '--' }}</span>
               </div>
               <div class="part">
-                <span class="part-left">主销</span>
+                <span class="part-left">收银员</span>
                 <span class="part-right">{{ item.mainSalesman || '--' }}</span>
               </div>
             </div>
           </div>
-          <div class="flex-center-row bg-[#F3F5FE] rounded-b-[24px] px-[16px] py-[8px] dark:bg-[rgba(243,245,254,0.1)]">
-            <div class="info color-[#3971F3] text-size-[14px] font-semibold dark:color-[#fff]" @click="handleClick">
-              查看详情
+          <div class="footer">
+            <div class="info font-semibold" @click="handleClick">
+              详情
             </div>
           </div>
         </template>
@@ -47,8 +47,11 @@ const handleClick = () => {
 </template>
 
 <style scoped lang="scss">
-  .info {
-  --uno: 'flex flex-col gap-[12px] px-[16px]';
+.footer {
+  --uno: 'flex-center-row gap-[12px] justify-items-center bg-[#F3F5FE] rounded-b-[24px] px-[40px] py-[8px] dark:bg-[rgba(243,245,254,0.1)]';
+}
+.info {
+  --uno: 'flex flex-col justify-items-center gap-[12px] px-[16px] color-[#3971F3] text-size-[14px] dark:color-[#fff]';
 
   .part {
     --uno: 'flex-center-between';
