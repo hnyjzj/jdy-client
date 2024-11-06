@@ -4,14 +4,14 @@ const company = ref(60)
 
 <template>
   <div
-    class="body min-h-screen box-border z-0" :style="{
+    class="body min-h-screen  z-0" :style="{
       '--navbar-height': `${company}px`,
     }">
     <div
       class="min-h-screen z-2 relative">
       <div>
         <slot name="header" />
-        <div class=" blur-bgc rounded-t-[16px] px-[16px] box-border pt-[16px]" :style="{ height: `calc(100vh - var(--navbar-height,0px))` }">
+        <div class=" blur-bgc rounded-t-[16px] px-[16px]  pt-[16px]" :style="{ height: `calc(100vh - var(--navbar-height,0px))` }">
           <slot name="body" />
         </div>
       </div>

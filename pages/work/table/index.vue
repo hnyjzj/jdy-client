@@ -1,7 +1,4 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: 'table',
-})
 useSeoMeta({
   title: '工作台',
 })
