@@ -13,7 +13,6 @@ const formatter = (type: string, option: any) => {
 
 <template>
   <div class="px-[16px]">
-    <common-dark />
     <div class="flex justify-between items-center py-[12px]">
       <product-manage-company />
       <product-filter-senior />
@@ -28,8 +27,8 @@ const formatter = (type: string, option: any) => {
             <div class="pt-[8px]" @click="showtime = true">
               <common-frame :is-disabled="true" tip="选择时间">
                 <template #left>
-                  <div>
-                    <icon color="#666666" name="jdy:product-toggle" size="15" />
+                  <div class="mr-1">
+                    <icon color="#666666" name="i-icon:calendar" size="14" />
                   </div>
                 </template>
               </common-frame>
@@ -42,8 +41,8 @@ const formatter = (type: string, option: any) => {
             <div class="pt-[8px]" @click="showtime = true">
               <common-frame :is-disabled="true" tip="选择时间">
                 <template #left>
-                  <div>
-                    <icon color="#666666" name="jdy:product-toggle" size="15" />
+                  <div class="mr-1">
+                    <icon color="#666666" name="i-icon:calendar" size="14" />
                   </div>
                 </template>
               </common-frame>

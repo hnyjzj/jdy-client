@@ -1,36 +1,42 @@
-export const useDemo = defineStore('demoStore', () => {
-  interface Result {
-    id: string
-    name: string
-    tags: string
-  }
+export const useUser = defineStore('userStore', {
+  state: () => ({
+    userinfo: {
+      token: '',
+      username: '',
+    },
+  }),
+  getters: {
 
-  const number = ref<number>(0)
-  const username = ref(0)
-  const result = ref<Result>()
-  const increment = async () => {
-    return await post<Result>('/submit', { username: 'test' }, true).then((res) => {
-      result.value = res
-      return res
-    })
-  }
+  },
+  actions: {
+    async increment() {
+    //   const res = await https.post<Users>('/submit', { username: 'test' })
+      //   const { data } = res
+      //   setTimeout(() => {
+      //     refresh()
+      //     execute()
+      //   }, 3000)
 
-  return {
-    number,
-    username,
-    increment,
-  }
-}, {
-  persist: {
-    storage: {
-      getItem(key) {
-        return window.localStorage.getItem(key)
-      },
-      setItem(key, value) {
-        window.localStorage.setItem(key, value)
-      },
+      //   watchEffect(() => {
+      //     this.num = data.value
+      //   })
+
+    //   return res
+    },
+
+    async mockLogin() {
+      // 模拟登录
+      // 随机生成一个token
+      const res = await https.post<Users>('/auth/login', { phone: 'test', password: '123123' })
+
+      if (import.meta.client) {
+        this.userinfo = res.data.value.data
+      }
+
+      return res.data.value.code === HttpCode.SUCCESS
     },
 
   },
+  persist: true,
 
 })

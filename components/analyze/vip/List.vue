@@ -5,7 +5,7 @@
 <template>
   <div>
     <template v-for="i in 3" :key="i">
-      <div class="mt-4">
+      <div class="mt-4" @click="jump('/analyze/vip/detail')">
         <common-fold title="标题/名称/单号/条码示例" from-color="rgba(255,255,255,0.6)" to-color="rgba(130,208,250,0.8)" :is-collapse="false">
           <template #title>
             <div class="py-[6px]">

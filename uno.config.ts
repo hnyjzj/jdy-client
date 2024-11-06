@@ -25,6 +25,17 @@ export default defineConfig({
       include: ['**/*.{vue,ts}'],
     },
   },
+  preflights: [{
+    getCSS: () => `
+        *,
+        ::before,
+        ::after {
+            box-sizing: border-box;
+            padding: 0;
+            margin: 0;
+        }
+    `,
+  }],
   rules: [
     // 自定义规则
     [/^wh-\[(\d+(?:px|em|rem|%)?)\]$/, ([, size]) => ({
