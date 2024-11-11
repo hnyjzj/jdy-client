@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// 测试数据。待删除
 const props = defineProps<{
   title: string
 }>()
