@@ -9,7 +9,11 @@ interface Request<T> {
 class Https {
   BASE_URL: string = import.meta.env.VITE_BASE_URL || ''
   authToken: string = ''
-  constructor() {}
+  constructor() {
+    if (import.meta.dev) {
+      this.BASE_URL = '/proxy'
+    }
+  }
 
   setAuthToken(token: string) {
     // window.sessionStorage.setItem('authToken', token)
@@ -59,11 +63,11 @@ class Https {
     const token = this.authToken
     if (import.meta.client) {
       if (isToken) {
-        const store = useUser()
-        this.authToken = store.userinfo.token
-        if (!this.authToken) {
-          navigateTo('/login')
-        }
+        // const store = useUser()
+        // // this.authToken = store.userinfo.token
+        // if (!this.authToken) {
+        //   navigateTo('/login')
+        // }
       }
 
       headers.Authorization = `Bearer ${token}`
@@ -72,7 +76,7 @@ class Https {
     return headers
   }
 
-  get = async <T>(url: string, options: Record<string, any> = {}, isToken: boolean = false) => {
+  get = async <T, R = undefined>(url: string, options?: R, isToken: boolean = false) => {
     return this.fetchApi<T>(url, {
       method: 'GET',
       headers: this.createHeaders(isToken),
@@ -80,7 +84,7 @@ class Https {
     })
   }
 
-  post = async <T>(url: string, body: Record<string, any> = {}, isToken: boolean = false) => {
+  post = async <T, R = undefined>(url: string, body?: R, isToken: boolean = false) => {
     return this.fetchApi<T>(url, {
       method: 'POST',
       headers: this.createHeaders(isToken),

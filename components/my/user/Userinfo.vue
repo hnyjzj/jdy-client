@@ -9,11 +9,9 @@ const userinfo = useUser().userinfo
         <div class="wh-[68px] bg-amber rounded-full" />
         <div class="ml-[8px]">
           <div class="mb-[4px] font-semibold text-[16px] line-height-[20px]">
-            {{ userinfo.username }}
+            {{ userinfo.Attributes.userID }}
           </div>
-          <div class="text-[14px] line-height-[20px]">
-            {{ userinfo.token }}
-          </div>
+          <div class="text-[14px] line-height-[20px]" />
         </div>
       </div>
     </nuxt-link>

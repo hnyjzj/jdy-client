@@ -1,11 +1,39 @@
 <script setup lang="ts">
-const store = useUser()
+// const userStore = useUser()
+const authStore = useAuth()
+// const loginBtn = async () => {
+//   const res = await store.mockLogin()
 
-const loginBtn = async () => {
-  const res = await store.mockLogin()
+//   if (res) {
+//     navigateTo('/')
+//   }
+// }
+// 账号输入
+const account = ref<Account>({
+  phone: '',
+  password: '',
+})
+// 控制显示是否显示验证码
+const codeShow = ref<boolean>(false)
+onMounted(() => {
 
+})
+// 企业微信登录
+const QWLogin = async () => {
+  const res = await authStore.OAuthLogin({ uri: 'http://sbf.yjzj.com/login/oauth', state: 'wxwork' })
   if (res) {
-    navigateTo('/')
+    window.location.href = res
+  }
+}
+
+// 手机号输入框失去焦点  进行验证码显示
+const blur = async () => {
+  if (account.value.phone.length === 11) {
+    await authStore.getCodeImg()
+    codeShow.value = true
+  }
+  else {
+    codeShow.value = false
   }
 }
 </script>
@@ -18,7 +46,8 @@ const loginBtn = async () => {
       </div>
       <div class="px-[12px] py-[10px] bg-[#fff] rounded-[8px]">
         <input
-          type="text" class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none " placeholder="全部"
+          v-model="account.phone" type="text" class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none "
+          maxlength="11" placeholder="全部" @blur="blur()"
         >
       </div>
     </div>
@@ -30,14 +59,30 @@ const loginBtn = async () => {
       <div class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] ">
         <form>
           <input
-            type="password" autocomplete=" " class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="密码"
+            v-model="account.password" type="password" autocomplete=" " class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="密码"
           >
         </form>
       </div>
     </div>
 
+    <div v-if="codeShow" class="mt-[32px]">
+      <div class="text-[14px] line-height-[20px] mb-[8px] dark:color-[#fff]">
+        验证码
+      </div>
+      <div class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] flex-between">
+        <form>
+          <input
+            type="text" autocomplete="" class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none h-[40px]" placeholder="验证码"
+          >
+        </form>
+        <div>
+          <nuxt-img :src="authStore.imageCaptcha.code" class="w-[100px] h-[40px]" />
+        </div>
+      </div>
+    </div>
+
     <div class="text-size-[16px]  font-semibold offset-5 mt-[32px]">
-      <div class="ok " @click="loginBtn()">
+      <div class="ok ">
         登录
       </div>
     </div>
@@ -50,7 +95,9 @@ const loginBtn = async () => {
       <div class="h-[1px] w-[58px]  color-[#9E9E9E] dark:color-[#fff] bg-gradient-linear-[270deg,#CCCCCC00,#CCCCCC] " />
     </div>
     <div class="flex-center-row py-[24px]">
-      <div class="wh-[32px] rounded-full bg-blue" />
+      <div class="wh-[32px] rounded-full flex-center-row" @click="QWLogin()">
+        <icon name="i-svg:qwicon" size="32" />
+      </div>
     </div>
   </div>
 </template>

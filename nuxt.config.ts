@@ -6,6 +6,9 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true,
   },
+  devServer: {
+    port: 80,
+  },
   ssr: true,
   modules: [
     '@pinia/nuxt',
@@ -31,6 +34,16 @@ export default defineNuxtConfig({
         scss: {
           api: 'modern-compiler',
         },
+      },
+    },
+  },
+  nitro: {
+    devProxy: {
+      '/proxy': {
+        // 代理目标的基础路径
+        target: import.meta.env.VITE_BASE_URL,
+        changeOrigin: true,
+        prependPath: true,
       },
     },
   },

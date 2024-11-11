@@ -2,6 +2,7 @@
 useSeoMeta({
   title: '登录注册',
 })
+// const route = useRoute()
 </script>
 
 <template>
