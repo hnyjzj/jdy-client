@@ -1,41 +1,93 @@
 <script setup lang="ts">
-// 测试数据。待删除
-interface ProductInfo {
-  name: string
-  desc: string
-}
-const productInfo: ProductInfo[] = [
+// 测试table数据。待删除
+const finishedColumns = [
   {
-    name: '条码',
-    desc: 's123901287',
+    header: '姓名',
+    field: 'name',
   },
   {
-    name: '零售方式',
-    desc: '自提',
+    header: '年龄',
+    field: 'age',
   },
   {
-    name: '零售方式',
-    desc: '自提',
+    header: '出生日期',
+    field: 'birthday',
   },
   {
-    name: '工艺',
-    desc: '特价',
+    header: '地址',
+    field: 'address',
   },
   {
-    name: '工艺',
-    desc: '特价',
-  },
-  {
-    name: '工艺',
-    desc: '特价',
+    header: '操作',
+    field: 'operation',
   },
 ]
-const showPop = ref(false)
+const oldColumns = [
+  {
+    header: '大类',
+    field: 'category',
+  },
+  {
+    header: '剩余抵值',
+    field: 'residue',
+  },
+  {
+    header: '退货金额',
+    field: 'returnAmount',
+  },
+]
+// 测试data数据。待删除
+const finishedData = ref([
+  {
+    name: '小美',
+    age: 20,
+    birthday: '0',
+    address: '0',
+    operation: '编辑',
+  },
+  {
+    name: '懒羊羊',
+    age: 23,
+    birthday: '0',
+    address: '0',
+    operation: '编辑',
+  },
+  {
+    name: '懒羊羊',
+    age: 23,
+    birthday: '0',
+    address: '0',
+    operation: '编辑',
+  },
+  {
+    name: '懒羊羊',
+    age: 23,
+    birthday: '0',
+    address: '0',
+    operation: '编辑',
+  },
+])
+const oldData = ref([
+  {
+    category: '成品',
+    residue: 100,
+    returnAmount: 100,
+  },
+  {
+    category: '原料',
+    residue: 100,
+    returnAmount: 100,
+  },
+  {
+    category: '银料用件',
+    residue: 100,
+    returnAmount: 100,
+  },
+])
 
 // 盘点单tab切换选项
 const options = computed(() => [
   {
-    // TODO: 文本信息过长，需要优化
     label: '成品业绩',
     value: 1,
   },
@@ -47,27 +99,46 @@ const options = computed(() => [
 
 const currentSelected = ref(1)
 
-const hasCheck = ref(false)
+const updateKey = ref(0)
 
-// const handleClick = () => {
-//   showPop.value = true
-// }
+// 监听 currentSelected 的变化
+watch(currentSelected, () => {
+  // 触发更新
+  updateKey.value++
+})
+
+const renderData = computed(() => {
+  return currentSelected.value === 1 ? finishedData.value : oldData.value
+})
+
+const renderTitle = computed(() => {
+  return currentSelected.value === 1 ? '成品业绩及对应旧料抵扣' : '旧料剩余抵值'
+})
+
+const renderOptions = computed(() => {
+  return currentSelected.value === 1 ? finishedColumns : oldColumns
+})
 </script>
 
 <template>
   <div>
-    <common-popup v-model="showPop" />
     <div>
-      <common-fold title="业绩汇总" :is-collapse="false">
-        <div class="flex flex-col gap-[16px] px-[16px] py-[16px]">
-          <div>
-            <common-tab-secondary :options="options" :current-selected="currentSelected" />
-          </div>
-          <div>
-            <sale-order-nesting v-model="hasCheck" title="成品业绩及对应旧料抵扣" :info="productInfo" />
-          </div>
+      <div class="flex flex-col gap-[16px] px-[16px] py-[16px]">
+        <div>
+          <common-tab-secondary
+            v-model:current-selected="currentSelected" :options="options" @click="() => {
+              console.log(currentSelected);
+            }" />
         </div>
-      </common-fold>
+        <div>
+          <common-fold :title="renderTitle">
+            <div class="flex flex-col pt-[16px]">
+              <!-- 数据量可能较大，考虑懒加载 -->
+              <common-form-table :key="updateKey" :columns="renderOptions" :data="renderData" />
+            </div>
+          </common-fold>
+        </div>
+      </div>
     </div>
   </div>
 </template>

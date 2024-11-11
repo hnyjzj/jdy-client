@@ -67,4 +67,7 @@ export default defineNuxtConfig({
     charts: ['BarChart', 'LineChart', 'PieChart'],
     components: ['DatasetComponent', 'GridComponent', 'TooltipComponent', 'LegendComponent'],
   },
+  devServer: {
+    port: 80,
+  },
 })
