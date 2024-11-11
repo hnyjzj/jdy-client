@@ -5,7 +5,7 @@ useSeoMeta({
 </script>
 
 <template>
-  <div>
+  <div class="flex flex-col">
     <div class="color-[#fff] grid-12 px-[16px] py-[12px]">
       <div class="col-4" uno-sm="col-3 offset-1" uno-lg="col-2 offset-2" uno-xl="col-1 offset-3">
         <product-manage-company />
@@ -25,6 +25,12 @@ useSeoMeta({
         </div>
       </template>
     </common-coll>
+
+    <!-- 销售管理入口 -->
+    <sale-entrance />
+
+    <!-- 财务管理入口 -->
+    <finance-entrance />
 
     <common-tabbar text="table" />
   </div>
