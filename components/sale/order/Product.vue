@@ -34,18 +34,20 @@ const productInfo: ProductInfo[] = [
 ]
 
 const hasCheck = defineModel({ type: Boolean, default: false })
-const hasTag = ref(true)
 </script>
 
 <template>
   <div>
-    <sale-order-nesting v-model="hasCheck" :has-tag="hasTag" title="成品" :info="productInfo">
-      <template #default="slotProps">
+    <sale-order-nesting v-model="hasCheck" title="成品" :info="productInfo">
+      <template #right>
+        <common-tags type="pink" text="成品" :is-oval="true" />
+      </template>
+      <template #info>
         <div class="flex flex-col gap-[12px] px-[16px]">
           <div class="flex flex-row gap-[12px]">
             <common-avatar :size="40" />
             <div class="grid grid-rows-4 grid-flow-col w-full place-items-start gap-y-[12px] gap-x-[auto]">
-              <template v-for="(item, index) in slotProps.info" :key="index">
+              <template v-for="(item, index) in productInfo" :key="index">
                 <div class="content">
                   <div class="left">
                     {{ item.name }}

@@ -1,21 +1,28 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
   img?: string
+  text?: string
 }>(), {
   img: '/images/empty/record.png',
+  text: '',
 })
 </script>
 
 <template>
-  <div class="flex justify-center items-center py-[24px]">
+  <div class="flex-center-col py-[24px]">
     <div class="empty">
       <NuxtImg class="empty-icon" :src="props.img" height="120" />
       <div class="super">
         <div class="super-bg">
-          <icon name="i-icon:crosspath" size="18" />
+          <icon name="i-icon:crosspath" color="#FFFFFF" size="18" />
         </div>
       </div>
     </div>
+    <template v-if="props.text">
+      <div class="font-size-[14px] color-[#666] pt-[24px]">
+        {{ props.text }}
+      </div>
+    </template>
   </div>
 </template>
 

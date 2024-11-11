@@ -34,7 +34,7 @@ const show = ref(false)
           </template>
         </common-help>
       </common-header-gradient>
-      <div class="content flex flex-col gap-[16px] px-[16px] py-[16px]">
+      <div class="content grid grid-cols-1 gap-[16px] px-[16px] py-[16px]" uno-lg="grid-cols-2" uno-sm="grid-cols-2">
         <template v-for="(list, index) in props.lists" :key="index">
           <finance-achievement-info :data="list" />
         </template>

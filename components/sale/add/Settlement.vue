@@ -16,9 +16,9 @@ const items = ref(getInitialItems())
 let id = items.value.length + 1
 
 const insertItem = () => {
-  if (items.value.length >= 3) {
+  if (items.value.length >= 11) {
     $toast({
-      msg: '最多可选择3种支付方式',
+      msg: '最多可选择11种支付方式',
       type: 'warning',
       ico: 'i-icon:warning',
     })
@@ -94,6 +94,7 @@ function removeItem(item: { id: number }) {
                     $toast({
                       msg: '该支付方式已被选择',
                       type: 'warning',
+                      ico: 'i-icon:warning',
                     })
                     return
                   }

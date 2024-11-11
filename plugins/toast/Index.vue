@@ -22,7 +22,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   type: 'primary',
   duration: 3000,
-  ico: 'i-icon:succeed',
+  ico: 'i-icon:success',
 })
 
 type Toasts = {

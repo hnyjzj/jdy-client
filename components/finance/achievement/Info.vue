@@ -13,7 +13,7 @@ const props = defineProps<{
             <div class="flex-center-between">
               <div class="left flex flex-row items-center gap-[8px]">
                 <common-check rounded="4px" />
-                <div class="font-size-[14px] color-[#333]">
+                <div class="font-size-[14px] color-[#333] text-nowrap">
                   {{ options.name }}
                 </div>
               </div>
