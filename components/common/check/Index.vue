@@ -24,7 +24,7 @@ function toggleCheck() {
   <div @click="toggleCheck">
     <template v-if="checked">
       <div class="check-box" :style="{ borderRadius: props.rounded, width: props.size, height: props.size }">
-        <icon name="i-icon:check-box" color="#3971F3" size="16px" class="w-[16px] h-[16px]" />
+        <icon name="i-icon:check-box" color="#3971F3" :size="props.size" />
       </div>
     </template>
     <template v-else>

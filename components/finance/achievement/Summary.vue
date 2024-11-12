@@ -54,7 +54,7 @@ const renderOptions = computed(() => {
         <div>
           <common-fold :title="renderTitle">
             <div class="flex flex-col pt-[16px]">
-              <common-form-table :key="updateKey" :columns="renderOptions" :data="renderData" />
+              <common-table :key="updateKey" :columns="renderOptions" :data="renderData" />
             </div>
           </common-fold>
         </div>

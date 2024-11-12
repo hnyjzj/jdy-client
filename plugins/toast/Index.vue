@@ -99,7 +99,7 @@ const toastStyle: { [key in types]: Toasts } = {
       >
         <div class="icon">
           <div class="rounded-[4px] w-[24px] h-[24px] text-lg flex-center-row" :style="{ backgroundColor: toastStyle[props.theme].iconBg }">
-            <div class="color-[#fff]" :class="[props.icon || 'i-icon:succeed']" />
+            <div class="color-[#fff]" :class="[props.icon || 'i-icon:success']" />
           </div>
         </div>
         <div class="msg font-medium font-size-[14px]" :style="{ color: toastStyle[props.theme].color }">

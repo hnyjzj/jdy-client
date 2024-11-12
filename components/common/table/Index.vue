@@ -14,6 +14,10 @@ const props = defineProps<{
    * 是否应用悬停样式
    */
   hover?: boolean
+  /**
+   * 空状态提示文本
+   */
+  emptyText?: string
 }>()
 </script>
 
@@ -45,7 +49,7 @@ const props = defineProps<{
         </div>
       </template>
       <template v-else>
-        <common-empty text="请先筛选数据" />
+        <common-empty :text="props.emptyText || '请先筛选数据'" />
       </template>
     </div>
   </div>
