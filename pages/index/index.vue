@@ -11,6 +11,7 @@ useSeoMeta({
 // const { $jslist, $wx, $isWorkWechat } = useNuxtApp()
 
 const clicek = () => {
+
 //   await $isWorkWechat()
 //   if ($jslist.value.scanQRCode) {
 //     $wx.scanQRCode({

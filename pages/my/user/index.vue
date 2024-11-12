@@ -2,6 +2,9 @@
 useSeoMeta({
   title: '个人中心',
 })
+
+const store = useUser()
+store.getUserInfo()
 </script>
 
 <template>

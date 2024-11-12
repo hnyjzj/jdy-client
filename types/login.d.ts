@@ -28,3 +28,8 @@ interface OAuthLoginReq {
   code: string
   state: string
 }
+
+interface WXworkLoginRes {
+  token: string
+  expires_at: number
+}

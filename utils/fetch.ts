@@ -6,8 +6,14 @@ interface Request<T> {
   data: T
 }
 
+const toLogin = (response: any) => {
+  if (response._data?.code === HttpCode.UNAUTHORIZED) {
+    navigateTo('/login')
+  }
+}
+
 class Https {
-  BASE_URL: string = import.meta.env.VITE_BASE_URL || ''
+  BASE_URL: string = import.meta.env.VITE_BASE_API || ''
   authToken: string = ''
   constructor() {
     if (import.meta.dev) {
@@ -41,11 +47,15 @@ class Https {
         onRequestError() {
           // Handle the request errors
         },
-        onResponse() {
+        onResponse({ response }) {
+          toLogin(response)
+
         // Process the response data
         // console.log(response._data, 'response')
         },
-        onResponseError() {
+        onResponseError({ response }) {
+          toLogin(response)
+
           // Handle the response errors
         },
         // ...opt,
@@ -67,18 +77,19 @@ class Https {
     if (import.meta.client) {
       if (isToken) {
         const store = useAuth()
+        const route = useRoute()
         this.authToken = store.token
-
         if (Date.now() > (store.expires_at) * 1000) {
-          navigateTo('/login')
+          navigateTo({
+            path: '/login',
+            query: {
+              redirect_url: encodeURIComponent(route.path),
+            },
+          })
         }
-
-        // if (!this.authToken) {
-        //   navigateTo('/login')
-        // }
       }
 
-      headers.Authorization = this.authToken
+      headers.Authorization = `Bearer ${this.authToken}`
     }
 
     return headers

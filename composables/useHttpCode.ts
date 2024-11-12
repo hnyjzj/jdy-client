@@ -7,4 +7,8 @@ export const HttpCode = {
    * 请求失败
    */
   ERROR: 500,
+  /**
+   * 未授权
+   */
+  UNAUTHORIZED: 401,
 }

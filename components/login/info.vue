@@ -6,17 +6,7 @@ const authStore = useAuth()
 const account = ref<Account>({
   phone: '17633596180',
   password: '123456',
-  captcha_id: '',
-  captcha: '',
-})
-
-// 企业微信登录
-const QWLogin = async () => {
-  const res = await authStore.OAuthLogin({ uri: 'http://sbf.yjzj.com/login/oauth', state: 'wxwork' })
-  if (res) {
-    window.location.href = res
-  }
-}
+} as Account)
 
 // 手机号输入框失去焦点  进行验证码显示
 const blur = async () => {
@@ -26,22 +16,20 @@ const blur = async () => {
 }
 // 点击登录按钮
 const login = async () => {
-  if (account.value.phone.trim() === '' || account.value.phone.length !== 11) {
+  if (!account.value?.phone || account.value?.phone.trim() === '' || account.value.phone.length !== 11) {
     $toast({ msg: '请输入正确手机号', type: 'error', ico: 'i-icon:error' })
     return false
   }
-  if (account.value.password.trim() === '') {
+  if (!account.value?.password || account.value?.password.trim() === '') {
     $toast({ msg: '请输入密码', type: 'error', ico: 'i-icon:error' })
     return false
   }
-  if (account.value.captcha.trim() === '') {
+  if (!account.value?.captcha || account.value?.captcha.trim() === '') {
     $toast({ msg: '请输入验证码', type: 'error', ico: 'i-icon:error' })
     return false
   }
-
   account.value.captcha_id = authStore.imageCaptcha.id
   await authStore.accountLogin(account.value)
-
   blur()
 }
 </script>
@@ -80,7 +68,7 @@ const login = async () => {
       <div class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] flex-between relative">
         <form>
           <input
-            v-model="account.captcha" type="text" autocomplete="" class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="验证码"
+            v-model="account.captcha" maxlength="5" type="text" autocomplete="" class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="验证码"
           >
         </form>
         <div class="absolute right-0 top-0 h-full" @click="blur()">
@@ -103,9 +91,7 @@ const login = async () => {
       <div class="h-[1px] w-[58px]  color-[#9E9E9E] dark:color-[#fff] bg-gradient-linear-[270deg,#CCCCCC00,#CCCCCC] " />
     </div>
     <div class="flex-center-row py-[24px]">
-      <div class="wh-[32px] rounded-full flex-center-row" @click="QWLogin()">
-        <icon name="i-svg:qwicon" size="32" />
-      </div>
+      <slot name="other_logins" />
     </div>
   </div>
 </template>

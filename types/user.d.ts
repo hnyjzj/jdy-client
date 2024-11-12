@@ -1,13 +1,9 @@
-interface Users {
-  token: string
-  res: {
-    UserInterface: any
-    Attributes: {
-      deviceID: string
-      externalUserID: string
-      openID: string
-      userID: string
-      raw: string
-    }
-  }
+interface UserInfo {
+  avatar: string
+  email: string
+  id: string
+  name: string
+  phone: string
+  username: string
+
 }

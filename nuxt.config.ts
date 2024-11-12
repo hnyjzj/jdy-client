@@ -41,7 +41,7 @@ export default defineNuxtConfig({
     devProxy: {
       '/proxy': {
         // 代理目标的基础路径
-        target: import.meta.env.VITE_BASE_URL,
+        target: import.meta.env.VITE_BASE_API,
         changeOrigin: true,
         prependPath: true,
       },
