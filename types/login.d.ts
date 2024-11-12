@@ -1,6 +1,8 @@
 interface Account {
   phone: string
   password: string
+  captcha_id: string
+  captcha: string
 }
 
 /** 登录方式选择 */

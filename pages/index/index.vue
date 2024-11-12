@@ -2,7 +2,6 @@
 useSeoMeta({
   title: '待办',
 })
-const store = useUser()
 
 // const { data } = await store.increment()
 // if (!store.userinfo.token) {
@@ -49,7 +48,7 @@ const demoListt = ref<DemoItem[]>([{ title: '销售金额', number: 100 }, { tit
         <nuxt-img src="/images/banner/work.png" class="w-[200px]" />
       </div>
 
-      <work-card-greet :name="store.userinfo?.Attributes?.userID" />
+      <work-card-greet />
       <common-dark />
       <work-card-digitalization left-title="今日销售" />
       <work-card-action />

@@ -1,8 +1,7 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: '登录注册',
+  title: '登录',
 })
-// const route = useRoute()
 </script>
 
 <template>

@@ -30,6 +30,9 @@ class Https {
           if (opt.method === 'POST') {
             options.body = opt.body
           }
+          else {
+            options.query = opt.query
+          }
 
           if (import.meta.client) {
             options.headers = opt.headers || {}
@@ -60,17 +63,22 @@ class Https {
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
     }
-    const token = this.authToken
+
     if (import.meta.client) {
       if (isToken) {
-        // const store = useUser()
-        // // this.authToken = store.userinfo.token
+        const store = useAuth()
+        this.authToken = store.token
+
+        if (Date.now() > (store.expires_at) * 1000) {
+          navigateTo('/login')
+        }
+
         // if (!this.authToken) {
         //   navigateTo('/login')
         // }
       }
 
-      headers.Authorization = `Bearer ${token}`
+      headers.Authorization = this.authToken
     }
 
     return headers

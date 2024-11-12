@@ -1,5 +1,9 @@
 <script setup lang="ts">
-const userinfo = useUser().userinfo
+const userinfo = ref()
+
+onMounted(async () => {
+  userinfo.value = await useUser().userinfo
+})
 </script>
 
 <template>
@@ -9,7 +13,7 @@ const userinfo = useUser().userinfo
         <div class="wh-[68px] bg-amber rounded-full" />
         <div class="ml-[8px]">
           <div class="mb-[4px] font-semibold text-[16px] line-height-[20px]">
-            {{ userinfo.Attributes.userID }}
+            {{ userinfo?.Attributes?.userID || '' }}
           </div>
           <div class="text-[14px] line-height-[20px]" />
         </div>

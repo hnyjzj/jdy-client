@@ -5,7 +5,6 @@ export const useUser = defineStore('userStore', {
         userID: '',
       },
     },
-
   }),
   getters: {
 
@@ -13,6 +12,8 @@ export const useUser = defineStore('userStore', {
   actions: {
 
   },
-  persist: true,
+  persist: {
+    storage: piniaPluginPersistedstate.localStorage(),
+  },
 
 })

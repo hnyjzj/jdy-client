@@ -1,23 +1,15 @@
 <script setup lang="ts">
-// const userStore = useUser()
-const authStore = useAuth()
-// const loginBtn = async () => {
-//   const res = await store.mockLogin()
+const { $toast } = useNuxtApp()
 
-//   if (res) {
-//     navigateTo('/')
-//   }
-// }
+const authStore = useAuth()
 // 账号输入
 const account = ref<Account>({
-  phone: '',
-  password: '',
+  phone: '17633596180',
+  password: '123456',
+  captcha_id: '',
+  captcha: '',
 })
-// 控制显示是否显示验证码
-const codeShow = ref<boolean>(false)
-onMounted(() => {
 
-})
 // 企业微信登录
 const QWLogin = async () => {
   const res = await authStore.OAuthLogin({ uri: 'http://sbf.yjzj.com/login/oauth', state: 'wxwork' })
@@ -30,11 +22,27 @@ const QWLogin = async () => {
 const blur = async () => {
   if (account.value.phone.length === 11) {
     await authStore.getCodeImg()
-    codeShow.value = true
   }
-  else {
-    codeShow.value = false
+}
+// 点击登录按钮
+const login = async () => {
+  if (account.value.phone.trim() === '' || account.value.phone.length !== 11) {
+    $toast({ msg: '请输入正确手机号', type: 'error', ico: 'i-icon:error' })
+    return false
   }
+  if (account.value.password.trim() === '') {
+    $toast({ msg: '请输入密码', type: 'error', ico: 'i-icon:error' })
+    return false
+  }
+  if (account.value.captcha.trim() === '') {
+    $toast({ msg: '请输入验证码', type: 'error', ico: 'i-icon:error' })
+    return false
+  }
+
+  account.value.captcha_id = authStore.imageCaptcha.id
+  await authStore.accountLogin(account.value)
+
+  blur()
 }
 </script>
 
@@ -65,23 +73,23 @@ const blur = async () => {
       </div>
     </div>
 
-    <div v-if="codeShow" class="mt-[32px]">
+    <div v-if="account.phone.length === 11" class="mt-[32px]">
       <div class="text-[14px] line-height-[20px] mb-[8px] dark:color-[#fff]">
         验证码
       </div>
-      <div class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] flex-between">
+      <div class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] flex-between relative">
         <form>
           <input
-            type="text" autocomplete="" class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none h-[40px]" placeholder="验证码"
+            v-model="account.captcha" type="text" autocomplete="" class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="验证码"
           >
         </form>
-        <div>
-          <nuxt-img :src="authStore.imageCaptcha.code" class="w-[100px] h-[40px]" />
+        <div class="absolute right-0 top-0 h-full" @click="blur()">
+          <nuxt-img :src="authStore.imageCaptcha.code" class="h-[100%] rounded-r-[8px]" />
         </div>
       </div>
     </div>
 
-    <div class="text-size-[16px]  font-semibold offset-5 mt-[32px]">
+    <div class="text-size-[16px]  font-semibold offset-5 mt-[32px]" @click="login()">
       <div class="ok ">
         登录
       </div>

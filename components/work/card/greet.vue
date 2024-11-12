@@ -1,15 +1,15 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
-  name?: string
-}>(), {
-  name: '用户',
+const userinfo = ref()
+
+onMounted(async () => {
+  userinfo.value = await useUser().userinfo
 })
 </script>
 
 <template>
   <div class="mb-[8px]">
     <div class="text-size-xl line-height-[24px] font-semibold color-[#fff]">
-      {{ getGreeting() }},{{ props.name }}
+      {{ getGreeting() }},{{ userinfo?.Attributes?.userID || '' }}
     </div>
     <div class="text-size-[14px] line-height-[24px] color-[#fff] mt-[8px]">
       {{ getDayAndWeek() }}
