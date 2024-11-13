@@ -20,12 +20,12 @@ export const useAuth = defineStore('authStore', {
         const uri = UrlAndParams(`${import.meta.env.VITE_BASE_URL || ''}/login/oauth`, {
           redirect_url: redirect_url || undefined,
         })
-
         const { data } = await https.post<OAuthRes, OAuthReq>('/oauth', { uri, state: 'wxwork' })
         if (data.value?.code === HttpCode.SUCCESS) {
           window.location.href = data.value.data.redirect_url
         }
-        return false
+
+        return data.value
       }
       catch (error) {
         console.error('授权登录错误：', error)
@@ -35,10 +35,9 @@ export const useAuth = defineStore('authStore', {
     /**
      * 企业微信登录获取用户信息
      */
-    async wxworkLogin(req: OAuthLoginReq) {
+    async wxworkLogin(req: WXworkLoginReq) {
       try {
-        const { data } = await https.post<WXworkLoginRes, OAuthLoginReq>('/login/oauth', req)
-
+        const { data } = await https.post<WXworkLoginRes, WXworkLoginReq>('/login/oauth', req)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.token = data.value.data.token
           this.expires_at = data.value.data.expires_at
@@ -71,10 +70,9 @@ export const useAuth = defineStore('authStore', {
     /**
      *  账号登录
      */
-    async accountLogin(req: Account) {
+    async accountLogin(req: AccountReq) {
       try {
-        const { data } = await https.post<any, Account>('/login/', req)
-        const { $toast } = useNuxtApp()
+        const { data } = await https.post<AccountRes, AccountReq>('/login/', req)
         // 获取当前地址栏的参数 并抓换回去
         const route = useRoute()
         const redirect_url = route.query.redirect_url || '/'
@@ -82,13 +80,9 @@ export const useAuth = defineStore('authStore', {
           // 登录成功 存储token ,跳转首页
           this.token = data.value.data.token
           this.expires_at = data.value.data.expires_at
-          $toast({ msg: '登录成功', type: 'success', ico: 'i-icon:success' })
           navigateTo(decodeURIComponent(redirect_url as string))
         }
-        else if (data.value?.code === HttpCode.ERROR) {
-          // 登录失败  ， 提示错误
-          $toast({ msg: data.value.message, type: 'error', ico: 'i-icon:error' })
-        }
+        return data.value
       }
       catch (error) {
         console.error('账号登录错误:', error)

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { $toast } = useNuxtApp()
 useSeoMeta({
   title: '登录',
 })
@@ -8,7 +9,14 @@ const QWLogin = async () => {
   const route = useRoute()
   const authStore = useAuth()
   const redirect_url = route.query?.redirect_url as string
-  await authStore.OAuthLogin(redirect_url || '')
+  const res = await authStore.OAuthLogin(redirect_url || '')
+  if (res.code !== HttpCode.SUCCESS) {
+    $toast({
+      msg: res.message,
+      type: 'error',
+      ico: 'i-icon:error',
+    })
+  }
 }
 </script>
 

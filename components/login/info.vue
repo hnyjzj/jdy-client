@@ -1,17 +1,26 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-
 const authStore = useAuth()
 // 账号输入
-const account = ref<Account>({
+const account = ref<AccountReq>({
   phone: '17633596180',
   password: '123456',
-} as Account)
+} as AccountReq)
 
 // 手机号输入框失去焦点  进行验证码显示
 const blur = async () => {
   if (account.value.phone.length === 11) {
-    await authStore.getCodeImg()
+    try {
+      await authStore.getCodeImg()
+    }
+    catch (error) {
+      $toast({
+        msg: '验证码获取失败',
+        type: 'error',
+        ico: 'i-icon:error',
+      })
+      throw error
+    }
   }
 }
 // 点击登录按钮
@@ -28,9 +37,29 @@ const login = async () => {
     $toast({ msg: '请输入验证码', type: 'error', ico: 'i-icon:error' })
     return false
   }
-  account.value.captcha_id = authStore.imageCaptcha.id
-  await authStore.accountLogin(account.value)
-  blur()
+
+  try {
+    account.value.captcha_id = authStore.imageCaptcha.id
+    const res = await authStore.accountLogin(account.value)
+    console.log(res, 'res')
+
+    if (res?.code !== HttpCode.SUCCESS) {
+      $toast({
+        msg: res?.message || '登录失败',
+        type: 'error',
+        ico: 'i-icon:error',
+      })
+    }
+    blur()
+  }
+  catch (error) {
+    $toast({
+      msg: '登录失败了,请重试',
+      type: 'error',
+      ico: 'i-icon:error',
+    })
+    throw error
+  }
 }
 </script>
 
