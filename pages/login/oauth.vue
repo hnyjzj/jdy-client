@@ -37,7 +37,11 @@ onMounted(async () => {
     }
   }
 })
-
+onUnmounted(() => {
+  if (timer.value) {
+    clearTimeout(timer.value)
+  }
+})
 const jumpLogin = () => {
   if (content.value.loading) {
     return false
