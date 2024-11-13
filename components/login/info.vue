@@ -3,8 +3,7 @@ const { $toast } = useNuxtApp()
 const authStore = useAuth()
 // 账号输入
 const account = ref<AccountReq>({
-  phone: '17633596180',
-  password: '123456',
+  phone: '',
 } as AccountReq)
 
 // 手机号输入框失去焦点  进行验证码显示
@@ -25,7 +24,7 @@ const blur = async () => {
 }
 // 点击登录按钮
 const login = async () => {
-  if (!account.value?.phone || account.value?.phone.trim() === '' || account.value.phone.length !== 11) {
+  if (!account.value?.phone || account.value?.phone.trim() === '' || account.value?.phone.length !== 11) {
     $toast({ msg: '请输入正确手机号', type: 'error', ico: 'i-icon:error' })
     return false
   }

@@ -2,9 +2,14 @@
 useSeoMeta({
   title: '个人中心',
 })
-
 const store = useUser()
-store.getUserInfo()
+const { getUserInfo } = useUser()
+const { token } = storeToRefs(useAuth())
+onMounted(async () => {
+  if (!store?.userinfo?.id && token) {
+    await getUserInfo()
+  }
+})
 </script>
 
 <template>

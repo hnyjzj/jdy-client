@@ -38,11 +38,13 @@ export const useAuth = defineStore('authStore', {
     async wxworkLogin(req: WXworkLoginReq) {
       try {
         const { data } = await https.post<WXworkLoginRes, WXworkLoginReq>('/login/oauth', req)
+        const userStore = useUser()
         if (data.value?.code === HttpCode.SUCCESS) {
           this.token = data.value.data.token
           this.expires_at = data.value.data.expires_at
+          await userStore.getUserInfo()
         }
-        return data.value.code
+        return data.value
       }
       catch (error) {
         console.error('企业微信登录出错:', error)
@@ -74,12 +76,14 @@ export const useAuth = defineStore('authStore', {
       try {
         const { data } = await https.post<AccountRes, AccountReq>('/login/', req)
         // 获取当前地址栏的参数 并抓换回去
+        const userStore = useUser()
         const route = useRoute()
         const redirect_url = route.query.redirect_url || '/'
         if (data.value?.code === HttpCode.SUCCESS) {
           // 登录成功 存储token ,跳转首页
           this.token = data.value.data.token
           this.expires_at = data.value.data.expires_at
+          await userStore.getUserInfo()
           navigateTo(decodeURIComponent(redirect_url as string))
         }
         return data.value
