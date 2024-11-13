@@ -41,7 +41,6 @@ const login = async () => {
   try {
     account.value.captcha_id = authStore.imageCaptcha.id
     const res = await authStore.accountLogin(account.value)
-    console.log(res, 'res')
 
     if (res?.code !== HttpCode.SUCCESS) {
       $toast({

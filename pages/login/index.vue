@@ -3,11 +3,17 @@ const { $toast } = useNuxtApp()
 useSeoMeta({
   title: '登录',
 })
+const authStore = useAuth()
+
+if (authStore.token) {
+  authStore.token = ''
+  authStore.expires_at = 0
+}
 
 // 企业微信登录
 const QWLogin = async () => {
   const route = useRoute()
-  const authStore = useAuth()
+
   const redirect_url = route.query?.redirect_url as string
   const res = await authStore.OAuthLogin(redirect_url || '')
   if (res.code !== HttpCode.SUCCESS) {

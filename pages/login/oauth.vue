@@ -19,6 +19,17 @@ onMounted(async () => {
     }
   }
 })
+
+const jumpLogin = () => {
+  const params = {} as {
+    redirect_url?: string
+  }
+  const redirect_url = route.query?.redirect_url as string
+  if (!redirect_url.startsWith('/login')) {
+    params.redirect_url = redirect_url
+  }
+  jump('/login', params)
+}
 </script>
 
 <template>
@@ -41,9 +52,8 @@ onMounted(async () => {
       <div
         class="col-12 px-[20px]"
         uno-lg="col-4 offset-4"
-        uno-sm="col-6 offset-3"
-        @click="jump('/')">
-        <common-button-rounded content="返回首页" />
+        uno-sm="col-6 offset-3">
+        <common-button-rounded content="返回登录页" @click="jumpLogin()" />
       </div>
     </template>
   </div>

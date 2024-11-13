@@ -7,7 +7,7 @@ export default defineNuxtRouteMiddleware((to, form) => {
         path: '/login',
         query: {},
       }
-      if (form.fullPath) {
+      if (form.fullPath && form.fullPath !== '/login') {
         params.query = {
           redirect_url: form.fullPath || '/',
         }
