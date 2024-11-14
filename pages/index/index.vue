@@ -3,33 +3,6 @@ useSeoMeta({
   title: '待办',
 })
 
-// const { data } = await store.increment()
-// if (!store.userinfo.token) {
-//   navigateTo('/login')
-//   await store.mockLogin()
-// }
-// const { $jslist, $wx, $isWorkWechat } = useNuxtApp()
-
-const clicek = () => {
-
-//   await $isWorkWechat()
-//   if ($jslist.value.scanQRCode) {
-//     $wx.scanQRCode({
-//       scanType: [$wx.ScanQRCodeType.barCode, $wx.ScanQRCodeType.qrCode],
-//       needResult: true,
-//       success(res) {
-//         alert(JSON.stringify(res))
-//       },
-//       fail(err) {
-//         alert(JSON.stringify({ err: 'fail', ...err }))
-//       },
-//     })
-//   }
-//   else {
-//     alert('请使用企业微信打开')
-//   }
-}
-
 interface DemoItem { title: string, number: number }
 
 const demoList = ref<DemoItem[]>([
@@ -45,10 +18,9 @@ const demoListt = ref<DemoItem[]>([{ title: '销售金额', number: 100 }, { tit
 <template>
   <div class="grid-12 pb-[120px]!">
     <div class="col-12  px-[16px] pt-[48px] pos-relative" uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
-      <div class="absolute right-0 top-[-10px] " @click="clicek()">
+      <div class="absolute right-0 top-[-10px] ">
         <nuxt-img src="/images/banner/work.png" class="w-[200px]" />
       </div>
-
       <work-card-greet />
       <common-dark />
       <work-card-digitalization left-title="今日销售" />
