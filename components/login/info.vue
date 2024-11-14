@@ -7,7 +7,7 @@ const account = ref<AccountReq>({
 } as AccountReq)
 
 // 手机号输入框失去焦点  进行验证码显示
-const blur = async () => {
+const getImg = async () => {
   if (account.value.phone.length === 11) {
     try {
       await authStore.getCodeImg()
@@ -47,8 +47,8 @@ const login = async () => {
         type: 'error',
         ico: 'i-icon:error',
       })
+      getImg()
     }
-    blur()
   }
   catch (error) {
     $toast({
@@ -59,6 +59,11 @@ const login = async () => {
     throw error
   }
 }
+watch(() => account.value.phone, async (newPhone, _) => {
+  if (newPhone.length === 11 && !authStore.imageCaptcha.id) {
+    await getImg()
+  }
+}, { deep: true })
 </script>
 
 <template>
@@ -70,7 +75,7 @@ const login = async () => {
       <div class="px-[12px] py-[10px] bg-[#fff] rounded-[8px]">
         <input
           v-model="account.phone" type="text" class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none "
-          maxlength="11" placeholder="全部" @blur="blur()"
+          maxlength="11" placeholder="全部"
         >
       </div>
     </div>
@@ -98,7 +103,7 @@ const login = async () => {
             v-model="account.captcha" maxlength="5" type="text" autocomplete="" class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="验证码"
           >
         </form>
-        <div class="absolute right-0 top-0 h-full" @click="blur()">
+        <div class="absolute right-0 top-0 h-full" @click="getImg()">
           <nuxt-img :src="authStore.imageCaptcha.code" class="h-[100%] rounded-r-[8px]" />
         </div>
       </div>
