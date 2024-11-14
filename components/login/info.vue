@@ -4,11 +4,19 @@ const authStore = useAuth()
 // 账号输入
 const account = ref<AccountReq>({
   phone: '',
+  password: '',
 } as AccountReq)
+// 显示密码
+const showPw = ref('text')
+
+// 切换密码能否显示
+const changeType = () => {
+  showPw.value = showPw.value === 'text' ? 'password' : 'text'
+}
 
 // 手机号输入框失去焦点  进行验证码显示
 const getImg = async () => {
-  if (account.value.phone.length === 11) {
+  if (account.value?.phone.length === 11) {
     try {
       await authStore.getCodeImg()
     }
@@ -72,9 +80,9 @@ watch(() => account.value.phone, async (newPhone, _) => {
       <div class="text-[14px] line-height-[20px] mb-[8px] dark:color-[#fff]">
         手机号
       </div>
-      <div class="px-[12px] py-[10px] bg-[#fff] rounded-[8px]">
+      <div class="">
         <input
-          v-model="account.phone" type="text" class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none "
+          v-model="account.phone" type="text" class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none "
           maxlength="11" placeholder="全部"
         >
       </div>
@@ -84,23 +92,33 @@ watch(() => account.value.phone, async (newPhone, _) => {
       <div class="text-[14px] line-height-[20px] mb-[8px] dark:color-[#fff]">
         密码
       </div>
-      <div class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] ">
+      <div class="relative">
         <form>
           <input
-            v-model="account.password" type="password" autocomplete=" " class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="密码"
+            v-model="account.password" :type="showPw" autocomplete=" " class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] flex-1  border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="密码"
           >
         </form>
+        <template v-if="account?.password.length > 0">
+          <div class="absolute right-0 top-0 h-full px-[20px] flex-center-row" @click="changeType()">
+            <template v-if="showPw === 'text'">
+              <van-icon name="eye-o" size="20" />
+            </template>
+            <template v-if="showPw === 'password'">
+              <van-icon name="closed-eye" size="20" />
+            </template>
+          </div>
+        </template>
       </div>
     </div>
-    <template v-if="account.phone.length === 11">
+    <template v-if="account?.phone?.length === 11">
       <div class="mt-[32px]">
         <div class="text-[14px] line-height-[20px] mb-[8px] dark:color-[#fff]">
           验证码
         </div>
-        <div class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] flex-between relative">
+        <div class="relative">
           <form>
             <input
-              v-model="account.captcha" maxlength="5" type="text" autocomplete="" class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="验证码"
+              v-model="account.captcha" maxlength="5" type="text" autocomplete="" class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] flex-between  border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="验证码"
             >
           </form>
           <div class="absolute right-0 top-0 h-full" @click="getImg()">
