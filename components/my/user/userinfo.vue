@@ -22,7 +22,7 @@ onMounted(() => {
             {{ store?.userinfo?.name || '' }}
           </div>
           <div class="text-[14px] line-height-[20px]">
-            {{ newPhone(store?.userinfo?.phone || '') }}
+            {{ store?.userinfo?.phone || '' }}
           </div>
         </div>
       </div>
