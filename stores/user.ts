@@ -11,18 +11,16 @@ export const useUser = defineStore('userStore', {
         const { data } = await https.get<UserInfo, null>('/user/info', null, true)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.userinfo = data.value.data
-          return data.value.data
         }
-        return false
       }
       catch (error) {
         console.error('获取用户信息报错：', error)
-        throw error
       }
+
+      return true
     },
   },
   persist: {
-    storage: piniaPluginPersistedstate.localStorage(),
+    storage: piniaPluginPersistedstate.cookies(),
   },
-
 })

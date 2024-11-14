@@ -37,16 +37,16 @@ export default defineNuxtConfig({
       },
     },
   },
-  nitro: {
-    devProxy: {
-      '/proxy': {
-        // 代理目标的基础路径
-        target: import.meta.env.VITE_BASE_API,
-        changeOrigin: true,
-        prependPath: true,
-      },
-    },
-  },
+  //   nitro: {
+  //     devProxy: {
+  //       '/proxy': {
+  //         // 代理目标的基础路径
+  //         target: import.meta.env.VITE_BASE_API,
+  //         changeOrigin: true,
+  //         prependPath: true,
+  //       },
+  //     },
+  //   },
   eslint: {
     config: {
       standalone: false,

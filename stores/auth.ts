@@ -83,6 +83,8 @@ export const useAuth = defineStore('authStore', {
           // 登录成功 存储token ,跳转首页
           this.token = data.value.data.token
           this.expires_at = data.value.data.expires_at
+          this.imageCaptcha.id = ''
+          this.imageCaptcha.code = ''
           await userStore.getUserInfo()
           navigateTo(decodeURIComponent(redirect_url as string))
         }

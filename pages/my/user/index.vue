@@ -2,13 +2,11 @@
 useSeoMeta({
   title: '个人中心',
 })
-const store = useUser()
+const { userinfo } = storeToRefs(useUser())
 const { getUserInfo } = useUser()
-const { token } = storeToRefs(useAuth())
-onMounted(async () => {
-  if (!store?.userinfo?.id && token) {
-    await getUserInfo()
-  }
+
+usePageShow(() => {
+  getUserInfo()
 })
 </script>
 
@@ -17,7 +15,7 @@ onMounted(async () => {
     <div class="grid-12">
       <div class="col-12" uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
         <div class="px-[16px] py-[24px]">
-          <my-user-userinfo />
+          <my-user-userinfo :userinfo="userinfo" />
         </div>
         <div class="px-[16px] ">
           <my-user-option />

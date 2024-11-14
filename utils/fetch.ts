@@ -16,9 +16,9 @@ class Https {
   BASE_URL: string = import.meta.env.VITE_BASE_API || ''
   authToken: string = ''
   constructor() {
-    if (import.meta.dev) {
-      this.BASE_URL = '/proxy'
-    }
+    // if (import.meta.dev) {
+    //   this.BASE_URL = '/proxy'
+    // }
   }
 
   setAuthToken(token: string) {
@@ -45,13 +45,12 @@ class Https {
           }
         },
         onRequestError() {
-          // Handle the request errors
+        //   Handle the request errors
         },
         onResponse({ response }) {
+        //   Process the response data
+        //   console.log(response._data, 'response')
           toLogin(response)
-
-        // Process the response data
-        // console.log(response._data, 'response')
         },
         onResponseError({ response }) {
           toLogin(response)
@@ -74,21 +73,20 @@ class Https {
       'Content-Type': 'application/json',
     }
 
-    if (import.meta.client) {
-      if (isToken) {
-        const store = useAuth()
-        const route = useRoute()
-        this.authToken = store.token
-        if (Date.now() > (store.expires_at) * 1000) {
-          navigateTo({
-            path: '/login',
-            query: {
-              redirect_url: encodeURIComponent(route.path),
-            },
-          })
-        }
-      }
+    if (isToken) {
+      const store = useAuth()
+      const route = useRoute()
+      this.authToken = store.token
+      //   console.log('token', store.token)
 
+      if (Date.now() > (store.expires_at) * 1000) {
+        navigateTo({
+          path: '/login',
+          query: {
+            redirect_url: encodeURIComponent(route.path),
+          },
+        })
+      }
       headers.Authorization = `Bearer ${this.authToken}`
     }
 

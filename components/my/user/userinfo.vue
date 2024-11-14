@@ -1,8 +1,7 @@
 <script setup lang="ts">
-const store = ref()
-onMounted(() => {
-  store.value = useUser()
-})
+const porps = defineProps<{
+  userinfo: UserInfo
+}>()
 </script>
 
 <template>
@@ -10,19 +9,19 @@ onMounted(() => {
     <nuxt-link to="/login" class="color-[#fff]">
       <div class="flex-start ">
         <div class="">
-          <template v-if="!store?.userinfo?.avatar">
+          <template v-if="!porps.userinfo?.avatar">
             <icon name="i-svg:avatar" size="68" />
           </template>
           <template v-else>
-            <nuxt-img :src="store?.userinfo?.avatar" size="68px" />
+            <nuxt-img :src="porps?.userinfo?.avatar" size="68px" />
           </template>
         </div>
         <div class="ml-[8px]">
           <div class="mb-[4px] font-semibold text-[16px] line-height-[20px]">
-            {{ store?.userinfo?.name || '' }}
+            {{ porps?.userinfo?.name || '' }}
           </div>
           <div class="text-[14px] line-height-[20px]">
-            {{ store?.userinfo?.phone || '' }}
+            {{ porps?.userinfo?.phone || '' }}
           </div>
         </div>
       </div>

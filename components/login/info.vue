@@ -9,6 +9,23 @@ const account = ref<AccountReq>({
 // 显示密码
 const showPw = ref('text')
 
+// 账号正则校验输入内容
+const onInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  // 使用正则表达式过滤非数字字符
+  account.value.phone = target.value.replace(/\D/g, '')
+}
+// 验证码正则校验输入内容
+const codeInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  account.value.captcha = target.value.replace(/\D/g, '')
+}
+// 密码正则校验输入内容
+const passInput = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  account.value.password = target.value.replace(/[\s\u4E00-\u9FA5]+/g, '')
+}
+
 // 切换密码能否显示
 const changeType = () => {
   showPw.value = showPw.value === 'text' ? 'password' : 'text'
@@ -67,8 +84,9 @@ const login = async () => {
     throw error
   }
 }
+// 监听 账号手机号变化
 watch(() => account.value.phone, async (newPhone, _) => {
-  if (newPhone.length === 11 && !authStore.imageCaptcha.id) {
+  if (newPhone.length === 11 && authStore.imageCaptcha.id === '') {
     await getImg()
   }
 }, { deep: true })
@@ -82,8 +100,8 @@ watch(() => account.value.phone, async (newPhone, _) => {
       </div>
       <div class="">
         <input
-          v-model="account.phone" type="text" class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none "
-          maxlength="11" placeholder="全部"
+          v-model="account.phone" type="text" oninput="if( this.value.length > 11 )  this.value = this.value.slice(0,11)" class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none " maxlength="11"
+          placeholder="全部" @input="onInput"
         >
       </div>
     </div>
@@ -96,6 +114,7 @@ watch(() => account.value.phone, async (newPhone, _) => {
         <form>
           <input
             v-model="account.password" :type="showPw" autocomplete=" " class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] flex-1  border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="密码"
+            @input="passInput"
           >
         </form>
         <template v-if="account?.password.length > 0">
@@ -119,6 +138,7 @@ watch(() => account.value.phone, async (newPhone, _) => {
           <form>
             <input
               v-model="account.captcha" maxlength="5" type="text" autocomplete="" class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] flex-between  border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="验证码"
+              @input="codeInput"
             >
           </form>
           <div class="absolute right-0 top-0 h-full" @click="getImg()">
