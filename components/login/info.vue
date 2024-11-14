@@ -92,22 +92,23 @@ watch(() => account.value.phone, async (newPhone, _) => {
         </form>
       </div>
     </div>
-
-    <div v-if="account.phone.length === 11" class="mt-[32px]">
-      <div class="text-[14px] line-height-[20px] mb-[8px] dark:color-[#fff]">
-        验证码
-      </div>
-      <div class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] flex-between relative">
-        <form>
-          <input
-            v-model="account.captcha" maxlength="5" type="text" autocomplete="" class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="验证码"
-          >
-        </form>
-        <div class="absolute right-0 top-0 h-full" @click="getImg()">
-          <nuxt-img :src="authStore.imageCaptcha.code" class="h-[100%] rounded-r-[8px]" />
+    <template v-if="account.phone.length === 11">
+      <div class="mt-[32px]">
+        <div class="text-[14px] line-height-[20px] mb-[8px] dark:color-[#fff]">
+          验证码
+        </div>
+        <div class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] flex-between relative">
+          <form>
+            <input
+              v-model="account.captcha" maxlength="5" type="text" autocomplete="" class="bg-transparent border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="验证码"
+            >
+          </form>
+          <div class="absolute right-0 top-0 h-full" @click="getImg()">
+            <img :src="authStore.imageCaptcha.code" class="h-[100%] rounded-r-[8px]">
+          </div>
         </div>
       </div>
-    </div>
+    </template>
 
     <div class="text-size-[16px]  font-semibold offset-5 mt-[32px]" @click="login()">
       <div class="ok ">
