@@ -2,6 +2,7 @@
 useSeoMeta({
   title: '待办',
 })
+const { userinfo } = storeToRefs(useUser())
 
 interface DemoItem { title: string, number: number }
 
@@ -21,7 +22,7 @@ const demoListt = ref<DemoItem[]>([{ title: '销售金额', number: 100 }, { tit
       <div class="absolute right-0 top-[-10px] ">
         <nuxt-img src="/images/banner/work.png" class="w-[200px]" />
       </div>
-      <work-card-greet />
+      <work-card-greet :userinfo="userinfo" />
       <common-dark />
       <work-card-digitalization left-title="今日销售" />
       <work-card-action />
