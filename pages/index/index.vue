@@ -2,7 +2,11 @@
 useSeoMeta({
   title: '待办',
 })
-const { userinfo } = storeToRefs(useUser())
+
+const userinfo = ref()
+onMounted(async () => {
+  userinfo.value = await useUser().userinfo
+})
 
 interface DemoItem { title: string, number: number }
 

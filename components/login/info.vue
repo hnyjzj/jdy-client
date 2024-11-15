@@ -7,7 +7,7 @@ const account = ref<AccountReq>({
   password: '',
 } as AccountReq)
 // 显示密码
-const showPw = ref('text')
+const showPw = ref<'password' | 'text'>('password')
 
 // 账号正则校验输入内容
 const onInput = (event: Event) => {
@@ -24,11 +24,6 @@ const codeInput = (event: Event) => {
 const passInput = (event: Event) => {
   const target = event.target as HTMLInputElement
   account.value.password = target.value.replace(/[\s\u4E00-\u9FA5]+/g, '')
-}
-
-// 切换密码能否显示
-const changeType = () => {
-  showPw.value = showPw.value === 'text' ? 'password' : 'text'
 }
 
 // 手机号输入框失去焦点  进行验证码显示
@@ -101,7 +96,7 @@ watch(() => account.value.phone, async (newPhone, _) => {
       <div class="">
         <input
           v-model="account.phone" type="text" class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none " maxlength="11"
-          placeholder="全部" @input="onInput"
+          placeholder="请输入手机号" @input="onInput"
         >
       </div>
     </div>
@@ -113,20 +108,11 @@ watch(() => account.value.phone, async (newPhone, _) => {
       <div class="relative">
         <form>
           <input
-            v-model="account.password" :type="showPw" autocomplete=" " class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] flex-1  border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="密码"
+            v-model="account.password" :type="showPw" autocomplete=""
+            class="py-[10px] px-[12px]  bg-[#fff] rounded-[8px] flex-1 border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="请输入密码"
             @input="passInput"
           >
         </form>
-        <template v-if="account?.password.length > 0">
-          <div class="absolute right-0 top-0 h-full px-[20px] flex-center-row" @click="changeType()">
-            <template v-if="showPw === 'text'">
-              <van-icon name="eye-o" size="20" />
-            </template>
-            <template v-if="showPw === 'password'">
-              <van-icon name="closed-eye" size="20" />
-            </template>
-          </div>
-        </template>
       </div>
     </div>
     <template v-if="account?.phone?.length === 11">
@@ -137,7 +123,8 @@ watch(() => account.value.phone, async (newPhone, _) => {
         <div class="relative">
           <form>
             <input
-              v-model="account.captcha" maxlength="5" type="text" autocomplete="" class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] flex-between  border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="验证码"
+              v-model="account.captcha" maxlength="5" type="text" autocomplete=""
+              class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] flex-between  border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="请输入验证码"
               @input="codeInput"
             >
           </form>
