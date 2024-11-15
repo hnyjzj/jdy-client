@@ -100,7 +100,7 @@ watch(() => account.value.phone, async (newPhone, _) => {
       </div>
       <div class="">
         <input
-          v-model="account.phone" type="text" oninput="if( this.value.length > 11 )  this.value = this.value.slice(0,11)" class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none " maxlength="11"
+          v-model="account.phone" type="text" class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none " maxlength="11"
           placeholder="全部" @input="onInput"
         >
       </div>
