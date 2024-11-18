@@ -19,9 +19,9 @@ const showCode = async () => {
   }
   catch (error) {
     $toast({
-      msg: '验证码获取失败',
-      type: 'error',
-      ico: 'i-icon:error',
+      message: '验证码获取失败',
+      theme: 'error',
+      icon: 'i-icon:error',
     })
     throw error
   }
@@ -31,21 +31,20 @@ const login = async () => {
   try {
     form.value.captcha_id = authStore.imageCaptcha.id
     const res = await authStore.accountLogin(form.value)
-
     if (res?.code !== HttpCode.SUCCESS) {
       $toast({
-        msg: res?.message || '登录失败',
-        type: 'error',
-        ico: 'i-icon:error',
+        message: res?.message || '登录失败',
+        theme: 'error',
+        icon: 'i-icon:error',
       })
       showCode()
     }
   }
   catch (error) {
     $toast({
-      msg: '登录失败了,请重试',
-      type: 'error',
-      ico: 'i-icon:error',
+      message: '登录失败了,请重试',
+      theme: 'error',
+      icon: 'i-icon:error',
     })
     throw error
   }
@@ -64,9 +63,9 @@ const QWLogin = async () => {
   const res = await authStore.OAuthLogin(redirect_url || '')
   if (res.code !== HttpCode.SUCCESS) {
     $toast({
-      msg: res.message,
-      type: 'error',
-      ico: 'i-icon:error',
+      message: res.message,
+      theme: 'error',
+      icon: 'i-icon:error',
     })
   }
 }
