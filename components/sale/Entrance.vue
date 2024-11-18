@@ -5,8 +5,6 @@ const isFold = defineModel({ type: Boolean, default: false })
 const toggleFold = () => {
   isFold.value = !isFold.value
 }
-
-const iconDirection = computed(() => (isFold.value ? 'i-icon:left' : 'i-icon:down'))
 </script>
 
 <template>
@@ -19,7 +17,7 @@ const iconDirection = computed(() => (isFold.value ? 'i-icon:left' : 'i-icon:dow
             <div
               class="flex-center-row justify-items-center gap-[2px] text-[12px] color-[#808089] dark:color-[#fff]" @click="toggleFold()">
               <div>点击{{ isFold ? '展开' : '收起' }}</div>
-              <icon :name="iconDirection" size="12px" class="dark:color-[#fff]" />
+              <icon :name="isFold ? 'i-icon:left' : 'i-icon:down'" size="12px" class="dark:color-[#fff]" />
             </div>
           </common-header-gradient>
         </div>
