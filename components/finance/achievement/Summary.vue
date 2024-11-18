@@ -1,12 +1,88 @@
 <script setup lang="ts">
-import { finishedColumns, finishedData, oldColumns, oldData } from '~/types/test'
-
 // 测试table数据。待替换
-const finishedMock = finishedColumns
-const oldMock = oldColumns
-// 测试data数据。待替换
-const finished = ref(finishedData)
-const old = ref(oldData)
+const finishedColumns = [
+  {
+    header: '姓名',
+    field: 'name',
+  },
+  {
+    header: '年龄',
+    field: 'age',
+  },
+  {
+    header: '出生日期',
+    field: 'birthday',
+  },
+  {
+    header: '地址',
+    field: 'address',
+  },
+  {
+    header: '操作',
+    field: 'operation',
+  },
+]
+const oldColumns = [
+  {
+    header: '大类',
+    field: 'category',
+  },
+  {
+    header: '剩余抵值',
+    field: 'residue',
+  },
+  {
+    header: '退货金额',
+    field: 'returnAmount',
+  },
+]
+const finishedData = [
+  {
+    name: '小美',
+    age: 20,
+    birthday: '0',
+    address: '0',
+    operation: '编辑',
+  },
+  {
+    name: '懒羊羊',
+    age: 23,
+    birthday: '0',
+    address: '0',
+    operation: '编辑',
+  },
+  {
+    name: '懒羊羊',
+    age: 23,
+    birthday: '0',
+    address: '0',
+    operation: '编辑',
+  },
+  {
+    name: '懒羊羊',
+    age: 23,
+    birthday: '0',
+    address: '0',
+    operation: '编辑',
+  },
+]
+const oldData = [
+  {
+    category: '成品',
+    residue: 100,
+    returnAmount: 100,
+  },
+  {
+    category: '原料',
+    residue: 100,
+    returnAmount: 100,
+  },
+  {
+    category: '银料用件',
+    residue: 100,
+    returnAmount: 100,
+  },
+]
 
 // 盘点单tab切换选项
 const options = computed(() => [
@@ -21,26 +97,6 @@ const options = computed(() => [
 ])
 
 const currentSelected = ref(1)
-
-const updateKey = ref(0)
-
-// 监听 currentSelected 的变化
-watch(currentSelected, () => {
-  // 触发更新
-  updateKey.value++
-})
-
-const renderData = computed(() => {
-  return currentSelected.value === 1 ? finished.value : old.value
-})
-
-const renderTitle = computed(() => {
-  return currentSelected.value === 1 ? '成品业绩及对应旧料抵扣' : '旧料剩余抵值'
-})
-
-const renderOptions = computed(() => {
-  return currentSelected.value === 1 ? finishedMock : oldMock
-})
 </script>
 
 <template>
@@ -48,13 +104,15 @@ const renderOptions = computed(() => {
     <div>
       <div class="flex flex-col gap-[16px] px-[16px] py-[16px]">
         <div>
-          <common-tab-secondary
-            v-model:current-selected="currentSelected" :options="options" />
+          <common-tab-secondary v-model:current-selected="currentSelected" :options="options" />
         </div>
         <div>
-          <common-fold :title="renderTitle">
+          <common-fold :title="currentSelected === 1 ? '成品业绩及对应旧料抵扣' : '旧料剩余抵值'">
             <div class="flex flex-col pt-[16px]">
-              <common-table :key="updateKey" :columns="renderOptions" :data="renderData" />
+              <common-table
+                :columns="currentSelected === 1 ? finishedColumns : oldColumns"
+                :data="currentSelected === 1 ? finishedData : oldData"
+              />
             </div>
           </common-fold>
         </div>
