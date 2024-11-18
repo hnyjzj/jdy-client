@@ -1,14 +1,20 @@
 <script setup lang="ts">
+type types =
+  | 'error'
+  | 'warning'
+  | 'success'
+  | 'primary'
+
 interface Props {
   /**
    * 文本内容
    */
-  msg: string
+  message: string
   /**
    * 提示主题
    * 'error' | 'warning' | 'success' | 'primary'
    */
-  type?: types
+  theme?: types
   /**
    * 显示时长
    */
@@ -16,13 +22,29 @@ interface Props {
   /**
    * icon
    */
-  ico?: string
+  icon?: string
+  /**
+   * 网格列开始
+   */
+  colStart?: number
+  /**
+   * 网格列跨度
+   */
+  colSpan?: number
+  /**
+   * 距顶部距离
+   * @param {number} top - 元素的垂直位置，单位为百分比（%）
+   */
+  top?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  type: 'primary',
+  theme: 'primary',
   duration: 3000,
-  ico: 'i-icon:succeed',
+  icon: 'i-icon:success',
+  colStart: 3,
+  colSpan: 8,
+  top: 10,
 })
 
 type Toasts = {
@@ -30,12 +52,6 @@ type Toasts = {
   color?: string
   iconBg?: string
 } & Partial<Props>
-
-type types =
-  | 'error'
-  | 'warning'
-  | 'success'
-  | 'primary'
 
 const toastStyle: { [key in types]: Toasts } = {
   error: {
@@ -65,19 +81,29 @@ const toastStyle: { [key in types]: Toasts } = {
 </script>
 
 <template>
-  <div class="toast-container">
-    <div class="rounded-[8px] w-80%" :style="{ backgroundColor: toastStyle[props.type].backgroundColor }">
+  <div
+    class="fixed bottom-auto w-[100vw] h-auto z-999 overflow-hidden grid-12"
+    :style="{ top: `${props.top}%` }"
+  >
+    <div
+      class="rounded-[8px] p-0"
+      :style="{
+        backgroundColor: toastStyle[props.theme].backgroundColor,
+        gridColumnStart: props.colStart,
+        gridColumnEnd: props.colStart + props.colSpan,
+      }"
+    >
       <div
         class="flex flex-row items-center gap-[12px] px-[12px] py-[12px]"
-        uno-lg="flex-center-row w-60%"
+        uno-lg="flex-center-row"
       >
         <div class="icon">
-          <div class="rounded-[4px] w-[24px] h-[24px] text-lg flex-center-row" :style="{ backgroundColor: toastStyle[props.type].iconBg }">
-            <div class="color-[#fff]" :class="[props.ico || 'i-icon:succeed']" />
+          <div class="rounded-[4px] w-[24px] h-[24px] text-lg flex-center-row" :style="{ backgroundColor: toastStyle[props.theme].iconBg }">
+            <div class="color-[#fff]" :class="[props.icon || 'i-icon:success']" />
           </div>
         </div>
-        <div class="msg font-medium font-size-[14px]" :style="{ color: toastStyle[props.type].color }">
-          {{ props.msg }}
+        <div class="msg font-medium font-size-[14px]" :style="{ color: toastStyle[props.theme].color }">
+          {{ props.message }}
         </div>
       </div>
     </div>
@@ -85,7 +111,4 @@ const toastStyle: { [key in types]: Toasts } = {
 </template>
 
 <style lang="scss" scoped>
-.toast-container {
-  --uno: 'fixed left-10% right-0 top-10% bottom-0 w-[100vw] h-[100vh] z-999 overflow-hidden';
-}
 </style>

@@ -1,17 +1,10 @@
 <script setup lang="ts">
-// 测试数据。待删除
-interface ProductInfo {
-  name: string
-  desc: string
-}
 const props = defineProps<{
   title: string
-  info: ProductInfo[]
 }>()
 
 const folded = ref(true)
 const hasCheck = defineModel({ type: Boolean, default: false })
-const hasTag = defineModel<boolean>('hasTag')
 
 const toggleFold = () => {
   folded.value = !folded.value
@@ -26,11 +19,7 @@ const toggleFold = () => {
         <template v-if="hasCheck">
           <common-check rounded="8px" />
         </template>
-
-        <template v-if="hasTag">
-          <common-tags type="pink" text="成品" :is-oval="true" />
-        </template>
-
+        <slot name="right" />
         <div class="text-[14px] font-semibold color-[#1B2129] dark:color-[#fff]">
           {{ props.title }}
         </div>
@@ -42,13 +31,13 @@ const toggleFold = () => {
     </div>
     <!-- info -->
     <template v-if="folded">
-      <slot :info="props.info" />
+      <slot name="info" />
     </template>
   </div>
 </template>
 
 <style scoped lang="scss">
 .card {
-  --uno: 'flex flex-col bg-[#fff] dark:bg-[rgb(245,245,245,0.1)] border-solid border-1 border-[#EFF0F6] rounded-[24px] shadow-[0_10px_20px_-7px_rgb(0,0,0,0.1)] gap-[12px] overflow-hidden dark:border-[rgb(239,240,246,0.1)]';
+  --uno: 'flex flex-col bg-[#fff] dark:bg-[rgb(245,245,245,0.1)] border-solid border-1 border-[#EFF0F6] rounded-[24px] shadow-[0_10px_20px_-7px_rgb(0,0,0,0.1)] gap-[16px] overflow-hidden dark:border-[rgb(239,240,246,0.1)]';
 }
 </style>

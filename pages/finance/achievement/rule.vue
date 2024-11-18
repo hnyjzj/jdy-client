@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { repairInfo } from '~/types/test'
+import { ruleList } from '~/types/test'
 // 测试数据。待替换
-const info = ref(repairInfo)
+const mockData = ruleList
 </script>
 
 <template>
   <div class="grid-12">
     <div class="flex flex-col gap-[16px] px-[16px] py-[16px] col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-      <finance-income-detail :info="info" />
+      <finance-achievement-rule :lists="mockData" />
+    </div>
+    <div class="h-[80px]">
+      <common-button-bottom />
     </div>
   </div>
 </template>

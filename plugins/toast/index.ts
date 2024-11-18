@@ -5,12 +5,12 @@ interface Props {
   /**
    * 文本内容
    */
-  msg: string
+  message: string
   /**
    * 提示主题
    * 'error' | 'warning' | 'success' | 'primary'
    */
-  type?: types
+  theme?: types
   /**
    * 显示时长
    */
@@ -18,7 +18,20 @@ interface Props {
   /**
    * icon
    */
-  ico?: string
+  icon?: string
+  /**
+   * 网格列开始
+   */
+  colStart?: number
+  /**
+   * 网格列跨度
+   */
+  colSpan?: number
+  /**
+   * 距顶部距离
+   * @param {number} top - 元素的垂直位置，单位为百分比（%）
+   */
+  top?: number
 }
 
 type types =

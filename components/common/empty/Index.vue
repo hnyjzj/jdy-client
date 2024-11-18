@@ -6,11 +6,13 @@ const props = withDefaults(defineProps<{
   size?: string
   isShadow?: boolean
 
+  text?: string
 }>(), {
   img: '/images/empty/record.png',
   showRT: true,
   size: '100%',
   isShadow: true,
+  text: '',
 })
 </script>
 
@@ -28,6 +30,11 @@ const props = withDefaults(defineProps<{
         </slot>
       </template>
     </div>
+    <template v-if="props.text">
+      <div class="font-size-[14px] color-[#666] pt-[24px]">
+        {{ props.text }}
+      </div>
+    </template>
   </div>
 </template>
 
