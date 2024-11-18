@@ -1,41 +1,16 @@
 <script setup lang="ts">
-// 测试数据。待删除
-interface ProductInfo {
-  name: string
-  desc: string
-}
-const productInfo: ProductInfo[] = [
-  {
-    name: '条码',
-    desc: 's123901287',
-  },
-  {
-    name: '零售方式',
-    desc: '自提',
-  },
-  {
-    name: '零售方式',
-    desc: '自提',
-  },
-  {
-    name: '工艺',
-    desc: '特价',
-  },
-  {
-    name: '工艺',
-    desc: '特价',
-  },
-  {
-    name: '工艺',
-    desc: '特价',
-  },
-]
-const showPop = ref(false)
+import { finishedColumns, finishedData, oldColumns, oldData } from '~/types/test'
+
+// 测试table数据。待替换
+const finishedMock = finishedColumns
+const oldMock = oldColumns
+// 测试data数据。待替换
+const finished = ref(finishedData)
+const old = ref(oldData)
 
 // 盘点单tab切换选项
 const options = computed(() => [
   {
-    // TODO: 文本信息过长，需要优化
     label: '成品业绩',
     value: 1,
   },
@@ -47,27 +22,43 @@ const options = computed(() => [
 
 const currentSelected = ref(1)
 
-const hasCheck = ref(false)
+const updateKey = ref(0)
 
-// const handleClick = () => {
-//   showPop.value = true
-// }
+// 监听 currentSelected 的变化
+watch(currentSelected, () => {
+  // 触发更新
+  updateKey.value++
+})
+
+const renderData = computed(() => {
+  return currentSelected.value === 1 ? finished.value : old.value
+})
+
+const renderTitle = computed(() => {
+  return currentSelected.value === 1 ? '成品业绩及对应旧料抵扣' : '旧料剩余抵值'
+})
+
+const renderOptions = computed(() => {
+  return currentSelected.value === 1 ? finishedMock : oldMock
+})
 </script>
 
 <template>
   <div>
-    <common-popup v-model="showPop" />
     <div>
-      <common-fold title="业绩汇总" :is-collapse="false">
-        <div class="flex flex-col gap-[16px] px-[16px] py-[16px]">
-          <div>
-            <common-tab-secondary :options="options" :current-selected="currentSelected" />
-          </div>
-          <div>
-            <sale-order-nesting v-model="hasCheck" title="成品业绩及对应旧料抵扣" :info="productInfo" />
-          </div>
+      <div class="flex flex-col gap-[16px] px-[16px] py-[16px]">
+        <div>
+          <common-tab-secondary
+            v-model:current-selected="currentSelected" :options="options" />
         </div>
-      </common-fold>
+        <div>
+          <common-fold :title="renderTitle">
+            <div class="flex flex-col pt-[16px]">
+              <common-table :key="updateKey" :columns="renderOptions" :data="renderData" />
+            </div>
+          </common-fold>
+        </div>
+      </div>
     </div>
   </div>
 </template>

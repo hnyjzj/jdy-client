@@ -17,11 +17,11 @@ const isSquare = ref(false)
 <template>
   <div class="grid-12">
     <div class="box" uno-lg="col-8 offset-2" uno-sm="col-12">
-      <div class="flex flex-row gap-2 items-center px-4 py-2 bg-[#F1F5FE] dark:bg-[rgb(245,245,245,0.1)] gap-[8px]">
+      <div class="flex flex-row gap-[12px] items-center px-4 py-2 bg-[#F1F5FE] dark:bg-[rgb(245,245,245,0.1)]">
         <div class="check">
           <common-check v-model="checked" :checked="checked" />
         </div>
-        <div class="flex flex-row gap-2 items-center">
+        <div class="flex flex-row gap-[8px] items-center">
           <common-avatar v-model:is-square="isSquare" :img="props.memberInfo.img || ''" :size="24" rounded="60px" />
           <div class="text-[14px] font-semibold color-[#1B2129] dark:color-[#fff]">
             {{ props.memberInfo.nickname }}
