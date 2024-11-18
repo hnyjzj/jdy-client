@@ -2,12 +2,8 @@
 useSeoMeta({
   title: '个人中心',
 })
+const { userinfo } = storeToRefs(useUser())
 const { getUserInfo } = useUser()
-const userinfo = ref()
-onMounted(async () => {
-  userinfo.value = await useUser().userinfo
-})
-
 usePageShow(() => {
   getUserInfo()
 })

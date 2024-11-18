@@ -41,7 +41,7 @@ declare module 'common-form' {
     /**
      * 验证通过的回调函数
      */
-    callback?: (value: K) => void
+    callback?: (value: K) => void | Promise<void>
   }
 
   // 表单规则集
