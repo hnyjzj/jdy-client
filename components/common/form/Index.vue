@@ -46,7 +46,7 @@ const validate = (value: any, rule: Rule): boolean => {
       return /^https?:\/\/[^\s/$.?#].\S*$/.test(value)
     }
     case 'phone':{
-      return /^\+?\d{10,15}$/.test(value)
+      return /^(?:(?:\+|00)86)?1\d{10}$/.test(value)
     }
     case 'enum':{
       if (!enums) {
