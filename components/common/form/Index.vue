@@ -40,7 +40,7 @@ const validate = (value: any, rule: Rule): boolean => {
       return !!value
     }
     case 'email':{
-      return !/^[^\s@]+@[^\s@][^\s.@]*\.[^\s@]+$/.test(value)
+      return /^[^\s@]+@[^\s@][^\s.@]*\.[^\s@]+$/.test(value)
     }
     case 'url':{
       return /^https?:\/\/[^\s/$.?#].\S*$/.test(value)
