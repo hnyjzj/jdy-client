@@ -1,34 +1,53 @@
 <script setup lang="ts">
+import type { Rules } from 'common-form'
+
 const { $toast } = useNuxtApp()
 const authStore = useAuth()
-// 账号输入
-const account = ref<AccountReq>({
+
+const form = ref<AccountReq>({
   phone: '',
   password: '',
-} as AccountReq)
-// 显示密码
-const showPw = ref<'password' | 'text'>('password')
+  captcha: '',
+  captcha_id: '',
+})
 
-// 账号正则校验输入内容
-const onInput = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  // 使用正则表达式过滤非数字字符
-  account.value.phone = target.value.replace(/\D/g, '')
-}
-// 验证码正则校验输入内容
-const codeInput = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  account.value.captcha = target.value.replace(/\D/g, '')
-}
-// 密码正则校验输入内容
-const passInput = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  account.value.password = target.value.replace(/[\s\u4E00-\u9FA5]+/g, '')
-}
+const rules = ref<Rules<AccountReq>>({
+  phone: [
+    {
+      message: '手机号不能为空',
+      validator: 'required',
+    },
+    {
+      message: '手机号格式不正确',
+      validator: 'phone',
+    },
+  ],
+  password: [
+    {
+      message: '密码不能为空',
+      validator: 'required',
+    },
+  ],
+  captcha: [
+    {
+      message: '验证码不能为空',
+      validator: 'required',
+    },
+    {
+      message: '验证码长度不正确',
+      // 限制验证码长度为 5 个数字
+      validator: val => val?.length === 5,
+      // 验证通过的回调函数，用于处理输入框的值，去除非数字字符
+      callback: (val) => {
+        form.value.captcha = val.replace(/\D/g, '')
+      },
+    },
+  ],
+})
 
 // 手机号输入框失去焦点  进行验证码显示
-const getImg = async () => {
-  if (account.value?.phone.length === 11) {
+const showCode = async () => {
+  if (form.value?.phone.length === 11) {
     try {
       await authStore.getCodeImg()
     }
@@ -42,24 +61,11 @@ const getImg = async () => {
     }
   }
 }
-// 点击登录按钮
+// 登录
 const login = async () => {
-  if (!account.value?.phone || account.value?.phone.trim() === '' || account.value?.phone.length !== 11) {
-    $toast({ msg: '请输入正确手机号', type: 'error', ico: 'i-icon:error' })
-    return false
-  }
-  if (!account.value?.password || account.value?.password.trim() === '') {
-    $toast({ msg: '请输入密码', type: 'error', ico: 'i-icon:error' })
-    return false
-  }
-  if (!account.value?.captcha || account.value?.captcha.trim() === '') {
-    $toast({ msg: '请输入验证码', type: 'error', ico: 'i-icon:error' })
-    return false
-  }
-
   try {
-    account.value.captcha_id = authStore.imageCaptcha.id
-    const res = await authStore.accountLogin(account.value)
+    form.value.captcha_id = authStore.imageCaptcha.id
+    const res = await authStore.accountLogin(form.value)
 
     if (res?.code !== HttpCode.SUCCESS) {
       $toast({
@@ -67,7 +73,7 @@ const login = async () => {
         type: 'error',
         ico: 'i-icon:error',
       })
-      getImg()
+      showCode()
     }
   }
   catch (error) {
@@ -79,67 +85,91 @@ const login = async () => {
     throw error
   }
 }
-// 监听 账号手机号变化
-watch(() => account.value.phone, async (newPhone, _) => {
-  if (newPhone.length === 11 && authStore.imageCaptcha.id === '') {
-    await getImg()
-  }
-}, { deep: true })
 </script>
 
 <template>
   <div class="cardbox blur-bgc rounded-[16px]">
-    <div>
-      <div class="text-[14px] line-height-[20px] mb-[8px] dark:color-[#fff]">
-        手机号
-      </div>
-      <div class="">
-        <input
-          v-model="account.phone" type="text" class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none " maxlength="11"
-          placeholder="请输入手机号" @input="onInput"
-        >
-      </div>
-    </div>
-
-    <div class="mt-[32px]">
-      <div class="text-[14px] line-height-[20px] mb-[8px] dark:color-[#fff]">
-        密码
-      </div>
-      <div class="relative">
-        <form>
-          <input
-            v-model="account.password" :type="showPw" autocomplete=""
-            class="py-[10px] px-[12px]  bg-[#fff] rounded-[8px] flex-1 border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="请输入密码"
-            @input="passInput"
-          >
-        </form>
-      </div>
-    </div>
-    <template v-if="account?.phone?.length === 11">
-      <div class="mt-[32px]">
-        <div class="text-[14px] line-height-[20px] mb-[8px] dark:color-[#fff]">
-          验证码
-        </div>
-        <div class="relative">
-          <form>
+    <common-form
+      v-model="form" :rules="rules" @submit="(val) => {
+        login()
+      }">
+      <template
+        #phone="{
+          error,
+          validate,
+        }">
+        <div class="pb-[32px]">
+          <div class="pb-[8px]">
+            手机号
+          </div>
+          <div class="">
             <input
-              v-model="account.captcha" maxlength="5" type="text" autocomplete=""
-              class="px-[12px] py-[10px] bg-[#fff] rounded-[8px] flex-between  border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none" placeholder="请输入验证码"
-              @input="codeInput"
+              v-model="form.phone" class="input " type="text" placeholder="请输入手机号" :maxlength="11" @change="() => {
+                const error = validate()
+                if (!error) {
+                  showCode()
+                }
+              }"
             >
-          </form>
-          <div class="absolute right-0 top-0 h-full" @click="getImg()">
-            <img :src="authStore.imageCaptcha.code" class="h-[100%] rounded-r-[8px]">
+            <div class="error">
+              {{ error }}
+            </div>
           </div>
         </div>
-      </div>
-    </template>
-
-    <div class="text-size-[16px]  font-semibold offset-5 mt-[32px]" @click="login()">
-      <div class="ok ">
-        登录
-      </div>
-    </div>
+      </template>
+      <template
+        #password="{
+          error,
+          validate }">
+        <div class="pb-[32px]">
+          <div class="pb-[8px]">
+            密码
+          </div>
+          <div class="">
+            <input
+              v-model="form.password"
+              class="input "
+              type="password" placeholder="请输入密码" @change="validate()" @blur="validate()">
+            <div class="error">
+              {{ error }}
+            </div>
+          </div>
+        </div>
+      </template>
+      <template
+        v-if="authStore.imageCaptcha.code"
+        #captcha="{
+          error,
+          validate }">
+        <div class="pb-[32px]">
+          <div class="pb-[8px]">
+            验证码
+          </div>
+          <div class="relative">
+            <input
+              v-model="form.captcha"
+              :maxlength="5"
+              class="input"
+              type="text" placeholder="请输入验证码"
+              @change="validate()">
+            <div class="absolute right-0 top-0 h-full" @click="showCode()">
+              <img :src="authStore.imageCaptcha.code" class="h-[100%] rounded-r-[8px]">
+            </div>
+          </div>
+          <div class="error">
+            {{ error }}
+          </div>
+        </div>
+      </template>
+      <template #actions="{ submit }">
+        <div
+          class="text-size-[16px]  font-semibold " @click="submit">
+          <div class="ok">
+            登录
+          </div>
+        </div>
+      </template>
+    </common-form>
 
     <div class="px-[20px] mt-[112px] flex-center-row">
       <div class="h-[1px] w-[58px] color-[#9E9E9E] dark:color-[#fff] bg-gradient-linear-[90deg,#CCCCCC00,#CCCCCC]" />
@@ -155,6 +185,12 @@ watch(() => account.value.phone, async (newPhone, _) => {
 </template>
 
 <style lang="scss" scoped>
+.error {
+  --uno: 'color-[red] text-size-[14px] line-height-[20px] ';
+}
+.input {
+  --uno: 'px-[12px] py-[10px] bg-[#fff] rounded-[8px] border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none';
+}
 .cardbox {
   --uno: 'px-[23px] pb-14px sm:px-[24px] sm:pb-33px pt-0 rounded-b-16px  pt-36px';
   .ok {
