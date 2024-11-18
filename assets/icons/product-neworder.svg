@@ -1,12 +1,1 @@
-<svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="6" y="5" width="20" height="22" fill="url(#paint0_linear_1823_19369)" stroke="white" stroke-width="2"/>
-<rect x="10" y="3" width="12" height="4" fill="#3971F3"/>
-<rect x="9" y="11" width="14" height="3" rx="1.5" fill="#3971F3"/>
-<rect x="9" y="18" width="14" height="3" rx="1.5" fill="#3971F3"/>
-<defs>
-<linearGradient id="paint0_linear_1823_19369" x1="12.25" y1="20.5833" x2="21.7415" y2="12.7765" gradientUnits="userSpaceOnUse">
-<stop stop-color="white"/>
-<stop offset="1" stop-color="#D1E9FF"/>
-</linearGradient>
-</defs>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" data-c="1"><path fill="url(#a)" stroke="#fff" stroke-width="2" d="M6 5h20v22H6z"/><path fill="#3971F3" d="M10 3h12v4H10z"/><rect width="14" height="3" x="9" y="11" fill="#3971F3" rx="1.5"/><rect width="14" height="3" x="9" y="18" fill="#3971F3" rx="1.5"/><defs><linearGradient id="a" x1="12.25" x2="21.741" y1="20.583" y2="12.777" gradientUnits="userSpaceOnUse"><stop stop-color="#fff"/><stop offset="1" stop-color="#D1E9FF"/></linearGradient></defs></svg>

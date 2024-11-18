@@ -7,7 +7,7 @@ const props = defineProps<{
 }>()
 
 // 表单方法
-defineEmits<{
+const emits = defineEmits<{
   (e: 'submit', data: T): void
 }>()
 
@@ -81,10 +81,13 @@ const getError = (key: keyof T): string => {
   const value = data.value[key]
   const errs: string[] = []
 
-  rule.forEach((r, i) => {
+  rule?.forEach((r, i) => {
     const res = validate(value, r)
     if (!res && r.message) {
       errs[i] = r.message
+    }
+    else {
+      r.callback && r.callback(value)
     }
   })
 
@@ -97,6 +100,17 @@ const getError = (key: keyof T): string => {
   errors.value[key] = res
 
   return res
+}
+
+const submit = () => {
+  for (const key in data.value) {
+    getError(key as keyof T)
+  }
+  const errs = Object.values(errors.value || {}).filter(Boolean)
+  if (errs.length) {
+    return
+  }
+  emits('submit', data.value)
 }
 </script>
 
@@ -111,7 +125,7 @@ const getError = (key: keyof T): string => {
       <slot name="errors" :errors="errors" />
     </div>
     <div class="actions">
-      <slot name="actions" :submit="() => $emit('submit', data)" :reset="() => { data = {} as T }" />
+      <slot name="actions" :submit="() => submit()" :reset="() => { data = {} as T }" />
     </div>
   </div>
 </template>

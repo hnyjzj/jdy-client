@@ -4,6 +4,7 @@ const props = withDefaults(defineProps<{
   color?: string
   shadow?: boolean
   padding?: string
+  bgc?: string
 }>(), {
   color: '',
   padding: '',
@@ -21,7 +22,7 @@ const handleClick = () => {
     class="flex-center-row font-bold text-4 rounded-3xl"
     :style="{
       color: props.color ? '#3971f3' : '#fff',
-      background: props.color ? props.color : 'linear-gradient(0deg, #6ea6ffbf 11%, #1a6beb)',
+      background: props.bgc ? props.bgc : 'linear-gradient(0deg, #6ea6ffbf 11%, #1a6beb)',
       boxShadow: props.shadow ? '0px 5px 10px 0px rgba(57, 113, 243, 0.24)' : '',
       padding: props.padding ? props.padding : '8px 16px',
     }"

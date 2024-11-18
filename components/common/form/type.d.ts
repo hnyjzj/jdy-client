@@ -37,6 +37,11 @@ declare module 'common-form' {
      * 当 validator 为 enum 时，枚举值必须
      */
     enums?: K[]
+
+    /**
+     * 验证通过的回调函数
+     */
+    callback?: (value: K) => void | Promise<void>
   }
 
   // 表单规则集
