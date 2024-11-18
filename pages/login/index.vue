@@ -70,7 +70,10 @@ const QWLogin = async () => {
     })
   }
 }
-
+const otherList = ref([{
+  name: 'wxwork',
+  icon: 'i-svg:qwicon',
+}])
 const otherLogin = (way: string) => {
   switch (way) {
     case 'wxwork':
@@ -88,7 +91,7 @@ const otherLogin = (way: string) => {
       <login-tips />
       <div class="cardbox blur-bgc rounded-[16px]">
         <login-info v-model="form" :image-captcha="authStore.imageCaptcha" @get-code="showCode" @submit="login" />
-        <login-other @other="otherLogin" />
+        <login-other :list="otherList" @other="otherLogin" />
       </div>
     </div>
   </div>
