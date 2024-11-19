@@ -16,7 +16,7 @@ usePageShow(() => {
         <div class="px-[16px] py-[24px]">
           <my-user-userinfo :userinfo="userinfo" />
         </div>
-        <div class="px-[16px] ">
+        <div class="px-[16px]">
           <my-user-option />
         </div>
       </div>
