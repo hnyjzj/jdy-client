@@ -1,4 +1,7 @@
 <script setup lang="ts">
+useSeoMeta({
+  title: '会员等级',
+})
 definePageMeta({ layout: false })
 const show = ref(true)
 </script>

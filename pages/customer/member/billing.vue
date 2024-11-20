@@ -1,4 +1,7 @@
 <script setup lang="ts">
+useSeoMeta({
+  title: '会员开单回访',
+})
 definePageMeta({ layout: false })
 </script>
 

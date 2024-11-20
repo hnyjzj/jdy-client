@@ -1,4 +1,7 @@
 <script setup lang="ts">
+useSeoMeta({
+  title: '会员权益',
+})
 definePageMeta({ layout: false })
 </script>
 

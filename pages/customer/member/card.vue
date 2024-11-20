@@ -1,4 +1,7 @@
 <script setup lang="ts">
+useSeoMeta({
+  title: '会员卡',
+})
 definePageMeta({ layout: false })
 const checked = ref<boolean>(true)
 </script>

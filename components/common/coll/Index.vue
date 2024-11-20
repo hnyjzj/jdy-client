@@ -10,26 +10,28 @@ const list = ref<IList[]>([{ title: '货品管理', isOpen: true, children: [{ t
 <template>
   <div>
     <template v-for="(item, index) in list" :key="index">
-      <div class="grid-12 px-[16px] py-[12px]">
-        <div class="grid-12 gap-[24px] col-12 " uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
-          <div class="sm:col-12 lg:col-12 xl:col-6 col-12">
-            <div class=" rounded-[24px] overflow-hidden">
-              <div class="bg-gradient-linear-[90deg,#8CADF8,#D8E7FD] px-[16px] py-[8px] text-size-[14px] line-height-[20px] color-[#333] font-semibold flex-between" @click="item.isOpen = !item.isOpen">
-                <slot name="title" :title="item.title" />
-                <div>
-                  <template v-if="item.isOpen">
-                    <van-icon name="arrow-down" />
-                  </template>
-                  <template v-else>
-                    <van-icon name="arrow-up" />
-                  </template>
+      <div>
+        <div class="rounded-[24px] overflow-hidden">
+          <div class="bg-gradient-linear-[90deg,#8CADF8,#D8E7FD] px-[16px] py-[8px] text-size-[14px] line-height-[20px] color-[#333] font-semibold flex-between" @click="item.isOpen = !item.isOpen">
+            <slot name="title" :title="item.title" />
+            <div class="flex items-center">
+              <template v-if="item.isOpen">
+                <div class="horn">
+                  点击收起
                 </div>
-              </div>
-              <div class="bg-[#DAE8FD] px-[16px]" :class="[item.isOpen ? 'block1' : 'hidden1']">
-                <div class=" pt-[12px] pb-[16px] text-size-[14px]" :class="[item.isOpen ? 'block2' : 'hidden2']">
-                  <slot name="content" :content="item.children" />
+                <icon name="i-icon:down" size="12px" color="rgba(128,128,137,1)" />
+              </template>
+              <template v-else>
+                <div class="horn">
+                  点击展开
                 </div>
-              </div>
+                <icon name="i-icon:left" size="12px" color="rgba(128,128,137,1)" />
+              </template>
+            </div>
+          </div>
+          <div class="blur-bgc px-[16px]" :class="[item.isOpen ? 'block1' : 'hidden1']">
+            <div class=" pt-[12px] pb-[16px] text-size-[14px]" :class="[item.isOpen ? 'block2' : 'hidden2']">
+              <slot name="content" :content="item.children" />
             </div>
           </div>
         </div>
@@ -51,5 +53,8 @@ const list = ref<IList[]>([{ title: '货品管理', isOpen: true, children: [{ t
 .hidden2 {
   opacity: 0;
   transition: all 200ms ease;
+}
+.horn {
+  --uno: 'text-3 text-[rgba(128,128,137,1)] pr-1';
 }
 </style>
