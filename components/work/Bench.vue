@@ -1,8 +1,14 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  list: WorkTables[]
+  list: WorkBench[]
 //   foldStatus: WorkTablesStatus
 }>()
+const emits = defineEmits<{
+  add: [id: string]
+}>()
+function addBench(id: string) {
+  emits('add', id)
+}
 </script>
 
 <template>
@@ -31,11 +37,18 @@ const props = defineProps<{
           </div>
           <div class="blur-bgc px-[16px]" :class="true ? 'block1' : 'hidden1'">
             <div class="pt-[12px] pb-[16px] text-size-[14px]" :class="true ? 'block2' : 'hidden2'">
+              <div
+                @click="addBench(work.id)">
+                添加目录
+              </div>
               <template v-for="(child, index) in work.children" :key="`${child.title}-${index}`">
                 <div class="flex flex-col gap-[24px] pb-[16px]">
                   <div class="flex flex-col gap-[16px]">
                     <div class="text-[12px] font-semibold color-[#333] dark:color-[#fff]">
                       {{ child.title }}
+                    </div>
+                    <div @click="addBench(child?.id)">
+                      添加页面
                     </div>
                     <div class="line" />
                     <div class="sector">
@@ -44,7 +57,7 @@ const props = defineProps<{
                           <div class="flex items-center">
                             <nuxt-img src="images/sale/sales-list.png" class="w-[32px] h-[32px]" />
                             <div class="son-title">
-                              {{ son.name }}
+                              {{ son.title }}
                             </div>
                           </div>
                         </nuxt-link>

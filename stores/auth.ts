@@ -57,7 +57,7 @@ export const useAuth = defineStore('authStore', {
      */
     async getCodeImg() {
       try {
-        const { data } = await https.get<ImageCaptcha, null>('/get_captcha_image')
+        const { data } = await https.get<ImageCaptcha, null>('/captcha/image')
         if (data.value?.code === HttpCode.SUCCESS) {
           this.imageCaptcha = data.value.data
         }
