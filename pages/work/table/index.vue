@@ -39,6 +39,12 @@ async function addWorkbenchFn(val: AddWorkbencheReq) {
   const res = await addWorkbench(val)
   if (res.code === 200) {
     show.value = false
+    params.value = {
+      parent_id: undefined,
+      title: '',
+      icon: '',
+      path: '',
+    }
     await getWorkbenchList()
   }
 }
@@ -58,11 +64,11 @@ function addBench(id: string) {
       <div class="col-7 offset-5" uno-sm="col-6 offset-5" uno-lg="col-5 offset-5" uno-xl="col-4 offset-5">
         <product-filter-search />
       </div>
-      <div @click="show = true">
-        加
-      </div>
       <!-- 工作台入口 -->
-      <div class="mt-6 col-12" uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
+      <div class="mt-6 mb-14 col-12" uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
+        <div class="text-[#000]" @click="show = true">
+          添加模块
+        </div>
         <work-bench :list="workBenchList" @add="addBench" />
       </div>
     </div>

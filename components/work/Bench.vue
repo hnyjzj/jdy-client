@@ -37,8 +37,7 @@ function addBench(id: string) {
           </div>
           <div class="blur-bgc px-[16px]" :class="true ? 'block1' : 'hidden1'">
             <div class="pt-[12px] pb-[16px] text-size-[14px]" :class="true ? 'block2' : 'hidden2'">
-              <div
-                @click="addBench(work.id)">
+              <div class="text-[#666]" @click="addBench(work.id)">
                 添加目录
               </div>
               <template v-for="(child, index) in work.children" :key="`${child.title}-${index}`">
@@ -47,7 +46,7 @@ function addBench(id: string) {
                     <div class="text-[12px] font-semibold color-[#333] dark:color-[#fff]">
                       {{ child.title }}
                     </div>
-                    <div @click="addBench(child?.id)">
+                    <div class="text-[#666]" @click="addBench(child?.id)">
                       添加页面
                     </div>
                     <div class="line" />
