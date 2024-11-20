@@ -13,13 +13,15 @@ export const useAuth = defineStore('authStore', {
   },
   actions: {
     /**
-     * 授权登录
+     * 获取授权地址
      */
-    async OAuthLogin(redirect_url: string = '') {
+    async getOauthUri(redirect_url: string = '') {
       try {
+        // 获取当前地址栏的参数 并抓换回去
         const uri = UrlAndParams(`${import.meta.env.VITE_BASE_URL || ''}/login/oauth`, {
           redirect_url: redirect_url || undefined,
         })
+        // 获取授权地址
         const { data } = await https.post<OAuthRes, OAuthReq>('/oauth', { uri, state: 'wxwork' })
         if (data.value?.code === HttpCode.SUCCESS) {
           window.location.href = data.value.data.redirect_url
@@ -74,7 +76,7 @@ export const useAuth = defineStore('authStore', {
      */
     async accountLogin(req: AccountReq) {
       try {
-        const { data } = await https.post<AccountRes, AccountReq>('/login/', req)
+        const { data } = await https.post<AccountRes, AccountReq>('/auth/login', req)
         // 获取当前地址栏的参数 并抓换回去
         const userStore = useUser()
         const route = useRoute()
