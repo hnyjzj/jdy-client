@@ -22,13 +22,13 @@ export const useWorkbenche = defineStore('workbencheStore', {
     },
     async getWorkbenchList() {
       try {
-        const { data } = await https.get<any, any>('/workbench/list')
+        const { data } = await https.get<WorkBench[], void>('/workbench/list')
         if (data.value?.code === HttpCode.SUCCESS) {
           this.workBenchList = data.value.data
         }
       }
       catch (error) {
-        console.error('获取失败:', error)
+        throw new Error(`获取工作台列表失败: ${error || '未知错误'}`)
       }
     },
   },

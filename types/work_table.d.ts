@@ -40,8 +40,9 @@ interface Column {
    */
   fixedRight?: string
   /**
-   * 是否可过滤 filterable?: boolean
+   * 是否可过滤
    */
+  filterable?: boolean
 }
 
 interface AddWorkbencheReq {

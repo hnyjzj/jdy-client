@@ -40,7 +40,7 @@ function addBench(id: string) {
               <div class="text-[#666]" @click="addBench(work.id)">
                 添加目录
               </div>
-              <template v-for="(child, index) in work.children" :key="`${child.title}-${index}`">
+              <template v-for="child in work.children" :key="child.id">
                 <div class="flex flex-col gap-[24px] pb-[16px]">
                   <div class="flex flex-col gap-[16px]">
                     <div class="text-[12px] font-semibold color-[#333] dark:color-[#fff]">
@@ -51,7 +51,7 @@ function addBench(id: string) {
                     </div>
                     <div class="line" />
                     <div class="sector">
-                      <template v-for="(son, i) in child.children" :key="`${child.name}-${i}`">
+                      <template v-for="son in child.children" :key="son.id">
                         <nuxt-link :to="son.path">
                           <div class="flex items-center">
                             <nuxt-img src="images/sale/sales-list.png" class="w-[32px] h-[32px]" />
