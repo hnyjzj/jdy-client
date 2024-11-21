@@ -23,6 +23,7 @@ const insertItem = () => {
       icon: 'i-icon:warning',
       colStart: 3,
       colSpan: 8,
+      duration: 3000,
     })
     return
   }
