@@ -1,10 +1,6 @@
 import { createVNode, render } from 'vue'
 import Dom from './Index.vue'
 
-interface ToastOptions extends Props {
-  id: string
-}
-
 const instances: ToastOptions[] = shallowReactive([])
 
 const MAX_INSTANS = 1
@@ -25,7 +21,7 @@ const deleteInstance = (id: string | undefined): number => {
 export default defineNuxtPlugin(() => {
   return {
     provide: {
-      toast: (props: Props) => {
+      toast: (props: Toast) => {
         const toastNode = document.createElement('div')
 
         // 限制最大实例数

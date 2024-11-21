@@ -38,3 +38,7 @@ interface Toast {
    */
   top?: number
 }
+
+interface ToastOptions extends Toast {
+  id: string
+}

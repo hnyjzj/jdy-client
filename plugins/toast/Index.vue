@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import Specific from './Toast.vue'
 
-interface ToastOptions extends Toast {
-  id: string
-}
-
 const props = defineProps<{
   instances: ToastOptions[]
 }>()
