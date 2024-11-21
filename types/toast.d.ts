@@ -4,7 +4,7 @@ type types =
   | 'success'
   | 'primary'
 
-interface Props {
+interface Toast {
   /**
    * 文本内容
    */

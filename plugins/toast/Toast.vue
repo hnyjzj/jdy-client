@@ -1,5 +1,5 @@
 <script setup lang="ts">
-interface ToastOptions extends Props {
+interface ToastOptions extends Toast {
   id: string
 }
 
@@ -11,7 +11,7 @@ type Toasts = {
   backgroundColor?: string
   color?: string
   iconBg?: string
-} & Partial<Props>
+} & Partial<Toast>
 
 const toastStyle: { [key in types]: Toasts } = {
   error: {
