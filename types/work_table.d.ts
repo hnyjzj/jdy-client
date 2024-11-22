@@ -3,7 +3,7 @@ interface WorkBench {
   title?: string
   name?: string
   path?: string
-  children?: WorkTables[]
+  children?: WorkBench[]
   parent_id?: string
 }
 

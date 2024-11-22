@@ -51,9 +51,11 @@ async function addWorkbenchFn(val: AddWorkbencheReq) {
   }
 }
 const foldStatus = ref<WorkTablesStatus>({})
-workBenchList.value.forEach((item: WorkBench) => {
-  foldStatus.value[item.id] = true
-})
+if (workBenchList.value?.length) {
+  workBenchList.value.forEach((item: WorkBench) => {
+    foldStatus.value[item.id] = true
+  })
+}
 // 折叠
 function fold(id: string) {
   foldStatus.value[id] = !foldStatus.value[id]

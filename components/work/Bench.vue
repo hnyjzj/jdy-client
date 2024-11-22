@@ -39,8 +39,8 @@ function fold(id: string) {
               </template>
             </div>
           </div>
-          <div class="blur-bgc px-[16px]" :class="true ? 'block1' : 'hidden1'">
-            <div class="pt-[12px] pb-[16px] text-size-[14px]" :class="true ? 'block2' : 'hidden2'">
+          <div class="blur-bgc px-[16px]" :class="foldStatus[work.id] ? 'block1' : 'hidden1'">
+            <div class="pt-[12px] pb-[16px] text-size-[14px]" :class="foldStatus[work.id] ? 'block2' : 'hidden2'">
               <div class="text-[#666]" @click="addBench(work.id)">
                 添加目录
               </div>
