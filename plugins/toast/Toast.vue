@@ -43,7 +43,10 @@ const data = props.instance
 
 const isLeaving = ref(false)
 
-const countdown = data.duration ? data.duration - 1000 : 2000
+const DEFAULT_DURATION = 2000
+const ANIMATION_DURATION = 1000
+
+const countdown = data.duration ? data.duration - ANIMATION_DURATION : DEFAULT_DURATION
 
 onMounted(() => {
   setTimeout(() => {
