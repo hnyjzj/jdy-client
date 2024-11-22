@@ -1,17 +1,9 @@
 <script setup lang="ts">
-interface ToastOptions extends Toast {
-  id: string
-}
+import type { ToastOptions, Toasts, types } from './type'
 
 const props = defineProps<{
   instance: ToastOptions
 }>()
-
-type Toasts = {
-  backgroundColor?: string
-  color?: string
-  iconBg?: string
-} & Partial<Toast>
 
 const toastStyle: { [key in types]: Toasts } = {
   error: {

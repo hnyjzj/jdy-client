@@ -1,10 +1,10 @@
-type types =
+export type types =
   | 'error'
   | 'warning'
   | 'success'
   | 'primary'
 
-interface Toast {
+export interface Toast {
   /**
    * 文本内容
    */
@@ -16,8 +16,8 @@ interface Toast {
   theme?: types
   /**
    * 显示时长
-   * 请预留1000毫秒的动画时间
-   * @example 如期望展示时间3000毫秒，则 duration 为 3000 + 1000 = 4000
+   *
+   * @default 3000
    */
   duration?: number
   /**
@@ -39,6 +39,20 @@ interface Toast {
   top?: number
 }
 
-interface ToastOptions extends Toast {
+export interface ToastOptions extends Toast {
+  id: string
+  /**
+   * 清理计时器
+   */
+  timer: NodeJS.Timeout
+}
+
+export type Toasts = {
+  backgroundColor?: string
+  color?: string
+  iconBg?: string
+} & Partial<Toast>
+
+export interface ToastOptions extends Toast {
   id: string
 }

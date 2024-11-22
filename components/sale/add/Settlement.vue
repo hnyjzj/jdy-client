@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { useToast } from '~/composables/toast'
+
 const props = defineProps<{
   goodinfo: any[]
 }>()
@@ -9,22 +11,14 @@ const actions = [
   { text: '现金' },
 ]
 
-const { $toast } = useNuxtApp()
-
 const getInitialItems = () => [{ id: 1, isPopoverVisible: false, actions, selected: '' }]
 const items = ref(getInitialItems())
 let id = items.value.length + 1
 
 const insertItem = () => {
-  if (items.value.length >= 11) {
-    $toast({
-      message: '最多可选择11种支付方式',
-      theme: 'warning',
-      icon: 'i-icon:warning',
-      colStart: 3,
-      colSpan: 8,
-      duration: 3000,
-    })
+  if (items.value.length >= 3) {
+    useToast().show({ message: '最多只能添加三个支付信息', icon: 'i-icon:warning', duration: 2000 })
+    useToast().show({ message: '最多只能添', icon: 'i-icon:warning', duration: 3000 })
     return
   }
   // 添加新的支付信息栏并初始化状态
