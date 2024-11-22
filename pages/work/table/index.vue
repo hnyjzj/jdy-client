@@ -34,7 +34,9 @@ const rules = ref<Rules<AddWorkbencheReq>>({
     },
   ],
 })
+// 获取工作台列表
 await getWorkbenchList()
+// 新增工作台页面
 async function addWorkbenchFn(val: AddWorkbencheReq) {
   const res = await addWorkbench(val)
   if (res.code === 200) {
@@ -48,7 +50,14 @@ async function addWorkbenchFn(val: AddWorkbencheReq) {
     await getWorkbenchList()
   }
 }
-
+const foldStatus = ref<WorkTablesStatus>({})
+workBenchList.value.forEach((item: WorkBench) => {
+  foldStatus.value[item.id] = true
+})
+// 折叠
+function fold(id: string) {
+  foldStatus.value[id] = !foldStatus.value[id]
+}
 function addBench(id: string) {
   show.value = true
   params.value.parent_id = id
@@ -69,7 +78,7 @@ function addBench(id: string) {
         <div class="text-[#000]" @click="show = true">
           添加模块
         </div>
-        <work-bench :list="workBenchList" @add="addBench" />
+        <work-bench :list="workBenchList" :fold-status="foldStatus" @add="addBench" @fold="fold" />
       </div>
     </div>
     <common-model v-model:model-value="show" title="新增" :show-ok="true" @confirm="() => addWorkbenchform?.submit()">

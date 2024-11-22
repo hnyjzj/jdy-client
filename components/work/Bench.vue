@@ -1,13 +1,17 @@
 <script lang="ts" setup>
 const props = defineProps<{
   list: WorkBench[]
-//   foldStatus: WorkTablesStatus
+  foldStatus: WorkTablesStatus
 }>()
 const emits = defineEmits<{
   add: [id: string]
+  fold: [id: string]
 }>()
 function addBench(id: string) {
   emits('add', id)
+}
+function fold(id: string) {
+  emits('fold', id)
 }
 </script>
 
@@ -20,8 +24,8 @@ function addBench(id: string) {
             <div class="title">
               {{ work.title }}
             </div>
-            <div class="flex items-center">
-              <template v-if="true">
+            <div class="flex items-center" @click="fold(work.id)">
+              <template v-if="foldStatus[work.id]">
                 <div class="horn">
                   点击收起
                 </div>

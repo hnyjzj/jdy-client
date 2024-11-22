@@ -13,7 +13,7 @@ interface WorkBenchReq {
   message: string
 }
 
-type WorkTablesStatus = Record<number, boolean>
+type WorkTablesStatus = Record<string, boolean>
 
 type ColumnAlign = 'left' | 'center' | 'right'
 
