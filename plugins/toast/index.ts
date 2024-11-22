@@ -3,7 +3,7 @@ import Dom from './Index.vue'
 
 const instances: ToastOptions[] = shallowReactive([])
 
-const MAX_INSTANS = 1
+const MAX_INSTANCES = 1
 
 let seed = 0
 const createUid = () => {
@@ -25,7 +25,7 @@ export default defineNuxtPlugin(() => {
         const toastNode = document.createElement('div')
 
         // 限制最大实例数
-        if (instances.length >= MAX_INSTANS) {
+        if (instances.length >= MAX_INSTANCES) {
           const firstId = instances[0].id
           const oldNode = document.querySelector(`[data-toast-id="${firstId}"]`)
           if (oldNode && oldNode.parentNode) {
