@@ -117,6 +117,7 @@ const submit = () => {
 <template>
   <div class="form">
     <div class="content">
+      <slot />
       <template v-for="(value, key) in data" :key="key">
         <slot :value="value" :name="key" :label="key" :error="errors?.[key as keyof T]" :rule="props.rules?.[key as keyof T]" :validate="() => getError(key as keyof T)" />
       </template>

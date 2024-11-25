@@ -20,7 +20,7 @@ interface OAuthReq {
   /**
    * 此接口固定为`wxwork`
    */
-  state: 'wxwork' | 'wechat' | 'dingding'
+  platform: 'wxwork' | 'wechat' | 'dingding'
   /**
    * 需要回到的链接地址
    */

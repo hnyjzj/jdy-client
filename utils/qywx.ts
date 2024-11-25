@@ -1,23 +1,128 @@
 import * as wx from '@wecom/jssdk'
 
-export const regs = async () => {
-  await wx.register({
-    corpId: 'ww4deef9b788f1ac8b', // 必填，当前用户企业所属企业ID
-    jsApiList: ['getNetworkType'], // 必填，需要使用的JSAPI列表
-    getConfigSignature, // 必填，根据url生成企业签名的回调函数
-    getAgentConfigSignature,
-  })
+interface Options {
+  agent_ticket?: string
+  jsapi_ticket?: string
+}
 
-  async function getConfigSignature(url: any) {
-    // 根据 url 生成企业签名
-    // 生成方法参考 https://developer.work.weixin.qq.com/document/path/90539
-    // return { timestamp, nonceStr, signature }
-    console.log(url, 'url1')
-    return url
+class WxWork {
+  public jsApiList = [
+    'selectEnterpriseContact',
+    'scanQRCode',
+  ]
+
+  private corpId = import.meta.env.VITE_CORPID || ''
+  private agent_ticket?: string
+  private jsapi_ticket?: string
+
+  constructor(options: Options) {
+    this.agent_ticket = options?.agent_ticket
+    this.jsapi_ticket = options?.jsapi_ticket
+
+    this.register()
+  }
+
+  /**
+   * 注册
+   */
+  register = () => {
+    const options = {
+      corpId: this.corpId,
+      jsApiList: this.jsApiList,
+    } as wx.RegisterOptions
+
+    if (this.jsapi_ticket) {
+      options.getConfigSignature = this.getConfigSignature
+    }
+    // if (this.agent_ticket) {
+    //   options.getAgentConfigSignature = this.getAgentConfigSignature
+    // }
+
+    options.onConfigSuccess = (res) => {
+      console.log('config success', res)
+    }
+    options.onConfigFail = (err) => {
+      console.log('config fail', err)
+    }
+
+    wx.register(options)
+  }
+
+  /**
+   * 检测api接口
+   *
+   */
+  checkJsApi = async () => {
+    const { checkResult } = await wx.checkJsApi({
+      jsApiList: this.jsApiList,
+    })
+    console.log('checkResult', checkResult)
+
+    return checkResult
+  }
+
+  //  调取扫码
+  scanQRCode = async () => {
+    const { resultStr } = await wx.scanQRCode({
+      needResult: true,
+      scanType: [wx.ScanQRCodeType.qrCode, wx.ScanQRCodeType.barCode],
+    })
+
+    return resultStr
+  }
+
+  /**
+   * 选择企业通讯录
+   *
+   * @param options 参数
+   * @param options.selectedUserIds 已选员工id列表
+   * @param options.selectedDepartmentIds 已选部门id列表
+   *
+   * @returns 选择的员工以及部门
+   */
+  selectPerson = async (options?: { selectedUserIds?: string[], selectedDepartmentIds?: string[] }) => {
+    const { result } = await wx.selectEnterpriseContact({
+      fromDepartmentId: 0,
+      mode: wx.SelectEnterpriseContactMode.multi,
+      type: [wx.SelectEnterpriseContactType.user],
+      ...options,
+    })
+
+    return result
+  }
+
+  /**
+   * @returns 获取jsapi_ticket
+   */
+  private getjsapiTicket = () => {
+    if (!this.jsapi_ticket) {
+      console.error('jsapi_ticket is required')
+      return {} as wx.SignatureData
+    }
+    return wx.getSignature(this.jsapi_ticket)
+  }
+
+  private getAgentConfigSignature = () => {
+    if (!this.agent_ticket) {
+      console.error('agent_ticket is required')
+      return {} as wx.SignatureData
+    }
+
+    return wx.getSignature(this.agent_ticket)
+  }
+
+  /**
+   * 企业签名数据
+   */
+  private getConfigSignature = () => {
+    return this.getjsapiTicket()
   }
 }
-async function getAgentConfigSignature(url: any) {
-  // 根据 url 生成应用签名，生成方法同上，但需要使用应用的 jsapi_ticket
-  console.log(url, 'url2')
-  return url
+
+export const wxWork = (options: Options) => new WxWork(options)
+export const isWxWorkClient = () => {
+  return wx.env.isWeCom || false
+}
+export const isWeChatClient = () => {
+  return wx.env.isWeChat || false
 }

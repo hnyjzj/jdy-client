@@ -20,7 +20,7 @@ export const useAuth = defineStore('authStore', {
         const uri = UrlAndParams(`${import.meta.env.VITE_BASE_URL || ''}/login/oauth`, {
           redirect_url: redirect_url || undefined,
         })
-        const { data } = await https.post<OAuthRes, OAuthReq>('/oauth', { uri, state: 'wxwork' })
+        const { data } = await https.post<OAuthRes, OAuthReq>('/platform/oauth', { uri, platform: 'wxwork' })
         if (data.value?.code === HttpCode.SUCCESS) {
           window.location.href = data.value.data.redirect_url
         }
@@ -37,7 +37,7 @@ export const useAuth = defineStore('authStore', {
      */
     async wxworkLogin(req: WXworkLoginReq) {
       try {
-        const { data } = await https.post<WXworkLoginRes, WXworkLoginReq>('/login/oauth', req)
+        const { data } = await https.post<WXworkLoginRes, WXworkLoginReq>('/auth/oauth', req)
         const userStore = useUser()
         if (data.value?.code === HttpCode.SUCCESS) {
           this.token = data.value.data.token
@@ -57,7 +57,7 @@ export const useAuth = defineStore('authStore', {
      */
     async getCodeImg() {
       try {
-        const { data } = await https.get<ImageCaptcha, null>('/get_captcha_image')
+        const { data } = await https.get<ImageCaptcha, null>('/captcha/image')
         if (data.value?.code === HttpCode.SUCCESS) {
           this.imageCaptcha = data.value.data
         }
@@ -74,7 +74,7 @@ export const useAuth = defineStore('authStore', {
      */
     async accountLogin(req: AccountReq) {
       try {
-        const { data } = await https.post<AccountRes, AccountReq>('/login/', req)
+        const { data } = await https.post<AccountRes, AccountReq>('/auth/login', req)
         // 获取当前地址栏的参数 并抓换回去
         const userStore = useUser()
         const route = useRoute()
