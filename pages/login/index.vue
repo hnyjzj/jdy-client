@@ -60,7 +60,7 @@ const QWLogin = async () => {
   const route = useRoute()
 
   const redirect_url = route.query?.redirect_url as string
-  const res = await authStore.OAuthLogin(redirect_url || '')
+  const res = await authStore.getOauthUri(redirect_url || '')
   if (res.code !== HttpCode.SUCCESS) {
     $toast({
       message: res.message,

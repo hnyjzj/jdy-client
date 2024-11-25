@@ -13,13 +13,15 @@ export const useAuth = defineStore('authStore', {
   },
   actions: {
     /**
-     * 授权登录
+     * 获取授权地址
      */
-    async OAuthLogin(redirect_url: string = '') {
+    async getOauthUri(redirect_url: string = '') {
       try {
+        // 获取当前地址栏的参数 并抓换回去
         const uri = UrlAndParams(`${import.meta.env.VITE_BASE_URL || ''}/login/oauth`, {
           redirect_url: redirect_url || undefined,
         })
+        // 获取授权地址
         const { data } = await https.post<OAuthRes, OAuthReq>('/platform/oauth', { uri, platform: 'wxwork' })
         if (data.value?.code === HttpCode.SUCCESS) {
           window.location.href = data.value.data.redirect_url
