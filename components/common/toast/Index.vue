@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Toast, ToastIcons, ToastStyles, types } from './type'
+import type { Toast, ToastIcons, ToastStyles } from './type'
 
 const props = withDefaults(defineProps<Toast>(), {
   type: 'primary',
