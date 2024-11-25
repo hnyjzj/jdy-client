@@ -7,11 +7,8 @@ export default class Toast {
 
   private rootDom = document.getElementById(this.ROOTDOM_ID)
 
-  constructor(options?: ToastOptions) {
+  constructor() {
     this.createRootDom()
-    if (options) {
-      this.show(options)
-    }
   }
 
   show(options: ToastOptions) {
