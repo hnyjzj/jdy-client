@@ -12,7 +12,7 @@ export const useStaff = defineStore('staffStore', {
       try {
         const { data } = await https.post<UserInfo, addStaffReq>('/user/create', req, true)
         if (data.value?.code === HttpCode.SUCCESS) {
-          console.log(data.value)
+        //   console.log(data.value)
         }
       }
       catch (error) {
