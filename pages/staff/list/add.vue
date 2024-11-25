@@ -9,9 +9,8 @@ const formlist = ref<addStaffReq>({
 })
 const { useWxWork } = useWxworkStore()
 const { createStaff } = useStaff()
-const addStaff = async (val: addStaffReq) => {
+const addStaff = async () => {
   await createStaff(formlist.value)
-  console.log(val)
 }
 // /jssdk/wxwork
 const demo = async () => {
