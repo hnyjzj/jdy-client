@@ -112,6 +112,9 @@ const submit = () => {
   }
   emits('submit', data.value)
 }
+defineExpose({
+  submit,
+})
 </script>
 
 <template>

@@ -9,21 +9,20 @@ const actions = [
   { text: '现金' },
 ]
 
-const { $toast } = useNuxtApp()
-
 const getInitialItems = () => [{ id: 1, isPopoverVisible: false, actions, selected: '' }]
 const items = ref(getInitialItems())
 let id = items.value.length + 1
 
+const { $toast } = useNuxtApp()
+
 const insertItem = () => {
-  if (items.value.length >= 11) {
-    $toast({
-      message: '最多可选择11种支付方式',
-      theme: 'warning',
-      icon: 'i-icon:warning',
-      colStart: 3,
-      colSpan: 8,
-    })
+  if (items.value.length >= 3) {
+    $toast.success('11111111')
+    $toast.primary('22222222')
+    $toast.error('333333333')
+    $toast.warning('44444444444')
+    $toast.default('44444444444')
+    $toast.show({ message: '11111111' })
     return
   }
   // 添加新的支付信息栏并初始化状态
@@ -93,11 +92,7 @@ function removeItem(item: { id: number }) {
                 :actions="item.actions"
                 @select="(action) => {
                   if (items.some(i => i !== item && i.selected === action.text)) {
-                    $toast({
-                      message: '该支付方式已被选择',
-                      theme: 'warning',
-                      icon: 'i-icon:warning',
-                    })
+                    $toast.warning('该支付方式已被选择')
                     return
                   }
                   item.selected = action.text

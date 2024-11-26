@@ -1,13 +1,24 @@
 <script setup lang="ts">
-import { memberInfo } from '~/types/test'
+// 测试数据。待替换
+const memberInfo: MemberInfo = {
+  nickname: '懒羊羊',
+  phone: '19222222222',
+  img: 'https://img.yzcdn.cn/vant/cat.jpeg',
+  email: '16000000000@qq.com',
+  address: '草原地上一层',
+  birthday: '0000-01-01',
+  gender: '未知',
+  remark: '备注信息',
+  createTime: '2021-10-10 10:10:10',
+  level: 3,
+  buyCount: 60,
+  isFollow: 1,
+}
 
 // 搜索会员页
 useSeoMeta({
   title: '会员列表',
 })
-
-// 测试数据。待替换
-const member = memberInfo
 
 const handleClick = async () => {
   // 跳转到新增会员页
@@ -30,7 +41,7 @@ const handleClick = async () => {
       </div>
       <!-- 会员卡片(待删除：如果查到信息，则展示会员卡片，否则展示空状态 ) -->
       <div class="px-[16px]">
-        <sale-sales-grades :member-info="member" />
+        <sale-sales-grades :member-info="memberInfo" />
       </div>
       <!-- 操作栏 -->
       <div class="h-[80px]">

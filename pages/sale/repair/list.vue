@@ -1,12 +1,34 @@
 <script setup lang="ts">
-import { depositList } from '~/types/test'
+// 测试数据。待替换
+const depositList: SalesSlip[] = [
+  {
+    num: 'CZ-32493974',
+    store: {
+      name: '青青草原一号店',
+      salesVolume: 100000,
+    },
+    member: {
+      nickname: '张三',
+      phone: '13800138000',
+      level: 2,
+    },
+    mainSalesman: '李四',
+    goodsInfo: '足金挂坠',
+    quantity: 55789,
+    realAmount: 25000,
+    goodsAmount: 15000,
+    discountAmount: '100',
+    oldDiscountAmount: '20',
+    integral: '32',
+    openType: '预定中',
+    createTime: '2021-11-11 11:11:11',
+    slipStatus: 2,
+  },
+]
 
 useSeoMeta({
   title: '维修单列表',
 })
-
-// 测试数据。待替换
-const list = depositList
 
 const handleClick = async () => {
 // 跳转到维修单详情页
@@ -24,7 +46,7 @@ const handleClick = async () => {
         <product-filter-senior class="color-[#fff]" />
       </div>
       <!-- content -->
-      <sale-repair-list :info="list" @info="handleClick" />
+      <sale-repair-list :info="depositList" @info="handleClick" />
     </div>
   </div>
 </template>

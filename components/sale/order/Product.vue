@@ -1,16 +1,38 @@
 <script setup lang="ts">
-import { productInfo } from '~/types/test'
-// 产品信息组件
-
 // 测试数据。待替换
-const info = productInfo
+const productInfo = [
+  {
+    name: '条码',
+    desc: 's123901287',
+  },
+  {
+    name: '零售方式',
+    desc: '自提',
+  },
+  {
+    name: '零售方式',
+    desc: '自提',
+  },
+  {
+    name: '工艺',
+    desc: '特价',
+  },
+  {
+    name: '工艺',
+    desc: '特价',
+  },
+  {
+    name: '工艺',
+    desc: '特价',
+  },
+]
 
 const hasCheck = defineModel({ type: Boolean, default: false })
 </script>
 
 <template>
   <div>
-    <sale-order-nesting v-model="hasCheck" title="成品" :info="info">
+    <sale-order-nesting v-model="hasCheck" title="成品" :info="productInfo">
       <template #right>
         <common-tags type="pink" text="成品" :is-oval="true" />
       </template>
@@ -19,7 +41,7 @@ const hasCheck = defineModel({ type: Boolean, default: false })
           <div class="flex flex-row gap-[12px]">
             <common-avatar :size="40" />
             <div class="grid grid-rows-4 grid-flow-col w-full place-items-start gap-y-[12px] gap-x-[auto]">
-              <template v-for="(item, index) in info" :key="index">
+              <template v-for="(item, index) in productInfo" :key="index">
                 <div class="content">
                   <div class="left">
                     {{ item.name }}
