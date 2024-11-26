@@ -3,52 +3,54 @@ import type { Rules } from 'common-form'
 import { pinyin } from 'pinyin-pro'
 
 const emits = defineEmits<{
-  submit: [val: addStaffReq]
+  submit: [val: addStaffAccount]
 }>()
 const formlist = defineModel({ default: {
-  phone: '',
-  username: '',
-  nickname: '',
-  password: '',
-  avatar: '',
-  email: '',
+  account: {
+    phone: '',
+    nickname: '',
+    username: '',
+    password: '',
+    avatar: '',
+    email: '',
+  },
 } })
 
 const toPinyin = () => {
-  const pinyinName = pinyin(formlist.value.username, { toneType: 'none', type: 'array' })
+  const pinyinName = pinyin(formlist.value.account.nickname, { toneType: 'none', type: 'array' })
   const capitalizedStrings = pinyinName.map(str =>
     str.charAt(0).toUpperCase() + str.substring(1),
   )
-  formlist.value.nickname = capitalizedStrings.join('')
+  formlist.value.account.username = capitalizedStrings.join('')
 }
 
-const rules = ref<Rules<addStaffReq>>({
+const rules = ref<Rules<addStaffAccount>>({
   phone: [
     {
       message: '手机号不能为空',
       validator: 'required',
     },
   ],
-  username: [
+  nickname: [
     {
       message: '姓名不能为空',
       validator: 'required',
       callback: (val) => {
-        formlist.value.username = val.replace(/[^\u4E00-\u9FA5]/g, '')
+        formlist.value.account.nickname = val.replace(/[^\u4E00-\u9FA5]/g, '')
         toPinyin()
       },
     },
   ],
-  nickname: [
+  username: [
     {
       message: '用户名不能为空',
       validator: 'required',
       callback: (val) => {
-        formlist.value.nickname = val.replace(/\W/g, '')
+        formlist.value.account.username = val.replace(/\W/g, '')
       },
     },
-
   ],
+
   password: [
     {
       message: '密码不能为空',
@@ -75,27 +77,14 @@ const rules = ref<Rules<addStaffReq>>({
     <div class="pb-[16px]">
       <common-fold title="新增员工" from-color="#9EBAF9" to-color="#fff">
         <div class="p-[16px]">
-          <common-form v-model="formlist" :rules="rules" @submit="(val) => emits('submit', val)">
+          <common-form v-model="formlist.account" :rules="rules" @submit="(val) => emits('submit', val)">
             <template #phone="{ validate, error }">
               <div class="text-[14px] pb-[12px]">
-                <div class="pb-[8px]">
+                <div class="label">
                   手机号
                 </div>
                 <div class="h-[40px] px-[12px] rounded-[36px] border border-solid border-[#E6E6E8] overflow-hidden">
-                  <input v-model="formlist.phone" maxlength="11" type="text" class="h-full w-full border-none" placeholder="请输入手机号码" @blur="validate()">
-                </div>
-                <div class="pt-[8px] pl-[16px] color-red">
-                  {{ error }}
-                </div>
-              </div>
-            </template>
-            <template #username="{ validate, error }">
-              <div class="text-[14px] pb-[12px]">
-                <div class="pb-[8px]">
-                  姓名
-                </div>
-                <div class="h-[40px] px-[12px] rounded-[36px] border border-solid border-[#E6E6E8] overflow-hidden">
-                  <input v-model="formlist.username" type="text" class="h-full w-full border-none" placeholder="请输入姓名" @blur="validate()">
+                  <input v-model="formlist.account.phone" maxlength="11" type="text" class="input-item" placeholder="请输入手机号码" @blur="validate()">
                 </div>
                 <div class="pt-[8px] pl-[16px] color-red">
                   {{ error }}
@@ -104,11 +93,24 @@ const rules = ref<Rules<addStaffReq>>({
             </template>
             <template #nickname="{ validate, error }">
               <div class="text-[14px] pb-[12px]">
-                <div class="pb-[8px]">
+                <div class="label">
+                  姓名
+                </div>
+                <div class="h-[40px] px-[12px] rounded-[36px] border border-solid border-[#E6E6E8] overflow-hidden">
+                  <input v-model="formlist.account.nickname" type="text" class="input-item" placeholder="请输入姓名" @blur="validate()">
+                </div>
+                <div class="pt-[8px] pl-[16px] color-red">
+                  {{ error }}
+                </div>
+              </div>
+            </template>
+            <template #username="{ validate, error }">
+              <div class="text-[14px] pb-[12px]">
+                <div class="label">
                   用户名
                 </div>
                 <div class="h-[40px] px-[12px] rounded-[36px] border border-solid border-[#E6E6E8] overflow-hidden">
-                  <input v-model="formlist.nickname" type="text" class="h-full w-full border-none" placeholder="请输入用户名" @blur="validate()">
+                  <input v-model="formlist.account.username" type="text" class="input-item" placeholder="请输入用户名" @blur="validate()">
                 </div>
                 <div class="pt-[8px] pl-[16px] color-red">
                   {{ error }}
@@ -117,11 +119,11 @@ const rules = ref<Rules<addStaffReq>>({
             </template>
             <template #password="{ validate, error }">
               <div class="text-[14px] pb-[12px]">
-                <div class="pb-[8px]">
+                <div class="label">
                   密码
                 </div>
                 <div class="h-[40px] px-[12px] rounded-[36px] border border-solid border-[#E6E6E8] overflow-hidden">
-                  <input v-model="formlist.password" type="text" class="h-full w-full border-none" placeholder="请输入密码" @blur="validate()">
+                  <input v-model="formlist.account.password" type="text" class="input-item" placeholder="请输入密码" @blur="validate()">
                 </div>
                 <div class="pt-[8px] pl-[16px] color-red">
                   {{ error }}
@@ -130,11 +132,11 @@ const rules = ref<Rules<addStaffReq>>({
             </template>
             <template #avatar="{ validate, error }">
               <div class="text-[14px] pb-[12px]">
-                <div class="pb-[8px]">
+                <div class="label">
                   头像
                 </div>
                 <div class="h-[40px] px-[12px] rounded-[36px] border border-solid border-[#E6E6E8] overflow-hidden">
-                  <input v-model="formlist.avatar" type="text" class="h-full w-full border-none" placeholder="请输入头像" @blur="validate()">
+                  <input v-model="formlist.account.avatar" type="text" class="input-item" placeholder="请输入头像" @blur="validate()">
                 </div>
                 <div class="pt-[8px] pl-[16px] color-red">
                   {{ error }}
@@ -143,11 +145,11 @@ const rules = ref<Rules<addStaffReq>>({
             </template>
             <template #email="{ validate, error }">
               <div class="text-[14px] pb-[12px]">
-                <div class="pb-[8px]">
+                <div class="label">
                   email
                 </div>
                 <div class="h-[40px] px-[12px] rounded-[36px] border border-solid border-[#E6E6E8] overflow-hidden">
-                  <input v-model="formlist.email" type="text" class="h-full w-full border-none" placeholder="请输入email" @blur="validate()">
+                  <input v-model="formlist.account.email" type="text" class="input-item" placeholder="请输入email" @blur="validate()">
                 </div>
                 <div class="pt-[8px] pl-[16px] color-red">
                   {{ error }}
@@ -172,5 +174,11 @@ const rules = ref<Rules<addStaffReq>>({
 <style lang="scss" scoped>
     .ok {
   --uno: 'bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] line-height-[24px] px-[77px] py-[6px] text-center rounded-[36px] color-[#fff] shadow-[0_8px_8px_0px_#3971F33D]';
+}
+.input-item {
+  --uno: 'h-full w-full border-none bg-transparent dark:placeholder-color-[#fff]';
+}
+.label {
+  --uno: 'pb-[8px] dark:color-#fff';
 }
 </style>

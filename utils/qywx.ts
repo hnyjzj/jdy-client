@@ -85,8 +85,8 @@ class WxWork {
       mode: wx.SelectEnterpriseContactMode.multi,
       type: [wx.SelectEnterpriseContactType.user],
       ...options,
-    })
 
+    })
     return result
   }
 

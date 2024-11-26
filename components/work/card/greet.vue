@@ -7,7 +7,7 @@ const props = defineProps<{
 <template>
   <div class="mb-[8px]">
     <div class="text-size-xl line-height-[24px] font-semibold color-[#fff]">
-      {{ props.userinfo?.name ? `${getGreeting()},${props.userinfo?.name}` : '' || '' }}
+      {{ props.userinfo?.nickname ? `${getGreeting()},${props.userinfo?.nickname}` : '' || '' }}
     </div>
     <div class="text-size-[14px] line-height-[24px] color-[#fff] mt-[8px]">
       {{ getDayAndWeek() }}

@@ -10,16 +10,14 @@ export const useStaff = defineStore('staffStore', {
      */
     async createStaff(req: addStaffReq) {
       try {
-        const { data } = await https.post<UserInfo, addStaffReq>('/user/create', req, true)
-        if (data.value?.code === HttpCode.SUCCESS) {
-        //   console.log(data.value)
-        }
+        const { data } = await https.post<addStaffRes, addStaffReq>('/staff/create', req, true)
+
+        return data.value
       }
       catch (error) {
         console.error('创建失败：', error)
+        throw error
       }
-
-      return true
     },
   },
 

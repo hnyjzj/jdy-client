@@ -4,6 +4,6 @@ interface UserInfo {
   id: string
   name: string
   phone: string
-  username: string
+  nickname: string
 
 }

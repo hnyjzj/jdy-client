@@ -17,7 +17,7 @@ const porps = defineProps<{
       </div>
       <div class="ml-[8px]">
         <div class="mb-[4px] font-semibold text-[16px] line-height-[20px]">
-          {{ porps.userinfo?.name || '' }}
+          {{ porps.userinfo?.nickname || '' }}
         </div>
         <div class="text-[14px] line-height-[20px]">
           {{ porps.userinfo?.phone || '' }}

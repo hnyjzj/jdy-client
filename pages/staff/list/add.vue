@@ -1,22 +1,52 @@
 <script lang="ts" setup>
-const formlist = ref<addStaffReq>({
-  phone: '',
-  username: '',
-  nickname: '',
-  password: '',
-  avatar: '',
-  email: '',
+const { $toast } = useNuxtApp()
+
+const formlist = ref<addStaffForm>({
+  platform: 'account',
+  account: {
+    phone: '',
+    nickname: '',
+    username: '',
+    password: '',
+    avatar: '',
+    email: '',
+  },
 })
 const { useWxWork } = useWxworkStore()
 const { createStaff } = useStaff()
-const addStaff = async () => {
-  await createStaff(formlist.value)
+
+// 提示是否添加成功
+const addStatus = (res: addStaffRes) => {
+  $toast({
+    message: res.code === HttpCode.SUCCESS ? '创建成功' : res.message,
+    theme: res.code === HttpCode.SUCCESS ? 'success' : 'error',
+    icon: res.code === HttpCode.SUCCESS ? 'i-icon:success' : 'i-icon:error',
+  })
 }
-// /jssdk/wxwork
-const demo = async () => {
+
+// 手动新增员工
+const addStaff = async () => {
+  formlist.value.platform = 'account'
+  const res = await createStaff(formlist.value)
+  addStatus(res)
+}
+// /jssdk/wxwork  企业微信授权添加
+const wxwordAdd = async () => {
   const wx = await useWxWork()
-  const users = wx?.selectPerson()
-  console.log(users, 'users')
+  const users = await wx?.selectPerson()
+  const params = ref<addStaffReq>({
+    platform: 'wxwork',
+    wxwork: {
+      user_id: [],
+    },
+  })
+  if (users?.userList && users.userList?.length > 0) {
+    users?.userList.forEach((item) => {
+      params.value.wxwork?.user_id.push(item.id)
+    })
+  }
+  const res = await createStaff(params.value)
+  addStatus(res)
 }
 </script>
 
@@ -25,7 +55,7 @@ const demo = async () => {
     <div class="pb-[16px] col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
       <common-fold title="其他新增方式" from-color="#9EBAF9" to-color="#fff">
         <div class="flex-center-row  py-[16px]">
-          <div class="wh-[40px] rounded-full flex-center-row" @click="demo()">
+          <div class="wh-[40px] rounded-full flex-center-row" @click="wxwordAdd()">
             <icon name="i-svg:qwicon" size="32" />
           </div>
         </div>
