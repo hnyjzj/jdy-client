@@ -6,10 +6,20 @@ interface Request<T> {
   data: T
 }
 
+const toLogin = (response: any) => {
+  if (response._data?.code === HttpCode.UNAUTHORIZED) {
+    navigateTo('/login')
+  }
+}
+
 class Https {
-  BASE_URL: string = import.meta.env.VITE_BASE_URL || ''
+  BASE_URL: string = import.meta.env.VITE_BASE_API || ''
   authToken: string = ''
-  constructor() {}
+  constructor() {
+    // if (import.meta.dev) {
+    //   this.BASE_URL = '/proxy'
+    // }
+  }
 
   setAuthToken(token: string) {
     // window.sessionStorage.setItem('authToken', token)
@@ -26,19 +36,25 @@ class Https {
           if (opt.method === 'POST') {
             options.body = opt.body
           }
+          else {
+            options.query = opt.query
+          }
 
           if (import.meta.client) {
             options.headers = opt.headers || {}
           }
         },
         onRequestError() {
-          // Handle the request errors
+        //   Handle the request errors
         },
-        onResponse() {
-        // Process the response data
-        // console.log(response._data, 'response')
+        onResponse({ response }) {
+        //   Process the response data
+        //   console.log(response._data, 'response')
+          toLogin(response)
         },
-        onResponseError() {
+        onResponseError({ response }) {
+          toLogin(response)
+
           // Handle the response errors
         },
         // ...opt,
@@ -56,23 +72,28 @@ class Https {
     const headers: HeadersInit = {
       'Content-Type': 'application/json',
     }
-    const token = this.authToken
-    if (import.meta.client) {
-      if (isToken) {
-        const store = useUser()
-        this.authToken = store.userinfo.token
-        if (!this.authToken) {
-          navigateTo('/login')
-        }
-      }
 
-      headers.Authorization = `Bearer ${token}`
+    if (isToken) {
+      const store = useAuth()
+      const route = useRoute()
+      this.authToken = store.token
+      //   console.log('token', store.token)
+
+      if (Date.now() > (store.expires_at) * 1000) {
+        navigateTo({
+          path: '/login',
+          query: {
+            redirect_url: encodeURIComponent(route.path),
+          },
+        })
+      }
+      headers.Authorization = `Bearer ${this.authToken}`
     }
 
     return headers
   }
 
-  get = async <T>(url: string, options: Record<string, any> = {}, isToken: boolean = false) => {
+  get = async <T, R = undefined>(url: string, options?: R, isToken: boolean = false) => {
     return this.fetchApi<T>(url, {
       method: 'GET',
       headers: this.createHeaders(isToken),
@@ -80,7 +101,7 @@ class Https {
     })
   }
 
-  post = async <T>(url: string, body: Record<string, any> = {}, isToken: boolean = false) => {
+  post = async <T, R = undefined>(url: string, body?: R, isToken: boolean = false) => {
     return this.fetchApi<T>(url, {
       method: 'POST',
       headers: this.createHeaders(isToken),

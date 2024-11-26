@@ -1,42 +1,26 @@
 export const useUser = defineStore('userStore', {
   state: () => ({
-    userinfo: {
-      token: '',
-      username: '',
-    },
+    userinfo: {} as UserInfo,
   }),
   getters: {
 
   },
   actions: {
-    async increment() {
-    //   const res = await https.post<Users>('/submit', { username: 'test' })
-      //   const { data } = res
-      //   setTimeout(() => {
-      //     refresh()
-      //     execute()
-      //   }, 3000)
-
-      //   watchEffect(() => {
-      //     this.num = data.value
-      //   })
-
-    //   return res
-    },
-
-    async mockLogin() {
-      // 模拟登录
-      // 随机生成一个token
-      const res = await https.post<Users>('/auth/login', { phone: 'test', password: '123123' })
-
-      if (import.meta.client) {
-        this.userinfo = res.data.value.data
+    async getUserInfo() {
+      try {
+        const { data } = await https.get<UserInfo, null>('/user/info', null, true)
+        if (data.value?.code === HttpCode.SUCCESS) {
+          this.userinfo = data.value.data
+        }
+      }
+      catch (error) {
+        console.error('获取用户信息报错：', error)
       }
 
-      return res.data.value.code === HttpCode.SUCCESS
+      return true
     },
-
   },
-  persist: true,
-
+  persist: {
+    storage: piniaPluginPersistedstate.cookies(),
+  },
 })
