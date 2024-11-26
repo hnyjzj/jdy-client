@@ -1,12 +1,15 @@
 <script setup lang="ts">
 interface Props {
   title?: string
+  showOk?: boolean
 }
-
 const props = withDefaults(defineProps<Props>(), {
   title: '',
+  showOk: false,
 })
-
+const emits = defineEmits<{
+  confirm: []
+}>()
 const show = defineModel({ type: Boolean, default: false })
 
 function close() {
@@ -32,8 +35,15 @@ function close() {
       <div class="center">
         <div class="box">
           <slot />
-          <div class="cancel-btn" @click="close">
-            取消
+          <div class="flex-between">
+            <div :class="[props.showOk ? 'cancel-btn' : 'ok']" :style="{ marginRight: props.showOk ? '10px' : '0' }" @click="close">
+              取消
+            </div>
+            <template v-if="showOk">
+              <div class="ok" @click="emits('confirm')">
+                确定
+              </div>
+            </template>
           </div>
         </div>
       </div>
@@ -83,10 +93,15 @@ function close() {
     .box {
       --uno: 'border-rd-[16px_0_0_0] bg-[rgb(236,239,246)] dark:bg-[rgba(0,0,0,0.8)] sm:border-rd-[16px_0_16px_16px] px-[30px] py-[42px]';
       margin-top: 0;
-      .cancel-btn {
-        --uno: 'mt-[24px] py-[6px] text-center border-rd-[36px] text-[16px] text-[#fff] font-bold';
+      .ok {
+        --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#fff] font-bold ';
         background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
         box-shadow: rgba(57, 113, 243, 0.24) 0px 8px 8px 0;
+      }
+      .cancel-btn {
+        --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#1a6beb] font-bold';
+        background: #fff;
+        box-shadow: rgba(82, 130, 241, 0.24) 0px 8px 8px 0;
       }
     }
   }
