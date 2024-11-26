@@ -38,11 +38,11 @@ class WxWork {
     //   options.getAgentConfigSignature = this.getAgentConfigSignature
     // }
 
-    options.onConfigSuccess = (res) => {
-      console.log('config success', res)
+    options.onConfigSuccess = () => {
+
     }
-    options.onConfigFail = (err) => {
-      console.log('config fail', err)
+    options.onConfigFail = () => {
+
     }
 
     wx.register(options)
@@ -56,7 +56,6 @@ class WxWork {
     const { checkResult } = await wx.checkJsApi({
       jsApiList: this.jsApiList,
     })
-    console.log('checkResult', checkResult)
 
     return checkResult
   }
