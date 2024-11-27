@@ -22,7 +22,7 @@ export const useWorkbenche = defineStore('workbencheStore', {
     },
     async getWorkbenchList() {
       try {
-        const { data } = await https.get<WorkBench[], void>('/workbench/list')
+        const { data } = await https.get<WorkBench[], null>('/workbench/list', null, true)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.workBenchList = data.value.data
         }

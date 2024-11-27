@@ -18,6 +18,7 @@
     "@wecom/jssdk": "^2.2.2",
     "nuxt": "^3.14.0",
     "pinia": "^2.2.5",
+    "pinyin-pro": "^3.26.0",
     "vue": "latest",
     "vue-router": "latest"
   },
