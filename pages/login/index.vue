@@ -18,11 +18,7 @@ const showCode = async () => {
     await authStore.getCodeImg()
   }
   catch (error) {
-    $toast({
-      message: '验证码获取失败',
-      theme: 'error',
-      icon: 'i-icon:error',
-    })
+    $toast.error('验证码获取失败')
     throw error
   }
 }
@@ -32,20 +28,12 @@ const login = async () => {
     form.value.captcha_id = authStore.imageCaptcha.id
     const res = await authStore.accountLogin(form.value)
     if (res?.code !== HttpCode.SUCCESS) {
-      $toast({
-        message: res?.message || '登录失败',
-        theme: 'error',
-        icon: 'i-icon:error',
-      })
+      $toast.error(res?.message || '登录失败')
       showCode()
     }
   }
   catch (error) {
-    $toast({
-      message: '登录失败了,请重试',
-      theme: 'error',
-      icon: 'i-icon:error',
-    })
+    $toast.error('登录失败,请重试')
     throw error
   }
 }
@@ -62,11 +50,7 @@ const QWLogin = async () => {
   const redirect_url = route.query?.redirect_url as string
   const res = await authStore.getOauthUri(redirect_url || '')
   if (res.code !== HttpCode.SUCCESS) {
-    $toast({
-      message: res.message,
-      theme: 'error',
-      icon: 'i-icon:error',
-    })
+    $toast.error(res?.message || '登录失败')
   }
 }
 const otherList = ref([{

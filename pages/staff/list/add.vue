@@ -17,11 +17,12 @@ const { createStaff } = useStaff()
 
 // 提示是否添加成功
 const addStatus = (res: addStaffRes) => {
-  $toast({
-    message: res.code === HttpCode.SUCCESS ? '创建成功' : res.message,
-    theme: res.code === HttpCode.SUCCESS ? 'success' : 'error',
-    icon: res.code === HttpCode.SUCCESS ? 'i-icon:success' : 'i-icon:error',
-  })
+  if (res.code === HttpCode.SUCCESS) {
+    $toast.success('创建成功')
+  }
+  else {
+    $toast.error(res.message)
+  }
 }
 
 // 手动新增员工
