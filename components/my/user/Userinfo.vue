@@ -12,7 +12,7 @@ const porps = defineProps<{
           <icon name="i-svg:avatar" size="68" />
         </template>
         <template v-else>
-          <nuxt-img :src="porps.userinfo?.avatar" size="68px" />
+          <nuxt-img :src="porps.userinfo?.avatar" class="wh-[68px] rounded-full" />
         </template>
       </div>
       <div class="ml-[8px]">
