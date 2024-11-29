@@ -50,7 +50,7 @@ const otherList = ref([{
         </div>
       </div>
       <div class="pb-[160px]  col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
-        <div class="ok ">
+        <div class="ok cursor-pointer">
           保存
         </div>
       </div>

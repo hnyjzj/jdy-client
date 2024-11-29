@@ -55,7 +55,7 @@ const wxwordAdd = async () => {
   <div class="pb-[120px] grid-12">
     <div class="pb-[16px] col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
       <common-fold title="其他新增方式" from-color="#9EBAF9" to-color="#fff">
-        <div class="flex-center-row  py-[16px]">
+        <div class="flex-center-row py-[16px] cursor-pointer">
           <div class="wh-[40px] rounded-full flex-center-row" @click="wxwordAdd()">
             <icon name="i-svg:qwicon" size="32" />
           </div>

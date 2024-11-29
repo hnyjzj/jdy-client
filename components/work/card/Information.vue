@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<{
 </script>
 
 <template>
-  <div class="blur-bgc rounded-[16px]" :style="{ marginBottom: props.marginBottom }">
+  <div class="blur-bgc rounded-[16px]  cursor-pointer" :style="{ marginBottom: props.marginBottom }">
     <div class="grid-12">
       <div
         class="skew col-4">

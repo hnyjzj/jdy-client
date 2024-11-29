@@ -24,7 +24,7 @@ function fold(id: string) {
             <div class="title">
               {{ work.title }}
             </div>
-            <div class="flex items-center" @click="fold(work.id)">
+            <div class="flex items-center cursor-pointer" @click="fold(work.id)">
               <template v-if="foldStatus[work.id]">
                 <div class="horn">
                   点击收起

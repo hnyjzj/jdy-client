@@ -158,7 +158,7 @@ const rules = ref<Rules<addStaffAccount>>({
             </template>
             <template #actions="{ submit }">
               <div
-                class="text-size-[16px] font-semibold py-[16px]" @click="submit">
+                class="text-size-[16px] font-semibold py-[16px] cursor-pointer" @click="submit">
                 <div class="ok">
                   登录
                 </div>
