@@ -2,7 +2,7 @@ export const useAuth = defineStore('authStore', {
   state: () => ({
     token: '' as string,
     expires_at: 0 as number,
-    redirect: '' as string,
+    redirect: '' as string | undefined,
     imageCaptcha: {
       id: '',
       code: '',
@@ -47,6 +47,10 @@ export const useAuth = defineStore('authStore', {
           this.token = data.value.data.token
           this.expires_at = data.value.data.expires_at
           await userStore.getUserInfo()
+        }
+        else {
+          // 如果登录不成功给，则删掉存储的授权地址，防止反复请求死循环
+          this.redirect = undefined
         }
         return data.value
       }
