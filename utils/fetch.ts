@@ -93,7 +93,7 @@ class Https {
     return headers
   }
 
-  get = async <T, R = undefined>(url: string, options?: R, isToken: boolean = false) => {
+  get = async <T, R = undefined>(url: string, options?: R, isToken: boolean = true) => {
     return this.fetchApi<T>(url, {
       method: 'GET',
       headers: this.createHeaders(isToken),
@@ -101,7 +101,7 @@ class Https {
     })
   }
 
-  post = async <T, R = undefined>(url: string, body?: R, isToken: boolean = false) => {
+  post = async <T, R = undefined>(url: string, body?: R, isToken: boolean = true) => {
     return this.fetchApi<T>(url, {
       method: 'POST',
       headers: this.createHeaders(isToken),
