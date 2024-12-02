@@ -9,10 +9,7 @@ export const useWorkbenche = defineStore('workbencheStore', {
   actions: {
     async addWorkbench(params: AddWorkbencheReq) {
       try {
-        const { data } = await https.post<any, AddWorkbencheReq>('/workbench/add', params)
-        if (data.value?.code === HttpCode.SUCCESS) {
-          //   window.location.href = data.value.data.redirect_url
-        }
+        const { data } = await https.post<any, AddWorkbencheReq>('/workbench/add', params, true)
         return data.value
       }
       catch (error) {
@@ -29,6 +26,24 @@ export const useWorkbenche = defineStore('workbencheStore', {
       }
       catch (error) {
         throw new Error(`获取工作台列表失败: ${error || '未知错误'}`)
+      }
+    },
+    async delWorkbench(id: string) {
+      try {
+        const { data } = await https.delete<any, { id: string }>('/workbench/del', { id }, true)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`删除工作台失败: ${error || '未知错误'}`)
+      }
+    },
+    async updateWorkbench(params: AddWorkbencheReq) {
+      try {
+        const { data } = await https.put<any, AddWorkbencheReq>('/workbench/update', params, true)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`更新工作台失败: ${error || '未知错误'}`)
       }
     },
   },
