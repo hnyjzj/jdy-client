@@ -136,7 +136,7 @@ function fold(id: string) {
                       </template>
                       <template v-if="isSetup">
                         <button style="all: unset;">
-                          <div class="flex items-center mb-2" @click="addBench(child?.id)">
+                          <div class="flex items-center" @click="addBench(child?.id)">
                             <icon name="i-icon:addsth" size="26px" color="#666666" />
                             <div class="text-[12px] text-[#666666] pl-1">
                               添加栏目

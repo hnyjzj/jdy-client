@@ -2,6 +2,8 @@
 import type { Rules } from 'common-form'
 import { showConfirmDialog } from 'vant'
 
+const { $toast } = useNuxtApp()
+
 const { addWorkbench, getWorkbenchList, delWorkbench, updateWorkbench } = useWorkbenche()
 const { workBenchList } = storeToRefs(useWorkbenche())
 
@@ -67,15 +69,19 @@ const updateBench = (id: string, parent_id: string) => {
 
 // 删除工作台
 const delBench = async (id: string) => {
-  const res = await showConfirmDialog({
-    title: '删除工作台页面',
-    message: '该操作存在一定风险，您确定要删除吗？',
-  })
-  if (res === 'confirm') {
+  try {
+    await showConfirmDialog({
+      title: '删除工作台页面',
+      message: '该操作存在一定风险，您确定要删除吗？',
+    })
     const data = await delWorkbench(id)
     if (data.code === 200) {
       await getWorkbenchList()
+      $toast.primary('删除成功')
     }
+  }
+  catch (error) {
+    throw new Error(`${error || '未知错误'}`)
   }
 }
 
@@ -98,7 +104,9 @@ async function submit(val: AddWorkbencheReq) {
   if (res.code === 200) {
     resetForm()
     await getWorkbenchList()
+    return $toast.primary('操作成功')
   }
+  $toast.error(res?.message || '操作失败')
 }
 </script>
 
