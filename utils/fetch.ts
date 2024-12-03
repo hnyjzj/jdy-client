@@ -33,12 +33,8 @@ class Https {
         onRequest({ options }) {
           // Set the request headers
           options.method = opt.method
-          if (opt.method === 'POST') {
-            options.body = opt.body
-          }
-          else {
-            options.query = opt.query
-          }
+          options.query = opt.query
+          options.body = opt.body
 
           if (import.meta.client) {
             options.headers = opt.headers || {}
@@ -93,12 +89,15 @@ class Https {
     return headers
   }
 
-  get = async <T, R = undefined>(url: string, options?: R, isToken: boolean = true) => {
-    return this.fetchApi<T>(url, {
+  get = async <T, R = undefined>(url: string, body?: R, isToken: boolean = true) => {
+    const options: any = {
       method: 'GET',
       headers: this.createHeaders(isToken),
-      ...(options && { query: options }),
-    })
+    }
+    if (body) {
+      options.body = JSON.stringify(body)
+    }
+    return this.fetchApi<T>(url, options)
   }
 
   post = async <T, R = undefined>(url: string, body?: R, isToken: boolean = true) => {
@@ -106,6 +105,22 @@ class Https {
       method: 'POST',
       headers: this.createHeaders(isToken),
       body: JSON.stringify(body),
+    })
+  }
+
+  put = async <T, R = undefined>(url: string, body?: R, isToken: boolean = true) => {
+    return this.fetchApi<T>(url, {
+      method: 'PUT',
+      headers: this.createHeaders(isToken),
+      body: JSON.stringify(body),
+    })
+  }
+
+  delete = async <T, R = undefined>(url: string, options?: R, isToken: boolean = true) => {
+    return this.fetchApi<T>(url, {
+      method: 'DELETE',
+      headers: this.createHeaders(isToken),
+      body: JSON.stringify(options),
     })
   }
 }

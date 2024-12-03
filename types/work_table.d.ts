@@ -2,9 +2,10 @@ interface WorkBench {
   id: string
   title?: string
   name?: string
-  path?: string
+  path: string
   children?: WorkBench[]
-  parent_id?: string
+  parent_id: string
+  icon: string
 }
 
 interface WorkBenchReq {
@@ -62,4 +63,10 @@ interface AddWorkbencheReq {
    * 父级ID
    */
   parent_id?: string
+  id?: string
+}
+
+interface DelBenchRes {
+  data: WorkBench[]
+  code: number
 }

@@ -5,11 +5,25 @@ const props = defineProps<{
 }>()
 const emits = defineEmits<{
   add: [id: string]
+  del: [id: string]
+  update: [bench: WorkBench]
   fold: [id: string]
 }>()
+
+const isSetup = defineModel({ type: Boolean, default: false })
+
 function addBench(id: string) {
   emits('add', id)
 }
+
+function updateBench(bench: WorkBench) {
+  emits('update', bench)
+}
+
+function delBench(id: string) {
+  emits('del', id)
+}
+
 function fold(id: string) {
   emits('fold', id)
 }
@@ -24,46 +38,111 @@ function fold(id: string) {
             <div class="title">
               {{ work.title }}
             </div>
-            <div class="flex items-center cursor-pointer" @click="fold(work.id)">
-              <template v-if="foldStatus[work.id]">
-                <div class="horn">
-                  点击收起
-                </div>
-                <icon name="i-icon:down" size="12px" color="rgba(128,128,137,1)" />
-              </template>
-              <template v-else>
-                <div class="horn">
-                  点击展开
-                </div>
-                <icon name="i-icon:left" size="12px" color="rgba(128,128,137,1)" />
-              </template>
-            </div>
-          </div>
-          <div class="blur-bgc px-[16px]" :class="foldStatus[work.id] ? 'block1' : 'hidden1'">
-            <div class="pt-[12px] pb-[16px] text-size-[14px]" :class="foldStatus[work.id] ? 'block2' : 'hidden2'">
-              <div class="text-[#666]" @click="addBench(work.id)">
-                添加目录
+            <template v-if="isSetup">
+              <div class="flex items-center">
+                <button style="all: unset;" @click="updateBench(work)">
+                  <div class="flex items-center cursor-pointer">
+                    <icon name="i-svg:edit" size="12px" color="#3970F3" />
+                    <div class="text-[12px] text-[#3970F3] pl-1">
+                      编辑
+                    </div>
+                  </div>
+                </button>
+                <template v-if="!work?.children?.length">
+                  <button style="all: unset;" @click="delBench(work.id)">
+                    <div class="flex items-center ml-4 cursor-pointer">
+                      <icon name="i-svg:delete" size="12px" color="#FF2F2F" />
+                      <div class="text-[12px] text-[#FF2F2F] pl-1">
+                        删除
+                      </div>
+                    </div>
+                  </button>
+                </template>
               </div>
+            </template>
+            <template v-else>
+              <div class="flex items-center cursor-pointer" @click="fold(work.id)">
+                <template v-if="!foldStatus[work.id]">
+                  <div class="horn">
+                    点击收起
+                  </div>
+                  <icon name="i-icon:down" size="12px" color="rgba(128,128,137,1)" />
+                </template>
+                <template v-else>
+                  <div class="horn">
+                    点击展开
+                  </div>
+                  <icon name="i-icon:left" size="12px" color="rgba(128,128,137,1)" />
+                </template>
+              </div>
+            </template>
+          </div>
+          <div class="blur-bgc px-[16px]" :class="!foldStatus[work.id] ? 'block1' : 'hidden1'">
+            <div class="pt-[12px] pb-[16px] text-size-[14px]" :class="!foldStatus[work.id] ? 'block2' : 'hidden2'">
+              <template v-if="isSetup">
+                <button style="all: unset;" @click="addBench(work.id)">
+                  <div class="flex items-center mb-3 cursor-pointer">
+                    <icon name="i-icon:addsth" size="26px" color="#666666" />
+                    <div class="text-[12px] text-[#666666] pl-1">
+                      添加分类
+                    </div>
+                  </div>
+                </button>
+              </template>
               <template v-for="child in work.children" :key="child.id">
                 <div class="flex flex-col gap-[24px] pb-[16px]">
                   <div class="flex flex-col gap-[16px]">
-                    <div class="text-[12px] font-semibold color-[#333] dark:color-[#fff]">
-                      {{ child.title }}
-                    </div>
-                    <div class="text-[#666]" @click="addBench(child?.id)">
-                      添加页面
+                    <div class="flex items-center justify-between">
+                      <div class="text-[12px] font-semibold color-[#333] dark:color-[#fff]">
+                        {{ child.title }}
+                      </div>
+                      <template v-if="isSetup">
+                        <div class="flex items-center">
+                          <button style="all: unset;" @click="updateBench(child)">
+                            <div class="flex items-center cursor-pointer">
+                              <icon name="i-svg:edit" size="12px" color="#3970F3" />
+                              <div class="text-[12px] text-[#3970F3] pl-1">
+                                编辑
+                              </div>
+                            </div>
+                          </button>
+                          <template v-if="!child?.children?.length">
+                            <button style="all: unset;" @click="delBench(child.id)">
+                              <div class="flex items-center ml-4 cursor-pointer">
+                                <icon name="i-svg:delete" size="12px" />
+                                <div class="text-[12px] text-[#FF2F2F] pl-1">
+                                  删除
+                                </div>
+                              </div>
+                            </button>
+                          </template>
+                        </div>
+                      </template>
                     </div>
                     <div class="line" />
                     <div class="sector">
                       <template v-for="son in child.children" :key="son.id">
-                        <nuxt-link :to="son.path">
-                          <div class="flex items-center">
-                            <nuxt-img src="images/sale/sales-list.png" class="w-[32px] h-[32px]" />
-                            <div class="son-title">
-                              {{ son.title }}
+                        <div class="flex items-center cursor-pointer">
+                          <div class="relative">
+                            <nuxt-img src="images/sale/sales-list.png" class="w-[32px] h-[32px]" @click="jump(son.path)" />
+                            <template v-if="isSetup">
+                              <icon class="absolute top-[-2px] right-[-2px] cursor-pointer" name="i-svg:reduce" size="14px" @click="delBench(son.id)" />
+                            </template>
+                          </div>
+                          <div class="son-title" @click="jump(son.path)">
+                            {{ son.title }}
+                          </div>
+                        </div>
+                      </template>
+                      <template v-if="isSetup">
+                        <button style="all: unset;">
+                          <div class="flex items-center cursor-pointer" @click="addBench(child?.id)">
+                            <icon name="i-icon:addsth" size="26px" color="#666666" />
+                            <div class="text-[12px] text-[#666666] pl-1">
+                              添加栏目
                             </div>
                           </div>
-                        </nuxt-link>
+                        </button>
                       </template>
                     </div>
                   </div>

@@ -94,7 +94,7 @@ export const useAuth = defineStore('authStore', {
           this.imageCaptcha.id = ''
           this.imageCaptcha.code = ''
           await userStore.getUserInfo()
-          navigateTo(decodeURIComponent(redirect_url as string))
+          await navigateTo(decodeURIComponent(redirect_url as string), { replace: true, redirectCode: 200 })
         }
         return data.value
       }
