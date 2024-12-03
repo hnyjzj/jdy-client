@@ -2,10 +2,14 @@
 const porps = defineProps<{
   userinfo: UserInfo
 }>()
+
+const emit = defineEmits<{
+  logout: []
+}>()
 </script>
 
 <template>
-  <div class="color-[#fff]">
+  <div class="color-[#fff] flex-between">
     <div class="flex-start ">
       <div class="cursor-pointer">
         <template v-if="!porps.userinfo?.avatar">
@@ -23,6 +27,9 @@ const porps = defineProps<{
           {{ porps.userinfo?.phone || '' }}
         </div>
       </div>
+    </div>
+    <div class="cursor-pointer" @click="emit('logout')">
+      <icon name="i-svg:logout" size="32" />
     </div>
   </div>
 </template>
