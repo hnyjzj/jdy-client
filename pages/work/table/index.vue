@@ -132,9 +132,9 @@ async function submit(val: AddWorkbencheReq) {
         <product-filter-search />
       </div>
       <div
-        class="col-2 offset-10 flex items-center justify-end" uno-sm="col-1 offset-10" uno-lg="col-1 offset-9" uno-xl="col-1 offset-8"
+        class="col-2 offset-10 flex items-center justify-end cursor-pointer" uno-sm="col-1 offset-10" uno-lg="col-1 offset-9" uno-xl="col-1 offset-8"
         @click="set">
-        <icon name="i-svg:setup" size="14" color="#666" />
+        <icon name="i-svg:setup" size="14" color="#FFF" />
         <div class="text-[#fff] text-[14px] pl-1">
           {{ isSetup ? '退出' : '编辑' }}
         </div>
@@ -145,7 +145,7 @@ async function submit(val: AddWorkbencheReq) {
       <div class="mt-6 mb-14 col-12" uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
         <template v-if="isSetup">
           <button style="all: unset;">
-            <div class="flex items-center mb-4" @click="show = true">
+            <div class="flex items-center mb-4 cursor-pointer" @click="show = true">
               <icon name="i-icon:addsth" size="26px" color="#FFF" />
               <div class="text-[14px] text-[#FFF] pl-1">
                 添加模块

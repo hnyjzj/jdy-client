@@ -41,8 +41,8 @@ function fold(id: string) {
             <template v-if="isSetup">
               <div class="flex items-center">
                 <button style="all: unset;" @click="updateBench(work.id, work.parent_id)">
-                  <div class="flex items-center">
-                    <icon name="i-icon:edit" size="12px" color="#3970F3" />
+                  <div class="flex items-center cursor-pointer">
+                    <icon name="i-svg:edit" size="12px" color="#3970F3" />
                     <div class="text-[12px] text-[#3970F3] pl-1">
                       编辑
                     </div>
@@ -50,7 +50,7 @@ function fold(id: string) {
                 </button>
                 <template v-if="!work?.children?.length">
                   <button style="all: unset;" @click="delBench(work.id)">
-                    <div class="flex items-center ml-4">
+                    <div class="flex items-center ml-4 cursor-pointer">
                       <icon name="i-svg:delete" size="12px" color="#FF2F2F" />
                       <div class="text-[12px] text-[#FF2F2F] pl-1">
                         删除
@@ -81,7 +81,7 @@ function fold(id: string) {
             <div class="pt-[12px] pb-[16px] text-size-[14px]" :class="!foldStatus[work.id] ? 'block2' : 'hidden2'">
               <template v-if="isSetup">
                 <button style="all: unset;" @click="addBench(work.id)">
-                  <div class="flex items-center mb-3">
+                  <div class="flex items-center mb-3 cursor-pointer">
                     <icon name="i-icon:addsth" size="26px" color="#666666" />
                     <div class="text-[12px] text-[#666666] pl-1">
                       添加分类
@@ -99,8 +99,8 @@ function fold(id: string) {
                       <template v-if="isSetup">
                         <div class="flex items-center">
                           <button style="all: unset;" @click="updateBench(child.id, child.parent_id)">
-                            <div class="flex items-center">
-                              <icon name="i-icon:edit" size="12px" color="#3970F3" />
+                            <div class="flex items-center cursor-pointer">
+                              <icon name="i-svg:edit" size="12px" color="#3970F3" />
                               <div class="text-[12px] text-[#3970F3] pl-1">
                                 编辑
                               </div>
@@ -108,7 +108,7 @@ function fold(id: string) {
                           </button>
                           <template v-if="!child?.children?.length">
                             <button style="all: unset;" @click="delBench(child.id)">
-                              <div class="flex items-center ml-4">
+                              <div class="flex items-center ml-4 cursor-pointer">
                                 <icon name="i-svg:delete" size="12px" />
                                 <div class="text-[12px] text-[#FF2F2F] pl-1">
                                   删除
@@ -136,7 +136,7 @@ function fold(id: string) {
                       </template>
                       <template v-if="isSetup">
                         <button style="all: unset;">
-                          <div class="flex items-center" @click="addBench(child?.id)">
+                          <div class="flex items-center cursor-pointer" @click="addBench(child?.id)">
                             <icon name="i-icon:addsth" size="26px" color="#666666" />
                             <div class="text-[12px] text-[#666666] pl-1">
                               添加栏目
