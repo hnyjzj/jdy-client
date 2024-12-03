@@ -32,14 +32,14 @@ const isSetup = ref(false)
 const submitStatus = ref<'add' | 'update'>('add')
 
 // 重置表单和显示状态
-const resetForm = () => {
+const resetForm = (isshow: boolean = false) => {
   params.value = {
     parent_id: undefined,
     title: '',
     icon: '',
     path: '',
   }
-  show.value = false
+  show.value = isshow
 }
 
 const foldStatus = useState('allFold', () => {
@@ -68,11 +68,13 @@ const fold = (id: string) => {
 
 // 添加/更新工作台表单
 const addBench = (id: string) => {
+  resetForm(true)
   submitStatus.value = 'add'
   show.value = true
   params.value.parent_id = id
 }
 const updateBench = (bench: WorkBench) => {
+  resetForm(true)
   submitStatus.value = 'update'
   show.value = true
   params.value.id = bench.id
@@ -151,7 +153,7 @@ async function submit(val: AddWorkbencheReq) {
       <div class="mt-6 mb-14 col-12" uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
         <template v-if="isSetup">
           <button style="all: unset;">
-            <div class="flex items-center mb-4 cursor-pointer" @click="show = true">
+            <div class="flex items-center mb-4 cursor-pointer" @click="resetForm(true);show = true">
               <icon name="i-icon:addsth" size="26px" color="#FFF" />
               <div class="text-[14px] text-[#FFF] pl-1">
                 添加模块

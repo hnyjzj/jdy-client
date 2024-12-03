@@ -122,7 +122,7 @@ function fold(id: string) {
                     <div class="line" />
                     <div class="sector">
                       <template v-for="son in child.children" :key="son.id">
-                        <div class="flex items-center">
+                        <div class="flex items-center cursor-pointer">
                           <div class="relative">
                             <nuxt-img src="images/sale/sales-list.png" class="w-[32px] h-[32px]" @click="jump(son.path)" />
                             <template v-if="isSetup">
