@@ -2,6 +2,7 @@ export const useAuth = defineStore('authStore', {
   state: () => ({
     token: '' as string,
     expires_at: 0 as number,
+    redirect: '' as string | undefined,
     imageCaptcha: {
       id: '',
       code: '',
@@ -22,8 +23,9 @@ export const useAuth = defineStore('authStore', {
           redirect_url: redirect_url || undefined,
         })
         // 获取授权地址
-        const { data } = await https.post<OAuthRes, OAuthReq>('/platform/oauth', { uri, platform: 'wxwork' })
+        const { data } = await https.post<OAuthRes, OAuthReq>('/platform/oauth', { uri, platform: 'wxwork' }, false)
         if (data.value?.code === HttpCode.SUCCESS) {
+          this.redirect = data.value.data.redirect_url
           window.location.href = data.value.data.redirect_url
         }
 
@@ -39,12 +41,16 @@ export const useAuth = defineStore('authStore', {
      */
     async wxworkLogin(req: WXworkLoginReq) {
       try {
-        const { data } = await https.post<WXworkLoginRes, WXworkLoginReq>('/auth/oauth', req)
+        const { data } = await https.post<WXworkLoginRes, WXworkLoginReq>('/auth/oauth', req, false)
         const userStore = useUser()
         if (data.value?.code === HttpCode.SUCCESS) {
           this.token = data.value.data.token
           this.expires_at = data.value.data.expires_at
           await userStore.getUserInfo()
+        }
+        else {
+          // 如果登录不成功给，则删掉存储的授权地址，防止反复请求死循环
+          this.redirect = undefined
         }
         return data.value
       }
@@ -59,7 +65,7 @@ export const useAuth = defineStore('authStore', {
      */
     async getCodeImg() {
       try {
-        const { data } = await https.get<ImageCaptcha, null>('/captcha/image')
+        const { data } = await https.get<ImageCaptcha, null>('/captcha/image', null, false)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.imageCaptcha = data.value.data
         }
@@ -76,7 +82,7 @@ export const useAuth = defineStore('authStore', {
      */
     async accountLogin(req: AccountReq) {
       try {
-        const { data } = await https.post<AccountRes, AccountReq>('/auth/login', req)
+        const { data } = await https.post<AccountRes, AccountReq>('/auth/login', req, false)
         // 获取当前地址栏的参数 并抓换回去
         const userStore = useUser()
         const route = useRoute()
@@ -101,7 +107,7 @@ export const useAuth = defineStore('authStore', {
   },
   persist: {
     storage: piniaPluginPersistedstate.cookies(),
-    pick: ['token', 'expires_at'],
+    pick: ['token', 'expires_at', 'redirect'],
   },
 
 })

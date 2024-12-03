@@ -7,6 +7,19 @@ const { getUserInfo } = useUser()
 usePageShow(() => {
   getUserInfo()
 })
+const optionsList = ref<UserOpts[]>([{
+  iconName: 'i-svg:my-profile',
+  optName: '资料管理',
+  link: '/my/user/information',
+}, {
+  iconName: 'i-svg:my-setting',
+  optName: '提醒设置',
+  link: '/my/user/information',
+}, {
+  iconName: 'i-svg:my-question',
+  optName: '问题反馈',
+  link: '/my/user/information',
+}])
 </script>
 
 <template>
@@ -17,7 +30,7 @@ usePageShow(() => {
           <my-user-userinfo :userinfo="userinfo" />
         </div>
         <div class="px-[16px] ">
-          <my-user-option />
+          <my-user-option :opt-list="optionsList" />
         </div>
       </div>
     </div>

@@ -20,7 +20,8 @@ const props = withDefaults(defineProps<{
     </div>
 
     <div class="pt-[10px] pl-[6px] text-[10px]" uno-sm="text-[14px]">
-      <div class="bg-[#C7DAFF] py-[5px] pl-[6px] pr-[10px] rounded-l-[20px]  grid-12">
+      <div
+        class="bg-[rgba(199,218,255,0.8)] py-[5px] pl-[6px] pr-[10px] rounded-l-[20px]  grid-12">
         <div class="items-title">
           门店
         </div>

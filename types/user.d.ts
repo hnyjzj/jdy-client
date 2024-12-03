@@ -7,3 +7,9 @@ interface UserInfo {
   nickname: string
 
 }
+
+interface UserOpts {
+  iconName: string
+  optName: string
+  link: string
+}

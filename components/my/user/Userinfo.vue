@@ -7,7 +7,7 @@ const porps = defineProps<{
 <template>
   <div class="color-[#fff]">
     <div class="flex-start ">
-      <div class="">
+      <div class="cursor-pointer">
         <template v-if="!porps.userinfo?.avatar">
           <icon name="i-svg:avatar" size="68" />
         </template>
@@ -15,7 +15,7 @@ const porps = defineProps<{
           <nuxt-img :src="porps.userinfo?.avatar" class="wh-[68px] rounded-full" />
         </template>
       </div>
-      <div class="ml-[8px]">
+      <div class="ml-[8px] cursor-pointer">
         <div class="mb-[4px] font-semibold text-[16px] line-height-[20px]">
           {{ porps.userinfo?.nickname || '' }}
         </div>

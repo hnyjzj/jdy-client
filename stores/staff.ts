@@ -10,7 +10,7 @@ export const useStaff = defineStore('staffStore', {
      */
     async createStaff(req: addStaffReq) {
       try {
-        const { data } = await https.post<addStaffRes, addStaffReq>('/staff/create', req, true)
+        const { data } = await https.post<addStaffRes, addStaffReq>('/staff/create', req)
 
         return data.value
       }
