@@ -126,7 +126,7 @@ function fold(id: string) {
                           <div class="relative">
                             <nuxt-img src="images/sale/sales-list.png" class="w-[32px] h-[32px]" @click="jump(son.path)" />
                             <template v-if="isSetup">
-                              <icon class="absolute top-[-2px] right-[-2px]" name="i-svg:reduce" size="14px" @click="delBench(son.id)" />
+                              <icon class="absolute top-[-2px] right-[-2px] cursor-pointer" name="i-svg:reduce" size="14px" @click="delBench(son.id)" />
                             </template>
                           </div>
                           <div class="son-title" @click="jump(son.path)">
