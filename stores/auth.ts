@@ -16,10 +16,10 @@ export const useAuth = defineStore('authStore', {
     /**
      * 获取授权地址
      */
-    async getOauthUri(redirect_url: string = '') {
+    async getOauthUri(redirect_url: string = '', now_url = '/login/oauth') {
       try {
         // 获取当前地址栏的参数 并抓换回去
-        const uri = UrlAndParams(`${import.meta.env.VITE_BASE_URL || ''}/login/oauth`, {
+        const uri = UrlAndParams(`${import.meta.env.VITE_BASE_URL || ''}${now_url}`, {
           redirect_url: redirect_url || undefined,
         })
         // 获取授权地址
@@ -36,6 +36,7 @@ export const useAuth = defineStore('authStore', {
         throw error
       }
     },
+
     /**
      * 企业微信登录获取用户信息
      */
@@ -100,6 +101,20 @@ export const useAuth = defineStore('authStore', {
       }
       catch (error) {
         console.error('账号登录错误:', error)
+        throw error
+      }
+    },
+    // 退出登录
+    async exit() {
+      try {
+        const { data } = await https.post('/auth/logout', null)
+        if (data.value?.code === HttpCode.SUCCESS) {
+          await navigateTo('/login', { replace: true, redirectCode: 200 })
+        }
+        return true
+      }
+      catch (error) {
+        console.error('退出登录错误:', error)
         throw error
       }
     },
