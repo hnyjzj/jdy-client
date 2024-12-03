@@ -5,6 +5,7 @@ interface WorkBench {
   path: string
   children?: WorkBench[]
   parent_id: string
+  icon: string
 }
 
 interface WorkBenchReq {

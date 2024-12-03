@@ -72,11 +72,17 @@ const addBench = (id: string) => {
   show.value = true
   params.value.parent_id = id
 }
-const updateBench = (id: string, parent_id: string) => {
+const updateBench = (bench: WorkBench) => {
   submitStatus.value = 'update'
   show.value = true
-  params.value.id = id
-  params.value.parent_id = parent_id
+  params.value.id = bench.id
+  params.value.parent_id = bench.parent_id
+  if (bench.title)
+    params.value.title = bench.title
+  if (bench.icon)
+    params.value.icon = bench.icon
+  if (bench.path)
+    params.value.path = bench.path
 }
 
 // 删除工作台

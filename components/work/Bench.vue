@@ -6,7 +6,7 @@ const props = defineProps<{
 const emits = defineEmits<{
   add: [id: string]
   del: [id: string]
-  update: [id: string, parent_id: string]
+  update: [bench: WorkBench]
   fold: [id: string]
 }>()
 
@@ -16,8 +16,8 @@ function addBench(id: string) {
   emits('add', id)
 }
 
-function updateBench(id: string, parent_id: string) {
-  emits('update', id, parent_id)
+function updateBench(bench: WorkBench) {
+  emits('update', bench)
 }
 
 function delBench(id: string) {
@@ -40,7 +40,7 @@ function fold(id: string) {
             </div>
             <template v-if="isSetup">
               <div class="flex items-center">
-                <button style="all: unset;" @click="updateBench(work.id, work.parent_id)">
+                <button style="all: unset;" @click="updateBench(work)">
                   <div class="flex items-center cursor-pointer">
                     <icon name="i-svg:edit" size="12px" color="#3970F3" />
                     <div class="text-[12px] text-[#3970F3] pl-1">
@@ -98,7 +98,7 @@ function fold(id: string) {
                       </div>
                       <template v-if="isSetup">
                         <div class="flex items-center">
-                          <button style="all: unset;" @click="updateBench(child.id, child.parent_id)">
+                          <button style="all: unset;" @click="updateBench(child)">
                             <div class="flex items-center cursor-pointer">
                               <icon name="i-svg:edit" size="12px" color="#3970F3" />
                               <div class="text-[12px] text-[#3970F3] pl-1">
