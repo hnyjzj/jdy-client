@@ -61,7 +61,7 @@ function fold(id: string) {
               </div>
             </template>
             <template v-else>
-              <div class="flex items-center" @click="fold(work.id)">
+              <div class="flex items-center cursor-pointer" @click="fold(work.id)">
                 <template v-if="!foldStatus[work.id]">
                   <div class="horn">
                     点击收起

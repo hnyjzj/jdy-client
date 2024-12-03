@@ -19,7 +19,7 @@ const handleClick = () => {
 
 <template>
   <div
-    class="flex-center-row font-bold text-4 rounded-3xl"
+    class="flex-center-row font-bold text-4 rounded-3xl cursor-pointer"
     :style="{
       color: props.color ? '#3971f3' : '#fff',
       background: props.bgc ? props.bgc : 'linear-gradient(0deg, #6ea6ffbf 11%, #1a6beb)',

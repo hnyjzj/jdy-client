@@ -12,10 +12,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 <template>
   <div class="btn grid-12 offset-2">
-    <button class="btn-left col-span-4 offset-1">
+    <button class="btn-left col-span-4 offset-1 cursor-pointer">
       {{ props.cancelText }}
     </button>
-    <button class="btn-right col-span-6">
+    <button class="btn-right col-span-6 cursor-pointer">
       {{ props.confirmText }}
     </button>
   </div>

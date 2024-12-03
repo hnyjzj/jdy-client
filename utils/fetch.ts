@@ -89,7 +89,7 @@ class Https {
     return headers
   }
 
-  get = async <T, R = undefined>(url: string, body?: R, isToken: boolean = false) => {
+  get = async <T, R = undefined>(url: string, body?: R, isToken: boolean = true) => {
     const options: any = {
       method: 'GET',
       headers: this.createHeaders(isToken),
@@ -100,7 +100,7 @@ class Https {
     return this.fetchApi<T>(url, options)
   }
 
-  post = async <T, R = undefined>(url: string, body?: R, isToken: boolean = false) => {
+  post = async <T, R = undefined>(url: string, body?: R, isToken: boolean = true) => {
     return this.fetchApi<T>(url, {
       method: 'POST',
       headers: this.createHeaders(isToken),
@@ -108,7 +108,7 @@ class Https {
     })
   }
 
-  put = async <T, R = undefined>(url: string, body?: R, isToken: boolean = false) => {
+  put = async <T, R = undefined>(url: string, body?: R, isToken: boolean = true) => {
     return this.fetchApi<T>(url, {
       method: 'PUT',
       headers: this.createHeaders(isToken),
@@ -116,7 +116,7 @@ class Https {
     })
   }
 
-  delete = async <T, R = undefined>(url: string, options?: R, isToken: boolean = false) => {
+  delete = async <T, R = undefined>(url: string, options?: R, isToken: boolean = true) => {
     return this.fetchApi<T>(url, {
       method: 'DELETE',
       headers: this.createHeaders(isToken),

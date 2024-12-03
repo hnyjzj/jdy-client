@@ -7,13 +7,13 @@ const subsearch = () => {
 
 <template>
   <div>
-    <div class="py-[6px] px-[12px] bg-[#FFFFFF66] border-rd-full text-size-[20px]  shadow-lg grid-12">
-      <div class="col-1">
+    <div class="px-[12px] bg-[#FFFFFF66] border-rd-full text-size-[20px] shadow-lg flex items-center">
+      <div class=" left-[10px] top-[6px]">
         <van-icon name="search" />
       </div>
-      <div class="text-size-[14px] line-height-[20px] col-9 offset-2">
+      <div class="text-size-[14px] line-height-[20px] flex-1">
         <input
-          v-model="searchKey" type="text" class="bg-transparent border-0 placeholder-text-[#fff] w-full" placeholder="搜索"
+          v-model="searchKey" type="text" class="bg-transparent w-full border-0 placeholder-text-[#fff] flex-1 py-[6px] line-height-[24px]" placeholder="搜索"
           @keyup.enter="subsearch()">
       </div>
     </div>

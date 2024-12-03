@@ -46,7 +46,7 @@ const modeFun = () => {
             </div>
             <div
               class="line-height-[20px] color-[#333] dark:color-[#fff]"
-              :class="{ 'text-active': props.text === item.key }">
+              :class="{ 'text-active': props.text === item.key && !mode }">
               {{ item.name }}
             </div>
           </div>

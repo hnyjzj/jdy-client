@@ -13,6 +13,18 @@ const demoList = ref<DemoItem[]>([
   { title: '旧货抵扣', number: 100 },
   { title: '退货金额', number: 100 },
 ])
+
+const actlist = ref<actionList[]>([{
+  icon: 'i-svg:product-target',
+  title: '销售目标',
+}, {
+  icon: 'i-svg:product-neworder',
+  title: '门店任务',
+}, {
+  icon: 'i-svg:product-newuser',
+  title: '新增会员',
+}])
+
 const demoListt = ref<DemoItem[]>([{ title: '销售金额', number: 100 }, { title: '销售金额', number: 100 }, { title: '销售件数', number: 100 }, { title: '旧货抵扣', number: 100 }, { title: '退货金额', number: 100 },
 ])
 </script>
@@ -26,7 +38,7 @@ const demoListt = ref<DemoItem[]>([{ title: '销售金额', number: 100 }, { tit
       <work-card-greet :userinfo="userinfo" />
       <common-dark />
       <work-card-digitalization left-title="今日销售" />
-      <work-card-action />
+      <work-card-action :action-list="actlist" />
       <work-card-information left-title="今日销售" :list="demoList" />
       <work-card-information left-title="销售目标" :list="demoList" />
       <work-card-information left-title="今日销售" :list="demoList" />
