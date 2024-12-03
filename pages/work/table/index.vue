@@ -25,7 +25,7 @@ const rules = ref<Rules<AddWorkbencheReq>>({
   path: [{ message: '跳转地址不能为空', validator: 'required' }],
 })
 // 折叠状态
-const foldStatus = ref<Record<string, boolean>>({})
+const foldType = ref<Record<string, boolean>>({})
 // 是否设置状态
 const isSetup = ref(false)
 // 提交表单时状态
@@ -42,6 +42,18 @@ const resetForm = () => {
   show.value = false
 }
 
+const foldStatus = useState('allFold', () => {
+  return foldType.value
+})
+
+// 初始化折叠状态
+const initFold = () => {
+  workBenchList.value.forEach((item: WorkBench) => {
+    if (!(item.id in foldStatus.value)) {
+      foldStatus.value[item.id] = false
+    }
+  })
+}
 // 打开所有工作台
 const allFold = () => {
   workBenchList.value.forEach((item: WorkBench) => {
@@ -94,7 +106,7 @@ const set = () => {
 // 页面显示时获取工作台列表
 usePageShow(() => {
   getWorkbenchList()
-  allFold()
+  initFold()
 })
 
 // 新增/更新工作台
