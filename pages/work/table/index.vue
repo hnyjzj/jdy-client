@@ -89,7 +89,7 @@ const delBench = async (id: string) => {
     const data = await delWorkbench(id)
     if (data.code === 200) {
       await getWorkbenchList()
-      $toast.primary('删除成功')
+      $toast.success('删除成功')
     }
   }
   catch (error) {
@@ -116,7 +116,7 @@ async function submit(val: AddWorkbencheReq) {
   if (res.code === 200) {
     resetForm()
     await getWorkbenchList()
-    return $toast.primary('操作成功')
+    return $toast.success('操作成功')
   }
   $toast.error(res?.message || '操作失败')
 }
