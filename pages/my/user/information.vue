@@ -80,7 +80,7 @@ const beforeRead = (file: any) => {
 }
 
 const submitForm = () => {
-  console.log(userinfoForm.value)
+//   console.log(userinfoForm.value)
 }
 
 const otherAuth = async (data: string) => {
