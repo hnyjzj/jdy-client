@@ -2,8 +2,13 @@
 import type { Rules } from 'common-form'
 
 definePageMeta({ layout: 'solid' })
+const { getUserInfo } = useUser()
+// 获取用户信息
+await getUserInfo()
 const { userinfo } = storeToRefs(useUser())
 const { getOauthUri } = useAuth()
+const { $toast } = useNuxtApp()
+const staff = useStaff()
 // 头像列表
 const fileList = ref<fileListArr[]>([])
 // 其他授权方式列表
@@ -11,13 +16,14 @@ const otherList = ref<{ name: string, icon: string }[]>([])
 // 上传参数
 const userinfoForm = ref<FormReq>({
   avatar: '',
+  username: '',
   nickname: '',
   phone: '',
   email: '',
   gender: 0,
   password: '',
 })
-
+// 初始化数据 给表单赋值 userinfoForm
 const { avatar, nickname, phone, email, gender } = userinfo.value
 userinfoForm.value = {
   ...userinfoForm.value, // 保留原有的所有字段
@@ -35,59 +41,84 @@ const rules = ref<Rules<FormReq>>({
       validator: 'required',
     },
   ],
-  phone: [
-    {
-      message: '手机号不能为空',
-      validator: 'required',
-    },
-  ],
   email: [
     {
       message: '邮箱不能为空',
       validator: 'required',
     },
   ],
-  password: [
-    {
-      message: '密码不能为空',
-      validator: 'required',
-    },
-  ],
 
 })
-fileList.value.push({ url: avatar })
+// 初始化头像
+fileList.value = [{ url: ImageUrl(avatar), isImage: true }]
 
-if (import.meta.client) {
+onMounted(() => {
+  // 其他授权方式 判断是否有微信企业微信授权
   if ((isWxWorkClient() || isWeChatClient())) {
     otherList.value.push({
       name: 'wxwork',
       icon: 'i-svg:qwicon',
     })
   }
-}
-
-// 上传文件
-const afterRead = () => {
-
-}
+})
+// 上传前
 const beforeRead = (file: any) => {
   // 验证文件类型
   if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
     showToast('请上传 jpg 格式图片')
     return false
   }
+
   return true
 }
-
-const submitForm = () => {
-//   console.log(userinfoForm.value)
+// 上传文件后
+const afterRead = async (file: any) => {
+  // 上传文件接口
+  const res = await staff.uploadAvatar({ avatar: file.file })
+  if (res.data.value.code !== HttpCode.SUCCESS) {
+    $toast.error(res.data.value?.message || '上传失败')
+  }
+  userinfoForm.value.avatar = res.data.value.data.url
+  fileList.value = [{ url: ImageUrl(res.data.value.data.url), isImage: true }]
 }
 
+/**
+ * 异步函数：提交表单
+ * 本函数用于更新用户信息通过调用后端API
+ */
+const submitForm = async () => {
+  // 发起更新用户信息的请求
+  const res = await staff.updateStaff({ platform: 'account', account: userinfoForm.value })
+
+  // 根据响应结果判断更新是否成功
+  if (res.code === HttpCode.SUCCESS) {
+    // 更新成功时，显示成功提示信息
+    $toast.success('更新成功')
+  }
+}
+
+/**
+ * 执行其他第三方认证
+ *
+ * 此函数根据传入的认证类型字符串，执行相应的第三方认证流程
+ * 它特别处理了微信企业号（wxwork）的认证流程
+ *
+ * @param {string} data - 第三方认证类型标识符，例如'wxwork'表示微信企业号
+ */
 const otherAuth = async (data: string) => {
+  // 当认证类型为微信企业号时
   if (data === 'wxwork') {
+    // 获取当前路由信息
     const route = useRoute()
+    // 调用获取OAuth URI的函数，准备进行微信企业号认证
+    // 第一个参数是当前路由的路径，第二个参数是认证成功后的重定向路径
     await getOauthUri(route.path || '', '/my/user/oauth')
   }
+}
+// 删除头像
+const deleteAvatar = () => {
+  fileList.value = []
+  userinfoForm.value.avatar = ''
 }
 </script>
 
@@ -99,7 +130,7 @@ const otherAuth = async (data: string) => {
           v-model="fileList" multiple :after-read="afterRead" :before-read="beforeRead" max-count="1" :style="{
             '--van-uploader-border-radius': '50%',
             '--van-uploader-upload-background': 'white',
-          }" :preview-options="{ closeable: true }" />
+          }" :preview-options="{ closeable: true }" @delete="deleteAvatar" />
         <div class="py-[8px] color-[#666]">
           上传头像
         </div>
@@ -145,27 +176,19 @@ const otherAuth = async (data: string) => {
                 </div>
               </div>
             </template>
-            <template #phone="{ error, validate }">
+            <template #phone>
               <div class="items">
                 <div>手机号</div>
-                <input v-model="userinfoForm.phone" type="text" class="text-right border-none color-black py-[10px]" placeholder="请输入" @change="validate()">
-              </div>
-              <template v-if="error">
-                <div class="error">
-                  {{ error }}
+                <div class="color-black ">
+                  {{ userinfoForm.phone }}
                 </div>
-              </template>
+              </div>
             </template>
-            <template #password="{ error, validate }">
+            <template #password>
               <div class="items ">
                 <div>密码</div>
-                <input v-model="userinfoForm.password" type="text" class="text-right border-none color-black py-[10px]" placeholder="请输入" @change="validate()">
+                <input v-model="userinfoForm.password" type="text" class="text-right border-none color-black py-[10px]" placeholder="请输入密码">
               </div>
-              <template v-if="error">
-                <div class="error">
-                  {{ error }}
-                </div>
-              </template>
             </template>
             <template #actions="{ submit }">
               <div class="py-[32px] col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
@@ -178,7 +201,6 @@ const otherAuth = async (data: string) => {
         </div>
       </div>
     </div>
-
     <template v-if="otherList.length">
       <login-other text="其他授权方式" :list="otherList" @other="otherAuth" />
     </template>
@@ -196,6 +218,9 @@ const otherAuth = async (data: string) => {
   --uno: 'color-[red] text-size-[14px] line-height-[20px] mt-10px';
 }
 ::v-deep .van-uploader__upload {
+  margin: 0;
+}
+::v-deep .van-uploader__preview {
   margin: 0;
 }
 </style>

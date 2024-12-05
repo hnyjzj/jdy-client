@@ -29,7 +29,7 @@ interface addStaffAccount {
   password: string
   avatar: string
   email: string
-  gender: string
+  gender: number
 }
 /**
  * 添加员工返回
@@ -46,11 +46,11 @@ interface updateStaffReq {
 }
 
 interface updateStaffRes {
-  code: number
-  message: string
+
 }
 
 interface FormReq {
+  username: string
   avatar: string
   nickname: string
   phone: string
@@ -60,4 +60,12 @@ interface FormReq {
 }
 interface fileListArr {
   url: string
+  isImage: true
+}
+
+interface uploadFileRes {
+  url: string
+}
+interface uploadFileReq {
+  avatar: File | undefined
 }

@@ -32,6 +32,10 @@ export const useStaff = defineStore('staffStore', {
         throw error
       }
     },
+    async uploadAvatar(req: uploadFileReq) {
+      return await https.upload<uploadFileRes, uploadFileReq>('/upload/avatar', req)
+    },
+
   },
 
 })

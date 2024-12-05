@@ -26,7 +26,7 @@ export const useAuth = defineStore('authStore', {
         const { data } = await https.post<OAuthRes, OAuthReq>('/platform/oauth', { uri, platform: 'wxwork' }, false)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.redirect = data.value.data.redirect_url
-          window.location.href = data.value.data.redirect_url
+          navigateTo(data.value.data.redirect_url, { external: true, replace: true, redirectCode: 200 })
         }
 
         return data.value
