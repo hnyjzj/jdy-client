@@ -123,12 +123,8 @@ class Https {
     const formData = new FormData()
 
     for (const [key, value] of Object.entries(body || {})) {
-      console.log(key, value)
-
       formData.append(key, value as Blob)
     }
-
-    console.log(formData, 'formData')
 
     return this.fetchApi<T>(url, {
       method: 'POST',
