@@ -23,6 +23,7 @@ const userinfoForm = ref<FormReq>({
   gender: 0,
   password: '',
 })
+const againPass = ref('')
 // 初始化数据 给表单赋值 userinfoForm
 const { avatar, nickname, phone, email, gender } = userinfo.value
 userinfoForm.value = {
@@ -87,6 +88,19 @@ const afterRead = async (file: any) => {
  * 本函数用于更新用户信息通过调用后端API
  */
 const submitForm = async () => {
+  // 判断两个密码是否一样
+// 如果密码输入了并且 两次密码不一致
+  // 则提示两次密码不一致
+  if (userinfoForm.value.password && (againPass.value !== userinfoForm.value.password)) {
+    // 如果没输入 确认密码
+    if (!againPass.value) {
+      $toast.error('请输入确认密码')
+      return false
+    }
+    $toast.error('两次密码不一致')
+    return false
+  }
+
   // 发起更新用户信息的请求
   const res = await staff.updateStaff({ platform: 'account', account: userinfoForm.value })
 
@@ -94,6 +108,7 @@ const submitForm = async () => {
   if (res.code === HttpCode.SUCCESS) {
     // 更新成功时，显示成功提示信息
     $toast.success('更新成功')
+    await getUserInfo()
   }
 }
 
@@ -166,6 +181,11 @@ const deleteAvatar = () => {
                 <div>性别</div>
                 <div class="py-[9px]">
                   <van-radio-group v-model="userinfoForm.gender" direction="horizontal">
+                    <template v-if="userinfo.gender === 0">
+                      <van-radio :name="0">
+                        保密
+                      </van-radio>
+                    </template>
                     <van-radio :name="1">
                       男
                     </van-radio>
@@ -179,7 +199,7 @@ const deleteAvatar = () => {
             <template #phone>
               <div class="items">
                 <div>手机号</div>
-                <div class="color-black ">
+                <div class="color-black  py-[10px]">
                   {{ userinfoForm.phone }}
                 </div>
               </div>
@@ -187,9 +207,16 @@ const deleteAvatar = () => {
             <template #password>
               <div class="items ">
                 <div>密码</div>
-                <input v-model="userinfoForm.password" type="text" class="text-right border-none color-black py-[10px]" placeholder="请输入密码">
+                <input v-model="userinfoForm.password" type="password" class="text-right border-none color-black py-[10px]" placeholder="请输入密码">
               </div>
+              <template v-if="userinfoForm.password">
+                <div class="items ">
+                  <div>确认密码</div>
+                  <input v-model="againPass" type="password" class="text-right border-none color-black py-[10px]" placeholder="请确认密码">
+                </div>
+              </template>
             </template>
+
             <template #actions="{ submit }">
               <div class="py-[32px] col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
                 <div class="ok cursor-pointer" @click="submit">
