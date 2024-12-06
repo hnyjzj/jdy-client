@@ -29,6 +29,7 @@ interface addStaffAccount {
   password: string
   avatar: string
   email: string
+  gender: number
 }
 /**
  * 添加员工返回
@@ -36,4 +37,35 @@ interface addStaffAccount {
 interface addStaffRes {
   code: number
   message: string
+}
+
+interface updateStaffReq {
+  platform: 'account' | 'wxwork'
+  account?: addStaffAccount
+  wxwork?: { code: string }
+}
+
+interface updateStaffRes {
+
+}
+
+interface FormReq {
+  username: string
+  avatar: string
+  nickname: string
+  phone: string
+  email: string
+  gender: number
+  password: string
+}
+interface fileListArr {
+  url: string
+  isImage: true
+}
+
+interface uploadFileRes {
+  url: string
+}
+interface uploadFileReq {
+  avatar: File | undefined
 }

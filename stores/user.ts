@@ -19,6 +19,7 @@ export const useUser = defineStore('userStore', {
 
       return true
     },
+
   },
   persist: {
     storage: piniaPluginPersistedstate.cookies(),

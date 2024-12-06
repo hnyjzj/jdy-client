@@ -64,9 +64,11 @@ class Https {
     }
   }
 
-  createHeaders = (isToken: boolean): HeadersInit => {
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
+  createHeaders = (isToken: boolean, isJson: boolean = true): HeadersInit => {
+    const headers: HeadersInit = {}
+
+    if (isJson) {
+      headers['Content-Type'] = 'application/json'
     }
 
     if (isToken) {
@@ -113,6 +115,21 @@ class Https {
       method: 'PUT',
       headers: this.createHeaders(isToken),
       body: JSON.stringify(body),
+    })
+  }
+
+  upload = async <T, R = undefined>(url: string, body?: R, isToken: boolean = true) => {
+    // 创建一个新的 FormData 对象
+    const formData = new FormData()
+
+    for (const [key, value] of Object.entries(body || {})) {
+      formData.append(key, value as Blob)
+    }
+
+    return this.fetchApi<T>(url, {
+      method: 'POST',
+      headers: this.createHeaders(isToken, false),
+      body: formData,
     })
   }
 
