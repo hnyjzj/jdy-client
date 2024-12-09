@@ -150,8 +150,18 @@ const beforeRead = (file: any) => {
 }
 
 const afterRead = async (file: any) => {
-  const res = await uploadIcon({ image: file.file })
-  params.value.icon = res.data.value.data.url
+  try {
+    const res = await uploadIcon({ image: file.file })
+    if (res.data?.value?.data?.url) {
+      params.value.icon = res.data.value.data.url
+    }
+    else {
+      $toast.error('上传失败')
+    }
+  }
+  catch (error) {
+    throw new Error(`更新工作台失败: ${error || '未知错误'}`)
+  }
 }
 </script>
 

@@ -71,6 +71,6 @@ interface DelBenchRes {
   code: number
 }
 
-interface uploadBencheReq {
-  image: File | undefined
+interface UploadBencheReq {
+  image: File
 }
