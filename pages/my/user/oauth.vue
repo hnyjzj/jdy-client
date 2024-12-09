@@ -15,8 +15,6 @@ const content = ref<{
 onMounted(async () => {
   await nextTick()
   const code = route.query?.code as string
-  const state = route.query?.state as string
-  console.log(state)
 
   const redirect_url = route.query?.redirect_url as string
   if (code) {
