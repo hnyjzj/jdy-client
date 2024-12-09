@@ -16,13 +16,8 @@ let id = items.value.length + 1
 const { $toast } = useNuxtApp()
 
 const insertItem = () => {
-  if (items.value.length >= 3) {
-    $toast.success('11111111')
-    $toast.primary('22222222')
-    $toast.error('333333333')
-    $toast.warning('44444444444')
-    $toast.default('44444444444')
-    $toast.show({ message: '11111111' })
+  if (items.value.length >= 11) {
+    $toast.warning('最多添加11种支付方式')
     return
   }
   // 添加新的支付信息栏并初始化状态
@@ -67,7 +62,9 @@ function removeItem(item: { id: number }) {
         </div>
       </div>
       <div class="flex flex-col gap-[8px] pt-[8px]">
-        <label for="remark color-[#333] dark:color-[#fff]">备注信息</label>
+        <div class="font-size-[16px] font-bold color-[#333] dark:color-[#fff]">
+          备注信息
+        </div>
         <textarea
           id="remark" name="remark"
           class="remark"

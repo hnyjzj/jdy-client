@@ -10,10 +10,18 @@ const router = useRouter()
 const HINT_TEXT = '返回上一页'
 
 const jumpTo = () => {
-  if (router.currentRoute.value.path !== '/') {
-    router.back()
+  try {
+    if (router.currentRoute.value.path !== '/') {
+      if (window.history.length > 1) {
+        router.back()
+      }
+      else {
+        router.push('/')
+      }
+    }
   }
-  else {
+  catch (e) {
+    console.error('导航出错了！', e)
     router.push('/')
   }
 }

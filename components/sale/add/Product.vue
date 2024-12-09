@@ -11,15 +11,15 @@ const handleClick = async () => {
     <div class="p-[16px]">
       <div class="btn grid-12 gap-[20px]">
         <div class="btn-left col-span-4 offset-2">
-          <icon name="jdy:search" size="12" />
-          <div class="ml-2" @click="handleClick()">
+          <icon name="i-icon:search" color="#fff" :size="12" />
+          <div class="ml-2" @click="handleClick">
             搜商品
           </div>
         </div>
         <div
           class="btn-right col-span-4"
         >
-          <icon name="jdy:scanit" size="12" />
+          <icon name="i-icon:scanit" color="#1a6beb" :size="12" />
           <div class="ml-2">
             扫商品
           </div>
@@ -35,8 +35,7 @@ const handleClick = async () => {
   background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
 }
 .btn-right {
-  --uno: 'text-[16px] py-[8px] text-[#1a6beb] rounded-[36px] bg-[transparent] flex justify-center items-center';
-  border: 1px solid #1a6beb;
+  --uno: 'text-[16px] py-[8px] text-[#1a6beb] rounded-[36px] bg-[transparent] flex justify-center items-center border-[1px] border-solid border-[#1a6beb]';
 }
 .product {
   --uno: 'w-[150px] h-[150px] rounded-[50%] relative';

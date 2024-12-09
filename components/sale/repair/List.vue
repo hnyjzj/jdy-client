@@ -43,17 +43,17 @@ const handleClick = () => {
               </div>
             </div>
           </template>
-          <div class="footer">
-            <div class="info font-semibold" @click="handleCancel">
-              撤销
+          <div class="footer gap-[40px]" uno-lg="gap-[48px]">
+            <div class="flex flex-row gap-[24px]">
+              <div class="accidental" @click="handleCancel">
+                撤销
+              </div>
+              <div class="accidental" @click="handleSign">
+                标记
+              </div>
             </div>
-            <div class="bg-[#E6E6E8] w-[1px] h-100%" />
-            <div class="info font-semibold" @click="handleSign">
-              标记
-            </div>
-            <div class="bg-[#E6E6E8] w-[1px] h-100%" />
-            <div class="info font-semibold" @click="handleClick">
-              详情
+            <div class="flex-end">
+              <common-button-irregular text="详情" @click="handleClick" />
             </div>
           </div>
         </template>
@@ -64,7 +64,11 @@ const handleClick = () => {
 
 <style scoped lang="scss">
 .footer {
-  --uno: 'grid grid-cols-5 gap-[12px] justify-items-center bg-[#F3F5FE] rounded-b-[24px] px-[40px] py-[8px] dark:bg-[rgba(243,245,254,0.1)]';
+  --uno: 'flex-end justify-items-center bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]';
+
+  .accidental {
+    --uno: 'color-[#3971F3] font-semibold font-size-[14px] dark:color-[#fff]';
+  }
 }
 .info {
   --uno: 'flex flex-col justify-items-center gap-[12px] px-[16px] text-nowrap color-[#3971F3] text-size-[14px] dark:color-[#fff]';
