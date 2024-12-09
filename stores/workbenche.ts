@@ -46,5 +46,8 @@ export const useWorkbenche = defineStore('workbencheStore', {
         throw new Error(`更新工作台失败: ${error || '未知错误'}`)
       }
     },
+    async uploadIcon(req: uploadBencheReq) {
+      return await https.upload<uploadFileRes, uploadBencheReq>('/upload/workbench', req)
+    },
   },
 })

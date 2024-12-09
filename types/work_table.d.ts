@@ -70,3 +70,7 @@ interface DelBenchRes {
   data: WorkBench[]
   code: number
 }
+
+interface uploadBencheReq {
+  image: File | undefined
+}
