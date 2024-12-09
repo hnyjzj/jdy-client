@@ -4,6 +4,7 @@ useSeoMeta({
 })
 const { userinfo } = storeToRefs(useUser())
 const { getUserInfo } = useUser()
+const { exit } = useAuth()
 usePageShow(() => {
   getUserInfo()
 })
@@ -20,6 +21,10 @@ const optionsList = ref<UserOpts[]>([{
   optName: '问题反馈',
   link: '/my/user/information',
 }])
+
+const Logout = () => {
+  exit()
+}
 </script>
 
 <template>
@@ -27,7 +32,7 @@ const optionsList = ref<UserOpts[]>([{
     <div class="grid-12">
       <div class="col-12" uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
         <div class="px-[16px] py-[24px]">
-          <my-user-userinfo :userinfo="userinfo" />
+          <my-user-userinfo :userinfo="userinfo" @logout="Logout()" />
         </div>
         <div class="px-[16px] ">
           <my-user-option :opt-list="optionsList" />

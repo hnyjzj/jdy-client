@@ -2,17 +2,21 @@
 const porps = defineProps<{
   userinfo: UserInfo
 }>()
+
+const emit = defineEmits<{
+  logout: []
+}>()
 </script>
 
 <template>
-  <div class="color-[#fff]">
+  <div class="color-[#fff] flex-between">
     <div class="flex-start ">
       <div class="cursor-pointer">
         <template v-if="!porps.userinfo?.avatar">
           <icon name="i-svg:avatar" size="68" />
         </template>
         <template v-else>
-          <nuxt-img :src="porps.userinfo?.avatar" class="wh-[68px] rounded-full" />
+          <nuxt-img :src="ImageUrl(porps.userinfo?.avatar)" class="wh-[68px] rounded-full" />
         </template>
       </div>
       <div class="ml-[8px] cursor-pointer">
@@ -23,6 +27,9 @@ const porps = defineProps<{
           {{ porps.userinfo?.phone || '' }}
         </div>
       </div>
+    </div>
+    <div class="cursor-pointer" @click="emit('logout')">
+      <icon name="i-svg:logout" size="32" />
     </div>
   </div>
 </template>
