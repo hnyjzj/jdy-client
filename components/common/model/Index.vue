@@ -36,11 +36,11 @@ function close() {
         <div class="box">
           <slot />
           <div class="flex-between">
-            <div :class="[props.showOk ? 'cancel-btn' : 'ok']" :style="{ marginRight: props.showOk ? '10px' : '0' }" @click="close">
+            <div class="cursor-pointer" :class="[props.showOk ? 'cancel-btn' : 'ok']" :style="{ marginRight: props.showOk ? '10px' : '0' }" @click="close">
               取消
             </div>
             <template v-if="showOk">
-              <div class="ok" @click="emits('confirm')">
+              <div class="ok cursor-pointer" @click="emits('confirm')">
                 确定
               </div>
             </template>
