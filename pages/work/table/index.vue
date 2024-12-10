@@ -166,39 +166,41 @@ const afterRead = async (file: any) => {
 </script>
 
 <template>
-  <div class="flex flex-col">
-    <div class="color-[#fff] grid-12 px-[16px] py-[12px]">
-      <div class="col-4" uno-sm="col-3 offset-1" uno-lg="col-2 offset-2" uno-xl="col-1 offset-3">
-        <product-manage-company />
-      </div>
-      <div class="col-6 offset-4 px-1" uno-sm="col-6 offset-4" uno-lg="col-5 offset-4" uno-xl="col-4 offset-4">
-        <product-filter-search />
-      </div>
-      <div
-        class="col-2 offset-10 flex items-center justify-end cursor-pointer" uno-sm="col-1 offset-10" uno-lg="col-1 offset-9" uno-xl="col-1 offset-8"
-        @click="set">
-        <icon name="i-svg:setup" size="14" color="#FFF" />
-        <div class="text-[#fff] text-[14px] pl-1">
-          {{ isSetup ? '退出' : '编辑' }}
+  <div>
+    <common-layout-center>
+      <div class="color-[#fff] px-[16px] pt-[12px] flex justify-between">
+        <div>
+          <product-manage-company />
+        </div>
+        <div class="flex-1 px-2 sm:px-4">
+          <product-filter-search />
+        </div>
+        <div
+          class="flex items-center justify-end cursor-pointer"
+          @click="set">
+          <icon name="i-svg:setup" size="14" color="#FFF" />
+          <div class="text-[#fff] text-[14px] pl-1">
+            {{ isSetup ? '退出' : '编辑' }}
+          </div>
         </div>
       </div>
-    </div>
-    <div class="grid-12 px-[16px]">
-      <!-- 工作台入口 -->
-      <div class="mt-6 mb-14 col-12" uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
-        <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="delBench" @update="updateBench" @fold="fold" />
-        <template v-if="isSetup">
-          <button style="all: unset;">
-            <div class="flex items-center mb-4 cursor-pointer" @click="resetForm(true);show = true">
-              <icon name="i-icon:addsth" size="26px" color="#000" />
-              <div class="text-[14px] text-[#000] pl-1">
-                添加模块
+      <div class="px-[16px]">
+        <!-- 工作台入口 -->
+        <div class="mt-6 mb-14 col-12">
+          <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="delBench" @update="updateBench" @fold="fold" />
+          <template v-if="isSetup">
+            <button style="all: unset;">
+              <div class="flex items-center mb-4 cursor-pointer" @click="resetForm(true);show = true">
+                <icon name="i-icon:addsth" size="26px" color="#000" />
+                <div class="text-[14px] text-[#000] pl-1">
+                  添加模块
+                </div>
               </div>
-            </div>
-          </button>
-        </template>
+            </button>
+          </template>
+        </div>
       </div>
-    </div>
+    </common-layout-center>
     <common-model v-model:model-value="show" title="新增" :show-ok="true" @confirm="() => addWorkbenchform?.submit()">
       <div class="py-[16px]">
         <common-form ref="addWorkbenchform" v-model="params" :rules="rules" @submit="(val) => submit(val)">
