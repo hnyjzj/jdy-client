@@ -52,13 +52,13 @@ interface AddWorkbencheReq {
    */
   title: string
   /**
-   * 图标
-   */
-  icon: string
-  /**
    * 路径
    */
   path: string
+  /**
+   * 图标
+   */
+  icon: string
   /**
    * 父级ID
    */

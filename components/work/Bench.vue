@@ -124,7 +124,7 @@ function fold(id: string) {
                       <template v-for="son in child.children" :key="son.id">
                         <div class="flex items-center cursor-pointer">
                           <div class="relative">
-                            <template v-if="/\.(png|jpg)$/i.test(son.icon)">
+                            <template v-if="son?.icon">
                               <nuxt-img :src="ImageUrl(son.icon)" class="w-[32px] h-[32px]" @click="jump(son.path)" />
                             </template>
                             <template v-else>

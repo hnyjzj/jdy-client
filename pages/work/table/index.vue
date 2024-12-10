@@ -16,12 +16,11 @@ const show = ref(false)
 const params = ref<AddWorkbencheReq>({
   parent_id: undefined,
   title: '',
-  icon: '',
   path: '',
+  icon: '',
 })
 const rules = ref<Rules<AddWorkbencheReq>>({
   title: [{ message: '标题不能为空', validator: 'required' }],
-  icon: [{ message: '图标不能为空', validator: 'required' }],
   path: [{ message: '跳转地址不能为空', validator: 'required' }],
 })
 // 折叠状态
@@ -38,8 +37,8 @@ const resetForm = (isshow: boolean = false) => {
   params.value = {
     parent_id: undefined,
     title: '',
-    icon: '',
     path: '',
+    icon: '',
   }
   show.value = isshow
   fileList.value = []
