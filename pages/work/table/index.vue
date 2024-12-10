@@ -203,11 +203,14 @@ const afterRead = async (file: any) => {
     <common-model v-model:model-value="show" title="新增" :show-ok="true" @confirm="() => addWorkbenchform?.submit()">
       <div class="py-[16px]">
         <common-form ref="addWorkbenchform" v-model="params" :rules="rules" @submit="(val) => submit(val)">
-          <template #title="{ label }">
+          <template #title="{ label, error }">
             <div class="pb-[16px]">
               <div class="add-row">
                 <div>标题</div>
                 <input v-model="params[label]" type="text" class="border-none bg-transparent" placeholder="输入标题">
+                <div class="text-[#FF2F2F] text-[12px] pt-2">
+                  {{ error }}
+                </div>
               </div>
             </div>
           </template>
@@ -226,11 +229,14 @@ const afterRead = async (file: any) => {
               </div>
             </div>
           </template>
-          <template #path="{ label }">
+          <template #path="{ label, error }">
             <div class="pb-[16px]">
               <div class="add-row">
                 <div>跳转地址</div>
                 <input v-model="params[label]" type="text" class="border-none bg-transparent" placeholder="输入跳转地址">
+                <div class="text-[#FF2F2F] text-[12px] pt-2">
+                  {{ error }}
+                </div>
               </div>
             </div>
           </template>
