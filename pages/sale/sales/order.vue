@@ -27,12 +27,6 @@ const list = ref([
     value: '0.00',
   },
 ])
-
-const isFold = ref(true)
-
-const toggleFold = () => {
-  isFold.value = !isFold.value
-}
 </script>
 
 <template>
@@ -42,7 +36,7 @@ const toggleFold = () => {
       <!-- 切换 -->
       <div class="nav">
         <template v-for="(item, index) in nav" :key="index">
-          <div class="nav-item" :class="{ active: index === selectNav }" @click="changeNav(index)">
+          <div class="nav-item cursor-pointer" :class="{ active: index === selectNav }" @click="changeNav(index)">
             {{ item }}
           </div>
         </template>
@@ -50,18 +44,12 @@ const toggleFold = () => {
       <!-- 产品信息 -->
       <div class="info">
         <!-- header -->
-        <common-header-gradient title="产品信息(3)">
-          <div @click="toggleFold()">
-            <van-icon :name="!isFold ? 'arrow' : 'arrow-down'" size="14" />
-          </div>
-        </common-header-gradient>
-        <!-- info -->
-        <template v-if="isFold">
-          <div class="flex flex-col gap-[12px] px-[16px] py-[16px]">
-            <!-- 成品 -->
+        <common-gradient title="产品信息(3)" theme="gradient" :italic="true">
+          <template #body>
+            <!-- info -->
             <sale-order-product />
-          </div>
-        </template>
+          </template>
+        </common-gradient>
       </div>
       <!-- 结算信息 -->
       <sale-add-card title="结算信息" :list="list">

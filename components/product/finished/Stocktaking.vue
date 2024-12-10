@@ -99,132 +99,135 @@ const active = computed(() => {
   <div class="grid-12">
     <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
       <div class="rounded-6 bg-white w-auto top">
-        <common-header-gradient title="基础信息" />
-        <div class="flex flex-col gap-4 px-4 py-4">
-          <div class="operation-information flex flex-col gap-1">
-            <div class="part">
-              <div class="left">
-                盘点人
+        <common-gradient title="基础信息">
+          <template #body>
+            <div class="flex flex-col gap-4">
+              <div class="operation-information flex flex-col gap-1">
+                <div class="part">
+                  <div class="left">
+                    盘点人
+                  </div>
+                  <div class="right">
+                    {{ props.sheet.operator }}
+                  </div>
+                </div>
+                <div class="part">
+                  <div class="left">
+                    监盘人
+                  </div>
+                  <div class="right">
+                    {{ props.sheet.supervisor }}
+                  </div>
+                </div>
+                <div class="part">
+                  <div class="left">
+                    盘点单号
+                  </div>
+                  <div class="right">
+                    {{ props.sheet.num }}
+                  </div>
+                </div>
               </div>
-              <div class="right">
-                {{ props.sheet.operator }}
+              <div class="h-0.5 bg-[#E6E6E8]" />
+              <div class="other-information flex flex-col gap-1">
+                <div class="part">
+                  <div class="left">
+                    盘点品牌
+                  </div>
+                  <div class="right">
+                    {{ props.sheet.brand }}
+                  </div>
+                </div>
+                <div class="part">
+                  <div class="left">
+                    盘点仓库
+                  </div>
+                  <div class="right">
+                    {{ props.sheet.wareHouse }}
+                  </div>
+                </div>
+                <div class="part">
+                  <div class="left">
+                    备注
+                  </div>
+                  <div class="right">
+                    {{ props.sheet.remark || '无' }}
+                  </div>
+                </div>
+                <div class="part">
+                  <div class="left">
+                    状态
+                  </div>
+                  <div class="right">
+                    <common-tags type="lake" :text="statusDesc[props.sheet.inventoryStatus]" />
+                  </div>
+                </div>
+              </div>
+              <div class="h-0.5 bg-[#E6E6E8]" />
+              <div class="product-information flex flex-col gap-1">
+                <div class="part">
+                  <div class="left">
+                    盘点范围
+                  </div>
+                  <div class="right">
+                    {{ props.sheet.scope }}
+                  </div>
+                </div>
+                <div class="part">
+                  <div class="left">
+                    大类
+                  </div>
+                  <div class="right">
+                    {{ props.sheet.category }}
+                  </div>
+                </div>
+                <div class="part">
+                  <div class="left">
+                    品类
+                  </div>
+                  <div class="right">
+                    {{ props.sheet.refinement }}
+                  </div>
+                </div>
+                <div class="part">
+                  <div class="left">
+                    工艺
+                  </div>
+                  <div class="right">
+                    {{ props.sheet.technique || '' }}
+                  </div>
+                </div>
+              </div>
+              <div class="h-0.5 bg-[#E6E6E8]" />
+              <div class="product-information flex flex-col gap-1">
+                <div class="part">
+                  <div class="left">
+                    总件数
+                  </div>
+                  <div class="right">
+                    {{ props.sheet.totalCount }}
+                  </div>
+                </div>
+                <div class="part">
+                  <div class="left">
+                    总金重
+                  </div>
+                  <div class="right">
+                    {{ props.sheet.totalWeight }}
+                  </div>
+                </div>
+                <div class="part">
+                  <div class="left">
+                    总标价
+                  </div>
+                  <div class="right">
+                    {{ props.sheet.totalPrice }}
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="part">
-              <div class="left">
-                监盘人
-              </div>
-              <div class="right">
-                {{ props.sheet.supervisor }}
-              </div>
-            </div>
-            <div class="part">
-              <div class="left">
-                盘点单号
-              </div>
-              <div class="right">
-                {{ props.sheet.num }}
-              </div>
-            </div>
-          </div>
-          <div class="h-0.5 bg-[#E6E6E8]" />
-          <div class="other-information flex flex-col gap-1">
-            <div class="part">
-              <div class="left">
-                盘点品牌
-              </div>
-              <div class="right">
-                {{ props.sheet.brand }}
-              </div>
-            </div>
-            <div class="part">
-              <div class="left">
-                盘点仓库
-              </div>
-              <div class="right">
-                {{ props.sheet.wareHouse }}
-              </div>
-            </div>
-            <div class="part">
-              <div class="left">
-                备注
-              </div>
-              <div class="right">
-                {{ props.sheet.remark || '无' }}
-              </div>
-            </div>
-            <div class="part">
-              <div class="left">
-                状态
-              </div>
-              <div class="right">
-                <common-tags type="lake" :text="statusDesc[props.sheet.inventoryStatus]" />
-              </div>
-            </div>
-          </div>
-          <div class="h-0.5 bg-[#E6E6E8]" />
-          <div class="product-information flex flex-col gap-1">
-            <div class="part">
-              <div class="left">
-                盘点范围
-              </div>
-              <div class="right">
-                {{ props.sheet.scope }}
-              </div>
-            </div>
-            <div class="part">
-              <div class="left">
-                大类
-              </div>
-              <div class="right">
-                {{ props.sheet.category }}
-              </div>
-            </div>
-            <div class="part">
-              <div class="left">
-                品类
-              </div>
-              <div class="right">
-                {{ props.sheet.refinement }}
-              </div>
-            </div>
-            <div class="part">
-              <div class="left">
-                工艺
-              </div>
-              <div class="right">
-                {{ props.sheet.technique || '' }}
-              </div>
-            </div>
-          </div>
-          <div class="h-0.5 bg-[#E6E6E8]" />
-          <div class="product-information flex flex-col gap-1">
-            <div class="part">
-              <div class="left">
-                总件数
-              </div>
-              <div class="right">
-                {{ props.sheet.totalCount }}
-              </div>
-            </div>
-            <div class="part">
-              <div class="left">
-                总金重
-              </div>
-              <div class="right">
-                {{ props.sheet.totalWeight }}
-              </div>
-            </div>
-            <div class="part">
-              <div class="left">
-                总标价
-              </div>
-              <div class="right">
-                {{ props.sheet.totalPrice }}
-              </div>
-            </div>
-          </div>
-        </div>
+          </template>
+        </common-gradient>
       </div>
       <div class="info flex flex-col gap-4 rounded-6 bg-[#fff] w-auto px-4 py-4">
         <div class="flex flex-col gap-3">

@@ -2,7 +2,6 @@
 // 通用_列表_卡片
 const props = defineProps<{
   title: string
-  info: SalesSlip
   tagText?: string
 }>()
 </script>

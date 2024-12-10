@@ -25,20 +25,25 @@ const show = ref(false)
 <template>
   <div>
     <div class="achievement-rule rounded-[24px] border-solid border-[1px] border-[#EFF0F6] overflow-hidden bg-[#fff]">
-      <common-header-gradient title="业绩计算规则" align-desc="start">
-        <common-help v-model="show" padding="48px">
-          <template v-for="(rule, index) in rules" :key="index">
-            <li class="font-size-[14px] color-[#333333] mb-[12px]">
-              {{ rule.desc }}
-            </li>
-          </template>
-        </common-help>
-      </common-header-gradient>
-      <div class="content grid grid-cols-1 gap-[16px] px-[16px] py-[16px]" uno-lg="grid-cols-2" uno-sm="grid-cols-2">
-        <template v-for="(list, index) in props.lists" :key="index">
-          <finance-achievement-info :data="list" />
+      <common-gradient title="业绩计算规则" align-desc="start">
+        <template #default>
+          <common-help v-model="show" padding="48px">
+            <template v-for="(rule, index) in rules" :key="index">
+              <li class="font-size-[14px] color-[#333333] mb-[12px]">
+                {{ rule.desc }}
+              </li>
+            </template>
+          </common-help>
         </template>
-      </div>
+
+        <template #body>
+          <div class="content grid grid-cols-1 gap-[16px]" uno-lg="grid-cols-2" uno-sm="grid-cols-2">
+            <template v-for="(list, index) in props.lists" :key="index">
+              <finance-achievement-info :data="list" />
+            </template>
+          </div>
+        </template>
+      </common-gradient>
     </div>
   </div>
 </template>
