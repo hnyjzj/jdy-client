@@ -35,10 +35,8 @@ const handleClick = () => {
               </div>
             </div>
           </div>
-          <div class="flex-center-row bg-[#F3F5FE] rounded-b-[24px] px-[16px] py-[8px] dark:bg-[rgba(243,245,254,0.1)]">
-            <div class="info color-[#3971F3] text-size-[14px] font-semibold dark:color-[#fff]" @click="handleClick">
-              查看详情
-            </div>
+          <div class="flex-end bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
+            <common-button-irregular text="查看详情" @click="handleClick" />
           </div>
         </template>
       </sale-cards>

@@ -40,14 +40,11 @@ const handleDelete = () => {
               </div>
             </div>
           </template>
-          <div class="grid grid-cols-3 gap-[12px] justify-items-center bg-[#F3F5FE] rounded-b-[24px] px-[40px] py-[8px] dark:bg-[rgba(243,245,254,0.1)]">
-            <div class="info font-semibold dark:border-[#4D4D4D] border-solid border-y-none border-l-none border-r-[2px] border-[rgba(230,230,232,0.3)]" @click="handleDelete">
+          <div class="flex-end bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)] gap-[32px]" uno-lg="gap-[40px]">
+            <div class="info delete" @click="handleDelete">
               删除
             </div>
-            <div class="bg-[#E6E6E8] w-[1px] h-100%" />
-            <div class="info font-semibold" @click="handleAmend">
-              修改
-            </div>
+            <common-button-irregular text="修改" @click="handleAmend" />
           </div>
         </template>
       </sale-cards>
@@ -68,5 +65,9 @@ const handleDelete = () => {
       --uno: 'text-size-[14px] color-[#333] dark:color-[#fff]';
     }
   }
+}
+
+.delete {
+  --uno: 'font-semibold dark:border-[#4D4D4D] dark:color-[#fff]';
 }
 </style>
