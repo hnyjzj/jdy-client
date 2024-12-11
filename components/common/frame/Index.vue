@@ -33,9 +33,9 @@ const value = defineModel()
     class="row"
     :class="props.disabledStyle ? 'disable' : 'nodisable'" :style="{ fontSize }"
   >
-    <div class="flex items-center">
+    <div class="flex items-center flex-1">
       <slot name="left" />
-      <input v-model="value" :disabled="props.isDisabled || props.disabledStyle" :class="props.disabledStyle ? 'row-input dis' : 'row-input nodis'" :type="props.type" :placeholder="props.tip">
+      <input v-model="value" pattern="^[1-9]d*$" :disabled="props.isDisabled || props.disabledStyle" :class="props.disabledStyle ? 'row-input dis' : 'row-input nodis'" :type="props.type" :placeholder="props.tip">
     </div>
     <template v-if="props.isIcon">
       <div class="row-right">
@@ -71,5 +71,9 @@ const value = defineModel()
   .dis::placeholder {
     --uno: 'color-[#808089] font-size-[14px]';
   }
+}
+::v-deep input::-webkit-outer-spin-button,
+::v-deep input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
 }
 </style>

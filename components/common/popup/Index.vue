@@ -25,7 +25,7 @@ function close() {
             <van-icon name="cross" color="#fff" size="14" />
           </div>
         </div>
-        <div class="body">
+        <div class="body overflow-y-auto">
           <slot />
         </div>
       </div>

@@ -2,10 +2,14 @@
 interface Props {
   title?: string
   showOk?: boolean
+  confirmText?: string
+  cancelText?: string
 }
 const props = withDefaults(defineProps<Props>(), {
   title: '',
   showOk: false,
+  confirmText: '确定',
+  cancelText: '取消',
 })
 const emits = defineEmits<{
   confirm: []
@@ -37,11 +41,11 @@ function close() {
           <slot />
           <div class="flex-between">
             <div class="cursor-pointer" :class="[props.showOk ? 'cancel-btn' : 'ok']" :style="{ marginRight: props.showOk ? '10px' : '0' }" @click="close">
-              取消
+              {{ props.cancelText }}
             </div>
             <template v-if="showOk">
               <div class="ok cursor-pointer" @click="emits('confirm')">
-                确定
+                {{ props.confirmText }}
               </div>
             </template>
           </div>
