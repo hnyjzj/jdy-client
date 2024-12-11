@@ -1,7 +1,8 @@
 <script setup lang="ts">
 // 成品列表-详情
 const props = defineProps<{
-  productList: FinishedProduct
+  productList: Product
+  filterList: ProductWhere
 }>()
 
 const goodsStatus = {
@@ -19,20 +20,17 @@ const goodsStatus = {
           <common-tags type="orange" :text="goodsStatus[props.productList.status]" />
         </common-header-theme>
         <div class="flex flex-col gap-3 px-4 py-3">
-          <template v-if="props.productList.info.length">
-            <template v-for="(item, index) in props.productList.info" :key="index">
+          <template v-for="(value, key, index) in props.productList" :key="index">
+            <template v-if="filterList[key]?.label">
               <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
                 <div class="color-[#666666]">
-                  {{ item.name }}
+                  {{ filterList[key]?.label }}
                 </div>
                 <div class="color-[#333333]">
-                  {{ item.description }}
+                  {{ value }}
                 </div>
               </div>
             </template>
-          </template>
-          <template v-else>
-            <common-empty />
           </template>
         </div>
         <div class="grid-12">
