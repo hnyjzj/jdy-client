@@ -1,7 +1,11 @@
 interface ProductReq {
   page: number
   limit: number
-  where?: prodeuct
+  where?: product
+}
+
+interface ProductImport {
+  products: prodect
 }
 
 interface Product {
@@ -139,7 +143,7 @@ interface FilterWhere {
   preset: null | object | array
   required: boolean
   type: number | string | float | string[]
-  input: select | text
+  input: 'select' | 'text'
 }
 
 interface ProductRes {

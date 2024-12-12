@@ -26,9 +26,9 @@ export const useProductManage = defineStore('ProductManage', {
       }
     },
     // 货品导入
-    async importProduct(pamars: any) {
+    async importProduct(pamars: ProductImport) {
       try {
-        const { data } = await https.post<any, any>('/product/enter', pamars)
+        const { data } = await https.post<any, ProductImport>('/product/enter', pamars)
         return data.value
       }
       catch (error) {

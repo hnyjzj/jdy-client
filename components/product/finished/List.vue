@@ -20,7 +20,7 @@ const goodsStatus = {
           <common-tags type="orange" :text="goodsStatus[props.productList.status]" />
         </common-header-theme>
         <div class="flex flex-col gap-3 px-4 py-3">
-          <template v-for="(value, key, index) in props.productList" :key="index">
+          <template v-for="(value, key) in props.productList" :key="key">
             <template v-if="filterList[key]?.label">
               <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
                 <div class="color-[#666666]">
@@ -36,7 +36,7 @@ const goodsStatus = {
         <div class="grid-12">
           <div class="flex-center-row gap-4 px-4 py-2 col-12" uno-lg="col-8 offset-2" uno-md="col-12 flex-shrink-1">
             <common-button-rounded content="操作记录" color="#fff" />
-            <common-button-rounded content="编辑" />
+            <common-button-rounded content="编辑" @button-click="jump('')" />
           </div>
         </div>
       </div>

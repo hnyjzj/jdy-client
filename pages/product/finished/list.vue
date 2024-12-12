@@ -8,7 +8,9 @@ useSeoMeta({
 })
 const route = useRoute()
 usePageShow(() => {
-  getProductInfo(route.query.code as string)
+  if (route.query.code) {
+    getProductInfo(route.query.code as string)
+  }
   getProductWhere()
 })
 </script>
