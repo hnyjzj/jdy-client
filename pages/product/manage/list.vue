@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx'
 
 const { $toast } = useNuxtApp()
 const { getProductList, getProductWhere, importProduct } = useProductManage()
-const { productList, filterList } = storeToRefs(useProductManage())
+const { productList, filterList, filterListToArray } = storeToRefs(useProductManage())
 const searchKey = ref('')
 const complate = ref(0)
 // 筛选框显示隐藏
@@ -20,7 +20,7 @@ useSeoMeta({
 const openFilter = () => {
   isFilter.value = true
 }
-usePageShow(() => {
+onMounted(() => {
   getProductList({ page: 1, limit: 10 })
   getProductWhere()
 })
@@ -136,7 +136,7 @@ async function submitWhere() {
       </template>
     </product-filter>
     <!-- 小卡片组件 -->
-    <div class="px-[16px]">
+    <div class="px-[16px] pb-16">
       <product-manage-card :product-list="productList" :filter-list="filterList" />
     </div>
     <product-manage-bottom />
@@ -150,34 +150,36 @@ async function submitWhere() {
     </common-model>
     <common-popup v-model="isFilter">
       <div class="p-4">
-        <template v-for="(filter, filterKey, kindex) in filterList" :key="kindex">
-          <div class="mb-2">
-            <div class="text-color">
-              {{ filter?.label }}
-            </div>
-            <template v-if="filter?.input === 'select'">
-              <div class="flex flex-wrap">
-                <template v-for="(presetValue, presetId, pindex) in filter?.preset" :key="pindex">
-                  <div class="shrink-0 flex items-center pr-2 mt-2 text-color" @click="selectFilter(filterKey, Number(presetId))">
-                    <template v-if="filterParams[filterKey] === Number(presetId)">
-                      <van-icon name="passed" color="#1D6DEC" />
-                    </template>
-                    <template v-else>
-                      <van-icon name="circle" />
-                    </template>
-                    <div class="cursor-pointer inline-block text-color-light text-[14px]">
-                      {{ presetValue }}
+        <template v-for="(filter, index) in filterListToArray" :key="index">
+          <template v-if="filter.show">
+            <div class="mb-2">
+              <div class="text-color">
+                {{ filter?.label }}
+              </div>
+              <template v-if="filter?.input === 'select'">
+                <div class="flex flex-wrap">
+                  <template v-for="(presetValue, presetId, pindex) in filter?.preset" :key="pindex">
+                    <div class="shrink-0 flex items-center pr-2 mt-2 text-color" @click="selectFilter(filter.name, Number(presetId))">
+                      <template v-if="filterParams[filter.name] === Number(presetId)">
+                        <van-icon name="passed" color="#1D6DEC" />
+                      </template>
+                      <template v-else>
+                        <van-icon name="circle" />
+                      </template>
+                      <div class="cursor-pointer inline-block text-color-light text-[14px]">
+                        {{ presetValue }}
+                      </div>
                     </div>
-                  </div>
-                </template>
-              </div>
-            </template>
-            <template v-else>
-              <div class="mt-2">
-                <common-frame v-model="filterParams[filterKey]" :type="filter?.type" :tip="`筛选${filter?.label}`" />
-              </div>
-            </template>
-          </div>
+                  </template>
+                </div>
+              </template>
+              <template v-else>
+                <div class="mt-2">
+                  <common-frame v-model="filterParams[filter.name]" :type="filter?.type" :tip="`筛选${filter?.label}`" />
+                </div>
+              </template>
+            </div>
+          </template>
         </template>
       </div>
       <div class="m-2">

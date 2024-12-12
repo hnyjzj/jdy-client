@@ -9,7 +9,15 @@ export const useProductManage = defineStore('ProductManage', {
     productInfo: {} as Product,
   }),
   getters: {
-
+    filterListToArray: (state) => {
+      const arr: FilterWhere[] = []
+      Object.entries(state.filterList).map((item) => {
+        return arr.push({
+          ...item[1],
+        })
+      })
+      return arr.sort((a, b) => a.sort - b.sort)
+    },
   },
   actions: {
     // 货品列表
@@ -59,5 +67,26 @@ export const useProductManage = defineStore('ProductManage', {
         throw new Error(`获取工作台列表失败: ${error || '未知错误'}`)
       }
     },
+    // 更新货品
+    async updateProductInfo(pamars: Product) {
+      try {
+        const { data } = await https.put<Product, Product>('/product/update', pamars)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`获取工作台列表失败: ${error || '未知错误'}`)
+      }
+    },
+    // 报损
+    async damageProduct(pamars: ProductLossReq) {
+      try {
+        const { data } = await https.put<any, ProductLossReq>('/product/damage', pamars)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`获取工作台列表失败: ${error || '未知错误'}`)
+      }
+    },
+
   },
 })

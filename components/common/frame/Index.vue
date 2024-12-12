@@ -55,14 +55,14 @@ const value = defineModel()
   --uno: 'px-[12px] py-[10px] rounded-[36px] w-auto';
 
   &.disable {
-    --uno: 'flex-between bg-[rgba(222,222,222,0.5)] border-[rgba(230,230,232,0.5)] border-1px border-solid dark:bg-[rgba(230,230,232,0.3)] dark:border-[rgba(230,230,232,0.3)]';
+    --uno: 'flex-between border-[rgba(230,230,232,0.5)] border-1px border-solid dark:bg-[rgba(230,230,232,0.3)] dark:border-[rgba(230,230,232,0.3)]';
   }
   &.nodisable {
     --uno: 'flex-between bg-#fff border-[#e6e6e8] border-1px border-solid dark:bg-[rgba(255,255,255,0.2)] dark:border-[rgba(230,230,232,0.2)]';
   }
   &-input {
     background: transparent;
-    --uno: 'border-none bg-transparent color-[#333] dark:color-[#fff]';
+    --uno: 'border-none bg-transparent color-[#333] dark:color-[#fff] flex-1';
   }
 
   .nodis::placeholder {

@@ -118,7 +118,7 @@ const set = () => {
 }
 
 // 页面显示时获取工作台列表
-usePageShow(() => {
+onMounted(() => {
   getWorkbenchList()
   initFold()
 })

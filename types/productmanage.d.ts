@@ -132,6 +132,8 @@ interface Product {
 }
 type ProductWhere = { [key in keyof Product]?: FilterWhere }
 
+type ProdectKey = keyof Product
+
 interface FilterWhere {
   /**
    * 筛选条件
@@ -141,12 +143,26 @@ interface FilterWhere {
    * 筛选预设
    */
   preset: null | object | array
+  /**
+   * 是否必填(仅添加上传时)
+   */
   required: boolean
   type: number | string | float | string[]
+  /**
+   * 筛选类型 选择或输入
+   */
   input: 'select' | 'text'
+  sort: number
+  show: boolean
+  name: ProdectKey
 }
 
 interface ProductRes {
   list: Product[]
   total: number
+}
+
+interface ProductLossReq {
+  code: string
+  reason: string
 }

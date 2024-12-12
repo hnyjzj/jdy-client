@@ -29,6 +29,7 @@ class Https {
   //   middleware
   async fetchApi<T>(url: string, opt: any) {
     try {
+      await nextTick()
       const res = await useFetch(this.BASE_URL + url, {
         onRequest({ options }) {
           // Set the request headers
