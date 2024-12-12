@@ -3,7 +3,7 @@ const props = defineProps<{
   info: MemberInfo[]
 }>()
 
-const emits = defineEmits(['goInfo'])
+const emits = defineEmits(['goInfo', 'changeIntegral'])
 
 const levelDesc = {
   1: '银卡',
@@ -13,6 +13,18 @@ const levelDesc = {
 
 const handleClick = () => {
   emits('goInfo')
+}
+
+const changeIntegral = () => {
+  emits('changeIntegral')
+}
+
+const getStatusText = (status: number) => {
+  return status === 1 ? '正常' : status === 2 ? '未审核' : '已禁用'
+}
+
+const getStatusType = (status: number) => {
+  return status === 1 ? 'green' : status === 2 ? 'orange' : 'black'
 }
 </script>
 
@@ -27,8 +39,8 @@ const handleClick = () => {
 
           <template #right>
             <common-tags
-              :text="item.status === 1 ? '正常' : item.status === 2 ? '未审核' : '已禁用'"
-              :type="item.status === 1 ? 'green' : item.status === 2 ? 'orange' : 'black'"
+              :text="getStatusText(item.status || 1)"
+              :type="getStatusType(item.status || 1)"
             />
           </template>
 
@@ -72,7 +84,7 @@ const handleClick = () => {
           <template #footer>
             <div class="footer gap-[32px]" uno-lg="gap-[40px]">
               <div class="flex flex-row gap-[24px] cursor-pointer">
-                <div class="accidental">
+                <div class="accidental" @click="changeIntegral">
                   调整积分
                 </div>
               </div>

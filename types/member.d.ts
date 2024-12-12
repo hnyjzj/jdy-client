@@ -91,6 +91,10 @@ interface Receiving {
 
 interface ConsumeRecord {
   /**
+   * 消费门店
+   */
+  store: string
+  /**
    * 消费金额
    */
   amount: number
@@ -121,7 +125,7 @@ interface ConsumeRecord {
   /**
    * 状态
    */
-  status: number
+  status: OrderStatus
 }
 
 enum MemberLevel {
@@ -169,4 +173,19 @@ enum MemberStatus {
    * 禁用
    */
   Disabled = 3,
+}
+
+enum OrderStatus {
+  /**
+   * 已售
+   */
+  Sold = 1,
+  /**
+   * 已完成
+   */
+  Completed = 2,
+  /**
+   * 已回收
+   */
+  Recycle = 3,
 }

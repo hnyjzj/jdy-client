@@ -33,8 +33,9 @@ const memberList: MemberInfo = {
   consumeRecords: [
     {
       time: '2022-06-29 12:00:00',
-      orderId: '1239283918723',
+      orderId: 'DD1239283918723',
       goodsName: '竖领对襟直袖长衫',
+      store: '杭州店',
       shouldPay: 1231,
       amount: 1,
       status: 1,
@@ -43,8 +44,9 @@ const memberList: MemberInfo = {
     },
     {
       time: '2022-06-29 12:00:00',
-      orderId: '1239283918723',
+      orderId: 'XD9283918723',
       goodsName: '商品22222',
+      store: '洛阳店',
       shouldPay: 38931,
       amount: 3,
       status: 2,
