@@ -1,36 +1,133 @@
+// 门店列表返回值
 interface storesListRes {
   list: storesList[]
-  page: storesPage
+  total: number
 }
-
-interface storesList {
+// 门店列表请求参数
+interface storeListReq {
+  page: number
+  limit: number
+  where?: Where
+}
+interface Where {
   address?: string
   city?: string
   contact?: string
-  created_at?: string
   district?: string
-  id?: string
-  logo?: string
   name?: string
   parent_id?: string
   province?: string
-  sort?: number
-  staffs?: null
-  updated_at?: string
+  wxwork_id?: string
+}
+// 门店列表
+interface storesList {
+  address: string
+  city: string
+  contact: string
+  created_at: string
+  district: string
+  id: string
+  parent: getStoreDetailRes | null
+  logo?: string
+  name: string
+  parent_id: string
+  province: string
+  sort: number
+  staffs: null
+  updated_at: string
+  wxwork_id: number
+}
+// 筛选表单
+interface filterForm {
+  address?: string
+  city?: string
+  contact?: string
+  district?: string
+  name?: string
+  parent_id?: string
+  province?: string
   wxwork_id?: number
 }
-
-interface storesPage {
-  total: number
+// 新增门店请求参数
+interface addStoreReq extends filterForm {
+  logo?: null | string
+  sort: number | undefined
+  sync_wxwork: boolean
 }
 
-interface filterForm {
-  address?: string | undefined
-  city?: string | undefined
-  contact?: string | undefined
-  district?: string | undefined
-  name?: string | undefined
-  parent_id?: string | undefined
-  province?: string | undefined
-  wxwork_id?: number | undefined
+interface addStoreRes {
+  code?: number
+  meassage?: string
+}
+
+// 编辑门店参数
+interface editStoreReq {
+  id: string
+  parent_id?: string
+  logo?: string
+  address: string
+  city: string
+  contact: string
+  district: string
+  name: string
+  province: string
+  sort: string | number
+}
+// 获取门店详情参数
+interface getStoreDetailReq {
+  id: string
+}
+// 获取门店详情返回值
+interface getStoreDetailRes {
+  addressName?: string
+  address: string
+  city: string
+  contact: string
+  created_at: string
+  district: string
+  id: string
+  logo: string
+  name: string
+  parent: getStoreDetailRes | null
+  parent_id: string
+  province: string
+  sort: number
+  staffs: null
+  updated_at: string
+  wxwork_id: number
+}
+
+// 更新门店
+interface updateStoreReq {
+  address: string
+  city: string
+  contact: string
+  district: string
+  id: string
+  logo?: null | string
+  name: string
+  parent_id?: null | string
+  province: string
+  sort: number | string
+}
+interface updateStoreRes {
+  code?: number
+  meassage?: string
+}
+
+interface deleteStoreReq {
+  id: string
+  sync_wxwork?: boolean
+}
+interface deleteStoreRes {
+  code?: number
+  meassage?: string
+}
+
+interface uploadFileRes {
+  url: string
+}
+interface uploadLogoFileReq {
+  image: File | undefined
+  store_id?: string
 }

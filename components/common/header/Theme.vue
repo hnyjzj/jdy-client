@@ -1,8 +1,10 @@
 <script setup lang="ts">
 // 主题色渐变边框
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   title: string
-}>()
+}>(), {
+  title: '',
+})
 </script>
 
 <template>

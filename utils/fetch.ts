@@ -22,38 +22,31 @@ class Https {
   }
 
   setAuthToken(token: string) {
-    // window.sessionStorage.setItem('authToken', token)
     this.authToken = token
   }
 
   //   middleware
   async fetchApi<T>(url: string, opt: any) {
     try {
+      await nextTick()
       const res = await useFetch(this.BASE_URL + url, {
         onRequest({ options }) {
-          // Set the request headers
           options.method = opt.method
           options.query = opt.query
           options.body = opt.body
 
           if (import.meta.client) {
-            options.headers = opt.headers || {}
+            options.headers = opt.headers || { 'Content-Type': 'application/json' }
           }
         },
-        onRequestError() {
-        //   Handle the request errors
-        },
+
         onResponse({ response }) {
-        //   Process the response data
-        //   console.log(response._data, 'response')
           toLogin(response)
         },
         onResponseError({ response }) {
           toLogin(response)
-
-          // Handle the response errors
         },
-        // ...opt,
+
       })
 
       return res as AsyncData<Request<T>, Error>
@@ -97,8 +90,9 @@ class Https {
       headers: this.createHeaders(isToken),
     }
     if (body) {
-      options.body = JSON.stringify(body)
+      options.query = body
     }
+
     return this.fetchApi<T>(url, options)
   }
 
