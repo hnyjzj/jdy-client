@@ -30,7 +30,7 @@ export const useProductManage = defineStore('ProductManage', {
         return data.value
       }
       catch (error) {
-        throw new Error(`获取工作台列表失败: ${error || '未知错误'}`)
+        throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
       }
     },
     // 货品导入
@@ -40,7 +40,7 @@ export const useProductManage = defineStore('ProductManage', {
         return data.value
       }
       catch (error) {
-        throw new Error(`获取工作台列表失败: ${error || '未知错误'}`)
+        throw new Error(`货品导入失败: ${error || '未知错误'}`)
       }
     },
     // 获取筛选列表
@@ -52,7 +52,7 @@ export const useProductManage = defineStore('ProductManage', {
         }
       }
       catch (error) {
-        throw new Error(`获取工作台列表失败: ${error || '未知错误'}`)
+        throw new Error(`筛选失败: ${error || '未知错误'}`)
       }
     },
     // 货品详情
@@ -64,7 +64,7 @@ export const useProductManage = defineStore('ProductManage', {
         }
       }
       catch (error) {
-        throw new Error(`获取工作台列表失败: ${error || '未知错误'}`)
+        throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
       }
     },
     // 更新货品
@@ -74,7 +74,7 @@ export const useProductManage = defineStore('ProductManage', {
         return data.value
       }
       catch (error) {
-        throw new Error(`获取工作台列表失败: ${error || '未知错误'}`)
+        throw new Error(`更新失败: ${error || '未知错误'}`)
       }
     },
     // 报损
@@ -84,7 +84,7 @@ export const useProductManage = defineStore('ProductManage', {
         return data.value
       }
       catch (error) {
-        throw new Error(`获取工作台列表失败: ${error || '未知错误'}`)
+        throw new Error(`报损失败: ${error || '未知错误'}`)
       }
     },
 

@@ -5,7 +5,7 @@ interface ProductReq {
 }
 
 interface ProductImport {
-  products: prodect
+  products: Product
 }
 
 interface Product {
