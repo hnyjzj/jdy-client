@@ -12,16 +12,10 @@ const emits = defineEmits<{
   updateParent: [val: string]
   submit: [val: Where]
 }>()
+const { formList } = storeToRefs(useStores())
 const form = defineModel<Where>({ default: {
-  parent_id: undefined,
-  address: undefined,
-  name: undefined,
-  province: undefined,
-  city: undefined,
-  district: undefined,
-  contact: undefined,
-  wxwork_id: undefined,
 } })
+form.value = formList.value
 const rules = ref<Rules<Where>>({
   parent_id: [],
   address: [],
@@ -34,7 +28,6 @@ const rules = ref<Rules<Where>>({
 })
 
 const searchKey = ref<string>('')
-
 const onSearch = useDebounceFn(() => {
   emits('updateParent', searchKey.value)
 }, 1000)

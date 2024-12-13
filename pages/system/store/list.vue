@@ -2,15 +2,14 @@
 import { useCascaderAreaData } from '@vant/area-data'
 
 const store = useStores()
-const { storesList } = storeToRefs(useStores())
+const { storesList, formList, addForm } = storeToRefs(useStores())
 const { $toast } = useNuxtApp()
 useSeoMeta({
   title: '门店列表',
 })
 
-onMounted(async () => {
-  await store.getStoreList({ page: 1, limit: 10 })
-})
+await store.getStoreList({ page: 1, limit: 10 })
+
 const addFormRef = ref<any>()
 const editFormRef = ref<any>()
 const searchRef = ref<any>()
@@ -31,32 +30,6 @@ const showName = ref({
   province_name: '',
 })
 
-// 筛选表单数据
-const formList = ref<Where>({
-  parent_id: '',
-  address: '',
-  name: '',
-  province: '',
-  city: '',
-  district: '',
-  contact: '',
-  wxwork_id: '',
-})
-
-// 新增门店表单数据
-const addForm = ref<addStoreReq>({
-  parent_id: undefined,
-  address: '',
-  name: '',
-  logo: '',
-  province: '',
-  city: '',
-  district: '',
-  contact: '',
-  wxwork_id: 0,
-  sort: 0,
-  sync_wxwork: true,
-})
 // 新增门店表单数据
 const editForm = ref<editStoreReq>({
   id: '',
@@ -291,7 +264,7 @@ const uploadFile = async (file: any, id?: string) => {
       </van-cell>
     </van-dialog>
     <!-- 新增门店弹窗 -->
-    <common-popup v-model="addStoreShow" @close="reastAddForm">
+    <common-popup v-model="addStoreShow">
       <div
         class="p-[16px] bg-[#F1F5FE] h-full">
         <stores-add

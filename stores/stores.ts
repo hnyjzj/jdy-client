@@ -4,12 +4,35 @@ export const useStores = defineStore('Store', {
     storesList: [] as storesList[],
     total: 0,
     storeDetails: {} as getStoreDetailRes,
+    formList: {
+      parent_id: undefined,
+      address: undefined,
+      name: undefined,
+      province: undefined,
+      city: undefined,
+      district: undefined,
+      contact: undefined,
+      wxwork_id: undefined,
+    } as Where,
+    addForm: {
+      parent_id: undefined,
+      address: '',
+      name: '',
+      logo: '',
+      province: '',
+      city: '',
+      district: '',
+      contact: '',
+      wxwork_id: 0,
+      sort: 0,
+      sync_wxwork: true,
+    } as addStoreReq,
   }),
   actions: {
     // 门店列表
     async getStoreList(req: storeListReq, search: boolean = false) {
       const { data } = await https.post<storesListRes, storeListReq>('/store/list', req)
-      if (data.value.code === HttpCode.SUCCESS) {
+      if (data.value?.code === HttpCode.SUCCESS) {
         if (!search) {
           this.storesList = data.value.data.list
           this.total = data.value.data.total
@@ -48,5 +71,9 @@ export const useStores = defineStore('Store', {
     async uploadImage(req: uploadLogoFileReq) {
       return await https.upload<uploadFileRes, uploadLogoFileReq>('/upload/store', req)
     },
+  },
+  persist: {
+    storage: piniaPluginPersistedstate.cookies(),
+    pick: ['formList', 'addForm'],
   },
 })

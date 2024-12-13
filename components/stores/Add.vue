@@ -4,6 +4,7 @@ import type { Rules } from 'common-form'
 const props = defineProps<{
   showName: { province_name: string }
 }>()
+
 const emits = defineEmits<{
   selectCity: []
   selectStore: []
@@ -13,19 +14,13 @@ const emits = defineEmits<{
   upload: [val: any]
   submit: [val: addStoreReq]
 }>()
+
+const { addForm } = storeToRefs(useStores())
+
 const form = defineModel<addStoreReq>({ default: {
-  parent_id: undefined,
-  address: undefined,
-  name: undefined,
-  logo: undefined,
-  province: undefined,
-  city: undefined,
-  district: undefined,
-  contact: undefined,
-  wxwork_id: undefined,
-  sort: 0,
-  sync_wxwork: true,
 } })
+
+form.value = addForm.value
 const rules = ref<Rules<addStoreReq>>({
   parent_id: [],
   address: [{
