@@ -34,6 +34,10 @@ const props = withDefaults(defineProps<{
    * 是否展示折叠图标
    */
   foldable?: boolean
+  /**
+   * 是否有阴影
+   */
+  hasShadow?: boolean
 }>(), {
   alignDesc: 'space-between',
   theme: 'theme',
@@ -41,20 +45,28 @@ const props = withDefaults(defineProps<{
   italic: false,
   bold: true,
   textColor: '#333',
+  hasShadow: false,
 })
 
 const isFold = ref(true)
 const toggleFold = () => {
   isFold.value = !isFold.value
 }
+
+const themeProcess = () => {
+  const res = props.theme === 'gradient' ? 'linear-gradient(90deg,#8CADF8,#D8E7FD)' : props.theme === 'theme' ? 'linear-gradient(90deg,#477ef500,#82d0faf2)' : '#F1F5FE'
+  return res
+}
 </script>
 
 <template>
-  <div class="info">
+  <div
+    class="info"
+    :style="{ boxShadow: props.hasShadow ? '0px 8px 16px rgba(0, 0, 0, 0.1)' : 'none' }"
+  >
     <div
       class="flex flex-row items-center justify-between px-4 py-2 bg-gradient-linear-[90deg,#8CADF8,#D8E7FD]"
-      :style="{
-        background: props.theme === 'gradient' ? 'linear-gradient(90deg,#8CADF8,#D8E7FD)' : props.theme === 'theme' ? 'linear-gradient(90deg,#477ef500,#82d0faf2)' : '#F1F5FE' }"
+      :style="{ background: themeProcess() }"
     >
       <div class="flex flex-row gap-[8px]" :style="{ justifyContent: props.alignDesc }">
         <slot name="before" />

@@ -6,7 +6,7 @@ useSeoMeta({
 const show = ref(true)
 const currentDate = ref(['2000', '01', '01'])
 const minDate = new Date(1900, 0, 1)
-const maxDate = new Date(2090, 0, 1)
+const maxDate = new Date(new Date().getFullYear(), 11, 31)
 </script>
 
 <template>

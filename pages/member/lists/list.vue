@@ -186,6 +186,7 @@ const updateShowTo = () => {
               name="textarea"
               rows="5"
               cols="30"
+              wrap="soft"
               placeholder="非必填"
               class="area"
             />
@@ -229,7 +230,7 @@ const updateShowTo = () => {
 }
 
 .area {
-  --uno: 'rounded-[8px] bg-[#fff] text-[#333] min-w-full max-h-[80px] px-[12px] py-[10px] font-size-[14px] border-solid border-[#E6E6E8] focus:border-[#3971F3] resize-none';
+  --uno: 'rounded-[8px] bg-[#fff] text-[#333] min-w-full max-h-[80px] px-[12px] py-[8px] font-size-[14px] border-solid border-[#E6E6E8] focus:border-[#3971F3] resize-none';
 }
 
 .input {

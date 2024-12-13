@@ -274,9 +274,9 @@ const goInfo = () => {
 
       <common-gradient title="消费记录" theme="gradient" :italic="true" :foldable="true">
         <template #body>
-          <div class="grid grid-cols-1 gap-[8px]" uno-md="grid-cols-2" uno-lg="grid-cols-2 gap-[16px]">
+          <div class="grid grid-cols-1 gap-[16px]" uno-md="grid-cols-2" uno-lg="grid-cols-2 gap-[16px]">
             <template v-for="(item, index) in props.data.consumeRecords" :key="index">
-              <common-gradient :title="item.goodsName" theme="solid" :italic="false" :foldable="true">
+              <common-gradient :title="item.goodsName" theme="solid" :italic="false" :foldable="true" :has-shadow="true">
                 <template #body>
                   <div class="flex flex-col gap-[12px]">
                     <div class="base flex flex-1 flex-col gap-[8px]">
