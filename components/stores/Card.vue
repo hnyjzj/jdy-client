@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
-  list: any[]
+  list: storesList[]
 }
 >()
 const emits = defineEmits<{

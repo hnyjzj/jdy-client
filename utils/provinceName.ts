@@ -1,21 +1,15 @@
 import { areaList } from '@vant/area-data'
 
-export const toProvinces = (province: string, city: string, area: string) => {
-  const name = ref('')
-  Object.keys(areaList.province_list).forEach((key) => {
-    if (key === province) {
-      name.value += areaList.province_list[key]
-    }
-  })
-  Object.keys(areaList.city_list).forEach((key) => {
-    if (key === city) {
-      name.value += areaList.city_list[key]
-    }
-  })
-  Object.keys(areaList.county_list).forEach((key) => {
-    if (key === area) {
-      name.value += areaList.county_list[key]
-    }
-  })
-  return name.value
+export const toProvinces = (province: string, city: string, area: string): string => {
+  try {
+    const provinceName = areaList.province_list[province] || ''
+    const cityName = areaList.city_list[city] || ''
+    const areaName = areaList.county_list[area] || ''
+
+    return `${provinceName}${cityName}${areaName}`
+  }
+  catch (error) {
+    console.error('区域代码解析失败:', error)
+    return ''
+  }
 }

@@ -21,6 +21,7 @@ interface Where {
 }
 // 门店列表
 interface storesList {
+  addressName?: string
   address: string
   city: string
   contact: string
