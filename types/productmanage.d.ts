@@ -5,7 +5,7 @@ interface ProductReq {
 }
 
 interface ProductImport {
-  products: Product
+  products: Product[]
 }
 
 interface Product {
@@ -132,7 +132,7 @@ interface Product {
 }
 type ProductWhere = { [key in keyof Product]?: FilterWhere }
 
-type ProdectKey = keyof Product
+type ProductKey = keyof Product
 
 interface FilterWhere {
   /**
@@ -154,7 +154,7 @@ interface FilterWhere {
   input: 'select' | 'text'
   sort: number
   show: boolean
-  name: ProdectKey
+  name: ProductKey
 }
 
 interface ProductRes {

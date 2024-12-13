@@ -44,11 +44,17 @@ function goLoss() {
     </div>
   </div>
   <div class="bottom">
-    <div class="grid-12">
-      <div class="flex-center-row gap-4 px-4 py-2 col-12" uno-lg="col-8 offset-2" uno-md="col-12 flex-shrink-1">
-        <common-button-rounded content="操作记录" color="#fff" bgc="#FFF" />
-        <common-button-rounded content="报损" color="#fff" bgc="#FFF" @button-click="goLoss" />
-        <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: props.productInfo.code })" />
+    <div class="">
+      <div class="flex-center-row grid-12 gap-4 px-4 py-2 col-12" uno-lg="col-8 offset-2" uno-md="col-12 flex-shrink-1">
+        <div class="flex-1">
+          <common-button-rounded content="操作记录" color="#fff" bgc="#FFF" />
+        </div>
+        <div class="flex-1">
+          <common-button-rounded content="报损" color="#fff" bgc="#FFF" @button-click="goLoss" />
+        </div>
+        <div class="flex-1">
+          <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: props.productInfo.code })" />
+        </div>
       </div>
     </div>
   </div>

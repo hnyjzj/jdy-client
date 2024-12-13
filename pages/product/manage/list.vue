@@ -54,30 +54,35 @@ function FileUpload(event: any) {
  * @param data 二维数组，第一行是表头，其余是数据行
  * @returns 对象数组
  */
-function transformData(data: any[][]): Record<string, any>[] {
+function transformData(data: any[][]) {
   if (!data || data.length < 2) {
     $toast.error('数据格式不正确，至少需要表头和一行数据')
     return []
   }
-  // 表头
-  const headers = data[0]
+  // 第一行是表头 对应着字段名
+  const headers: ProductKey[] = data[0]
   return data.slice(1).map((row) => {
-    const obj: Record<string, any> = {}
-    headers.forEach((header: keyof Product, index) => {
-      if (filterList.value[header]?.type === 'number') {
-        row[index] = Number(row[index])
-      }
-      if (filterList.value[header]?.type === 'float') {
-        row[index] = Number.parseFloat(row[index])
-      }
-      if (filterList.value[header]?.type === 'string') {
-        row[index] = String(row[index])
-      }
-      if (filterList.value[header]?.type === 'bool') {
-        row[index] = Boolean(row[index])
-      }
-      if (filterList.value[header]?.type === 'string[]') {
-        row[index] = JSON.parse(JSON.stringify(row[index]))
+    const obj = {} as Record<ProductKey, any>
+    headers.forEach((header: ProductKey, index) => {
+      const type = filterList.value[header]?.type
+      switch (type) {
+        case 'number':
+          row[index] = Number(row[index])
+          break
+        case 'float':
+          row[index] = Number.parseFloat(row[index])
+          break
+        case 'string':
+          row[index] = String(row[index])
+          break
+        case 'bool':
+          row[index] = Boolean(row[index])
+          break
+        case 'string[]':
+          row[index] = JSON.parse(JSON.stringify(row[index]))
+          break
+        default:
+          break
       }
       obj[header] = row[index] ?? '' // 将表头与对应的数据行匹配
     })
@@ -87,7 +92,7 @@ function transformData(data: any[][]): Record<string, any>[] {
 
 // 提交入库
 async function submitGoods() {
-  const data = transformData(sheetData.value)
+  const data: Product[] = transformData(sheetData.value)
   if (data?.length) {
     const { code, message } = await importProduct({ products: data })
     if (code === HttpCode.SUCCESS) {
@@ -159,14 +164,14 @@ async function submitWhere() {
               <template v-if="filter?.input === 'select'">
                 <div class="flex flex-wrap">
                   <template v-for="(presetValue, presetId, pindex) in filter?.preset" :key="pindex">
-                    <div class="shrink-0 flex items-center pr-2 mt-2 text-color" @click="selectFilter(filter.name, Number(presetId))">
+                    <div class="cursor-pointer inline-block shrink-0 flex items-center mr-2 mt-2 text-color" @click="selectFilter(filter.name, Number(presetId))">
                       <template v-if="filterParams[filter.name] === Number(presetId)">
                         <van-icon name="passed" color="#1D6DEC" />
                       </template>
                       <template v-else>
                         <van-icon name="circle" />
                       </template>
-                      <div class="cursor-pointer inline-block text-color-light text-[14px]">
+                      <div class="text-color-light text-[14px]">
                         {{ presetValue }}
                       </div>
                     </div>
