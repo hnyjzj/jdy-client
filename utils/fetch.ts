@@ -28,16 +28,12 @@ class Https {
   //   middleware
   async fetchApi<T>(url: string, opt: any) {
     try {
-      await nextTick()
       const res = await useFetch(this.BASE_URL + url, {
         onRequest({ options }) {
           options.method = opt.method
           options.query = opt.query
           options.body = opt.body
-
-          if (import.meta.client) {
-            options.headers = opt.headers || { 'Content-Type': 'application/json' }
-          }
+          options.headers = opt.headers
         },
 
         onResponse({ response }) {
@@ -68,7 +64,6 @@ class Https {
       const store = useAuth()
       const route = useRoute()
       this.authToken = store.token
-      //   console.log('token', store.token)
 
       if (Date.now() > (store.expires_at) * 1000) {
         navigateTo({
