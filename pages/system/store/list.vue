@@ -84,7 +84,7 @@ const replaceEmptyStrings = (obj: any) => {
 }
 // 搜索 获取列表数据
 const searchFn = async () => {
-  await replaceEmptyStrings(formList.value)
+  replaceEmptyStrings(formList.value)
   await store.getStoreList({ page: 1, limit: 10, where: formList.value })
 }
 

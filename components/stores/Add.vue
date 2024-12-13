@@ -165,7 +165,7 @@ defineExpose({
           </div>
           <div class="bg-[#fff] rounded-full px-[12px] flex items-center">
             <input
-              v-model="form.address" class="py-[10px] border-0 text-[14px] flex-1 color-[#333] " type="text" placeholder="请输入地址" :maxlength="11" @change="validate()">
+              v-model="form.address" class="py-[10px] border-0 text-[14px] flex-1 color-[#333] " type="text" placeholder="请输入地址" @change="validate()">
             <van-icon name="arrow" />
           </div>
           <template v-if="error">
@@ -186,7 +186,7 @@ defineExpose({
           </div>
           <div class="bg-[#fff] rounded-full px-[12px] flex items-center">
             <input
-              v-model="form.name" class="py-[10px] border-0 text-[14px] flex-1 color-[#333] " type="text" placeholder="请输入店名" :maxlength="11" @change="validate()">
+              v-model="form.name" class="py-[10px] border-0 text-[14px] flex-1 color-[#333] " type="text" placeholder="请输入店名" @change="validate()">
             <van-icon name="arrow" />
           </div>
           <template v-if="error">
@@ -282,7 +282,7 @@ defineExpose({
           </div>
           <div class="bg-[#fff] rounded-full px-[12px] flex items-center">
             <input
-              v-model="form.wxwork_id" class="py-[10px] border-0 text-[14px] flex-1 color-[#333] " type="text" placeholder="请输入企业微信ID" :maxlength="11" @change="validate()">
+              v-model="form.wxwork_id" class="py-[10px] border-0 text-[14px] flex-1 color-[#333] " type="text" placeholder="请输入企业微信ID" @change="validate()">
             <van-icon name="arrow" />
           </div>
           <template v-if="error">
@@ -303,7 +303,7 @@ defineExpose({
           </div>
           <div class="bg-[#fff] rounded-full px-[12px] flex items-center">
             <input
-              v-model="form.sort" class="py-[10px] border-0 text-[14px] flex-1 color-[#333] " type="text" placeholder="请输入排序值" :maxlength="11" @change="validate()">
+              v-model="form.sort" class="py-[10px] border-0 text-[14px] flex-1 color-[#333] " type="text" placeholder="请输入排序值" @change="validate()">
             <van-icon name="arrow" />
           </div>
           <template v-if="error">
