@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { Where } from 'where'
 import * as XLSX from 'xlsx'
 
 const { $toast } = useNuxtApp()
@@ -9,22 +10,18 @@ const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const isModel = ref(false)
-// 高级筛选参数
-interface FilterParams {
-  [key: string]: number
-}
-const filterParams: Ref<FilterParams> = ref({})
+
 useSeoMeta({
   title: '货品管理',
 })
 const openFilter = () => {
   isFilter.value = true
 }
-onMounted(() => {
-  getProductList({ page: 1, limit: 10 })
-  getProductWhere()
+onMounted(async () => {
+  await getProductList({ page: 1, limit: 10 })
+  await getProductWhere()
 })
-
+const list = ref({} as Where<Product>)
 const create = () => {
   isModel.value = true
 }
@@ -36,18 +33,9 @@ const sheetData = ref([])
  * @param event input上传文件
  */
 function FileUpload(event: any) {
-  const file = (event.target as HTMLInputElement).files?.[0]
-  if (file) {
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      const data = new Uint8Array(e.target?.result as ArrayBuffer)
-      const workbook = XLSX.read(data, { type: 'array' })
-      const firstSheetName = workbook.SheetNames[0]
-      const worksheet = workbook.Sheets[firstSheetName]
-      sheetData.value = XLSX.utils.sheet_to_json(worksheet, { header: 1 })
-    }
-    reader.readAsArrayBuffer(file)
-  }
+  uploadXlsx(event).then((data) => {
+    sheetData.value = data as never[]
+  })
 }
 /**
  * 将二维数组转换为对象数组
@@ -105,22 +93,9 @@ async function submitGoods() {
   }
 }
 
-/**
- * 选择筛选条件
- * @param filterValue  筛选条件值
- * @param presetId 预选值id
- */
-function selectFilter(filterKey: string, presetId: number) {
-  if (filterParams.value[filterKey] === presetId) {
-    delete (filterParams.value[filterKey])
-  }
-  else {
-    filterParams.value[filterKey] = presetId
-  }
-}
 // 筛选列表
-async function submitWhere() {
-  const res = await getProductList({ page: 1, limit: 10, where: filterParams.value })
+async function submitWhere(filterParams: Product) {
+  const res = await getProductList({ page: 1, limit: 10, where: filterParams })
   if (res.code === HttpCode.SUCCESS) {
     isFilter.value = false
     $toast.success('筛选成功')
@@ -153,43 +128,6 @@ async function submitWhere() {
         <input class="text-color" type="file" @change="FileUpload">
       </div>
     </common-model>
-    <common-popup v-model="isFilter">
-      <div class="p-4">
-        <template v-for="(filter, index) in filterListToArray" :key="index">
-          <template v-if="filter.show">
-            <div class="mb-2">
-              <div class="text-color">
-                {{ filter?.label }}
-              </div>
-              <template v-if="filter?.input === 'select'">
-                <div class="flex flex-wrap">
-                  <template v-for="(presetValue, presetId, pindex) in filter?.preset" :key="pindex">
-                    <div class="cursor-pointer inline-block shrink-0 flex items-center mr-2 mt-2 text-color" @click="selectFilter(filter.name, Number(presetId))">
-                      <template v-if="filterParams[filter.name] === Number(presetId)">
-                        <van-icon name="passed" color="#1D6DEC" />
-                      </template>
-                      <template v-else>
-                        <van-icon name="circle" />
-                      </template>
-                      <div class="text-color-light text-[14px]">
-                        {{ presetValue }}
-                      </div>
-                    </div>
-                  </template>
-                </div>
-              </template>
-              <template v-else>
-                <div class="mt-2">
-                  <common-frame v-model="filterParams[filter.name]" :type="filter?.type" :tip="`筛选${filter?.label}`" />
-                </div>
-              </template>
-            </div>
-          </template>
-        </template>
-      </div>
-      <div class="m-2">
-        <common-button-rounded content="确认筛选" @button-click="submitWhere" />
-      </div>
-    </common-popup>
+    <product-where v-model="isFilter" :list="list" :filter-list-to-array="filterListToArray" @submit="submitWhere" />
   </div>
 </template>
