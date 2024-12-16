@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 useSeoMeta({
-  title: '货品盘点',
+  title: '销售统计',
 })
 </script>
 
 <template>
   <div>
-    货品盘点
+    销售统计
   </div>
 </template>
 
