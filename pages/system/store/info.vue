@@ -9,9 +9,7 @@ const {
 const { getStoreDetail } = useStores()
 const route = useRoute()
 
-onMounted(async () => {
-  await getStoreDetail({ id: route.query.id as string })
-})
+await getStoreDetail({ id: route.query.id as string })
 </script>
 
 <template>
