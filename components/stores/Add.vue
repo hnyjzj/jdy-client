@@ -19,7 +19,6 @@ const { addForm, addsearchKey } = storeToRefs(useStores())
 const form = defineModel<addStoreReq>({ default: {
 } })
 form.value = addForm.value
-console.log(addForm.value)
 
 const rules = ref<Rules<addStoreReq>>({
   parent_id: [],
