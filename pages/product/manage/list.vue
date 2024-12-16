@@ -17,7 +17,7 @@ useSeoMeta({
 const openFilter = () => {
   isFilter.value = true
 }
-
+// 获取货品列表
 async function getList(where = {} as Product) {
   if (!isCanPull.value)
     return
