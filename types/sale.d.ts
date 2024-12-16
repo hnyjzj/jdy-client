@@ -74,57 +74,6 @@ enum SlipStatus {
   Unpaid = 3,
 }
 
-// 会员信息
-interface MemberInfo {
-  nickname: string
-  phone: string
-  img?: string
-  email?: string
-  address?: string
-  birthday?: string
-  gender?: string
-  remark?: string
-  createTime?: string
-  /**
-   * 会员等级
-   */
-  level: MemberLevel
-  /**
-   * 购买次数
-   */
-  buyCount?: number
-  /**
-   * 是否关注公众号
-   */
-  isFollow?: IsFollow
-}
-
-enum MemberLevel {
-  /**
-   * 银卡
-   */
-  Silver = 1,
-  /**
-   * 金卡
-   */
-  Gold = 2,
-  /**
-   * 钻石卡
-   */
-  Diamond = 3,
-}
-
-enum IsFollow {
-  /**
-   * 已关注
-   */
-  Followed = 1,
-  /**
-   * 未关注
-   */
-  Unfollowed = 2,
-}
-
 // 门店定义（？）
 interface StoreInfo {
   name: string
