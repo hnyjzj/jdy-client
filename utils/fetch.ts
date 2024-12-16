@@ -22,7 +22,6 @@ class Https {
   }
 
   setAuthToken(token: string) {
-    // window.sessionStorage.setItem('authToken', token)
     this.authToken = token
   }
 
@@ -31,29 +30,19 @@ class Https {
     try {
       const res = await useFetch(this.BASE_URL + url, {
         onRequest({ options }) {
-          // Set the request headers
           options.method = opt.method
           options.query = opt.query
           options.body = opt.body
+          options.headers = opt.headers
+        },
 
-          if (import.meta.client) {
-            options.headers = opt.headers || {}
-          }
-        },
-        onRequestError() {
-        //   Handle the request errors
-        },
         onResponse({ response }) {
-        //   Process the response data
-        //   console.log(response._data, 'response')
           toLogin(response)
         },
         onResponseError({ response }) {
           toLogin(response)
-
-          // Handle the response errors
         },
-        // ...opt,
+
       })
 
       return res as AsyncData<Request<T>, Error>
@@ -75,7 +64,6 @@ class Https {
       const store = useAuth()
       const route = useRoute()
       this.authToken = store.token
-      //   console.log('token', store.token)
 
       if (Date.now() > (store.expires_at) * 1000) {
         navigateTo({
@@ -97,8 +85,9 @@ class Https {
       headers: this.createHeaders(isToken),
     }
     if (body) {
-      options.body = JSON.stringify(body)
+      options.query = body
     }
+
     return this.fetchApi<T>(url, options)
   }
 

@@ -68,6 +68,7 @@ export default defineConfig({
     'flex-center-col': 'flex flex-col items-center justify-center',
     'flex-center-row': 'flex flex-row items-center justify-center',
     'flex-center-between': 'flex flex-row items-center justify-between',
+    'flex-col-between': 'flex flex-col justify-between',
     'grid-12': 'grid grid-cols-12',
     'blur-bgc': 'light:bg-[rgba(255,255,255,0.7)] dark:bg-[rgba(0,0,0,0.3)] blur-5px', // 毛玻璃背景色
     'blur-bga': 'light:bg-[rgb(255,255,255)] dark:bg-[rgba(0,0,0,0.3)] blur-5px',

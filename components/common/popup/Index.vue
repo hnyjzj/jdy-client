@@ -1,6 +1,8 @@
 <script lang="ts" setup>
+const emits = defineEmits<{
+  close: []
+}>()
 const show = defineModel({ type: Boolean, default: false })
-
 watch(show, (val) => {
   if (val) {
     document.body.style.overflow = 'hidden'// 禁止滚动
@@ -12,6 +14,7 @@ watch(show, (val) => {
 
 function close() {
   show.value = false
+  emits('close')
 }
 </script>
 
@@ -25,7 +28,7 @@ function close() {
             <van-icon name="cross" color="#fff" size="14" />
           </div>
         </div>
-        <div class="body">
+        <div class="body overflow-y-auto">
           <slot />
         </div>
       </div>
