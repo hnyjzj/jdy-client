@@ -11,7 +11,7 @@ const isFilter = defineModel({ type: Boolean, default: false })
 const filterParams = ref({} as T)
 /**
  * 选择筛选条件
- * @param filterValue  筛选条件值
+ * @param filterKey  筛选条件值
  * @param presetId 预选值id
  */
 function selectFilter(filterKey: string, presetId: number) {
