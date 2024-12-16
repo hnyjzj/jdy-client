@@ -26,7 +26,7 @@ const list = ref([
       <!-- 产品信息 -->
       <div class="info">
         <!-- header -->
-        <common-gradient title="产品信息(3)">
+        <common-gradient title="产品信息(3)" theme="gradient" :italic="true">
           <template #body>
             <!-- info -->
             <sale-order-product />
