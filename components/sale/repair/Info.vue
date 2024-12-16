@@ -3,11 +3,6 @@ const props = defineProps<{
   info: any[]
 }>()
 
-const isFold = ref(true)
-const toggleFold = () => {
-  isFold.value = !isFold.value
-}
-
 const checked = ref(1)
 </script>
 
@@ -68,18 +63,12 @@ const checked = ref(1)
       <!-- 产品信息 -->
       <div class="info">
         <!-- header -->
-        <common-header-gradient title="产品信息(3)">
-          <div @click="toggleFold()">
-            <van-icon :name="!isFold ? 'arrow' : 'arrow-down'" size="14" />
-          </div>
-        </common-header-gradient>
-        <!-- info -->
-        <template v-if="isFold">
-          <div class="flex flex-col gap-[12px] px-[16px] py-[16px]">
-            <!-- 成品 -->
+        <common-gradient title="产品信息(3)">
+          <template #body>
+            <!-- info -->
             <sale-order-product />
-          </div>
-        </template>
+          </template>
+        </common-gradient>
       </div>
     </div>
   </div>

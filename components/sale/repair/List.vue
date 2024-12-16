@@ -44,7 +44,7 @@ const handleClick = () => {
             </div>
           </template>
           <div class="footer gap-[40px]" uno-lg="gap-[48px]">
-            <div class="flex flex-row gap-[24px]">
+            <div class="flex flex-row gap-[24px]" uno-lg="gap-[32px]">
               <div class="accidental" @click="handleCancel">
                 撤销
               </div>

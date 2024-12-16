@@ -14,7 +14,6 @@ const handlePop = () => {
   <div class="grid-12">
     <common-popup v-model="showPop" />
     <div class="flex flex-col gap-[16px] px-[16px] py-[16px] col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-      <!-- 切换门店 筛选门店 -->
       <div class="flex justify-between">
         <product-manage-company class="color-[#fff]" />
         <product-filter-senior class="color-[#fff]" @click="handlePop" />

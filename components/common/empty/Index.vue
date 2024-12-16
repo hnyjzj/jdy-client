@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<{
 </script>
 
 <template>
-  <div class="flex justify-center items-center py-[16px]">
+  <div class="flex flex-col justify-center items-center py-[16px]">
     <div class="empty" :style="{ boxShadow: isShadow ? 'rgba(239, 242, 255, 1) 0 5px 20px 0' : 'none' }">
       <NuxtImg class="block" :src="props.img" :width="props.size" :height="props.size" />
       <template v-if="props.showRT">
@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<{
       </template>
     </div>
     <template v-if="props.text">
-      <div class="font-size-[14px] color-[#666] pt-[24px]">
+      <div class="font-size-[14px] color-[#606266] pt-[24px]">
         {{ props.text }}
       </div>
     </template>
