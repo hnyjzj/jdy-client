@@ -2,10 +2,14 @@
 interface Props {
   title?: string
   showOk?: boolean
+  confirmText?: string
+  cancelText?: string
 }
 const props = withDefaults(defineProps<Props>(), {
   title: '',
   showOk: false,
+  confirmText: '确定',
+  cancelText: '取消',
 })
 const emits = defineEmits<{
   confirm: []
@@ -15,6 +19,14 @@ const show = defineModel({ type: Boolean, default: false })
 function close() {
   show.value = false
 }
+watch(show, (val) => {
+  if (val) {
+    document.body.style.overflow = 'hidden'// 禁止滚动
+  }
+  else {
+    document.body.style.overflow = ''
+  }
+})
 </script>
 
 <template>
@@ -37,11 +49,11 @@ function close() {
           <slot />
           <div class="flex-between">
             <div class="cursor-pointer" :class="[props.showOk ? 'cancel-btn' : 'ok']" :style="{ marginRight: props.showOk ? '10px' : '0' }" @click="close">
-              取消
+              {{ props.cancelText }}
             </div>
             <template v-if="showOk">
               <div class="ok cursor-pointer" @click="emits('confirm')">
-                确定
+                {{ props.confirmText }}
               </div>
             </template>
           </div>
@@ -91,7 +103,7 @@ function close() {
     }
 
     .box {
-      --uno: 'border-rd-[16px_0_0_0] bg-[rgb(236,239,246)] dark:bg-[rgba(0,0,0,0.8)] sm:border-rd-[16px_0_16px_16px] px-[30px] py-[42px]';
+      --uno: 'border-rd-[16px_0_0_0] dark:bg-[rgba(0,0,0,0.8)] sm:border-rd-[16px_0_16px_16px] px-[30px] py-[42px] bg-[#F1F5FE]';
       margin-top: 0;
       .ok {
         --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#fff] font-bold ';

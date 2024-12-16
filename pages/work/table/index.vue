@@ -118,10 +118,8 @@ const set = () => {
 }
 
 // 页面显示时获取工作台列表
-usePageShow(() => {
-  getWorkbenchList()
-  initFold()
-})
+await getWorkbenchList()
+await initFold()
 
 // 新增/更新工作台
 async function submit(val: AddWorkbencheReq) {

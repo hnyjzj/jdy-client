@@ -1,12 +1,17 @@
+<script lang="ts" setup>
+const emits = defineEmits(['create'])
+const create = () => {
+  emits('create')
+}
+</script>
+
 <template>
-  <div>
-    <div class="createbox">
+  <div class="createbox coursor-pointer" @click="create">
+    <div
+      class="create2">
+      <div class="row" />
       <div
-        class="create2">
-        <div class="row" />
-        <div
-          class="cols" />
-      </div>
+        class="cols" />
     </div>
   </div>
 </template>
