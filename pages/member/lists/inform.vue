@@ -8,7 +8,7 @@ const rechargePop = () => {
   show.value = !show.value
 }
 
-const testing = ref(true)
+const testing = ref(false)
 const beta = () => {
   testing.value = !testing.value
 }
@@ -38,11 +38,11 @@ const checked = ref([])
 const tips = ref([
   {
     id: 1,
-    lable: '1、关注门店公众号',
+    label: '1、关注门店公众号',
   },
   {
     id: 2,
-    lable: '2、用手机号绑定成为门店会员',
+    label: '2、用手机号绑定成为门店会员',
   },
 ])
 </script>
@@ -124,7 +124,7 @@ const tips = ref([
           <div class="ordered flex flex-col gap-[8px]">
             <template v-for="item in tips" :key="item.id">
               <div class="font-size-[14px] color-[#333]">
-                {{ item.lable }}
+                {{ item.label }}
               </div>
             </template>
           </div>
@@ -135,6 +135,7 @@ const tips = ref([
         </div>
       </div>
     </common-model>
+
     <div class="col-12 px-[16px] py-[16px]" uno-lg="col-8 offset-2">
       <member-lists-inform @recharge="rechargePop" @testing="beta" />
     </div>

@@ -54,8 +54,12 @@ const toggleFold = () => {
 }
 
 const themeProcess = () => {
-  const res = props.theme === 'gradient' ? 'linear-gradient(90deg,#8CADF8,#D8E7FD)' : props.theme === 'theme' ? 'linear-gradient(90deg,#477ef500,#82d0faf2)' : '#F1F5FE'
-  return res
+  const themeMap = {
+    gradient: 'linear-gradient(90deg,#8CADF8,#D8E7FD)',
+    theme: 'linear-gradient(90deg,#477ef500,#82d0faf2)',
+    solid: '#F1F5FE',
+  }
+  return themeMap[props.theme] || themeMap.solid
 }
 </script>
 
