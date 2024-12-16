@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 const props = withDefaults(defineProps<{
   nomore?: boolean
+
 }>(), {
   nomore: false,
 })
 const emits = defineEmits<{
-  scrollToBottom: []
+  pull: []
 }>()
 const loadingShow = ref<boolean>(false)
 const onScroll = useDebounceFn((e: any) => {
@@ -15,9 +16,9 @@ const onScroll = useDebounceFn((e: any) => {
   const currentHeight = scrollTop + offsetHeight
   if (currentHeight + 20 >= scrollHeight) {
     loadingShow.value = true
-    emits('scrollToBottom')
+    emits('pull')
   }
-}, 500)
+}, 300)
 </script>
 
 <template>

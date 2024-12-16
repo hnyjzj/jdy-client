@@ -255,7 +255,7 @@ const uploadFile = async (file: any, id?: string) => {
     <div class="">
       <common-list-pull
         :nomore="nomore"
-        @scroll-to-bottom=" () => {
+        @pull=" () => {
           searchPage += 1
           searchFn()
         }">
