@@ -55,8 +55,8 @@ const props = defineProps<{
                 </div>
               </van-col>
               <van-col span="12">
-                <div class="flex-end text-size-[14px] ">
-                  <common-button-irregular text="编辑" />
+                <div class="flex-end text-size-[14px]">
+                  <common-button-irregular text="编辑" @submit="jump('/product/manage/edit', { code: item.code })" />
                 </div>
               </van-col>
             </van-row>

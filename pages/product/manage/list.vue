@@ -35,10 +35,9 @@ async function getList(where = {} as Product) {
   return res as any
 }
 
-onMounted(async () => {
-  await getList()
-  await getProductWhere()
-})
+await getList()
+await getProductWhere()
+
 const list = ref({} as Where<Product>)
 const create = () => {
   isModel.value = true

@@ -1,4 +1,4 @@
-<script lang="ts" setup generic="T">
+<script lang="ts" setup generic="T extends Record<string, any>">
 const props = defineProps<{
   filterListToArray: FilterWhere[]
   list: T

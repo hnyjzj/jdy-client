@@ -6,16 +6,10 @@ const props = defineProps<{
   filterListToArray: FilterWhere[]
 }>()
 
-const emits = defineEmits(['goLoss'])
-
 const goodsStatus = {
   1: '在库',
   2: '报损',
   3: '维修中',
-}
-
-function goLoss() {
-  emits('goLoss')
 }
 </script>
 
@@ -62,25 +56,4 @@ function goLoss() {
       </div>
     </div>
   </div>
-  <div class="bottom">
-    <div class="">
-      <div class="flex-center-row grid-12 gap-4 px-4 py-2 col-12" uno-lg="col-8 offset-2" uno-md="col-12 flex-shrink-1">
-        <div class="flex-1">
-          <common-button-rounded content="操作记录" color="#fff" bgc="#FFF" />
-        </div>
-        <div class="flex-1">
-          <common-button-rounded content="报损" color="#fff" bgc="#FFF" @button-click="goLoss" />
-        </div>
-        <div class="flex-1">
-          <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: props.productInfo.code })" />
-        </div>
-      </div>
-    </div>
-  </div>
 </template>
-
-<style lang="scss" scoped>
-.bottom {
-  --uno: 'fixed bottom-0 left-0 right-0 blur-bgc';
-}
-</style>

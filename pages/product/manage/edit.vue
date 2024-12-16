@@ -25,10 +25,9 @@ async function getInfo() {
     productPamas.value = JSON.parse(JSON.stringify(productInfo.value))
   }
 }
-onMounted(async () => {
-  await getInfo()
-  await getProductWhere()
-})
+
+await getInfo()
+await getProductWhere()
 /**
  * 显示选择器并填充列数据
  * @param name 字段名

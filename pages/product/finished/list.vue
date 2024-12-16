@@ -12,12 +12,10 @@ const route = useRoute()
 const isModel = ref(false)
 // 报损原因
 const reason = ref('')
-onMounted(() => {
-  if (route.query.code) {
-    getProductInfo(route.query.code as string)
-  }
-  getProductWhere()
-})
+if (route.query.code) {
+  await getProductInfo(route.query.code as string)
+}
+await getProductWhere()
 
 function goLoss() {
   isModel.value = true
@@ -44,6 +42,21 @@ async function loss() {
 <template>
   <div class="py-6">
     <product-finished-list :product-info="productInfo" :filter-list="filterList" :filter-list-to-array="filterListToArray" @go-loss="goLoss" />
+    <div class="bottom">
+      <div class="">
+        <div class="flex-center-row grid-12 gap-4 px-4 py-2 col-12" uno-lg="col-8 offset-2" uno-md="col-12 flex-shrink-1">
+          <div class="flex-1">
+            <common-button-rounded content="操作记录" color="#fff" bgc="#FFF" />
+          </div>
+          <div class="flex-1">
+            <common-button-rounded content="报损" color="#fff" bgc="#FFF" @button-click="goLoss" />
+          </div>
+          <div class="flex-1">
+            <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: productInfo.code })" />
+          </div>
+        </div>
+      </div>
+    </div>
     <common-model v-model="isModel" title="报损" :show-ok="true" @confirm="loss">
       <div>
         <div class="title">
@@ -85,5 +98,9 @@ async function loss() {
 }
 .area {
   --uno: 'bg-[#EFF0F6] dark:bg-[rgba(230,230,232,0.3)] border-none p-2 rounded-2';
+}
+
+.bottom {
+  --uno: 'fixed bottom-0 left-0 right-0 blur-bgc';
 }
 </style>
