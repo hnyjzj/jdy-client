@@ -15,12 +15,12 @@ const emits = defineEmits<{
   submit: [val: addStoreReq]
 }>()
 
-const { addForm } = storeToRefs(useStores())
-
+const { addForm, addsearchKey } = storeToRefs(useStores())
 const form = defineModel<addStoreReq>({ default: {
 } })
-
 form.value = addForm.value
+console.log(addForm.value)
+
 const rules = ref<Rules<addStoreReq>>({
   parent_id: [],
   address: [{
@@ -51,26 +51,24 @@ const rules = ref<Rules<addStoreReq>>({
   sync_wxwork: [],
 })
 
-const searchKey = ref<string>('')
-
 const onSearch = useDebounceFn(() => {
-  emits('updateParent', searchKey.value)
+  emits('updateParent', addsearchKey.value)
 }, 1000)
 // 清空输入框
 const clearFn = () => {
-  searchKey.value = ''
+  addsearchKey.value = ''
   form.value.parent_id = ''
 }
 
 // 失去焦点 判断是否为空上级门店
 const blurClean = () => {
   // 如果关键字为空，则清空 id
-  if (searchKey.value === '') {
+  if (addsearchKey.value === '') {
     form.value.parent_id = ''
   }
   //   如果id为空，则清空关键字
   if (form.value.parent_id === '') {
-    searchKey.value = ''
+    addsearchKey.value = ''
   }
 }
 // 显示上级门店列表弹窗
@@ -124,7 +122,7 @@ defineExpose({
                   class="py-[12px] border-b-[#E6E6E8] border-b-solid border text-[14px] overflow-hidden text-ellipsis text-nowrap"
                   :style="{ borderBottom: index === popList.length - 1 ? 'none' : '1px solid #E6E6E8', color: item.id === form.parent_id ? '#578AFA' : '#000' }"
                   @click="() => {
-                    searchKey = item.name
+                    addsearchKey = item.name
                     form.parent_id = item.id
                     pop = false
                   }">
@@ -134,7 +132,7 @@ defineExpose({
             </div>
             <template #reference>
               <van-search
-                v-model="searchKey"
+                v-model="addsearchKey"
                 autocomplete="off"
                 shape="round"
                 :style="{

@@ -4,6 +4,9 @@ export const useStores = defineStore('Store', {
     storesList: [] as storesList[],
     total: 0,
     storeDetails: {} as getStoreDetailRes,
+    showName: {
+      province_name: '' as string,
+    },
     formList: {
       parent_id: undefined,
       address: undefined,
@@ -14,6 +17,8 @@ export const useStores = defineStore('Store', {
       contact: undefined,
       wxwork_id: undefined,
     } as Where,
+    searchKey: '' as string,
+    addsearchKey: '' as string,
     addForm: {
       parent_id: undefined,
       address: '',
@@ -34,8 +39,14 @@ export const useStores = defineStore('Store', {
       const { data } = await https.post<storesListRes, storeListReq>('/store/list', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         if (!search) {
-          this.storesList = data.value.data.list
           this.total = data.value.data.total
+          if (data.value.data.list.length > 0) {
+            this.storesList = [...this.storesList, ...data.value.data.list]
+          }
+          else {
+            // 当前页没有数据，则不进行下一页
+            return false
+          }
         }
         else {
           return data.value.data.list
@@ -74,6 +85,6 @@ export const useStores = defineStore('Store', {
   },
   persist: {
     storage: piniaPluginPersistedstate.cookies(),
-    pick: ['formList', 'addForm'],
+    pick: ['formList', 'addForm', 'searchKey', 'addsearchKey', 'showName'],
   },
 })

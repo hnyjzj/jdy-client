@@ -2,13 +2,11 @@
 import { useCascaderAreaData } from '@vant/area-data'
 
 const store = useStores()
-const { storesList, formList, addForm } = storeToRefs(useStores())
+const { storesList, formList, addForm, showName } = storeToRefs(useStores())
 const { $toast } = useNuxtApp()
 useSeoMeta({
   title: '门店列表',
 })
-
-await store.getStoreList({ page: 1, limit: 10 })
 
 const addFormRef = ref<any>()
 const editFormRef = ref<any>()
@@ -26,9 +24,9 @@ const options = useCascaderAreaData()
 // 地址选择器显示状态
 const addressShow = ref(false)
 // 用于显示 上级门店中文 和  省市区中文
-const showName = ref({
-  province_name: '',
-})
+// const showName = ref({
+//   province_name: '',
+// })
 
 // 新增门店表单数据
 const editForm = ref<editStoreReq>({
@@ -82,11 +80,27 @@ const replaceEmptyStrings = (obj: any) => {
     }
   })
 }
+
+// 搜索页面
+const searchPage = ref(1)
+// 没有更多数据了
+const nomore = ref(false)
 // 搜索 获取列表数据
-const searchFn = async () => {
+const searchFn = async (init = false) => {
+  if (nomore.value) {
+    return false
+  }
+  if (init) {
+    storesList.value = []
+  }
   replaceEmptyStrings(formList.value)
-  await store.getStoreList({ page: 1, limit: 10, where: formList.value })
+  const res = await store.getStoreList({ page: searchPage.value, limit: 10, where: formList.value })
+  if (res === false) {
+    nomore.value = true
+  }
 }
+// 初始化请求列表数据
+await searchFn(true)
 
 // 跳转到详情页
 const getStoreInfo = (val: string) => {
@@ -215,6 +229,7 @@ const uploadFile = async (file: any, id?: string) => {
     $toast.error(res.data.value?.message || '上传失败')
     return false
   }
+  //  如果有id 说明是 修改logo ,没有id则是新增
   if (id) {
     editForm.value.logo = res.data.value.data.url
   }
@@ -229,18 +244,27 @@ const uploadFile = async (file: any, id?: string) => {
     <!-- 筛选 -->
     <div class="px-[16px]">
       <div class="col-12 grid-12 lg:col-8 lg:offset-2 pt-[12px] pb-[16px] color-[#fff]">
-        <div class="col-8 py-[6px] px-[12px] line-height-[20px]">
+        <div class="col-8 py-[6px] px-[12px] line-height-[20px]" uno-lg="col-4 offset-2">
           共{{ store.total }}条数据
         </div>
-        <div class="col-4" @click="show = true">
+        <div class="col-4" uno-lg="col-4" @click="show = true">
           <product-filter-Senior />
         </div>
       </div>
     </div>
-    <!-- 小卡片组件 -->
-    <div class="px-[16px]">
-      <stores-card :list="storesList" @get-detail="getStoreInfo" @edit-store="edit" @delete-store="deleteStoreFn" />
+    <div class="">
+      <common-list-pull
+        :nomore="nomore"
+        @scroll-to-bottom=" () => {
+          searchPage += 1
+          searchFn()
+        }">
+        <template #default>
+          <stores-card @get-detail="getStoreInfo" @edit-store="edit" @delete-store="deleteStoreFn" />
+        </template>
+      </common-list-pull>
     </div>
+    <!-- 小卡片组件 -->
 
     <div @click="newAdd()">
       <common-create />
@@ -269,7 +293,6 @@ const uploadFile = async (file: any, id?: string) => {
         class="p-[16px] bg-[#F1F5FE] h-full">
         <stores-add
           ref="addFormRef"
-          v-model="addForm"
           :show-name="showName"
           @upload="uploadFile"
           @select-city="addressShow = true"
@@ -320,7 +343,14 @@ const uploadFile = async (file: any, id?: string) => {
           @clean-parent-id="() => {
             formList.parent_id = undefined
           }"
-          @submit="searchFn" />
+          @submit="
+            () => {
+              searchPage = 1
+              nomore = false
+              storesList = []
+              searchFn()
+            }
+          " />
       </div>
     </common-popup>
 

@@ -1,19 +1,16 @@
 <script setup lang="ts">
-const props = defineProps<{
-  list: storesList[]
-}
->()
 const emits = defineEmits<{
   getDetail: [val: string]
   editStore: [val: string]
   deleteStore: [val: string]
 }>()
+const { storesList } = storeToRefs(useStores())
 // 转换省市区名字
 const addressName = computed(() => {
-  props.list.forEach((item) => {
+  storesList.value.forEach((item) => {
     item.addressName = toProvinces(item.province, item.city, item.district)
   })
-  return props.list
+  return storesList.value
 })
 </script>
 
