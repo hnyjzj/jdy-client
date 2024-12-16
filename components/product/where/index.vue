@@ -24,6 +24,7 @@ function selectFilter(filterKey: string, presetId: number) {
 }
 function submit() {
   emits('submit', filterParams.value)
+  filterParams.value = {} as T
 }
 </script>
 
@@ -53,6 +54,12 @@ function submit() {
                     </div>
                   </template>
                 </div>
+              </template>
+              <template v-else-if="filter?.input === 'switch'">
+                <van-switch v-model="filterParams[filter.name]" />
+              </template>
+              <template v-else-if="filter?.input === 'search'">
+                <van-switch v-model="filterParams[filter.name]" />
               </template>
               <template v-else>
                 <div class="mt-2">

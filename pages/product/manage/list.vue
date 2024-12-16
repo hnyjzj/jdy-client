@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Where } from 'where'
-import * as XLSX from 'xlsx'
 
 const { $toast } = useNuxtApp()
 const { getProductList, getProductWhere, importProduct } = useProductManage()
@@ -10,20 +9,43 @@ const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const isModel = ref(false)
-
+const pages = ref(1)
+const isCanPull = ref(true)
 useSeoMeta({
   title: '货品管理',
 })
 const openFilter = () => {
   isFilter.value = true
 }
+
+async function getList(where = {} as Product) {
+  if (!isCanPull.value)
+    return
+  const params = { page: pages.value, limit: 20 } as ProductReq
+  if (JSON.stringify(where) !== '{}') {
+    params.where = where
+  }
+  const res = await getProductList(params)
+  if (res.data?.list.length) {
+    pages.value++
+  }
+  else {
+    isCanPull.value = false
+  }
+  return res as any
+}
+
 onMounted(async () => {
-  await getProductList({ page: 1, limit: 10 })
+  await getList()
   await getProductWhere()
 })
 const list = ref({} as Where<Product>)
 const create = () => {
   isModel.value = true
+}
+
+function pull() {
+  getList()
 }
 
 // 上传xlsx文件数据
@@ -95,7 +117,10 @@ async function submitGoods() {
 
 // 筛选列表
 async function submitWhere(filterParams: Product) {
-  const res = await getProductList({ page: 1, limit: 10, where: filterParams })
+  pages.value = 1
+  isCanPull.value = true
+  productList.value = []
+  const res = await getList(filterParams)
   if (res.code === HttpCode.SUCCESS) {
     isFilter.value = false
     $toast.success('筛选成功')
@@ -107,17 +132,21 @@ async function submitWhere(filterParams: Product) {
 </script>
 
 <template>
-  <div>
-    <!-- 筛选 -->
-    <product-filter
-      v-model:id="complate" v-model:search="searchKey" @filter="openFilter">
-      <template #company>
-        <product-manage-company />
-      </template>
-    </product-filter>
+  <div class="overflow-hidden">
+    <div class="fixed top-0 left-0 right-0">
+      <!-- 筛选 -->
+      <product-filter
+        v-model:id="complate" v-model:search="searchKey" @filter="openFilter">
+        <template #company>
+          <product-manage-company />
+        </template>
+      </product-filter>
+    </div>
     <!-- 小卡片组件 -->
-    <div class="px-[16px] pb-16">
-      <product-manage-card :product-list="productList" :filter-list="filterList" />
+    <div class="px-[16px] pt-26 pb-16 overflow-hidden">
+      <common-list-pull @pull="pull">
+        <product-manage-card :product-list="productList" :filter-list="filterList" />
+      </common-list-pull>
     </div>
     <product-manage-bottom />
     <div class="cursor-pointer">

@@ -27,7 +27,7 @@ const props = defineProps<{
               </van-col>
               <van-col span="12">
                 <div class="text-align-end">
-                  {{ item?.class }}
+                  {{ props.filterList.class?.preset[item.class] }}
                 </div>
               </van-col>
             </van-row>
@@ -39,7 +39,7 @@ const props = defineProps<{
               </van-col>
               <van-col span="12">
                 <div class="text-align-end">
-                  {{ item?.material }}
+                  {{ props.filterList.material?.preset[item.class] }}
                 </div>
               </van-col>
             </van-row>

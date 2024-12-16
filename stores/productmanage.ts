@@ -25,7 +25,7 @@ export const useProductManage = defineStore('ProductManage', {
       try {
         const { data } = await https.post<ProductRes, ProductReq>('/product/list', pamars)
         if (data.value.code === HttpCode.SUCCESS) {
-          this.productList = data.value.data.list
+          pamars.page === 1 ? this.productList = data.value.data.list : this.productList = this.productList.concat(data.value.data.list)
         }
         return data.value
       }

@@ -151,7 +151,7 @@ interface FilterWhere {
   /**
    * 筛选类型 选择或输入
    */
-  input: 'select' | 'text'
+  input: 'select' | 'text' | 'search' | 'switch' | 'number'
   sort: number
   show: boolean
   name: ProductKey
