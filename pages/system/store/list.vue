@@ -101,7 +101,10 @@ const searchFn = async (init = false) => {
   }
 }
 // 初始化请求列表数据
-await searchFn(true)
+
+usePageShow(() => {
+  searchFn(true)
+})
 
 // 跳转到详情页
 const getStoreInfo = (val: string) => {
