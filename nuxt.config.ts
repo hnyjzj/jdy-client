@@ -1,5 +1,6 @@
 import { defineNuxtConfig } from 'nuxt/config'
-
+import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
+import Components from 'unplugin-vue-components/vite'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-06',
@@ -29,6 +30,12 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/css/main.scss'],
   vite: {
+    plugins: [
+      Components({
+        dts: true,
+        resolvers: [NaiveUiResolver()], // Automatically register all components in the `components` directory
+      }),
+    ],
     css: {
       preprocessorOptions: {
         scss: {
@@ -36,6 +43,19 @@ export default defineNuxtConfig({
         },
       },
     },
+  },
+  imports: {
+    presets: [
+      {
+        from: 'naive-ui',
+        imports: [
+          'useDialog',
+          'useMessage',
+          'useNotification',
+          'useLoadingBar',
+        ],
+      },
+    ],
   },
   //   nitro: {
   //     devProxy: {

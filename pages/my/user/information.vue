@@ -244,10 +244,11 @@ const deleteAvatar = () => {
 .error {
   --uno: 'color-[red] text-size-[14px] line-height-[20px] mt-10px';
 }
-::v-deep .van-uploader__upload {
+:deep(.van-uploader__upload) {
   margin: 0;
 }
-::v-deep .van-uploader__preview {
+
+:deep(.van-uploader__preview) {
   margin: 0;
 }
 </style>
