@@ -72,13 +72,12 @@ const fold = (id: string) => {
 const addBench = (id: string) => {
   resetForm(true)
   submitStatus.value = 'add'
-  show.value = true
   params.value.parent_id = id
 }
+
 const updateBench = (bench: WorkBench) => {
   resetForm(true)
   submitStatus.value = 'update'
-  show.value = true
   params.value.id = bench.id
   params.value.parent_id = bench.parent_id
   if (bench.title)
@@ -132,6 +131,15 @@ async function submit(val: AddWorkbencheReq) {
   }
   $toast.error(res?.message || '操作失败')
 }
+
+// 编辑或跳转分页
+async function changePage(bench: WorkBench) {
+  if (isSetup.value) {
+    return updateBench(bench)
+  }
+  jump(bench.path)
+}
+
 // 删除头像
 const deleteFile = () => {
   fileList.value = []
@@ -184,7 +192,7 @@ const afterRead = async (file: any) => {
       <div class="px-[16px]">
         <!-- 工作台入口 -->
         <div class="mt-6 mb-14 col-12">
-          <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="delBench" @update="updateBench" @fold="fold" />
+          <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="delBench" @update="updateBench" @fold="fold" @change-page="changePage" />
           <template v-if="isSetup">
             <button style="all: unset;">
               <div class="flex items-center mb-4 cursor-pointer" @click="resetForm(true);show = true">
@@ -198,7 +206,7 @@ const afterRead = async (file: any) => {
         </div>
       </div>
     </common-layout-center>
-    <common-model v-model:model-value="show" title="新增" :show-ok="true" @confirm="() => addWorkbenchform?.submit()">
+    <common-model v-model:model-value="show" :title="submitStatus === 'add' ? '新增' : '编辑'" :show-ok="true" @confirm="() => addWorkbenchform?.submit()">
       <div class="py-[16px]">
         <common-form ref="addWorkbenchform" v-model="params" :rules="rules" @submit="(val) => submit(val)">
           <template #title="{ label, error }">
