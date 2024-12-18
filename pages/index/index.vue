@@ -43,6 +43,9 @@ const demoListt = ref<DemoItem[]>([{ title: '销售金额', number: 100 }, { tit
       <work-card-information left-title="销售目标" :list="demoList" />
       <work-card-information left-title="今日销售" :list="demoList" />
       <work-card-information left-title="会员数据" :list="demoListt" rb-text="查看员工排行" />
+      <n-button type="success">
+        Success
+      </n-button>
     </div>
 
     <common-tabbar text="todo" />
