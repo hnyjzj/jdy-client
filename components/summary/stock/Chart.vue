@@ -34,7 +34,8 @@ async function goDetail() {
       </div>
       <div class="pb-[14px]">
         <ClientOnly fallback-tag="div" fallback="加载中...">
-          <VChart class="chart" :option="props.option" />
+          <!-- <VChart class="chart" :option="props.option" /> -->
+          {{ props.option }}
         </ClientOnly>
       </div>
     </common-fold>

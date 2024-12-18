@@ -51,12 +51,12 @@ function pull() {
 const sheetData = ref([])
 /**
  * 上传xlsx文件并解析数据
- * @param event input上传文件
  */
-function FileUpload(event: any) {
-  uploadXlsx(event).then((data) => {
-    sheetData.value = data as never[]
-  })
+function FileUpload(_: any) {
+
+//   uploadXlsx(event).then((data) => {
+//     sheetData.value = data as never[]
+//   })
 }
 /**
  * 将二维数组转换为对象数组

@@ -62,7 +62,8 @@ const option = ref({
         </div>
       </div>
       <div>
-        <VChart class="chart" :option="option" />
+        <!-- <VChart class="chart" :option="option" /> -->
+        {{ option }}
       </div>
     </div>
     <div>

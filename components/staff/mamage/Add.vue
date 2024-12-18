@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Rules } from 'common-form'
-import { pinyin } from 'pinyin-pro'
+// import { pinyin } from 'pinyin-pro'
 
 const emits = defineEmits<{
   submit: [val: addStaffAccount]
@@ -17,7 +17,8 @@ const formlist = defineModel({ default: {
 } })
 
 const toPinyin = () => {
-  const pinyinName = pinyin(formlist.value.account.nickname, { toneType: 'none', type: 'array' })
+//   const pinyinName = pinyin(formlist.value.account.nickname, { toneType: 'none', type: 'array' })
+  const pinyinName = ['']
   const capitalizedStrings = pinyinName.map(str =>
     str.charAt(0).toUpperCase() + str.substring(1),
   )

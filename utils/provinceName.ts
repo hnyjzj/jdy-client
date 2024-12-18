@@ -1,6 +1,7 @@
-import { areaList } from '@vant/area-data'
+// import { areaList } from '@vant/area-data'
 
 export const toProvinces = (province: string, city: string, area: string): string => {
+  const areaList = {} as any
   try {
     const provinceName = areaList.province_list[province] || ''
     const cityName = areaList.city_list[city] || ''

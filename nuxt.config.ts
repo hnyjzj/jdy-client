@@ -9,6 +9,12 @@ export default defineNuxtConfig({
   devServer: {
     port: 80,
   },
+  build: {
+    analyze: true,
+  },
+  nitro: {
+    compressPublicAssets: true, // 启动压缩
+  },
   ssr: true,
   modules: [
     '@pinia/nuxt',
@@ -20,7 +26,6 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@waset/unplugin-iconify/nuxt',
     '@nuxtjs/color-mode',
-    'nuxt-echarts',
   ],
   app: {
     head: {
@@ -75,9 +80,5 @@ export default defineNuxtConfig({
       },
     },
     iconifyIntelliSense: true,
-  },
-  echarts: {
-    charts: ['BarChart', 'LineChart', 'PieChart'],
-    components: ['DatasetComponent', 'GridComponent', 'TooltipComponent', 'LegendComponent'],
   },
 })

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useCascaderAreaData } from '@vant/area-data'
+// import { useCascaderAreaData } from '@vant/area-data'
 
 const store = useStores()
 const { storesList, formList, addForm, showName } = storeToRefs(useStores())
@@ -20,7 +20,7 @@ const show = ref(false)
 // 当前选中的省市区
 const cascaderValue = ref('')
 // 省市区数据
-const options = useCascaderAreaData()
+// const options = useCascaderAreaData()
 // 地址选择器显示状态
 const addressShow = ref(false)
 // 用于显示 上级门店中文 和  省市区中文
@@ -48,30 +48,30 @@ useSeoMeta({
 /**
  * 筛选表单完成时操作
  */
-const onFinish = (values: any) => {
-  const province = values.selectedOptions[0].value
-  const city = values.selectedOptions[1].value
-  const district = values.selectedOptions[2].value
-  if (show.value) {
-    formList.value.province = province
-    formList.value.city = city
-    formList.value.district = district
-  }
-  else if (addStoreShow.value) {
-    addForm.value.province = province
-    addForm.value.city = city
-    addForm.value.district = district
-  }
-  else if (editStoreShow.value) {
-    editForm.value.province = province
-    editForm.value.city = city
-    editForm.value.district = district
-  }
-  // 更新显示名称，合并省份、城市和地区的文本
-  showName.value.province_name = values.selectedOptions[0].text + values.selectedOptions[1].text + values.selectedOptions[2].text
-  // 隐藏地址选择器
-  addressShow.value = false
-}
+// const onFinish = (values: any) => {
+//   const province = values.selectedOptions[0].value
+//   const city = values.selectedOptions[1].value
+//   const district = values.selectedOptions[2].value
+//   if (show.value) {
+//     formList.value.province = province
+//     formList.value.city = city
+//     formList.value.district = district
+//   }
+//   else if (addStoreShow.value) {
+//     addForm.value.province = province
+//     addForm.value.city = city
+//     addForm.value.district = district
+//   }
+//   else if (editStoreShow.value) {
+//     editForm.value.province = province
+//     editForm.value.city = city
+//     editForm.value.district = district
+//   }
+//   // 更新显示名称，合并省份、城市和地区的文本
+//   showName.value.province_name = values.selectedOptions[0].text + values.selectedOptions[1].text + values.selectedOptions[2].text
+//   // 隐藏地址选择器
+//   addressShow.value = false
+// }
 
 // 替换空字符串
 const replaceEmptyStrings = (obj: any) => {
@@ -357,13 +357,13 @@ const uploadFile = async (file: any, id?: string) => {
 
     <!-- 选择省市区 -->
     <van-popup v-model:show="addressShow" round position="bottom">
-      <van-cascader
+      <!-- <van-cascader
         v-model="cascaderValue"
         title="请选择所在地区"
         :options="options"
         @close="addressShow = false"
         @finish="onFinish"
-      />
+      /> -->
     </van-popup>
   </div>
 </template>
