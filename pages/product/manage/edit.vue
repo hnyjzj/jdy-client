@@ -154,7 +154,16 @@ function cancelUpdata() {
                   <div class="label">
                     {{ item?.label }}
                   </div>
-                  <common-frame :is-icon="true" :tip="String(productPamas[item.name])" :is-disabled="true" @click="pickerFun(item.name)" />
+                  <div class="select" @click.capture="pickerFun(item.name)">
+                    <div>
+                      <div class="flex items-center flex-1">
+                        <div>{{ filterList[item.name]?.preset[productPamas[item.name]] ?? '请选择' }}</div>
+                      </div>
+                    </div>
+                    <div class="select-right">
+                      <van-icon name="arrow" color="#808089" />
+                    </div>
+                  </div>
                 </template>
               </div>
             </template>
@@ -177,5 +186,8 @@ function cancelUpdata() {
 <style lang="scss" scoped>
 .label {
   --uno: 'mb-2 text-color text-14px';
+}
+.select {
+  --uno: 'px-[12px] py-[10px] rounded-[36px] flex-between text-color bg-#fff border-[#e6e6e8] border-1px border-solid dark:bg-[rgba(255,255,255,0.2)] dark:border-[rgba(230,230,232,0.2)]';
 }
 </style>

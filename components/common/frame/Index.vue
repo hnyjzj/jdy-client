@@ -52,7 +52,7 @@ const value = defineModel()
 
 <style lang="scss" scoped>
 .row {
-  --uno: 'px-[12px] py-[10px] rounded-[36px] w-auto';
+  --uno: 'px-[12px] rounded-[36px] w-auto';
 
   &.disable {
     --uno: 'flex-between border-[rgba(230,230,232,0.5)] border-1px border-solid dark:bg-[rgba(230,230,232,0.3)] dark:border-[rgba(230,230,232,0.3)]';
@@ -62,7 +62,7 @@ const value = defineModel()
   }
   &-input {
     background: transparent;
-    --uno: 'border-none bg-transparent color-[#333] dark:color-[#fff] flex-1';
+    --uno: 'border-none bg-transparent color-[#333] dark:color-[#fff] flex-1 py-[10px]';
   }
 
   .nodis::placeholder {
@@ -72,8 +72,8 @@ const value = defineModel()
     --uno: 'color-[#808089] font-size-[14px]';
   }
 }
-::v-deep input::-webkit-outer-spin-button,
-::v-deep input::-webkit-inner-spin-button {
+:v-deep(input::-webkit-outer-spin-button),
+:v-deep(input::-webkit-inner-spin-button) {
   -webkit-appearance: none !important;
 }
 </style>

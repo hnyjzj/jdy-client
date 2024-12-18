@@ -61,9 +61,14 @@ function submit() {
               <template v-else-if="filter?.input === 'search'">
                 <van-switch v-model="filterParams[filter.name]" />
               </template>
-              <template v-else>
+              <template v-else-if="filter?.input === 'number'">
                 <div class="mt-2">
-                  <common-frame v-model="filterParams[filter.name]" :type="filter?.type" :tip="`筛选${filter?.label}`" />
+                  <common-frame v-model="filterParams[filter.name]" type="number" :tip="`输入筛选${filter?.label}`" />
+                </div>
+              </template>
+              <template v-else-if="filter?.input === 'text'">
+                <div class="mt-2">
+                  <common-frame v-model="filterParams[filter.name]" type="text" :tip="`输入筛选${filter?.label}`" />
                 </div>
               </template>
             </div>
@@ -77,6 +82,9 @@ function submit() {
   </div>
 </template>
 
-<style lang="scss" scoped>
-
+<style>
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
 </style>
