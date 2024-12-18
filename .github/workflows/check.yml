@@ -24,7 +24,7 @@ jobs:
         run: pnpm i
 
       - name: Build
-        run: pnpm generate
+        run: pnpm build
 
       - name: Lint
         run: pnpm lint

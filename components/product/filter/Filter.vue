@@ -1,5 +1,9 @@
 <script setup lang="ts">
+const emits = defineEmits(['filter'])
 const search = defineModel('search')
+const filter = () => {
+  emits('filter')
+}
 </script>
 
 <template>
@@ -17,7 +21,7 @@ const search = defineModel('search')
         共1292939339条数据
       </div>
       <div class="col-4 ">
-        <product-filter-Senior />
+        <product-filter-Senior @filter="filter" />
       </div>
     </div>
   </div>

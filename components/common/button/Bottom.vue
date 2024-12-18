@@ -8,14 +8,23 @@ const props = withDefaults(defineProps<Props>(), {
   cancelText: '取消',
   confirmText: '确认',
 })
+const emit = defineEmits(['cancel', 'confirm'])
+
+const cancel = () => {
+  emit('cancel')
+}
+
+const confirm = () => {
+  emit('confirm')
+}
 </script>
 
 <template>
   <div class="btn grid-12 offset-2">
-    <button class="btn-left col-span-4 offset-1 cursor-pointer">
+    <button class="btn-left col-span-4 offset-1 cursor-pointer" @click="cancel">
       {{ props.cancelText }}
     </button>
-    <button class="btn-right col-span-6 cursor-pointer">
+    <button class="btn-right col-span-6 cursor-pointer" @click="confirm">
       {{ props.confirmText }}
     </button>
   </div>
