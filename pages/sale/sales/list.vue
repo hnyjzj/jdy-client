@@ -51,7 +51,7 @@ const handleClick = async () => {
         <div class="text-size-[14px] color-[#fff]">
           共{{ saleList[0].store.salesVolume }}条数据
         </div>
-        <product-filter-senior />
+        <product-filter-senior class="color-[#fff]" />
       </div>
       <!-- cards -->
       <sale-sales-list :info="saleList" @user-click="handleClick" />

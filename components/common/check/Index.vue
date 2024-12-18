@@ -21,7 +21,7 @@ function toggleCheck() {
 </script>
 
 <template>
-  <div @click="toggleCheck">
+  <div class="cursor-pointer" @click="toggleCheck">
     <template v-if="checked">
       <div class="check-box" :style="{ borderRadius: props.rounded, width: props.size, height: props.size }">
         <icon name="i-icon:check-box" color="#3971F3" :size="props.size" />

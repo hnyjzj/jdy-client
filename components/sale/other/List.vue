@@ -41,7 +41,7 @@ const handleDelete = () => {
             </div>
           </template>
           <div class="flex-end bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)] gap-[32px]" uno-lg="gap-[40px]">
-            <div class="info delete" @click="handleDelete">
+            <div class="info delete cursor-pointer" @click="handleDelete">
               删除
             </div>
             <common-button-irregular text="修改" @click="handleAmend" />

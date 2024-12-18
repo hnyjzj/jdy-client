@@ -67,7 +67,7 @@ const handleClick = () => {
   --uno: 'flex-end justify-items-center bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]';
 
   .accidental {
-    --uno: 'color-[#3971F3] font-semibold font-size-[14px] dark:color-[#fff]';
+    --uno: 'color-[#3971F3] font-semibold font-size-[14px] dark:color-[#fff] cursor-pointer';
   }
 }
 .info {
