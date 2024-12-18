@@ -13,6 +13,7 @@ const formlist = defineModel({ default: {
     password: '',
     avatar: '',
     email: '',
+    gender: 0,
   },
 } })
 
@@ -143,6 +144,19 @@ const rules = ref<Rules<addStaffAccount>>({
                 </div>
               </div>
             </template>
+            <template #gender="{ validate, error }">
+              <div class="text-[14px] pb-[12px]">
+                <div class="label">
+                  性别
+                </div>
+                <div class="h-[40px] px-[12px] rounded-[36px] border border-solid border-[#E6E6E8] overflow-hidden">
+                  <input v-model="formlist.account.gender" type="text" class="input-item" placeholder="请输入性别" @blur="validate()">
+                </div>
+                <div class="pt-[8px] pl-[16px] color-red">
+                  {{ error }}
+                </div>
+              </div>
+            </template>
             <template #email="{ validate, error }">
               <div class="text-[14px] pb-[12px]">
                 <div class="label">
@@ -160,7 +174,7 @@ const rules = ref<Rules<addStaffAccount>>({
               <div
                 class="text-size-[16px] font-semibold py-[16px] cursor-pointer" @click="submit">
                 <div class="ok">
-                  登录
+                  添加
                 </div>
               </div>
             </template>
