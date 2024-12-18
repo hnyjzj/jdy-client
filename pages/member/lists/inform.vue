@@ -3,14 +3,22 @@ useSeoMeta({
   title: '会员通知',
 })
 
+// 充值弹窗
 const show = ref(false)
 const rechargePop = () => {
   show.value = !show.value
 }
 
+// 测试通知弹窗
 const testing = ref(false)
 const beta = () => {
   testing.value = !testing.value
+}
+
+// 积分清零通知弹窗
+const notice = ref(false)
+const noticePop = () => {
+  notice.value = !notice.value
 }
 
 const per = ref([
@@ -33,8 +41,9 @@ const per = ref([
   },
 ])
 
-const checked = ref([])
-
+/**
+ * 测试弹窗提醒文本
+ */
 const tips = ref([
   {
     id: 1,
@@ -45,21 +54,47 @@ const tips = ref([
     label: '2、用手机号绑定成为门店会员',
   },
 ])
+
+/**
+ * 积分清零弹窗提醒文本
+ */
+const warnPhrase = [
+  {
+    id: 1,
+    label: '1、该类提醒，用于积分清零前，提醒顾客到店使用积分;',
+  },
+  {
+    id: 2,
+    label: '2、若使用短信提醒，请根据会员数量、确保短信条数。若短信条数不足，会发送失败;',
+  },
+  {
+    id: 1,
+    label: '3、请仅在需要通知顾客时使用该功能。临近清零前会每天自动发送提醒一次。',
+  },
+]
+
+const themeVars = reactive({
+  checkboxLabelColor: '#666',
+})
+
+const rechargeWay = ref([])
+
+const pushMode = ref(['a'])
 </script>
 
 <template>
   <div class="grid-12">
     <common-model v-model:model-value="show" :show-ok="true" title="短信充值">
-      <div class="flex flex-col gap-[16px] pb-[32px]">
+      <div class="inner">
         <div class="options model">
           <div class="top">
             充值条数
           </div>
           <template v-for="item in per" :key="item.id">
-            <div class="flex flex-row justify-between items-center px-[16px] py-[16px] bg-[#fff] rounded-[8px] shadow shadow-md">
+            <div class="part">
               <div class="flex-center-row gap-[16px] flex-start">
                 <div class="flex-center-row gap-[8px]">
-                  <van-radio-group v-model="checked">
+                  <van-radio-group v-model="rechargeWay">
                     <van-radio :name="item.id" icon-size="18px" />
                   </van-radio-group>
 
@@ -115,7 +150,7 @@ const tips = ref([
     </common-model>
 
     <common-model v-model:model-value="testing" :show-ok="true" title="测试通知">
-      <div class="flex flex-col gap-[16px] pb-[32px]">
+      <div class="inner">
         <div class="flex flex-col gap-[12px]">
           <div class="font-size-[14px] color-[#333]">
             发送测试前，请确认完成以下操作：
@@ -136,8 +171,69 @@ const tips = ref([
       </div>
     </common-model>
 
+    <common-model v-model:model-value="notice" :show-ok="true" title="积分清零通知">
+      <div class="inner">
+        <div class="flex flex-col gap-[6px]">
+          <template v-for="item in warnPhrase" :key="item.id">
+            <div class="font-size-[14px] color-[#666] italic">
+              {{ item.label }}
+            </div>
+          </template>
+        </div>
+
+        <div class="flex flex-col gap-[8px]">
+          <div class="font-size-[14px] color-[#333]">
+            清零时间
+          </div>
+
+          <div>
+            <common-frame tip="单位/天数" />
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-[8px]">
+          <div class="font-size-[14px] color-[#333]">
+            门店名
+          </div>
+
+          <div>
+            <common-frame tip="请输入门店名称" />
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-[8px]">
+          <div class="font-size-[14px] color-[#333]">
+            联系电话
+          </div>
+
+          <div>
+            <common-frame tip="请输入用户手机号" />
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-[8px]">
+          <div class="font-size-[14px] color-[#333]">
+            发送方式
+          </div>
+
+          <div>
+            <van-config-provider :theme-vars="themeVars" class="font-size-[14px]">
+              <van-checkbox-group v-model="pushMode" direction="horizontal">
+                <van-checkbox name="a" icon-size="16px">
+                  公众号
+                </van-checkbox>
+                <van-checkbox name="b" icon-size="16px">
+                  短信
+                </van-checkbox>
+              </van-checkbox-group>
+            </van-config-provider>
+          </div>
+        </div>
+      </div>
+    </common-model>
+
     <div class="col-12 px-[16px] py-[16px]" uno-lg="col-8 offset-2">
-      <member-lists-inform @recharge="rechargePop" @testing="beta" />
+      <member-lists-inform @recharge="rechargePop" @testing="beta" @send="noticePop" />
     </div>
   </div>
 </template>
@@ -148,5 +244,13 @@ const tips = ref([
 }
 .top {
   --uno: 'font-size-[14px] color-[#333]';
+}
+
+.part {
+  --uno: 'flex flex-row justify-between items-center px-[16px] py-[16px] bg-[#fff] rounded-[8px] shadow shadow-md';
+}
+
+.inner {
+  --uno: 'flex flex-col gap-[16px] pb-[32px]';
 }
 </style>
