@@ -6,10 +6,16 @@ const props = withDefaults(defineProps<{
 
   radius: '24px',
 })
+
+const emits = defineEmits(['submit'])
+
+function submit() {
+  emits('submit')
+}
 </script>
 
 <template>
-  <div class="editbox " :style="{ '--br-br': props.radius }">
+  <div class="editbox cursor-pointer" :style="{ '--br-br': props.radius }" @click="submit">
     <div
       class="text ">
       <span v-text="props.text" />

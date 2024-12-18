@@ -1,6 +1,13 @@
+<script lang="ts" setup>
+const emits = defineEmits(['filter'])
+const filter = () => {
+  emits('filter')
+}
+</script>
+
 <template>
   <div>
-    <div class="py-[6px] px-[12px] flex-end">
+    <div class="py-[6px] px-[12px] flex-end cursor-pointer cursor-pointer" @click="filter">
       <div class="mr-[4px]">
         <van-icon name="filter-o" />
       </div>
