@@ -37,7 +37,7 @@ const per = ref([
     id: 3,
     name: '300条',
     price: 250,
-    discount: 0.75,
+    discount: 0.6,
   },
 ])
 
@@ -80,6 +80,12 @@ const themeVars = reactive({
 const rechargeWay = ref([])
 
 const pushMode = ref(['official'])
+
+const counter = useState('counter', () => 0)
+
+const process = (val: number) => {
+  return counter.value = val * 10
+}
 </script>
 
 <template>
@@ -106,7 +112,7 @@ const pushMode = ref(['official'])
                 <template v-if="item.discount">
                   <div class="flex-center-row gap-[2px] italic">
                     <span class="color-[#FFAA04] dark:color-[#FFFFFF] text-[14px]">
-                      {{ item.discount * 100 }}
+                      {{ process(item.discount) }}
                     </span>
                     <span class="color-[#FFAA04] dark:color-[#FFFFFF] text-[14px]">
                       折

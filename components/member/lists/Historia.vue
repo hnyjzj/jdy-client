@@ -2,8 +2,8 @@
 </script>
 
 <template>
-  <div class="flex flex-col gap-[16px]">
-    <common-gradient title="顾客通知" theme="gradient" :italic="true" :foldable="true">
+  <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
+    <common-gradient title="顾客通知" theme="gradient" :italic="true">
       <template #body>
         <div class="box flex flex-col gap-[12px]">
           <div class="item">
@@ -49,7 +49,7 @@
       </template>
     </common-gradient>
 
-    <common-gradient title="顾客通知" theme="gradient" :italic="true" :foldable="true">
+    <common-gradient title="顾客通知" theme="gradient" :italic="true">
       <template #body>
         <div class="box flex flex-col gap-[12px]">
           <div class="item">
