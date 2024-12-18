@@ -79,7 +79,7 @@ const themeVars = reactive({
 
 const rechargeWay = ref([])
 
-const pushMode = ref(['a'])
+const pushMode = ref(['official'])
 </script>
 
 <template>
@@ -219,10 +219,10 @@ const pushMode = ref(['a'])
           <div>
             <van-config-provider :theme-vars="themeVars" class="font-size-[14px]">
               <van-checkbox-group v-model="pushMode" direction="horizontal">
-                <van-checkbox name="a" icon-size="16px">
+                <van-checkbox name="official" icon-size="16px">
                   公众号
                 </van-checkbox>
-                <van-checkbox name="b" icon-size="16px">
+                <van-checkbox name="note" icon-size="16px">
                   短信
                 </van-checkbox>
               </van-checkbox-group>
