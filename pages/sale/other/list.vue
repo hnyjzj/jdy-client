@@ -49,7 +49,7 @@ const handleDelete = () => {
         <span>删除后不可恢复，请谨慎处理。</span>
       </div>
     </common-model>
-    <div class="flex flex-col gap-[16px] px-[16px] py-[16px] col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
+    <div class="flex flex-col gap-[20px] px-[16px] py-[16px] col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
       <!-- header -->
       <!-- 搜索 -->
       <div class="flex flex-row gap-[12px]">

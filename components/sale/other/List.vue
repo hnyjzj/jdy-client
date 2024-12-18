@@ -14,7 +14,7 @@ const handleDelete = () => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-[16px]">
+  <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
       <sale-cards :title="item.num" :tag-text="item.openType" :info="item">
         <template #info>
