@@ -11,6 +11,7 @@ const isFilter = ref(false)
 const isModel = ref(false)
 const pages = ref(1)
 const isCanPull = ref(true)
+const loadingShow = ref<boolean>(true)
 useSeoMeta({
   title: '货品管理',
 })
@@ -130,22 +131,31 @@ async function submitWhere(filterParams: Where<Product>) {
 function edit(code: string) {
   jump('/product/manage/edit', { code })
 }
+
+/** 触底 */
+const onScroll = useDebounceFn((e: any) => {
+  const scrollTop = e.target.scrollTop
+  const scrollHeight = e.target.scrollHeight
+  const offsetHeight = Math.ceil(e.target.getBoundingClientRect().height)
+  const currentHeight = scrollTop + offsetHeight
+  if (currentHeight + 20 >= scrollHeight) {
+    pull()
+  }
+}, 300)
 </script>
 
 <template>
   <div class="overflow-hidden">
-    <div class="fixed top-0 left-0 right-0">
-      <!-- 筛选 -->
-      <product-filter
-        v-model:id="complate" v-model:search="searchKey" @filter="openFilter">
-        <template #company>
-          <product-manage-company />
-        </template>
-      </product-filter>
-    </div>
+    <!-- 筛选 -->
+    <product-filter
+      v-model:id="complate" v-model:search="searchKey" @filter="openFilter">
+      <template #company>
+        <product-manage-company />
+      </template>
+    </product-filter>
     <!-- 小卡片组件 -->
-    <div class="px-[16px] pt-26 pb-16 overflow-hidden">
-      <common-list-pull @pull="pull">
+    <div class="px-[16px] overflow-hidden">
+      <div class="pullList mb-12" @scroll="onScroll">
         <product-manage-card :list="productList" @edit="edit">
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]" @click="jump('/product/finished/list', { code: info.code })">
@@ -176,7 +186,19 @@ function edit(code: string) {
             </div>
           </template>
         </product-manage-card>
-      </common-list-pull>
+        <template v-if="loadingShow && isCanPull">
+          <div class="flex-center-row py-[16px]">
+            <van-loading color="#0094ff">
+              加载中...
+            </van-loading>
+          </div>
+        </template>
+        <template v-else-if="!isCanPull">
+          <div class="flex-center-row py-[16px] color-[#666] text-[14px]">
+            没有更多数据了~
+          </div>
+        </template>
+      </div>
     </div>
     <product-manage-bottom />
     <div class="cursor-pointer">
@@ -190,3 +212,11 @@ function edit(code: string) {
     <product-where v-model="isFilter" :list="list" :filter-list-to-array="filterListToArray" @submit="submitWhere" />
   </div>
 </template>
+
+<style lang="scss" scoped>
+.pullList {
+  --uno: 'px-[16px] pb-10px';
+  overflow: auto;
+  height: calc(100vh - 168px);
+}
+</style>
