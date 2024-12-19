@@ -68,23 +68,44 @@ const handleClick = async () => {
 </script>
 
 <template>
-  <div class="grid-12">
-    <div class="flex flex-col gap-[20px] px-[16px] py-[16px] col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-      <!-- header -->
-      <!-- 搜索 -->
-      <div class="flex flex-row gap-[12px]">
-        <product-filter-search class="color-[#fff] flex-1" />
-        <product-filter-senior class="color-[#fff]" />
-      </div>
-      <!-- 切换tab -->
+  <div class="grid-12 py-[16px]">
+    <div class="col-12 offset-2 col-start-3 px-[16px]" uno-lg="col-8 offset-2">
       <common-tab-secondary v-model:current-selected="currentSelected" :options="options" />
-      <!-- content -->
-      <component
-        :is="currentSelected === 1 ? detailsCards : detailsChart"
-        :info="depositList"
-        :pics="pics"
-        @user-click="handleClick"
-      />
     </div>
+    <template v-if="currentSelected === 1">
+      <div class="c1 px-[16px] py-[16px] col-12" uno-sm="col-12" uno-lg="col-8 offset-2">
+        <div class="flex flex-col gap-[20px]">
+          <div class="flex flex-row gap-[12px]">
+            <product-filter-search class="color-[#fff] flex-1" />
+            <product-filter-senior class="color-[#fff]" />
+          </div>
+          <component
+            :is="detailsCards"
+            :info="depositList"
+            @user-click="handleClick"
+          />
+        </div>
+      </div>
+    </template>
+
+    <template v-if="currentSelected === 2">
+      <div class="c2 px-[16px] py-[16px] col-12" uno-sm="col-12" uno-lg="col-8 offset-2">
+        <div class="flex flex-col gap-[20px]">
+          <div class="flex flex-row gap-[12px]">
+            <!-- 筛选门店 + 筛选时间 -->
+            <product-manage-company class="color-[#fff]" />
+            <product-filter-search class="color-[#fff] flex-1" />
+          </div>
+
+          <component
+            :is="detailsChart"
+            :pics="pics"
+          />
+        </div>
+      </div>
+    </template>
   </div>
 </template>
+
+<style lang="scss" scoped>
+</style>
