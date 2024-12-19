@@ -19,7 +19,6 @@ export default defineNuxtConfig({
     '@vant/nuxt',
     '@vueuse/nuxt',
     '@nuxt/eslint',
-    '@nuxt/image',
     '@waset/unplugin-iconify/nuxt',
     '@nuxtjs/color-mode',
     '@bg-dev/nuxt-naiveui',
@@ -86,9 +85,6 @@ export default defineNuxtConfig({
     classSuffix: '',
     storage: 'cookie', // or 'sessionStorage' or 'cookie'
     storageKey: 'nuxt-color-mode',
-  },
-  image: {
-    inject: true,
   },
   Iconify: {
     convert: {
