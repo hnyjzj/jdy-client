@@ -1,10 +1,10 @@
-<script lang="ts" setup generic="T extends Record<string, any>">
+<script lang="ts" setup generic="T">
 const props = defineProps<{
   filterListToArray: FilterWhere[]
   list: T
 }>()
 const emits = defineEmits<{
-  submit: [T]
+  submit: [params: T]
 }>()
 const isFilter = defineModel({ type: Boolean, default: false })
 // 筛选参数

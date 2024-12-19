@@ -18,7 +18,7 @@ const openFilter = () => {
   isFilter.value = true
 }
 // 获取货品列表
-async function getList(where = {} as Product) {
+async function getList(where = {} as Where<Product>) {
   if (!isCanPull.value)
     return
   const params = { page: pages.value, limit: 20 } as ProductReq
@@ -39,6 +39,7 @@ await getList()
 await getProductWhere()
 
 const list = ref({} as Where<Product>)
+
 const create = () => {
   isModel.value = true
 }
@@ -106,27 +107,28 @@ async function submitGoods() {
     const { code, message } = await importProduct({ products: data })
     if (code === HttpCode.SUCCESS) {
       isModel.value = false
-      $toast.success('导入成功')
+      return $toast.success('导入成功')
     }
-    else {
-      $toast.error(message ?? '导入失败')
-    }
+    $toast.error(message ?? '导入失败')
   }
 }
 
 // 筛选列表
-async function submitWhere(filterParams: Product) {
+async function submitWhere(filterParams: Where<Product>) {
   pages.value = 1
   isCanPull.value = true
   productList.value = []
   const res = await getList(filterParams)
   if (res.code === HttpCode.SUCCESS) {
     isFilter.value = false
-    $toast.success('筛选成功')
+    return $toast.success('筛选成功')
   }
-  else {
-    $toast.error(res.message ?? '筛选失败')
-  }
+  $toast.error(res.message ?? '筛选失败')
+}
+
+/** 编辑 */
+function edit(code: string) {
+  jump('/product/manage/edit', { code })
 }
 </script>
 
@@ -144,7 +146,36 @@ async function submitWhere(filterParams: Product) {
     <!-- 小卡片组件 -->
     <div class="px-[16px] pt-26 pb-16 overflow-hidden">
       <common-list-pull @pull="pull">
-        <product-manage-card :product-list="productList" :filter-list="filterList" />
+        <product-manage-card :list="productList" @edit="edit">
+          <template #info="{ info }">
+            <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]" @click="jump('/product/finished/list', { code: info.code })">
+              <van-row justify="space-between" class="py-[4px]">
+                <van-col span="12">
+                  <div class="">
+                    所属大类
+                  </div>
+                </van-col>
+                <van-col span="12">
+                  <div class="text-align-end">
+                    {{ filterList.class?.preset[info.class] }}
+                  </div>
+                </van-col>
+              </van-row>
+              <van-row justify="space-between" class="py-[4px]">
+                <van-col span="12">
+                  <div class="">
+                    材质
+                  </div>
+                </van-col>
+                <van-col span="12">
+                  <div class="text-align-end">
+                    {{ filterList.material?.preset[info.class] }}
+                  </div>
+                </van-col>
+              </van-row>
+            </div>
+          </template>
+        </product-manage-card>
       </common-list-pull>
     </div>
     <product-manage-bottom />
