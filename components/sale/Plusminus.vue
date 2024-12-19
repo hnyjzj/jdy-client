@@ -23,7 +23,11 @@ const handleClick = () => {
 </script>
 
 <template>
-  <div class="bg-[#F1F5FE] rounded-[60px] flex justify-center items-center" :style="`width: ${props.size}px; height: ${props.size}px;`" @click="handleClick">
+  <div
+    class="bg-[#F1F5FE] rounded-[60px] flex justify-center items-center cursor-pointer"
+    :style="`width: ${props.size}px; height: ${props.size}px;`"
+    @click="handleClick"
+  >
     <template v-if="props.isAdd">
       <icon name="i-icon:add" size="20" color="#3971F3" />
     </template>

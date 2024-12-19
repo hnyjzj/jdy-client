@@ -59,7 +59,7 @@ const handleDelete = () => {
 <template>
   <div class="grid-12">
     <common-model v-model:model-value="show" :show-ok="true" title="确认删除">
-      <div class="flex-center-col gap-[12px] text-[16px] color-[#333] pb-[24px]">
+      <div class="flex-center-col gap-[12px] text-[14px] color-[#333] pb-[32px]">
         <span>确认删除该条记录吗？</span>
         <span>删除后不可恢复，请谨慎处理。</span>
       </div>

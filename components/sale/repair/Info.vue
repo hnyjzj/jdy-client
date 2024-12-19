@@ -7,69 +7,67 @@ const checked = ref(1)
 </script>
 
 <template>
-  <div class="grid-12">
-    <div class="col-12 flex flex-col gap-[16px] py-[16px]" uno-lg="col-8 offset-2">
-      <common-fold title="基础信息">
-        <div class="grid-cols-[1fr] gap-[16px] px-[16px] py-[16px]" uno-lg="grid-cols-[1fr]" uno-md="grid">
-          <div class="flex flex-col gap-[12px]">
-            <div class="item">
-              <span class="item-left">门店信息</span>
-              <span class="item-right">洛阳XXXXXX店 | 0395-xxxxxxxxx | 千江毕竟东流去</span>
-            </div>
-            <div class="item">
-              <span class="item-left">接待人</span>
-              <span class="item-right">李一一 | 15000000000</span>
-            </div>
-            <div class="item">
-              <span class="item-left">会员信息</span>
-              <span class="item-right">懒羊羊1500xxxxxx</span>
-            </div>
-            <div class="item">
-              <span class="item-left">状态</span>
-              <common-tags text="门店已收货" type="lake" />
-            </div>
+  <div class="flex flex-col gap-[16px]">
+    <common-fold title="基础信息">
+      <div class="grid-cols-[1fr] gap-[16px] px-[16px] py-[16px]" uno-lg="grid-cols-[1fr]" uno-md="grid">
+        <div class="flex flex-col gap-[12px]">
+          <div class="item">
+            <span class="item-left">门店信息</span>
+            <span class="item-right">洛阳XXXXXX店 | 0395-xxxxxxxxx | 千江毕竟东流去</span>
+          </div>
+          <div class="item">
+            <span class="item-left">接待人</span>
+            <span class="item-right">李一一 | 15000000000</span>
+          </div>
+          <div class="item">
+            <span class="item-left">会员信息</span>
+            <span class="item-right">懒羊羊1500xxxxxx</span>
+          </div>
+          <div class="item">
+            <span class="item-left">状态</span>
+            <common-tags text="门店已收货" type="lake" />
           </div>
         </div>
-      </common-fold>
-
-      <common-fold title="维修信息">
-        <div class="grid-cols-[1fr] gap-[16px] px-[16px] py-[16px]" uno-lg="grid-cols-[1fr]" uno-md="grid">
-          <div class="flex flex-col gap-[12px]">
-            <template v-for="(item, index) in props.info" :key="index">
-              <div class="flex items-center justify-between">
-                <div class="color-[#333] dark:color-[#FFFFFF] text-[14px] flex-none">
-                  {{ item.name }}
-                </div>
-                <common-frame
-                  v-model="item.num"
-                />
-              </div>
-            </template>
-            <div class="flex-center-between gap-[8px] py-[6px]">
-              <span class="color-[#333] dark:color-[#FFFFFF] text-[14px] flex-none">取货方式</span>
-              <van-radio-group v-model="checked" shape="dot" direction="horizontal">
-                <van-radio :name="1" checked-color="#3971F3" icon-size="20px" class="font-size-[14px]">
-                  自提
-                </van-radio>
-                <van-radio :name="2" checked-color="#3971F3" icon-size="20px" class="font-size-[14px]">
-                  邮寄
-                </van-radio>
-              </van-radio-group>
-            </div>
-          </div>
-        </div>
-      </common-fold>
-
-      <!-- 产品信息 -->
-      <div class="info">
-        <!-- header -->
-        <common-gradient title="产品信息(3)">
-          <template #body>
-            <!-- info -->
-            <sale-order-product />
-          </template>
-        </common-gradient>
       </div>
+    </common-fold>
+
+    <common-fold title="维修信息">
+      <div class="grid-cols-[1fr] gap-[16px] px-[16px] py-[16px]" uno-lg="grid-cols-[1fr]" uno-md="grid">
+        <div class="flex flex-col gap-[12px]">
+          <template v-for="(item, index) in props.info" :key="index">
+            <div class="flex items-center justify-between">
+              <div class="color-[#333] dark:color-[#FFFFFF] text-[14px] flex-none">
+                {{ item.name }}
+              </div>
+              <common-frame
+                v-model="item.num"
+              />
+            </div>
+          </template>
+          <div class="flex-center-between gap-[8px] py-[6px]">
+            <span class="color-[#333] dark:color-[#FFFFFF] text-[14px] flex-none">取货方式</span>
+            <van-radio-group v-model="checked" shape="dot" direction="horizontal">
+              <van-radio :name="1" checked-color="#3971F3" icon-size="20px" class="font-size-[14px]">
+                自提
+              </van-radio>
+              <van-radio :name="2" checked-color="#3971F3" icon-size="20px" class="font-size-[14px]">
+                邮寄
+              </van-radio>
+            </van-radio-group>
+          </div>
+        </div>
+      </div>
+    </common-fold>
+
+    <!-- 产品信息 -->
+    <div class="info">
+      <!-- header -->
+      <common-gradient title="产品信息(3)" :foldable="true">
+        <template #body>
+          <!-- info -->
+          <sale-order-product />
+        </template>
+      </common-gradient>
     </div>
   </div>
 </template>

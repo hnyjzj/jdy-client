@@ -10,14 +10,14 @@ const handleClick = async () => {
     <common-empty />
     <div class="p-[16px]">
       <div class="btn grid-12 gap-[20px]">
-        <div class="btn-left col-span-4 offset-2">
+        <div class="btn-left col-span-4 offset-2 cursor-pointer">
           <icon name="i-icon:search" color="#fff" :size="12" />
           <div class="ml-2" @click="handleClick">
             搜商品
           </div>
         </div>
         <div
-          class="btn-right col-span-4"
+          class="btn-right col-span-4 cursor-pointer"
         >
           <icon name="i-icon:scanit" color="#1a6beb" :size="12" />
           <div class="ml-2">

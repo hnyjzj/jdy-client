@@ -29,81 +29,75 @@ const getStatusType = (status: number) => {
 </script>
 
 <template>
-  <template v-for="(item, index) in props.info" :key="index">
-    <div class="card">
-      <div class="rounded-[24px] overflow-hidden">
-        <common-gradient :title="item.compellation || '--'" theme="theme">
-          <template #before>
-            <common-avatar :src="item.img" :size="20" />
-          </template>
+  <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
+    <template v-for="(item, index) in props.info" :key="index">
+      <common-gradient :title="item.compellation || '--'" theme="theme">
+        <template #before>
+          <common-avatar :src="item.img" :size="20" />
+        </template>
 
-          <template #right>
-            <common-tags
-              :text="getStatusText(item.status || 1)"
-              :type="getStatusType(item.status || 1)"
-            />
-          </template>
+        <template #right>
+          <common-tags
+            :text="getStatusText(item.status || 1)"
+            :type="getStatusType(item.status || 1)"
+          />
+        </template>
 
-          <template #body>
-            <div class="body">
-              <div class="part">
-                <div class="part-left">
-                  会员手机
-                </div>
-                <div class="part-right">
-                  {{ item.phone }}
-                </div>
+        <template #body>
+          <div class="body">
+            <div class="part">
+              <div class="part-left">
+                会员手机
               </div>
-              <div class="part">
-                <div class="part-left">
-                  专属顾问
-                </div>
-                <div class="part-right">
-                  {{ item.adviser }}
-                </div>
-              </div>
-              <div class="part">
-                <div class="part-left">
-                  会员等级
-                </div>
-                <div class="part-right">
-                  <common-level :desc="levelDesc[item.level]" />
-                </div>
-              </div>
-              <div class="part">
-                <div class="part-left">
-                  入会门店
-                </div>
-                <div class="part-right">
-                  {{ item.store }}
-                </div>
+              <div class="part-right">
+                {{ item.phone }}
               </div>
             </div>
-          </template>
-
-          <template #footer>
-            <div class="footer gap-[32px]" uno-lg="gap-[40px]">
-              <div class="flex flex-row gap-[24px] cursor-pointer">
-                <div class="accidental" @click="changeIntegral">
-                  调整积分
-                </div>
+            <div class="part">
+              <div class="part-left">
+                专属顾问
               </div>
-              <div>
-                <common-button-irregular text="查看详情" @click="handleClick" />
+              <div class="part-right">
+                {{ item.adviser }}
               </div>
             </div>
-          </template>
-        </common-gradient>
-      </div>
-    </div>
-  </template>
+            <div class="part">
+              <div class="part-left">
+                会员等级
+              </div>
+              <div class="part-right">
+                <common-level :desc="levelDesc[item.level]" />
+              </div>
+            </div>
+            <div class="part">
+              <div class="part-left">
+                入会门店
+              </div>
+              <div class="part-right">
+                {{ item.store }}
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <template #footer>
+          <div class="footer gap-[32px]" uno-lg="gap-[40px]">
+            <div class="flex flex-row gap-[24px] cursor-pointer">
+              <div class="accidental" @click="changeIntegral">
+                调整积分
+              </div>
+            </div>
+            <div>
+              <common-button-irregular text="查看详情" @click="handleClick" />
+            </div>
+          </div>
+        </template>
+      </common-gradient>
+    </template>
+  </div>
 </template>
 
 <style scoped lang="scss">
-.card {
-  --uno: 'flex flex-col gap-[12px] rounded-[24px] bg-[#fff] dark:bg-[rgb(245,245,245,0.1)] border-solid border-1 border-[#EFF0F6] overflow-hidden dark:border-[rgb(239,240,246,0.1)]';
-}
-
 .body {
   --uno: 'flex flex-col gap-[12px]';
 

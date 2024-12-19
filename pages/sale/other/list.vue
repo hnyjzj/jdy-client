@@ -34,11 +34,22 @@ const handleAmend = async () => {
 // 携参跳转到详情页
   await navigateTo('/sale/other/info')
 }
+
+const show = ref(false)
+const handleDelete = () => {
+  show.value = !show.value
+}
 </script>
 
 <template>
   <div class="grid-12">
-    <div class="flex flex-col gap-[16px] px-[16px] py-[16px] col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
+    <common-model v-model:model-value="show" :show-ok="true" title="确认删除">
+      <div class="flex-center-col gap-[12px] text-[14px] color-[#333] pb-[32px]">
+        <span>确认删除该条记录吗？</span>
+        <span>删除后不可恢复，请谨慎处理。</span>
+      </div>
+    </common-model>
+    <div class="flex flex-col gap-[20px] px-[16px] py-[16px] col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
       <!-- header -->
       <!-- 搜索 -->
       <div class="flex flex-row gap-[12px]">
@@ -46,7 +57,7 @@ const handleAmend = async () => {
         <product-filter-senior class="color-[#fff]" />
       </div>
       <!-- content -->
-      <sale-other-list :info="depositList" @amend="handleAmend" />
+      <sale-other-list :info="depositList" @amend="handleAmend" @delete="handleDelete" />
     </div>
   </div>
 </template>

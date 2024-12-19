@@ -24,7 +24,7 @@ const typeMap = {
 </script>
 
 <template>
-  <div class="flex flex-col gap-[16px]">
+  <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.data" :key="index">
       <div>
         <common-gradient theme="theme" :title="item.createTime" :foldable="true">
