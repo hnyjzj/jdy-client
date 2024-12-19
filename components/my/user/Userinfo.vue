@@ -16,7 +16,7 @@ const emit = defineEmits<{
           <icon name="i-svg:avatar" size="68" />
         </template>
         <template v-else>
-          <nuxt-img :src="ImageUrl(porps.userinfo?.avatar)" class="wh-[68px] rounded-full" />
+          <img :src="ImageUrl(porps.userinfo?.avatar)" class="wh-[68px] rounded-full">
         </template>
       </div>
       <div class="ml-[8px] cursor-pointer">

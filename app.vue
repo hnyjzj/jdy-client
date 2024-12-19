@@ -4,8 +4,10 @@
 
 <template>
   <div>
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
+    <naive-config>
+      <nuxt-layout>
+        <nuxt-page />
+      </nuxt-layout>
+    </naive-config>
   </div>
 </template>

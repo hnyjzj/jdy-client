@@ -1,6 +1,5 @@
 import { defineNuxtConfig } from 'nuxt/config'
-import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
-import Components from 'unplugin-vue-components/vite'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-06',
@@ -9,7 +8,9 @@ export default defineNuxtConfig({
   },
   devServer: {
     port: 80,
+
   },
+
   ssr: true,
   modules: [
     '@pinia/nuxt',
@@ -21,6 +22,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@waset/unplugin-iconify/nuxt',
     '@nuxtjs/color-mode',
+    '@bg-dev/nuxt-naiveui',
     'nuxt-echarts',
   ],
   app: {
@@ -31,10 +33,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.scss'],
   vite: {
     plugins: [
-      Components({
-        dts: true,
-        resolvers: [NaiveUiResolver()], // Automatically register all components in the `components` directory
-      }),
+
     ],
     css: {
       preprocessorOptions: {
@@ -44,19 +43,24 @@ export default defineNuxtConfig({
       },
     },
   },
-  imports: {
-    presets: [
-      {
-        from: 'naive-ui',
-        imports: [
-          'useDialog',
-          'useMessage',
-          'useNotification',
-          'useLoadingBar',
-        ],
-      },
-    ],
+  naiveui: {
+    spaLoadingTemplate: {
+      name: 'bar-scale',
+    },
   },
+  //   imports: {
+  //     presets: [
+  //       {
+  //         from: 'naive-ui',
+  //         imports: [
+  //           'useDialog',
+  //           'useMessage',
+  //           'useNotification',
+  //           'useLoadingBar',
+  //         ],
+  //       },
+  //     ],
+  //   },
   //   nitro: {
   //     devProxy: {
   //       '/proxy': {

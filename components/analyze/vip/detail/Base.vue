@@ -11,7 +11,7 @@ const props = defineProps<{
         <div>
           <div class="bust">
             <div class="bust-bg" />
-            <NuxtImg class="avatar" src="/images/empty/record.png" />
+            <img class="avatar" src="/images/empty/record.png">
           </div>
           <div class="info">
             <template v-for="(item, index) in props.vipbase" :key="index">

@@ -43,6 +43,6 @@ const onScroll = useDebounceFn((e: any) => {
 .pullList {
   --uno: 'px-[16px] pb-10px';
   overflow: auto;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 62px);
 }
 </style>
