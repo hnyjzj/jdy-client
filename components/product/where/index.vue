@@ -30,7 +30,7 @@ function submit() {
 
 <template>
   <div>
-    <common-popup v-model="isFilter">
+    <common-popup v-model="isFilter" title="高级筛选">
       <div class="p-4">
         <template v-for="(filter, index) in props.filterListToArray" :key="index">
           <template v-if="filter.show">
