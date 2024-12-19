@@ -18,7 +18,7 @@ const props = defineProps<{
           <template v-for="(url, urlIndex) in item.url" :key="urlIndex">
             <div class="chart-item">
               <div class="rounded-[24px]">
-                <nuxt-img :key="index" :src="url" class="flex items-center justify-center bg-[#fff] rounded-[8px] w-full" />
+                <img :key="index" :src="url" class="flex items-center justify-center bg-[#fff] rounded-[8px] w-full">
               </div>
               <div class="info">
                 <div class="item">

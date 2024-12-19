@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<{
 <template>
   <div class="flex flex-col justify-center items-center py-[16px]">
     <div class="empty" :style="{ boxShadow: isShadow ? 'rgba(239, 242, 255, 1) 0 5px 20px 0' : 'none' }">
-      <NuxtImg class="block" :src="props.img" :width="props.size" :height="props.size" />
+      <img class="block" :src="props.img" :width="props.size" :height="props.size">
       <template v-if="props.showRT">
         <slot name="rt">
           <div class="super">

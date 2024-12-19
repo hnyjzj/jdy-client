@@ -2,7 +2,8 @@
 import { useCascaderAreaData } from '@vant/area-data'
 
 const store = useStores()
-const { storesList, formList, addForm, showName } = storeToRefs(useStores())
+const { storesList, formList, addForm, showName, storeDetails } = storeToRefs(useStores())
+const { getStoreDetail } = useStores()
 const { $toast } = useNuxtApp()
 useSeoMeta({
   title: '门店列表',
@@ -95,7 +96,7 @@ const searchFn = async (init = false) => {
     storesList.value = []
   }
   replaceEmptyStrings(formList.value)
-  const res = await store.getStoreList({ page: searchPage.value, limit: 10, where: formList.value })
+  const res = await store.getStoreList({ page: searchPage.value, limit: 12, where: formList.value })
   if (res === false) {
     nomore.value = true
   }
@@ -103,14 +104,21 @@ const searchFn = async (init = false) => {
 // 初始化请求列表数据
 await searchFn(true)
 
+definePageMeta({
+  keepalive: true, // 设置为keepAlive
+})
+
+const showModal = ref(false)
 // 跳转到详情页
-const getStoreInfo = (val: string) => {
-  navigateTo({
-    path: '/system/store/info',
-    query: {
-      id: val,
-    },
-  })
+const getStoreInfo = async (val: string) => {
+  await getStoreDetail({ id: val as string })
+  showModal.value = true
+  // navigateTo({
+  //   path: '/system/store/info',
+  //   query: {
+  //     id: val,
+  //   },
+  // })
 }
 
 // 开发新增门店弹窗
@@ -139,7 +147,7 @@ const newStore = async () => {
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     addStoreShow.value = false
-    await store.getStoreList({ page: 1, limit: 10 })
+    await store.getStoreList({ page: 1, limit: 12 })
     reastAddForm()
   }
   else {
@@ -182,7 +190,7 @@ const editStore = async () => {
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('更新成功')
     editStoreShow.value = false
-    await store.getStoreList({ page: 1, limit: 10 })
+    await store.getStoreList({ page: 1, limit: 12 })
   }
 }
 
@@ -205,7 +213,7 @@ const confirmDelete = async () => {
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('删除成功')
     editStoreShow.value = false
-    await store.getStoreList({ page: 1, limit: 10 })
+    await store.getStoreList({ page: 1, limit: 12 })
   }
 }
 
@@ -332,7 +340,7 @@ const uploadFile = async (file: any, id?: string) => {
     </common-popup>
     <common-popup v-model="show">
       <div class="p-[16px] bg-[#F1F5FE] h-full">
-        <stores-search
+        <stores-searchcopy
           ref="searchRef"
           v-model="formList"
           :show-name="showName"
@@ -365,6 +373,10 @@ const uploadFile = async (file: any, id?: string) => {
         @finish="onFinish"
       />
     </van-popup>
+
+    <n-modal v-model:show="showModal">
+      <stores-info :info-detail="storeDetails" />
+    </n-modal>
   </div>
 </template>
 

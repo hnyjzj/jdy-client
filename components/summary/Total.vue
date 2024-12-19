@@ -17,7 +17,7 @@ const props = withDefaults(defineProps<{
 <template>
   <div class="total">
     <div class="icon">
-      <NuxtImg width="52" height="46" src="/images/summary/stock.png" />
+      <img width="52" height="46" src="/images/summary/stock.png">
     </div>
     <div class="flex items-center">
       <div class="label" />

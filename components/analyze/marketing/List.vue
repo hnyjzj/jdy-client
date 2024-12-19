@@ -10,7 +10,7 @@
           <div class="flex pt-[4px]">
             <div class="bust">
               <div class="bust-bg" />
-              <NuxtImg class="avatar" src="/images/empty/record.png" />
+              <img class="avatar" src="/images/empty/record.png">
             </div>
             <div class="text-[14px] pl-4">
               {{ t }}
