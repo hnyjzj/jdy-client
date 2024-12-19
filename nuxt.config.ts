@@ -2,15 +2,14 @@ import { defineNuxtConfig } from 'nuxt/config'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  telemetry: false,
   compatibilityDate: '2024-11-06',
   devtools: {
     enabled: true,
   },
   devServer: {
     port: 80,
-
   },
-
   ssr: true,
   modules: [
     '@pinia/nuxt',
@@ -31,9 +30,6 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/css/main.scss'],
   vite: {
-    plugins: [
-
-    ],
     css: {
       preprocessorOptions: {
         scss: {
@@ -42,34 +38,6 @@ export default defineNuxtConfig({
       },
     },
   },
-  naiveui: {
-    spaLoadingTemplate: {
-      name: 'bar-scale',
-    },
-  },
-  //   imports: {
-  //     presets: [
-  //       {
-  //         from: 'naive-ui',
-  //         imports: [
-  //           'useDialog',
-  //           'useMessage',
-  //           'useNotification',
-  //           'useLoadingBar',
-  //         ],
-  //       },
-  //     ],
-  //   },
-  //   nitro: {
-  //     devProxy: {
-  //       '/proxy': {
-  //         // 代理目标的基础路径
-  //         target: import.meta.env.VITE_BASE_API,
-  //         changeOrigin: true,
-  //         prependPath: true,
-  //       },
-  //     },
-  //   },
   eslint: {
     config: {
       standalone: false,
@@ -99,5 +67,10 @@ export default defineNuxtConfig({
   echarts: {
     charts: ['BarChart', 'LineChart', 'PieChart'],
     components: ['DatasetComponent', 'GridComponent', 'TooltipComponent', 'LegendComponent'],
+  },
+  naiveui: {
+    spaLoadingTemplate: {
+      name: 'bar-scale',
+    },
   },
 })
