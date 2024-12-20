@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const emits = defineEmits(['recharge', 'testing'])
+const emits = defineEmits(['recharge', 'testing', 'send'])
 
 const rules = ref([
   {
@@ -22,6 +22,10 @@ const showRecharge = () => {
 
 const userTesting = () => {
   emits('testing')
+}
+
+const sendMessage = () => {
+  emits('send')
 }
 
 const checked = ref(['a'])
@@ -147,7 +151,7 @@ const jumpRecord = () => {
                   </div>
 
                   <div class="right">
-                    <van-config-provider :theme-vars="themeVars">
+                    <van-config-provider :theme-vars="themeVars" class="font-size-[14px]">
                       <van-checkbox-group v-model="checked" direction="horizontal">
                         <van-checkbox name="a" icon-size="16px">
                           公众号
@@ -166,7 +170,7 @@ const jumpRecord = () => {
 
             <template #footer>
               <div class="operation flex flex-row items-center justify-end gap-[16px] px-[16px] pb-[16px]">
-                <div class="button color-[#0068FF] hover:bg-[#F1F5FE] hover:color-[#3971F3] active:bg-[#D9E4FF]">
+                <div class="button color-[#0068FF] hover:bg-[#F1F5FE] hover:color-[#3971F3] active:bg-[#D9E4FF]" @click="sendMessage">
                   发送
                 </div>
 
