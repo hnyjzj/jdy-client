@@ -22,7 +22,7 @@ const toLabel = (key: string): string => {
   const labelMap: { [key: string]: string } = {
     address: '地址',
     parent_id: '上级id',
-    name: '店名',
+    name: '门店名称',
     province: '省',
     city: '市',
     district: '区',

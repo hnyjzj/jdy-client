@@ -24,11 +24,11 @@ const form = defineModel<editStoreReq>({ default: {
 
 // 上级门店搜索框
 const searchKey = ref<string>('')
-
+const realSearchKey = ref<string>('')
 // 搜索关键字 去父组件请求查询列表
 const onSearch = useDebounceFn(() => {
   emits('updateParent', searchKey.value)
-}, 1000)
+}, 500)
 
 // 失去焦点 判断是否为空上级门店
 const blurClean = () => {
@@ -39,6 +39,9 @@ const blurClean = () => {
   //   如果id为空，则清空关键字
   if (form.value.parent_id === '' || form.value.parent_id === undefined) {
     searchKey.value = ''
+  }
+  else {
+    searchKey.value = realSearchKey.value
   }
 }
 // 显示上级门店列表
@@ -54,6 +57,7 @@ const popList = ref<storesList[]>([])
 const setKeySearch = (val?: string) => {
   if (val) {
     searchKey.value = val
+    realSearchKey.value = val
   }
   else {
     searchKey.value = ''
@@ -92,7 +96,7 @@ const showPopup = (res: any) => {
 const seletParent = (key: string | number, options: any) => {
   form.value.parent_id = options.key as string
   searchKey.value = options.label as string
-  //   realSearchKey.value = options.label as string
+  realSearchKey.value = options.label as string
   pop.value = false
 }
 
@@ -104,7 +108,44 @@ const clearFn = () => {
 // form 表单尺寸
 const size = ref<'small' | 'medium' | 'large'>('large')
 const rules = {
-  address: {},
+  address: {
+    required: true,
+    message: '请输入门店地址',
+    trigger: ['input', 'blur'],
+  },
+  name: {
+    required: true,
+    message: '请输入门店名称',
+    trigger: ['input', 'blur'],
+  },
+  contact: {
+    required: true,
+    message: '请输入联系方式',
+    trigger: ['input', 'blur'],
+  },
+  district: {
+    required: true,
+    message: '请输入联系方式',
+    trigger: 'change',
+  },
+}
+const message = useMessage()
+const formRef = ref()
+const handleValidateButtonClick = (e: MouseEvent) => {
+  e.preventDefault()
+  formRef.value?.validate((errors: any) => {
+    if (!errors) {
+      if (form.value.district) {
+        emits('submit')
+      }
+      else {
+        message.error('请选择省市区')
+      }
+    }
+    else {
+      message.error(errors[0][0].message)
+    }
+  })
 }
 
 defineExpose({
@@ -117,21 +158,30 @@ defineExpose({
 <template>
   <div>
     <n-form
+      ref="formRef"
       :model="form"
       :rules="rules"
       :size="size"
       label-placement="top"
     >
-      <n-form-item label="上级门店" path="address">
-        <n-dropdown :options="options" :show="pop" placement="bottom-start" @select="seletParent">
+      <n-form-item label="上级门店" path="partent_id">
+        <n-dropdown :options="options" :show="pop" label placement="bottom-start" @select="seletParent">
           <n-input
             v-model:value="searchKey"
             round placeholder="请输入上级门店" clearable @input="() => onSearch()" @clear="clearFn" @blur="blurClean" />
         </n-dropdown>
       </n-form-item>
+      <!-- <n-form-item label="上级门店" path="partent_id">
+        <stores-dropdown :options="options" :show="pop">
+          <n-input
+            v-model:value="searchKey"
+            round placeholder="请输入上级门店" clearable @input="() => onSearch()" @clear="clearFn" @blur="blurClean" />
+        </stores-dropdown>
+      </n-form-item> -->
+
       <div class="pb-[16px]">
         <div class="text-[14px] color-[#333] line-height-[20px] pb-[8px]">
-          省市区
+          省市区<span class="color-[#D23B5A]">*</span>
         </div>
         <div class="bg-[#fff] border-[#E2E2E8] border-solid border rounded-full px-[12px] flex items-center">
           <template v-if="form.province || form.city || form.district">
@@ -152,19 +202,24 @@ defineExpose({
               emits('cleanProvince')
             }" />
         </div>
+        <template v-if="!props.showName.province_name">
+          <div class="error">
+            请填写省市区
+          </div>
+        </template>
       </div>
 
       <n-form-item label="地址" path="address">
         <n-input v-model:value="form.address" placeholder="请输入门店地址" round />
       </n-form-item>
-      <n-form-item label="点名" path="address">
+      <n-form-item label="门店名称" path="name">
         <n-input v-model:value="form.name" placeholder="请输入门店名称" round />
       </n-form-item>
-      <n-form-item label="联系方式" path="address">
+      <n-form-item label="联系方式" path="contact">
         <n-input v-model:value="form.contact" placeholder="请输入门店联系方式" round />
       </n-form-item>
       <div
-        class="text-size-[16px] font-semibold" @click="emits('submit')">
+        class="text-size-[16px] font-semibold" @click="handleValidateButtonClick">
         <div class="ok">
           确定
         </div>
@@ -175,7 +230,7 @@ defineExpose({
 
 <style lang="scss" scoped>
 .error {
-  --uno: 'color-[red] text-size-[14px] line-height-[20px] mt-10px';
+  --uno: 'color-[#D23B5A] text-size-[14px] line-height-[20px] mt-10px';
 }
 .ok {
   --uno: 'bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] line-height-[24px] px-[77px] py-[6px] text-center rounded-[36px] color-[#fff] shadow-[0_8px_8px_0px_#3971F33D]';

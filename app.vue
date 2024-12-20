@@ -5,9 +5,11 @@
 <template>
   <div>
     <naive-config>
-      <nuxt-layout>
-        <nuxt-page />
-      </nuxt-layout>
+      <n-message-provider>
+        <nuxt-layout>
+          <nuxt-page />
+        </nuxt-layout>
+      </n-message-provider>
     </naive-config>
   </div>
 </template>

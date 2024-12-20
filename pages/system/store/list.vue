@@ -178,7 +178,7 @@ const edit = async (val: string) => {
       }
       if (item.logo) {
         await nextTick()
-        editFormRef.value?.setLogo(item.logo)
+        // editFormRef.value?.setLogo(item.logo)
       }
       showName.value.province_name = toProvinces(item.province, item.city, item.district)
     }
@@ -190,6 +190,7 @@ const editStore = async () => {
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('更新成功')
     editStoreShow.value = false
+    storesList.value = []
     await store.getStoreList({ page: 1, limit: 12 })
   }
 }
@@ -221,10 +222,14 @@ const confirmDelete = async () => {
 const searchParentId = async (val: string) => {
   const searhParentList = ref({ page: 1, limit: 20, where: { name: '' as string | undefined } })
   searhParentList.value.where.name = val
+  console.log(val)
+
   if (val === '') {
     searhParentList.value.where.name = undefined
     return
   }
+  console.log(searhParentList.value)
+
   const res = await store.getStoreList(searhParentList.value, true)
   addFormRef.value?.showPopup(res)
   editFormRef.value?.showPopup(res)
