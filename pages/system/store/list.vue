@@ -331,16 +331,14 @@ const uploadFile = async (file: any, id?: string) => {
             showName.province_name = ''
           }"
           @clean-parent-id="() => {
-
             addForm.parent_id = undefined
-
           }"
           @submit="editStore" />
       </div>
     </common-popup>
     <common-popup v-model="show">
       <div class="p-[16px] bg-[#F1F5FE] h-full">
-        <stores-searchcopy
+        <stores-search
           ref="searchRef"
           v-model="formList"
           :show-name="showName"
