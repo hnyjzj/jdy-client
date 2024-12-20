@@ -5,7 +5,7 @@
         <div class="grid grid-cols-[30%_70%] items-center mb-[12px]">
           <div>图文信息</div>
           <div class="relative">
-            <NuxtImg src="/images/empty/record.png" width="100" height="100" />
+            <img src="/images/empty/record.png" width="100" height="100">
             <div class="absolute top-[50%] left-[38px] translate-y-[-50%]">
               <icon name="i-icon:camera" size="24" color="#666" />
             </div>
@@ -14,7 +14,7 @@
         <div class="grid grid-cols-[30%_70%] items-center mb-[12px]">
           <div>图文信息</div>
           <div class="relative">
-            <NuxtImg src="/images/empty/record.png" width="100" height="100" />
+            <img src="/images/empty/record.png" width="100" height="100">
             <div class="absolute top-[50%] left-[38px] translate-y-[-50%]">
               <icon name="jdy:camera" size="24" color="#666" />
             </div>

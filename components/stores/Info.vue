@@ -11,12 +11,12 @@ const addressName = computed(() => {
 </script>
 
 <template>
-  <div class="grid-12 p-[16px]">
-    <div class="w-auto bg-white blur-bga rounded-[24px] border-solid border-[#EFF0F6] col-12 overflow-hidden" uno-lg="col-4 offset-4" uno-md="col-12">
+  <div class="w-full" uno-md="w-50%" uno-sm="w-50%" uno-lg="w-40%">
+    <div class="w-auto bg-white blur-bga rounded-[24px] border-solid border-[#EFF0F6] col-12 overflow-hidden">
       <div class="rounded-[24px]">
         <common-gradient :title="props.infoDetail?.name">
           <template #body>
-            <div class="flex flex-col gap-3 px-4 py-[6px]">
+            <div class="flex flex-col px-4 py-[6px]">
               <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
                 <div class="color-[#666666]">
                   上级门店
@@ -26,27 +26,27 @@ const addressName = computed(() => {
                 </div>
               </div>
             </div>
-            <div class="flex flex-col gap-3 px-4 py-[6px]">
+            <div class="flex flex-col px-4 py-[6px]">
               <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
-                <div class="color-[#666666]">
+                <div class="color-[#666666] ">
                   省市区
                 </div>
-                <div class="color-[#333333]">
+                <div class="color-[#333333] max-w-[60%]">
                   {{ addressName }}
                 </div>
               </div>
             </div>
-            <div class="flex flex-col gap-3 px-4 py-[6px]">
+            <div class="flex flex-col px-4 py-[6px]">
               <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
                 <div class="color-[#666666]">
                   地址
                 </div>
-                <div class="color-[#333333]">
+                <div class="color-[#333333] max-w-[60%]">
                   {{ props.infoDetail.address }}
                 </div>
               </div>
             </div>
-            <div class="flex flex-col gap-3 px-4 py-[6px]">
+            <div class="flex flex-col px-4 py-[6px]">
               <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
                 <div class="color-[#666666]">
                   联系方式
@@ -56,7 +56,7 @@ const addressName = computed(() => {
                 </div>
               </div>
             </div>
-            <div class="flex flex-col gap-3 px-4 py-[6px]">
+            <div class="flex flex-col px-4 py-[6px]">
               <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
                 <div class="color-[#666666]">
                   排序
@@ -66,7 +66,7 @@ const addressName = computed(() => {
                 </div>
               </div>
             </div>
-            <div class="flex flex-col gap-3 px-4 py-[6px]">
+            <div class="flex flex-col px-4 py-[6px]">
               <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
                 <div class="color-[#666666]">
                   企业微信id

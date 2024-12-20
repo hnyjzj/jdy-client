@@ -18,8 +18,9 @@ export const useAuth = defineStore('authStore', {
      */
     async getOauthUri(redirect_url: string = '', now_url = '/login/oauth') {
       try {
+        const location = useBrowserLocation()
         // 获取当前地址栏的参数 并抓换回去
-        const uri = UrlAndParams(`${import.meta.env.VITE_BASE_URL || ''}${now_url}`, {
+        const uri = UrlAndParams(`${location.value?.origin || ''}${now_url}`, {
           redirect_url: redirect_url || undefined,
         })
         // 获取授权地址

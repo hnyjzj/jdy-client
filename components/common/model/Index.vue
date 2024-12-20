@@ -37,8 +37,8 @@ watch(show, (val) => {
           <van-icon name="cross" color="#fff" size="16" />
         </div>
         <div class="title">
-          <NuxtImg class="title-img1" src="/images/model/title1.png" width="80" />
-          <NuxtImg class="title-img2" src="/images/model/title2.png" width="170" />
+          <img class="title-img1" src="/images/model/title1.png" width="80">
+          <img class="title-img2" src="/images/model/title2.png" width="170">
           <div class="title-content">
             {{ props.title }}
           </div>

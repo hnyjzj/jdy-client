@@ -2,7 +2,8 @@
 import { useCascaderAreaData } from '@vant/area-data'
 
 const store = useStores()
-const { storesList, formList, addForm, showName } = storeToRefs(useStores())
+const { storesList, formList, addForm, showName, storeDetails } = storeToRefs(useStores())
+const { getStoreDetail } = useStores()
 const { $toast } = useNuxtApp()
 useSeoMeta({
   title: '门店列表',
@@ -92,7 +93,7 @@ const searchFn = async (init = false) => {
     storesList.value = []
   }
   replaceEmptyStrings(formList.value)
-  const res = await store.getStoreList({ page: searchPage.value, limit: 10, where: formList.value })
+  const res = await store.getStoreList({ page: searchPage.value, limit: 12, where: formList.value })
   if (res === false) {
     nomore.value = true
   }
@@ -100,14 +101,21 @@ const searchFn = async (init = false) => {
 // 初始化请求列表数据
 await searchFn(true)
 
+definePageMeta({
+  keepalive: true, // 设置为keepAlive
+})
+
+const showModal = ref(false)
 // 跳转到详情页
-const getStoreInfo = (val: string) => {
-  navigateTo({
-    path: '/system/store/info',
-    query: {
-      id: val,
-    },
-  })
+const getStoreInfo = async (val: string) => {
+  await getStoreDetail({ id: val as string })
+  showModal.value = true
+  // navigateTo({
+  //   path: '/system/store/info',
+  //   query: {
+  //     id: val,
+  //   },
+  // })
 }
 
 // 开发新增门店弹窗
@@ -136,7 +144,7 @@ const newStore = async () => {
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     addStoreShow.value = false
-    await store.getStoreList({ page: 1, limit: 10 })
+    await store.getStoreList({ page: 1, limit: 12 })
     reastAddForm()
   }
   else {
@@ -167,7 +175,7 @@ const edit = async (val: string) => {
       }
       if (item.logo) {
         await nextTick()
-        editFormRef.value?.setLogo(item.logo)
+        // editFormRef.value?.setLogo(item.logo)
       }
       showName.value.province_name = toProvinces(item.province, item.city, item.district)
     }
@@ -179,7 +187,8 @@ const editStore = async () => {
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('更新成功')
     editStoreShow.value = false
-    await store.getStoreList({ page: 1, limit: 10 })
+    storesList.value = []
+    await store.getStoreList({ page: 1, limit: 12 })
   }
 }
 
@@ -202,7 +211,7 @@ const confirmDelete = async () => {
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('删除成功')
     editStoreShow.value = false
-    await store.getStoreList({ page: 1, limit: 10 })
+    await store.getStoreList({ page: 1, limit: 12 })
   }
 }
 
@@ -210,10 +219,14 @@ const confirmDelete = async () => {
 const searchParentId = async (val: string) => {
   const searhParentList = ref({ page: 1, limit: 20, where: { name: '' as string | undefined } })
   searhParentList.value.where.name = val
+  console.log(val)
+
   if (val === '') {
     searhParentList.value.where.name = undefined
     return
   }
+  console.log(searhParentList.value)
+
   const res = await store.getStoreList(searhParentList.value, true)
   addFormRef.value?.showPopup(res)
   editFormRef.value?.showPopup(res)
@@ -320,9 +333,7 @@ const uploadFile = async (file: any, id?: string) => {
             showName.province_name = ''
           }"
           @clean-parent-id="() => {
-
             addForm.parent_id = undefined
-
           }"
           @submit="editStore" />
       </div>
@@ -362,6 +373,10 @@ const uploadFile = async (file: any, id?: string) => {
         @finish="onFinish"
       />
     </van-popup>
+
+    <n-modal v-model:show="showModal">
+      <stores-info :info-detail="storeDetails" />
+    </n-modal>
   </div>
 </template>
 

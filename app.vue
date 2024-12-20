@@ -4,8 +4,12 @@
 
 <template>
   <div>
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
+    <naive-config>
+      <n-message-provider>
+        <nuxt-layout>
+          <nuxt-page />
+        </nuxt-layout>
+      </n-message-provider>
+    </naive-config>
   </div>
 </template>

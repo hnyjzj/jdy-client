@@ -61,14 +61,6 @@ const addressName = computed(() => {
                   {{ item.contact }}
                 </div>
               </div>
-              <div class="flex-between p-[4px]">
-                <div class="">
-                  排序
-                </div>
-                <div class="text-align-end">
-                  {{ item.sort }}
-                </div>
-              </div>
             </div>
             <div class="bg-[#F3F5FE] dark:bg-[#F3F5FE1A] rounded-b-[24px] ">
               <div class="grid-12">

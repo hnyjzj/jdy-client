@@ -9,7 +9,7 @@ const addto = () => {
 
 <template>
   <div class="addto">
-    <NuxtImg src="/images/summary/addto.png" width="56" @click="addto" />
+    <img src="/images/summary/addto.png" width="56" @click="addto">
   </div>
 </template>
 
