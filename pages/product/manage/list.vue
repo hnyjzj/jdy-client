@@ -205,8 +205,17 @@ const onScroll = useDebounceFn((e: any) => {
       <common-create @click="create" />
     </div>
     <common-model v-model="isModel" title="入库" :show-ok="true" confirm-text="导入货品" @confirm="submitGoods">
-      <div class="mb-8">
-        <input class="text-color" type="file" @change="FileUpload">
+      <div class="mb-8 relative">
+        <input class="h-[40px] absolute top-0 w-full opacity-0" type="file" @change="FileUpload">
+        <div class="uploadInp cursor-pointer">
+          <div>请添加文件</div>
+          <div class="uploadInp-right">
+            <icon name="i-svg:upload" size="16" color="#666" />
+            <div class="ml-2">
+              点击上传
+            </div>
+          </div>
+        </div>
       </div>
     </common-model>
     <product-where v-model="isFilter" :list="list" :filter-list-to-array="filterListToArray" @submit="submitWhere" />
@@ -218,5 +227,14 @@ const onScroll = useDebounceFn((e: any) => {
   --uno: 'px-[16px] pb-10px';
   overflow: auto;
   height: calc(100vh - 168px);
+}
+
+.uploadInp {
+  --uno: 'text-14px px-[12px] py-[4px] rounded-[36px] flex-between text-color-light bg-#fff border-[#e6e6e8] border-1px border-solid dark:bg-[rgba(255,255,255,0.2)] dark:border-[rgba(230,230,232,0.2)]';
+  &-right {
+    --uno: 'flex items-center py-[6px] px-4 rounded-[36px] text-#FFF';
+    background: linear-gradient(to bottom, #1b6ceb, #6da6ff);
+    box-shadow: #1111113d 0px 2px 2px 1px;
+  }
 }
 </style>
