@@ -24,9 +24,6 @@ const options = useCascaderAreaData()
 // 地址选择器显示状态
 const addressShow = ref(false)
 // 用于显示 上级门店中文 和  省市区中文
-// const showName = ref({
-//   province_name: '',
-// })
 
 // 新增门店表单数据
 const editForm = ref<editStoreReq>({
