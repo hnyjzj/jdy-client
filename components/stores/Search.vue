@@ -156,7 +156,7 @@ defineExpose({
 .ok {
   --uno: 'bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] line-height-[24px] px-[77px] py-[6px] text-center rounded-[36px] color-[#fff] shadow-[0_8px_8px_0px_#3971F33D]';
 }
-::v-deep .van-popover__wrapper {
+:deep(.van-popover__wrapper) {
   width: 100%;
 }
 :deep(.n-input:hover) {
