@@ -219,14 +219,10 @@ const confirmDelete = async () => {
 const searchParentId = async (val: string) => {
   const searhParentList = ref({ page: 1, limit: 20, where: { name: '' as string | undefined } })
   searhParentList.value.where.name = val
-  console.log(val)
-
   if (val === '') {
     searhParentList.value.where.name = undefined
     return
   }
-  console.log(searhParentList.value)
-
   const res = await store.getStoreList(searhParentList.value, true)
   addFormRef.value?.showPopup(res)
   editFormRef.value?.showPopup(res)

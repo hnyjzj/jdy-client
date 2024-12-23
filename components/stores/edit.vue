@@ -125,7 +125,7 @@ const rules = {
   },
   district: {
     required: true,
-    message: '请输入联系方式',
+    message: '请选择省市区',
     trigger: 'change',
   },
 }
@@ -164,7 +164,7 @@ defineExpose({
       :size="size"
       label-placement="top"
     >
-      <n-form-item label="上级门店" path="partent_id">
+      <n-form-item label="上级门店" path="parent_id">
         <n-dropdown :options="options" :show="pop" label placement="bottom-start" @select="seletParent">
           <n-input
             v-model:value="searchKey"
