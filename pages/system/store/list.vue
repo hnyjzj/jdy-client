@@ -246,12 +246,18 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
   }
   onfinish && onfinish()
 }
+
+// 获取头部高度
+const height = ref(0)
+onMounted(() => {
+  height.value = getHeight('header') as number
+})
 </script>
 
 <template>
   <div>
     <!-- 筛选 -->
-    <div class="px-[16px]">
+    <div id="header" class="px-[16px]">
       <div class="col-12 grid-12 lg:col-8 lg:offset-2 pt-[12px] pb-[16px] color-[#fff]">
         <div class="col-8 py-[6px] px-[12px] line-height-[20px]" uno-lg="col-4 offset-2">
           共{{ store.total }}条数据
@@ -263,6 +269,7 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
     </div>
     <div class="">
       <common-list-pull
+        :distance="height"
         :nomore="nomore"
         @pull=" () => {
           searchPage += 1
