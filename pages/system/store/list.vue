@@ -60,7 +60,7 @@ const onFinish = (values: any) => {
     addForm.value.city = city
     addForm.value.district = district
   }
-  else if (editStoreShow.value) {
+  else {
     editForm.value.province = province
     editForm.value.city = city
     editForm.value.district = district
@@ -118,8 +118,13 @@ const getStoreInfo = async (val: string) => {
   // })
 }
 
-// 开发新增门店弹窗
+// 开发新增门店弹窗, 清空 省市区选择
 const newAdd = () => {
+  cascaderValue.value = ''
+  showName.value.province_name = ''
+  addForm.value.province = ''
+  addForm.value.city = ''
+  addForm.value.district = ''
   addStoreShow.value = true
 }
 // 重置新增表单
@@ -133,9 +138,7 @@ const reastAddForm = () => {
     city: '',
     district: '',
     contact: '',
-    wxwork_id: 0,
     sort: 0,
-    sync_wxwork: true,
   }
 }
 // 新增门店
@@ -208,10 +211,11 @@ const deleteStoreFn = async (val: string) => {
 }
 // 确认删除
 const confirmDelete = async () => {
-  const res = await store.deleteStore({ id: nowDeleteId.value, sync_wxwork: isSync.value })
+  const res = await store.deleteStore({ id: nowDeleteId.value })
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('删除成功')
     editStoreShow.value = false
+    storesList.value = []
     await store.getStoreList({ page: 1, limit: 12 })
   }
 }
@@ -246,7 +250,6 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
   }
   onfinish && onfinish()
 }
-
 // 获取头部高度
 const height = ref(0)
 onMounted(() => {
@@ -262,7 +265,15 @@ onMounted(() => {
         <div class="col-8 py-[6px] px-[12px] line-height-[20px]" uno-lg="col-4 offset-2">
           共{{ store.total }}条数据
         </div>
-        <div class="col-4" uno-lg="col-4" @click="show = true">
+        <div
+          class="col-4" uno-lg="col-4" @click="() => {
+            cascaderValue = ''
+            showName.province_name = ''
+            formList.province = ''
+            formList.city = ''
+            formList.district = ''
+            show = true
+          }">
           <product-filter-Senior />
         </div>
       </div>
@@ -347,12 +358,12 @@ onMounted(() => {
       <div class="p-[16px] bg-[#F1F5FE] h-full">
         <stores-search
           ref="searchRef"
-          v-model="formList"
           :show-name="showName"
           @select-city="addressShow = true"
           @update-parent="searchParentId"
           @clean-province="() => {
             cascaderValue = ''
+            showName.province_name = ''
           }"
           @clean-parent-id="() => {
             formList.parent_id = undefined

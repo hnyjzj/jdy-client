@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 
-const props = defineProps<{
-  showName: { province_name: string }
-}>()
 const emits = defineEmits<{
   selectCity: []
   cleanProvince: []
@@ -13,7 +10,7 @@ const emits = defineEmits<{
 }>()
 const message = useMessage()
 
-const { addForm, addsearchKey, addrealSearchKey } = storeToRefs(useStores())
+const { addForm, addsearchKey, addrealSearchKey, showName } = storeToRefs(useStores())
 // 展示预览图
 const showModalRef = ref(false)
 // 显示上级门店列表弹窗
@@ -104,34 +101,13 @@ const seletParent = (key: string | number, options: any) => {
   addrealSearchKey.value = options.label as string
   pop.value = false
 }
-// 设置开关颜色
-const railStyle = ({
-  focused,
-  checked,
-}: {
-  focused: boolean
-  checked: boolean
-}) => {
-  const style: any = {}
-  if (checked) {
-    style.background = '#2080f0'
-    if (focused) {
-      style.boxShadow = '0 0 0 2px #d0305040'
-    }
-  }
-  else {
-    style.background = '#d03050'
-    if (focused) {
-      style.boxShadow = '0 0 0 2px #2080f040'
-    }
-  }
-  return style
-}
+
 // 预览图片
 function handlePreview() {
   showModalRef.value = true
 }
 
+const areaError = ref(false)
 // 表单校验
 const handleValidateButtonClick = (e: MouseEvent) => {
   e.preventDefault()
@@ -141,11 +117,15 @@ const handleValidateButtonClick = (e: MouseEvent) => {
         emits('submit')
       }
       else {
+        areaError.value = true
         message.error('请选择省市区')
       }
     }
     else {
       message.error(errors[0][0].message)
+      if (!addForm.value.district) {
+        areaError.value = true
+      }
     }
   })
 }
@@ -176,15 +156,19 @@ defineExpose({
             round placeholder="请输入上级门店" clearable @input="() => onSearch()" @clear="clearFn" @blur="blurClean" />
         </n-dropdown>
       </n-form-item>
-
+      <n-form-item label="门店名称" path="name">
+        <n-input v-model:value="addForm.name" placeholder="请输入门店名称" round />
+      </n-form-item>
       <div class="pb-[16px]">
         <div class="text-[14px] color-[#333] line-height-[20px] pb-[8px]">
           省市区<span class="color-[#D23B5A]">*</span>
         </div>
-        <div class="bg-[#fff] border-[#E2E2E8] border-solid border rounded-full px-[12px] flex items-center">
+        <div
+          class="bg-[#fff]  border-[#E2E2E8] border-solid border rounded-full px-[12px] flex items-center"
+          :style="{ border: areaError && showName.province_name === '' ? '1px solid #d03050' : ' 1px solid #E2E2E8' }">
           <template v-if="addForm.province || addForm.city || addForm.district">
             <div class="text-[14px] color-[#333] py-[9.5px] flex-1" @click="emits('selectCity')">
-              {{ props.showName.province_name }}
+              {{ showName.province_name }}
             </div>
           </template>
           <template v-else>
@@ -200,7 +184,7 @@ defineExpose({
               emits('cleanProvince')
             }" />
         </div>
-        <template v-if="!props.showName.province_name">
+        <template v-if="areaError && showName.province_name === ''">
           <div class="error">
             请填写省市区
           </div>
@@ -209,8 +193,8 @@ defineExpose({
       <n-form-item label="地址" path="address">
         <n-input v-model:value="addForm.address" placeholder="请输入门店地址" round />
       </n-form-item>
-      <n-form-item label="门店名称" path="name">
-        <n-input v-model:value="addForm.name" placeholder="请输入门店名称" round />
+      <n-form-item label="联系方式" path="contact">
+        <n-input v-model:value="addForm.contact" placeholder="请输入门店联系方式" round />
       </n-form-item>
       <n-form-item
         label="logo">
@@ -224,24 +208,9 @@ defineExpose({
           @preview="handlePreview"
         />
       </n-form-item>
-      <n-form-item label="联系方式" path="contact">
-        <n-input v-model:value="addForm.contact" placeholder="请输入门店联系方式" round />
-      </n-form-item>
-      <n-form-item label="企业微信id" path="wxwork_id">
-        <n-input-number v-model:value="addForm.wxwork_id" clearable placeholder="请输入门店联系方式" round />
-      </n-form-item>
+
       <n-form-item label="排序" path="sort ">
         <n-input-number v-model:value="addForm.sort" clearable placeholder="请输入门店联系方式" round />
-      </n-form-item>
-      <n-form-item label="是否同步到企业微信">
-        <n-switch v-model:value="addForm.sync_wxwork " size="large" :rail-style="railStyle">
-          <template #checked>
-            同步
-          </template>
-          <template #unchecked>
-            不同步
-          </template>
-        </n-switch>
       </n-form-item>
 
       <div
@@ -263,12 +232,11 @@ defineExpose({
 
 <style lang="scss" scoped>
 .error {
-  --uno: 'color-[red] text-size-[14px] line-height-[20px] mt-10px';
+  --uno: 'color-[red] text-size-[14px] line-height-[20px] mt-10px color-#D23B5A';
 }
 .ok {
   --uno: 'w-full bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] line-height-[24px] px-[77px] py-[6px] text-center rounded-[36px] color-[#fff] shadow-[0_8px_8px_0px_#3971F33D]';
 }
-
 :deep(.van-popover__wrapper) {
   width: 100%;
 }

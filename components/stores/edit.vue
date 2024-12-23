@@ -48,11 +48,6 @@ const blurClean = () => {
 const pop = ref(false)
 const popList = ref<storesList[]>([])
 
-// const fileList = ref<fileListArr[]>([])
-// 设置logo
-// const setLogo = (val: any) => {
-//   fileList.value = [{ url: ImageUrl(val), isImage: true }]
-// }
 // 设置搜索关键字
 const setKeySearch = (val?: string) => {
   if (val) {
@@ -64,20 +59,6 @@ const setKeySearch = (val?: string) => {
     form.value.parent_id = ''
   }
 }
-// // 上传前
-// const beforeRead = (file: any) => {
-//   // 验证文件类型
-//   if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
-//     showToast('请上传 jpg 格式图片')
-//     return false
-//   }
-
-//   return true
-// }
-// // 上传文件后
-// const afterRead = async (file: any) => {
-//   emits('upload', file.file, form.value.id)
-// }
 
 const options = ref<{ label: string, key: string }[]>([])
 // 选择上级门店 弹出列表

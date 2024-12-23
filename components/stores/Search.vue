@@ -40,7 +40,6 @@ const popList = ref<storesList[]>([])
 const showPopup = (res: any) => {
   popList.value = res
   options.value = []
-
   res.forEach((item: storesList) => {
     options.value.push({
       label: item.name,
@@ -49,7 +48,6 @@ const showPopup = (res: any) => {
   })
   pop.value = true
 }
-
 const onSearch = useDebounceFn(() => {
   if (searchKey.value)
     emits('updateParent', searchKey.value)
@@ -61,7 +59,6 @@ const clearFn = () => {
   searchKey.value = ''
   form.value.parent_id = ''
 }
-
 // 失去焦点清空 输入框
 const blurClean = () => {
   const resetSearch = () => {
