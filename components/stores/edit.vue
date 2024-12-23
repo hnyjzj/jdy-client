@@ -6,7 +6,7 @@ const emits = defineEmits<{
   selectCity: []
   cleanProvince: []
   updateParent: [val: string]
-  upload: [val: any, id: string]
+  upload: [val: any, onFinish?: () => void, id?: string]
   submit: []
 }>()
 const form = defineModel<editStoreReq>({ default: {
@@ -21,7 +21,7 @@ const form = defineModel<editStoreReq>({ default: {
   sort: '',
   contact: '',
 } })
-
+const message = useMessage()
 // 上级门店搜索框
 const searchKey = ref<string>('')
 const realSearchKey = ref<string>('')
@@ -129,7 +129,7 @@ const rules = {
     trigger: 'change',
   },
 }
-const message = useMessage()
+
 const formRef = ref()
 const handleValidateButtonClick = (e: MouseEvent) => {
   e.preventDefault()

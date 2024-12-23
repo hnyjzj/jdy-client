@@ -144,6 +144,7 @@ const newStore = async () => {
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     addStoreShow.value = false
+    storesList.value = []
     await store.getStoreList({ page: 1, limit: 12 })
     reastAddForm()
   }
@@ -230,7 +231,7 @@ const searchParentId = async (val: string) => {
 }
 
 // 上传图片文件
-const uploadFile = async (file: any, id?: string) => {
+const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
   const res = await store.uploadImage({ image: file, store_id: id || undefined })
   if (res.data.value.code !== HttpCode.SUCCESS) {
     $toast.error(res.data.value?.message || '上传失败')
@@ -243,6 +244,7 @@ const uploadFile = async (file: any, id?: string) => {
   else {
     addForm.value.logo = res.data.value.data.url
   }
+  onfinish && onfinish()
 }
 </script>
 

@@ -4,7 +4,7 @@
  * @param path 图片地址
  * @returns 加工后的图片地址
  */
-export const ImageUrl = (path: string | undefined, preview = true) => {
+export const ImageUrl = (path: string | undefined, preview = false) => {
   if (!path || path.startsWith('http'))
     return path || ''
 

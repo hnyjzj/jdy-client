@@ -20,6 +20,7 @@ export const useStores = defineStore('Store', {
     searchKey: '' as string,
     realSearchKey: '' as string,
     addsearchKey: '' as string,
+    addrealSearchKey: '' as string,
     addForm: {
       parent_id: undefined,
       address: '',
@@ -89,6 +90,6 @@ export const useStores = defineStore('Store', {
   },
   persist: {
     storage: piniaPluginPersistedstate.cookies(),
-    pick: ['formList', 'addForm', 'searchKey', 'addsearchKey', 'showName', 'realSearchKey'],
+    pick: ['formList', 'addForm', 'searchKey', 'addsearchKey', 'showName', 'realSearchKey', 'addrealSearchKey'],
   },
 })
