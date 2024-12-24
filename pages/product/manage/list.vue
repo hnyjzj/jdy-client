@@ -39,7 +39,7 @@ async function getList(where = {} as Where<Product>) {
 await getList()
 await getProductWhere()
 
-const list = ref({} as Where<Product>)
+const filterData = ref({} as Where<Product>)
 
 const create = () => {
   isModel.value = true
@@ -218,7 +218,7 @@ const onScroll = useDebounceFn((e: any) => {
         </div>
       </div>
     </common-model>
-    <product-where v-model="isFilter" :list="list" :filter-list-to-array="filterListToArray" @submit="submitWhere" />
+    <product-where v-model="isFilter" :filter-data="filterData" :filter-list-to-array="filterListToArray" @submit="submitWhere" />
   </div>
 </template>
 

@@ -1,7 +1,7 @@
-<script lang="ts" setup generic="T">
+<script lang="ts" setup generic="T, F extends Record<string, any>">
 const props = defineProps<{
-  filterListToArray: FilterWhere[]
-  list: T
+  filterListToArray: F[]
+  filterData: T
 }>()
 const emits = defineEmits<{
   submit: [params: T]

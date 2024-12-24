@@ -72,8 +72,4 @@ const value = defineModel()
     --uno: 'color-[#808089] font-size-[14px]';
   }
 }
-:v-deep(input::-webkit-outer-spin-button),
-:v-deep(input::-webkit-inner-spin-button) {
-  -webkit-appearance: none !important;
-}
 </style>
