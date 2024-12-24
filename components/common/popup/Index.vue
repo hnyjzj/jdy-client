@@ -4,7 +4,13 @@ const props = withDefaults(defineProps<{
    * 弹出层方向
    */
   placement?: 'left' | 'right' | 'top' | 'bottom'
+  /**
+   * 弹出层宽度
+   */
   width?: string
+  /**
+   * 弹出层标题
+   */
   title?: string
   /**
    * 是否点击遮罩层关闭
