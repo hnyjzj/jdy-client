@@ -191,13 +191,13 @@ defineExpose({
       </div>
 
       <n-form-item label="地址" path="address">
-        <n-input v-model:value="form.address" placeholder="请输入门店地址" round />
+        <n-input v-model:value="form.address" placeholder="请输入门店地址" round clearable />
       </n-form-item>
       <n-form-item label="门店名称" path="name">
-        <n-input v-model:value="form.name" placeholder="请输入门店名称" round />
+        <n-input v-model:value="form.name" placeholder="请输入门店名称" round clearable />
       </n-form-item>
       <n-form-item label="联系方式" path="contact">
-        <n-input v-model:value="form.contact" placeholder="请输入门店联系方式" round />
+        <n-input v-model:value="form.contact" placeholder="请输入门店联系方式" round clearable />
       </n-form-item>
       <div
         class="text-size-[16px] font-semibold" @click="handleValidateButtonClick">

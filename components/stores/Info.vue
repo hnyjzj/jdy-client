@@ -19,6 +19,16 @@ const addressName = computed(() => {
             <div class="flex flex-col px-4 py-[6px]">
               <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
                 <div class="color-[#666666]">
+                  Logo
+                </div>
+                <div>
+                  <img :src="ImageUrl(props.infoDetail?.logo)" mode="asc" class="w-auto max-w-[150px] h-[100px]">
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col px-4 py-[6px]">
+              <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
+                <div class="color-[#666666]">
                   上级门店
                 </div>
                 <div class="color-[#333333]">

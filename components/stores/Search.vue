@@ -117,7 +117,7 @@ defineExpose({
           </template>
           <template v-else>
             <div class="text-[14px] color-[#C9C9C9] py-[9.5px] flex-1" @click="emits('selectCity')">
-              请输入省市区
+              请选择省市区
             </div>
           </template>
           <van-icon

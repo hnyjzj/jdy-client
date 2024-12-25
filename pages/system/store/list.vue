@@ -202,8 +202,7 @@ const selectAsyncShow = ref<boolean>(false)
 const nowDeleteId = ref<string>('')
 // 删除门店对话框
 const deleteDialog = ref(false)
-// 是否同步平台
-const isSync = ref(true)
+
 // 打开确认删除弹窗
 const deleteStoreFn = async (val: string) => {
   nowDeleteId.value = val
@@ -297,22 +296,9 @@ onMounted(() => {
       <common-create />
     </div>
     <van-dialog v-model:show="deleteDialog" title="删除门店" show-cancel-button @confirm="confirmDelete">
-      <van-cell center title="同步至企业微信">
-        <template #right-icon>
-          <van-switch v-model="isSync">
-            <template #node>
-              <div class="icon-wrapper flex-center-row h-full">
-                <template v-if="isSync">
-                  <icon name="i-svg:qwicon" size="16" />
-                </template>
-                <template v-else>
-                  <van-icon name="cross" size="16" />
-                </template>
-              </div>
-            </template>
-          </van-switch>
-        </template>
-      </van-cell>
+      <div class="text-center py-[16px]">
+        确认删除此门店吗?
+      </div>
     </van-dialog>
     <!-- 新增门店弹窗 -->
     <common-popup v-model="addStoreShow">

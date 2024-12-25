@@ -157,7 +157,7 @@ defineExpose({
         </n-dropdown>
       </n-form-item>
       <n-form-item label="门店名称" path="name">
-        <n-input v-model:value="addForm.name" placeholder="请输入门店名称" round />
+        <n-input v-model:value="addForm.name" placeholder="请输入门店名称" round clearable />
       </n-form-item>
       <div class="pb-[16px]">
         <div class="text-[14px] color-[#333] line-height-[20px] pb-[8px]">
@@ -173,7 +173,7 @@ defineExpose({
           </template>
           <template v-else>
             <div class="text-[14px] color-[#C9C9C9] py-[9.5px] flex-1" @click="emits('selectCity')">
-              请输入省市区
+              请选择省市区
             </div>
           </template>
           <van-icon
@@ -191,10 +191,10 @@ defineExpose({
         </template>
       </div>
       <n-form-item label="地址" path="address">
-        <n-input v-model:value="addForm.address" placeholder="请输入门店地址" round />
+        <n-input v-model:value="addForm.address" placeholder="请输入门店地址" round clearable />
       </n-form-item>
       <n-form-item label="联系方式" path="contact">
-        <n-input v-model:value="addForm.contact" placeholder="请输入门店联系方式" round />
+        <n-input v-model:value="addForm.contact" placeholder="请输入门店联系方式" round clearable />
       </n-form-item>
       <n-form-item
         label="logo">
@@ -210,7 +210,7 @@ defineExpose({
       </n-form-item>
 
       <n-form-item label="排序" path="sort ">
-        <n-input-number v-model:value="addForm.sort" clearable placeholder="请输入门店联系方式" round />
+        <n-input-number v-model:value="addForm.sort" clearable placeholder="请输入排序" round />
       </n-form-item>
 
       <div
