@@ -7,6 +7,7 @@ const emits = defineEmits<{
   updateParent: [val: string]
   upload: [val: any, onFinish: () => void]
   submit: []
+
 }>()
 const message = useMessage()
 

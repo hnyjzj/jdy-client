@@ -5,7 +5,6 @@ const props = defineProps<{
 const emits = defineEmits<{
   selectCity: []
   selectStore: []
-  cleanParentId: []
   cleanProvince: []
   updateParent: [val: string]
   submit: []

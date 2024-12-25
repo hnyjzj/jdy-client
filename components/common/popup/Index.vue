@@ -18,8 +18,8 @@ const props = withDefaults(defineProps<{
   isMaskClose?: boolean
 }>(), {
   placement: 'right',
-  width: '80%',
-  isMaskClose: false,
+  width: '70%',
+  isMaskClose: true,
 })
 
 const emits = defineEmits<{
@@ -74,7 +74,7 @@ function close() {
 
 <style lang="scss" scoped>
 .content {
-  --uno: 'p-4px bg-[#F1F5FE] dark:bg-[rgba(0,0,0,0.6)] blur-8px';
+  --uno: 'p-4px bg-[#F1F5FE] dark:bg-[rgba(0,0,0,0.6)] blur-8px h-full';
 }
 .footer {
   border-top: 1px solid #e6e6e8;

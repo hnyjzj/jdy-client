@@ -43,33 +43,6 @@ const editForm = ref<editStoreReq>({
 useSeoMeta({
   title: '门店列表',
 })
-/**
- * 筛选表单完成时操作
- */
-const onFinish = (values: any) => {
-  const province = values.selectedOptions[0].value
-  const city = values.selectedOptions[1].value
-  const district = values.selectedOptions[2].value
-  if (show.value) {
-    formList.value.province = province
-    formList.value.city = city
-    formList.value.district = district
-  }
-  else if (addStoreShow.value) {
-    addForm.value.province = province
-    addForm.value.city = city
-    addForm.value.district = district
-  }
-  else {
-    editForm.value.province = province
-    editForm.value.city = city
-    editForm.value.district = district
-  }
-  // 更新显示名称，合并省份、城市和地区的文本
-  showName.value.province_name = values.selectedOptions[0].text + values.selectedOptions[1].text + values.selectedOptions[2].text
-  // 隐藏地址选择器
-  addressShow.value = false
-}
 
 // 替换空字符串
 const replaceEmptyStrings = (obj: any) => {
@@ -110,12 +83,6 @@ const showModal = ref(false)
 const getStoreInfo = async (val: string) => {
   await getStoreDetail({ id: val as string })
   showModal.value = true
-  // navigateTo({
-  //   path: '/system/store/info',
-  //   query: {
-  //     id: val,
-  //   },
-  // })
 }
 
 // 开发新增门店弹窗, 清空 省市区选择
@@ -196,8 +163,6 @@ const editStore = async () => {
   }
 }
 
-// 选择是否同步企业微信弹窗
-const selectAsyncShow = ref<boolean>(false)
 // 当前要删除的id
 const nowDeleteId = ref<string>('')
 // 删除门店对话框
@@ -249,6 +214,83 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
   }
   onfinish && onfinish()
 }
+// 记录当前是哪个操作
+const nowShow = ref<'search' | 'add' | 'edit' | null>()
+// 弹窗点击选择省市区
+const clickCity = (key: string) => {
+  switch (key) {
+    case 'add':
+      addStoreShow.value = false
+      nowShow.value = 'add'
+      break
+    case 'edit':
+      editStoreShow.value = false
+      nowShow.value = 'edit'
+      break
+    default:
+      show.value = false
+      nowShow.value = 'search'
+      break
+  }
+  addressShow.value = true
+}
+/**
+ * 筛选表单完成时操作
+ */
+const onFinish = (values: any) => {
+  const province = values.selectedOptions[0].value
+  const city = values.selectedOptions[1].value
+  const district = values.selectedOptions[2].value
+
+  switch (nowShow.value) {
+    case 'add':
+      addForm.value.province = province
+      addForm.value.city = city
+      addForm.value.district = district
+      addStoreShow.value = true
+      break
+    case 'edit':
+      editForm.value.province = province
+      editForm.value.city = city
+      editForm.value.district = district
+      editStoreShow.value = true
+      break
+    default:
+      formList.value.province = province
+      formList.value.city = city
+      formList.value.district = district
+      show.value = true
+      break
+  }
+
+  // 更新显示名称，合并省份、城市和地区的文本
+  showName.value.province_name = values.selectedOptions[0].text + values.selectedOptions[1].text + values.selectedOptions[2].text
+  // 隐藏地址选择器
+  addressShow.value = false
+}
+
+// 重置省市区选择器数据 和 省市区名称
+const reaset = () => {
+  cascaderValue.value = ''
+  showName.value.province_name = ''
+}
+// 高级搜索按钮
+const heightSearchFn = () => {
+  cascaderValue.value = ''
+  showName.value.province_name = ''
+  formList.value.province = ''
+  formList.value.city = ''
+  formList.value.district = ''
+  show.value = true
+}
+// 搜索确认查询列表
+const searchSubmit = () => {
+  searchPage.value = 1
+  nomore.value = false
+  storesList.value = []
+  searchFn()
+}
+
 // 获取头部高度
 const height = ref(0)
 onMounted(() => {
@@ -265,14 +307,7 @@ onMounted(() => {
           共{{ store.total }}条数据
         </div>
         <div
-          class="col-4" uno-lg="col-4" @click="() => {
-            cascaderValue = ''
-            showName.province_name = ''
-            formList.province = ''
-            formList.city = ''
-            formList.district = ''
-            show = true
-          }">
+          class="col-4" uno-lg="col-4" @click="heightSearchFn()">
           <product-filter-Senior />
         </div>
       </div>
@@ -308,12 +343,8 @@ onMounted(() => {
           ref="addFormRef"
           :show-name="showName"
           @upload="uploadFile"
-          @select-city="addressShow = true"
-          @select-async="selectAsyncShow = true"
-          @clean-province="() => {
-            cascaderValue = ''
-            showName.province_name = ''
-          }"
+          @select-city="clickCity('add')"
+          @clean-province="reaset()"
           @update-parent="searchParentId"
           @submit="newStore" />
       </div>
@@ -328,15 +359,8 @@ onMounted(() => {
           :show-name="showName"
           @upload="uploadFile"
           @update-parent="searchParentId"
-          @select-city="addressShow = true"
-          @select-async="selectAsyncShow = true"
-          @clean-province="() => {
-            cascaderValue = ''
-            showName.province_name = ''
-          }"
-          @clean-parent-id="() => {
-            addForm.parent_id = undefined
-          }"
+          @select-city="clickCity('edit')"
+          @clean-province="reaset()"
           @submit="editStore" />
       </div>
     </common-popup>
@@ -345,22 +369,10 @@ onMounted(() => {
         <stores-search
           ref="searchRef"
           :show-name="showName"
-          @select-city="addressShow = true"
+          @select-city="clickCity('search')"
           @update-parent="searchParentId"
-          @clean-province="() => {
-            cascaderValue = ''
-            showName.province_name = ''
-          }"
-          @clean-parent-id="() => {
-            formList.parent_id = undefined
-          }"
-          @submit="
-            () => {
-              searchPage = 1
-              nomore = false
-              storesList = []
-              searchFn()
-            }
+          @clean-province="reaset()"
+          @submit="searchSubmit()
           " />
       </div>
     </common-popup>
