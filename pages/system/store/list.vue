@@ -197,22 +197,27 @@ const searchParentId = async (val: string) => {
   editFormRef.value?.showPopup(res)
   searchRef.value?.showPopup(res)
 }
-
+const message = useMessage()
 // 上传图片文件
 const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
-  const res = await store.uploadImage({ image: file, store_id: id || undefined })
-  if (res.data.value.code !== HttpCode.SUCCESS) {
-    $toast.error(res.data.value?.message || '上传失败')
-    return false
+  try {
+    const res = await store.uploadImage({ image: file, store_id: id || undefined })
+    if (res.data.value.code !== HttpCode.SUCCESS) {
+      $toast.error(res.data.value?.message || '上传失败')
+      return false
+    }
+    //  如果有id 说明是 修改logo ,没有id则是新增
+    if (id) {
+      editForm.value.logo = res.data.value.data.url
+    }
+    else {
+      addForm.value.logo = res.data.value.data.url
+    }
+    onfinish && onfinish()
   }
-  //  如果有id 说明是 修改logo ,没有id则是新增
-  if (id) {
-    editForm.value.logo = res.data.value.data.url
+  catch {
+    message.error('上传失败，请重试')
   }
-  else {
-    addForm.value.logo = res.data.value.data.url
-  }
-  onfinish && onfinish()
 }
 // 记录当前是哪个操作
 const nowShow = ref<'search' | 'add' | 'edit' | null>()
