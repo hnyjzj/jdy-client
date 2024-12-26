@@ -3,10 +3,12 @@ export const useProductManage = defineStore('ProductManage', {
     productList: Product[]
     filterList: ProductWhere
     productInfo: Product
+    productListTotal: number
   } => ({
     filterList: {} as ProductWhere,
     productList: [],
     productInfo: {} as Product,
+    productListTotal: 0,
   }),
   getters: {
     filterListToArray: (state) => {
@@ -25,6 +27,7 @@ export const useProductManage = defineStore('ProductManage', {
       try {
         const { data } = await https.post<ProductRes, ProductReq>('/product/list', pamars)
         if (data.value.code === HttpCode.SUCCESS) {
+          this.productListTotal = data.value.data.total
           pamars.page === 1 ? this.productList = data.value.data.list : this.productList = this.productList.concat(data.value.data.list)
         }
         return data.value

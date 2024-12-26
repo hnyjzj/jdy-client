@@ -297,9 +297,9 @@ const searchSubmit = () => {
 }
 
 // 获取头部高度
-const height = ref(0)
+const height = ref<number | undefined>(0)
 onMounted(() => {
-  height.value = getHeight('header') as number
+  height.value = getHeight('header')
 })
 </script>
 

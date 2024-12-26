@@ -3,7 +3,7 @@ import type { Where } from 'where'
 
 const { $toast } = useNuxtApp()
 const { getProductList, getProductWhere, importProduct } = useProductManage()
-const { productList, filterList, filterListToArray } = storeToRefs(useProductManage())
+const { productList, filterList, filterListToArray, productListTotal } = storeToRefs(useProductManage())
 const searchKey = ref('')
 const complate = ref(0)
 // 筛选框显示隐藏
@@ -39,9 +39,9 @@ await getList()
 await getProductWhere()
 
 // 获取头部高度
-const height = ref(0)
+const height = ref<number | undefined>(0)
 onMounted(() => {
-  height.value = getHeight('header') as number
+  height.value = getHeight('header')
 })
 
 const filterData = ref({} as Where<Product>)
@@ -143,7 +143,7 @@ function edit(code: string) {
     <!-- 筛选 -->
     <div id="header">
       <product-filter
-        v-model:id="complate" v-model:search="searchKey" @filter="openFilter">
+        v-model:id="complate" v-model:search="searchKey" :product-list-total="productListTotal" @filter="openFilter">
         <template #company>
           <product-manage-company />
         </template>
