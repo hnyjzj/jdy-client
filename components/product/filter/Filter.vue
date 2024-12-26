@@ -1,4 +1,7 @@
 <script setup lang="ts">
+const props = defineProps({
+  productListTotal: Number,
+})
 const emits = defineEmits(['filter'])
 const search = defineModel('search')
 const filter = () => {
@@ -18,7 +21,7 @@ const filter = () => {
     </div>
     <div class="col-12 grid-12 lg:col-8 lg:offset-2 pt-[12px] pb-[16px]">
       <div class="col-8 py-[6px] px-[12px] line-height-[20px]">
-        共1292939339条数据
+        共 {{ props.productListTotal }} 条数据
       </div>
       <div class="col-4 ">
         <product-filter-Senior @filter="filter" />

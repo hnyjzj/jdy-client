@@ -3,7 +3,7 @@ import type { Where } from 'where'
 
 const { $toast } = useNuxtApp()
 const { getProductList, getProductWhere, importProduct } = useProductManage()
-const { productList, filterList, filterListToArray } = storeToRefs(useProductManage())
+const { productList, filterList, filterListToArray, productListTotal } = storeToRefs(useProductManage())
 const searchKey = ref('')
 const complate = ref(0)
 // 筛选框显示隐藏
@@ -11,7 +11,6 @@ const isFilter = ref(false)
 const isModel = ref(false)
 const pages = ref(1)
 const isCanPull = ref(true)
-const loadingShow = ref<boolean>(true)
 useSeoMeta({
   title: '货品管理',
 })
@@ -38,6 +37,15 @@ async function getList(where = {} as Where<Product>) {
 
 await getList()
 await getProductWhere()
+
+// 获取头部高度
+const height = ref<number | undefined>(0)
+onMounted(() => {
+  height.value = getHeight('header')
+  if (height.value) {
+    height.value = height.value + 40
+  }
+})
 
 const filterData = ref({} as Where<Product>)
 
@@ -131,31 +139,22 @@ async function submitWhere(filterParams: Where<Product>) {
 function edit(code: string) {
   jump('/product/manage/edit', { code })
 }
-
-/** 触底 */
-const onScroll = useDebounceFn((e: any) => {
-  const scrollTop = e.target.scrollTop
-  const scrollHeight = e.target.scrollHeight
-  const offsetHeight = Math.ceil(e.target.getBoundingClientRect().height)
-  const currentHeight = scrollTop + offsetHeight
-  if (currentHeight + 20 >= scrollHeight) {
-    pull()
-  }
-}, 300)
 </script>
 
 <template>
   <div class="overflow-hidden">
     <!-- 筛选 -->
-    <product-filter
-      v-model:id="complate" v-model:search="searchKey" @filter="openFilter">
-      <template #company>
-        <product-manage-company />
-      </template>
-    </product-filter>
+    <div id="header">
+      <product-filter
+        v-model:id="complate" v-model:search="searchKey" :product-list-total="productListTotal" @filter="openFilter">
+        <template #company>
+          <product-manage-company />
+        </template>
+      </product-filter>
+    </div>
     <!-- 小卡片组件 -->
-    <div class="px-[16px] overflow-hidden">
-      <div class="pullList mb-12" @scroll="onScroll">
+    <div class="pb-10 overflow-hidden">
+      <common-list-pull :distance="height" :nomore="!isCanPull" @pull="pull">
         <product-manage-card :list="productList" @edit="edit">
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]" @click="jump('/product/finished/list', { code: info.code })">
@@ -186,19 +185,7 @@ const onScroll = useDebounceFn((e: any) => {
             </div>
           </template>
         </product-manage-card>
-        <template v-if="loadingShow && isCanPull">
-          <div class="flex-center-row py-[16px]">
-            <van-loading color="#0094ff">
-              加载中...
-            </van-loading>
-          </div>
-        </template>
-        <template v-else-if="!isCanPull">
-          <div class="flex-center-row py-[16px] color-[#666] text-[14px]">
-            没有更多数据了~
-          </div>
-        </template>
-      </div>
+      </common-list-pull>
     </div>
     <product-manage-bottom />
     <div class="cursor-pointer">
@@ -223,12 +210,6 @@ const onScroll = useDebounceFn((e: any) => {
 </template>
 
 <style lang="scss" scoped>
-.pullList {
-  --uno: 'px-[16px] pb-10px';
-  overflow: auto;
-  height: calc(100vh - 168px);
-}
-
 .uploadInp {
   --uno: 'text-14px px-[12px] py-[4px] rounded-[36px] flex-between text-color-light bg-#fff border-[#e6e6e8] border-1px border-solid dark:bg-[rgba(255,255,255,0.2)] dark:border-[rgba(230,230,232,0.2)]';
   &-right {

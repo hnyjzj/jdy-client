@@ -25,7 +25,7 @@ const onScroll = useDebounceFn((e: any) => {
 
 <template>
   <div
-    class="pullList" :style="{ height: `calc(100vh - (${props.distance} + 'px'))` }" @scroll="onScroll">
+    class="pullList" :style="{ height: `calc(100vh - (${props.distance}px))` }" @scroll="onScroll">
     <slot name="default" />
     <template v-if="loadingShow && !props.nomore">
       <div class="flex-center-row py-[16px]">
@@ -46,7 +46,6 @@ const onScroll = useDebounceFn((e: any) => {
 .pullList {
   --uno: 'px-[16px] pb-10px';
   overflow: auto;
-  height: calc(100vh - 62px);
 }
 
 @media screen and (min-width: 768px) {
