@@ -8,6 +8,7 @@ const emits = defineEmits<{
   del: [id: string]
   update: [bench: WorkBench]
   fold: [id: string]
+  changePage: [bench: WorkBench]
 }>()
 
 const isSetup = defineModel({ type: Boolean, default: false })
@@ -26,6 +27,10 @@ function delBench(id: string) {
 
 function fold(id: string) {
   emits('fold', id)
+}
+
+function changePageBench(bench: WorkBench) {
+  emits('changePage', bench)
 }
 </script>
 
@@ -125,16 +130,16 @@ function fold(id: string) {
                         <div class="flex items-center cursor-pointer">
                           <div class="relative">
                             <template v-if="son?.icon">
-                              <nuxt-img :src="ImageUrl(son.icon)" class="w-[32px] h-[32px]" @click="jump(son.path)" />
+                              <img :src="ImageUrl(son.icon)" class="w-[32px] h-[32px]" @click="jump(son.path)">
                             </template>
                             <template v-else>
-                              <nuxt-img src="images/sale/sales-list.png" class="w-[32px] h-[32px]" @click="jump(son.path)" />
+                              <img src="/images/sale/sales-list.png" class="w-[32px] h-[32px]" @click="jump(son.path)">
                             </template>
                             <template v-if="isSetup">
                               <icon class="absolute top-[-2px] right-[-2px] cursor-pointer" name="i-svg:reduce" size="14px" @click="delBench(son.id)" />
                             </template>
                           </div>
-                          <div class="son-title" @click="jump(son.path)">
+                          <div class="son-title" @click="changePageBench(son)">
                             {{ son.title }}
                           </div>
                         </div>

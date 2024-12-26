@@ -12,7 +12,7 @@
         </div>
         <div class="grid grid-cols-[30%_70%] pt-[18px] items-center">
           <div>图文信息</div>
-          <NuxtImg src="/images/empty/record.png" width="100" />
+          <img src="/images/empty/record.png" width="100">
         </div>
       </div>
     </common-fold>

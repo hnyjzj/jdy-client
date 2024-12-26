@@ -26,6 +26,9 @@ function submit() {
   emits('submit', filterParams.value)
   filterParams.value = {} as T
 }
+function reset() {
+  filterParams.value = {} as T
+}
 </script>
 
 <template>
@@ -75,14 +78,34 @@ function submit() {
           </template>
         </template>
       </div>
-      <div class="m-2">
-        <common-button-rounded content="确认筛选" @button-click="submit" />
-      </div>
+      <template #footer>
+        <div class="footer grid-12 offset-2">
+          <button class="left col-span-4 offset-1 cursor-pointer" @click="reset">
+            重置
+          </button>
+          <button class="right col-span-6 cursor-pointer" @click="submit">
+            确认筛选
+          </button>
+        </div>
+      </template>
     </common-popup>
   </div>
 </template>
 
-<style>
+<style lang="scss" scoped>
+.footer {
+  .left {
+    background: #ffffff;
+    box-shadow: 0px 6px 6px rgba(110, 166, 255, 0.3);
+    --uno: 'text-[16px] py-[6px] border-none text-center rounded-[36px] mr-[8px]';
+  }
+
+  .right {
+    background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
+    box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
+    --uno: 'text-[16px] py-[6px] border-none flex-1 rounded-[36px] ml-[8px] text-[#FFFFFF]';
+  }
+}
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;

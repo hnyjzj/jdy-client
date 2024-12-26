@@ -7,7 +7,7 @@ definePageMeta({ layout: false })
 
 <template>
   <div>
-    <NuxtLayout name="member">
+    <nuxt-layout name="member">
       <template #header>
         <div class="grid-12 px-[16px] flex-start" :style="{ height: 'var(--navbar-height)' }">
           <div class="col-4 color-[#fff] ">
@@ -38,6 +38,6 @@ definePageMeta({ layout: false })
           </div>
         </div>
       </template>
-    </NuxtLayout>
+    </nuxt-layout>
   </div>
 </template>

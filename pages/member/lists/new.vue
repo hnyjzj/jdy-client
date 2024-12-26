@@ -3,7 +3,7 @@ useSeoMeta({
   title: '新增会员',
 })
 
-const show = ref(true)
+const show = ref(false)
 const currentDate = ref(['2000', '01', '01'])
 const minDate = new Date(1900, 0, 1)
 const maxDate = new Date(new Date().getFullYear(), 11, 31)
@@ -28,6 +28,9 @@ const maxDate = new Date(new Date().getFullYear(), 11, 31)
     <div class="col-12 px-[16px] py-[16px]" uno-lg="col-8 offset-2">
       <member-lists-new
         @show-pop="() => { show = true }" />
+    </div>
+    <div class="h-[80px]">
+      <common-button-bottom confirm-text="确认新增" cancel-text="取消" />
     </div>
   </div>
 </template>

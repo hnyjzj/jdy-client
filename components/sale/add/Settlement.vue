@@ -39,7 +39,7 @@ function removeItem(item: { id: number }) {
         <div class="flex flex-col gap-[12px]">
           <template v-for="(item, index) in props.goodinfo" :key="index">
             <div class="flex items-center justify-between">
-              <div class="color-[#333] dark:color-[#FFFFFF] text-[16px] font-medium">
+              <div class="color-[#333] dark:color-[#FFFFFF] text-[14px] font-normal">
                 {{ item.name }}
               </div>
               <common-frame
@@ -62,7 +62,7 @@ function removeItem(item: { id: number }) {
         </div>
       </div>
       <div class="flex flex-col gap-[8px] pt-[8px]">
-        <div class="font-size-[16px] font-bold color-[#333] dark:color-[#fff]">
+        <div class="font-size-[14px] font-normal color-[#333] dark:color-[#fff]">
           备注信息
         </div>
         <textarea
@@ -129,7 +129,7 @@ function removeItem(item: { id: number }) {
 }
 
 .remark {
-  --uno: 'w-auto border-[#CBCDD1] border border-solid rounded-[8px] px-[4px] pt-[4px] pb-[32px] bg-[#fff] tracking-[1px] text-[14px] dark:bg-[rgba(255,255,255,0.2)] dark:border-[rgba(230,230,232,0.3)] color-[#333] dark:color-[#fff] resize-y';
+  --uno: 'w-auto border-[#E6E6E8] border border-solid rounded-[8px] px-[4px] pt-[4px] pb-[32px] bg-[#fff] tracking-[1px] text-[14px] dark:bg-[rgba(255,255,255,0.2)] dark:border-[rgba(230,230,232,0.3)] color-[#333] dark:color-[#fff] resize-y';
 }
 
 textarea::placeholder {

@@ -1,18 +1,13 @@
 <script setup lang="ts">
-import type { Rules } from 'common-form'
-
 const props = defineProps<{
   showName: { province_name: string }
 }>()
 const emits = defineEmits<{
   selectCity: []
-  selectStore: []
-  cleanParentId: []
   cleanProvince: []
   updateParent: [val: string]
-  upload: [val: any, id: string]
-  selectAsync: []
-  submit: [val: editStoreReq]
+  upload: [val: any, onFinish?: () => void, id?: string]
+  submit: []
 }>()
 const form = defineModel<editStoreReq>({ default: {
   id: '',
@@ -26,40 +21,14 @@ const form = defineModel<editStoreReq>({ default: {
   sort: '',
   contact: '',
 } })
-const rules = ref<Rules<editStoreReq>>({
-  parent_id: [],
-  address: [{
-    message: '地址不能为空',
-    validator: 'required',
-  }],
-  name: [
-    {
-      message: '店名不能为空',
-      validator: 'required',
-    },
-  ],
-  logo: [],
-  province: [
-    {
-      message: '省市区不能为空',
-      validator: 'required',
-    },
-  ],
-  city: [],
-  contact: [{
-    message: '联系方式不能为空',
-    validator: 'required',
-  }],
-  district: [],
-})
-
+const message = useMessage()
 // 上级门店搜索框
 const searchKey = ref<string>('')
-
+const realSearchKey = ref<string>('')
 // 搜索关键字 去父组件请求查询列表
 const onSearch = useDebounceFn(() => {
   emits('updateParent', searchKey.value)
-}, 1000)
+}, 500)
 
 // 失去焦点 判断是否为空上级门店
 const blurClean = () => {
@@ -68,247 +37,187 @@ const blurClean = () => {
     form.value.parent_id = ''
   }
   //   如果id为空，则清空关键字
-  if (form.value.parent_id === '') {
+  if (form.value.parent_id === '' || form.value.parent_id === undefined) {
     searchKey.value = ''
+  }
+  else {
+    searchKey.value = realSearchKey.value
   }
 }
 // 显示上级门店列表
 const pop = ref(false)
 const popList = ref<storesList[]>([])
 
-// 显示气泡列表
-const showPopup = (res: any) => {
-  popList.value = res
-  pop.value = true
-}
-const fileList = ref<fileListArr[]>([])
-// 设置logo
-const setLogo = (val: any) => {
-  fileList.value = [{ url: ImageUrl(val), isImage: true }]
-}
 // 设置搜索关键字
 const setKeySearch = (val?: string) => {
   if (val) {
     searchKey.value = val
+    realSearchKey.value = val
   }
   else {
     searchKey.value = ''
     form.value.parent_id = ''
   }
 }
-// 上传前
-const beforeRead = (file: any) => {
-  // 验证文件类型
-  if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
-    showToast('请上传 jpg 格式图片')
-    return false
-  }
 
-  return true
+const options = ref<{ label: string, key: string }[]>([])
+// 选择上级门店 弹出列表
+const showPopup = (res: any) => {
+  popList.value = res
+  options.value = []
+  res.forEach((item: storesList) => {
+    options.value.push({
+      label: item.name,
+      key: item.id,
+    })
+  })
+  pop.value = true
 }
-// 上传文件后
-const afterRead = async (file: any) => {
-  emits('upload', file.file, form.value.id)
+// 选择上级门店
+const seletParent = (key: string | number, options: any) => {
+  form.value.parent_id = options.key as string
+  searchKey.value = options.label as string
+  realSearchKey.value = options.label as string
+  pop.value = false
 }
+
+// 清空按钮
+const clearFn = () => {
+  searchKey.value = ''
+  form.value.parent_id = ''
+}
+// form 表单尺寸
+const size = ref<'small' | 'medium' | 'large'>('large')
+const rules = {
+  address: {
+    required: true,
+    message: '请输入门店地址',
+    trigger: ['input', 'blur'],
+  },
+  name: {
+    required: true,
+    message: '请输入门店名称',
+    trigger: ['input', 'blur'],
+  },
+  contact: {
+    required: true,
+    message: '请输入联系方式',
+    trigger: ['input', 'blur'],
+  },
+  district: {
+    required: true,
+    message: '请选择省市区',
+    trigger: 'change',
+  },
+}
+
+const formRef = ref()
+const handleValidateButtonClick = (e: MouseEvent) => {
+  e.preventDefault()
+  formRef.value?.validate((errors: any) => {
+    if (!errors) {
+      if (form.value.district) {
+        emits('submit')
+      }
+      else {
+        message.error('请选择省市区')
+      }
+    }
+    else {
+      message.error(errors[0][0].message)
+    }
+  })
+}
+
 defineExpose({
   showPopup,
-  setLogo,
+  // setLogo,
   setKeySearch,
 })
 </script>
 
 <template>
   <div>
-    <common-form v-model="form" :rules="rules" @submit="(val) => emits('submit', val)">
-      <template
-        #parent_id>
-        <div class="pb-[16px]">
-          <div class="text-[14px] color-[#333] line-height-[20px] pb-[8px]">
-            上级门店
-          </div>
-          <van-popover v-model:show="pop" trigger="manual" placement="bottom-start">
-            <div class="px-[12px] w-[260px]">
-              <template v-if="popList.length === 0">
-                <div class="py-[12px] text-[14px] color-[#666]">
-                  暂无相关门店,换个关键字试试吧
-                </div>
-              </template>
+    <n-form
+      ref="formRef"
+      :model="form"
+      :rules="rules"
+      :size="size"
+      label-placement="top"
+    >
+      <n-form-item label="上级门店" path="parent_id">
+        <n-dropdown :options="options" :show="pop" label placement="bottom-start" @select="seletParent">
+          <n-input
+            v-model:value="searchKey"
+            round placeholder="请输入上级门店" clearable @input="() => onSearch()" @clear="clearFn" @blur="blurClean" />
+        </n-dropdown>
+      </n-form-item>
+      <!-- <n-form-item label="上级门店" path="partent_id">
+        <stores-dropdown :options="options" :show="pop">
+          <n-input
+            v-model:value="searchKey"
+            round placeholder="请输入上级门店" clearable @input="() => onSearch()" @clear="clearFn" @blur="blurClean" />
+        </stores-dropdown>
+      </n-form-item> -->
 
-              <template v-for="(item, index) in popList" :key="index">
-                <div
-                  class="py-[12px] border-b-[#E6E6E8] border-b-solid border text-[14px] overflow-hidden text-ellipsis text-nowrap"
-                  :style="{ borderBottom: index === popList.length - 1 ? 'none' : '1px solid #E6E6E8', color: item.id === form.parent_id ? '#578AFA' : '#000' }"
-                  @click="() => {
-                    searchKey = item.name
-                    form.parent_id = item.id
-                    pop = false
-                  }">
-                  {{ item.name }}
-                </div>
-              </template>
-            </div>
-            <template #reference>
-              <van-search
-                v-model="searchKey"
-                autocomplete="off"
-                shape="round"
-                :style="{
-                  '--van-search-padding': '0',
-                  '--van-search-background': '#ffffff',
-                  '--van-search-content-background': '#fff',
-                }"
-                background="#F1F5FE"
-                placeholder="请输入搜索关键词"
-                @update:model-value="onSearch"
-                @search="onSearch"
-                @clear="setKeySearch()"
-                @blur="blurClean"
-
-              />
-            </template>
-          </van-popover>
+      <div class="pb-[16px]">
+        <div class="text-[14px] color-[#333] line-height-[20px] pb-[8px]">
+          省市区<span class="color-[#D23B5A]">*</span>
         </div>
-      </template>
-      <template
-        #address="{
-          error,
-          validate,
-        }">
-        <div class="pb-[16px]">
-          <div class="text-[14px] color-[#333] line-height-[20px] pb-[8px]">
-            地址<span class="color-red-4">*</span>
-          </div>
-          <div class="bg-[#fff] rounded-full px-[12px] flex items-center">
-            <input
-              v-model="form.address" class="py-[10px] border-0 text-[14px] flex-1 color-[#333] " type="text" placeholder="请输入地址" @change="validate()">
-            <van-icon name="arrow" />
-          </div>
-          <template v-if="error">
-            <div class="error">
-              {{ error }}
+        <div class="bg-[#fff] border-[#E2E2E8] border-solid border rounded-full px-[12px] flex items-center">
+          <template v-if="form.province || form.city || form.district">
+            <div class="text-[14px] color-[#333] py-[9.5px] flex-1" @click="emits('selectCity')">
+              {{ props.showName.province_name }}
             </div>
           </template>
-        </div>
-      </template>
-      <template
-        #name="{
-          error,
-          validate,
-        }">
-        <div class="pb-[16px]">
-          <div class="text-[14px] color-[#333] line-height-[20px] pb-[8px]">
-            店名<span class="color-red-4">*</span>
-          </div>
-          <div class="bg-[#fff] rounded-full px-[12px] flex items-center">
-            <input
-              v-model="form.name" class="py-[10px] border-0 text-[14px] flex-1 color-[#333] " type="text" placeholder="请输入店名" @change="validate()">
-            <van-icon name="arrow" />
-          </div>
-          <template v-if="error">
-            <div class="error">
-              {{ error }}
+          <template v-else>
+            <div class="text-[14px] color-[#C9C9C9] py-[9.5px] flex-1" @click="emits('selectCity')">
+              请输入省市区
             </div>
           </template>
-        </div>
-      </template>
-      <template
-        #logo>
-        <div class="pb-[16px]">
-          <div class="text-[14px] color-[#333] line-height-[20px] pb-[8px]">
-            logo
-          </div>
-          <van-uploader
-            v-model="fileList"
-            :style="{
-              '--van-uploader-upload-background': 'white',
-            }"
-            max-count="1"
-            :after-read="afterRead"
-            :preview-options="{ closeable: true }" multiple :before-read="beforeRead"
-            @delete="() => {
-              form.logo = ''
+          <van-icon
+            name="close" @click="() => {
+              form.province = ''
+              form.city = ''
+              form.district = ''
+              emits('cleanProvince')
             }" />
         </div>
-      </template>
-      <template
-        #province="{
-          error,
-        }">
-        <div class="pb-[16px]">
-          <div class="text-[14px] color-[#333] line-height-[20px] pb-[8px]">
-            省市区<span class="color-red-4">*</span>
+        <template v-if="!props.showName.province_name">
+          <div class="error">
+            请填写省市区
           </div>
-          <div class="bg-[#fff] rounded-full px-[12px] flex items-center">
-            <template v-if="form.province && form.city && form.district">
-              <div class="text-[14px] color-[#333] py-[10px] flex-1" @click="emits('selectCity')">
-                {{ props.showName.province_name }}
-              </div>
-            </template>
-            <template v-else>
-              <div class="text-[14px] color-[#666] py-[10px] flex-1" @click="emits('selectCity')">
-                请选择省市区
-              </div>
-            </template>
+        </template>
+      </div>
 
-            <van-icon
-              name="close" @click="() => {
-                form.province = ''
-                form.city = ''
-                form.district = ''
-                emits('cleanProvince')
-              }" />
-          </div>
-          <template v-if="error">
-            <div class="error">
-              {{ error }}
-            </div>
-          </template>
+      <n-form-item label="地址" path="address">
+        <n-input v-model:value="form.address" placeholder="请输入门店地址" round clearable />
+      </n-form-item>
+      <n-form-item label="门店名称" path="name">
+        <n-input v-model:value="form.name" placeholder="请输入门店名称" round clearable />
+      </n-form-item>
+      <n-form-item label="联系方式" path="contact">
+        <n-input v-model:value="form.contact" placeholder="请输入门店联系方式" round clearable />
+      </n-form-item>
+      <div
+        class="text-size-[16px] font-semibold" @click="handleValidateButtonClick">
+        <div class="ok">
+          确定
         </div>
-      </template>
-
-      <template
-        #contact="{
-          error,
-          validate,
-        }">
-        <div class="pb-[16px]">
-          <div class="text-[14px] color-[#333] line-height-[20px] pb-[8px]">
-            联系方式<span class="color-red-4">*</span>
-          </div>
-          <div class="bg-[#fff] rounded-full px-[12px] flex items-center">
-            <input
-              v-model="form.contact" class="py-[10px] border-0 text-[14px] flex-1 color-[#333] " type="text" placeholder="请输入联系方式" :maxlength="11" @change="validate()">
-            <van-icon name="arrow" />
-          </div>
-          <template v-if="error">
-            <div class="error">
-              {{ error }}
-            </div>
-          </template>
-        </div>
-      </template>
-
-      <template #actions="{ submit }">
-        <div
-          class="text-size-[16px] font-semibold" @click="submit">
-          <div class="ok">
-            确定
-          </div>
-        </div>
-      </template>
-    </common-form>
+      </div>
+    </n-form>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .error {
-  --uno: 'color-[red] text-size-[14px] line-height-[20px] mt-10px';
+  --uno: 'color-[#D23B5A] text-size-[14px] line-height-[20px] mt-10px';
 }
 .ok {
   --uno: 'bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] line-height-[24px] px-[77px] py-[6px] text-center rounded-[36px] color-[#fff] shadow-[0_8px_8px_0px_#3971F33D]';
 }
 
-::v-deep .van-popover__wrapper {
+:deep(.van-popover__wrapper) {
   width: 100%;
 }
 </style>

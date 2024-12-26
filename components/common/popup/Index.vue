@@ -1,20 +1,31 @@
 <script lang="ts" setup>
-const props = defineProps<{
+const props = withDefaults(defineProps<{
+  /**
+   * 弹出层方向
+   */
+  placement?: 'left' | 'right' | 'top' | 'bottom'
+  /**
+   * 弹出层宽度
+   */
+  width?: string
+  /**
+   * 弹出层标题
+   */
   title?: string
-}>()
+  /**
+   * 是否点击遮罩层关闭
+   */
+  isMaskClose?: boolean
+}>(), {
+  placement: 'right',
+  width: '70%',
+  isMaskClose: true,
+})
 
 const emits = defineEmits<{
   close: []
 }>()
 const show = defineModel({ type: Boolean, default: false })
-watch(show, (val) => {
-  if (val) {
-    document.body.style.overflow = 'hidden' // 禁止滚动
-  }
-  else {
-    document.body.style.overflow = ''
-  }
-})
 
 function close() {
   show.value = false
@@ -23,75 +34,62 @@ function close() {
 </script>
 
 <template>
-  <div v-if="show" class="popup">
-    <div class="flex h-full justify-between">
-      <div class="flex-1" />
-      <div class="content">
-        <div class="title">
-          <template v-if="props.title">
-            <div class="top">
-              <div class="name">
-                <NuxtImg
-                  class="img1"
-                  src="/images/model/title1.png"
-                  width="80"
-                />
-                <NuxtImg
-                  class="img2"
-                  src="/images/model/title2.png"
-                  width="176"
-                />
-                <div class="name">
-                  {{ props.title }}
-                </div>
-              </div>
+  <n-drawer
+    v-model:show="show" :style="{
+      '--n-color': 'transparent',
+      'top': '30px',
+      '--n-header-padding': '0',
+      '--n-header-border-bottom': 'none',
+      '--n-body-padding': '0',
+      '--n-footer-padding': '0',
+    }" :width="props.width" default-height="400px" resizable :mask-closable="isMaskClose" :placement="props.placement">
+    <n-drawer-content header-class="rounded-2">
+      <template #header>
+        <template v-if="props.title">
+          <div class="title relative mb-[-36px]">
+            <img class="relative z-2" src="/images/model/title1.png" width="80">
+            <img class="ml--10 mb-1 relative z-1" src="/images/model/title2.png" width="170">
+            <div class="title-content">
+              {{ props.title }}
             </div>
-          </template>
+          </div>
+        </template>
+        <div class="top">
           <div class="close" @click="close">
-            <van-icon name="cross" color="#fff" size="14" />
+            <van-icon name="cross" color="#fff" size="16" />
           </div>
         </div>
-        <div class="body overflow-y-auto">
-          <slot />
-        </div>
+      </template>
+      <div class="content">
+        <slot name="default" />
       </div>
-    </div>
-  </div>
+      <template #footer>
+        <div class="footer">
+          <slot name="footer" />
+        </div>
+      </template>
+    </n-drawer-content>
+  </n-drawer>
 </template>
 
 <style lang="scss" scoped>
-.popup {
-  --uno: 'fixed left-0 right-0 top-0 bottom-0 w-[100vw] h-[100vh] z-999 overflow-hidden';
-  background: rgba($color: #000, $alpha: 0.3);
-  .content {
-    --uno: 'h-[100%] w-[86%] sm:w-[86%] md:w-[86%] lg:w-[66%] flex flex-col';
-    .title {
-      --uno: 'relative h-50px border-rd-[20px_20px_0_0] mt-40px';
-      background: linear-gradient(to right, rgba(147, 211, 245, 1), rgba(56, 101, 252, 1));
-      .close {
-        --uno: 'absolute top-[10px] right-[20px]';
-      }
-      .top {
-        --uno: 'absolute bottom-[14px] left-[0px] border-rd-[20px_20px_0_0]';
-        background: red;
-        .name {
-          .img1 {
-            --uno: 'absolute bottom-0 z-[3]';
-          }
-          .img2 {
-            --uno: 'z-[2] pl-[58px] absolute bottom-4px';
-          }
-          .name {
-            --uno: 'absolute left-[80px] bottom-[8px] z-[9] text-[rgba(255,255,255,1)] font-bold text-nowrap text-14px';
-            transform: skewY(-4deg);
-            transform-origin: bottom left;
-          }
-        }
-      }
-    }
-    .body {
-      --uno: 'border-rd-[20px_0_0_0] mt-[-14px] flex-1 blur-bga';
-    }
+.content {
+  --uno: 'p-4px bg-[#F1F5FE] dark:bg-[rgba(0,0,0,0.6)] blur-8px h-full';
+}
+.footer {
+  border-top: 1px solid #e6e6e8;
+  --uno: 'block w-full bg-[#F1F5FE] dark:bg-[rgba(0,0,0,0.6)] blur-8px py-3 px-6';
+}
+.top {
+  --uno: 'flex justify-end items-center h-34px border-rd-[20px_20px_0_0]';
+  background: linear-gradient(to right, rgba(147, 211, 245, 1), rgba(56, 101, 252, 1));
+  .close {
+    --uno: 'mr-[20px]';
   }
+}
+.title-content {
+  --uno: 'absolute left-20 top-6 z-3 text-#fff font-bold';
+  transform: skewY(-4deg);
+  transform-origin: bottom left;
 }
 </style>

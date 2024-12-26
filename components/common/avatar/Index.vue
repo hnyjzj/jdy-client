@@ -26,20 +26,20 @@ const props = withDefaults(defineProps<{
 <template>
   <div>
     <template v-if="props.img">
-      <nuxt-img
+      <img
         :src="props.img"
-        class="w-full h-full shadow-[-4px_4px_0px_1px_rgba(56,101,258,.8)]"
+        class="w-full h-full shadow-[-3px_3px_0px_-1px_rgba(56,101,258,.8)]"
         :style="{
           width: `${props.size}px`,
           height: `${props.size}px`,
           borderRadius: props.rounded,
           boxShadow: props.hasShadow ? '-4 4px 0px 1px rgba(56,101,258,.8)' : 'none',
         }"
-      />
+      >
     </template>
     <template v-else>
       <div
-        class="rounded-[8px] bg-gray-200 shadow-[-4px_4px_0px_1px_rgba(56,101,258,.8)]"
+        class="rounded-[8px] bg-gray-200 shadow-[-3px_3px_0px_-1px_rgba(56,101,258,.8)]"
         :style="{
           width: `${props.size}px`,
           height: `${props.size}px`,

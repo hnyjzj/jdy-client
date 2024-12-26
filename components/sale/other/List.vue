@@ -14,7 +14,7 @@ const handleDelete = () => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-[16px]">
+  <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
       <sale-cards :title="item.num" :tag-text="item.openType" :info="item">
         <template #info>
@@ -41,7 +41,7 @@ const handleDelete = () => {
             </div>
           </template>
           <div class="flex-end bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)] gap-[32px]" uno-lg="gap-[40px]">
-            <div class="info delete" @click="handleDelete">
+            <div class="info delete cursor-pointer" @click="handleDelete">
               删除
             </div>
             <common-button-irregular text="修改" @click="handleAmend" />

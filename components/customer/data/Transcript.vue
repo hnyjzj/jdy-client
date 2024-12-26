@@ -21,11 +21,11 @@ const props = defineProps<{
               <div>{{ item.top }}</div>
             </template>
             <template v-else>
-              <NuxtImg class="avatar" :src="`/images/top/top${item.top}.svg`" />
+              <img class="avatar" :src="`/images/top/top${item.top}.svg`">
             </template>
           </div>
           <div class="flex items-center">
-            <NuxtImg class="avatar" src="/images/empty/record.png" />
+            <img class="avatar" src="/images/empty/record.png">
             <div class="ml-1">
               {{ item.name }}
             </div>

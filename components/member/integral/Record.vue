@@ -21,9 +21,9 @@ const changeReason = {
 <template>
   <div>
     <template v-if="props.data">
-      <div class="flex flex-col gap-[16px]">
+      <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
         <template v-for="(item, index) in props.data" :key="index">
-          <common-gradient :title="item.orderId" theme="solid" :foldable="true">
+          <common-gradient :title="item.orderId" theme="solid">
             <template #before>
               <common-avatar :size="16" />
             </template>
@@ -103,11 +103,11 @@ const changeReason = {
   --uno: 'flex flex-row items-center justify-between gap-[16px]';
 
   .left {
-    --uno: 'font-size-[14px] color-[#333333]';
+    --uno: 'font-size-[14px] color-[#666]';
   }
 
   .right {
-    --uno: 'font-size-[14px] color-[#666666]';
+    --uno: 'font-size-[14px] color-[#333]';
   }
 }
 </style>

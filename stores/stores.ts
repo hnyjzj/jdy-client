@@ -18,7 +18,9 @@ export const useStores = defineStore('Store', {
       wxwork_id: undefined,
     } as Where,
     searchKey: '' as string,
+    realSearchKey: '' as string,
     addsearchKey: '' as string,
+    addrealSearchKey: '' as string,
     addForm: {
       parent_id: undefined,
       address: '',
@@ -42,6 +44,9 @@ export const useStores = defineStore('Store', {
           this.total = data.value.data.total
           if (data.value.data.list.length > 0) {
             this.storesList = [...this.storesList, ...data.value.data.list]
+            if (this.storesList.length === this.total) {
+              return false
+            }
           }
           else {
             // 当前页没有数据，则不进行下一页
@@ -85,6 +90,6 @@ export const useStores = defineStore('Store', {
   },
   persist: {
     storage: piniaPluginPersistedstate.cookies(),
-    pick: ['formList', 'addForm', 'searchKey', 'addsearchKey', 'showName'],
+    // pick: ['addForm', 'searchKey', 'addsearchKey', 'showName', 'realSearchKey', 'addrealSearchKey'],
   },
 })

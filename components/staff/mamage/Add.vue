@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { Rules } from 'common-form'
-import { pinyin } from 'pinyin-pro'
 
 const emits = defineEmits<{
   submit: [val: addStaffAccount]
@@ -9,20 +8,12 @@ const formlist = defineModel({ default: {
   account: {
     phone: '',
     nickname: '',
-    username: '',
     password: '',
     avatar: '',
     email: '',
+    gender: 0,
   },
 } })
-
-const toPinyin = () => {
-  const pinyinName = pinyin(formlist.value.account.nickname, { toneType: 'none', type: 'array' })
-  const capitalizedStrings = pinyinName.map(str =>
-    str.charAt(0).toUpperCase() + str.substring(1),
-  )
-  formlist.value.account.username = capitalizedStrings.join('')
-}
 
 const rules = ref<Rules<addStaffAccount>>({
   phone: [
@@ -37,16 +28,6 @@ const rules = ref<Rules<addStaffAccount>>({
       validator: 'required',
       callback: (val) => {
         formlist.value.account.nickname = val.replace(/[^\u4E00-\u9FA5]/g, '')
-        toPinyin()
-      },
-    },
-  ],
-  username: [
-    {
-      message: '用户名不能为空',
-      validator: 'required',
-      callback: (val) => {
-        formlist.value.account.username = val.replace(/\W/g, '')
       },
     },
   ],
@@ -104,19 +85,7 @@ const rules = ref<Rules<addStaffAccount>>({
                 </div>
               </div>
             </template>
-            <template #username="{ validate, error }">
-              <div class="text-[14px] pb-[12px]">
-                <div class="label">
-                  用户名
-                </div>
-                <div class="h-[40px] px-[12px] rounded-[36px] border border-solid border-[#E6E6E8] overflow-hidden">
-                  <input v-model="formlist.account.username" type="text" class="input-item" placeholder="请输入用户名" @blur="validate()">
-                </div>
-                <div class="pt-[8px] pl-[16px] color-red">
-                  {{ error }}
-                </div>
-              </div>
-            </template>
+
             <template #password="{ validate, error }">
               <div class="text-[14px] pb-[12px]">
                 <div class="label">
