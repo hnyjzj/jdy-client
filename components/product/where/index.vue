@@ -1,10 +1,10 @@
-<script lang="ts" setup generic="T extends Record<string, any>">
+<script lang="ts" setup generic="T, F extends Record<string, any>">
 const props = defineProps<{
-  filterListToArray: FilterWhere[]
-  list: T
+  filterListToArray: F[]
+  filterData: T
 }>()
 const emits = defineEmits<{
-  submit: [T]
+  submit: [params: T]
 }>()
 const isFilter = defineModel({ type: Boolean, default: false })
 // 筛选参数
@@ -33,7 +33,7 @@ function reset() {
 
 <template>
   <div>
-    <common-popup v-model="isFilter">
+    <common-popup v-model="isFilter" title="高级筛选">
       <div class="p-4">
         <template v-for="(filter, index) in props.filterListToArray" :key="index">
           <template v-if="filter.show">
@@ -64,9 +64,14 @@ function reset() {
               <template v-else-if="filter?.input === 'search'">
                 <van-switch v-model="filterParams[filter.name]" />
               </template>
-              <template v-else>
+              <template v-else-if="filter?.input === 'number'">
                 <div class="mt-2">
-                  <common-frame v-model="filterParams[filter.name]" :type="filter?.type" :tip="`筛选${filter?.label}`" />
+                  <common-frame v-model="filterParams[filter.name]" type="number" :tip="`输入筛选${filter?.label}`" />
+                </div>
+              </template>
+              <template v-else-if="filter?.input === 'text'">
+                <div class="mt-2">
+                  <common-frame v-model="filterParams[filter.name]" type="text" :tip="`输入筛选${filter?.label}`" />
                 </div>
               </template>
             </div>

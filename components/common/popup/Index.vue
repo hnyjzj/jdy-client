@@ -64,9 +64,11 @@ function close() {
         <slot name="default" />
       </div>
       <template #footer>
-        <div class="footer">
-          <slot name="footer" />
-        </div>
+        <template v-if="$slots.footer">
+          <div class="footer">
+            <slot name="footer" />
+          </div>
+        </template>
       </template>
     </n-drawer-content>
   </n-drawer>

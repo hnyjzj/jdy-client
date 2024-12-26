@@ -11,6 +11,7 @@ const isFilter = ref(false)
 const isModel = ref(false)
 const pages = ref(1)
 const isCanPull = ref(true)
+const loadingShow = ref<boolean>(true)
 useSeoMeta({
   title: '货品管理',
 })
@@ -18,7 +19,7 @@ const openFilter = () => {
   isFilter.value = true
 }
 // 获取货品列表
-async function getList(where = {} as Product) {
+async function getList(where = {} as Where<Product>) {
   if (!isCanPull.value)
     return
   const params = { page: pages.value, limit: 20 } as ProductReq
@@ -38,7 +39,8 @@ async function getList(where = {} as Product) {
 await getList()
 await getProductWhere()
 
-const list = ref({} as Where<Product>)
+const filterData = ref({} as Where<Product>)
+
 const create = () => {
   isModel.value = true
 }
@@ -106,56 +108,133 @@ async function submitGoods() {
     const { code, message } = await importProduct({ products: data })
     if (code === HttpCode.SUCCESS) {
       isModel.value = false
-      $toast.success('导入成功')
+      return $toast.success('导入成功')
     }
-    else {
-      $toast.error(message ?? '导入失败')
-    }
+    $toast.error(message ?? '导入失败')
   }
 }
 
 // 筛选列表
-async function submitWhere(filterParams: Product) {
+async function submitWhere(filterParams: Where<Product>) {
   pages.value = 1
   isCanPull.value = true
   productList.value = []
   const res = await getList(filterParams)
   if (res.code === HttpCode.SUCCESS) {
     isFilter.value = false
-    $toast.success('筛选成功')
+    return $toast.success('筛选成功')
   }
-  else {
-    $toast.error(res.message ?? '筛选失败')
-  }
+  $toast.error(res.message ?? '筛选失败')
 }
+
+/** 编辑 */
+function edit(code: string) {
+  jump('/product/manage/edit', { code })
+}
+
+/** 触底 */
+const onScroll = useDebounceFn((e: any) => {
+  const scrollTop = e.target.scrollTop
+  const scrollHeight = e.target.scrollHeight
+  const offsetHeight = Math.ceil(e.target.getBoundingClientRect().height)
+  const currentHeight = scrollTop + offsetHeight
+  if (currentHeight + 20 >= scrollHeight) {
+    pull()
+  }
+}, 300)
 </script>
 
 <template>
   <div class="overflow-hidden">
-    <div class="fixed top-0 left-0 right-0">
-      <!-- 筛选 -->
-      <product-filter
-        v-model:id="complate" v-model:search="searchKey" @filter="openFilter">
-        <template #company>
-          <product-manage-company />
-        </template>
-      </product-filter>
-    </div>
+    <!-- 筛选 -->
+    <product-filter
+      v-model:id="complate" v-model:search="searchKey" @filter="openFilter">
+      <template #company>
+        <product-manage-company />
+      </template>
+    </product-filter>
     <!-- 小卡片组件 -->
-    <div class="px-[16px] pt-26 pb-16 overflow-hidden">
-      <common-list-pull @pull="pull">
-        <product-manage-card :product-list="productList" :filter-list="filterList" />
-      </common-list-pull>
+    <div class="px-[16px] overflow-hidden">
+      <div class="pullList mb-12" @scroll="onScroll">
+        <product-manage-card :list="productList" @edit="edit">
+          <template #info="{ info }">
+            <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]" @click="jump('/product/finished/list', { code: info.code })">
+              <van-row justify="space-between" class="py-[4px]">
+                <van-col span="12">
+                  <div class="">
+                    所属大类
+                  </div>
+                </van-col>
+                <van-col span="12">
+                  <div class="text-align-end">
+                    {{ filterList.class?.preset[info.class] }}
+                  </div>
+                </van-col>
+              </van-row>
+              <van-row justify="space-between" class="py-[4px]">
+                <van-col span="12">
+                  <div class="">
+                    材质
+                  </div>
+                </van-col>
+                <van-col span="12">
+                  <div class="text-align-end">
+                    {{ filterList.material?.preset[info.class] }}
+                  </div>
+                </van-col>
+              </van-row>
+            </div>
+          </template>
+        </product-manage-card>
+        <template v-if="loadingShow && isCanPull">
+          <div class="flex-center-row py-[16px]">
+            <van-loading color="#0094ff">
+              加载中...
+            </van-loading>
+          </div>
+        </template>
+        <template v-else-if="!isCanPull">
+          <div class="flex-center-row py-[16px] color-[#666] text-[14px]">
+            没有更多数据了~
+          </div>
+        </template>
+      </div>
     </div>
     <product-manage-bottom />
     <div class="cursor-pointer">
       <common-create @click="create" />
     </div>
     <common-model v-model="isModel" title="入库" :show-ok="true" confirm-text="导入货品" @confirm="submitGoods">
-      <div class="mb-8">
-        <input class="text-color" type="file" @change="FileUpload">
+      <div class="mb-8 relative">
+        <input class="h-[40px] absolute top-0 w-full opacity-0" type="file" @change="FileUpload">
+        <div class="uploadInp cursor-pointer">
+          <div>请添加文件</div>
+          <div class="uploadInp-right">
+            <icon name="i-svg:upload" size="16" color="#666" />
+            <div class="ml-2">
+              点击上传
+            </div>
+          </div>
+        </div>
       </div>
     </common-model>
-    <product-where v-model="isFilter" :list="list" :filter-list-to-array="filterListToArray" @submit="submitWhere" />
+    <product-where v-model="isFilter" :filter-data="filterData" :filter-list-to-array="filterListToArray" @submit="submitWhere" />
   </div>
 </template>
+
+<style lang="scss" scoped>
+.pullList {
+  --uno: 'px-[16px] pb-10px';
+  overflow: auto;
+  height: calc(100vh - 168px);
+}
+
+.uploadInp {
+  --uno: 'text-14px px-[12px] py-[4px] rounded-[36px] flex-between text-color-light bg-#fff border-[#e6e6e8] border-1px border-solid dark:bg-[rgba(255,255,255,0.2)] dark:border-[rgba(230,230,232,0.2)]';
+  &-right {
+    --uno: 'flex items-center py-[6px] px-4 rounded-[36px] text-#FFF';
+    background: linear-gradient(to bottom, #1b6ceb, #6da6ff);
+    box-shadow: #1111113d 0px 2px 2px 1px;
+  }
+}
+</style>
