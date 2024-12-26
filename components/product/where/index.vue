@@ -34,7 +34,7 @@ function reset() {
 <template>
   <div>
     <common-popup v-model="isFilter" title="高级筛选">
-      <div class="p-4">
+      <div class="p-4 bg-[#F1F5FE] dark:bg-[rgba(0,0,0,0.6)] blur-[8px]">
         <template v-for="(filter, index) in props.filterListToArray" :key="index">
           <template v-if="filter.show">
             <div class="mb-2">

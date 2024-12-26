@@ -76,7 +76,7 @@ function close() {
 
 <style lang="scss" scoped>
 .content {
-  --uno: 'p-4px bg-[#F1F5FE] dark:bg-[rgba(0,0,0,0.6)] blur-8px h-full';
+  --uno: 'h-full';
 }
 .footer {
   border-top: 1px solid #e6e6e8;
