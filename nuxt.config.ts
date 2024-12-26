@@ -4,9 +4,6 @@ import { defineNuxtConfig } from 'nuxt/config'
 export default defineNuxtConfig({
   telemetry: false,
   compatibilityDate: '2024-11-06',
-  build: {
-    analyze: true,
-  },
   devtools: {
     enabled: true,
   },
