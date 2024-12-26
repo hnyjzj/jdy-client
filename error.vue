@@ -32,7 +32,7 @@ useHead({
 </script>
 
 <template>
-  <NuxtLayout>
+  <nuxt-layout>
     <div class="grid-12 min-h-screen overflow-hidden">
       <div class="col-8 offset-2 flex-center-col gap-[32px]" uno-lg="col-8 offset-2">
         <div class="text-[#1D1D1D] text-[160px] font-bold dark:text-[#F5F5F5]" uno-lg="text-[240px]">
@@ -60,7 +60,7 @@ useHead({
         </div>
       </div>
     </div>
-  </NuxtLayout>
+  </nuxt-layout>
 </template>
 
 <style lang="scss" scoped>

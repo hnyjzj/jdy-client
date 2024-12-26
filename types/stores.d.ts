@@ -17,7 +17,6 @@ interface Where {
   name?: string
   parent_id?: string
   province?: string
-  wxwork_id?: string
 }
 // 门店列表
 interface storesList {
@@ -36,7 +35,6 @@ interface storesList {
   sort: number
   staffs: null
   updated_at: string
-  wxwork_id: number
 }
 // 筛选表单
 interface filterForm {
@@ -47,13 +45,11 @@ interface filterForm {
   name?: string
   parent_id?: string
   province?: string
-  wxwork_id?: number
 }
 // 新增门店请求参数
 interface addStoreReq extends filterForm {
   logo?: null | string
   sort: number | undefined
-  sync_wxwork: boolean
 }
 
 interface addStoreRes {
@@ -95,7 +91,6 @@ interface getStoreDetailRes {
   sort: number
   staffs: null
   updated_at: string
-  wxwork_id: number
 }
 
 // 更新门店
@@ -118,7 +113,6 @@ interface updateStoreRes {
 
 interface deleteStoreReq {
   id: string
-  sync_wxwork?: boolean
 }
 interface deleteStoreRes {
   code?: number

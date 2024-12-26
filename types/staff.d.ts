@@ -24,7 +24,6 @@ interface addStaffForm {
  */
 interface addStaffAccount {
   phone: string
-  username: string
   nickname: string
   password: string
   avatar: string

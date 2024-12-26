@@ -130,10 +130,10 @@ function changePageBench(bench: WorkBench) {
                         <div class="flex items-center cursor-pointer">
                           <div class="relative">
                             <template v-if="son?.icon">
-                              <nuxt-img :src="ImageUrl(son.icon)" class="w-[32px] h-[32px]" @click="jump(son.path)" />
+                              <img :src="ImageUrl(son.icon)" class="w-[32px] h-[32px]" @click="jump(son.path)">
                             </template>
                             <template v-else>
-                              <nuxt-img src="images/sale/sales-list.png" class="w-[32px] h-[32px]" @click="jump(son.path)" />
+                              <img src="/images/sale/sales-list.png" class="w-[32px] h-[32px]" @click="jump(son.path)">
                             </template>
                             <template v-if="isSetup">
                               <icon class="absolute top-[-2px] right-[-2px] cursor-pointer" name="i-svg:reduce" size="14px" @click="delBench(son.id)" />

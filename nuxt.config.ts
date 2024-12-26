@@ -2,6 +2,7 @@ import { defineNuxtConfig } from 'nuxt/config'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  telemetry: false,
   compatibilityDate: '2024-11-06',
   devtools: {
     enabled: true,
@@ -17,9 +18,9 @@ export default defineNuxtConfig({
     '@vant/nuxt',
     '@vueuse/nuxt',
     '@nuxt/eslint',
-    '@nuxt/image',
     '@waset/unplugin-iconify/nuxt',
     '@nuxtjs/color-mode',
+    '@bg-dev/nuxt-naiveui',
     'nuxt-echarts',
   ],
   app: {
@@ -37,16 +38,6 @@ export default defineNuxtConfig({
       },
     },
   },
-  //   nitro: {
-  //     devProxy: {
-  //       '/proxy': {
-  //         // 代理目标的基础路径
-  //         target: import.meta.env.VITE_BASE_API,
-  //         changeOrigin: true,
-  //         prependPath: true,
-  //       },
-  //     },
-  //   },
   eslint: {
     config: {
       standalone: false,
@@ -63,9 +54,6 @@ export default defineNuxtConfig({
     storage: 'cookie', // or 'sessionStorage' or 'cookie'
     storageKey: 'nuxt-color-mode',
   },
-  image: {
-    inject: true,
-  },
   Iconify: {
     convert: {
       svg: 'assets/icons',
@@ -79,5 +67,10 @@ export default defineNuxtConfig({
   echarts: {
     charts: ['BarChart', 'LineChart', 'PieChart'],
     components: ['DatasetComponent', 'GridComponent', 'TooltipComponent', 'LegendComponent'],
+  },
+  naiveui: {
+    spaLoadingTemplate: {
+      name: 'bar-scale',
+    },
   },
 })
