@@ -42,6 +42,9 @@ await getProductWhere()
 const height = ref<number | undefined>(0)
 onMounted(() => {
   height.value = getHeight('header')
+  if (height.value) {
+    height.value = height.value + 40
+  }
 })
 
 const filterData = ref({} as Where<Product>)
@@ -150,7 +153,7 @@ function edit(code: string) {
       </product-filter>
     </div>
     <!-- 小卡片组件 -->
-    <div class="px-[16px] pb-12 overflow-hidden">
+    <div class="pb-10 overflow-hidden">
       <common-list-pull :distance="height" :nomore="!isCanPull" @pull="pull">
         <product-manage-card :list="productList" @edit="edit">
           <template #info="{ info }">
