@@ -4,7 +4,7 @@ const props = withDefaults(defineProps<{
   distance?: number
 }>(), {
   nomore: false, // 没有更多数据了
-  distance: 63, // 减去上下的距离
+  distance: 60, // 减去上下的距离
 })
 const emits = defineEmits<{
   // 触底
@@ -26,7 +26,6 @@ const onScroll = useDebounceFn((e: any) => {
 <template>
   <div
     class="pullList" :style="{ height: `calc(100vh - (${props.distance}px))` }" @scroll="onScroll">
-    <!-- {{ props.distance }} -->
     <slot name="default" />
     <template v-if="loadingShow && !props.nomore">
       <div class="flex-center-row py-[16px]">
