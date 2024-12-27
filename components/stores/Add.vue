@@ -2,8 +2,6 @@
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 
 const emits = defineEmits<{
-  selectCity: []
-  cleanProvince: []
   updateParent: [val: string]
   upload: [val: any, onFinish: () => void]
   submit: []
@@ -136,7 +134,24 @@ const customRequest = ({ file, onFinish }: UploadCustomRequestOptions) => {
   // 上传接口
   emits('upload', file.file, onFinish)
 }
-
+// 省市区文本显示
+const areaText = ref('')
+// 展示地址选择器
+const areaShow = ref(false)
+// 选择地址完成
+const finishedArea = (val: ProvinceTab[]) => {
+  addForm.value.province = val[0].value
+  addForm.value.city = val[1].value
+  addForm.value.district = val[2].value
+  areaText.value = `${val[0].text} ${val[1].text} ${val[2].text}`
+}
+// 清理选择地址
+const clearnArea = () => {
+  addForm.value.province = undefined
+  addForm.value.city = undefined
+  addForm.value.district = undefined
+  areaText.value = ''
+}
 defineExpose({
   showPopup,
 })
@@ -160,7 +175,7 @@ defineExpose({
       <n-form-item label="门店名称" path="name">
         <n-input v-model:value="addForm.name" placeholder="请输入门店名称" round clearable />
       </n-form-item>
-      <div class="pb-[16px]">
+      <div class="pb-[16px] relative">
         <div class="text-[14px] color-[#333] line-height-[20px] pb-[8px]">
           省市区<span class="color-[#D23B5A]">*</span>
         </div>
@@ -168,28 +183,26 @@ defineExpose({
           class="bg-[#fff]  border-[#E2E2E8] border-solid border rounded-full px-[12px] flex items-center"
           :style="{ border: areaError && showName.province_name === '' ? '1px solid #d03050' : ' 1px solid #E2E2E8' }">
           <template v-if="addForm.province || addForm.city || addForm.district">
-            <div class="text-[14px] color-[#333] py-[9.5px] flex-1" @click="emits('selectCity')">
-              {{ showName.province_name }}
+            <div class="text-[14px] color-[#333] py-[9.5px] flex-1" @click="areaShow = true">
+              {{ areaText }}
             </div>
           </template>
           <template v-else>
-            <div class="text-[14px] color-[#C9C9C9] py-[9.5px] flex-1" @click="emits('selectCity')">
+            <div class="text-[14px] color-[#C9C9C9] py-[9.5px] flex-1" @click="areaShow = true">
               请选择省市区
             </div>
           </template>
           <van-icon
-            name="close" @click="() => {
-              addForm.province = ''
-              addForm.city = ''
-              addForm.district = ''
-              emits('cleanProvince')
-            }" />
+            name="close" @click="clearnArea" />
         </div>
         <template v-if="areaError && showName.province_name === ''">
           <div class="error">
             请填写省市区
           </div>
         </template>
+        <div class="absolute w-full">
+          <common-area v-model:show="areaShow" @on-finish="finishedArea" />
+        </div>
       </div>
       <n-form-item label="地址" path="address">
         <n-input v-model:value="addForm.address" placeholder="请输入门店地址" round clearable />

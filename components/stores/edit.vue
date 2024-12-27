@@ -1,10 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
-  showName: { province_name: string }
-}>()
 const emits = defineEmits<{
-  selectCity: []
-  cleanProvince: []
   updateParent: [val: string]
   upload: [val: any, onFinish?: () => void, id?: string]
   submit: []
@@ -129,9 +124,38 @@ const handleValidateButtonClick = (e: MouseEvent) => {
   })
 }
 
+// 省市区文本显示
+const areaText = ref('')
+const areaRef = ref()
+
+if (form.value.province && form.value.city && form.value.district) {
+  areaText.value = toProvinces(form.value.province, form.value.city, form.value.district)
+  areaRef?.value?.setDefault([form.value.province, form.value.city, form.value.district])
+}
+// 展示地址选择器
+const areaShow = ref(false)
+// 选择地址完成
+const finishedArea = (val: ProvinceTab[]) => {
+  form.value.province = val[0].value
+  form.value.city = val[1].value
+  form.value.district = val[2].value
+  areaText.value = `${val[0].text} ${val[1].text} ${val[2].text}`
+}
+// 清理选择地址
+const clearnArea = () => {
+  form.value.province = ''
+  form.value.city = ''
+  form.value.district = ''
+  areaText.value = ''
+}
+const openArea = () => {
+  areaShow.value = true
+  if (form.value.province && form.value.city && form.value.district) {
+    areaRef?.value?.setDefault([form.value.province, form.value.city, form.value.district])
+  }
+}
 defineExpose({
   showPopup,
-  // setLogo,
   setKeySearch,
 })
 </script>
@@ -152,42 +176,33 @@ defineExpose({
             round placeholder="请输入上级门店" clearable @input="() => onSearch()" @clear="clearFn" @blur="blurClean" />
         </n-dropdown>
       </n-form-item>
-      <!-- <n-form-item label="上级门店" path="partent_id">
-        <stores-dropdown :options="options" :show="pop">
-          <n-input
-            v-model:value="searchKey"
-            round placeholder="请输入上级门店" clearable @input="() => onSearch()" @clear="clearFn" @blur="blurClean" />
-        </stores-dropdown>
-      </n-form-item> -->
 
-      <div class="pb-[16px]">
+      <div class="pb-[16px] relative">
         <div class="text-[14px] color-[#333] line-height-[20px] pb-[8px]">
           省市区<span class="color-[#D23B5A]">*</span>
         </div>
         <div class="bg-[#fff] border-[#E2E2E8] border-solid border rounded-full px-[12px] flex items-center">
           <template v-if="form.province || form.city || form.district">
-            <div class="text-[14px] color-[#333] py-[9.5px] flex-1" @click="emits('selectCity')">
-              {{ props.showName.province_name }}
+            <div class="text-[14px] color-[#333] py-[9.5px] flex-1" @click="openArea()">
+              {{ areaText }}
             </div>
           </template>
           <template v-else>
-            <div class="text-[14px] color-[#C9C9C9] py-[9.5px] flex-1" @click="emits('selectCity')">
+            <div class="text-[14px] color-[#C9C9C9] py-[9.5px] flex-1" @click="openArea()">
               请输入省市区
             </div>
           </template>
           <van-icon
-            name="close" @click="() => {
-              form.province = ''
-              form.city = ''
-              form.district = ''
-              emits('cleanProvince')
-            }" />
+            name="close" @click="clearnArea()" />
         </div>
-        <template v-if="!props.showName.province_name">
+        <template v-if="!areaText">
           <div class="error">
             请填写省市区
           </div>
         </template>
+        <div class="absolute w-full">
+          <common-area ref="areaRef" v-model:show="areaShow" @on-finish="finishedArea" />
+        </div>
       </div>
 
       <n-form-item label="地址" path="address">

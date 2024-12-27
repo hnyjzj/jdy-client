@@ -87,6 +87,21 @@ export const useStores = defineStore('Store', {
     async uploadImage(req: uploadLogoFileReq) {
       return await https.upload<uploadFileRes, uploadLogoFileReq>('/upload/store', req)
     },
+
+    // 重置新增表单
+    async reastAddForm() {
+      this.addForm = {
+        parent_id: undefined,
+        address: '',
+        name: '',
+        logo: '',
+        province: '',
+        city: '',
+        district: '',
+        contact: '',
+        sort: 0,
+      }
+    },
   },
   persist: {
     storage: piniaPluginPersistedstate.cookies(),
