@@ -211,7 +211,7 @@ defineExpose({
       </n-form-item>
 
       <n-form-item label="排序" path="sort ">
-        <n-input-number v-model:value="addForm.sort" clearable placeholder="请输入排序" round />
+        <n-input-number v-model:value="addForm.sort" :min="0" clearable placeholder="请输入排序" round />
       </n-form-item>
 
       <div
