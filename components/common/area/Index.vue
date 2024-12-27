@@ -37,7 +37,6 @@ const selectTab = (val: string) => {
 }
 
 const setDefault = (val: string[]) => {
-  console.log(val)
   // val: [province, city, area]
   selectProvinceTab.value = [{ name: 'province', text: '请选择', value: '', children: [] as areaitem[] }]
   options.forEach((item) => {
