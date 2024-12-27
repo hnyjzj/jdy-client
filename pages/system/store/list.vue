@@ -221,6 +221,17 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
 }
 // 记录当前是哪个操作
 const nowShow = ref<'search' | 'add' | 'edit' | null>()
+
+const area = ref()
+const finishedArea = (val: any) => {
+  console.log(val)
+}
+
+const areaShow = ref(false)
+const openAddressFn = () => {
+  areaShow.value = true
+//   area.value?.setDefault(['140000', '140200', '140213'])
+}
 // 弹窗点击选择省市区
 const clickCity = (key: string) => {
   switch (key) {
@@ -233,11 +244,12 @@ const clickCity = (key: string) => {
       nowShow.value = 'edit'
       break
     default:
-      show.value = false
+    //   show.value = false
       nowShow.value = 'search'
+      areaShow.value = true
       break
   }
-  addressShow.value = true
+//   addressShow.value = true
 }
 /**
  * 筛选表单完成时操作
@@ -308,7 +320,8 @@ onMounted(() => {
     <!-- 筛选 -->
     <div id="header" class="px-[16px]">
       <div class="col-12 grid-12 lg:col-8 lg:offset-2 pt-[12px] pb-[16px] color-[#fff]">
-        <div class="col-8 py-[6px] px-[12px] line-height-[20px]" uno-lg="col-4 offset-2">
+        <div
+          class="col-8 py-[6px] px-[12px] line-height-[20px]" uno-lg="col-4 offset-2" @click="openAddressFn()">
           共{{ store.total }}条数据
         </div>
         <div
@@ -317,6 +330,8 @@ onMounted(() => {
         </div>
       </div>
     </div>
+    <common-area ref="area" v-model:show="areaShow" @on-finish="finishedArea" />
+
     <div class="">
       <common-list-pull
         :distance="height"
@@ -373,10 +388,7 @@ onMounted(() => {
       <div class="p-[16px] bg-[#F1F5FE] h-full">
         <stores-search
           ref="searchRef"
-          :show-name="showName"
-          @select-city="clickCity('search')"
           @update-parent="searchParentId"
-          @clean-province="reaset()"
           @submit="searchSubmit()
           " />
       </div>

@@ -1,11 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
-  showName: { province_name: string }
-}>()
 const emits = defineEmits<{
-  selectCity: []
-  selectStore: []
-  cleanProvince: []
   updateParent: [val: string]
   submit: []
 }>()
@@ -32,7 +26,6 @@ const toLabel = (key: string): string => {
   return labelMap[key] || ''
 }
 const options = ref<{ label: string, key: string }[]>([])
-
 // 显示上级门店列表
 const pop = ref(false)
 const popList = ref<storesList[]>([])
@@ -84,6 +77,24 @@ const seletParent = (key: string | number, options: any) => {
   realSearchKey.value = options.label as string
   pop.value = false
 }
+// 省市区文本显示
+const areaText = ref('')
+// 展示地址选择器
+const areaShow = ref(false)
+// 选择地址完成
+const finishedArea = (val: ProvinceTab[]) => {
+  form.value.province = val[0].value
+  form.value.city = val[1].value
+  form.value.district = val[2].value
+  areaText.value = `${val[0].text} ${val[1].text} ${val[2].text}`
+}
+// 清理选择地址
+const clearnArea = () => {
+  form.value.province = undefined
+  form.value.city = undefined
+  form.value.district = undefined
+  areaText.value = ''
+}
 defineExpose({
   showPopup,
 })
@@ -104,28 +115,26 @@ defineExpose({
             round placeholder="请输入上级门店" clearable @input="() => onSearch()" @clear="clearFn" @blur="blurClean" />
         </n-dropdown>
       </n-form-item>
-      <div class="pb-[16px]">
+      <div class="pb-[16px] relative">
         <div class="text-[14px] color-[#333] line-height-[20px] pb-[8px]">
           省市区
         </div>
         <div class="bg-[#fff] border-[#E2E2E8] border-solid border rounded-full px-[12px] flex items-center">
           <template v-if="form.province || form.city || form.district">
-            <div class="text-[14px] color-[#333] py-[9.5px] flex-1" @click="emits('selectCity')">
-              {{ props.showName.province_name }}
+            <div class="text-[14px] color-[#333] py-[9.5px] flex-1" @click="areaShow = true">
+              {{ areaText }}
             </div>
           </template>
           <template v-else>
-            <div class="text-[14px] color-[#C9C9C9] py-[9.5px] flex-1" @click="emits('selectCity')">
+            <div class="text-[14px] color-[#C9C9C9] py-[9.5px] flex-1" @click="areaShow = true">
               请选择省市区
             </div>
           </template>
           <van-icon
-            name="close" @click="() => {
-              form.province = ''
-              form.city = ''
-              form.district = ''
-              emits('cleanProvince')
-            }" />
+            name="close" @click="clearnArea()" />
+        </div>
+        <div class="absolute w-full">
+          <common-area v-model:show="areaShow" @on-finish="finishedArea" />
         </div>
       </div>
       <template v-for="(value, key, index) in form" :key="index">
