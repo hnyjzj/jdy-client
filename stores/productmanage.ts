@@ -12,7 +12,7 @@ export const useProductManage = defineStore('ProductManage', {
   }),
   getters: {
     filterListToArray: (state) => {
-      const arr: FilterWhere[] = []
+      const arr: FilterWhere<Product>[] = []
       Object.entries(state.filterList).map((item) => {
         return arr.push({
           ...item[1],
@@ -28,7 +28,12 @@ export const useProductManage = defineStore('ProductManage', {
         const { data } = await https.post<ProductRes, ProductReq>('/product/list', pamars)
         if (data.value.code === HttpCode.SUCCESS) {
           this.productListTotal = data.value.data.total
-          pamars.page === 1 ? this.productList = data.value.data.list : this.productList = this.productList.concat(data.value.data.list)
+          if (pamars.page === 1) {
+            this.productList = data.value.data.list
+          }
+          else {
+            this.productList = this.productList.concat(data.value.data.list)
+          }
         }
         return data.value
       }
