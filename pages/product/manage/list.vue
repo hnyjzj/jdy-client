@@ -123,11 +123,12 @@ async function submitGoods() {
 }
 
 // 筛选列表
-async function submitWhere(filterParams: Where<Product>) {
+async function submitWhere(f: Where<Product>) {
+  filterData.value = f
   pages.value = 1
   isCanPull.value = true
   productList.value = []
-  const res = await getList(filterParams)
+  const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
     isFilter.value = false
     return $toast.success('筛选成功')
@@ -205,7 +206,11 @@ function edit(code: string) {
         </div>
       </div>
     </common-model>
-    <product-where v-model="isFilter" :filter-data="filterData" :filter-list-to-array="filterListToArray" @submit="submitWhere" />
+    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere">
+      <template #product_enter_id="{ filter }">
+        {{ filter.name }}
+      </template>
+    </common-filter-where>
   </div>
 </template>
 

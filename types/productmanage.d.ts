@@ -130,11 +130,10 @@ interface Product {
    */
   weight_other: number
 }
-type ProductWhere = { [key in keyof Product]?: FilterWhere }
+  type ProductWhere = { [key in keyof Product]?: FilterWhere }
 
-type ProductKey = keyof Product
-
-interface FilterWhere {
+  type ProductKey = keyof Product
+interface FilterWhere<T, N = keyof T> {
   /**
    * 筛选条件
    */
@@ -151,10 +150,10 @@ interface FilterWhere {
   /**
    * 筛选类型 选择或输入
    */
-  input: 'select' | 'text' | 'search' | 'switch' | 'number'
+  input: 'select' | 'text' | 'search' | 'switch' | 'number' | 'textarea'
   sort: number
   show: boolean
-  name: ProductKey
+  name: unknown & string & N
 }
 
 interface ProductRes {
