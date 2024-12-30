@@ -206,11 +206,11 @@ function edit(code: string) {
         </div>
       </div>
     </common-model>
-    <product-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere">
+    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere">
       <template #product_enter_id="{ filter }">
         {{ filter.name }}
       </template>
-    </product-where>
+    </common-filter-where>
   </div>
 </template>
 
