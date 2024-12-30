@@ -45,7 +45,8 @@ interface storeDeleteReq {
 // 新增门店请求参数
 interface addStoreReq extends StoresWhere {
   logo?: null | string
-  sort: number | undefined
+  id?: string
+  sort?: number | undefined
 }
 
 // 更新门店

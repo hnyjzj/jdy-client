@@ -6,28 +6,15 @@ const { $toast } = useNuxtApp()
 useSeoMeta({
   title: '门店列表',
 })
-
-const addFormRef = ref<any>()
-const editFormRef = ref<any>()
+const addOrUpdateFormRef = ref<any>()
 const searchRef = ref<any>()
 // 新增门店弹窗
 const addStoreShow = ref(false)
 // 编辑门店弹窗
-const editStoreShow = ref(false)
+// const editStoreShow = ref(false)
 // 搜索弹窗显示状态
 const show = ref(false)
-// 新增门店表单数据
-const editForm = ref<updateStoreReq>({
-  id: '',
-  address: '',
-  name: '',
-  logo: '',
-  province: '',
-  city: '',
-  district: '',
-  sort: '',
-  contact: '',
-})
+
 useSeoMeta({
   title: '门店列表',
 })
@@ -69,9 +56,7 @@ const getStoreInfo = async (val: string) => {
 
 // 开发新增门店弹窗, 清空 省市区选择
 const newAdd = () => {
-  addForm.value.province = ''
-  addForm.value.city = ''
-  addForm.value.district = ''
+  store.reastAddForm()
   addStoreShow.value = true
 }
 
@@ -92,30 +77,26 @@ const newStore = async () => {
 
 // 编辑按钮
 const edit = (val: string) => {
-  editStoreShow.value = true
-
+  addStoreShow.value = true
   // 找到匹配的商店信息
   const store = storesList.value.find(item => item.id === val)
-
   if (!store) {
-    console.warn(`No store found with id: ${val}`)
     return
   }
-
   // 解构赋值，简化代码
   const { name, id, address, contact, sort, province, city, district, logo } = store
-
   // 一次性更新表单数据
-  Object.assign(editForm.value, { name, id, address, contact, sort, province, city, district, logo })
+  Object.assign(addForm.value, { name, id, address, contact, sort, province, city, district, logo })
 }
 // 确认更新
 const editStore = async () => {
-  const res = await store.updateStore(editForm.value)
+  const res = await store.updateStore(addForm.value)
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('更新成功')
-    editStoreShow.value = false
+    addStoreShow.value = false
     storesList.value = []
     await store.getStoreList({ page: 1, limit: 12 })
+    store.reastAddForm()
   }
 }
 
@@ -139,20 +120,6 @@ const confirmDelete = async () => {
   }
 }
 
-// 搜索上级门店id
-const searchParentId = async (val: string) => {
-  const searhParentList = ref({ page: 1, limit: 20, where: { name: '' as string | undefined } })
-  searhParentList.value.where.name = val
-  if (val === '') {
-    searhParentList.value.where.name = undefined
-    return
-  }
-  const res = await store.getStoreList(searhParentList.value, true)
-  addFormRef.value?.showPopup(res)
-  editFormRef.value?.showPopup(res)
-  searchRef.value?.showPopup(res)
-}
-const message = useMessage()
 // 上传图片文件
 const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
   try {
@@ -163,11 +130,11 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
     }
     const url = res.data.value.data.url
     //  如果有id 说明是 修改logo ,没有id则是新增
-    id ? editForm.value.logo = url : addForm.value.logo = url
+    addForm.value.logo = url
     onfinish && onfinish()
   }
   catch {
-    message.error('上传失败，请重试')
+    $toast.error('上传失败，请重试')
   }
 }
 
@@ -194,7 +161,6 @@ onMounted(() => {
 
 <template>
   <div>
-    <!-- 筛选 -->
     <div id="header" class="px-[16px]">
       <div class="col-12 grid-12 lg:col-8 lg:offset-2 pt-[12px] pb-[16px] color-[#fff]">
         <div
@@ -207,7 +173,6 @@ onMounted(() => {
         </div>
       </div>
     </div>
-
     <common-list-pull
       :distance="height"
       :nomore="nomore"
@@ -219,28 +184,18 @@ onMounted(() => {
         <stores-card @get-detail="getStoreInfo" @edit-store="edit" @delete-store="deleteStoreFn" />
       </template>
     </common-list-pull>
-
-    <!-- 新增门店弹窗 -->
+    <!-- 新增或更新门店弹窗 -->
     <common-popup v-model="addStoreShow">
-      <stores-add
-        ref="addFormRef"
+      <stores-add-update
+        ref="addOrUpdateFormRef"
         @upload="uploadFile"
-        @update-parent="searchParentId"
-        @submit="newStore" />
-    </common-popup>
-    <!-- 编辑门店弹窗 -->
-    <common-popup v-model="editStoreShow">
-      <stores-edit
-        ref="editFormRef"
-        v-model="editForm"
-        @upload="uploadFile"
-        @update-parent="searchParentId"
-        @submit="editStore" />
+        @submit="newStore"
+        @edit-submit="editStore" />
     </common-popup>
     <common-popup v-model="show" title="高级筛选">
       <stores-search
         ref="searchRef"
-        @update-parent="searchParentId"
+
       />
       <template #footer>
         <common-button-rounded content="确定" @button-click="searchSubmit()" />

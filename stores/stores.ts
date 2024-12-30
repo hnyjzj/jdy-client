@@ -17,6 +17,7 @@ export const useStores = defineStore('Store', {
     } as StoresWhere,
 
     addForm: {
+      id: undefined,
       address: '',
       name: '',
       logo: '',
@@ -56,8 +57,8 @@ export const useStores = defineStore('Store', {
       return data.value
     },
     // 更新门店
-    async updateStore(req: updateStoreReq) {
-      const { data } = await https.put<undefined, updateStoreReq>('/store/update', req)
+    async updateStore(req: addStoreReq) {
+      const { data } = await https.put<undefined, addStoreReq>('/store/update', req)
       return data.value
     },
     async deleteStore(req: storeDeleteReq) {
