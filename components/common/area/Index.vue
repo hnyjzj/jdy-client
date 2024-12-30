@@ -3,7 +3,7 @@ import type { TabsInst } from 'naive-ui'
 import { useCascaderAreaData } from '@vant/area-data'
 
 const emits = defineEmits<{
-  onFinish: [val: ProvinceTab[]]
+  onFinish: [val: ProvinceTab[]] // 完成选择
 }>()
 const show = defineModel('show')
 const options = useCascaderAreaData()
@@ -11,6 +11,7 @@ const selectProvinceTab = ref<ProvinceTab[]>([{ name: 'province', text: '请选�
 
 const tabindex = ref('province')
 const tabsInstRef = ref<TabsInst | null>(null)
+// 选择省市区
 const Next = (val: areaitem, index: number) => {
   selectProvinceTab.value[index].text = val.text
   selectProvinceTab.value[index].value = val.value
@@ -26,7 +27,7 @@ const Next = (val: areaitem, index: number) => {
     tabindex.value = selectProvinceTab.value[index + 1].name
   })
 }
-
+// 点击选择左侧省市区
 const selectTab = (val: string) => {
   if (val === 'province') {
     selectProvinceTab.value = [{ name: 'province', text: '请选择', value: '', children: [] as areaitem[] }]
@@ -35,7 +36,7 @@ const selectTab = (val: string) => {
     selectProvinceTab.value.splice(-1, 1)
   }
 }
-
+// 设置默认地址 ，传入 [province, city, area] 例如：['110000', '110100', '110101']
 const setDefault = (val: string[]) => {
   // val: [province, city, area]
   selectProvinceTab.value = [{ name: 'province', text: '请选择', value: '', children: [] as areaitem[] }]
