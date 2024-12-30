@@ -1,79 +1,105 @@
-<script lang="ts" setup generic="T, F extends Record<string, any>">
+<script lang="ts" setup generic="T">
 const props = defineProps<{
-  filterListToArray: F[]
-  filterData: T
+  /**
+   * 筛选结果
+   */
+  data: T
+  /**
+   * 筛选条件
+   */
+  filter: FilterWhere<T>[]
 }>()
 const emits = defineEmits<{
+  /**
+   * 提交
+   * @param params 筛选结果
+   */
   submit: [params: T]
 }>()
-const isFilter = defineModel({ type: Boolean, default: false })
-// 筛选参数
-const filterParams = ref({} as T)
+
 /**
- * 选择筛选条件
- * @param filterKey  筛选条件值
- * @param presetId 预选值id
+ * 弹出筛选
  */
-function selectFilter(filterKey: string, presetId: number) {
-  if (filterParams.value[filterKey] === presetId) {
-    delete (filterParams.value[filterKey])
-  }
-  else {
-    filterParams.value[filterKey] = presetId
-  }
-}
+const show = defineModel<boolean>('show', { default: false, required: true })
+
+/**
+ * 筛选结果
+ */
+const datas = ref<T>(props.data)
+/**
+ * 提交
+ */
 function submit() {
-  emits('submit', filterParams.value)
-  filterParams.value = {} as T
+  emits('submit', datas.value)
 }
+
+/**
+ * 重置
+ */
 function reset() {
-  filterParams.value = {} as T
+  datas.value = {} as T
+}
+
+/**
+ * 预设转换为选择项
+ * @param filter 筛选条件
+ */
+const presetToSelect = (filter: FilterWhere<T>): { label: string, value: any }[] => {
+  if (!filter.preset) {
+    return []
+  }
+  return Object.keys(filter.preset).map((key) => {
+    switch (filter.type) {
+      case 'number':
+        return {
+          label: filter.preset[key],
+          value: Number(key),
+        }
+      default:
+        return {
+          label: filter.preset[key],
+          value: key,
+        }
+    }
+  })
 }
 </script>
 
 <template>
   <div>
-    <common-popup v-model="isFilter" title="高级筛选">
+    <common-popup v-model="show" title="高级筛选">
       <div class="p-4 bg-[#F1F5FE] dark:bg-[rgba(0,0,0,0.6)] blur-[8px]">
-        <template v-for="(filter, index) in props.filterListToArray" :key="index">
-          <template v-if="filter.show">
+        <template v-for="(f, i) in props.filter" :key="i">
+          <template v-if="f.show">
             <div class="mb-2">
               <div class="text-color">
-                {{ filter?.label }}
+                {{ f?.label }}
               </div>
-              <template v-if="filter?.input === 'select'">
-                <div class="flex flex-wrap">
-                  <template v-for="(presetValue, presetId, pindex) in filter?.preset" :key="pindex">
-                    <div class="cursor-pointer inline-block shrink-0 flex items-center mr-2 mt-2 text-color" @click="selectFilter(filter.name, Number(presetId))">
-                      <template v-if="filterParams[filter.name] === Number(presetId)">
-                        <van-icon name="passed" color="#1D6DEC" />
-                      </template>
-                      <template v-else>
-                        <van-icon name="circle" />
-                      </template>
-                      <div class="text-color-light text-[14px]">
-                        {{ presetValue }}
-                      </div>
-                    </div>
-                  </template>
-                </div>
-              </template>
-              <template v-else-if="filter?.input === 'switch'">
-                <van-switch v-model="filterParams[filter.name]" />
-              </template>
-              <template v-else-if="filter?.input === 'search'">
-                <van-switch v-model="filterParams[filter.name]" />
-              </template>
-              <template v-else-if="filter?.input === 'number'">
-                <div class="mt-2">
-                  <common-frame v-model="filterParams[filter.name]" type="number" :tip="`输入筛选${filter?.label}`" />
-                </div>
-              </template>
-              <template v-else-if="filter?.input === 'text'">
-                <div class="mt-2">
-                  <common-frame v-model="filterParams[filter.name]" type="text" :tip="`输入筛选${filter?.label}`" />
-                </div>
-              </template>
+              <slot :name="f?.name" :filter="f">
+                <template v-if="f?.input === 'text'">
+                  <div class="mt-2">
+                    <n-input v-model:value="datas[f.name as string]" size="large" :placeholder="`输入${f?.label}`" />
+                  </div>
+                </template>
+                <template v-if="f?.input === 'number'">
+                  <div class="mt-2">
+                    <n-input-number v-model:value="datas[f.name as string]" size="large" :placeholder="`输入${f?.label}`" />
+                  </div>
+                </template>
+                <template v-if="f?.input === 'switch'">
+                  <n-switch v-model:value="datas[f.name as string]" size="large" />
+                </template>
+                <template v-if="f?.input === 'select'">
+                  <n-select
+                    v-model:value="datas[f.name as string]"
+                    :default-value="0 || '' || undefined || null"
+                    menu-size="large"
+                    fable
+                    :placeholder="`请选择${f?.label}`"
+                    :options="presetToSelect(f) "
+                  />
+                </template>
+              </slot>
             </div>
           </template>
         </template>

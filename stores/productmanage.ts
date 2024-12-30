@@ -12,7 +12,7 @@ export const useProductManage = defineStore('ProductManage', {
   }),
   getters: {
     filterListToArray: (state) => {
-      const arr: FilterWhere[] = []
+      const arr: FilterWhere<Product>[] = []
       Object.entries(state.filterList).map((item) => {
         return arr.push({
           ...item[1],
