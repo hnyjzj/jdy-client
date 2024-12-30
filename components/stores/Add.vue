@@ -9,20 +9,15 @@ const emits = defineEmits<{
 }>()
 const message = useMessage()
 
-const { addForm, addsearchKey, addrealSearchKey, showName } = storeToRefs(useStores())
+const { addForm } = storeToRefs(useStores())
 // 展示预览图
 const showModalRef = ref(false)
-// 显示上级门店列表弹窗
-const pop = ref(false)
-// 上级门店列表
-const popList = ref<storesList[]>([])
-// 上级门店搜索框
+
 // form 表单尺寸
 const size = ref<'small' | 'medium' | 'large'>('large')
 // 文件列表
 const previewFileList = ref<UploadFileInfo[]>([])
 const formRef = ref()
-const options = ref<{ label: string, key: string }[]>([])
 
 // 表单验证
 const rules = {
@@ -53,52 +48,6 @@ const beforeUpload = (data: any) => {
     message.error('只能上传png,jpeg格式的图片文件,请重新上传')
     return false
   }
-}
-// 选择上级门店 弹出列表
-const showPopup = (res: any) => {
-  popList.value = res
-  options.value = []
-  res.forEach((item: storesList) => {
-    options.value.push({
-      label: item.name,
-      key: item.id,
-    })
-  })
-  pop.value = true
-}
-// 搜索上级门店
-const onSearch = useDebounceFn(() => {
-  emits('updateParent', addsearchKey.value)
-}, 500)
-// 清空上级门店输入框
-const clearFn = () => {
-  addsearchKey.value = ''
-  addForm.value.parent_id = ''
-}
-// 失去焦点 判断是否为空上级门店
-const blurClean = () => {
-  // 如果关键字为空，则清空 id
-  if (addsearchKey.value === '') {
-    addForm.value.parent_id = ''
-  }
-  //   如果id为空，则清空关键字
-  if (addForm.value.parent_id === '' || addForm.value.parent_id === undefined) {
-    addsearchKey.value = ''
-  }
-  else {
-    // 如果 id不为空，则搜索关键字赋值为初始化关键字·
-    addsearchKey.value = addrealSearchKey.value
-  }
-  setTimeout(() => {
-    pop.value = false
-  }, 100)
-}
-// 选择上级门店
-const seletParent = (key: string | number, options: any) => {
-  addForm.value.parent_id = options.key as string
-  addsearchKey.value = options.label as string
-  addrealSearchKey.value = options.label as string
-  pop.value = false
 }
 
 // 预览图片
@@ -152,9 +101,6 @@ const clearnArea = () => {
   addForm.value.district = undefined
   areaText.value = ''
 }
-defineExpose({
-  showPopup,
-})
 </script>
 
 <template>
@@ -165,13 +111,6 @@ defineExpose({
       :rules="rules"
       :size="size"
       label-placement="top">
-      <n-form-item label="上级门店" path="parent_id">
-        <n-dropdown :options="options" :show="pop" label placement="bottom-start" @select="seletParent">
-          <n-input
-            v-model:value="addsearchKey"
-            round placeholder="请输入上级门店" clearable @input="() => onSearch()" @clear="clearFn" @blur="blurClean" />
-        </n-dropdown>
-      </n-form-item>
       <n-form-item label="门店名称" path="name">
         <n-input v-model:value="addForm.name" placeholder="请输入门店名称" round clearable />
       </n-form-item>
@@ -181,7 +120,7 @@ defineExpose({
         </div>
         <div
           class="bg-[#fff]  border-[#E2E2E8] border-solid border rounded-full px-[12px] flex items-center"
-          :style="{ border: areaError && showName.province_name === '' ? '1px solid #d03050' : ' 1px solid #E2E2E8' }">
+          :style="{ border: areaError && areaText === '' ? '1px solid #d03050' : ' 1px solid #E2E2E8' }">
           <template v-if="addForm.province || addForm.city || addForm.district">
             <div class="text-[14px] color-[#333] py-[9.5px] flex-1" @click="areaShow = true">
               {{ areaText }}
@@ -195,7 +134,7 @@ defineExpose({
           <van-icon
             name="close" @click="clearnArea" />
         </div>
-        <template v-if="areaError && showName.province_name === ''">
+        <template v-if="areaError && areaText === ''">
           <div class="error">
             请填写省市区
           </div>
@@ -221,10 +160,6 @@ defineExpose({
           @before-upload="beforeUpload"
           @preview="handlePreview"
         />
-      </n-form-item>
-
-      <n-form-item label="排序" path="sort ">
-        <n-input-number v-model:value="addForm.sort" clearable placeholder="请输入排序" round />
       </n-form-item>
 
       <div

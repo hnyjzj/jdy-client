@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const store = useStores()
-const { storesList, formList, addForm, showName, storeDetails } = storeToRefs(useStores())
+const { storesList, formList, addForm, storeDetails } = storeToRefs(useStores())
 const { getStoreDetail } = useStores()
 const { $toast } = useNuxtApp()
 useSeoMeta({
@@ -17,9 +17,8 @@ const editStoreShow = ref(false)
 // 搜索弹窗显示状态
 const show = ref(false)
 // 新增门店表单数据
-const editForm = ref<editStoreReq>({
+const editForm = ref<updateStoreReq>({
   id: '',
-  parent_id: undefined,
   address: '',
   name: '',
   logo: '',
@@ -92,27 +91,22 @@ const newStore = async () => {
 }
 
 // 编辑按钮
-const edit = async (val: string) => {
-  showName.value.province_name = ''
+const edit = (val: string) => {
   editStoreShow.value = true
-  storesList.value.forEach(async (item) => {
-    if (item.id === val) {
-      editForm.value.name = item.name
-      editForm.value.id = item.id
-      editForm.value.parent_id = item.parent_id
-      editForm.value.address = item.address
-      editForm.value.contact = item.contact
-      editForm.value.sort = item.sort
-      editForm.value.province = item.province
-      editForm.value.city = item.city
-      editForm.value.district = item.district
-      editForm.value.logo = item.logo
-      if (item.parent_id) {
-        await nextTick()
-        editFormRef.value?.setKeySearch(item.parent?.name)
-      }
-    }
-  })
+
+  // 找到匹配的商店信息
+  const store = storesList.value.find(item => item.id === val)
+
+  if (!store) {
+    console.warn(`No store found with id: ${val}`)
+    return
+  }
+
+  // 解构赋值，简化代码
+  const { name, id, address, contact, sort, province, city, district, logo } = store
+
+  // 一次性更新表单数据
+  Object.assign(editForm.value, { name, id, address, contact, sort, province, city, district, logo })
 }
 // 确认更新
 const editStore = async () => {
@@ -228,35 +222,29 @@ onMounted(() => {
 
     <!-- 新增门店弹窗 -->
     <common-popup v-model="addStoreShow">
-      <div
-        class="p-[16px] bg-[#F1F5FE]">
-        <stores-add
-          ref="addFormRef"
-          @upload="uploadFile"
-          @update-parent="searchParentId"
-          @submit="newStore" />
-      </div>
+      <stores-add
+        ref="addFormRef"
+        @upload="uploadFile"
+        @update-parent="searchParentId"
+        @submit="newStore" />
     </common-popup>
     <!-- 编辑门店弹窗 -->
     <common-popup v-model="editStoreShow">
-      <div
-        class="p-[16px] bg-[#F1F5FE] h-full">
-        <stores-edit
-          ref="editFormRef"
-          v-model="editForm"
-          @upload="uploadFile"
-          @update-parent="searchParentId"
-          @submit="editStore" />
-      </div>
+      <stores-edit
+        ref="editFormRef"
+        v-model="editForm"
+        @upload="uploadFile"
+        @update-parent="searchParentId"
+        @submit="editStore" />
     </common-popup>
-    <common-popup v-model="show">
-      <div class="p-[16px] bg-[#F1F5FE] h-full">
-        <stores-search
-          ref="searchRef"
-          @update-parent="searchParentId"
-          @submit="searchSubmit()
-          " />
-      </div>
+    <common-popup v-model="show" title="高级筛选">
+      <stores-search
+        ref="searchRef"
+        @update-parent="searchParentId"
+      />
+      <template #footer>
+        <common-button-rounded content="确定" @button-click="searchSubmit()" />
+      </template>
     </common-popup>
 
     <n-modal v-model:show="showModal">
@@ -270,3 +258,11 @@ onMounted(() => {
     <common-create @create="newAdd()" />
   </div>
 </template>
+
+<style lang="scss" scoped>
+.right {
+  background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
+  box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
+  --uno: 'text-[16px] py-[6px] border-none flex-1 rounded-[36px] ml-[8px] text-[#FFFFFF]';
+}
+</style>

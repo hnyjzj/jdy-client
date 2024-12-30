@@ -38,23 +38,27 @@ const selectTab = (val: string) => {
 }
 // 设置默认地址 ，传入 [province, city, area] 例如：['110000', '110100', '110101']
 const setDefault = (val: string[]) => {
-  // val: [province, city, area]
+  // 初始化省市区选项
   selectProvinceTab.value = [{ name: 'province', text: '请选择', value: '', children: [] as areaitem[] }]
-  options.forEach((item) => {
-    if (item.value === val[0]) {
-      Next(item as areaitem, 0)
-      item?.children?.forEach((city) => {
-        if (city.value === val[1]) {
-          Next(city as areaitem, 1)
-          city?.children?.forEach((area) => {
-            if (area.value === val[2]) {
-              Next(area as areaitem, 2)
-            }
-          })
-        }
-      })
-    }
-  })
+
+  // 查找省份
+  const province = options.find(item => item.value === val[0]) as areaitem
+  if (!province)
+    return
+  // 更新ui
+  Next(province, 0)
+
+  // 查找城市
+  const city = province.children?.find(item => item.value === val[1])
+  if (!city)
+    return
+  Next(city, 1)
+
+  // 查找区县
+  const area = city.children?.find(item => item.value === val[2])
+  if (!area)
+    return
+  Next(area, 2)
 }
 defineExpose({
   setDefault,

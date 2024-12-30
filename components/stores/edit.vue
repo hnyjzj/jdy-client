@@ -4,9 +4,8 @@ const emits = defineEmits<{
   upload: [val: any, onFinish?: () => void, id?: string]
   submit: []
 }>()
-const form = defineModel<editStoreReq>({ default: {
+const form = defineModel<updateStoreReq>({ default: {
   id: '',
-  parent_id: undefined,
   address: '',
   name: '',
   logo: '',
@@ -17,70 +16,7 @@ const form = defineModel<editStoreReq>({ default: {
   contact: '',
 } })
 const message = useMessage()
-// 上级门店搜索框
-const searchKey = ref<string>('')
-const realSearchKey = ref<string>('')
-// 搜索关键字 去父组件请求查询列表
-const onSearch = useDebounceFn(() => {
-  emits('updateParent', searchKey.value)
-}, 500)
 
-// 失去焦点 判断是否为空上级门店
-const blurClean = () => {
-  // 如果关键字为空，则清空 id
-  if (searchKey.value === '') {
-    form.value.parent_id = ''
-  }
-  //   如果id为空，则清空关键字
-  if (form.value.parent_id === '' || form.value.parent_id === undefined) {
-    searchKey.value = ''
-  }
-  else {
-    searchKey.value = realSearchKey.value
-  }
-}
-// 显示上级门店列表
-const pop = ref(false)
-const popList = ref<storesList[]>([])
-
-// 设置搜索关键字
-const setKeySearch = (val?: string) => {
-  if (val) {
-    searchKey.value = val
-    realSearchKey.value = val
-  }
-  else {
-    searchKey.value = ''
-    form.value.parent_id = ''
-  }
-}
-
-const options = ref<{ label: string, key: string }[]>([])
-// 选择上级门店 弹出列表
-const showPopup = (res: any) => {
-  popList.value = res
-  options.value = []
-  res.forEach((item: storesList) => {
-    options.value.push({
-      label: item.name,
-      key: item.id,
-    })
-  })
-  pop.value = true
-}
-// 选择上级门店
-const seletParent = (key: string | number, options: any) => {
-  form.value.parent_id = options.key as string
-  searchKey.value = options.label as string
-  realSearchKey.value = options.label as string
-  pop.value = false
-}
-
-// 清空按钮
-const clearFn = () => {
-  searchKey.value = ''
-  form.value.parent_id = ''
-}
 // form 表单尺寸
 const size = ref<'small' | 'medium' | 'large'>('large')
 const rules = {
@@ -154,10 +90,6 @@ const openArea = () => {
     areaRef?.value?.setDefault([form.value.province, form.value.city, form.value.district])
   }
 }
-defineExpose({
-  showPopup,
-  setKeySearch,
-})
 </script>
 
 <template>
@@ -169,14 +101,6 @@ defineExpose({
       :size="size"
       label-placement="top"
     >
-      <n-form-item label="上级门店" path="parent_id">
-        <n-dropdown :options="options" :show="pop" label placement="bottom-start" @select="seletParent">
-          <n-input
-            v-model:value="searchKey"
-            round placeholder="请输入上级门店" clearable @input="() => onSearch()" @clear="clearFn" @blur="blurClean" />
-        </n-dropdown>
-      </n-form-item>
-
       <div class="pb-[16px] relative">
         <div class="text-[14px] color-[#333] line-height-[20px] pb-[8px]">
           省市区<span class="color-[#D23B5A]">*</span>
