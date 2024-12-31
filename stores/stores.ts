@@ -1,12 +1,9 @@
 export const useStores = defineStore('Store', {
   state: () => ({
-    filterForm: {} as StoresWhere,
+    filterList: [] as StoreWhere,
     storesList: [] as stores[],
     total: 0,
     storeDetails: {} as stores,
-    showName: {
-      province_name: '' as string,
-    },
     formList: {
       address: undefined,
       name: undefined,
@@ -15,8 +12,7 @@ export const useStores = defineStore('Store', {
       district: undefined,
       contact: undefined,
     } as StoresWhere,
-
-    addForm: {
+    addorUpdateForm: {
       id: undefined,
       address: '',
       name: '',
@@ -26,12 +22,23 @@ export const useStores = defineStore('Store', {
       district: '',
       contact: '',
       sort: undefined,
-    } as addStoreReq,
+    } as StoreAddorUpdateReq,
   }),
+  getters: {
+    filterListToArray: (state) => {
+      const arr: FilterWhere<Stores>[] = []
+      Object.entries(state.filterList).map((item) => {
+        return arr.push({
+          ...item[1],
+        })
+      })
+      return arr.sort((a, b) => a.sort - b.sort)
+    },
+  },
   actions: {
     // 门店列表
-    async getStoreList(req: storeListReq, search: boolean = false) {
-      const { data } = await https.post<storesListRes, storeListReq>('/store/list', req)
+    async getStoreList(req: storesWhereReq, search: boolean = false) {
+      const { data } = await https.post<storesListRes, storesWhereReq>('/store/list', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         if (!search) {
           this.total = data.value.data.total
@@ -52,13 +59,13 @@ export const useStores = defineStore('Store', {
       }
     },
     // 创建门店
-    async createStore(req: addStoreReq) {
-      const { data } = await https.post<undefined, addStoreReq>('/store/create', req)
+    async createStore(req: StoreAddorUpdateReq) {
+      const { data } = await https.post<undefined, StoreAddorUpdateReq>('/store/create', req)
       return data.value
     },
     // 更新门店
-    async updateStore(req: addStoreReq) {
-      const { data } = await https.put<undefined, addStoreReq>('/store/update', req)
+    async updateStore(req: StoreAddorUpdateReq) {
+      const { data } = await https.put<undefined, StoreAddorUpdateReq>('/store/update', req)
       return data.value
     },
     async deleteStore(req: storeDeleteReq) {
@@ -77,13 +84,21 @@ export const useStores = defineStore('Store', {
         console.error(error)
       }
     },
+
+    async getStoreWhere() {
+      const { data } = await https.get<StoreWhere, null>('/store/where', null)
+      if (data.value.code === HttpCode.SUCCESS) {
+        this.filterList = data.value.data
+      }
+    },
+
     async uploadImage(req: uploadLogoFileReq) {
       return await https.upload<uploadFileRes, uploadLogoFileReq>('/upload/store', req)
     },
 
     // 重置新增表单
     async reastAddForm() {
-      this.addForm = {
+      this.addorUpdateForm = {
         address: '',
         name: '',
         logo: '',

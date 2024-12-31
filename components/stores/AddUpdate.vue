@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
+import type { FormItemRule, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 
 const emits = defineEmits<{
   upload: [val: any, onFinish: () => void]
@@ -9,7 +9,7 @@ const emits = defineEmits<{
 }>()
 const message = useMessage()
 
-const { addForm } = storeToRefs(useStores())
+const { addorUpdateForm } = storeToRefs(useStores())
 // 展示预览图
 const showModalRef = ref(false)
 
@@ -33,8 +33,11 @@ const rules = {
   },
   contact: {
     required: true,
-    message: '请输入联系方式',
-    trigger: ['input', 'blur'],
+    message: '请输入正确的联系方式',
+    trigger: ['blur'],
+    validator: (rule: FormItemRule, value: string) => {
+      return /^(?:(?:\+|00)86)?1[3-9]\d{9}$/.test(value)
+    },
   },
   district: {
     required: true,
@@ -61,8 +64,8 @@ const handleValidateButtonClick = (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate((errors: any) => {
     if (!errors) {
-      if (addForm.value.district) {
-        if (addForm.value.id) {
+      if (addorUpdateForm.value.district) {
+        if (addorUpdateForm.value.id) {
           emits('editSubmit')
         }
         else {
@@ -76,7 +79,7 @@ const handleValidateButtonClick = (e: MouseEvent) => {
     }
     else {
       message.error(errors[0][0].message)
-      if (!addForm.value.district) {
+      if (!addorUpdateForm.value.district) {
         areaError.value = true
       }
     }
@@ -94,22 +97,23 @@ const areaText = ref('')
 const areaShow = ref(false)
 // 选择地址完成
 const finishedArea = (val: ProvinceTab[]) => {
-  addForm.value.province = val[0].value
-  addForm.value.city = val[1].value
-  addForm.value.district = val[2].value
+  addorUpdateForm.value.province = val[0].value
+  addorUpdateForm.value.city = val[1].value
+  addorUpdateForm.value.district = val[2].value
   areaText.value = `${val[0].text} ${val[1].text} ${val[2].text}`
 }
 // 清理选择地址
 const clearnArea = () => {
-  addForm.value.province = undefined
-  addForm.value.city = undefined
-  addForm.value.district = undefined
+  addorUpdateForm.value.province = undefined
+  addorUpdateForm.value.city = undefined
+  addorUpdateForm.value.district = undefined
   areaText.value = ''
 }
 const areaRef = ref()
-if (addForm.value.province && addForm.value.city && addForm.value.district) {
-  areaText.value = toProvinces(addForm.value.province, addForm.value.city, addForm.value.district)
-  areaRef?.value?.setDefault([addForm.value.province, addForm.value.city, addForm.value.district])
+const { province, city, district } = addorUpdateForm.value
+if (province && city && district) {
+  areaText.value = toProvinces(province, city, district)
+  areaRef?.value?.setDefault([province, city, district])
 }
 </script>
 
@@ -117,14 +121,14 @@ if (addForm.value.province && addForm.value.city && addForm.value.district) {
   <div class="">
     <n-form
       ref="formRef"
-      :model="addForm"
+      :model="addorUpdateForm"
       :rules="rules"
       :size="size"
       label-placement="top">
       <div class=" flex-col justify-between">
         <div>
           <n-form-item label="门店名称" path="name">
-            <n-input v-model:value="addForm.name" placeholder="请输入门店名称" round clearable />
+            <n-input v-model:value="addorUpdateForm.name" placeholder="请输入门店名称" round clearable />
           </n-form-item>
           <div class="pb-[16px] relative">
             <div class="text-[14px] color-[#333] line-height-[20px] pb-[8px]">
@@ -133,7 +137,7 @@ if (addForm.value.province && addForm.value.city && addForm.value.district) {
             <div
               class="bg-[#fff]  border-[#E2E2E8] border-solid border rounded-full px-[12px] flex items-center"
               :style="{ border: areaError && areaText === '' ? '1px solid #d03050' : ' 1px solid #E2E2E8' }">
-              <template v-if="addForm.province || addForm.city || addForm.district">
+              <template v-if="addorUpdateForm.province || addorUpdateForm.city || addorUpdateForm.district">
                 <div class="text-[14px] color-[#333] py-[9.5px] flex-1" @click="areaShow = true">
                   {{ areaText }}
                 </div>
@@ -156,10 +160,10 @@ if (addForm.value.province && addForm.value.city && addForm.value.district) {
             </div>
           </div>
           <n-form-item label="地址" path="address">
-            <n-input v-model:value="addForm.address" placeholder="请输入门店地址" round clearable />
+            <n-input v-model:value="addorUpdateForm.address" placeholder="请输入门店地址" round clearable />
           </n-form-item>
           <n-form-item label="联系方式" path="contact">
-            <n-input v-model:value="addForm.contact" placeholder="请输入门店联系方式" round clearable />
+            <n-input v-model:value="addorUpdateForm.contact" maxlength="11" placeholder="请输入门店联系方式" round clearable />
           </n-form-item>
           <n-form-item
             label="logo">
@@ -188,7 +192,7 @@ if (addForm.value.province && addForm.value.city && addForm.value.district) {
       preset="card"
       style="width: 600px"
     >
-      <img :src="ImageUrl(addForm.logo as string)" style="width: 100%;">
+      <img :src="ImageUrl(addorUpdateForm.logo as string)" style="width: 100%;">
     </n-modal>
   </div>
 </template>

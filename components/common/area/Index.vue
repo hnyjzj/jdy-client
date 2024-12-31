@@ -21,7 +21,12 @@ const Next = (val: areaitem, index: number) => {
     show.value = false
     return
   }
-  selectProvinceTab.value.push({ name: index === 0 ? 'city' : index === 1 ? 'area' : '', text: '请选择', value: '', children: [] as areaitem[] })
+  if (index === 0) {
+    selectProvinceTab.value.push({ name: 'city', text: '请选择', value: '', children: [] as areaitem[] })
+  }
+  else if (index === 1) {
+    selectProvinceTab.value.push({ name: 'area', text: '请选择', value: '', children: [] as areaitem[] })
+  }
   selectProvinceTab.value[index + 1].children = val.children
   nextTick(() => {
     tabindex.value = selectProvinceTab.value[index + 1].name

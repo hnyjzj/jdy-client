@@ -4,11 +4,6 @@ interface storesListRes {
   total: number
 }
 // 门店列表请求参数
-interface storeListReq {
-  page: number
-  limit: number
-  where?: StoresWhere
-}
 interface StoresWhere {
   address?: string
   city?: string
@@ -43,7 +38,7 @@ interface storeDeleteReq {
   id: string
 }
 // 新增门店请求参数
-interface addStoreReq extends StoresWhere {
+interface StoreAddorUpdateReq extends StoresWhere {
   logo?: null | string
   id?: string
   sort?: number | undefined
@@ -66,3 +61,24 @@ interface uploadLogoFileReq {
   image: File | undefined
   store_id?: string
 }
+
+type StoreWhereParams = { [key in keyof Stores]?: Stores[key] }
+// 门店列表筛选请求参数
+interface storesWhereReq {
+  page: number
+  limit: number
+  where?: StoreWhereParams
+}
+// 筛选列表请求参数
+interface Stores {
+  address: string
+  city: string
+  contact: string
+  name: string
+  region: {
+    province: string
+    city: string
+    district: string
+  }
+}
+type StoreWhere = { [key in keyof Stores]?: FilterWhere }

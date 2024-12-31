@@ -1,9 +1,10 @@
+type WhereParams = { [key in keyof Product]?: Product[key] }
+
 interface ProductReq {
   page: number
   limit: number
-  where?: product
+  where?: WhereParams
 }
-
 interface ProductImport {
   products: Product[]
 }

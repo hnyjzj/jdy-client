@@ -1,83 +1,101 @@
 <script setup lang="ts">
-const store = useStores()
-const { storesList, formList, addForm, storeDetails } = storeToRefs(useStores())
-const { getStoreDetail } = useStores()
-const { $toast } = useNuxtApp()
-useSeoMeta({
-  title: '门店列表',
-})
-const addOrUpdateFormRef = ref<any>()
-const searchRef = ref<any>()
-// 新增门店弹窗
-const addStoreShow = ref(false)
-// 编辑门店弹窗
-// const editStoreShow = ref(false)
-// 搜索弹窗显示状态
-const show = ref(false)
+import type { Where } from 'where'
 
 useSeoMeta({
   title: '门店列表',
 })
-// 替换空字符串
-const replaceEmptyStrings = (obj: any) => {
-  Object.keys(obj).forEach((key) => {
-    if (obj[key] === '') {
-      obj[key] = undefined
-    }
-  })
-}
-// 搜索页面
-const searchPage = ref(1)
-// 没有更多数据了
-const nomore = ref(false)
-// 搜索 获取列表数据
-const searchFn = async (init = false) => {
-  if (nomore.value) {
-    return false
-  }
-  if (init) {
-    storesList.value = []
-  }
-  replaceEmptyStrings(formList.value)
-  const res = await store.getStoreList({ page: searchPage.value, limit: 12, where: formList.value })
-  if (res === false) {
-    nomore.value = true
-  }
-}
-// 初始化请求列表数据
-await searchFn(true)
+
+const { storesList, formList, addorUpdateForm, storeDetails, filterListToArray, total } = storeToRefs(useStores())
+const { getStoreDetail, reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
+const message = useMessage()
+
+// 新增门店弹窗
+const addOrUpdateShow = ref<boolean>(false)
+// 搜索弹窗显示状态
+const show = ref<boolean>(false)
+// 搜索条件 页码
+const searchPage = ref<number>(1)
+// 是否有更多数据
+const nomore = ref<boolean>(false)
 // 显示详情页
-const showModal = ref(false)
-// 跳转到详情页
+const showModal = ref<boolean>(false)
+// 筛选请求数据
+const filterData = ref({} as Where<Stores>)
+// 获取列表
+const getList = async (where = {} as Where<Stores>) => {
+  if (nomore.value)
+    return
+  const params = { page: searchPage.value, limit: 12 } as storesWhereReq
+  if (JSON.stringify(where) !== '{}') {
+    params.where = where
+  }
+  const res = await getStoreList(params)
+  res ? nomore.value = false : nomore.value = true
+}
+
+// 筛选列表
+const submitWhere = async (f: Where<Stores>) => {
+  filterData.value = f
+  storesList.value = []
+  nomore.value = false
+  searchPage.value = 1
+  await getList(filterData.value)
+}
+
+// 获取列表数据
+await getList()
+// 获取筛选条件
+await getStoreWhere()
+
+// 展示详情
 const getStoreInfo = async (val: string) => {
   await getStoreDetail({ id: val as string })
   showModal.value = true
 }
 
-// 开发新增门店弹窗, 清空 省市区选择
+// 开发新增门店弹窗, 清空表单数据
 const newAdd = () => {
-  store.reastAddForm()
-  addStoreShow.value = true
+  reastAddForm()
+  addOrUpdateShow.value = true
 }
 
-// 新增门店
+// 调用新增门店接口
 const newStore = async () => {
-  const res = await store.createStore(addForm.value)
+  const res = await createStore(addorUpdateForm.value)
   if (res.code === HttpCode.SUCCESS) {
-    $toast.success('创建成功')
-    store.reastAddForm()
-    addStoreShow.value = false
+    message.success('创建门店成功')
+    reastAddForm()
+    addOrUpdateShow.value = false
     storesList.value = []
-    await store.getStoreList({ page: 1, limit: 12 })
+    await getStoreList({ page: 1, limit: 12 })
   }
   else {
-    $toast.error(res.message)
+    message.error(res.message)
   }
 }
 
-// 编辑按钮
+// 当前要删除的id
+const nowDeleteId = ref<string>('')
+// 删除门店对话框
+const deleteDialog = ref(false)
+// 打开确认删除弹窗
+const deleteStoreFn = async (val: string) => {
+  nowDeleteId.value = val
+  deleteDialog.value = true
+}
+// 确认删除
+const confirmDelete = async () => {
+  const res = await deleteStore({ id: nowDeleteId.value })
+  if (res.code === HttpCode.SUCCESS) {
+    message.success('删除成功')
+    storesList.value = []
+    await getStoreList({ page: 1, limit: 12 })
+  }
+}
+
+// 修改门店编辑按钮
 const edit = (val: string) => {
-  addStoreShow.value = true
+  addOrUpdateShow.value = true
   // 找到匹配的商店信息
   const store = storesList.value.find(item => item.id === val)
   if (!store) {
@@ -86,55 +104,57 @@ const edit = (val: string) => {
   // 解构赋值，简化代码
   const { name, id, address, contact, sort, province, city, district, logo } = store
   // 一次性更新表单数据
-  Object.assign(addForm.value, { name, id, address, contact, sort, province, city, district, logo })
+  Object.assign(addorUpdateForm.value, { name, id, address, contact, sort, province, city, district, logo })
 }
-// 确认更新
+
+// 调用更新门店接口
 const editStore = async () => {
-  const res = await store.updateStore(addForm.value)
+  const res = await updateStore(addorUpdateForm.value)
   if (res.code === HttpCode.SUCCESS) {
-    $toast.success('更新成功')
-    addStoreShow.value = false
+    message.success('更新成功')
+    addOrUpdateShow.value = false
     storesList.value = []
-    await store.getStoreList({ page: 1, limit: 12 })
-    store.reastAddForm()
+    await getStoreList({ page: 1, limit: 12 })
+    reastAddForm()
   }
 }
 
-// 当前要删除的id
-const nowDeleteId = ref<string>('')
-// 删除门店对话框
-const deleteDialog = ref(false)
-
-// 打开确认删除弹窗
-const deleteStoreFn = async (val: string) => {
-  nowDeleteId.value = val
-  deleteDialog.value = true
-}
-// 确认删除
-const confirmDelete = async () => {
-  const res = await store.deleteStore({ id: nowDeleteId.value })
-  if (res.code === HttpCode.SUCCESS) {
-    $toast.success('删除成功')
-    storesList.value = []
-    await store.getStoreList({ page: 1, limit: 12 })
-  }
-}
-
-// 上传图片文件
-const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
-  try {
-    const res = await store.uploadImage({ image: file, store_id: id || undefined })
-    if (res.data.value.code !== HttpCode.SUCCESS) {
-      $toast.error(res.data.value?.message || '上传失败')
-      return false
+// 省市区文本显示
+const areaText = ref({
+  province: '请选择区域',
+  city: '',
+  area: '',
+})
+// 展示地址选择器
+const areaShow = ref(false)
+// 完成省市区选择 配置 请求数据省市区数据
+const finishedArea = (val: ProvinceTab[]) => {
+  const region = {} as Stores['region']
+  val.forEach((item: ProvinceTab) => {
+    switch (item.name) {
+      case 'province':
+        areaText.value.province = item.text
+        region.province = item.value
+        break
+      case 'city':
+        areaText.value.city = item.text
+        region.city = item.value
+        break
+      case 'area':
+        areaText.value.area = item.text
+        region.district = item.value
+        break
     }
-    const url = res.data.value.data.url
-    //  如果有id 说明是 修改logo ,没有id则是新增
-    addForm.value.logo = url
-    onfinish && onfinish()
-  }
-  catch {
-    $toast.error('上传失败，请重试')
+  })
+  filterData.value.region = region
+}
+// 清空省市区
+const clearnArea = () => {
+  filterData.value.region = undefined
+  areaText.value = {
+    province: '请选择区域',
+    city: '',
+    area: '',
   }
 }
 
@@ -145,12 +165,23 @@ const heightSearchFn = () => {
   formList.value.district = ''
   show.value = true
 }
-// 搜索确认查询列表
-const searchSubmit = () => {
-  searchPage.value = 1
-  nomore.value = false
-  storesList.value = []
-  searchFn()
+
+// 上传图片文件
+const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
+  try {
+    const res = await uploadImage({ image: file, store_id: id || undefined })
+    if (res.data.value.code !== HttpCode.SUCCESS) {
+      message.error(res.data.value?.message || '上传失败')
+      return false
+    }
+    const url = res.data.value.data.url
+    //  如果有id 说明是 修改logo ,没有id则是新增
+    addorUpdateForm.value.logo = url
+    onfinish && onfinish()
+  }
+  catch {
+    message.error('上传失败，请重试')
+  }
 }
 // 获取头部高度
 const height = ref<number | undefined>(0)
@@ -165,7 +196,7 @@ onMounted(() => {
       <div class="col-12 grid-12 lg:col-8 lg:offset-2 pt-[12px] pb-[16px] color-[#fff]">
         <div
           class="col-8 py-[6px] px-[12px] line-height-[20px]" uno-lg="col-4 offset-2">
-          共{{ store.total }}条数据
+          共{{ total }}条数据
         </div>
         <div
           class="col-4" uno-lg="col-4" @click="heightSearchFn()">
@@ -178,28 +209,18 @@ onMounted(() => {
       :nomore="nomore"
       @pull="() => {
         searchPage += 1
-        searchFn()
+        getList()
       }">
       <template #default>
         <stores-card @get-detail="getStoreInfo" @edit-store="edit" @delete-store="deleteStoreFn" />
       </template>
     </common-list-pull>
     <!-- 新增或更新门店弹窗 -->
-    <common-popup v-model="addStoreShow">
+    <common-popup v-model="addOrUpdateShow">
       <stores-add-update
-        ref="addOrUpdateFormRef"
         @upload="uploadFile"
         @submit="newStore"
         @edit-submit="editStore" />
-    </common-popup>
-    <common-popup v-model="show" title="高级筛选">
-      <stores-search
-        ref="searchRef"
-
-      />
-      <template #footer>
-        <common-button-rounded content="确定" @button-click="searchSubmit()" />
-      </template>
     </common-popup>
 
     <n-modal v-model:show="showModal">
@@ -211,6 +232,30 @@ onMounted(() => {
       </div>
     </van-dialog>
     <common-create @create="newAdd()" />
+
+    <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere">
+      <template #region>
+        <div class="relative">
+          <div class="bg-[#fff] border-[#E2E2E8] border-solid border rounded-full px-[12px] flex items-center">
+            <template v-if="filterData.region?.district">
+              <div class="text-[14px] color-[#333] py-[9.5px] flex-1" @click="areaShow = true">
+                {{ areaText.province + areaText.city + areaText.area }}
+              </div>
+            </template>
+            <template v-else>
+              <div class="text-[14px] color-[#C9C9C9] py-[9.5px] flex-1" @click="areaShow = true">
+                请选择省市区
+              </div>
+            </template>
+            <van-icon
+              name="close" @click="clearnArea()" />
+          </div>
+          <div class="absolute w-full">
+            <common-area v-model:show="areaShow" @on-finish="finishedArea" />
+          </div>
+        </div>
+      </template>
+    </common-filter-where>
   </div>
 </template>
 

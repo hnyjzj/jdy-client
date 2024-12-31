@@ -56,16 +56,6 @@ const addressName = computed(() => {
                 </div>
               </div>
             </div>
-            <div class="flex flex-col px-4 py-[6px]">
-              <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
-                <div class="color-[#666666]">
-                  排序
-                </div>
-                <div class="color-[#333333]">
-                  {{ props.infoDetail.sort }}
-                </div>
-              </div>
-            </div>
           </template>
         </common-gradient>
       </div>
