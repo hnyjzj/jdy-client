@@ -5,7 +5,7 @@ useSeoMeta({
   title: '门店列表',
 })
 
-const { storesList, formList, addorUpdateForm, storeDetails, filterListToArray, total } = storeToRefs(useStores())
+const { storesList, addorUpdateForm, storeDetails, filterListToArray, total } = storeToRefs(useStores())
 const { getStoreDetail, reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
 const message = useMessage()
 
@@ -118,51 +118,13 @@ const editStore = async () => {
     reastAddForm()
   }
 }
-
-// 省市区文本显示
-const areaText = ref({
-  province: '请选择区域',
-  city: '',
-  area: '',
-})
-// 展示地址选择器
-const areaShow = ref(false)
-// 完成省市区选择 配置 请求数据省市区数据
-const finishedArea = (val: ProvinceTab[]) => {
-  const region = {} as Stores['region']
-  val.forEach((item: ProvinceTab) => {
-    switch (item.name) {
-      case 'province':
-        areaText.value.province = item.text
-        region.province = item.value
-        break
-      case 'city':
-        areaText.value.city = item.text
-        region.city = item.value
-        break
-      case 'area':
-        areaText.value.area = item.text
-        region.district = item.value
-        break
-    }
-  })
-  filterData.value.region = region
-}
-// 清空省市区
-const clearnArea = () => {
-  filterData.value.region = undefined
-  areaText.value = {
-    province: '请选择区域',
-    city: '',
-    area: '',
-  }
+// 更新省市区请求参数
+const updateArea = (val: Stores['region']) => {
+  filterData.value.region = val
 }
 
 // 高级搜索按钮
 const heightSearchFn = () => {
-  formList.value.province = ''
-  formList.value.city = ''
-  formList.value.district = ''
   show.value = true
 }
 
@@ -216,7 +178,7 @@ onMounted(() => {
       </template>
     </common-list-pull>
     <!-- 新增或更新门店弹窗 -->
-    <common-popup v-model="addOrUpdateShow">
+    <common-popup v-model="addOrUpdateShow" :title="addorUpdateForm.id ? '编辑门店' : '新增门店'">
       <stores-add-update
         @upload="uploadFile"
         @submit="newStore"
@@ -235,25 +197,7 @@ onMounted(() => {
 
     <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere">
       <template #region>
-        <div class="relative">
-          <div class="bg-[#fff] border-[#E2E2E8] border-solid border rounded-full px-[12px] flex items-center">
-            <template v-if="filterData.region?.district">
-              <div class="text-[14px] color-[#333] py-[9.5px] flex-1" @click="areaShow = true">
-                {{ areaText.province + areaText.city + areaText.area }}
-              </div>
-            </template>
-            <template v-else>
-              <div class="text-[14px] color-[#C9C9C9] py-[9.5px] flex-1" @click="areaShow = true">
-                请选择省市区
-              </div>
-            </template>
-            <van-icon
-              name="close" @click="clearnArea()" />
-          </div>
-          <div class="absolute w-full">
-            <common-area v-model:show="areaShow" @on-finish="finishedArea" />
-          </div>
-        </div>
+        <common-area-select :is-required="false" :showtitle="false" :form="filterData.region" @update="updateArea" />
       </template>
     </common-filter-where>
   </div>

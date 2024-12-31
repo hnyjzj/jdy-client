@@ -1,17 +1,9 @@
 export const useStores = defineStore('Store', {
   state: () => ({
-    filterList: [] as StoreWhere,
-    storesList: [] as stores[],
+    filterList: [] as StoreWhere, // 筛选条件
+    storesList: [] as stores[], // 门店列表
     total: 0,
-    storeDetails: {} as stores,
-    formList: {
-      address: undefined,
-      name: undefined,
-      province: undefined,
-      city: undefined,
-      district: undefined,
-      contact: undefined,
-    } as StoresWhere,
+    storeDetails: {} as stores, //  门店详情
     addorUpdateForm: {
       id: undefined,
       address: '',
@@ -74,24 +66,17 @@ export const useStores = defineStore('Store', {
     },
     // 获取门店详情
     async getStoreDetail(req: storeDetailReq) {
-      try {
-        const { data } = await https.post<stores, storeDetailReq>('/store/info', req)
-        if (data.value.code === HttpCode.SUCCESS) {
-          this.storeDetails = data.value.data
-        }
-      }
-      catch (error) {
-        console.error(error)
+      const { data } = await https.post<stores, storeDetailReq>('/store/info', req)
+      if (data.value.code === HttpCode.SUCCESS) {
+        this.storeDetails = data.value.data
       }
     },
-
     async getStoreWhere() {
       const { data } = await https.get<StoreWhere, null>('/store/where', null)
       if (data.value.code === HttpCode.SUCCESS) {
         this.filterList = data.value.data
       }
     },
-
     async uploadImage(req: uploadLogoFileReq) {
       return await https.upload<uploadFileRes, uploadLogoFileReq>('/upload/store', req)
     },
@@ -112,6 +97,5 @@ export const useStores = defineStore('Store', {
   },
   persist: {
     storage: piniaPluginPersistedstate.cookies(),
-    // pick: ['addForm', 'searchKey', 'addsearchKey', 'showName', 'realSearchKey', 'addrealSearchKey'],
   },
 })

@@ -6,11 +6,11 @@ interface storesListRes {
 // 门店列表请求参数
 interface StoresWhere {
   address?: string
-  city?: string
+  city: string | undefined
   contact?: string
-  district?: string
+  district: string | undefined
   name?: string
-  province?: string
+  province: string | undefined
 }
 // 门店列表
 interface stores {
@@ -82,3 +82,10 @@ interface Stores {
   }
 }
 type StoreWhere = { [key in keyof Stores]?: FilterWhere }
+
+// 选择省市区组件需要的参数
+interface provinceForm {
+  province: string | undefined
+  city: string | undefined
+  district: string | undefined
+}
