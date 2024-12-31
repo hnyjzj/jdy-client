@@ -5,20 +5,16 @@ const emits = defineEmits<{
   upload: [val: any, onFinish: () => void]
   submit: []
   editSubmit: []
-
 }>()
 const message = useMessage()
-
 const { addorUpdateForm } = storeToRefs(useStores())
 // 展示预览图
 const showModalRef = ref(false)
-
 // form 表单尺寸
 const size = ref<'small' | 'medium' | 'large'>('large')
 // 文件列表
 const previewFileList = ref<UploadFileInfo[]>([])
 const formRef = ref()
-
 // 表单验证
 const rules = {
   address: {

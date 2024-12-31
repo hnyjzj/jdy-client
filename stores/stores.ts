@@ -1,9 +1,9 @@
 export const useStores = defineStore('Store', {
   state: () => ({
     filterList: [] as StoreWhere, // 筛选条件
-    storesList: [] as stores[], // 门店列表
+    storesList: [] as storesItem[], // 门店列表
     total: 0,
-    storeDetails: {} as stores, //  门店详情
+    storeDetails: {} as storesItem, //  门店详情
     addorUpdateForm: {
       id: undefined,
       address: '',
@@ -66,7 +66,7 @@ export const useStores = defineStore('Store', {
     },
     // 获取门店详情
     async getStoreDetail(req: storeDetailReq) {
-      const { data } = await https.post<stores, storeDetailReq>('/store/info', req)
+      const { data } = await https.post<storesItem, storeDetailReq>('/store/info', req)
       if (data.value.code === HttpCode.SUCCESS) {
         this.storeDetails = data.value.data
       }

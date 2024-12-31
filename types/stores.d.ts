@@ -1,6 +1,6 @@
 // 门店列表返回值
 interface storesListRes {
-  list: stores[]
+  list: storesItem[]
   total: number
 }
 // 门店列表请求参数
@@ -13,7 +13,7 @@ interface StoresWhere {
   province: string | undefined
 }
 // 门店列表
-interface stores {
+interface storesItem {
   addressName?: string
   address: string
   city: string
