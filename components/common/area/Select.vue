@@ -48,18 +48,20 @@ const clearnArea = () => {
 }
 
 // 设置默认值
-const setD = (val: any) => {
+const setD = (val: string[]) => {
   AreaRef.value.setDefault(val)
 }
-// 判断首次加载是否有数据 ，有数据的话  ，则设置默认值
-if (form.value) {
-  const { province, city, district } = form.value
-  if (province && city && district) {
-    setTimeout(() => {
-      setD([province, city, district])
-    }, 10)
+onMounted(() => {
+  // 判断首次加载是否有数据 ，有数据的话  ，则设置默认值
+  if (form.value) {
+    const { province, city, district } = form.value
+    if (province && city && district) {
+      nextTick(() => {
+        setD([province, city, district])
+      })
+    }
   }
-}
+})
 
 defineExpose({
   setD,
