@@ -126,3 +126,8 @@ interface uploadLogoFileReq {
   image: File | undefined
   store_id?: string
 }
+
+interface CurrentStoreType {
+  name: string
+  id: string
+}

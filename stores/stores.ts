@@ -34,6 +34,10 @@ export const useStores = defineStore('Store', {
       sort: undefined,
       sync_wxwork: true,
     } as addStoreReq,
+    // 我的门店
+    myStoreList: [] as storesList[],
+    // 当前门店
+    newStore: {} as CurrentStoreType,
   }),
   actions: {
     // 门店列表
@@ -87,9 +91,29 @@ export const useStores = defineStore('Store', {
     async uploadImage(req: uploadLogoFileReq) {
       return await https.upload<uploadFileRes, uploadLogoFileReq>('/upload/store', req)
     },
+    // 我的门店
+    async getMyStore(req: storeListReq) {
+      try {
+        const { data } = await https.post<storesList[], storeListReq>('/store/my', req)
+        if (data.value.code === HttpCode.SUCCESS) {
+          this.myStoreList = data.value.data
+          if (Object.keys(this.newStore).length === 0) {
+            this.newStore = { name: this.myStoreList[0].name, id: this.myStoreList[0].id }
+          }
+        }
+      }
+      catch (error) {
+        console.error(error)
+      }
+    },
+    // 切换门店
+    async switchStore(params: CurrentStoreType) {
+      this.newStore = params
+    },
   },
   persist: {
     storage: piniaPluginPersistedstate.cookies(),
     // pick: ['addForm', 'searchKey', 'addsearchKey', 'showName', 'realSearchKey', 'addrealSearchKey'],
+    pick: ['newStore'],
   },
 })
