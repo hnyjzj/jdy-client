@@ -81,7 +81,8 @@ interface Stores {
     district: string
   }
 }
-type StoreWhere = { [key in keyof Stores]?: FilterWhere }
+
+type StoreWhere = { [key in keyof Stores]?: FilterWhere<Stores> }
 
 // 选择省市区组件需要的参数
 interface provinceForm {

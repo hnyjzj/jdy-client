@@ -19,11 +19,11 @@ export const useStores = defineStore('Store', {
   getters: {
     filterListToArray: (state) => {
       const arr: FilterWhere<Stores>[] = []
-      Object.entries(state.filterList).map((item) => {
-        return arr.push({
-          ...item[1],
+      for (const [_k, item] of Object.entries(state.filterList)) {
+        arr.push({
+          ...item,
         })
-      })
+      }
       return arr.sort((a, b) => a.sort - b.sort)
     },
   },
