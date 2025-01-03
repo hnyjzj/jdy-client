@@ -14,6 +14,14 @@ const showModalRef = ref(false)
 const size = ref<'small' | 'medium' | 'large'>('large')
 // 文件列表
 const previewFileList = ref<UploadFileInfo[]>([])
+if (addorUpdateForm.value.logo && addorUpdateForm.value.id) {
+  previewFileList.value.push({
+    id: addorUpdateForm.value.id,
+    name: 'Logo',
+    status: 'finished',
+    url: ImageUrl(addorUpdateForm.value.logo),
+  })
+}
 const formRef = ref()
 // 表单验证
 const rules = {
@@ -89,6 +97,10 @@ if (province && city && district) {
     areaRef?.value?.setD([province, city, district])
   }, 10)
 }
+// 清空预览图
+onUnmounted(() => {
+  previewFileList.value = []
+})
 </script>
 
 <template>
@@ -104,7 +116,7 @@ if (province && city && district) {
           <n-form-item label="门店名称" path="name">
             <n-input v-model:value="addorUpdateForm.name" placeholder="请输入门店名称" round clearable />
           </n-form-item>
-          <common-area-select ref="areaRef" :border="areaError" :form="addorUpdateForm" />
+          <common-area-select ref="areaRef" :border="areaError" :form="addorUpdateForm" @update-error="(val) => { areaError = val }" />
           <n-form-item label="地址" path="address">
             <n-input v-model:value="addorUpdateForm.address" placeholder="请输入门店地址" round clearable />
           </n-form-item>

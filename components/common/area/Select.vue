@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<{
 })
 const emits = defineEmits<{
   update: [val: Stores['region']]
+  updateError: [val: boolean]
 }>()
 // 显示选择器
 const areaShow = ref(false)
@@ -37,7 +38,8 @@ const finishedArea = (val: ProvinceTab[]) => {
 }
 // 清理省市区
 const clearnArea = () => {
-  areaText.value = '请选择省市区'
+  emits('updateError', true)
+  areaText.value = ''
   if (!form.value)
     return
   form.value.province = undefined
@@ -84,8 +86,10 @@ defineExpose({
           请选择省市区
         </div>
       </template>
-      <van-icon
-        name="close" @click="clearnArea" />
+      <div class="wh-[30px] flex-center-row" @click="clearnArea">
+        <van-icon
+          name="close" size="20" />
+      </div>
     </div>
 
     <div :style="{ height: props.isRequired ? '26px' : '0' }">
