@@ -19,12 +19,15 @@ const form = defineModel<provinceForm>('form')
 const AreaRef = ref()
 // 完场筛选
 const finishedArea = (val: ProvinceTab[]) => {
+  if (!val?.length || val.length !== 3)
+    return
   if (!form.value) {
     // 如果没有表单数据，则手动更新 emit
-    const region = {} as Stores['region']
-    region.province = val[0].value
-    region.city = val[1].value
-    region.district = val[2].value
+    const region = {
+      province: val[0].value,
+      city: val[1].value,
+      district: val[2].value,
+    } as Stores['region']
     areaText.value = `${val[0].text} ${val[1].text} ${val[2].text}`
     emits('update', region)
   }
