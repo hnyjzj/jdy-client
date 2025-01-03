@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // 成品列表-详情
 const props = defineProps<{
-  infoDetail: storesItem
+  infoDetail: Stores
 }>()
 
 // 转换省市区名字

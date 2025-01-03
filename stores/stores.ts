@@ -1,9 +1,9 @@
 export const useStores = defineStore('Store', {
   state: () => ({
-    filterList: [] as StoreWhere, // 筛选条件
-    storesList: [] as storesItem[], // 门店列表
+    filterList: {} as Where<Stores>, // 筛选条件
+    storesList: [] as Stores[], // 门店列表
     total: 0,
-    storeDetails: {} as storesItem, //  门店详情
+    storeDetails: {} as Stores, //  门店详情
     addorUpdateForm: {
       id: undefined,
       address: '',
@@ -14,7 +14,7 @@ export const useStores = defineStore('Store', {
       district: '',
       contact: '',
       sort: undefined,
-    } as StoreAddorUpdateReq,
+    } as Partial<Stores>,
   }),
   getters: {
     filterListToArray: (state) => {
@@ -30,7 +30,7 @@ export const useStores = defineStore('Store', {
   actions: {
     // 门店列表
     async getStoreList(req: storesWhereReq, search: boolean = false) {
-      const { data } = await https.post<storesListRes, storesWhereReq>('/store/list', req)
+      const { data } = await https.post<ResList<Stores>, storesWhereReq>('/store/list', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         if (!search) {
           this.total = data.value.data.total
@@ -51,28 +51,28 @@ export const useStores = defineStore('Store', {
       }
     },
     // 创建门店
-    async createStore(req: StoreAddorUpdateReq) {
-      const { data } = await https.post<undefined, StoreAddorUpdateReq>('/store/create', req)
+    async createStore(req: Partial<Stores>) {
+      const { data } = await https.post<undefined, Partial<Stores>>('/store/create', req)
       return data.value
     },
     // 更新门店
-    async updateStore(req: StoreAddorUpdateReq) {
-      const { data } = await https.put<undefined, StoreAddorUpdateReq>('/store/update', req)
+    async updateStore(req: Partial<Stores>) {
+      const { data } = await https.put<undefined, Partial<Stores>>('/store/update', req)
       return data.value
     },
-    async deleteStore(req: storeDeleteReq) {
-      const { data } = await https.delete<undefined, storeDeleteReq>('/store/delete', req)
+    async deleteStore(id: Stores['id']) {
+      const { data } = await https.delete<undefined, { id: Stores['id'] }>('/store/delete', { id })
       return data.value
     },
     // 获取门店详情
-    async getStoreDetail(req: storeDetailReq) {
-      const { data } = await https.post<storesItem, storeDetailReq>('/store/info', req)
+    async getStoreDetail(id: Stores['id']) {
+      const { data } = await https.post<Stores, { id: Stores['id'] }>('/store/info', { id })
       if (data.value.code === HttpCode.SUCCESS) {
         this.storeDetails = data.value.data
       }
     },
     async getStoreWhere() {
-      const { data } = await https.get<StoreWhere, null>('/store/where', null)
+      const { data } = await https.get<Where<Stores>, null>('/store/where', null)
       if (data.value.code === HttpCode.SUCCESS) {
         this.filterList = data.value.data
       }

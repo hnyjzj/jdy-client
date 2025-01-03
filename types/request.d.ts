@@ -3,3 +3,8 @@ interface Res<T = undefined> {
   message: string
   data?: T
 }
+
+interface ResList<T = undefined> {
+  list: T[]
+  total: number
+}

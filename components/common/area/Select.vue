@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends {province?: string, city?: string, district?: string}">
 const props = withDefaults(defineProps<{
   border?: boolean // 校验显示隐藏错误提示边框
   showtitle?: boolean // 是否显示标题
@@ -9,13 +9,13 @@ const props = withDefaults(defineProps<{
   isRequired: true,
 })
 const emits = defineEmits<{
-  update: [val: Stores['region']]
+  update: [val: T]
   updateError: [val: boolean]
 }>()
 // 显示选择器
 const areaShow = ref(false)
 const areaText = ref('')
-const form = defineModel<provinceForm>('form')
+const form = defineModel<T>('form')
 const AreaRef = ref()
 // 完场筛选
 const finishedArea = (val: ProvinceTab[]) => {
@@ -27,7 +27,7 @@ const finishedArea = (val: ProvinceTab[]) => {
       province: val[0].value,
       city: val[1].value,
       district: val[2].value,
-    } as Stores['region']
+    } as T
     areaText.value = `${val[0].text} ${val[1].text} ${val[2].text}`
     emits('update', region)
   }
@@ -92,8 +92,7 @@ defineExpose({
         </div>
       </template>
       <div class="wh-[30px] flex-center-row" @click="clearnArea">
-        <van-icon
-          name="close" size="20" />
+        <van-icon name="close" size="20" />
       </div>
     </div>
 

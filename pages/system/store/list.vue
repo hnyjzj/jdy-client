@@ -48,8 +48,8 @@ await getList()
 await getStoreWhere()
 
 // 展示详情
-const getStoreInfo = async (val: string) => {
-  await getStoreDetail({ id: val as string })
+const getStoreInfo = async (id: string) => {
+  await getStoreDetail(id)
   showModal.value = true
 }
 
@@ -85,7 +85,7 @@ const deleteStoreFn = async (val: string) => {
 }
 // 确认删除
 const confirmDelete = async () => {
-  const res = await deleteStore({ id: nowDeleteId.value })
+  const res = await deleteStore(nowDeleteId.value)
   if (res.code === HttpCode.SUCCESS) {
     message.success('删除成功')
     storesList.value = []
