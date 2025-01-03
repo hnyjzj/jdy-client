@@ -3,7 +3,7 @@
 const props = defineProps<{
   productInfo: Product
   filterList: ProductWhere
-  filterListToArray: FilterWhere[]
+  filterListToArray: FilterWhere<Product>[]
 }>()
 
 const goodsStatus = {
