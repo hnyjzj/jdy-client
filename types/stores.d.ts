@@ -28,10 +28,3 @@ interface uploadLogoFileReq {
   store_id?: string
 }
 // 门店列表筛选请求参数
-interface storesWhereReq {
-  page: number
-  limit: number
-  where?: StoreWhereParams
-}
-
-type Where<T = any> = { [key in keyof T]?: FilterWhere<T> }

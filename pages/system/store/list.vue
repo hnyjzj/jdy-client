@@ -25,7 +25,7 @@ const filterData = ref({} as Where<Stores>)
 const getList = async (where = {} as Where<Stores>) => {
   if (nomore.value)
     return
-  const params = { page: searchPage.value, limit: 12 } as storesWhereReq
+  const params = { page: searchPage.value, limit: 12 } as ReqList<Stores>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }

@@ -29,8 +29,8 @@ export const useStores = defineStore('Store', {
   },
   actions: {
     // 门店列表
-    async getStoreList(req: storesWhereReq, search: boolean = false) {
-      const { data } = await https.post<ResList<Stores>, storesWhereReq>('/store/list', req)
+    async getStoreList(req: ReqList<Stores>, search: boolean = false) {
+      const { data } = await https.post<ResList<Stores>, ReqList<Stores>>('/store/list', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         if (!search) {
           this.total = data.value.data.total
