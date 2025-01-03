@@ -130,14 +130,14 @@ interface Product {
    */
   weight_other: number
 }
-  type ProductWhere = { [key in keyof Product]?: FilterWhere }
+type ProductWhere = { [key in keyof Product]?: FilterWhere<Product> }
 
-  type ProductKey = keyof Product
+type ProductKey = keyof Product
 interface FilterWhere<T, N = keyof T> {
   /**
    * 筛选条件
    */
-  label: StringifiedUtil
+  label: string
   /**
    * 筛选预设
    */

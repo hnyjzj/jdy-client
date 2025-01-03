@@ -4,23 +4,17 @@ export const useProductManage = defineStore('ProductManage', {
     filterList: ProductWhere
     productInfo: Product
     productListTotal: number
+    /**
+     * 排序后的筛选条件列表
+     */
+    filterListToArray: FilterWhere<Product>[]
   } => ({
     filterList: {} as ProductWhere,
     productList: [],
     productInfo: {} as Product,
     productListTotal: 0,
+    filterListToArray: {} as FilterWhere<Product>[],
   }),
-  getters: {
-    filterListToArray: (state) => {
-      const arr: FilterWhere<Product>[] = []
-      Object.entries(state.filterList).map((item) => {
-        return arr.push({
-          ...item[1],
-        })
-      })
-      return arr.sort((a, b) => a.sort - b.sort)
-    },
-  },
   actions: {
     // 货品列表
     async getProductList(pamars: ProductReq) {
@@ -57,6 +51,7 @@ export const useProductManage = defineStore('ProductManage', {
         const { data } = await https.get<ProductWhere, null>('/product/where', null)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.filterList = data.value.data
+          this.filterListToArray = sortArr(this.filterList)
         }
       }
       catch (error) {
