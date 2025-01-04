@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Where } from 'where'
-
 const { $toast } = useNuxtApp()
 const { getProductList, getProductWhere, importProduct } = useProductManage()
 const { productList, filterList, filterListToArray, productListTotal } = storeToRefs(useProductManage())
@@ -18,13 +16,14 @@ const openFilter = () => {
   isFilter.value = true
 }
 // 获取货品列表
-async function getList(where = {} as Where<Product>) {
+async function getList(where = {} as Partial<Product>) {
   if (!isCanPull.value)
     return
-  const params = { page: pages.value, limit: 20 } as ProductReq
+  const params = { page: pages.value, limit: 20 } as ReqList<Product>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
+
   const res = await getProductList(params)
   if (res.data?.list.length) {
     pages.value++
@@ -47,7 +46,7 @@ onMounted(() => {
   }
 })
 
-const filterData = ref({} as Where<Product>)
+const filterData = ref({} as Partial<Product>)
 
 const create = () => {
   isModel.value = true
@@ -79,6 +78,7 @@ function transformData(data: any[][]) {
     return []
   }
   // 第一行是表头 对应着字段名
+  type ProductKey = keyof Product
   const headers: ProductKey[] = data[0]
   return data.slice(1).map((row) => {
     const obj = {} as Record<ProductKey, any>
@@ -113,7 +113,7 @@ function transformData(data: any[][]) {
 async function submitGoods() {
   const data: Product[] = transformData(sheetData.value)
   if (data?.length) {
-    const { code, message } = await importProduct({ products: data })
+    const { code, message } = await importProduct(data)
     if (code === HttpCode.SUCCESS) {
       isModel.value = false
       return $toast.success('导入成功')
@@ -123,11 +123,12 @@ async function submitGoods() {
 }
 
 // 筛选列表
-async function submitWhere(filterParams: Where<Product>) {
+async function submitWhere(f: Partial<Product>) {
+  filterData.value = { ...f }
   pages.value = 1
   isCanPull.value = true
   productList.value = []
-  const res = await getList(filterParams)
+  const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
     isFilter.value = false
     return $toast.success('筛选成功')
@@ -205,7 +206,11 @@ function edit(code: string) {
         </div>
       </div>
     </common-model>
-    <product-where v-model="isFilter" :filter-data="filterData" :filter-list-to-array="filterListToArray" @submit="submitWhere" />
+    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere">
+      <template #product_enter_id="{ filter }">
+        {{ filter.name }}
+      </template>
+    </common-filter-where>
   </div>
 </template>
 

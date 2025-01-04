@@ -1,34 +1,33 @@
 export const useProductManage = defineStore('ProductManage', {
   state: (): {
     productList: Product[]
-    filterList: ProductWhere
+    filterList: Where<Product>
     productInfo: Product
     productListTotal: number
+    /**
+     * 排序后的筛选条件列表
+     */
+    filterListToArray: FilterWhere<Product>[]
   } => ({
-    filterList: {} as ProductWhere,
+    filterList: {} as Where<Product>,
     productList: [],
     productInfo: {} as Product,
     productListTotal: 0,
+    filterListToArray: {} as FilterWhere<Product>[],
   }),
-  getters: {
-    filterListToArray: (state) => {
-      const arr: FilterWhere[] = []
-      Object.entries(state.filterList).map((item) => {
-        return arr.push({
-          ...item[1],
-        })
-      })
-      return arr.sort((a, b) => a.sort - b.sort)
-    },
-  },
   actions: {
     // 货品列表
-    async getProductList(pamars: ProductReq) {
+    async getProductList(pamars: ReqList<Product>) {
       try {
-        const { data } = await https.post<ProductRes, ProductReq>('/product/list', pamars)
+        const { data } = await https.post<ResList<Product>, ReqList<Product>>('/product/list', pamars)
         if (data.value.code === HttpCode.SUCCESS) {
           this.productListTotal = data.value.data.total
-          pamars.page === 1 ? this.productList = data.value.data.list : this.productList = this.productList.concat(data.value.data.list)
+          if (pamars.page === 1) {
+            this.productList = data.value.data.list
+          }
+          else {
+            this.productList = this.productList.concat(data.value.data.list)
+          }
         }
         return data.value
       }
@@ -37,9 +36,9 @@ export const useProductManage = defineStore('ProductManage', {
       }
     },
     // 货品导入
-    async importProduct(pamars: ProductImport) {
+    async importProduct(products: Product[]) {
       try {
-        const { data } = await https.post<any, ProductImport>('/product/enter', pamars)
+        const { data } = await https.post<any, { products: Product[] }>('/product/enter', { products })
         return data.value
       }
       catch (error) {
@@ -49,9 +48,10 @@ export const useProductManage = defineStore('ProductManage', {
     // 获取筛选列表
     async getProductWhere() {
       try {
-        const { data } = await https.get<ProductWhere, null>('/product/where', null)
+        const { data } = await https.get<Where<Product>>('/product/where')
         if (data.value?.code === HttpCode.SUCCESS) {
           this.filterList = data.value.data
+          this.filterListToArray = sortArr(this.filterList)
         }
       }
       catch (error) {
@@ -59,9 +59,9 @@ export const useProductManage = defineStore('ProductManage', {
       }
     },
     // 货品详情
-    async getProductInfo(code: string) {
+    async getProductInfo(code: Product['code']) {
       try {
-        const { data } = await https.post<Product, { code: string }>('/product/info', { code })
+        const { data } = await https.post<Product, { code: Product['code'] }>('/product/info', { code })
         if (data.value.code === HttpCode.SUCCESS) {
           this.productInfo = data.value.data
         }
@@ -71,9 +71,9 @@ export const useProductManage = defineStore('ProductManage', {
       }
     },
     // 更新货品
-    async updateProductInfo(pamars: Product) {
+    async updateProductInfo(pamars: Partial<Product>) {
       try {
-        const { data } = await https.put<Product, Product>('/product/update', pamars)
+        const { data } = await https.put<Product, Partial<Product>>('/product/update', pamars)
         return data.value
       }
       catch (error) {
@@ -81,9 +81,9 @@ export const useProductManage = defineStore('ProductManage', {
       }
     },
     // 报损
-    async damageProduct(pamars: ProductLossReq) {
+    async damageProduct(pamars: ProductDamage) {
       try {
-        const { data } = await https.put<any, ProductLossReq>('/product/damage', pamars)
+        const { data } = await https.put<any, ProductDamage>('/product/damage', pamars)
         return data.value
       }
       catch (error) {

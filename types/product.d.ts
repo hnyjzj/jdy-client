@@ -1,14 +1,17 @@
+type WhereParams = { [key in keyof Product]?: Product[key] }
+
 interface ProductReq {
   page: number
   limit: number
-  where?: product
+  where?: WhereParams
 }
-
 interface ProductImport {
   products: Product[]
 }
 
+// 产品类型
 interface Product {
+  id: string
   /**
    * 入网费
    */
@@ -130,39 +133,8 @@ interface Product {
    */
   weight_other: number
 }
-type ProductWhere = { [key in keyof Product]?: FilterWhere }
 
-type ProductKey = keyof Product
-
-interface FilterWhere {
-  /**
-   * 筛选条件
-   */
-  label: StringifiedUtil
-  /**
-   * 筛选预设
-   */
-  preset: null | object | array
-  /**
-   * 是否必填(仅添加上传时)
-   */
-  required: boolean
-  type: number | string | float | string[]
-  /**
-   * 筛选类型 选择或输入
-   */
-  input: 'select' | 'text' | 'search' | 'switch' | 'number'
-  sort: number
-  show: boolean
-  name: ProductKey
-}
-
-interface ProductRes {
-  list: Product[]
-  total: number
-}
-
-interface ProductLossReq {
-  code: string
+interface ProductDamage {
+  code: Product['code']
   reason: string
 }
