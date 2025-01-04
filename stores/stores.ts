@@ -33,24 +33,23 @@ export const useStores = defineStore('Store', {
   },
   actions: {
     // 门店列表
-    async getStoreList(req: ReqList<Stores>, search: boolean = false) {
+    async getStoreList(req: ReqList<Stores>) {
+      if (req.page === 1) {
+        this.storesList = []
+      }
       const { data } = await https.post<ResList<Stores>, ReqList<Stores>>('/store/list', req)
       if (data.value?.code === HttpCode.SUCCESS) {
-        if (!search) {
-          this.total = data.value.data.total
-          if (data.value.data.list.length > 0) {
-            this.storesList = [...this.storesList, ...data.value.data.list]
-            if (this.storesList.length === this.total) {
-              return false
-            }
-          }
-          else {
-            // 当前页没有数据，则不进行下一页
+        this.total = data.value.data.total
+        if (data.value.data.list.length > 0) {
+          this.storesList = [...this.storesList, ...data.value.data.list]
+          if (this.storesList.length === this.total) {
             return false
           }
+          return true
         }
         else {
-          return data.value.data.list
+          // 当前页没有数据，则不进行下一页
+          return false
         }
       }
     },
