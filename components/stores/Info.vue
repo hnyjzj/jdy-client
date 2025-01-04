@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // 成品列表-详情
 const props = defineProps<{
-  infoDetail: getStoreDetailRes
+  infoDetail: Stores
 }>()
 
 // 转换省市区名字
@@ -23,16 +23,6 @@ const addressName = computed(() => {
                 </div>
                 <div>
                   <img :src="ImageUrl(props.infoDetail?.logo)" mode="asc" class="w-auto max-w-[150px] h-[100px]">
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-col px-4 py-[6px]">
-              <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
-                <div class="color-[#666666]">
-                  上级门店
-                </div>
-                <div class="color-[#333333]">
-                  {{ props.infoDetail.parent?.name || '无' }}
                 </div>
               </div>
             </div>
@@ -63,16 +53,6 @@ const addressName = computed(() => {
                 </div>
                 <div class="color-[#333333]">
                   {{ props.infoDetail.contact }}
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-col px-4 py-[6px]">
-              <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
-                <div class="color-[#666666]">
-                  排序
-                </div>
-                <div class="color-[#333333]">
-                  {{ props.infoDetail.sort }}
                 </div>
               </div>
             </div>
