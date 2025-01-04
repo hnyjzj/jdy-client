@@ -1,5 +1,5 @@
 interface ReqList<T = undefined> {
   page: number
   limit: number
-  where: T
+  where?: Partial<T>
 }

@@ -13,7 +13,7 @@ function changeStoer() {
 function handleSelect(e: any) {
   const stored = myStoreList.value.find(item => item.id === e)
   if (stored) {
-    switchStore({ id: stored.name, name: stored.name })
+    switchStore({ id: stored.id, name: stored.name })
   }
 }
 </script>
