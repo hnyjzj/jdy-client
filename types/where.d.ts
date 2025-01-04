@@ -1,3 +1,6 @@
+/**
+ * 筛选条件
+ */
 interface FilterWhere<T, N = keyof T> {
   /**
    * 筛选条件
@@ -20,5 +23,9 @@ interface FilterWhere<T, N = keyof T> {
   show: boolean
   name: unknown & string & N
 }
-
+/**
+ * 筛选对象
+ *
+ * {a:FilterWhere,b:FilterWhere}
+ */
 type Where<T = any> = { [key in keyof T]?: FilterWhere<T> }
