@@ -1,102 +1,122 @@
 <script setup lang="ts">
+import type { Where } from 'where'
+
+const { getMemberList, getMemberInfo, getMemberWhere, updateMemberInfo } = useMemberManage()
+const { memberList, memberInfo, filterListToArray, memberListTotal } = storeToRefs(useMemberManage())
+
+const { $toast } = useNuxtApp()
+
 useSeoMeta({
   title: '会员列表',
 })
-
-// 测试数据。待替换
-const memberList: MemberInfo[] = [
-  {
-    id: 1,
-    nickname: '',
-    compellation: '李女士',
-    phone: '15000000000',
-    email: '16532000000@qq.com',
-    birthday: '1990-01-25',
-    gender: 1,
-    integral: 798798797,
-    level: 1,
-    buyCount: 3,
-    isFollow: 1,
-    source: '洛阳某某店',
-    adviser: '沈易',
-    store: 'XXXXXXXXXX',
-    totalBuyCount: 9,
-    activityCount: 0,
-    createTime: '2022-01-01 12:00:00',
-    joinTime: '2022-01-01 12:00:00',
-    lastVisitTime: '2022-06-29 12:00:00',
-    receiving: {
-      name: '成为羊',
-      address: '杭州市滨江区XXX',
-      phone: '19000000000',
-    },
-    status: 1,
-  },
-  {
-    id: 2,
-    nickname: '',
-    compellation: '李旻',
-    phone: '13799000000',
-    email: '16532000000@qq.com',
-    birthday: '1990-01-25',
-    gender: 1,
-    integral: 798798797,
-    level: 3,
-    buyCount: 3,
-    isFollow: 1,
-    source: '洛阳某某店',
-    adviser: '曹春花',
-    store: 'XXXXXXXXXX',
-    totalBuyCount: 9,
-    activityCount: 0,
-    createTime: '2022-01-01 12:00:00',
-    joinTime: '2022-01-01 12:00:00',
-    lastVisitTime: '2022-06-29 12:00:00',
-    receiving: {
-      name: '成为羊',
-      address: '杭州市滨江区XXX',
-      phone: '19000000000',
-    },
-    status: 3,
-  },
-]
 
 const actions = [
   { id: 1, text: '增加' },
   { id: 2, text: '减少' },
 ]
 
-const getInitialItems = () => [{ id: 1, isPopoverVisible: false, actions, selected: '' }]
-const items = ref(getInitialItems())
+const items = ref([{
+  id: 1,
+  isPopoverVisible: false,
+  actions,
+  selected: '',
+}])
 
-const userJump = () => {
-  jump('/member/lists/info')
+const complate = ref(0)
+const searchKey = ref('')
+const isFilter = ref(false)
+const filterData = ref({} as Where<Member>)
+// 没有更多数据了
+const nomore = ref(true)
+
+const pages = ref(1)
+async function getList(where = {} as Where<Member>) {
+  if (!nomore.value)
+    return
+  const params = { page: pages.value, limit: 20 } as MemberReq
+  if (JSON.stringify(where) !== '{}') {
+    params.where = where
+  }
+  const res = await getMemberList(params)
+  if (res.data?.list.length) {
+    pages.value++
+  }
+  else {
+    nomore.value = false
+  }
+  return res as any
+}
+
+await getList()
+await getMemberWhere()
+
+const openFilter = () => {
+  isFilter.value = true
+}
+
+// 获取头部高度
+const height = ref<number | undefined>(0)
+onMounted(() => {
+  height.value = getHeight('header')
+})
+function pull() {
+  getList()
 }
 
 const show = ref(false)
-const adjustment = () => {
+const memberParams = ref<Member>({} as Member)
+const adjustment = async (id: string) => {
   show.value = !show.value
+  await getMemberInfo(id as string)
+  memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
 }
 
-const capture = defineModel()
 const adjustWay = ref(0)
-const showTo = ref(0)
-
 const afterAdjusting = (initValue: number, adjustValue: number) => {
   return adjustWay.value === 1 ? initValue + adjustValue : initValue - adjustValue
 }
 
+const showTo = ref(0)
+const capture = defineModel()
 const updateShowTo = () => {
   if (adjustWay.value !== 0 && capture.value !== undefined && capture.value !== '') {
     const adjustValue = Number(capture.value)
-    showTo.value = afterAdjusting(250, adjustValue)
+    showTo.value = afterAdjusting(memberParams.value.integral, adjustValue)
   }
+}
+
+const updateIntegral = async () => {
+  memberParams.value.integral = showTo.value
+  await updateMemberInfo(memberParams.value)
+  if (adjustWay.value !== 0 && capture.value !== '') {
+    show.value = false
+  }
+  else {
+    $toast.warning('当前积分调整无效')
+  }
+}
+
+// 筛选列表
+async function submitWhere(filterParams: Where<Member>) {
+  pages.value = 1
+  nomore.value = true
+  memberList.value = []
+  const res = await getList(filterParams)
+  if (res.code === HttpCode.SUCCESS) {
+    isFilter.value = false
+    return $toast.success('筛选成功')
+  }
+  $toast.error(res.message ?? '筛选失败')
+}
+
+const userJump = (id: string) => {
+  jump('/member/lists/info', { id })
 }
 </script>
 
 <template>
   <div class="grid-12">
-    <common-model v-model:model-value="show" :show-ok="true" title="调整积分">
+    <common-model v-model:model-value="show" :show-ok="true" title="调整积分" @confirm="updateIntegral">
       <div class="pb-[16px] flex flex-col gap-[16px]">
         <div class="flex flex-row justify-between gap-[16px]">
           <div class="item flex-1">
@@ -105,7 +125,7 @@ const updateShowTo = () => {
             </div>
             <div class="item-specific">
               <div class="disabled">
-                250
+                {{ memberParams.integral }}
               </div>
             </div>
           </div>
@@ -194,12 +214,26 @@ const updateShowTo = () => {
         </div>
       </div>
     </common-model>
-    <div class="flex flex-col gap-[20px] px-[16px] py-[16px] col-12" uno-lg="col-8 offset-2">
-      <div class="flex flex-row items-center justify-between gap-[32px]">
-        <product-filter-search class="color-[#fff] flex-1" />
-        <product-filter-senior class="color-[#fff]" />
+
+    <product-where v-model="isFilter" :filter-data="filterData" :filter-list-to-array="filterListToArray" @submit="submitWhere" />
+
+    <div class="flex flex-col col-12" uno-lg="col-8 offset-2">
+      <div>
+        <product-filter
+          v-model:id="complate" v-model:search="searchKey" :product-list-total="memberListTotal" @filter="openFilter">
+          <template #company>
+            <product-manage-company />
+          </template>
+        </product-filter>
       </div>
-      <member-lists-list :info="memberList" @go-info="userJump" @change-integral="adjustment" />
+
+      <common-list-pull
+        :distance="height"
+        :nomore="!nomore"
+        @pull="pull"
+      >
+        <member-lists-list :info="memberList" @go-info="userJump" @change-integral="adjustment" />
+      </common-list-pull>
     </div>
   </div>
 </template>

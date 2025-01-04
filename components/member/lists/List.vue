@@ -1,9 +1,12 @@
 <script setup lang="ts">
 const props = defineProps<{
-  info: MemberInfo[]
+  info: Member[]
 }>()
 
-const emits = defineEmits(['goInfo', 'changeIntegral'])
+const emits = defineEmits<{
+  goInfo: [id: string]
+  changeIntegral: [id: string]
+}>()
 
 const levelDesc = {
   1: '银卡',
@@ -11,35 +14,27 @@ const levelDesc = {
   3: '钻石卡',
 }
 
-const handleClick = () => {
-  emits('goInfo')
-}
-
-const changeIntegral = () => {
-  emits('changeIntegral')
-}
-
 const getStatusText = (status: number) => {
-  return status === 1 ? '正常' : status === 2 ? '未审核' : '已禁用'
+  return status === 1 ? '正常' : '未审核'
 }
 
 const getStatusType = (status: number) => {
-  return status === 1 ? 'green' : status === 2 ? 'orange' : 'black'
+  return status === 1 ? 'green' : 'orange'
 }
 </script>
 
 <template>
   <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
-      <common-gradient :title="item.compellation || '--'" theme="theme">
+      <common-gradient :title="item.name || '--'" theme="theme">
         <template #before>
-          <common-avatar :src="item.img" :size="20" />
+          <common-avatar :size="20" />
         </template>
 
         <template #right>
           <common-tags
-            :text="getStatusText(item.status || 1)"
-            :type="getStatusType(item.status || 1)"
+            :text="getStatusText(item.status)"
+            :type="getStatusType(item.status)"
           />
         </template>
 
@@ -58,7 +53,7 @@ const getStatusType = (status: number) => {
                 专属顾问
               </div>
               <div class="part-right">
-                {{ item.adviser }}
+                {{ item.consultant_id }}
               </div>
             </div>
             <div class="part">
@@ -74,7 +69,7 @@ const getStatusType = (status: number) => {
                 入会门店
               </div>
               <div class="part-right">
-                {{ item.store }}
+                {{ item.store_id }}
               </div>
             </div>
           </div>
@@ -83,12 +78,12 @@ const getStatusType = (status: number) => {
         <template #footer>
           <div class="footer gap-[32px]" uno-lg="gap-[40px]">
             <div class="flex flex-row gap-[24px] cursor-pointer">
-              <div class="accidental" @click="changeIntegral">
+              <div class="accidental" @click="emits('changeIntegral', item.id)">
                 调整积分
               </div>
             </div>
             <div>
-              <common-button-irregular text="查看详情" @click="handleClick" />
+              <common-button-irregular text="查看详情" @click="emits('goInfo', item.id)" />
             </div>
           </div>
         </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
-  data: CustomerMaintenance[]
+  data: any[]
 }>()
 
 const emits = defineEmits(['goInfo', 'delete'])
@@ -27,7 +27,7 @@ const typeMap = {
   <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.data" :key="index">
       <div>
-        <common-gradient theme="theme" :title="item.createTime" :foldable="true">
+        <common-gradient theme="theme" :title="item.createTime">
           <template #before>
             <common-avatar :size="16" />
           </template>
@@ -57,7 +57,7 @@ const typeMap = {
                   记录类型
                 </div>
                 <div class="right">
-                  {{ typeMap[item.type] }}
+                  {{ typeMap[item.type || 1] }}
                 </div>
               </div>
 
@@ -113,11 +113,11 @@ const typeMap = {
   --uno: 'flex flex-row items-center justify-between gap-[16px]';
 
   .left {
-    --uno: 'font-size-[14px] color-[#333333]';
+    --uno: 'font-size-[14px] color-[#333333] dark:color-[#cdcdd1]';
   }
 
   .right {
-    --uno: 'font-size-[14px] color-[#666666]';
+    --uno: 'font-size-[14px] color-[#666666] dark:color-[#fff]';
   }
 }
 

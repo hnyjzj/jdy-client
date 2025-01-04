@@ -22,18 +22,26 @@ const handleClick = () => {
               </div>
               <div class="secondary">
                 <div class="secondary-top">
-                  昵称
-                </div>
-                <div class="secondary-bottom">
-                  <common-frame tip="请输入昵称" />
-                </div>
-              </div>
-              <div class="secondary">
-                <div class="secondary-top">
                   联系方式
                 </div>
                 <div class="secondary-bottom">
                   <common-frame tip="请输入会员手机号" />
+                </div>
+              </div>
+              <div class="secondary">
+                <div class="secondary-top">
+                  专属顾问
+                </div>
+                <div class="secondary-bottom">
+                  <common-frame tip="请输入专属顾问" />
+                </div>
+              </div>
+              <div class="secondary">
+                <div class="secondary-top">
+                  昵称
+                </div>
+                <div class="secondary-bottom">
+                  <common-frame tip="请输入会员昵称" />
                 </div>
               </div>
               <div class="secondary">
@@ -52,6 +60,12 @@ const handleClick = () => {
                   <common-frame :is-disabled="true" :is-icon="true" tip="请选择会员生日" @click="handleClick" />
                 </div>
               </div>
+              <div class="secondary">
+                <div class="secondary-top">
+                  状态
+                </div>
+                <div class="secondary-bottom" />
+              </div>
             </div>
           </div>
         </template>
@@ -65,34 +79,26 @@ const handleClick = () => {
             <div class="base flex flex-1 flex-col gap-[12px]">
               <div class="secondary">
                 <div class="secondary-top">
-                  姓名
+                  生日
                 </div>
                 <div class="secondary-bottom">
-                  <common-frame tip="请输入会员姓名" />
+                  <common-frame tip="请输入会员生日" />
                 </div>
               </div>
               <div class="secondary">
                 <div class="secondary-top">
-                  昵称
+                  纪念日
                 </div>
                 <div class="secondary-bottom">
-                  <common-frame tip="请输入昵称" />
+                  <common-frame tip="请输入会员纪念日" />
                 </div>
               </div>
               <div class="secondary">
                 <div class="secondary-top">
-                  联系方式
+                  备注
                 </div>
                 <div class="secondary-bottom">
-                  <common-frame tip="请输入会员手机号" />
-                </div>
-              </div>
-              <div class="secondary">
-                <div class="secondary-top">
-                  性别
-                </div>
-                <div class="secondary-bottom">
-                  <common-frame :is-disabled="true" tip="请选择会员性别" :is-icon="true" />
+                  <common-frame tip="请输入备注" />
                 </div>
               </div>
             </div>
@@ -100,8 +106,6 @@ const handleClick = () => {
         </template>
       </common-gradient>
     </div>
-
-    <div class="tertiary" />
   </div>
 </template>
 
@@ -110,7 +114,7 @@ const handleClick = () => {
   --uno: 'flex flex-col gap-[8px]';
 
   &-top {
-    --uno: 'font-size-[14px] color-[#333333]';
+    --uno: 'font-size-[14px] color-[#333333] dark:color-[#fff]';
   }
 }
 </style>
