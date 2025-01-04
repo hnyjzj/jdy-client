@@ -1,28 +1,11 @@
 export const useStores = defineStore('Store', {
   state: () => ({
-    filterForm: {} as filterForm,
-    storesList: [] as storesList[],
+    filterList: {} as Where<Stores>, // 筛选条件
+    storesList: [] as Stores[], // 门店列表
     total: 0,
-    storeDetails: {} as getStoreDetailRes,
-    showName: {
-      province_name: '' as string,
-    },
-    formList: {
-      parent_id: undefined,
-      address: undefined,
-      name: undefined,
-      province: undefined,
-      city: undefined,
-      district: undefined,
-      contact: undefined,
-      wxwork_id: undefined,
-    } as Where,
-    searchKey: '' as string,
-    realSearchKey: '' as string,
-    addsearchKey: '' as string,
-    addrealSearchKey: '' as string,
-    addForm: {
-      parent_id: undefined,
+    storeDetails: {} as Stores, //  门店详情
+    addorUpdateForm: {
+      id: undefined,
       address: '',
       name: '',
       logo: '',
@@ -30,19 +13,28 @@ export const useStores = defineStore('Store', {
       city: '',
       district: '',
       contact: '',
-      wxwork_id: undefined,
       sort: undefined,
-      sync_wxwork: true,
-    } as addStoreReq,
+    } as Partial<Stores>,
     // 我的门店
-    myStoreList: [] as storesList[],
+    myStoreList: [] as Stores[],
     // 当前门店
-    newStore: {} as CurrentStoreType,
+    myStore: {} as Stores,
   }),
+  getters: {
+    filterListToArray: (state) => {
+      const arr: FilterWhere<Stores>[] = []
+      for (const [_k, item] of Object.entries(state.filterList)) {
+        arr.push({
+          ...item,
+        })
+      }
+      return arr.sort((a, b) => a.sort - b.sort)
+    },
+  },
   actions: {
     // 门店列表
-    async getStoreList(req: storeListReq, search: boolean = false) {
-      const { data } = await https.post<storesListRes, storeListReq>('/store/list', req)
+    async getStoreList(req: ReqList<Stores>, search: boolean = false) {
+      const { data } = await https.post<ResList<Stores>, ReqList<Stores>>('/store/list', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         if (!search) {
           this.total = data.value.data.total
@@ -63,42 +55,57 @@ export const useStores = defineStore('Store', {
       }
     },
     // 创建门店
-    async createStore(req: addStoreReq) {
-      const { data } = await https.post<addStoreRes, addStoreReq>('/store/create', req)
+    async createStore(req: Partial<Stores>) {
+      const { data } = await https.post<undefined, Partial<Stores>>('/store/create', req)
       return data.value
     },
     // 更新门店
-    async updateStore(req: updateStoreReq) {
-      const { data } = await https.put<updateStoreRes, updateStoreReq>('/store/update', req)
+    async updateStore(req: Partial<Stores>) {
+      const { data } = await https.put<undefined, Partial<Stores>>('/store/update', req)
       return data.value
     },
-    async deleteStore(req: deleteStoreReq) {
-      const { data } = await https.delete<deleteStoreRes, deleteStoreReq>('/store/delete', req)
+    async deleteStore(id: Stores['id']) {
+      const { data } = await https.delete<undefined, { id: Stores['id'] }>('/store/delete', { id })
       return data.value
     },
     // 获取门店详情
-    async getStoreDetail(req: getStoreDetailReq) {
-      try {
-        const { data } = await https.post<getStoreDetailRes, getStoreDetailReq>('/store/info', req)
-        if (data.value.code === HttpCode.SUCCESS) {
-          this.storeDetails = data.value.data
-        }
+    async getStoreDetail(id: Stores['id']) {
+      const { data } = await https.post<Stores, { id: Stores['id'] }>('/store/info', { id })
+      if (data.value.code === HttpCode.SUCCESS) {
+        this.storeDetails = data.value.data
       }
-      catch (error) {
-        console.error(error)
+    },
+    async getStoreWhere() {
+      const { data } = await https.get<Where<Stores>, null>('/store/where', null)
+      if (data.value.code === HttpCode.SUCCESS) {
+        this.filterList = data.value.data
       }
     },
     async uploadImage(req: uploadLogoFileReq) {
       return await https.upload<uploadFileRes, uploadLogoFileReq>('/upload/store', req)
     },
+
+    // 重置新增表单
+    async reastAddForm() {
+      this.addorUpdateForm = {
+        address: '',
+        name: '',
+        logo: '',
+        province: '',
+        city: '',
+        district: '',
+        contact: '',
+        sort: 0,
+      }
+    },
     // 我的门店
-    async getMyStore(req: storeListReq) {
+    async getMyStore(req: ReqList<Stores>) {
       try {
-        const { data } = await https.post<storesList[], storeListReq>('/store/my', req)
+        const { data } = await https.post<Stores[], ReqList<Stores>>('/store/my', req)
         if (data.value.code === HttpCode.SUCCESS) {
           this.myStoreList = data.value.data
-          if (Object.keys(this.newStore).length === 0) {
-            this.newStore = { name: this.myStoreList[0].name, id: this.myStoreList[0].id }
+          if (Object.keys(this.myStore).length === 0) {
+            this.myStore = this.myStoreList[0] || {}
           }
         }
       }
@@ -107,13 +114,12 @@ export const useStores = defineStore('Store', {
       }
     },
     // 切换门店
-    async switchStore(params: CurrentStoreType) {
-      this.newStore = params
+    async switchStore(params: Stores) {
+      this.myStore = params
     },
   },
   persist: {
     storage: piniaPluginPersistedstate.cookies(),
-    // pick: ['addForm', 'searchKey', 'addsearchKey', 'showName', 'realSearchKey', 'addrealSearchKey'],
-    pick: ['newStore'],
+    pick: ['myStore'],
   },
 })

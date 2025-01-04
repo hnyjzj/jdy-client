@@ -1,3 +1,14 @@
+type WhereParams = { [key in keyof Product]?: Product[key] }
+
+interface ProductReq {
+  page: number
+  limit: number
+  where?: WhereParams
+}
+interface ProductImport {
+  products: Product[]
+}
+
 // 产品类型
 interface Product {
   id: string
