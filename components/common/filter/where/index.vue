@@ -68,7 +68,7 @@ const presetToSelect = (filter: FilterWhere<T>): { label: string, value: any }[]
 <template>
   <div>
     <common-popup v-model="show" title="高级筛选">
-      <div class="p-4 bg-[#F1F5FE] dark:bg-[rgba(0,0,0,0.6)] blur-[8px]">
+      <div class="">
         <template v-for="(f, i) in props.filter" :key="i">
           <template v-if="f.show">
             <div class="mb-2">
