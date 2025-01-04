@@ -12,11 +12,6 @@ useSeoMeta({
   title: '列表详情',
 })
 const route = useRoute()
-// 选中值
-const pickerValue = ref('')
-const showPicker = ref(false)
-// 选择器列数据
-const columns = ref<SelectPicker[]>([])
 const productPamas = ref<Product>({} as Product)
 
 async function getInfo() {
@@ -28,30 +23,6 @@ async function getInfo() {
 
 await getInfo()
 await getProductWhere()
-/**
- * 显示选择器并填充列数据
- * @param name 字段名
- */
-function pickerFun(name: keyof ProductWhere) {
-  columns.value = []
-  showPicker.value = true
-  const preset = filterList.value[name]?.preset
-  for (const key in preset) {
-    columns.value.push({ text: preset[key], value: Number(key), key: name })
-  }
-}
-
-interface SelectPicker extends Columns {
-  key: keyof Product & string
-}
-
-function pickered(e: any) {
-  showPicker.value = false
-  // 选中项数据
-  const selected: SelectPicker = e.selectedOptions[0]
-  pickerValue.value = selected.value
-  productPamas.value = { ...productPamas.value, [selected.key]: selected.value }
-}
 
 // 参数转换相应类型
 function transformData() {
@@ -95,6 +66,36 @@ async function updata() {
 function cancelUpdata() {
   productPamas.value = JSON.parse(JSON.stringify(productInfo.value))
 }
+const presetToSelect = (filter: FilterWhere<Product>): { label: string, value: any }[] => {
+  if (!filter.preset) {
+    return []
+  }
+  return Object.keys(filter.preset).map((key) => {
+    switch (filter.type) {
+      case 'number':
+        return {
+          label: filter.preset[key],
+          value: Number(key),
+        }
+      default:
+        return {
+          label: filter.preset[key],
+          value: key,
+        }
+    }
+  })
+}
+// 校验上传文件
+const beforeUpload = (data: any) => {
+  if (data.file.file?.type !== 'image/png' && data.file.file?.type !== 'image/jpeg') {
+    $toast.error('只能上传png,jpeg格式的图片文件,请重新上传')
+    return false
+  }
+}
+const file = ref()
+function customRequest(e: any) {
+  file.value.image = e.file.file?.name
+}
 </script>
 
 <template>
@@ -102,12 +103,15 @@ function cancelUpdata() {
     <common-layout-center>
       <div class="px-4 pt-5">
         <div class="flex">
-          <van-uploader
-            preview-size="100" reupload max-count="1" :style="{
-              '--van-uploader-border-radius': '20px',
-              '--van-uploader-upload-background': 'white',
-            }" :preview-options="{ closeable: true }"
-          />
+          <div>
+            <n-upload
+              action="#"
+              :custom-request="customRequest"
+              list-type="image-card"
+              :max="1"
+              @before-upload="beforeUpload"
+            />
+          </div>
           <div class="flex-1 ml-4 grid gap-y-2 text-[#FFF] text-[12px]">
             <div class="flex justify-between">
               <div>状态</div>
@@ -154,16 +158,14 @@ function cancelUpdata() {
                   <div class="label">
                     {{ item?.label }}
                   </div>
-                  <div class="select" @click.capture="pickerFun(item.name)">
-                    <div>
-                      <div class="flex items-center flex-1">
-                        <div>{{ filterList[item.name]?.preset[productPamas[item.name]] ?? '请选择' }}</div>
-                      </div>
-                    </div>
-                    <div class="select-right">
-                      <van-icon name="arrow" color="#808089" />
-                    </div>
-                  </div>
+                  <n-select
+                    v-model:value="productPamas[item.name]"
+                    :default-value="0 || '' || undefined || null"
+                    menu-size="large"
+                    fable
+                    :placeholder="`请选择${item.label}`"
+                    :options="presetToSelect(item) "
+                  />
                 </template>
               </div>
             </template>
@@ -171,14 +173,6 @@ function cancelUpdata() {
         </div>
       </div>
     </common-layout-center>
-    <van-popup v-model:show="showPicker" destroy-on-close round position="bottom">
-      <van-picker
-        :model="pickerValue"
-        :columns="columns"
-        @cancel="showPicker = false"
-        @confirm="pickered"
-      />
-    </van-popup>
     <common-button-bottom @confirm="transformData" @cancel="cancelUpdata" />
   </div>
 </template>

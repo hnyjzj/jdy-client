@@ -15,6 +15,10 @@ export const useStores = defineStore('Store', {
       contact: '',
       sort: undefined,
     } as Partial<Stores>,
+    // 我的门店
+    myStoreList: [] as Stores[],
+    // 当前门店
+    myStore: {} as Stores,
   }),
   getters: {
     filterListToArray: (state) => {
@@ -94,8 +98,28 @@ export const useStores = defineStore('Store', {
         sort: 0,
       }
     },
+    // 我的门店
+    async getMyStore(req: ReqList<Stores>) {
+      try {
+        const { data } = await https.post<Stores[], ReqList<Stores>>('/store/my', req)
+        if (data.value.code === HttpCode.SUCCESS) {
+          this.myStoreList = data.value.data
+          if (Object.keys(this.myStore).length === 0) {
+            this.myStore = this.myStoreList[0] || {}
+          }
+        }
+      }
+      catch (error) {
+        console.error(error)
+      }
+    },
+    // 切换门店
+    async switchStore(params: Stores) {
+      this.myStore = params
+    },
   },
   persist: {
     storage: piniaPluginPersistedstate.cookies(),
+    pick: ['myStore'],
   },
 })
