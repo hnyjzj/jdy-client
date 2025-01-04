@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Where } from 'where'
-
 useSeoMeta({
   title: '门店列表',
 })
@@ -20,9 +18,9 @@ const nomore = ref<boolean>(false)
 // 显示详情页
 const showModal = ref<boolean>(false)
 // 筛选请求数据
-const filterData = ref({} as Where<Stores>)
+const filterData = ref({} as Partial<Stores>)
 // 获取列表
-const getList = async (where = {} as Where<Stores>) => {
+const getList = async (where = {} as Partial<Stores>) => {
   if (nomore.value)
     return
   const params = { page: searchPage.value, limit: 12 } as ReqList<Stores>
@@ -34,7 +32,7 @@ const getList = async (where = {} as Where<Stores>) => {
 }
 
 // 筛选列表
-const submitWhere = async (f: Where<Stores>) => {
+const submitWhere = async (f: Partial<Stores>) => {
   filterData.value = f
   storesList.value = []
   nomore.value = false
