@@ -11,7 +11,9 @@ const themeOverrides = {
     <n-config-provider :theme-overrides="themeOverrides">
       <n-message-provider>
         <nuxt-layout>
-          <nuxt-page />
+          <common-layout-watermark>
+            <nuxt-page />
+          </common-layout-watermark>
         </nuxt-layout>
       </n-message-provider>
     </n-config-provider>
