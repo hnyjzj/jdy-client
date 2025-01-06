@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { Where } from 'where'
-
 const { getMemberList, getMemberInfo, getMemberWhere, updateMemberInfo } = useMemberManage()
 const { memberList, memberInfo, filterListToArray, memberListTotal } = storeToRefs(useMemberManage())
 
@@ -25,15 +23,15 @@ const items = ref([{
 const complate = ref(0)
 const searchKey = ref('')
 const isFilter = ref(false)
-const filterData = ref({} as Where<Member>)
+const filterData = ref({} as Partial<Member>)
 // 没有更多数据了
 const nomore = ref(true)
 
 const pages = ref(1)
-async function getList(where = {} as Where<Member>) {
+async function getList(where = {} as Partial<Member>) {
   if (!nomore.value)
     return
-  const params = { page: pages.value, limit: 20 } as MemberReq
+  const params = { page: pages.value, limit: 20 } as ReqList<Member>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
@@ -97,11 +95,12 @@ const updateIntegral = async () => {
 }
 
 // 筛选列表
-async function submitWhere(filterParams: Where<Member>) {
+async function submitWhere(f: Partial<Member>) {
+  filterData.value = { ...f }
   pages.value = 1
   nomore.value = true
   memberList.value = []
-  const res = await getList(filterParams)
+  const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
     isFilter.value = false
     return $toast.success('筛选成功')
@@ -215,7 +214,7 @@ const userJump = (id: string) => {
       </div>
     </common-model>
 
-    <product-where v-model="isFilter" :filter-data="filterData" :filter-list-to-array="filterListToArray" @submit="submitWhere" />
+    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
 
     <div class="flex flex-col col-12" uno-lg="col-8 offset-2">
       <div>

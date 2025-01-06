@@ -1,34 +1,23 @@
-export const useMemberManage = defineStore('MemberManage', {
+export const useMemberManage = defineStore('Member', {
   state: (): {
     memberList: Member[]
-    filterList: MemberWhere
+    filterList: Where<Member>
     memberInfo: Member
     memberListTotal: number
-
+    filterListToArray: FilterWhere<Member>[]
   } => ({
     memberList: [],
     filterList: {},
     memberInfo: {} as Member,
     memberListTotal: 0,
+    filterListToArray: {} as FilterWhere<Member>[],
   }),
-
-  getters: {
-    filterListToArray: (state) => {
-      const arr: MemberFilterWhere[] = []
-      Object.entries(state.filterList).map((item) => {
-        return arr.push({
-          ...item[1],
-        })
-      })
-      return arr.sort((a, b) => a.sort - b.sort)
-    },
-  },
 
   actions: {
     // 会员列表
-    async getMemberList(params: MemberReq) {
+    async getMemberList(params: ReqList<Member>) {
       try {
-        const { data } = await https.post<MemberRes, MemberReq>('/member/list', params)
+        const { data } = await https.post<ResList<Member>, ReqList<Member>>('/member/list', params)
         if (data.value.code === HttpCode.SUCCESS) {
           this.memberListTotal = data.value.data.total
           params.page === 1 ? this.memberList = data.value.data.list : this.memberList = this.memberList.concat(data.value.data.list)
@@ -42,9 +31,10 @@ export const useMemberManage = defineStore('MemberManage', {
     // 获取筛选列表
     async getMemberWhere() {
       try {
-        const { data } = await https.get<MemberWhere, null>('/member/where', null)
+        const { data } = await https.get<Where<Member>>('/member/where')
         if (data.value?.code === HttpCode.SUCCESS) {
           this.filterList = data.value.data
+          this.filterListToArray = sortArr(this.filterList)
         }
       }
       catch (error) {

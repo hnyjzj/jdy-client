@@ -74,6 +74,9 @@ interface Member {
   nickname: string
 }
 
+/**
+ * 顾问信息
+ */
 interface Consultant {
   id: string
   phone: string
@@ -85,6 +88,9 @@ interface Consultant {
   stores: string
 }
 
+/**
+ * 门店信息
+ */
 interface Store {
   id: string
   created_at: string
@@ -100,6 +106,9 @@ interface Store {
   staffs: Staff[]
 }
 
+/**
+ * 会员等级
+ */
 enum MemberLevel {
   /**
    * 银卡
@@ -115,6 +124,9 @@ enum MemberLevel {
   Diamond = 3,
 }
 
+/**
+ * 会员状态
+ */
 enum MemberStatus {
   /**
    * 正常
@@ -126,45 +138,18 @@ enum MemberStatus {
   Unreviewed = 2,
 }
 
+/**
+ * 性别
+ */
 enum Gender {
   Man = 1,
   Woman = 2,
 }
 
-type MemberWhere = { [key in keyof Member]?: MemberFilterWhere }
-
-type MemberKey = keyof Member
-
-interface MemberFilterWhere {
-  /**
-   * 筛选条件
-   */
-  label: StringifiedUtil
-  /**
-   * 筛选预设
-   */
-  preset: null | object | array
-  /**
-   * 是否必填(仅添加上传时)
-   */
-  required: boolean
-  type: number | string | float | string[]
-  /**
-   * 筛选类型 选择或输入
-   */
-  input: 'select' | 'text' | 'search' | 'switch' | 'number'
-  sort: number
-  show: boolean
-  name: MemberKey
-}
+type WhereParams = { [key in keyof Member]?: Member[key] }
 
 interface MemberReq {
   page: number
   limit: number
   where?: member
-}
-
-interface MemberRes {
-  list: Member[]
-  total: number
 }
