@@ -12,6 +12,7 @@ const emits = defineEmits<{
   update: [val: T]
   updateError: [val: boolean]
 }>()
+const { $colorMode } = useNuxtApp()
 // 显示选择器
 const areaShow = ref(false)
 const areaText = ref('')
@@ -66,6 +67,31 @@ onMounted(() => {
   }
 })
 
+const bordercolor = computed(() => {
+  // 默认边框颜色
+  const color = '1px solid #E0E0E6'
+
+  // 如果没有校验，则根据颜色模式设置透明或默认灰色边框
+  if (!props.border) {
+    return $colorMode.value === 'dark'
+      ? '1px solid rgba(255, 255, 255, 0)'
+      : color
+  }
+
+  // 如果有校验且文本区域为空，则根据颜色模式设置红色边框
+  if (props.border && areaText.value === '') {
+    return $colorMode.value === 'light'
+      ? '1px solid #d03050'
+      : '1px solid #E88080'
+  }
+  else if (props.border && areaText.value !== '') {
+    return $colorMode.value === 'light'
+      ? '1px solid #E0E0E6'
+      : '1px solid transparent'
+  }
+
+  return color
+})
 defineExpose({
   setD,
 })
@@ -74,20 +100,20 @@ defineExpose({
 <template>
   <div class="relative">
     <template v-if="props.showtitle">
-      <div class="text-[14px] color-[#333] line-height-[20px] pb-[8px]">
-        省市区<span class="color-[#D23B5A]">*</span>
+      <div class="text-[14px] color-[#333] dark:color-[#fff] line-height-[20px] pb-[8px]">
+        省市区<span class="color-[#D23B5A] dark:color-[#E88080]">*</span>
       </div>
     </template>
     <div
-      class="bg-[#fff]  border-[#E2E2E8] border-solid border rounded-full px-[12px] flex items-center"
-      :style="{ border: props.border && areaText === '' ? '1px solid #d03050' : '1px solid #E2E2E8' }">
+      class="bg-[#fff] dark:color-[#fff] dark:bg-[rgba(255,255,255,0.1)] rounded-full px-[12px] flex items-center"
+      :style="{ border: bordercolor }">
       <template v-if="form?.province || form?.city || form?.district">
-        <div class="text-[14px] color-[#333] py-[9.5px] flex-1" @click="areaShow = true">
+        <div class="text-[14px] dark:color-[#fff] color-[#333] py-[9.5px] flex-1" @click="areaShow = true">
           {{ areaText }}
         </div>
       </template>
       <template v-else>
-        <div class="text-[14px] color-[#C9C9C9] py-[8.5px] flex-1" @click="areaShow = true">
+        <div class="text-[14px] color-[#C9C9C9] dark:color-[#7E878E] py-[8.5px] flex-1" @click="areaShow = true">
           请选择省市区
         </div>
       </template>
@@ -112,6 +138,6 @@ defineExpose({
 
 <style lang="scss" scoped>
 .error {
-  --uno: 'color-[red] text-size-[14px] line-height-[20px] pt-[4px] color-#D23B5A';
+  --uno: ' dark:color-[#E88080] text-size-[14px] line-height-[20px] pt-[4px] color-#D23B5A';
 }
 </style>
