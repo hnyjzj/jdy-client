@@ -25,6 +25,6 @@
   height: calc(100vh - 56px - 60px);
 }
 .footer {
-  --uno: 'h-[60px] fixed left-0 bottom-0 py-10px px-[16px] blur-bgc w-full grid-12';
+  --uno: 'h-[60px] fixed left-0 bottom-0 py-10px px-[16px] blur-bgc w-full grid-12 z-1';
 }
 </style>
