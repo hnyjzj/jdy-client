@@ -76,7 +76,7 @@ const themeProcess = () => {
         <slot name="before" />
 
         <div
-          class="font-black text-[14px] dark:color-[#fff]"
+          class="font-black text-[16px] dark:color-[#fff]"
           :style="{
             fontStyle: props.italic ? 'italic' : 'normal',
             fontWeight: props.bold ? 'bold' : 'normal',
