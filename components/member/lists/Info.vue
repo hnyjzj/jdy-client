@@ -79,7 +79,9 @@ const levelDesc = {
                     身份证号
                   </div>
                   <div class="item-right">
-                    {{ props.data.id_card || '-- --' }}
+                    {{ props.data.id_card
+                      ? (`${props.data.id_card.slice(0, 6)}********${props.data.id_card.slice(-4)}`)
+                      : '-- --' }}
                   </div>
                 </div>
               </div>
@@ -101,7 +103,7 @@ const levelDesc = {
                   入会时间
                 </div>
                 <div class="item-right">
-                  {{ props.data.nickname || '-- --' }}
+                  {{ props.data.created_at || '-- --' }}
                 </div>
               </div>
               <div class="item">
