@@ -3,34 +3,238 @@ useSeoMeta({
   title: '新增会员',
 })
 
-const show = ref(false)
-const currentDate = ref(['2000', '01', '01'])
-const minDate = new Date(1900, 0, 1)
-const maxDate = new Date(new Date().getFullYear(), 11, 31)
+const { $toast } = useNuxtApp()
+
+const { createMember } = useMemberManage()
+
+const memberParams = ref<Member>({} as Member)
+
+const selectValue = ref('')
+const selectOptions = [
+  {
+    label: '男',
+    value: '1',
+  },
+  {
+    label: '女',
+    value: '2',
+  },
+]
+
+const selectGender = () => {
+  memberParams.value.gender = Number(selectValue) as Gender
+}
+
+const birthday = ref()
+const anniversary = ref()
+
+const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
+  if (memberKey === 'birthday' && birthday.value) {
+    const date = new Date(birthday.value)
+    const formattedDate = date.toLocaleDateString('en-CA')
+    memberParams.value.birthday = formattedDate
+  }
+  else if (memberKey === 'anniversary' && anniversary.value) {
+    const date = new Date(anniversary.value)
+    const formattedDate = date.toLocaleDateString('en-CA')
+    memberParams.value.anniversary = formattedDate
+  }
+}
+
+const backtrack = () => {
+  jump('/work/table')
+}
+
+const createNew = async () => {
+  const res = await createMember(memberParams.value)
+  if (res.code === HttpCode.SUCCESS) {
+    $toast.success('新增成功')
+    backtrack()
+  }
+  else {
+    $toast.warning(res.message ?? '新增失败')
+  }
+}
 </script>
 
 <template>
   <div>
     <div class="grid-12">
-      <common-model v-model="show" :show-ok="true" title="请选择会员生日">
-        <div class="pb-[24px]">
-          <van-date-picker
-            v-model="currentDate"
-            title="选择日期"
-            :min-date="minDate"
-            :max-date="maxDate"
-          />
-        </div>
-      </common-model>
       <div class="col-12 px-[16px] py-[16px]" uno-lg="col-8 offset-2">
-        <member-lists-new @show-pop="() => { show = true }" />
+        <div class="flex flex-col gap-[16px]">
+          <div class="primary">
+            <common-gradient title="会员归属" theme="gradient" :italic="true">
+              <template #body>
+                <div class="flex flex-col gap-[12px]">
+                  <div class="base flex flex-1 flex-col gap-[12px]">
+                    <div class="secondary">
+                      <div class="secondary-top">
+                        姓名
+                      </div>
+                      <div class="secondary-bottom">
+                        <n-input
+                          v-model:value="memberParams.name"
+                          size="large"
+                          round
+                          placeholder="请输入会员姓名"
+                        />
+                      </div>
+                    </div>
+                    <div class="secondary">
+                      <div class="secondary-top">
+                        联系方式
+                      </div>
+                      <div class="secondary-bottom">
+                        <n-input
+                          v-model:value="memberParams.phone"
+                          size="large"
+                          maxlength="11"
+                          round
+                          placeholder="请输入会员联系方式"
+                        />
+                      </div>
+                    </div>
+                    <div class="secondary">
+                      <div class="secondary-top">
+                        昵称
+                      </div>
+                      <div class="secondary-bottom">
+                        <n-input
+                          v-model:value="memberParams.nickname"
+                          size="large"
+                          round
+                          placeholder="请输入会员昵称"
+                        />
+                      </div>
+                    </div>
+                    <div class="secondary">
+                      <div class="secondary-top">
+                        性别
+                      </div>
+                      <n-select
+                        v-model:value="selectValue"
+                        placeholder="请选择会员性别"
+                        :options="selectOptions"
+                        menu-size="large"
+                        @blur="selectGender"
+                      />
+                    </div>
+                    <div class="secondary">
+                      <div class="secondary-top">
+                        身份证号
+                      </div>
+                      <div class="secondary-bottom">
+                        <n-input
+                          v-model:value="memberParams.id_card"
+                          size="large"
+                          round
+                          placeholder="请输入会员身份证号"
+                        />
+                      </div>
+                    </div>
+                    <div class="secondary">
+                      <div class="secondary-top">
+                        入会门店
+                      </div>
+                      <div class="secondary-bottom">
+                        <n-input
+                          v-model:value="memberParams.store_id"
+                          size="large"
+                          round
+                          placeholder="请选择会员入会门店"
+                        />
+                      </div>
+                    </div>
+                    <div class="secondary">
+                      <div class="secondary-top">
+                        专属顾问
+                      </div>
+                      <div class="secondary-bottom">
+                        <n-input
+                          v-model:value="memberParams.consultant_id"
+                          size="large"
+                          round
+                          placeholder="请选择专属顾问"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </common-gradient>
+          </div>
+
+          <div class="secondary">
+            <common-gradient title="其他信息" theme="gradient" :italic="true">
+              <template #body>
+                <div class="flex flex-col gap-[12px]">
+                  <div class="base flex flex-1 flex-col gap-[12px]">
+                    <div class="secondary">
+                      <div class="secondary-top">
+                        生日
+                      </div>
+                      <div class="secondary-bottom">
+                        <n-date-picker
+                          v-model:value="birthday"
+                          clearable
+                          format="yyyy-MM-dd"
+                          type="date"
+                          @blur="handleDateBlur('birthday')"
+                        />
+                      </div>
+                    </div>
+                    <div class="secondary">
+                      <div class="secondary-top">
+                        纪念日
+                      </div>
+                      <div class="secondary-bottom">
+                        <n-date-picker
+                          v-model:value="anniversary"
+                          clearable
+                          format="yyyy-MM-dd"
+                          type="date"
+                          @blur="handleDateBlur('anniversary')"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </common-gradient>
+          </div>
+        </div>
       </div>
     </div>
     <div class="h-[80px]">
-      <common-button-bottom confirm-text="确认新增" cancel-text="取消" />
+      <common-button-bottom confirm-text="确认新增" cancel-text="取消" @confirm="createNew" @cancel="backtrack" />
     </div>
   </div>
 </template>
 
+<style>
+.n-base-selection {
+  border-radius: 20px;
+}
+
+.n-base-selection-label {
+  height: 40px !important;
+}
+
+.n-input-wrapper {
+  border-radius: 20px !important;
+}
+
+.n-date-picker {
+  border-radius: 20px;
+}
+</style>
+
 <style scoped lang="scss">
+.secondary {
+  --uno: 'flex flex-col gap-[8px]';
+
+  &-top {
+    --uno: 'font-size-[16px] color-[#333333] dark:color-[#fff]';
+  }
+}
 </style>

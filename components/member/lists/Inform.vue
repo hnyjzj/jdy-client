@@ -170,7 +170,7 @@ const jumpRecord = () => {
 
             <template #footer>
               <div class="operation flex flex-row items-center justify-end gap-[16px] px-[16px] pb-[16px]">
-                <div class="button color-[#0068FF] dark:color-[# ] hover:bg-[#F1F5FE] hover:color-[#3971F3] active:bg-[#D9E4FF]" @click="sendMessage">
+                <div class="button color-[#0068FF] dark:color-[#fff] hover:bg-[#F1F5FE] hover:color-[#3971F3] active:bg-[#D9E4FF]" @click="sendMessage">
                   发送
                 </div>
 

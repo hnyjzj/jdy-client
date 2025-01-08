@@ -1,65 +1,9 @@
 interface Member {
-  id: string
+  id?: string
   /**
    * 姓名
    */
   name: string
-  /**
-   * 购买次数
-   */
-  buy_count: number
-  /**
-   * 顾问
-   */
-  consultant: Consultant
-  /**
-   * 顾问id
-   */
-  consultant_id: string
-  /**
-   * 活动次数
-   */
-  event_count: number
-  /**
-   * 积分
-   */
-  integral: number
-  /**
-   * 手机号
-   */
-  phone: string
-  /**
-   * 来源
-   */
-  source: number
-  /**
-   * 来源id
-   */
-  source_id: string
-  /**
-   * 会员等级
-   */
-  level: MemberLevel
-  /**
-   * 状态
-   */
-  status: MemberStatus
-  /**
-   * 入会门店
-   */
-  store: Store
-  /**
-   * 入会门店id
-   */
-  store_id: string
-  /**
-   * 纪念日
-   */
-  anniversary: Date
-  /**
-   * 生日
-   */
-  birthday: Date
   /**
    * 性别
    */
@@ -72,6 +16,70 @@ interface Member {
    * 昵称
    */
   nickname: string
+  /**
+   * 购买次数
+   */
+  buy_count?: number
+  /**
+   * 顾问
+   */
+  consultant?: Consultant
+  /**
+   * 顾问id
+   */
+  consultant_id: string
+  /**
+   * 活动次数
+   */
+  event_count?: number
+  /**
+   * 积分
+   */
+  integral?: number
+  /**
+   * 手机号
+   */
+  phone: string
+  /**
+   * 来源
+   */
+  source?: number
+  /**
+   * 来源id
+   */
+  source_id?: string
+  /**
+   * 会员等级
+   */
+  level?: MemberLevel
+  /**
+   * 状态
+   */
+  status?: MemberStatus
+  /**
+   * 创建时间
+   */
+  created_at?: string
+  /**
+   * 创建时间
+   */
+  updated_at?: string
+  /**
+   * 入会门店
+   */
+  store?: Store
+  /**
+   * 入会门店id
+   */
+  store_id: string
+  /**
+   * 纪念日
+   */
+  anniversary: string
+  /**
+   * 生日
+   */
+  birthday: string
 }
 
 /**

@@ -20,7 +20,12 @@ export const useMemberManage = defineStore('Member', {
         const { data } = await https.post<ResList<Member>, ReqList<Member>>('/member/list', params)
         if (data.value.code === HttpCode.SUCCESS) {
           this.memberListTotal = data.value.data.total
-          params.page === 1 ? this.memberList = data.value.data.list : this.memberList = this.memberList.concat(data.value.data.list)
+          if (params.page === 1) {
+            this.memberList = data.value.data.list
+          }
+          else {
+            this.memberList = this.memberList.concat(data.value.data.list)
+          }
         }
         return data.value
       }
@@ -39,6 +44,16 @@ export const useMemberManage = defineStore('Member', {
       }
       catch (error) {
         throw new Error(`筛选失败: ${error || '未知错误'}`)
+      }
+    },
+    // 新增会员
+    async createMember(req: Partial<Member>) {
+      try {
+        const { data } = await https.post<undefined, Partial<Member>>('/member/create', req)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`新增会员失败: ${error || '未知错误'}`)
       }
     },
     // 会员详情
