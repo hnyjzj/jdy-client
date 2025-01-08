@@ -21,11 +21,11 @@ useSeoMeta({
       </div>
 
       <template #footer>
-        <div class="fixed left-0 bottom-0  px-[16px] py-[12px] blur-bgc w-full border-t-solid b-t-[1px] border-color-[#E6E6E8] grid-12 ">
-          <div class="col-4">
+        <div class="grid-12 w-full " uno-sm="col-6 offset-3">
+          <div class="col-4" uno-sm="col-4">
             <common-button-rounded content="取消" bgc="#fff" color="#3971F3" />
           </div>
-          <div class="col-7 offset-5">
+          <div class="col-7 offset-5" uno-sm="col-6 offset-5">
             <common-button-rounded content="保存" />
           </div>
         </div>

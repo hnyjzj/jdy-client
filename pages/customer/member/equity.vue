@@ -17,11 +17,13 @@ useSeoMeta({
         </div>
       </div>
       <template #footer>
-        <div class="col-4">
-          <common-button-rounded content="取消" color="#fff" />
-        </div>
-        <div class="col-7 offset-5">
-          <common-button-rounded content="保存" />
+        <div class="grid-12 w-full " uno-sm="col-6 offset-3">
+          <div class="col-4" uno-sm="col-4">
+            <common-button-rounded content="取消" bgc="#fff" color="#3971F3" />
+          </div>
+          <div class="col-7 offset-5" uno-sm="col-6 offset-5">
+            <common-button-rounded content="保存" />
+          </div>
         </div>
       </template>
     </common-layout-card>
