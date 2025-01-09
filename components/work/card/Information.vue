@@ -16,7 +16,7 @@ onMounted(() => {
   })
 })
 onBeforeUnmount(() => {
-  mouseLeaveEvent.value && mouseLeaveEvent.value()
+  mouseLeaveEvent.value?.()
 })
 </script>
 
