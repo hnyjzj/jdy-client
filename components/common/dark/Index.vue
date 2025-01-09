@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const { $colorMode } = useNuxtApp()
-// true: dark, false: light
 const mode = computed({
   get() {
     return $colorMode.preference === 'dark'
