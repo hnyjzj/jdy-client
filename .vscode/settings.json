@@ -1,14 +1,4 @@
 {
-  "[scss]": {
-    "editor.defaultFormatter": "vscode.css-language-features"
-  },
-  "[svg]": {
-    "editor.defaultFormatter": "jock.svg"
-  },
-  "[vue]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  },
-  "css.validate": false,
   // Auto fix
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit",
@@ -32,6 +22,7 @@
     "vue",
     "yaml"
   ],
+  "css.validate": false,
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
     ".env": " *.env, .env.*",
@@ -49,7 +40,10 @@
   "nuxtr.vueFiles.firstTag": "script",
   "nuxtr.vueFiles.style.alwaysScoped": true,
   "nuxtr.vueFiles.style.defaultLanguage": "scss",
-  "[typescript]": {
+  "[svg]": {
+    "editor.defaultFormatter": "jock.svg"
+  },
+  "[vue]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   }
 }

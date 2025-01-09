@@ -73,7 +73,7 @@ const otherLogin = (way: string) => {
     <div class="px-[16px] pt-[24px] col-12" uno-sm="col-6 offset-3" uno-lg="offset-4 col-4">
       <div class="flex-center-col">
         <div class="bg-[#D8E4F4] wh-[75px] rounded-2xl mb-[16px]">
-          <img src="/images/banner/product.png" class="w-[100%]">
+          <img src="/images/banner/jdylogo.png" class="w-[100%]">
         </div>
         <div class="text-[24px] line-height-[24px] color-[#Fff] text-center mb-[26px]">
           欢迎进入金斗云

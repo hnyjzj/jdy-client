@@ -38,20 +38,22 @@ const modeFun = () => {
     <div
       class="w-full bg-[#F8FAFF] dark:bg-[#515862] text-[12px] pt-[12px] pb-[4px] px-[40px] flex-between"
       uno-lg="w-auto px-8px py-12px flex-center-col rounded-8px">
-      <div v-for="item in menuItems" :key="item.key">
-        <nuxt-link :to="item.route">
-          <div class="flex-center-col sm:py-[10px]">
-            <div class="wh-[24px] mb-[4px]">
-              <icon :name="props.text === item.key ? item.activeIcon : item.inactiveIcon" size="24" :color="modeFun()" />
+      <template v-for="item in menuItems" :key="item.key">
+        <div>
+          <nuxt-link :to="item.route">
+            <div class="flex-center-col sm:py-[10px]">
+              <div class="wh-[24px] mb-[4px]">
+                <icon :name="props.text === item.key ? item.activeIcon : item.inactiveIcon" size="24" :color="modeFun()" />
+              </div>
+              <div
+                class="line-height-[20px] color-[#333] dark:color-[#fff]"
+                :class="{ 'text-active': props.text === item.key && !mode }">
+                {{ item.name }}
+              </div>
             </div>
-            <div
-              class="line-height-[20px] color-[#333] dark:color-[#fff]"
-              :class="{ 'text-active': props.text === item.key && !mode }">
-              {{ item.name }}
-            </div>
-          </div>
-        </nuxt-link>
-      </div>
+          </nuxt-link>
+        </div>
+      </template>
     </div>
   </div>
 </template>

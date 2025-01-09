@@ -5,9 +5,8 @@ useSeoMeta({
 const { userinfo } = storeToRefs(useUser())
 const { getUserInfo } = useUser()
 const { exit } = useAuth()
-usePageShow(() => {
-  getUserInfo()
-})
+await getUserInfo()
+
 const optionsList = ref<UserOpts[]>([{
   iconName: 'i-svg:my-profile',
   optName: '资料管理',
