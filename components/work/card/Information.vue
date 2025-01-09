@@ -8,6 +8,16 @@ const props = withDefaults(defineProps<{
   rbText: '查看排行',
   marginBottom: '16px',
 })
+const mouseLeaveEvent = ref()
+const id = useId()
+onMounted(() => {
+  nextTick(() => {
+    mouseLeaveEvent.value = addMouseEvent(`#${id}`)
+  })
+})
+onBeforeUnmount(() => {
+  mouseLeaveEvent.value && mouseLeaveEvent.value()
+})
 </script>
 
 <template>
@@ -22,10 +32,10 @@ const props = withDefaults(defineProps<{
       </div>
     </div>
 
-    <div class="p-[16px]">
-      <div class="flex-between">
+    <div class="p-[16px] ">
+      <div :id="id" class="flex overflow-x-scroll gap-[20px]">
         <template v-for="(item, index) in list" :key="index">
-          <div class="flex-col">
+          <div class="flex-grow-1 flex-shrink-0">
             <div class="flex-start">
               <div class="w-[4px] h-[10px] bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] rounded-[2px]" />
               <div class="color-[#428EFF] dark:color-[#fff] ml-[4px] text-[12px]  line-height-[24px]">
@@ -56,5 +66,8 @@ const props = withDefaults(defineProps<{
 </template>
 
 <style lang="scss" scoped>
-
+::-webkit-scrollbar {
+  /* 隐藏Webkit浏览器的滚动条 */
+  display: none;
+}
 </style>
