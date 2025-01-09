@@ -8,15 +8,14 @@ const props = withDefaults(defineProps<{
   rbText: '查看排行',
   marginBottom: '16px',
 })
-const mouseLeaveEvent = ref<(() => void) | undefined>()
+
 const id = useId()
+const { run, stop } = addMouseEvent(`#${id}`)
 onMounted(() => {
-  nextTick(() => {
-    mouseLeaveEvent.value = addMouseEvent(`#${id}`)
-  })
+  run()
 })
 onBeforeUnmount(() => {
-  mouseLeaveEvent.value?.()
+  stop()
 })
 </script>
 

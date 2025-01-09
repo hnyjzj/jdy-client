@@ -1,10 +1,9 @@
 // 添加鼠标移动事件
-
 export const addMouseEvent = (el: string) => {
-  const container = document?.querySelector(el) as HTMLDivElement
-  if (!container) {
-    console.error(`Element with selector "${el}" not found`)
-    return () => {}
+  let container = {} as HTMLDivElement
+  const res = {
+    run: () => {},
+    stop: () => {},
   }
   let isMouseDown = false
   let startX = 0
@@ -34,24 +33,32 @@ export const addMouseEvent = (el: string) => {
     isMouseDown = false
   }
 
-  container.addEventListener('mousedown', (e) => {
-    onMouseDown(e)
-  })
-  container.addEventListener('mouseleave', () => {
-    onMouseLeave()
-  })
-  container.addEventListener('mouseup', () => {
-    onMouseUp()
-  })
-  container.addEventListener('mousemove', (e) => {
-    onMouseMove(e)
-  })
+  res.run = () => {
+    container = document.querySelector(el) as HTMLDivElement
+    if (!container) {
+      console.error(`Element with selector "${el}" not found`)
+      return res
+    }
+    container.addEventListener('mousedown', (e) => {
+      onMouseDown(e)
+    })
+    container.addEventListener('mouseleave', () => {
+      onMouseLeave()
+    })
+    container.addEventListener('mouseup', () => {
+      onMouseUp()
+    })
+    container.addEventListener('mousemove', (e) => {
+      onMouseMove(e)
+    })
+  }
 
-  const removeEventListeners = () => {
+  res.stop = () => {
     container.removeEventListener('mousedown', onMouseDown)
     container.removeEventListener('mouseleave', onMouseLeave)
     container.removeEventListener('mouseup', onMouseUp)
     container.removeEventListener('mousemove', onMouseMove)
   }
-  return removeEventListeners
+
+  return res
 }
