@@ -18,7 +18,7 @@ const addressName = computed(() => {
           <template #body>
             <div class="flex flex-col px-4 py-[6px]">
               <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
-                <div class="color-[#666666]">
+                <div class="color-[#666666] dark:color-[#fff]">
                   Logo
                 </div>
                 <div>
@@ -28,30 +28,30 @@ const addressName = computed(() => {
             </div>
             <div class="flex flex-col px-4 py-[6px]">
               <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
-                <div class="color-[#666666] ">
+                <div class="color-[#666666] dark:color-[#fff]">
                   省市区
                 </div>
-                <div class="color-[#333333] max-w-[60%]">
+                <div class="color-[#333333] max-w-[60%] dark:color-[#fff]">
                   {{ addressName }}
                 </div>
               </div>
             </div>
             <div class="flex flex-col px-4 py-[6px]">
               <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
-                <div class="color-[#666666]">
+                <div class="color-[#666666] dark:color-[#fff]">
                   地址
                 </div>
-                <div class="color-[#333333] max-w-[60%]">
+                <div class="color-[#333333] max-w-[60%] dark:color-[#fff]">
                   {{ props.infoDetail.address }}
                 </div>
               </div>
             </div>
             <div class="flex flex-col px-4 py-[6px]">
               <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
-                <div class="color-[#666666]">
+                <div class="color-[#666666] dark:color-[#fff]">
                   联系方式
                 </div>
-                <div class="color-[#333333]">
+                <div class="color-[#333333] dark:color-[#fff]">
                   {{ props.infoDetail.contact }}
                 </div>
               </div>

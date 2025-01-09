@@ -14,7 +14,7 @@ const mode = computed({
   <div class="mb-[16px]">
     <van-switch
       v-model="mode" :style="{
-        '--van-switch-width': '4.2rem',
+        '--van-switch-width': '4.5rem',
         '--van-switch-background': '#8FB8EE',
 
       }">
@@ -30,7 +30,7 @@ const mode = computed({
       </template>
       <template #background>
         <template v-if="!mode">
-          <span class="span select-none" style="right: 2px;">浅色</span>
+          <span class="span select-none" style="right: 1px;">浅色</span>
         </template>
         <template v-else>
           <span class="span select-none" style="left: 2px;">深色</span>
@@ -40,16 +40,15 @@ const mode = computed({
   </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .span {
   position: absolute;
   top: 0;
-  font-size: 14px;
   height: 100%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0 6px;
   color: #fff;
+  padding: 0 2px;
 }
 </style>

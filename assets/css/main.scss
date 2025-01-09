@@ -1,11 +1,15 @@
 .skew {
-  --uno: 'h-[29px] relative';
+    --uno: 'h-[29px] relative';
 
-  &-right {
-    --uno: 'absolute left-[20px] w-[80%] h-[100%] bg-gradient-linear-[90deg,#1a6beb,#69a2fe]  skew-x-335 rounded-rb-8px';
-  }
+    &-right {
+        --uno: 'absolute left-[20px] w-[80%] h-[100%] bg-gradient-linear-[90deg,#1a6beb,#69a2fe] skew-x-335 rounded-rb-8px';
+    }
 
-  &-text {
-    --uno: 'line-height-[29px] absolute text-size-xl text-center  w-[80%] h-[100%]  color-[#fff] bg-gradient-linear-[90deg,#1A6BEB,#3D82F4,rgba(91,152,251,0.1)] rounded-tl-16px ';
-  }
+    &-text {
+        --uno: 'line-height-[29px] absolute text-size-xl text-center w-[80%] h-[100%] color-[#fff] bg-gradient-linear-[90deg,#1A6BEB,#3D82F4,rgba(91,152,251,0.1)] rounded-tl-16px ';
+    }
+}
+
+* {
+    --uno: 'text-[14px] line-height-[20px]';
 }
