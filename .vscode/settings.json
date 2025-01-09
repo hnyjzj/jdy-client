@@ -42,5 +42,8 @@
   "nuxtr.vueFiles.style.defaultLanguage": "scss",
   "[svg]": {
     "editor.defaultFormatter": "jock.svg"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   }
 }
