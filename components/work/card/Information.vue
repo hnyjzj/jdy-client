@@ -8,7 +8,7 @@ const props = withDefaults(defineProps<{
   rbText: '查看排行',
   marginBottom: '16px',
 })
-const mouseLeaveEvent = ref()
+const mouseLeaveEvent = ref<(() => void) | undefined>()
 const id = useId()
 onMounted(() => {
   nextTick(() => {

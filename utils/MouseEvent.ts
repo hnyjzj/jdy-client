@@ -1,7 +1,11 @@
 // 添加鼠标移动事件
 
 export const addMouseEvent = (el: string) => {
-  const container = document.querySelector(el) as HTMLDivElement
+  const container = document?.querySelector(el) as HTMLDivElement
+  if (!container) {
+    console.error(`Element with selector "${el}" not found`)
+    return () => {}
+  }
   let isMouseDown = false
   let startX = 0
   let scrollLeft = 0
