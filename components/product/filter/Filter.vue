@@ -15,7 +15,7 @@ const filter = () => {
       <div class="col-4 ">
         <slot name="company" />
       </div>
-      <div class="col-7  offset-5">
+      <div class="col-8 offset-4 ml-4">
         <product-filter-search v-model:search-key="search" />
       </div>
     </div>

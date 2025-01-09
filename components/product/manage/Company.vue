@@ -22,7 +22,7 @@ function handleSelect(id: Stores['id']) {
   <div>
     <n-dropdown trigger="hover" :options="columns" @select="handleSelect">
       <div class="py-[6px] px-[12px] bg-[#FFFFFF66] border-rd-full flex-center-row shadow-lg cursor-pointer" @click="changeStoer">
-        <div class="font-bold text-size-[14px] mr-[4px]">
+        <div class="store-name font-bold text-size-[14px] mr-[4px]">
           {{ myStore.name }}
         </div>
         <icon name="i-icon:product-toggle" size="24" />
@@ -30,3 +30,13 @@ function handleSelect(id: Stores['id']) {
     </n-dropdown>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.store-name {
+  max-width: 100px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  word-break: break-all;
+}
+</style>

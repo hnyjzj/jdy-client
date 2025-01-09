@@ -125,9 +125,19 @@ function changePageBench(bench: WorkBench) {
                       </template>
                     </div>
                     <div class="line" />
+                    <template v-if="isSetup">
+                      <button style="all: unset;">
+                        <div class="flex items-center cursor-pointer" @click="addBench(child?.id)">
+                          <icon name="i-icon:addsth" color="#666666" />
+                          <div class="text-[12px] text-[#666666] pl-1">
+                            添加栏目
+                          </div>
+                        </div>
+                      </button>
+                    </template>
                     <div class="sector">
                       <template v-for="son in child.children" :key="son.id">
-                        <div class="flex items-center cursor-pointer">
+                        <div class="flex flex-col items-center cursor-pointer">
                           <div class="relative">
                             <template v-if="son?.icon">
                               <img :src="ImageUrl(son.icon)" class="w-[32px] h-[32px]" @click="jump(son.path)">
@@ -143,16 +153,6 @@ function changePageBench(bench: WorkBench) {
                             {{ son.title }}
                           </div>
                         </div>
-                      </template>
-                      <template v-if="isSetup">
-                        <button style="all: unset;">
-                          <div class="flex items-center cursor-pointer" @click="addBench(child?.id)">
-                            <icon name="i-icon:addsth" size="26px" color="#666666" />
-                            <div class="text-[12px] text-[#666666] pl-1">
-                              添加栏目
-                            </div>
-                          </div>
-                        </button>
                       </template>
                     </div>
                   </div>
@@ -175,7 +175,7 @@ function changePageBench(bench: WorkBench) {
 }
 
 .sector {
-  --uno: 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-y-3';
+  --uno: 'grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-y-3';
 }
 
 .line {
