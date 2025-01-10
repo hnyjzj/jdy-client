@@ -75,7 +75,7 @@ const tagStyle: { [key in colors]: Tags } = {
 
 <template>
   <div
-    class="flex-start px-[8px] text-size-[14px] min-w-fit"
+    class="flex-start px-[8px] text-size-[16px] min-w-fit"
     :style="{
       backgroundColor: tagStyle[props.type].backgroundColor,
       color: tagStyle[props.type].color,

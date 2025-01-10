@@ -104,17 +104,17 @@ const process = (val: number) => {
                     <van-radio :name="item.id" icon-size="18px" />
                   </van-radio-group>
 
-                  <div class="font-size-[14px] color-[#333]">
+                  <div class="font-size-[14px] color-[#333] dark:color-[#fff]">
                     {{ item.name }}
                   </div>
                 </div>
 
                 <template v-if="item.discount">
                   <div class="flex-center-row gap-[2px] italic">
-                    <span class="color-[#FFAA04] dark:color-[#FFFFFF] text-[14px]">
+                    <span class="color-[#FFAA04] text-[14px]">
                       {{ process(item.discount) }}
                     </span>
-                    <span class="color-[#FFAA04] dark:color-[#FFFFFF] text-[14px]">
+                    <span class="color-[#FFAA04] text-[14px]">
                       折
                     </span>
                   </div>
@@ -158,13 +158,13 @@ const process = (val: number) => {
     <common-model v-model:model-value="testing" :show-ok="true" title="测试通知">
       <div class="inner">
         <div class="flex flex-col gap-[12px]">
-          <div class="font-size-[14px] color-[#333]">
+          <div class="font-size-[14px] color-[#333] dark:color-[#fff]">
             发送测试前，请确认完成以下操作：
           </div>
 
           <div class="ordered flex flex-col gap-[8px]">
             <template v-for="item in tips" :key="item.id">
-              <div class="font-size-[14px] color-[#333]">
+              <div class="font-size-[14px] color-[#333] dark:color-[#fff]">
                 {{ item.label }}
               </div>
             </template>
@@ -181,14 +181,14 @@ const process = (val: number) => {
       <div class="inner">
         <div class="flex flex-col gap-[6px]">
           <template v-for="item in warnPhrase" :key="item.id">
-            <div class="font-size-[14px] color-[#666] italic">
+            <div class="font-size-[14px] color-[#666] dark:color-[#cbcdd1] italic">
               {{ item.label }}
             </div>
           </template>
         </div>
 
         <div class="flex flex-col gap-[8px]">
-          <div class="font-size-[14px] color-[#333]">
+          <div class="font-size-[14px] color-[#333] dark:color-[#fff]">
             清零时间
           </div>
 
@@ -198,7 +198,7 @@ const process = (val: number) => {
         </div>
 
         <div class="flex flex-col gap-[8px]">
-          <div class="font-size-[14px] color-[#333]">
+          <div class="font-size-[14px] color-[#333] dark:color-[#fff]">
             门店名
           </div>
 
@@ -208,7 +208,7 @@ const process = (val: number) => {
         </div>
 
         <div class="flex flex-col gap-[8px]">
-          <div class="font-size-[14px] color-[#333]">
+          <div class="font-size-[14px] color-[#333] dark:color-[#fff]">
             联系电话
           </div>
 
@@ -218,7 +218,7 @@ const process = (val: number) => {
         </div>
 
         <div class="flex flex-col gap-[8px]">
-          <div class="font-size-[14px] color-[#333]">
+          <div class="font-size-[14px] color-[#333] dark:color-[#fff]">
             发送方式
           </div>
 
@@ -249,11 +249,11 @@ const process = (val: number) => {
   --uno: 'flex flex-col gap-[8px]';
 }
 .top {
-  --uno: 'font-size-[14px] color-[#333]';
+  --uno: 'font-size-[14px] color-[#333] dark:color-[#fff]';
 }
 
 .part {
-  --uno: 'flex flex-row justify-between items-center px-[16px] py-[16px] bg-[#fff] rounded-[8px] shadow shadow-md';
+  --uno: 'flex flex-row justify-between items-center px-[16px] py-[16px] bg-[#fff] dark:bg-[rgba(255,255,255,0.05)] rounded-[8px] shadow shadow-md';
 }
 
 .inner {
