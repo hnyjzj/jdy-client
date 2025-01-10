@@ -2,7 +2,7 @@
 // 成品列表-详情
 const props = defineProps<{
   productInfo: Product
-  filterList: ProductWhere
+  filterList: Where<Product>
   filterListToArray: FilterWhere<Product>[]
 }>()
 
