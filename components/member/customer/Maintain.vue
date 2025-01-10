@@ -2,25 +2,6 @@
 const props = defineProps<{
   data: any[]
 }>()
-
-const emits = defineEmits(['goInfo', 'delete'])
-
-const handleClick = () => {
-  emits('goInfo')
-}
-
-const handleDelete = () => {
-  emits('delete')
-}
-
-const typeMap = {
-  1: '核销',
-  2: '维修单',
-  3: '销售单',
-  4: '订金单',
-  5: '到店记录',
-  6: '回访记录',
-}
 </script>
 
 <template>
@@ -54,15 +35,6 @@ const typeMap = {
 
               <div class="item">
                 <div class="left">
-                  记录类型
-                </div>
-                <div class="right">
-                  {{ typeMap[item.type || 1] }}
-                </div>
-              </div>
-
-              <div class="item">
-                <div class="left">
                   记录内容
                 </div>
                 <div class="right">
@@ -86,19 +58,6 @@ const typeMap = {
                 <div class="right">
                   {{ item.staffPhone }}
                 </div>
-              </div>
-            </div>
-          </template>
-
-          <template #footer>
-            <div class="footer gap-[32px]" uno-lg="gap-[40px]">
-              <div class="flex flex-row gap-[24px] cursor-pointer">
-                <div class="accidental" @click="handleDelete">
-                  删除
-                </div>
-              </div>
-              <div>
-                <common-button-irregular text="会员详情" @click="handleClick" />
               </div>
             </div>
           </template>

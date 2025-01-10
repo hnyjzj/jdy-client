@@ -116,7 +116,7 @@ onUnmounted(() => {
           <n-form-item label="门店名称" path="name">
             <n-input v-model:value="addorUpdateForm.name" placeholder="请输入门店名称" round clearable />
           </n-form-item>
-          <common-area-select ref="areaRef" :border="areaError" :form="addorUpdateForm" @update-error="(val) => { areaError = val }" />
+          <common-area-select ref="areaRef" :border="areaError" :form="addorUpdateForm" @update-error="(val: boolean) => { areaError = val }" />
           <n-form-item label="地址" path="address">
             <n-input v-model:value="addorUpdateForm.address" placeholder="请输入门店地址" round clearable />
           </n-form-item>

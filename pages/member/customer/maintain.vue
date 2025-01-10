@@ -3,7 +3,7 @@ useSeoMeta({
   title: '客户维护',
 })
 
-const maintenance: CustomerMaintenance[] = [
+const maintenance: any[] = [
   {
     userInfo: {
       nickname: '张三',
