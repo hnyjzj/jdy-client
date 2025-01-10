@@ -1,21 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
-  data?: Integral[]
+  data?: any[]
 }>()
-
-const changeReason = {
-  1: '销售',
-  2: '兑换卡券',
-  3: '合并账号',
-  4: '后台调整',
-  5: '退货',
-  6: '积分清零',
-  7: '销售抵扣',
-  8: '抽奖抵扣',
-  9: '系统赠送',
-  10: '积分商城兑换礼品',
-  11: '积分商城退款',
-}
 </script>
 
 <template>
@@ -45,15 +31,6 @@ const changeReason = {
                   </div>
                   <div class="right">
                     {{ item.type }}
-                  </div>
-                </div>
-
-                <div class="item">
-                  <div class="left">
-                    变化原因
-                  </div>
-                  <div class="right">
-                    {{ changeReason[item.reason || 1] }}
                   </div>
                 </div>
 
