@@ -3,7 +3,7 @@ useSeoMeta({
   title: '积分记录',
 })
 
-const integrals: Integral[] = [
+const integrals: any[] = [
   {
     userInfo: {
       nickname: '沈易',

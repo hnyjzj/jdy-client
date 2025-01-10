@@ -23,7 +23,7 @@ const checked = ref([])
                     成品
                   </div>
                   <div>
-                    <common-avatar :wh="24" />
+                    <common-avatar :size="24" />
                   </div>
                   <div class="color-[#1B2129] text-size-[14px] line-height-[20px] ml-[8px] font-semibold">
                     123213
