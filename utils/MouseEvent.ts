@@ -39,18 +39,10 @@ export const addMouseEvent = (el: string) => {
       console.error(`Element with selector "${el}" not found`)
       return res
     }
-    container.addEventListener('mousedown', (e) => {
-      onMouseDown(e)
-    })
-    container.addEventListener('mouseleave', () => {
-      onMouseLeave()
-    })
-    container.addEventListener('mouseup', () => {
-      onMouseUp()
-    })
-    container.addEventListener('mousemove', (e) => {
-      onMouseMove(e)
-    })
+    container.addEventListener('mousedown', onMouseDown)
+    container.addEventListener('mouseleave', onMouseLeave)
+    container.addEventListener('mouseup', onMouseUp)
+    container.addEventListener('mousemove', onMouseMove)
   }
 
   res.stop = () => {
