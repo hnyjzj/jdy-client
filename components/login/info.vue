@@ -59,7 +59,7 @@ const rules = ref<Rules<AccountReq>>({
 
 <template>
   <common-form
-    v-model="form" :rules="rules" @submit="(val) => emits('submit', val)">
+    v-model="form" :rules="rules" @submit="(val:AccountReq) => emits('submit', val)">
     <template
       #phone="{
         error,

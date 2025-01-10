@@ -58,7 +58,7 @@ const rules = ref<Rules<addStaffAccount>>({
     <div class="pb-[16px]">
       <common-fold title="新增员工" from-color="#9EBAF9" to-color="#fff">
         <div class="p-[16px]">
-          <common-form v-model="formlist.account" :rules="rules" @submit="(val) => emits('submit', val)">
+          <common-form v-model="formlist.account" :rules="rules" @submit="(val: addStaffAccount) => emits('submit', val)">
             <template #phone="{ validate, error }">
               <div class="text-[14px] pb-[12px]">
                 <div class="label">
