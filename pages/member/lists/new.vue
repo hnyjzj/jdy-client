@@ -7,9 +7,15 @@ const { $toast } = useNuxtApp()
 
 const { createMember } = useMemberManage()
 
+const { getStoreList } = useStores()
+const searchPage = ref<number>(1)
+const params = { page: searchPage.value, limit: 100 } as ReqList<Stores>
+await getStoreList(params)
+
+const { storesList } = storeToRefs(useStores())
+
 const memberParams = ref<Member>({} as Member)
 
-const selectValue = ref('')
 const selectOptions = [
   {
     label: '男',
@@ -20,10 +26,6 @@ const selectOptions = [
     value: '2',
   },
 ]
-
-const selectGender = () => {
-  memberParams.value.gender = Number(selectValue) as Gender
-}
 
 const birthday = ref()
 const anniversary = ref()
@@ -54,6 +56,15 @@ const createNew = async () => {
   else {
     $toast.warning(res.message ?? '新增失败')
   }
+}
+
+const turnOptions = (list: Stores[]) => {
+  return list.map((item) => {
+    return {
+      label: item.name,
+      value: item.id,
+    }
+  })
 }
 </script>
 
@@ -112,11 +123,13 @@ const createNew = async () => {
                         性别
                       </div>
                       <n-select
-                        v-model:value="selectValue"
+                        v-model:value="memberParams.gender"
                         placeholder="请选择会员性别"
                         :options="selectOptions"
                         menu-size="large"
-                        @blur="selectGender"
+                        @blur="() => {
+                          memberParams.gender = Number(memberParams.gender) as Gender
+                        }"
                       />
                     </div>
                     <div class="secondary">
@@ -137,11 +150,11 @@ const createNew = async () => {
                         入会门店
                       </div>
                       <div class="secondary-bottom">
-                        <n-input
+                        <n-select
                           v-model:value="memberParams.store_id"
-                          size="large"
-                          round
-                          placeholder="请选择会员入会门店"
+                          placeholder="请选择入会门店"
+                          :options="turnOptions(storesList)"
+                          menu-size="large"
                         />
                       </div>
                     </div>
