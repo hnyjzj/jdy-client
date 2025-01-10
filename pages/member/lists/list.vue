@@ -69,17 +69,19 @@ const adjustment = async (id: string) => {
   memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
 }
 
+// 调整方式
 const adjustWay = ref(0)
 const afterAdjusting = (initValue: number, adjustValue: number) => {
   return adjustWay.value === 1 ? initValue + adjustValue : initValue - adjustValue
 }
 
 const showTo = ref(0)
+// 调整数量
 const capture = defineModel()
 const updateShowTo = () => {
   if (adjustWay.value !== 0 && capture.value !== undefined && capture.value !== '') {
     const adjustValue = Number(capture.value)
-    showTo.value = afterAdjusting(memberParams.value.integral, adjustValue)
+    showTo.value = afterAdjusting(memberParams.value.integral || 0, adjustValue)
   }
 }
 

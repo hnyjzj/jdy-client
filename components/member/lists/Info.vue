@@ -3,15 +3,26 @@ const props = defineProps<{
   data: Member
 }>()
 
-const genderMap = {
-  1: '男',
-  2: '女',
+const { getMemberWhere } = useMemberManage()
+await getMemberWhere()
+
+const memberParams = props.data
+
+const { filterListToArray } = storeToRefs(useMemberManage())
+
+const showInfo = filterListToArray.value
+
+const getTarget = (keyword: string, type: 'gender' | 'level') => {
+  const targetOption = showInfo?.find(p => p.name === keyword)
+  const targetPreset = targetOption?.preset
+  return targetPreset[memberParams[type]]
 }
 
-const levelDesc = {
-  1: '银卡',
-  2: '金卡',
-  3: '钻石卡',
+const processDuring = () => {
+  if (memberParams.created_at) {
+    const diffDays = Math.floor((new Date().getTime() - new Date(memberParams.created_at).getTime()) / (24 * 3600 * 1000))
+    return diffDays
+  }
 }
 </script>
 
@@ -31,7 +42,7 @@ const levelDesc = {
                     姓名
                   </div>
                   <div class="item-right">
-                    {{ props.data.name }}
+                    {{ memberParams.name }}
                   </div>
                 </div>
                 <div class="item">
@@ -39,7 +50,7 @@ const levelDesc = {
                     昵称
                   </div>
                   <div class="item-right">
-                    {{ props.data.nickname || '-- --' }}
+                    {{ memberParams.nickname || '-- --' }}
                   </div>
                 </div>
                 <div class="item">
@@ -47,7 +58,15 @@ const levelDesc = {
                     手机号
                   </div>
                   <div class="item-right">
-                    {{ props.data.phone }}
+                    {{ memberParams.phone }}
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="item-left">
+                    会员等级
+                  </div>
+                  <div class="item-right">
+                    <common-level :desc="getTarget('level', 'level')" />
                   </div>
                 </div>
                 <div class="item">
@@ -55,7 +74,7 @@ const levelDesc = {
                     生日
                   </div>
                   <div class="item-right">
-                    {{ props.data.birthday }}
+                    {{ memberParams.birthday }}
                   </div>
                 </div>
                 <div class="item">
@@ -63,7 +82,7 @@ const levelDesc = {
                     纪念日
                   </div>
                   <div class="item-right">
-                    {{ props.data.anniversary }}
+                    {{ memberParams.anniversary }}
                   </div>
                 </div>
                 <div class="item">
@@ -71,7 +90,7 @@ const levelDesc = {
                     性别
                   </div>
                   <div class="item-right">
-                    {{ genderMap[props.data.gender] }}
+                    {{ getTarget('gender', 'gender') }}
                   </div>
                 </div>
                 <div class="item">
@@ -79,8 +98,8 @@ const levelDesc = {
                     身份证号
                   </div>
                   <div class="item-right">
-                    {{ props.data.id_card
-                      ? (`${props.data.id_card.slice(0, 6)}********${props.data.id_card.slice(-4)}`)
+                    {{ memberParams.id_card
+                      ? (`${memberParams.id_card.slice(0, 6)}********${props.data.id_card.slice(-4)}`)
                       : '-- --' }}
                   </div>
                 </div>
@@ -95,7 +114,7 @@ const levelDesc = {
                   入会门店
                 </div>
                 <div class="item-right">
-                  {{ props.data.store.name || '-- --' }}
+                  {{ memberParams.store?.name || '-- --' }}
                 </div>
               </div>
               <div class="item">
@@ -103,7 +122,7 @@ const levelDesc = {
                   入会时间
                 </div>
                 <div class="item-right">
-                  {{ props.data.created_at || '-- --' }}
+                  {{ memberParams.created_at || '-- --' }}
                 </div>
               </div>
               <div class="item">
@@ -111,7 +130,7 @@ const levelDesc = {
                   常去门店
                 </div>
                 <div class="item-right">
-                  {{ props.data.store.name || '-- --' }}
+                  {{ memberParams.store?.name || '-- --' }}
                 </div>
               </div>
               <div class="item">
@@ -119,7 +138,7 @@ const levelDesc = {
                   来源
                 </div>
                 <div class="item-right">
-                  {{ props.data.store.name || '-- --' }}
+                  {{ memberParams.store?.name || '-- --' }}
                 </div>
               </div>
             </div>
@@ -136,7 +155,7 @@ const levelDesc = {
                   姓名
                 </div>
                 <div class="secondary-bottom">
-                  <common-frame :disabled-style="true" :tip="props.data.name" />
+                  <common-frame :disabled-style="true" :tip="memberParams.name" />
                 </div>
               </div>
               <div class="secondary">
@@ -144,7 +163,7 @@ const levelDesc = {
                   联系方式
                 </div>
                 <div class="secondary-bottom">
-                  <common-frame :disabled-style="true" :tip="props.data.phone" />
+                  <common-frame :disabled-style="true" :tip="memberParams.phone" />
                 </div>
               </div>
               <div class="secondary">
@@ -176,19 +195,11 @@ const levelDesc = {
                 </div>
                 <div class="item-right">
                   <span>
-                    111111111111
+                    {{ processDuring() }}
                   </span>
                   <span class="font-size-[12px] color-[#333] dark:color-[#fff]">
                     /天
                   </span>
-                </div>
-              </div>
-              <div class="item">
-                <div class="item-left">
-                  会员等级
-                </div>
-                <div class="item-right">
-                  <common-level :desc="levelDesc[props.data.level]" />
                 </div>
               </div>
               <div class="item">
@@ -204,20 +215,20 @@ const levelDesc = {
                   专属顾问
                 </div>
                 <div class="item-right">
-                  {{ props.data.consultant.nickname || '-- --' }}
+                  {{ memberParams.consultant?.nickname || '-- --' }}
                 </div>
               </div>
-            </div>
-
-            <div class="secendary flex flex-1 flex-col gap-[8px]">
               <div class="item">
                 <div class="item-left">
                   当前积分
                 </div>
                 <div class="item-right">
-                  {{ props.data.integral }}
+                  {{ memberParams.integral }}
                 </div>
               </div>
+            </div>
+
+            <div class="secendary flex flex-1 flex-col gap-[8px]">
               <div class="item">
                 <div class="item-left">
                   累计积分
@@ -232,7 +243,7 @@ const levelDesc = {
                 </div>
                 <div class="item-right">
                   <span>
-                    {{ props.data.event_count }}
+                    {{ memberParams.event_count }}
                   </span>
                   <span class="font-size-[12px] color-[#333] dark:color-[#fff]">
                     /次
@@ -245,7 +256,7 @@ const levelDesc = {
                 </div>
                 <div class="item-right">
                   <span>
-                    {{ props.data.event_count }}
+                    {{ memberParams.event_count }}
                   </span>
                   <span class="font-size-[12px] color-[#333] dark:color-[#fff]">
                     /元

@@ -8,14 +8,17 @@ const emits = defineEmits<{
   changeIntegral: [id: string]
 }>()
 
-const levelDesc = {
-  1: '银卡',
-  2: '金卡',
-  3: '钻石卡',
-}
+const { getMemberWhere } = useMemberManage()
+await getMemberWhere()
 
-const getStatusText = (status: number) => {
-  return status === 1 ? '正常' : '未审核'
+const { filterListToArray } = storeToRefs(useMemberManage())
+
+const showInfo = filterListToArray.value
+
+const getTarget = (arrs: Member, keyword: string, type: 'level' | 'status') => {
+  const targetOption = showInfo?.find(p => p.name === keyword)
+  const targetPreset = targetOption?.preset
+  return targetPreset[arrs[type]]
 }
 
 const getStatusType = (status: number) => {
@@ -33,8 +36,8 @@ const getStatusType = (status: number) => {
 
         <template #right>
           <common-tags
-            :text="getStatusText(item.status)"
-            :type="getStatusType(item.status)"
+            :text="getTarget(item, 'status', 'status')"
+            :type="getStatusType(item.status || 1)"
           />
         </template>
 
@@ -61,7 +64,7 @@ const getStatusType = (status: number) => {
                 会员等级
               </div>
               <div class="part-right">
-                <common-level :desc="levelDesc[item.level]" />
+                <common-level :desc="getTarget(item, 'level', 'level')" />
               </div>
             </div>
             <div class="part">

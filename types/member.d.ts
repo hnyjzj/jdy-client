@@ -1,5 +1,5 @@
 interface Member {
-  id?: string
+  id: string
   /**
    * 姓名
    */
