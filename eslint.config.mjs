@@ -10,6 +10,11 @@ export default withNuxt(
       },
     },
   },
+  {
+    ignores: [
+      'assets/css',
+    ],
+  },
   antfu({
     unocss: true,
     formatters: true,

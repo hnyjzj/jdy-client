@@ -75,7 +75,7 @@ const jumpRecord = () => {
 
             <div class="count flex flex-row justify-between gap-[8px]">
               <div class="flex flex-row items-center justify-start gap-[2px]">
-                <span class="font-size-[14px] color-[#333]">
+                <span class="font-size-[14px] color-[#333] dark:color-[#cdcdd1]">
                   剩余短信条数
                 </span>
                 <span class="help">
@@ -91,10 +91,10 @@ const jumpRecord = () => {
               <div class="secondary-bottom">
                 <div class="flex flex-row items-center justify-start gap-[8px]">
                   <div class="flex flex-row items-center gap-[4px]">
-                    <span class="font-size-[16px] color-[#333333]">
+                    <span class="font-size-[16px] color-[#333333] dark:color-[#fff]">
                       98
                     </span>
-                    <span class="font-size-[14px] color-[#666]">
+                    <span class="font-size-[14px] color-[#666] dark:color-[#fff]">
                       /条
                     </span>
                   </div>
@@ -170,7 +170,7 @@ const jumpRecord = () => {
 
             <template #footer>
               <div class="operation flex flex-row items-center justify-end gap-[16px] px-[16px] pb-[16px]">
-                <div class="button color-[#0068FF] hover:bg-[#F1F5FE] hover:color-[#3971F3] active:bg-[#D9E4FF]" @click="sendMessage">
+                <div class="button color-[#0068FF] dark:color-[#fff] hover:bg-[#F1F5FE] hover:color-[#3971F3] active:bg-[#D9E4FF]" @click="sendMessage">
                   发送
                 </div>
 
@@ -191,7 +191,7 @@ const jumpRecord = () => {
   --uno: 'flex flex-row items-center justify-start gap-[8px]';
 
   &-top {
-    --uno: 'font-size-[14px] color-[#333333]';
+    --uno: 'font-size-[14px] color-[#333333] dark:color-[#cdcdd1]';
   }
 }
 
@@ -199,11 +199,11 @@ const jumpRecord = () => {
   --uno: 'flex flex-row items-center justify-between gap-[16px]';
 
   .left {
-    --uno: 'font-size-[14px] color-[#333333]';
+    --uno: 'font-size-[14px] color-[#333333] dark:color-[#cdcdd1]';
   }
 
   .right {
-    --uno: 'font-size-[14px] color-[#666666]';
+    --uno: 'font-size-[14px] color-[#666666] dark:color-[#fff]';
   }
 }
 

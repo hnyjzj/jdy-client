@@ -87,7 +87,7 @@ defineExpose({
           <n-tab-pane :name="items.name" :tab="items.text">
             <div class="content">
               <template v-for="select_item in (index === 0 ? options : items.children)" :key="select_item.value">
-                <div class="province py-[6px] cursor-pointer pl-[6px]" :style="{ color: items.value === select_item.value ? '#18A058' : '' }" @click="Next(select_item as areaitem, index)">
+                <div class="province color-[#333333] dark:color-[#fff] py-[6px] cursor-pointer pl-[6px]" :style="{ color: items.value === select_item.value ? '#18A058' : '' }" @click="Next(select_item as areaitem, index)">
                   {{ select_item.text }}
                 </div>
               </template>
@@ -101,12 +101,13 @@ defineExpose({
 
 <style lang="scss" scoped>
 .area-box {
-  --uno: ' bg-[#fff] relative z-9999 rounded-16px';
+  --uno: ' bg-[#fff] dark:bg-[#000] relative z-9999 rounded-16px';
   .content {
     --uno: 'h-300px ';
     overflow-y: auto;
     .province:hover {
       background: #ececec;
+      color: #333;
       border-radius: 10px;
     }
   }
