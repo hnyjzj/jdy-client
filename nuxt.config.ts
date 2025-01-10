@@ -10,6 +10,9 @@ export default defineNuxtConfig({
   devServer: {
     port: 80,
   },
+  typescript: {
+    typeCheck: true,
+  },
   ssr: true,
   modules: [
     '@pinia/nuxt',

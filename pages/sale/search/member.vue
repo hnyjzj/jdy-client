@@ -1,22 +1,12 @@
 <script setup lang="ts">
 // 测试数据。待替换
-const memberInfo: MemberInfo = {
+const memberInfo: Partial<Member> = {
+  id: '122222',
   nickname: '懒羊羊',
   phone: '19222222222',
-  img: 'https://img.yzcdn.cn/vant/cat.jpeg',
-  email: '16000000000@qq.com',
-  receiving: {
-    address: '北京市海淀区西二旗',
-    name: '张三',
-    phone: '18888888888',
-  },
   birthday: '0000-01-01',
   gender: 1,
-  remark: '备注信息',
-  createTime: '2021-10-10 10:10:10',
   level: 3,
-  buyCount: 60,
-  isFollow: 1,
 }
 
 // 搜索会员页

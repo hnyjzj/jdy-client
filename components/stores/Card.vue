@@ -23,7 +23,7 @@ const addressName = computed(() => {
           <div class="h-full flex-col-between">
             <div
               class="py-[8px] px-[16px] bg-gradient-linear-[90deg,#E9F1FE,#95D5FB] dark:bg-gradient-linear-[90deg,#23324B01,#2A3E5F01,#70B8E8] rounded-t-[24px] flex-start text-black dark:text-[#FFF]">
-              <common-avatar :wh="32" :size="24" rounded="4px" :img="ImageUrl(item.logo)" />
+              <common-avatar :size="24" rounded="4px" :img="ImageUrl(item.logo)" />
               <div class="ml-[8px] font-semibold line-height-[20px] text-size-[14px]">
                 {{ item.name }}
               </div>
