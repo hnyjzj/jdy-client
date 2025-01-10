@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// 成品列表-详情
 const props = defineProps<{
   productInfo: Product
   filterList: Where<Product>
