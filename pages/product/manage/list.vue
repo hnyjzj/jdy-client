@@ -53,7 +53,7 @@ const create = () => {
 }
 
 function pull() {
-  getList()
+  getList(filterData.value)
 }
 
 // 上传xlsx文件数据
