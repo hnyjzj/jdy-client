@@ -14,11 +14,13 @@ const themeOverrides = {
   <div>
     <n-config-provider :theme-overrides="themeOverrides" :theme="$colorMode.value === 'light' ? null : darkTheme">
       <n-message-provider>
-        <nuxt-layout>
-          <common-layout-watermark>
-            <nuxt-page />
-          </common-layout-watermark>
-        </nuxt-layout>
+        <n-dialog-provider>
+          <nuxt-layout>
+            <common-layout-watermark>
+              <nuxt-page />
+            </common-layout-watermark>
+          </nuxt-layout>
+        </n-dialog-provider>
       </n-message-provider>
     </n-config-provider>
   </div>

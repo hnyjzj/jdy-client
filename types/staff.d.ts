@@ -1,3 +1,17 @@
+/*
+* 员工详情
+*/
+interface Staff {
+  id: string
+  phone: string
+  nickname: string
+  password: string
+  avatar: string
+  email: string
+  gender: number
+  is_disabled: boolean
+}
+
 /**
  * 添加员工请求参数
  */

@@ -1,10 +1,43 @@
 export const useStaff = defineStore('staffStore', {
   state: () => ({
+    filterList: {} as Where<Staff>,
+    staffList: [] as Staff[],
+    staffInfo: {} as Staff,
+    total: 0,
   }),
   getters: {
-
+    filterListToArray: (state) => {
+      const arr: FilterWhere<Staff>[] = []
+      for (const [_k, item] of Object.entries(state.filterList)) {
+        arr.push({
+          ...item,
+        })
+      }
+      return arr.sort((a, b) => a.sort - b.sort)
+    },
   },
   actions: {
+    // 门店列表
+    async getStaffList(req: ReqList<Staff>) {
+      if (req.page === 1) {
+        this.staffList = []
+      }
+      const { data } = await https.post<ResList<Staff>, ReqList<Staff>>('/staff/list', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.total = data.value.data.total
+        if (data.value.data.list.length > 0) {
+          this.staffList = [...this.staffList, ...data.value.data.list]
+          if (this.staffList.length === this.total) {
+            return false
+          }
+          return true
+        }
+        else {
+          // 当前页没有数据，则不进行下一页
+          return false
+        }
+      }
+    },
     /**
      * 创建员工
      */
@@ -30,6 +63,20 @@ export const useStaff = defineStore('staffStore', {
       catch (error) {
         console.error('更新失败：', error)
         throw error
+      }
+    },
+    // 获取where 条件
+    async getStaffWhere() {
+      // /staff/where
+      const { data } = await https.get<Where<Staff>, null>('/staff/where')
+      if (data.value.code === HttpCode.SUCCESS) {
+        this.filterList = data.value.data
+      }
+    },
+    async getStaffInfo(req: { id: string }) {
+      const { data } = await https.post<Staff, { id: string }>('/staff/info', req)
+      if (data.value.code === HttpCode.SUCCESS) {
+        this.staffInfo = data.value.data
       }
     },
     async uploadAvatar(req: uploadFileReq) {

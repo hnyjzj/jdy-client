@@ -208,7 +208,7 @@ const afterRead = async (file: any) => {
     </common-layout-center>
     <common-model v-model:model-value="show" :title="submitStatus === 'add' ? '新增' : '编辑'" :show-ok="true" @confirm="() => addWorkbenchform?.submit()">
       <div class="py-[16px]">
-        <common-form ref="addWorkbenchform" v-model="params" :rules="rules" @submit="(val) => submit(val)">
+        <common-form ref="addWorkbenchform" v-model="params" :rules="rules" @submit="(val: AddWorkbencheReq) => submit(val)">
           <template #title="{ label, error }">
             <div class="pb-[16px]">
               <div class="add-row">

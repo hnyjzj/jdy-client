@@ -33,7 +33,7 @@ export const useStores = defineStore('Store', {
   },
   actions: {
     // 门店列表
-    async getStoreList(req: ReqList<Stores>) {
+    async getStoreList(req: ReqList<Stores>, search?: boolean) {
       if (req.page === 1) {
         this.storesList = []
       }
@@ -42,6 +42,11 @@ export const useStores = defineStore('Store', {
         this.total = data.value.data.total
         if (data.value.data.list.length > 0) {
           this.storesList = [...this.storesList, ...data.value.data.list]
+
+          if (search) {
+            return this.storesList
+          }
+
           if (this.storesList.length === this.total) {
             return false
           }
