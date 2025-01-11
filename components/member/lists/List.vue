@@ -27,71 +27,75 @@ const getStatusType = (status: number) => {
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
-    <template v-for="(item, index) in props.info" :key="index">
-      <common-gradient :title="item.name || '--'" theme="theme">
-        <template #before>
-          <common-avatar :size="20" />
-        </template>
+  <div class="grid-12">
+    <div class="col-12 gap-[20px]" uno-lg="col-8 offset-2">
+      <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
+        <template v-for="(item, index) in props.info" :key="index">
+          <common-gradient :title="item.name || '--'" theme="theme">
+            <template #before>
+              <common-avatar :size="20" />
+            </template>
 
-        <template #right>
-          <common-tags
-            :text="getTarget(item, 'status', 'status')"
-            :type="getStatusType(item.status || 1)"
-          />
-        </template>
+            <template #right>
+              <common-tags
+                :text="getTarget(item, 'status', 'status')"
+                :type="getStatusType(item.status || 1)"
+              />
+            </template>
 
-        <template #body>
-          <div class="body">
-            <div class="part">
-              <div class="part-left">
-                会员手机
+            <template #body>
+              <div class="body">
+                <div class="part">
+                  <div class="part-left">
+                    会员手机
+                  </div>
+                  <div class="part-right">
+                    {{ item.phone }}
+                  </div>
+                </div>
+                <div class="part">
+                  <div class="part-left">
+                    专属顾问
+                  </div>
+                  <div class="part-right">
+                    {{ item.consultant_id }}
+                  </div>
+                </div>
+                <div class="part">
+                  <div class="part-left">
+                    会员等级
+                  </div>
+                  <div class="part-right">
+                    <common-level :desc="getTarget(item, 'level', 'level')" />
+                  </div>
+                </div>
+                <div class="part">
+                  <div class="part-left">
+                    入会门店
+                  </div>
+                  <div class="part-right">
+                    {{ item.store_id }}
+                  </div>
+                </div>
               </div>
-              <div class="part-right">
-                {{ item.phone }}
-              </div>
-            </div>
-            <div class="part">
-              <div class="part-left">
-                专属顾问
-              </div>
-              <div class="part-right">
-                {{ item.consultant_id }}
-              </div>
-            </div>
-            <div class="part">
-              <div class="part-left">
-                会员等级
-              </div>
-              <div class="part-right">
-                <common-level :desc="getTarget(item, 'level', 'level')" />
-              </div>
-            </div>
-            <div class="part">
-              <div class="part-left">
-                入会门店
-              </div>
-              <div class="part-right">
-                {{ item.store_id }}
-              </div>
-            </div>
-          </div>
-        </template>
+            </template>
 
-        <template #footer>
-          <div class="footer gap-[32px]" uno-lg="gap-[40px]">
-            <div class="flex flex-row gap-[24px] cursor-pointer">
-              <div class="accidental" @click="emits('changeIntegral', item.id)">
-                调整积分
+            <template #footer>
+              <div class="footer gap-[32px]" uno-lg="gap-[40px]">
+                <div class="flex flex-row gap-[24px] cursor-pointer">
+                  <div class="accidental" @click="emits('changeIntegral', item.id)">
+                    调整积分
+                  </div>
+                </div>
+                <div>
+                  <common-button-irregular text="查看详情" @click="emits('goInfo', item.id)" />
+                </div>
               </div>
-            </div>
-            <div>
-              <common-button-irregular text="查看详情" @click="emits('goInfo', item.id)" />
-            </div>
-          </div>
+            </template>
+          </common-gradient>
         </template>
-      </common-gradient>
-    </template>
+      </div>
+    </div>
   </div>
 </template>
 
