@@ -33,7 +33,7 @@ function handleSelect(id: Stores['id']) {
 
 <style lang="scss" scoped>
 .store-name {
-  max-width: 100px;
+  width: 80%;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
