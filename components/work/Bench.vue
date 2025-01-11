@@ -140,13 +140,13 @@ function changePageBench(bench: WorkBench) {
                         <div class="flex flex-col items-center cursor-pointer">
                           <div class="relative">
                             <template v-if="son?.icon">
-                              <img :src="ImageUrl(son.icon)" class="w-[32px] h-[32px]" @click="jump(son.path)">
+                              <img :src="ImageUrl(son.icon)" class="w-[32px] h-[32px]" @click="changePageBench(son)">
                             </template>
                             <template v-else>
-                              <img src="/images/sale/sales-list.png" class="w-[32px] h-[32px]" @click="jump(son.path)">
+                              <img src="/images/sale/sales-list.png" class="w-[32px] h-[32px]" @click="changePageBench(son)">
                             </template>
                             <template v-if="isSetup">
-                              <icon class="absolute top-[-2px] right-[-2px] cursor-pointer" name="i-svg:reduce" size="14px" @click="delBench(son.id)" />
+                              <icon class="absolute top-[-2px] right-[-2px] cursor-pointer" name="i-svg:reduce" size="14" @click="delBench(son.id)" />
                             </template>
                           </div>
                           <div class="son-title" @click="changePageBench(son)">
