@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { FormItemRule, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
+import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 
 const emits = defineEmits<{
   submit: []
