@@ -13,7 +13,7 @@ const emit = defineEmits<{
     <div class="flex-start ">
       <div class="cursor-pointer">
         <template v-if="!porps.userinfo?.avatar">
-          <icon name="i-svg:avatar" size="68" />
+          <icon name="i-svg:avatar" :size="68" />
         </template>
         <template v-else>
           <img :src="ImageUrl(porps.userinfo?.avatar)" class="wh-[68px] rounded-full">
@@ -29,7 +29,7 @@ const emit = defineEmits<{
       </div>
     </div>
     <div class="cursor-pointer" @click="emit('logout')">
-      <icon name="i-svg:logout" size="32" />
+      <icon name="i-svg:logout" :size="32" />
     </div>
   </div>
 </template>

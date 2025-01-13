@@ -16,8 +16,8 @@ export default defineConfig({
       },
       customizations: {
         customize(props) {
-          props.width = 'var(--size,16px)'
-          props.height = 'var(--size,16px)'
+          //   props.width = 'var(--size,16px)'
+          //   props.height = 'var(--size,16px)'
           return props
         },
       },

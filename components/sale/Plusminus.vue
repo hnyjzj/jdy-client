@@ -29,10 +29,10 @@ const handleClick = () => {
     @click="handleClick"
   >
     <template v-if="props.isAdd">
-      <icon name="i-icon:add" size="20" color="#3971F3" />
+      <icon name="i-icon:add" :size="20" color="#3971F3" />
     </template>
     <template v-else>
-      <icon name="i-icon:subtract" size="20" color="#3971F3" />
+      <icon name="i-icon:subtract" :size="20" color="#3971F3" />
     </template>
   </div>
 </template>

@@ -103,7 +103,7 @@ const uploadFile = async (file: any, onfinish?: () => void) => {
       <common-fold title="其他新增方式" from-color="#9EBAF9" to-color="#fff">
         <div class="flex-center-row py-[16px] cursor-pointer">
           <div class="wh-[40px] rounded-full flex-center-row" @click="wxwordAdd()">
-            <icon name="i-svg:qwicon" size="32" />
+            <icon name="i-svg:qwicon" :size="32" />
           </div>
         </div>
       </common-fold>

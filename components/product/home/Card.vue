@@ -6,7 +6,7 @@ const props = defineProps<{ img: string, text: string, num: number }>()
   <div class="">
     <div class="flex-start">
       <div>
-        <icon :name="props.img" size="30" />
+        <icon :name="props.img" :size="30" />
       </div>
       <div>
         <div class="color-[#428EFF] dark:color-[#fff] text-size-xs line-height-[24px]">
