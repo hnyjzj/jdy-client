@@ -43,7 +43,7 @@ export const useStaff = defineStore('staffStore', {
      */
     async createStaff(req: addStaffReq) {
       try {
-        const { data } = await https.post <ResList<Staff>, addStaffReq>('/staff/create', req)
+        const { data } = await https.post<ResList<Staff>, addStaffReq>('/staff/create', req)
 
         return data.value
       }
@@ -80,7 +80,7 @@ export const useStaff = defineStore('staffStore', {
       }
     },
     async uploadAvatar(req: { avatar: File | undefined }) {
-      return await https.upload<{ url: string }, { avatar: File | undefined }>('/upload/avatar', req)
+      return await https.upload<UploadRes, { avatar: File | undefined }>('/upload/avatar', req)
     },
 
   },

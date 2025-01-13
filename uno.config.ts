@@ -14,13 +14,6 @@ export default defineConfig({
       collections: {
         ...UnocssLoader(),
       },
-      customizations: {
-        customize(props) {
-          //   props.width = 'var(--size,16px)'
-          //   props.height = 'var(--size,16px)'
-          return props
-        },
-      },
     }),
   ],
   transformers: [

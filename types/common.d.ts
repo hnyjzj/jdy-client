@@ -12,3 +12,7 @@ interface GetListReq<T = any> {
    */
   where?: T
 }
+
+interface UploadRes {
+  url: string
+}

@@ -3,8 +3,6 @@ const { staffList, filterListToArray, total, staffInfo } = storeToRefs(useStaff(
 const { getStaffWhere, getStaffList, getStaffInfo } = useStaff()
 const complate = ref(0)
 const searchKey = ref('')
-// const { getStoreList } = useStores()
-
 const show = ref<boolean>(false)
 const showModal = ref<boolean>(false)
 // 搜索条件 页码
@@ -13,8 +11,6 @@ const searchPage = ref<number>(1)
 const nomore = ref<boolean>(false)
 // 筛选请求数据
 const filterData = ref({} as StaffWhere)
-// const loading = ref(false)
-// const options = ref<Stores[]>([])
 // 获取列表
 const getList = async (where = {} as StaffWhere) => {
   if (nomore.value)
@@ -50,7 +46,6 @@ onMounted(() => {
   height.value = getHeight('header')
 })
 
-// console.log(filterListToArray.value)
 const getInfo = async (val: string) => {
   await getStaffInfo({ id: val })
   showModal.value = true

@@ -47,7 +47,7 @@ export const useWorkbenche = defineStore('workbencheStore', {
       }
     },
     async uploadIcon(req: UploadBencheReq) {
-      return await https.upload<{ url: string }, UploadBencheReq>('/upload/workbench', req)
+      return await https.upload<UploadRes, UploadBencheReq>('/upload/workbench', req)
     },
   },
 })
