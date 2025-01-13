@@ -87,7 +87,7 @@ function removeItem(item: { id: number }) {
               <van-popover
                 v-model:show="item.isPopoverVisible"
                 :actions="item.actions"
-                @select="(action) => {
+                @select="(action: any) => {
                   if (items.some(i => i !== item && i.selected === action.text)) {
                     $toast.warning('该支付方式已被选择')
                     return

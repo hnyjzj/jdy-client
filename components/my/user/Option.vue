@@ -11,7 +11,7 @@ const props = defineProps<{
         <nuxt-link :to="item.link" class="color-[#000]">
           <div class="flex-between">
             <div class="flex-center-row py-[24px]">
-              <icon :name="item.iconName" size="32" />
+              <icon :name="item.iconName" :size="32" />
               <div class="font-semibold text-[14px] line-height-[20px] ml-[8px] dark:color-[#fff]">
                 {{ item.optName }}
               </div>

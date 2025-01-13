@@ -117,7 +117,7 @@ function customRequest(e: any) {
               <div>状态</div>
               <div class="flex">
                 <div class="flex items-center">
-                  <icon name="i-svg:selected" size="16" />
+                  <icon name="i-svg:selected" :size="16" />
                   <div class="ml-1">
                     在库
                   </div>

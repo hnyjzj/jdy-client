@@ -22,11 +22,13 @@ const themeOverrides = {
       :locale="locale"
       :date-locale="dateLocale">
       <n-message-provider>
-        <nuxt-layout>
-          <common-layout-watermark>
-            <nuxt-page />
-          </common-layout-watermark>
-        </nuxt-layout>
+        <n-dialog-provider>
+          <nuxt-layout>
+            <common-layout-watermark>
+              <nuxt-page />
+            </common-layout-watermark>
+          </nuxt-layout>
+        </n-dialog-provider>
       </n-message-provider>
     </n-config-provider>
   </div>

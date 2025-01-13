@@ -170,7 +170,7 @@ const userJump = (id: string) => {
                   <van-popover
                     v-model:show="item.isPopoverVisible"
                     :actions="item.actions"
-                    @select="(action) => {
+                    @select="(action: any) => {
                       item.selected = action.text
                       adjustWay = action.id
                       updateShowTo()

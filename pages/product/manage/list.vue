@@ -198,7 +198,7 @@ function edit(code: string) {
         <div class="uploadInp cursor-pointer">
           <div>请添加文件</div>
           <div class="uploadInp-right">
-            <icon name="i-svg:upload" size="16" color="#666" />
+            <icon name="i-svg:upload" :size="16" color="#666" />
             <div class="ml-2">
               点击上传
             </div>

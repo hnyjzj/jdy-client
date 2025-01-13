@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<{
         <slot name="rt">
           <div class="super">
             <div class="bg" :style="{ rotate: deg }">
-              <icon name="i-svg:crosspath" size="18" />
+              <icon name="i-svg:crosspath" :size="18" />
             </div>
           </div>
         </slot>

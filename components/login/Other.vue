@@ -23,7 +23,7 @@ const emits = defineEmits<{
     <template v-for="(item, index) in props.list" :key="index">
       <div class="flex-center-row py-[24px] cursor-pointer">
         <div class="wh-[32px] rounded-full flex-center-row" @click="emits('other', item.name)">
-          <icon :name="item.icon" size="32" />
+          <icon :name="item.icon" :size="32" />
         </div>
       </div>
     </template>

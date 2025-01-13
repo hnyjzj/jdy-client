@@ -8,10 +8,10 @@ const props = withDefaults(defineProps<{
   /**
    * 尺寸
    */
-  size?: string
+  size?: number
 }>(), {
   rounded: '60px',
-  size: '20px',
+  size: 20,
 })
 const checked = defineModel({ type: Boolean, default: false })
 

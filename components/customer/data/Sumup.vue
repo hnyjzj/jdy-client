@@ -30,7 +30,7 @@ const actions = [
               <div class="mr-1">
                 今日
               </div>
-              <icon name="jdy:down" size="10" color="#666" />
+              <icon name="jdy:down" :size="10" color="#666" />
             </div>
           </template>
         </van-popover>
