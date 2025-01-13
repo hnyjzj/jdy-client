@@ -42,8 +42,11 @@ const handleConfirm = () => {
 
   })
 }
-// 提示是否添加成功
-const addStatus = (res: addStaffRes) => {
+
+// 手动新增员工
+const addStaff = async () => {
+  formlist.value.platform = 'account'
+  const res = await createStaff(formlist.value)
   if (res.code === HttpCode.SUCCESS) {
     message.success('创建成功')
     handleConfirm()
@@ -51,13 +54,6 @@ const addStatus = (res: addStaffRes) => {
   else {
     message.error(res.message)
   }
-}
-
-// 手动新增员工
-const addStaff = async () => {
-  formlist.value.platform = 'account'
-  const res = await createStaff(formlist.value)
-  addStatus(res)
 }
 // /jssdk/wxwork  企业微信授权添加
 const wxwordAdd = async () => {
@@ -75,7 +71,13 @@ const wxwordAdd = async () => {
     })
   }
   const res = await createStaff(params.value)
-  addStatus(res)
+  if (res.code === HttpCode.SUCCESS) {
+    message.success('创建成功')
+    handleConfirm()
+  }
+  else {
+    message.error(res.message)
+  }
 }
 const uploadFile = async (file: any, onfinish?: () => void) => {
   try {

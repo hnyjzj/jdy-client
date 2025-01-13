@@ -86,7 +86,7 @@ export const useStores = defineStore('Store', {
       }
     },
     async uploadImage(req: uploadLogoFileReq) {
-      return await https.upload<uploadFileRes, uploadLogoFileReq>('/upload/store', req)
+      return await https.upload<{ url: string }, uploadLogoFileReq>('/upload/store', req)
     },
 
     // 重置新增表单

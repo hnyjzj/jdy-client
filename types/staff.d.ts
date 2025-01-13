@@ -1,22 +1,22 @@
+type StaffWhere = Partial<Staff>
 /*
 * 员工详情
 */
 interface Staff {
-  id: string
+  id?: string
   phone: string
   nickname: string
   password: string
   avatar: string
   email: string
   gender: number
-  is_disabled: boolean
+  is_disabled?: boolean
 }
-
 /**
  * 添加员工请求参数
  */
 interface addStaffReq {
-  account?: addStaffAccount
+  account?: Staff
   platform: string
   wxwork?: wxUserid
 }
@@ -31,54 +31,15 @@ interface wxUserid {
  */
 interface addStaffForm {
   platform: string
-  account: addStaffAccount
-}
-/**
- * 添加员工表单
- */
-interface addStaffAccount {
-  phone: string
-  nickname: string
-  password: string
-  avatar: string
-  email: string
-  gender: number
-}
-/**
- * 添加员工返回
- */
-interface addStaffRes {
-  code: number
-  message: string
+  account: Staff
 }
 
 interface updateStaffReq {
   platform: 'account' | 'wxwork'
-  account?: addStaffAccount
+  account?: Staff
   wxwork?: { code: string }
-}
-
-interface updateStaffRes {
-
-}
-
-interface FormReq {
-  username: string
-  avatar: string
-  nickname: string
-  phone: string
-  email: string
-  gender: number
-  password: string
 }
 interface fileListArr {
   url: string
   isImage: true
-}
-
-interface uploadFileRes {
-  url: string
-}
-interface uploadFileReq {
-  avatar: File | undefined
 }

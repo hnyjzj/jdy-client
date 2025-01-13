@@ -43,7 +43,7 @@ export const useStaff = defineStore('staffStore', {
      */
     async createStaff(req: addStaffReq) {
       try {
-        const { data } = await https.post<addStaffRes, addStaffReq>('/staff/create', req)
+        const { data } = await https.post <ResList<Staff>, addStaffReq>('/staff/create', req)
 
         return data.value
       }
@@ -56,7 +56,7 @@ export const useStaff = defineStore('staffStore', {
     // /staff/update
     async updateStaff(req: updateStaffReq) {
       try {
-        const { data } = await https.put<updateStaffRes, updateStaffReq>('/staff/update', req)
+        const { data } = await https.put<ResList<Staff>, updateStaffReq>('/staff/update', req)
 
         return data.value
       }
@@ -79,8 +79,8 @@ export const useStaff = defineStore('staffStore', {
         this.staffInfo = data.value.data
       }
     },
-    async uploadAvatar(req: uploadFileReq) {
-      return await https.upload<uploadFileRes, uploadFileReq>('/upload/avatar', req)
+    async uploadAvatar(req: { avatar: File | undefined }) {
+      return await https.upload<{ url: string }, { avatar: File | undefined }>('/upload/avatar', req)
     },
 
   },

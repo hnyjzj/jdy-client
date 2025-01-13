@@ -12,11 +12,11 @@ const searchPage = ref<number>(1)
 // 是否有更多数据
 const nomore = ref<boolean>(false)
 // 筛选请求数据
-const filterData = ref({} as Partial<Staff>)
+const filterData = ref({} as StaffWhere)
 // const loading = ref(false)
 // const options = ref<Stores[]>([])
 // 获取列表
-const getList = async (where = {} as Partial<Staff>) => {
+const getList = async (where = {} as StaffWhere) => {
   if (nomore.value)
     return
   const params = { page: searchPage.value, limit: 12 } as ReqList<Staff>
@@ -28,7 +28,7 @@ const getList = async (where = {} as Partial<Staff>) => {
 }
 
 // 筛选列表
-const submitWhere = async (f: Partial<Staff>) => {
+const submitWhere = async (f: StaffWhere) => {
   filterData.value = f
   staffList.value = []
   nomore.value = false

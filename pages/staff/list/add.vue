@@ -15,21 +15,16 @@ const formlist = ref<addStaffForm>({
 const { useWxWork } = useWxworkStore()
 const { createStaff } = useStaff()
 
-// 提示是否添加成功
-const addStatus = (res: addStaffRes) => {
+// 手动新增员工
+const addStaff = async () => {
+  formlist.value.platform = 'account'
+  const res = await createStaff(formlist.value)
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
   }
   else {
     $toast.error(res.message)
   }
-}
-
-// 手动新增员工
-const addStaff = async () => {
-  formlist.value.platform = 'account'
-  const res = await createStaff(formlist.value)
-  addStatus(res)
 }
 // /jssdk/wxwork  企业微信授权添加
 const wxwordAdd = async () => {
@@ -47,7 +42,12 @@ const wxwordAdd = async () => {
     })
   }
   const res = await createStaff(params.value)
-  addStatus(res)
+  if (res.code === HttpCode.SUCCESS) {
+    $toast.success('创建成功')
+  }
+  else {
+    $toast.error(res.message)
+  }
 }
 </script>
 
