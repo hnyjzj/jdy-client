@@ -2,7 +2,6 @@ export const useEnter = defineStore('EnterStore', {
   state: (): {
     EnterList: Enter[]
     filterList: Where<Enter>
-    EnterInfo: Enter
     EnterListTotal: number
     /**
      * 排序后的筛选条件列表
@@ -11,7 +10,6 @@ export const useEnter = defineStore('EnterStore', {
   } => ({
     filterList: {} as Where<Enter>,
     EnterList: [],
-    EnterInfo: {} as Enter,
     EnterListTotal: 0,
     EnterToArray: {} as FilterWhere<Enter>[],
   }),
@@ -40,24 +38,12 @@ export const useEnter = defineStore('EnterStore', {
       try {
         const { data } = await https.get<Where<Enter>>('/product/enter/where')
         if (data.value?.code === HttpCode.SUCCESS) {
-          console.log(data.value.data)
-
           this.filterList = data.value.data
           this.EnterToArray = sortArr(this.filterList)
         }
       }
       catch (error) {
         throw new Error(`筛选失败: ${error || '未知错误'}`)
-      }
-    },
-    // 更新货品
-    async updateEnterInfo(pamars: Partial<Enter>) {
-      try {
-        const { data } = await https.put<Enter, Partial<Enter>>('/Enter/update', pamars)
-        return data.value
-      }
-      catch (error) {
-        throw new Error(`更新失败: ${error || '未知错误'}`)
       }
     },
   },

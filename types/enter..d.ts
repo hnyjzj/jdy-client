@@ -11,6 +11,6 @@ interface Enter {
   ip: string
   operator: null
   operator_id: string
-  products: null
+  products: Product
   updated_at: string
 }

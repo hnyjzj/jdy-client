@@ -31,7 +31,7 @@ async function getList(where = {} as Partial<Enter>) {
   else {
     isCanPull.value = false
   }
-  return res as any
+  return res
 }
 
 await getList()
@@ -63,11 +63,11 @@ async function submitWhere(f: Partial<Enter>) {
   isCanPull.value = true
   EnterList.value = []
   const res = await getList(filterData.value)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     isFilter.value = false
     return $toast.success('筛选成功')
   }
-  $toast.error(res.message ?? '筛选失败')
+  $toast.error(res?.message ?? '筛选失败')
 }
 
 /** 编辑 */
