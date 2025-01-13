@@ -56,6 +56,9 @@ const openFilter = () => {
 const height = ref<number | undefined>(0)
 onMounted(() => {
   height.value = getHeight('header')
+  if (height.value) {
+    height.value = height.value + 40
+  }
 })
 function pull() {
   getList()
@@ -116,7 +119,7 @@ const userJump = (id: string) => {
 </script>
 
 <template>
-  <div class="grid-12">
+  <div class="overflow-hidden">
     <common-model v-model:model-value="show" :show-ok="true" title="调整积分" @confirm="updateIntegral">
       <div class="pb-[16px] flex flex-col gap-[16px]">
         <div class="flex flex-row justify-between gap-[16px]">
@@ -218,21 +221,17 @@ const userJump = (id: string) => {
 
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
 
-    <div class="flex flex-col col-12" uno-lg="col-8 offset-2">
-      <div>
-        <product-filter
-          v-model:id="complate" v-model:search="searchKey" :product-list-total="memberListTotal" @filter="openFilter">
-          <template #company>
-            <product-manage-company />
-          </template>
-        </product-filter>
-      </div>
+    <div id="header">
+      <product-filter
+        v-model:id="complate" v-model:search="searchKey" :product-list-total="memberListTotal" @filter="openFilter">
+        <template #company>
+          <product-manage-company />
+        </template>
+      </product-filter>
+    </div>
 
-      <common-list-pull
-        :distance="height"
-        :nomore="!nomore"
-        @pull="pull"
-      >
+    <div class="pb-10 overflow-hidden">
+      <common-list-pull :distance="height" :nomore="!nomore" @pull="pull">
         <member-lists-list :info="memberList" @go-info="userJump" @change-integral="adjustment" />
       </common-list-pull>
     </div>

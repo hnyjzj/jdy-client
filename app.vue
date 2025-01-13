@@ -1,7 +1,11 @@
 <script setup lang="ts">
-import { darkTheme } from 'naive-ui'
+import { darkTheme, dateZhCN, zhCN } from 'naive-ui'
 
 const { $colorMode } = useNuxtApp()
+
+const locale = zhCN
+
+const dateLocale = dateZhCN
 
 const themeOverrides = {
   Drawer: {
@@ -12,7 +16,11 @@ const themeOverrides = {
 
 <template>
   <div>
-    <n-config-provider :theme-overrides="themeOverrides" :theme="$colorMode.value === 'light' ? null : darkTheme">
+    <n-config-provider
+      :theme-overrides="themeOverrides"
+      :theme="$colorMode.value === 'light' ? null : darkTheme"
+      :locale="locale"
+      :date-locale="dateLocale">
       <n-message-provider>
         <n-dialog-provider>
           <nuxt-layout>
