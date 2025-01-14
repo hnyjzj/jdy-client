@@ -27,10 +27,6 @@ const props = withDefaults(defineProps<{
    */
   bold?: boolean
   /**
-   * 标题颜色
-   */
-  textColor?: string
-  /**
    * 是否展示折叠图标
    */
   foldable?: boolean
@@ -76,11 +72,10 @@ const themeProcess = () => {
         <slot name="before" />
 
         <div
-          class="font-black text-[16px] dark:color-[#fff]"
+          class="text-[16px] text-[#333] dark:text-[#FFF]"
           :style="{
             fontStyle: props.italic ? 'italic' : 'normal',
             fontWeight: props.bold ? 'bold' : 'normal',
-            color: props.textColor,
           }"
         >
           {{ props.title }}
