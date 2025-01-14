@@ -164,11 +164,4 @@ textarea::placeholder {
 textarea:focus {
   --uno: 'border border-solid border-[1px] border-[#3971f3] outline-[none]';
 }
-
-.select-item {
-  ::v-deep(.n-button .n-button--default-type .n-button--medium-type) {
-    // --n-text-color-hover: #3971f3;
-    // --n-border-hover: #3971f3;
-  }
-}
 </style>
