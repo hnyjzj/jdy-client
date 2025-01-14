@@ -3,17 +3,26 @@ const props = defineProps<{
   goodinfo: any[]
 }>()
 
-const actions = [
-  { text: '微信' },
-  { text: '支付宝' },
-  { text: '现金' },
+const { $toast } = useNuxtApp()
+
+const options = [
+  {
+    label: '支付宝',
+    value: '支付宝',
+  },
+  {
+    label: '微信',
+    value: '微信',
+  },
+  {
+    label: '银联',
+    value: '银联',
+  },
 ]
 
-const getInitialItems = () => [{ id: 1, isPopoverVisible: false, actions, selected: '' }]
+const getInitialItems = () => [{ id: 1, multiple: '支付信息', isPopoverVisible: false, options, selected: '' }]
 const items = ref(getInitialItems())
 let id = items.value.length + 1
-
-const { $toast } = useNuxtApp()
 
 const insertItem = () => {
   if (items.value.length >= 11) {
@@ -21,7 +30,7 @@ const insertItem = () => {
     return
   }
   // 添加新的支付信息栏并初始化状态
-  items.value.push({ id: id++, isPopoverVisible: false, actions, selected: '' })
+  items.value.push({ id: id++, multiple: '支付信息', isPopoverVisible: false, options, selected: '' })
 }
 
 function removeItem(item: { id: number }) {
@@ -83,28 +92,20 @@ function removeItem(item: { id: number }) {
       <div class="flex flex-col gap-[12px]">
         <TransitionGroup name="operation">
           <template v-for="item in items" :key="item.id">
-            <div class="flex flex-row items-end gap-[12px]">
-              <van-popover
-                v-model:show="item.isPopoverVisible"
-                :actions="item.actions"
-                @select="(action: any) => {
-                  if (items.some(i => i !== item && i.selected === action.text)) {
-                    $toast.warning('该支付方式已被选择')
-                    return
-                  }
-                  item.selected = action.text
-                }">
-                <template #reference>
-                  <div class="refer">
-                    <div class="row-left color-[#333] dark:color-[#fff] font-size-[14px] text-nowrap">
-                      {{ item.selected || '支付方式' }}
-                    </div>
-                    <div class="row-right">
-                      <van-icon name="arrow-down" color="#333" />
-                    </div>
-                  </div>
-                </template>
-              </van-popover>
+            <div class="flex flex-row items-end items-center gap-[12px]">
+              <div class="select-item">
+                <n-popselect
+                  v-model:value="item.multiple"
+                  :options="item.options"
+                  size="medium"
+                  scrollable
+                >
+                  <n-button style="margin-right: 8px">
+                    {{ item.multiple }}
+                  </n-button>
+                </n-popselect>
+              </div>
+
               <common-frame tip="金额" uno-lg="flex-1" uno-md="flex-1" />
               <template v-if="item.id === 1">
                 <sale-plusminus
@@ -122,6 +123,21 @@ function removeItem(item: { id: number }) {
     </div>
   </common-fold>
 </template>
+
+<style>
+.n-button {
+  border-radius: 60px;
+  height: 42px;
+}
+
+.n-border-hover {
+  border-color: #3971f3;
+}
+
+.n-border-focus {
+  border-color: #3971f3;
+}
+</style>
 
 <style lang="scss" scoped>
 .refer {
@@ -147,5 +163,12 @@ textarea::placeholder {
 
 textarea:focus {
   --uno: 'border border-solid border-[1px] border-[#3971f3] outline-[none]';
+}
+
+.select-item {
+  ::v-deep(.n-button .n-button--default-type .n-button--medium-type) {
+    // --n-text-color-hover: #3971f3;
+    // --n-border-hover: #3971f3;
+  }
 }
 </style>
