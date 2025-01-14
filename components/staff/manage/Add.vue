@@ -131,7 +131,7 @@ const beforeUpload = (data: any) => {
               </n-radio-group>
             </n-form-item>
             <n-form-item
-              label="logo">
+              label="头像">
               <n-upload
                 action="#"
                 :custom-request="customRequest"
