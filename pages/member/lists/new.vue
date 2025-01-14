@@ -1,11 +1,22 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: '新增会员',
-})
-
 const { $toast } = useNuxtApp()
 
-const { createMember } = useMemberManage()
+const route = useRoute()
+
+const guideTxt = () => {
+  if (route.query.id) {
+    return '编辑'
+  }
+  else {
+    return '新增'
+  }
+}
+useSeoMeta({
+  title: () => `${guideTxt()}会员`,
+})
+
+const { createMember, getMemberInfo, updateMemberInfo } = useMemberManage()
+const { memberInfo } = storeToRefs(useMemberManage())
 
 const { getStoreList } = useStores()
 const searchPage = ref<number>(1)
@@ -43,20 +54,44 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
   }
 }
 
-const backtrack = () => {
-  jump('/work/table')
+// 编辑会员信息
+async function getInfo() {
+  if (route.query.id) {
+    await getMemberInfo(route.query.id as string)
+    memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
+  }
 }
 
-const createNew = async () => {
-  const res = await createMember(memberParams.value)
-  if (res.code === HttpCode.SUCCESS) {
-    $toast.success('新增成功')
-    backtrack()
-  }
-  else {
-    $toast.warning(res.message ?? '新增失败')
+await getInfo()
+
+const conductEditDate = () => {
+  if (route.query.id) {
+    const birthdayDate = new Date(memberParams.value.birthday)
+    const birthdayFormattedDate = birthdayDate.getTime()
+
+    const anniversaryDate = new Date(memberParams.value.anniversary)
+    const anniversaryFormattedDate = anniversaryDate.getTime()
+
+    birthday.value = birthdayFormattedDate
+    anniversary.value = anniversaryFormattedDate
   }
 }
+
+// 若是编辑用户信息的话，则转换已有的生日和纪念日信息格式
+onMounted(() => {
+  conductEditDate()
+})
+
+const showGender = () => {
+  if (memberParams.value.gender === 1) {
+    return '男'
+  }
+  else if (memberParams.value.gender === 2) {
+    return '女'
+  }
+}
+
+const showToUser = ref(showGender())
 
 const turnOptions = (list: Stores[]) => {
   return list.map((item) => {
@@ -65,6 +100,34 @@ const turnOptions = (list: Stores[]) => {
       value: item.id,
     }
   })
+}
+
+const backtrack = () => {
+  const { back } = useRouter()
+  back()
+}
+
+const execute = async () => {
+  if (route.query.id) {
+    const res = await updateMemberInfo(memberParams.value)
+    if (res.code === HttpCode.SUCCESS) {
+      $toast.success('编辑成功')
+      backtrack()
+    }
+    else {
+      $toast.warning(res.message ?? '编辑失败')
+    }
+  }
+  else {
+    const res = await createMember(memberParams.value)
+    if (res.code === HttpCode.SUCCESS) {
+      $toast.success('新增成功')
+      backtrack()
+    }
+    else {
+      $toast.warning(res.message ?? '新增失败')
+    }
+  }
 }
 </script>
 
@@ -123,12 +186,12 @@ const turnOptions = (list: Stores[]) => {
                         性别
                       </div>
                       <n-select
-                        v-model:value="memberParams.gender"
+                        v-model:value="showToUser"
                         placeholder="请选择会员性别"
                         :options="selectOptions"
                         menu-size="large"
                         @blur="() => {
-                          memberParams.gender = Number(memberParams.gender) as Gender
+                          memberParams.gender = Number(showToUser) as Gender
                         }"
                       />
                     </div>
@@ -219,7 +282,7 @@ const turnOptions = (list: Stores[]) => {
       </div>
     </div>
     <div class="h-[80px]">
-      <common-button-bottom confirm-text="确认新增" cancel-text="取消" @confirm="createNew" @cancel="backtrack" />
+      <common-button-bottom :confirm-text="`确认${guideTxt()}`" cancel-text="取消" @confirm="execute" @cancel="backtrack" />
     </div>
   </div>
 </template>

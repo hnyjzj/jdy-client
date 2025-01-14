@@ -3,6 +3,10 @@ const props = defineProps<{
   data: Member
 }>()
 
+const emit = defineEmits<{
+  goEdit: [id: string]
+}>()
+
 const { getMemberWhere } = useMemberManage()
 await getMemberWhere()
 
@@ -108,7 +112,7 @@ const processDuring = () => {
 
             <div class="h-0.4 bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
 
-            <div class="secendary flex flex-1 flex-col gap-[8px] px-[80px]">
+            <div class="secendary flex flex-1 flex-col gap-[8px] pl-[80px]">
               <div class="item">
                 <div class="item-left">
                   入会门店
@@ -270,7 +274,7 @@ const processDuring = () => {
     </div>
   </div>
   <div class="h-[80px]">
-    <common-button-bottom confirm-text="编辑" cancel-text="返回" />
+    <common-button-bottom confirm-text="编辑" cancel-text="返回" @confirm="() => emit('goEdit', memberParams.id)" />
   </div>
 </template>
 

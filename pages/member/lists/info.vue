@@ -18,11 +18,15 @@ async function getInfo() {
 }
 
 await getInfo()
+
+const goEdit = (id: string) => {
+  jump('/member/lists/new', { id })
+}
 </script>
 
 <template>
   <div>
-    <member-lists-info :data="memberInfo" />
+    <member-lists-info :data="memberInfo" @go-edit="goEdit(memberParams.id)" />
   </div>
 </template>
 
