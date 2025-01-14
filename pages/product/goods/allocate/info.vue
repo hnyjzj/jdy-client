@@ -1,12 +1,15 @@
 <script setup lang="ts">
-const { getAllocateInfo, confirmAllcate, cancelAllcate, finishAllcate, remove } = useAllocate()
+const { getAllocateInfo, confirmAllcate, cancelAllcate, finishAllcate, remove, add } = useAllocate()
 const { allocateInfo, filterList } = storeToRefs(useAllocate())
 useSeoMeta({
   title: '调拨单详情',
 })
 const route = useRoute()
 const { $toast } = useNuxtApp()
-
+/** 添加货品弹窗显隐 */
+const isAddModel = ref(false)
+/** 添加货品条码 */
+const pCode = ref()
 if (route.query.id) {
   await getAllocateInfo(route.query.id as string)
 }
@@ -53,6 +56,21 @@ async function finish() {
 /** 删除产品 */
 async function delProduct(code: Product['code']) {
   const res = await remove(allocateInfo.value?.id, code)
+  if (res.code === HttpCode.SUCCESS) {
+    await getAllocateInfo(route.query.id as string)
+    $toast.success('删除成功')
+  }
+  else {
+    $toast.error(res.message ?? '删除失败')
+  }
+}
+
+function create() {
+  isAddModel.value = true
+}
+/** 添加产品 */
+async function addProduct() {
+  const res = await add(allocateInfo.value?.id, pCode.value)
   if (res.code === HttpCode.SUCCESS) {
     await getAllocateInfo(route.query.id as string)
     $toast.success('删除成功')
@@ -204,12 +222,20 @@ async function delProduct(code: Product['code']) {
         </template>
       </div>
     </template>
+    <common-model v-model="isAddModel" title="添加" :show-ok="true" cancel-text="取消" confirm-text="确认添加" @confirm="addProduct">
+      <div class="mb-6">
+        <n-input v-model:value="pCode" placeholder="输入产品条码" round />
+      </div>
+    </common-model>
     <template v-if="allocateInfo.status === 1">
       <common-button-one text="确认调拨" @confirm="confirm" />
     </template>
     <template v-if="allocateInfo.status === 2">
       <common-button-bottom cancel-text="取消调拨" confirm-text="完成调拨" @cancel="cancel" @confirm="finish" />
     </template>
+    <div class="cursor-pointer">
+      <common-create @click="create" />
+    </div>
   </div>
 </template>
 
