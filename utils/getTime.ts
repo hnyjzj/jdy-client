@@ -15,3 +15,22 @@ export const getGreeting = () => {
     return '下午好'
   return '晚上好'
 }
+
+/**
+ *
+ * @param timestamp 时间戳
+ * @returns 日期时间
+ */
+export const formatTimestampToDateTime = (timestamp: string) => {
+  const date = new Date(timestamp)
+  // 提取日期部分
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0') // 月份从 0 开始
+  const day = String(date.getDate()).padStart(2, '0')
+  // 提取时间部分
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  const seconds = String(date.getSeconds()).padStart(2, '0')
+  // 拼接为 YYYY-MM-DD HH:mm:ss 格式
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
