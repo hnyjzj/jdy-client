@@ -15,13 +15,20 @@ const demoList = ref<DemoItem[]>([
 const actlist = ref<actionList[]>([{
   icon: 'i-svg:product-target',
   title: '销售目标',
+  url: '',
 }, {
   icon: 'i-svg:product-neworder',
   title: '门店任务',
+  url: '',
 }, {
   icon: 'i-svg:product-newuser',
   title: '新增会员',
+  url: '/member/lists/new',
 }])
+
+const userJump = (url: string) => {
+  jump(url)
+}
 
 const demoListt = ref<DemoItem[]>([{ title: '销售金额', number: 100 }, { title: '销售金额', number: 100 }, { title: '销售件数', number: 100 }, { title: '旧货抵扣', number: 100 }, { title: '退货金额', number: 100 },
 ])
@@ -36,7 +43,7 @@ const demoListt = ref<DemoItem[]>([{ title: '销售金额', number: 100 }, { tit
       <work-card-greet />
       <common-dark />
       <work-card-digitalization left-title="今日销售" />
-      <work-card-action :action-list="actlist" />
+      <work-card-action :action-list="actlist" @user-jump="userJump" />
       <work-card-information left-title="今日销售" :list="demoList" />
       <work-card-information left-title="销售目标" :list="demoList" />
       <work-card-information left-title="今日销售" :list="demoList" />
