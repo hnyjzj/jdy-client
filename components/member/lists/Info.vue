@@ -7,6 +7,8 @@ const emit = defineEmits<{
   goEdit: [id: string]
 }>()
 
+const PERCH = '-- --'
+
 const { getMemberWhere } = useMemberManage()
 await getMemberWhere()
 
@@ -54,7 +56,7 @@ const processDuring = () => {
                     昵称
                   </div>
                   <div class="item-right">
-                    {{ memberParams.nickname || '-- --' }}
+                    {{ memberParams.nickname || PERCH }}
                   </div>
                 </div>
                 <div class="item">
@@ -78,7 +80,7 @@ const processDuring = () => {
                     生日
                   </div>
                   <div class="item-right">
-                    {{ memberParams.birthday }}
+                    {{ memberParams.birthday || PERCH }}
                   </div>
                 </div>
                 <div class="item">
@@ -86,7 +88,7 @@ const processDuring = () => {
                     纪念日
                   </div>
                   <div class="item-right">
-                    {{ memberParams.anniversary }}
+                    {{ memberParams.anniversary || PERCH }}
                   </div>
                 </div>
                 <div class="item">
@@ -104,7 +106,7 @@ const processDuring = () => {
                   <div class="item-right">
                     {{ memberParams.id_card
                       ? (`${memberParams.id_card.slice(0, 6)}********${props.data.id_card.slice(-4)}`)
-                      : '-- --' }}
+                      : PERCH }}
                   </div>
                 </div>
               </div>
@@ -118,7 +120,7 @@ const processDuring = () => {
                   入会门店
                 </div>
                 <div class="item-right">
-                  {{ memberParams.store?.name || '-- --' }}
+                  {{ memberParams.store?.name || PERCH }}
                 </div>
               </div>
               <div class="item">
@@ -126,7 +128,7 @@ const processDuring = () => {
                   入会时间
                 </div>
                 <div class="item-right">
-                  {{ memberParams.created_at || '-- --' }}
+                  {{ memberParams.created_at || PERCH }}
                 </div>
               </div>
               <div class="item">
@@ -134,7 +136,7 @@ const processDuring = () => {
                   常去门店
                 </div>
                 <div class="item-right">
-                  {{ memberParams.store?.name || '-- --' }}
+                  {{ memberParams.store?.name || PERCH }}
                 </div>
               </div>
               <div class="item">
@@ -142,7 +144,7 @@ const processDuring = () => {
                   来源
                 </div>
                 <div class="item-right">
-                  {{ memberParams.store?.name || '-- --' }}
+                  {{ memberParams.store?.name || PERCH }}
                 </div>
               </div>
             </div>
@@ -219,7 +221,7 @@ const processDuring = () => {
                   专属顾问
                 </div>
                 <div class="item-right">
-                  {{ memberParams.consultant?.nickname || '-- --' }}
+                  {{ memberParams.consultant?.nickname || PERCH }}
                 </div>
               </div>
               <div class="item">
