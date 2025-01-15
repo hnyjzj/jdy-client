@@ -99,6 +99,15 @@ function removeItem(item: { id: number }) {
                   :options="item.options"
                   size="medium"
                   scrollable
+                  @update:value="() => {
+                    item.selected = item.multiple
+                    if (items.some(i => i !== item && i.selected === item.multiple)) {
+                      item.multiple = '支付信息'
+                      item.selected = ''
+                      $toast.warning('该支付方式已被选择')
+                      return
+                    }
+                  }"
                 >
                   <n-button style="margin-right: 8px">
                     {{ item.multiple }}
