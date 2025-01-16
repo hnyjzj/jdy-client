@@ -2,6 +2,20 @@
 const { $toast } = useNuxtApp()
 const { getAllocate, getProductWhere } = useAllocate()
 const { allocateList, filterListToArray, filterList, allocateTotal } = storeToRefs(useAllocate())
+
+const { storesList } = storeToRefs(useStores())
+const { getStoreList } = useStores()
+
+const storeCol = ref()
+function changeStoer() {
+  storeCol.value = []
+  storesList.value.forEach((item: Stores) => {
+    storeCol.value.push({ label: item.name, value: item.id })
+  })
+}
+await getStoreList({ page: 1, limit: 100 })
+await changeStoer()
+
 const searchKey = ref('')
 const complate = ref(0)
 // 筛选框显示隐藏
@@ -50,9 +64,12 @@ const filterData = ref({} as Partial<Allocate>)
 function pull() {
   getList(filterData.value)
 }
-
+const store_id = ref()
 // 筛选列表
 async function submitWhere(f: Partial<Allocate>) {
+  if (store_id.value) {
+    f.store_id = store_id.value
+  }
   filterData.value = { ...f }
   pages.value = 1
   isCanPull.value = true
@@ -137,7 +154,18 @@ async function submitWhere(f: Partial<Allocate>) {
     <div class="cursor-pointer">
       <common-create @click="jump('/product/goods/allocate/add')" />
     </div>
-    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
+    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere">
+      <template #store_id>
+        <n-select
+          v-model:value="store_id"
+          :default-value="0 || '' || undefined || null"
+          menu-size="large"
+          fable
+          placeholder="选择调入门店"
+          :options="storeCol"
+        />
+      </template>
+    </common-filter-where>
   </div>
 </template>
 

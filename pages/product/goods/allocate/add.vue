@@ -8,11 +8,11 @@ useSeoMeta({
   title: '新增调拨单',
 })
 
-const columns = ref()
+const storeCol = ref()
 function changeStoer() {
-  columns.value = []
+  storeCol.value = []
   storesList.value.forEach((item: Stores) => {
-    columns.value.push({ label: item.name, key: item.id })
+    storeCol.value.push({ label: item.name, value: item.id })
   })
 }
 await getProductWhere()
@@ -94,17 +94,17 @@ const presetToSelect = (key: keyof AllocateReq): { label: string, value: any }[]
                     menu-size="large"
                     fable
                     placeholder="选择调出门店"
-                    :options="columns"
+                    :options="storeCol"
                   />
                 </n-form-item>
                 <n-form-item label="调入门店">
                   <n-select
-                    v-model:value="params.from_store_id"
+                    v-model:value="params.to_store_id"
                     :default-value="0 || '' || undefined || null"
                     menu-size="large"
                     fable
                     placeholder="选择调入门店"
-                    :options="columns"
+                    :options="storeCol"
                   />
                 </n-form-item>
                 <n-form-item label="调拨原因">
