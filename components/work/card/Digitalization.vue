@@ -82,4 +82,8 @@ onBeforeUnmount(() => {
 .items {
   --uno: 'col-2 flex-center-row text-center color-[#3971F3] dark:color-[#fff] flex-grow-1 flex-shrink-0 w-100px px-10px';
 }
+::-webkit-scrollbar {
+  /* 隐藏Webkit浏览器的滚动条 */
+  display: none;
+}
 </style>
