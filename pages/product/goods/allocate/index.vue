@@ -160,7 +160,7 @@ async function submitWhere(f: Partial<Allocate>) {
           v-model:value="store_id"
           :default-value="0 || '' || undefined || null"
           menu-size="large"
-          fable
+          filterable
           placeholder="选择调入门店"
           :options="storeCol"
         />

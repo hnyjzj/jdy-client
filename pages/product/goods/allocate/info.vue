@@ -19,7 +19,7 @@ if (route.query.id) {
 type ProductKey = keyof Product
 /** 汇总 */
 function sum(key: ProductKey) {
-  return allocateInfo.value?.product?.reduce((sum, item) => sum + item[key], 0)
+  return allocateInfo.value?.product?.reduce((sum, item) => sum + item[key], 0) ?? 0
 }
 
 async function cancel() {
@@ -84,8 +84,21 @@ async function addProduct() {
   }
 }
 async function scanit() {
-  const wx = await useWxWork()
-  pCode.value = wx?.scanQRCode()
+  try {
+    const wx = await useWxWork()
+    pCode.value = wx?.scanQRCode()
+    const result = await wx?.scanQRCode()
+    if (result) {
+      pCode.value = result
+    }
+    else {
+      $toast.error('扫码失败，请重试')
+    }
+  }
+  catch (error) {
+    console.error('扫码出错:', error)
+    $toast.error('扫码异常，请重试')
+  }
 }
 </script>
 
