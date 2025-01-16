@@ -89,7 +89,7 @@ function removeItem(item: { id: number }) {
         <span class="mr-[4px]">剩余未支付:</span>
         <span>00.00</span>
       </div>
-      <div class="flex flex-col gap-[12px]">
+      <div class="flex flex-col gap-[12px] w-full">
         <TransitionGroup name="operation">
           <template v-for="item in items" :key="item.id">
             <div class="flex flex-row items-end items-center gap-[12px]">
@@ -99,9 +99,11 @@ function removeItem(item: { id: number }) {
                   :options="item.options"
                   size="medium"
                   scrollable
+                  trigger="click"
                   @update:value="() => {
                     item.selected = item.multiple
-                    if (items.some(i => i !== item && i.selected === item.multiple)) {
+                    const isExist = items.some(i => i !== item && i.selected === item.multiple)
+                    if (isExist) {
                       item.multiple = '支付信息'
                       item.selected = ''
                       $toast.warning('该支付方式已被选择')
@@ -109,7 +111,7 @@ function removeItem(item: { id: number }) {
                     }
                   }"
                 >
-                  <n-button style="margin-right: 8px">
+                  <n-button style="width: auto; min-width: 100px; color: #333;">
                     {{ item.multiple }}
                   </n-button>
                 </n-popselect>
