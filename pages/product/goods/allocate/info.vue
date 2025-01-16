@@ -96,16 +96,18 @@ async function scanit() {
     }
   }
   catch (error) {
-    console.error('扫码出错:', error)
-    $toast.error('扫码异常，请重试')
+    throw new Error(`扫码失败: ${error || '未知错误'}`)
   }
 }
 </script>
 
 <template>
   <div class="storage">
-    <div class="grid-12">
+    <div class="grid-12 pt-4">
       <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
+        <div class="w-[40%]">
+          <product-manage-company />
+        </div>
         <div class="rounded-6 bg-white w-auto blur-bga top">
           <common-gradient title="基础信息">
             <template #body>
