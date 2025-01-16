@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { FormInst, FormRules } from 'naive-ui'
-
 const { createAllocate, getProductWhere } = useAllocate()
 const { filterList } = storeToRefs(useAllocate())
 const { $toast } = useNuxtApp()
