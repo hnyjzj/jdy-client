@@ -1,12 +1,11 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
 const { getAllocate, getProductWhere } = useAllocate()
-const { allocateList, filterListToArray, allocateTotal } = storeToRefs(useAllocate())
+const { allocateList, filterListToArray, filterList, allocateTotal } = storeToRefs(useAllocate())
 const searchKey = ref('')
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
-const isModel = ref(false)
 const pages = ref(1)
 const isCanPull = ref(true)
 useSeoMeta({
@@ -48,10 +47,6 @@ onMounted(() => {
 
 const filterData = ref({} as Partial<Allocate>)
 
-const create = () => {
-  isModel.value = true
-}
-
 function pull() {
   getList(filterData.value)
 }
@@ -69,11 +64,6 @@ async function submitWhere(f: Partial<Allocate>) {
   }
   $toast.error(res.message ?? '筛选失败')
 }
-
-/** 编辑 */
-function edit(code: string) {
-  jump('/product/manage/edit', { code })
-}
 </script>
 
 <template>
@@ -90,33 +80,54 @@ function edit(code: string) {
     <!-- 小卡片组件 -->
     <div class="pb-10 overflow-hidden">
       <common-list-pull :distance="height" :nomore="!isCanPull" @pull="pull">
-        <product-manage-card :list="allocateList" @edit="edit">
+        <product-manage-card :list="allocateList">
           <template #info="{ info }">
-            <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]" @click="jump('/product/goods/allocate/info', { id: info.id })">
-              <van-row justify="space-between" class="py-[4px]">
-                <van-col span="12">
-                  <div class="">
-                    所属大类
-                  </div>
-                </van-col>
-                <van-col span="12">
-                  <div class="text-align-end">
-                    {{ info.created_at }}
-                  </div>
-                </van-col>
-              </van-row>
-              <van-row justify="space-between" class="py-[4px]">
-                <van-col span="12">
-                  <div class="">
-                    材质
-                  </div>
-                </van-col>
-                <van-col span="12">
-                  <div class="text-align-end">
-                    {{ info.deleted_at }}
-                  </div>
-                </van-col>
-              </van-row>
+            <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+              <div class="flex py-[4px] justify-between">
+                <div>
+                  调拨方式
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.method?.preset[info.method] }}
+                </div>
+              </div>
+              <div class="flex py-[4px] justify-between">
+                <div>
+                  仓库类型
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.type?.preset[info.type] }}
+                </div>
+              </div>
+              <div class="flex py-[4px] justify-between">
+                <div>
+                  调拨原因
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.reason?.preset[info.reason] }}
+                </div>
+              </div>
+              <div class="flex py-[4px] justify-between">
+                <div>
+                  调拨状态
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.status?.preset[info.status] }}
+                </div>
+              </div>
+              <div class="flex py-[4px] justify-between">
+                <div>
+                  开始时间
+                </div>
+                <div class="text-align-end">
+                  {{ formatTimestampToDateTime(info.created_at) }}
+                </div>
+              </div>
+            </div>
+          </template>
+          <template #bottom="{ info }">
+            <div class="flex-end text-size-[14px]">
+              <common-button-irregular text="详情" @click="jump('/product/goods/allocate/info', { id: info.id })" />
             </div>
           </template>
         </product-manage-card>
@@ -124,7 +135,7 @@ function edit(code: string) {
     </div>
     <product-manage-bottom />
     <div class="cursor-pointer">
-      <common-create @click="create" />
+      <common-create @click="jump('/product/goods/allocate/add')" />
     </div>
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
   </div>

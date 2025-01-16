@@ -59,4 +59,37 @@ interface Allocate {
    * 0:全部 1:盘点中 2:调拨中 3:已完成 4:已取消
    */
   status: number
+  from_store_id?: string
+  to_store_id?: string
+}
+
+interface AllocateReq {
+  /**
+   * 调出门店
+   */
+  from_store_id?: string
+  /**
+   * 调拨方式
+   */
+  method: number
+  /**
+   * 调拨原因
+   */
+  reason: number
+  /**
+   * 备注
+   */
+  remark?: string
+  /**
+   * 状态
+   */
+  status?: number
+  /**
+   * 调入门店
+   */
+  to_store_id?: string
+  /**
+   * 产品类型
+   */
+  type: number
 }

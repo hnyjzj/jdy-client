@@ -21,7 +21,7 @@ export const getGreeting = () => {
  * @param timestamp 时间戳
  * @returns 日期时间
  */
-export const formatTimestampToDateTime = (timestamp: string) => {
+export const formatTimestampToDateTime = (timestamp: string | Date) => {
   const date = new Date(timestamp)
   // 提取日期部分
   const year = date.getFullYear()

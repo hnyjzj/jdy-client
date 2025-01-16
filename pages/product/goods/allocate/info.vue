@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const { getAllocateInfo, confirmAllcate, cancelAllcate, finishAllcate, remove, add } = useAllocate()
 const { allocateInfo, filterList } = storeToRefs(useAllocate())
+const { useWxWork } = useWxworkStore()
+
 useSeoMeta({
   title: '调拨单详情',
 })
@@ -74,10 +76,16 @@ async function addProduct() {
   if (res.code === HttpCode.SUCCESS) {
     await getAllocateInfo(route.query.id as string)
     $toast.success('删除成功')
+    pCode.value = ''
+    isAddModel.value = false
   }
   else {
     $toast.error(res.message ?? '删除失败')
   }
+}
+async function scanit() {
+  const wx = await useWxWork()
+  pCode.value = wx?.scanQRCode()
 }
 </script>
 
@@ -223,8 +231,9 @@ async function addProduct() {
       </div>
     </template>
     <common-model v-model="isAddModel" title="添加" :show-ok="true" cancel-text="取消" confirm-text="确认添加" @confirm="addProduct">
-      <div class="mb-6">
+      <div class="flex justify-center items-center mb-6">
         <n-input v-model:value="pCode" placeholder="输入产品条码" round />
+        <icon class="ml-2" name="i-icon:scanit" :size="18" @click="scanit" />
       </div>
     </common-model>
     <template v-if="allocateInfo.status === 1">

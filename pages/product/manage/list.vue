@@ -185,6 +185,11 @@ function edit(code: string) {
               </van-row>
             </div>
           </template>
+          <template #bottom="{ info }">
+            <div class="flex-end text-size-[14px]">
+              <common-button-irregular text="编辑" @click="edit(info.code)" />
+            </div>
+          </template>
         </product-manage-card>
       </common-list-pull>
     </div>

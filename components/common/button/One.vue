@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-  text: string
+  text?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {

@@ -10,7 +10,7 @@ export const useAllocate = defineStore('Allocate', {
   } => ({
     allocateList: [],
     allocateTotal: 0,
-    filterListToArray: {} as FilterWhere<Allocate>[],
+    filterListToArray: [] as FilterWhere<Allocate>[],
     filterList: {} as Where<Allocate>,
     allocateInfo: {} as Allocate,
   }),
@@ -108,6 +108,16 @@ export const useAllocate = defineStore('Allocate', {
       }
       catch (error) {
         throw new Error(`添加失败: ${error || '未知错误'}`)
+      }
+    },
+    /** 创建调拨单 */
+    async createAllocate(params: AllocateReq) {
+      try {
+        const { data } = await https.post<AllocateReq, any >('/product/allocate/create', params)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`创建失败: ${error || '未知错误'}`)
       }
     },
   },
