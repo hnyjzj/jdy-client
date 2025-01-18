@@ -4,14 +4,14 @@ export const useAllocate = defineStore('Allocate', {
     allocateList: Allocate[]
     /** 调拨数量 */
     allocateTotal: number
-    filterListToArray: FilterWhere<Allocate>[]
-    filterList: Where<Allocate>
+    allocateFilterListToArray: FilterWhere<Allocate>[]
+    allocateFilterList: Where<Allocate>
     allocateInfo: Allocate
   } => ({
     allocateList: [],
     allocateTotal: 0,
-    filterListToArray: [] as FilterWhere<Allocate>[],
-    filterList: {} as Where<Allocate>,
+    allocateFilterListToArray: [] as FilterWhere<Allocate>[],
+    allocateFilterList: {} as Where<Allocate>,
     allocateInfo: {} as Allocate,
   }),
   actions: {
@@ -39,8 +39,8 @@ export const useAllocate = defineStore('Allocate', {
       try {
         const { data } = await https.get<Where<Allocate>>('/product/allocate/where')
         if (data.value?.code === HttpCode.SUCCESS) {
-          this.filterList = data.value.data
-          this.filterListToArray = sortArr(data.value.data)
+          this.allocateFilterList = data.value.data
+          this.allocateFilterListToArray = sortArr(data.value.data)
         }
       }
       catch (error) {

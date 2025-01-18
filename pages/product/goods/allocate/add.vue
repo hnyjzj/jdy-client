@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const { createAllocate, getProductWhere } = useAllocate()
-const { filterList } = storeToRefs(useAllocate())
+const { allocateFilterList } = storeToRefs(useAllocate())
 const { $toast } = useNuxtApp()
 const { storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
@@ -47,7 +47,7 @@ const presetToSelect = (key: keyof AllocateReq): { label: string, value: any }[]
   if (!key)
     return []
 
-  const filter = filterList.value[key]
+  const filter = allocateFilterList.value[key]
   if (!filter)
     return []
   if (!filter.preset) {
@@ -81,23 +81,23 @@ const presetToSelect = (key: keyof AllocateReq): { label: string, value: any }[]
           <common-gradient title="新增调拨单">
             <template #body>
               <n-form :model="params">
-                <n-form-item path="method" required :label="filterList.method?.label">
+                <n-form-item path="method" required :label="allocateFilterList.method?.label">
                   <n-select
                     v-model:value="params.method"
                     :default-value="0 || '' || undefined || null"
                     menu-size="large"
-                    :placeholder="`选择${filterList.method?.label}`"
+                    :placeholder="`选择${allocateFilterList.method?.label}`"
                     :options="presetToSelect('method')"
 
                     clearable
                   />
                 </n-form-item>
-                <n-form-item path="type" required :label="filterList.type?.label">
+                <n-form-item path="type" required :label="allocateFilterList.type?.label">
                   <n-select
                     v-model:value="params.type"
                     :default-value="0 || '' || undefined || null"
                     menu-size="large"
-                    :placeholder="`选择${filterList.type?.label}`"
+                    :placeholder="`选择${allocateFilterList.type?.label}`"
                     :options="presetToSelect('type')"
                     clearable
                   />

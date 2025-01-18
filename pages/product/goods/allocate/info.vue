@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { getAllocateInfo, confirmAllcate, cancelAllcate, finishAllcate, remove, add } = useAllocate()
-const { allocateInfo, filterList } = storeToRefs(useAllocate())
+const { allocateInfo, allocateFilterList } = storeToRefs(useAllocate())
 const { useWxWork } = useWxworkStore()
 
 useSeoMeta({
@@ -142,7 +142,7 @@ async function scanit() {
                       状态
                     </div>
                     <div class="color-[#333333]">
-                      {{ filterList.status?.preset[allocateInfo.status] }}
+                      {{ allocateFilterList.status?.preset[allocateInfo.status] }}
                     </div>
                   </div>
                   <div class="h-0.5 bg-[#E6E6E8]" />
@@ -152,7 +152,7 @@ async function scanit() {
                         调拨方式
                       </div>
                       <div class="color-[#333333]">
-                        {{ filterList.method?.preset[allocateInfo.method] }}
+                        {{ allocateFilterList.method?.preset[allocateInfo.method] }}
                       </div>
                     </div>
                     <div class="flex-start gap-3 text-sm font-normal">
@@ -160,7 +160,7 @@ async function scanit() {
                         调拨原因
                       </div>
                       <div class="color-[#333333]">
-                        {{ filterList.reason?.preset[allocateInfo.reason] }}
+                        {{ allocateFilterList.reason?.preset[allocateInfo.reason] }}
                       </div>
                     </div>
                     <div class="flex-start gap-3 text-sm font-normal">
@@ -168,7 +168,7 @@ async function scanit() {
                         调拨状态
                       </div>
                       <div class="color-[#333333]">
-                        {{ filterList.status?.preset[allocateInfo.status] }}
+                        {{ allocateFilterList.status?.preset[allocateInfo.status] }}
                       </div>
                     </div>
                     <div class="flex-start gap-3 text-sm font-normal">
@@ -176,7 +176,7 @@ async function scanit() {
                         仓库类型
                       </div>
                       <div class="color-[#333333]">
-                        {{ filterList.type?.preset[allocateInfo.type] }}
+                        {{ allocateFilterList.type?.preset[allocateInfo.type] }}
                       </div>
                     </div>
                     <div class="flex-start gap-3 text-sm font-normal">

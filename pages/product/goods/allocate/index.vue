@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
 const { getAllocate, getProductWhere } = useAllocate()
-const { allocateList, filterListToArray, filterList, allocateTotal } = storeToRefs(useAllocate())
+const { allocateList, allocateFilterListToArray, allocateFilterList, allocateTotal } = storeToRefs(useAllocate())
 
 const { storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
@@ -105,7 +105,7 @@ async function submitWhere(f: Partial<Allocate>) {
                   调拨方式
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.method?.preset[info.method] }}
+                  {{ allocateFilterList.method?.preset[info.method] }}
                 </div>
               </div>
               <div class="flex py-[4px] justify-between">
@@ -113,7 +113,7 @@ async function submitWhere(f: Partial<Allocate>) {
                   仓库类型
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.type?.preset[info.type] }}
+                  {{ allocateFilterList.type?.preset[info.type] }}
                 </div>
               </div>
               <div class="flex py-[4px] justify-between">
@@ -121,7 +121,7 @@ async function submitWhere(f: Partial<Allocate>) {
                   调拨原因
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.reason?.preset[info.reason] }}
+                  {{ allocateFilterList.reason?.preset[info.reason] }}
                 </div>
               </div>
               <div class="flex py-[4px] justify-between">
@@ -129,7 +129,7 @@ async function submitWhere(f: Partial<Allocate>) {
                   调拨状态
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.status?.preset[info.status] }}
+                  {{ allocateFilterList.status?.preset[info.status] }}
                 </div>
               </div>
               <div class="flex py-[4px] justify-between">
@@ -154,7 +154,7 @@ async function submitWhere(f: Partial<Allocate>) {
     <div class="cursor-pointer">
       <common-create @click="jump('/product/goods/allocate/add')" />
     </div>
-    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere">
+    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="allocateFilterListToArray" @submit="submitWhere">
       <template #store_id>
         <n-select
           v-model:value="store_id"
