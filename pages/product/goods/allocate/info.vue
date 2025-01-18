@@ -3,6 +3,8 @@ const { getAllocateInfo, confirmAllcate, cancelAllcate, finishAllcate, remove, a
 const { allocateInfo, allocateFilterList } = storeToRefs(useAllocate())
 const { useWxWork } = useWxworkStore()
 
+const { getProductWhere } = useProductManage()
+const { filterListToArray } = storeToRefs(useProductManage())
 useSeoMeta({
   title: '调拨单详情',
 })
@@ -14,6 +16,7 @@ const isAddModel = ref(false)
 const pCode = ref()
 if (route.query.id) {
   await getAllocateInfo(route.query.id as string)
+  await getProductWhere()
 }
 
 type ProductKey = keyof Product
@@ -262,14 +265,25 @@ async function scanit() {
                   </template>
                   <template #info>
                     <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
-                      <div>
-                        <span class="key">
-                          条码
-                        </span>
-                        <span class="value ml-auto">
-                          {{ item.code }}
-                        </span>
-                      </div>
+                      <template v-for="(filter, findex) in filterListToArray" :key="findex">
+                        <template v-if="filter.show">
+                          <div class="flex">
+                            <div class="key">
+                              {{ filter.label }}
+                            </div>
+                            <template v-if="filter.input === 'select'">
+                              <div class="value">
+                                {{ filter.preset[item[filter.name]] }}
+                              </div>
+                            </template>
+                            <template v-else>
+                              <div class="value">
+                                {{ item[filter.name] }}
+                              </div>
+                            </template>
+                          </div>
+                        </template>
+                      </template>
                       <div>
                         <span class="key">
                           工艺
@@ -306,10 +320,13 @@ async function scanit() {
 </template>
 
 <style lang="scss" scoped>
-.left {
-  --uno: 'text-size-[14px] color-[#666] dark:color-[#CBCDD1]';
+.key {
+  --uno: 'text-size-[14px] color-[#666] dark:color-[#CBCDD1] mr-2';
 }
-.right {
-  --uno: 'text-size-[14px] color-[#333] dark:color-[#fff]';
+.value {
+  --uno: 'text-size-[14px] color-[#333] dark:color-[#fff] w-[60%]';
+  text-overflow: ellipsis; /* 超出显示省略号 */
+  white-space: nowrap; /* 禁止换行 */
+  overflow: hidden;
 }
 </style>

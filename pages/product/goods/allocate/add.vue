@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { createAllocate, getProductWhere } = useAllocate()
+const { createAllocate, getAllocateWhere } = useAllocate()
 const { allocateFilterList } = storeToRefs(useAllocate())
 const { $toast } = useNuxtApp()
 const { storesList } = storeToRefs(useStores())
@@ -19,7 +19,7 @@ function changeStoer() {
   })
 }
 
-await getProductWhere()
+await getAllocateWhere()
 await getStoreList({ page: 1, limit: 100 })
 await changeStoer()
 const params = ref({} as AllocateReq)

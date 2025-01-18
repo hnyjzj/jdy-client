@@ -35,7 +35,7 @@ export const useAllocate = defineStore('Allocate', {
       }
     },
     // 获取筛选列表
-    async getProductWhere() {
+    async getAllocateWhere() {
       try {
         const { data } = await https.get<Where<Allocate>>('/product/allocate/where')
         if (data.value?.code === HttpCode.SUCCESS) {

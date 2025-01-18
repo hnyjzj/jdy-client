@@ -1,11 +1,9 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { getAllocate, getProductWhere } = useAllocate()
+const { getAllocate, getAllocateWhere } = useAllocate()
 const { allocateList, allocateFilterListToArray, allocateFilterList, allocateTotal } = storeToRefs(useAllocate())
-
 const { storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
-
 const storeCol = ref()
 function changeStoer() {
   storeCol.value = []
@@ -15,7 +13,7 @@ function changeStoer() {
 }
 await getStoreList({ page: 1, limit: 100 })
 await changeStoer()
-
+await getAllocateWhere()
 const searchKey = ref('')
 const complate = ref(0)
 // 筛选框显示隐藏
@@ -48,7 +46,6 @@ async function getList(where = {} as Partial<Allocate>) {
 }
 
 await getList()
-await getProductWhere()
 
 // 获取头部高度
 const height = ref<number | undefined>(0)
