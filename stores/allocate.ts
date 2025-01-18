@@ -63,7 +63,7 @@ export const useAllocate = defineStore('Allocate', {
     /** 确认调拨 */
     async confirmAllcate(id: Allocate['id']) {
       try {
-        const { data } = await https.put<{ id: string }, any >('product/allocate/confirm', { id })
+        const { data } = await https.put<{ id: string }, any >('/product/allocate/confirm', { id })
         return data.value
       }
       catch (error) {
@@ -73,7 +73,7 @@ export const useAllocate = defineStore('Allocate', {
     /** 取消调拨 */
     async cancelAllcate(id: Allocate['id']) {
       try {
-        const { data } = await https.put<{ id: string }, any >('product/allocate/cancel', { id })
+        const { data } = await https.put<{ id: string }, any >('/product/allocate/cancel', { id })
         return data.value
       }
       catch (error) {

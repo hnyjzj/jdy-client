@@ -107,7 +107,6 @@ const presetToSelect = (key: keyof AllocateReq): { label: string, value: any }[]
                     v-model:value="params.from_store_id"
                     :default-value="0 || '' || undefined || null"
                     menu-size="large"
-                    filterable
                     placeholder="选择调出门店"
                     :options="storeCol"
                     clearable
@@ -118,7 +117,6 @@ const presetToSelect = (key: keyof AllocateReq): { label: string, value: any }[]
                     v-model:value="params.to_store_id"
                     :default-value="0 || '' || undefined || null"
                     menu-size="large"
-                    filterable
                     placeholder="选择调入门店"
                     :options="storeCol"
                     clearable

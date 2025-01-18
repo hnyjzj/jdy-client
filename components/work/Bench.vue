@@ -166,7 +166,7 @@ function changePageBench(bench: WorkBench) {
   --uno: 'text-[rgba(51,51,51,1)] font-bold text-14px';
 }
 .son-title {
-  --uno: 'text-[12px] color-[#333] font-medium dark:color-[#fff]';
+  --uno: 'text-[12px] text-center color-[#333] font-medium dark:color-[#fff]';
 }
 
 .sector {

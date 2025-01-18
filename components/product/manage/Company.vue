@@ -2,7 +2,9 @@
 const { getMyStore, switchStore } = useStores()
 const { myStoreList, myStore } = storeToRefs(useStores())
 const columns = ref()
-await getMyStore({ page: 1, limit: 20 })
+if (!myStoreList.value.length) {
+  await getMyStore({ page: 1, limit: 20 })
+}
 function changeStoer() {
   columns.value = []
   myStoreList.value.forEach((item: Stores) => {

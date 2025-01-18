@@ -189,7 +189,7 @@ const afterRead = async (file: any) => {
           </div>
         </div>
       </div>
-      <div class="px-[16px]">
+      <div class="px-[16px] pb-10">
         <!-- 工作台入口 -->
         <div class="mt-6 mb-14 col-12">
           <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="delBench" @update="updateBench" @fold="fold" @change-page="changePage" />
