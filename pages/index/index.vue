@@ -42,6 +42,18 @@ const demoListt = ref<DemoItem[]>([{ title: '销售金额', number: 100 }, { tit
       </div>
       <work-card-greet />
       <common-dark />
+      <div class="pb-[16px]">
+        <div class="blur-bgc rounded-[16px] py-[8px] px-[16px] flex-between items-center">
+          <div class="flex-1 dark:color-[#fff]">
+            郑州紫金山与二七总店联合经营店
+          </div>
+          <div class="bg-[#0068FF] py-[8px] px-[16px] rounded-[40px] color-[#fff] flex items-center w-auto">
+            <icon name="i-icon:product-toggle" :size="16" /> <div class="pl-[4px]">
+              切换门店
+            </div>
+          </div>
+        </div>
+      </div>
       <work-card-digitalization left-title="今日销售" />
       <work-card-action :action-list="actlist" @user-jump="userJump" />
       <work-card-information left-title="今日销售" :list="demoList" />

@@ -29,19 +29,19 @@ const addressName = computed(() => {
               </div>
             </div>
             <div class="flex-1 px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-              <div class="flex-between p-[4px] grid-12">
-                <div class="col-6">
+              <div class=" p-[4px] grid-12">
+                <div class="col-4">
                   省市区
                 </div>
-                <div class="text-align-end col-6">
+                <div class="text-align-end col-8">
                   {{ item.addressName }}
                 </div>
               </div>
               <div class=" p-[4px] grid-12">
-                <div class="col-6">
+                <div class="col-4">
                   地址
                 </div>
-                <div class="text-align-end col-6">
+                <div class="text-align-end col-8">
                   {{ item.address }}
                 </div>
               </div>

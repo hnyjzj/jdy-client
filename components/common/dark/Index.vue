@@ -14,7 +14,7 @@ const mode = computed({
   <div class="mb-[16px]">
     <van-switch
       v-model="mode" :style="{
-        '--van-switch-width': '4.5rem',
+        '--van-switch-width': '4.8rem',
         '--van-switch-background': '#8FB8EE',
 
       }">
@@ -30,10 +30,10 @@ const mode = computed({
       </template>
       <template #background>
         <template v-if="!mode">
-          <span class="span select-none" style="right: 1px;">浅色</span>
+          <span class="span select-none" style="right: 5px;">浅色</span>
         </template>
         <template v-else>
-          <span class="span select-none" style="left: 2px;">深色</span>
+          <span class="span select-none" style="left: 5px;">深色</span>
         </template>
       </template>
     </van-switch>
