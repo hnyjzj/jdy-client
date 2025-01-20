@@ -14,7 +14,7 @@ if (route.query.id) {
 type ProductKey = keyof Product
 /** 汇总 */
 function sum(key: ProductKey) {
-  return enterInfo.value?.products?.reduce((sum, item) => sum + item[key], 0) ?? 0
+  return enterInfo.value?.products?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
 }
 </script>
 

@@ -10,7 +10,7 @@ useSeoMeta({
 })
 /** 门店选择列表 */
 const storeCol = ref()
-function changeStoer() {
+function changeStore() {
   storeCol.value = []
   storesList.value.forEach((item: Stores) => {
     storeCol.value.push({ label: item.name, value: item.id })
@@ -18,7 +18,7 @@ function changeStoer() {
 }
 await getProductWhere()
 await getStoreList({ page: 1, limit: 100 })
-await changeStoer()
+await changeStore()
 const params = ref({} as Product)
 async function submit() {
   const res = await addEnter(params.value as Product)
@@ -68,7 +68,7 @@ const presetToSelect = (key: keyof Product): { label: string, value: any }[] => 
             <template #body>
               <n-form :model="params">
                 <template v-for="(item, index) in filterListToArray" :key="index">
-                  <n-form-item path="method" :required="item.required" :label="item.label">
+                  <n-form-item :path="item.name" :required="item.required" :label="item.label">
                     <template v-if="item.input === 'select'">
                       <n-select
                         v-model:value="params[item.name]"

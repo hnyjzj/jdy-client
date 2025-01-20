@@ -67,7 +67,7 @@ export const useEnter = defineStore('EnterStore', {
         }
       }
       catch (error) {
-        throw new Error(`新增入库失败: ${error || '未知错误'}`)
+        throw new Error(`获取入库单详情失败: ${error || '未知错误'}`)
       }
     },
   },
