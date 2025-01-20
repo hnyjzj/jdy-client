@@ -23,7 +23,7 @@ interface Member {
   /**
    * 顾问
    */
-  consultant?: Consultant
+  consultant?: Staff
   /**
    * 顾问id
    */
@@ -67,7 +67,7 @@ interface Member {
   /**
    * 入会门店
    */
-  store?: Store
+  store?: Stores
   /**
    * 入会门店id
    */
@@ -80,38 +80,6 @@ interface Member {
    * 生日
    */
   birthday: string
-}
-
-/**
- * 顾问信息
- */
-interface Consultant {
-  id: string
-  phone: string
-  nickname: string
-  avatar: string
-  email: string
-  gender: Gender
-  is_disabled: string
-  stores: string
-}
-
-/**
- * 门店信息
- */
-interface Store {
-  id: string
-  created_at: string
-  updated_at: string
-  name: string
-  address: string
-  contact: string
-  logo: string
-  sort: 0
-  province: string
-  city: string
-  district: string
-  staffs: Staff[]
 }
 
 /**
