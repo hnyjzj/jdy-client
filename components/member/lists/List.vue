@@ -8,6 +8,8 @@ const emits = defineEmits<{
   changeIntegral: [id: string]
 }>()
 
+const PERCH = '-- --'
+
 const { getMemberWhere } = useMemberManage()
 await getMemberWhere()
 
@@ -32,10 +34,6 @@ const getStatusType = (status: number) => {
       <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
         <template v-for="(item, index) in props.info" :key="index">
           <common-gradient :title="item.name || '--'" theme="theme">
-            <template #before>
-              <common-avatar :size="20" />
-            </template>
-
             <template #right>
               <common-tags
                 :text="getTarget(item, 'status', 'status')"
@@ -74,7 +72,7 @@ const getStatusType = (status: number) => {
                     入会门店
                   </div>
                   <div class="part-right">
-                    {{ item.store_id }}
+                    {{ item.store?.name || PERCH }}
                   </div>
                 </div>
               </div>
