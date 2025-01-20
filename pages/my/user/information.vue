@@ -14,9 +14,8 @@ const fileList = ref<fileListArr[]>([])
 // 其他授权方式列表
 const otherList = ref<{ name: string, icon: string }[]>([])
 // 上传参数
-const userinfoForm = ref<FormReq>({
+const userinfoForm = ref<Staff>({
   avatar: '',
-  username: '',
   nickname: '',
   phone: '',
   email: '',
@@ -35,7 +34,7 @@ userinfoForm.value = {
   gender,
 }
 
-const rules = ref<Rules<FormReq>>({
+const rules = ref<Rules<Staff>>({
   nickname: [
     {
       message: '昵称不能为空',

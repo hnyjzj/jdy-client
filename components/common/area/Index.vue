@@ -78,7 +78,7 @@ defineExpose({
           <!-- 省市区选择 -->
         </div>
         <div class="colse flex-center-row  w-[30px]  h-[30px] z-10" @click="show = false">
-          <icon name="i-icon:error" color="#666" size="24" />
+          <icon name="i-icon:error" color="#666" :size="24" />
         </div>
       </div>
       <n-tabs

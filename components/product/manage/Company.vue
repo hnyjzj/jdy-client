@@ -25,7 +25,7 @@ function handleSelect(id: Stores['id']) {
         <div class="store-name font-bold text-size-[14px] mr-[4px]">
           {{ myStore.name }}
         </div>
-        <icon name="i-icon:product-toggle" size="24" />
+        <icon name="i-icon:product-toggle" :size="24" />
       </div>
     </n-dropdown>
   </div>

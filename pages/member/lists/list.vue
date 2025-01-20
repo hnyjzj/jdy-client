@@ -116,11 +116,23 @@ async function submitWhere(f: Partial<Member>) {
 const userJump = (id: string) => {
   jump('/member/lists/info', { id })
 }
+
+const userCancel = () => {
+  show.value = false
+  adjustWay.value = 0
+  showTo.value = 0
+  capture.value = 0
+}
 </script>
 
 <template>
   <div class="overflow-hidden">
-    <common-model v-model:model-value="show" :show-ok="true" title="调整积分" @confirm="updateIntegral">
+    <common-model
+      v-model:model-value="show"
+      :show-ok="true" title="调整积分"
+      @confirm="updateIntegral"
+      @cancel="userCancel"
+    >
       <div class="pb-[16px] flex flex-col gap-[16px]">
         <div class="flex flex-row justify-between gap-[16px]">
           <div class="item flex-1">
@@ -144,12 +156,16 @@ const userJump = (id: string) => {
                 </div>
                 <template v-if="adjustWay !== 0 && capture !== undefined && capture !== ''">
                   <div class="variational">
-                    <div v-if="adjustWay === 1" class="increase color-[#2ED653]">
-                      +
-                    </div>
-                    <div v-else class="decrease color-[#FF2F2F]">
-                      -
-                    </div>
+                    <template v-if="adjustWay === 1">
+                      <div class="increase color-[#2ED653]">
+                        +
+                      </div>
+                    </template>
+                    <template v-else>
+                      <div class="decrease color-[#FF2F2F]">
+                        -
+                      </div>
+                    </template>
                     <div class="capture" :style="{ color: adjustWay === 1 ? '#2ED653' : '#FF2F2F' }">
                       {{ capture }}
                     </div>
@@ -170,7 +186,7 @@ const userJump = (id: string) => {
                   <van-popover
                     v-model:show="item.isPopoverVisible"
                     :actions="item.actions"
-                    @select="(action) => {
+                    @select="(action: any) => {
                       item.selected = action.text
                       adjustWay = action.id
                       updateShowTo()

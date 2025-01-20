@@ -2,7 +2,7 @@
 const props = defineProps<{
   name: string
   color?: string
-  size?: string | number
+  size?: number
 }>()
 
 const attrs = useAttrs()
@@ -16,7 +16,7 @@ const attrs = useAttrs()
       '--color': props.color,
       '--size': props.size ? `${props.size}px` : '16px',
     }">
-    <div :class="props.name" />
+    <div :class="props.name" class="i" />
   </div>
 </template>
 
@@ -24,5 +24,10 @@ const attrs = useAttrs()
 .icon {
   font-size: var(--size);
   color: var(--color);
+
+  .i {
+    width: var(--size);
+    height: var(--size);
+  }
 }
 </style>

@@ -8,7 +8,7 @@ export const useUser = defineStore('userStore', {
   actions: {
     async getUserInfo() {
       try {
-        const { data } = await https.get<UserInfo, null>('/staff/info', null)
+        const { data } = await https.get<UserInfo, null>('/staff/my', null)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.userinfo = data.value.data
         }

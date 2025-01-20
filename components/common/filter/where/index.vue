@@ -75,34 +75,36 @@ const presetToSelect = (filter: FilterWhere<T>): { label: string, value: any }[]
               <div class="text-color">
                 {{ f?.label }}
               </div>
-              <slot :name="f?.name" :filter="f">
-                <template v-if="f?.input === 'text'">
-                  <div class="mt-2">
-                    <n-input v-model:value="datas[f.name as string]" size="large" :placeholder="`输入${f?.label}`" round />
-                  </div>
-                </template>
-                <template v-if="f?.input === 'number'">
-                  <div class="mt-2">
-                    <n-input-number v-model:value="datas[f.name as string]" size="large" :placeholder="`输入${f?.label}`" round />
-                  </div>
-                </template>
-                <template v-if="f?.input === 'switch'">
-                  <n-switch v-model:value="datas[f.name as string]" size="large" :style="{ 'border-radius': '20px' }" round />
-                </template>
-                <template v-if="f?.input === 'select'">
-                  <n-select
-                    v-model:value="datas[f.name as string]"
-                    :default-value="0 || '' || undefined || null"
-                    menu-size="large"
-                    fable
-                    :placeholder="`请选择${f?.label}`"
-                    :options="presetToSelect(f) "
-                  />
-                </template>
-                <template v-if="f?.input === 'textarea'">
-                  <n-input v-model:value="datas[f.name as string]" :placeholder="`输入${f?.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
-                </template>
-              </slot>
+              <div class="mt-2">
+                <slot :name="f?.name" :filter="f">
+                  <template v-if="f?.input === 'text'">
+                    <div>
+                      <n-input v-model:value="datas[f.name as string]" size="large" :placeholder="`输入${f?.label}`" round />
+                    </div>
+                  </template>
+                  <template v-if="f?.input === 'number'">
+                    <div>
+                      <n-input-number v-model:value="datas[f.name as string]" size="large" :placeholder="`输入${f?.label}`" round />
+                    </div>
+                  </template>
+                  <template v-if="f?.input === 'switch'">
+                    <n-switch v-model:value="datas[f.name as string]" size="large" :style="{ 'border-radius': '20px' }" round />
+                  </template>
+                  <template v-if="f?.input === 'select'">
+                    <n-select
+                      v-model:value="datas[f.name as string]"
+                      :default-value="0 || '' || undefined || null"
+                      menu-size="large"
+                      fable
+                      :placeholder="`请选择${f?.label}`"
+                      :options="presetToSelect(f) "
+                    />
+                  </template>
+                  <template v-if="f?.input === 'textarea'">
+                    <n-input v-model:value="datas[f.name as string]" :placeholder="`输入${f?.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
+                  </template>
+                </slot>
+              </div>
             </div>
           </template>
         </template>

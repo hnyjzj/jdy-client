@@ -47,7 +47,7 @@ function changePageBench(bench: WorkBench) {
               <div class="flex items-center">
                 <button style="all: unset;" @click="updateBench(work)">
                   <div class="flex items-center cursor-pointer">
-                    <icon name="i-svg:edit" size="12px" color="#3970F3" />
+                    <icon name="i-svg:edit" :size="12" color="#3970F3" />
                     <div class="text-[12px] text-[#3970F3] pl-1">
                       编辑
                     </div>
@@ -56,7 +56,7 @@ function changePageBench(bench: WorkBench) {
                 <template v-if="!work?.children?.length">
                   <button style="all: unset;" @click="delBench(work.id)">
                     <div class="flex items-center ml-4 cursor-pointer">
-                      <icon name="i-svg:delete" size="12px" color="#FF2F2F" />
+                      <icon name="i-svg:delete" :size="12" color="#FF2F2F" />
                       <div class="text-[12px] text-[#FF2F2F] pl-1">
                         删除
                       </div>
@@ -71,13 +71,13 @@ function changePageBench(bench: WorkBench) {
                   <div class="horn">
                     点击收起
                   </div>
-                  <icon name="i-icon:down" size="12px" color="rgba(128,128,137,1)" />
+                  <icon name="i-icon:down" :size="12" color="rgba(128,128,137,1)" />
                 </template>
                 <template v-else>
                   <div class="horn">
                     点击展开
                   </div>
-                  <icon name="i-icon:left" size="12px" color="rgba(128,128,137,1)" />
+                  <icon name="i-icon:left" :size="12" color="rgba(128,128,137,1)" />
                 </template>
               </div>
             </template>
@@ -87,7 +87,7 @@ function changePageBench(bench: WorkBench) {
               <template v-if="isSetup">
                 <button style="all: unset;" @click="addBench(work.id)">
                   <div class="flex items-center mb-3 cursor-pointer">
-                    <icon name="i-icon:addsth" size="26px" color="#666666" />
+                    <icon name="i-icon:addsth" :size="26" color="#666666" />
                     <div class="text-[12px] text-[#666666] pl-1">
                       添加分类
                     </div>
@@ -105,7 +105,7 @@ function changePageBench(bench: WorkBench) {
                         <div class="flex items-center">
                           <button style="all: unset;" @click="updateBench(child)">
                             <div class="flex items-center cursor-pointer">
-                              <icon name="i-svg:edit" size="12px" color="#3970F3" />
+                              <icon name="i-svg:edit" :size="12" color="#3970F3" />
                               <div class="text-[12px] text-[#3970F3] pl-1">
                                 编辑
                               </div>
@@ -114,7 +114,7 @@ function changePageBench(bench: WorkBench) {
                           <template v-if="!child?.children?.length">
                             <button style="all: unset;" @click="delBench(child.id)">
                               <div class="flex items-center ml-4 cursor-pointer">
-                                <icon name="i-svg:delete" size="12px" />
+                                <icon name="i-svg:delete" :size="12" />
                                 <div class="text-[12px] text-[#FF2F2F] pl-1">
                                   删除
                                 </div>
@@ -141,7 +141,7 @@ function changePageBench(bench: WorkBench) {
                           <div class="relative">
                             <img :src="son?.icon ? ImageUrl(son.icon) : '/images/sale/sales-list.png'" class="w-[32px] h-[32px]" @click="changePageBench(son)">
                             <template v-if="isSetup">
-                              <icon class="absolute top-[-2px] right-[-2px] cursor-pointer" name="i-svg:reduce" size="14" @click="delBench(son.id)" />
+                              <icon class="absolute top-[-2px] right-[-2px] cursor-pointer" name="i-svg:reduce" :size="14" @click="delBench(son.id)" />
                             </template>
                           </div>
                           <div class="son-title" @click="changePageBench(son)">

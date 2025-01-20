@@ -28,7 +28,7 @@ const formatter = (type: string, option: any) => {
               <common-frame :is-disabled="true" tip="选择时间">
                 <template #left>
                   <div class="mr-1">
-                    <icon color="#666666" name="i-icon:calendar" size="14" />
+                    <icon color="#666666" name="i-icon:calendar" :size="14" />
                   </div>
                 </template>
               </common-frame>
@@ -42,7 +42,7 @@ const formatter = (type: string, option: any) => {
               <common-frame :is-disabled="true" tip="选择时间">
                 <template #left>
                   <div class="mr-1">
-                    <icon color="#666666" name="i-icon:calendar" size="14" />
+                    <icon color="#666666" name="i-icon:calendar" :size="14" />
                   </div>
                 </template>
               </common-frame>

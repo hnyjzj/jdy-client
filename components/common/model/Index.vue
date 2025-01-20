@@ -13,11 +13,13 @@ const props = withDefaults(defineProps<Props>(), {
 })
 const emits = defineEmits<{
   confirm: []
+  cancel: []
 }>()
 const show = defineModel({ type: Boolean, default: false })
 
 function close() {
   show.value = false
+  emits('cancel')
 }
 watch(show, (val) => {
   if (val) {

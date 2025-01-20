@@ -182,7 +182,7 @@ const afterRead = async (file: any) => {
         <div
           class="flex items-center justify-end cursor-pointer"
           @click="set">
-          <icon name="i-svg:setup" size="14" color="#FFF" />
+          <icon name="i-svg:setup" :size="14" color="#FFF" />
           <div class="text-[#fff] text-[14px] pl-1">
             {{ isSetup ? '退出' : '编辑' }}
           </div>
@@ -195,7 +195,7 @@ const afterRead = async (file: any) => {
           <template v-if="isSetup">
             <button style="all: unset;">
               <div class="flex items-center mb-4 cursor-pointer" @click="resetForm(true);show = true">
-                <icon name="i-icon:addsth" size="26px" color="#000" />
+                <icon name="i-icon:addsth" :size="26" color="#000" />
                 <div class="text-[14px] text-[#000] pl-1">
                   添加模块
                 </div>
@@ -207,7 +207,7 @@ const afterRead = async (file: any) => {
     </common-layout-center>
     <common-model v-model:model-value="show" :title="submitStatus === 'add' ? '新增' : '编辑'" :show-ok="true" @confirm="() => addWorkbenchform?.submit()">
       <div class="py-[16px]">
-        <common-form ref="addWorkbenchform" v-model="params" :rules="rules" @submit="(val) => submit(val)">
+        <common-form ref="addWorkbenchform" v-model="params" :rules="rules" @submit="(val: AddWorkbencheReq) => submit(val)">
           <template #title="{ label, error }">
             <div class="pb-[16px]">
               <div class="add-row">
