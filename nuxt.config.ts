@@ -21,7 +21,6 @@ export default defineNuxtConfig({
     '@vant/nuxt',
     '@vueuse/nuxt',
     '@nuxt/eslint',
-    '@waset/unplugin-iconify/nuxt',
     '@nuxtjs/color-mode',
     '@bg-dev/nuxt-naiveui',
     'nuxt-echarts',
@@ -56,16 +55,6 @@ export default defineNuxtConfig({
     classSuffix: '',
     storage: 'cookie', // or 'sessionStorage' or 'cookie'
     storageKey: 'nuxt-color-mode',
-  },
-  Iconify: {
-    convert: {
-      svg: 'assets/icons',
-      icon: {
-        path: 'assets/icons',
-        noColor: true,
-      },
-    },
-    iconifyIntelliSense: true,
   },
   echarts: {
     charts: ['BarChart', 'LineChart', 'PieChart'],
