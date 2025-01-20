@@ -70,11 +70,6 @@ function removeItem(item: { id: number }) {
           class="remark"
           placeholder="请输入内容"
         />
-        <div class="flex">
-          <div class="text-[#3971F3] text-[14px] px-[8px] bg-[#F1F5FE] rounded-[8px]">
-            常用备注
-          </div>
-        </div>
       </div>
       <div class="text-[#FF2F2F] text-[16px] font-semibold py-[12px]">
         <span class="mr-[4px]">剩余未支付:</span>
