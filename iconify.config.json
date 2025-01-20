@@ -1,0 +1,10 @@
+{
+  "convert": {
+    "icon": {
+      "noColor": true,
+      "path": "assets/icons"
+    },
+    "svg": "assets/icons"
+  },
+  "iconifyIntelliSense": true
+}
