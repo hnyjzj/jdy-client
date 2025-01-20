@@ -20,10 +20,16 @@ const { memberInfo } = storeToRefs(useMemberManage())
 
 const { getStoreList } = useStores()
 const searchPage = ref<number>(1)
-const params = { page: searchPage.value, limit: 100 } as ReqList<Stores>
-await getStoreList(params)
+const storeParams = { page: searchPage.value, limit: 100 } as ReqList<Stores>
+await getStoreList(storeParams)
 
 const { storesList } = storeToRefs(useStores())
+
+const { getStaffList } = useStaff()
+const staffParams = { page: searchPage.value, limit: 12 } as ReqList<Staff>
+await getStaffList(staffParams)
+
+const { staffList } = storeToRefs(useStaff())
 
 const memberParams = ref<Member>({} as Member)
 
@@ -77,7 +83,7 @@ const conductEditDate = () => {
   }
 }
 
-// 若是编辑用户信息的话，则转换已有的生日和纪念日信息格式
+// 编辑用户信息的情况下，转换已有的生日和纪念日信息格式
 onMounted(() => {
   conductEditDate()
 })
@@ -93,11 +99,19 @@ const showGender = () => {
 
 const showToUser = ref(showGender())
 
-const turnOptions = (list: Stores[]) => {
+const turnOptions = (list: Stores[] | Staff[]) => {
   return list.map((item) => {
-    return {
-      label: item.name,
-      value: item.id,
+    if ('name' in item) {
+      return {
+        label: item.name,
+        value: item.id,
+      }
+    }
+    else {
+      return {
+        label: item.nickname,
+        value: item.id,
+      }
     }
   })
 }
@@ -226,11 +240,11 @@ const execute = async () => {
                         专属顾问
                       </div>
                       <div class="secondary-bottom">
-                        <n-input
+                        <n-select
                           v-model:value="memberParams.consultant_id"
-                          size="large"
-                          round
                           placeholder="请选择专属顾问"
+                          :options="turnOptions(staffList)"
+                          menu-size="large"
                         />
                       </div>
                     </div>
