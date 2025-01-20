@@ -9,8 +9,8 @@ interface Enter {
   created_at: string
   id: string
   ip: string
-  operator: null
+  operator: Staff
   operator_id: string
-  products: Product
+  products: Product[]
   updated_at: string
 }

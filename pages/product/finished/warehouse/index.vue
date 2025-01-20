@@ -71,8 +71,8 @@ async function submitWhere(f: Partial<Enter>) {
 }
 
 /** 编辑 */
-function edit(code: string) {
-  jump('/Enter/manage/edit', { code })
+function edit(id: string) {
+  jump('/product/finished/warehouse/info', { id })
 }
 </script>
 
@@ -93,20 +93,23 @@ function edit(code: string) {
         <product-manage-card :list="EnterList" @edit="edit">
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-              <template v-for="(item, index) in EnterToArray" :key="index">
-                <van-row justify="space-between" class="py-[4px]">
-                  <van-col span="12">
-                    <div class="">
-                      {{ item.label }}
-                    </div>
-                  </van-col>
-                  <van-col span="12">
-                    <div class="text-align-end">
-                      {{ info[item.name] }}
-                    </div>
-                  </van-col>
-                </van-row>
-              </template>
+              <div class="py-[4px] flex justify-between">
+                <div>入库单号</div>
+                <div class="text-align-end">
+                  {{ info.id }}
+                </div>
+              </div>
+              <div class="py-[4px] flex justify-between">
+                <div>入库时间</div>
+                <div class="text-align-end">
+                  {{ info.created_at }}
+                </div>
+              </div>
+            </div>
+          </template>
+          <template #bottom="{ info }">
+            <div class="flex-end text-size-[14px]">
+              <common-button-irregular text="详情" @click="jump('/product/finished/warehouse/info', { id: info.id })" />
             </div>
           </template>
         </product-manage-card>
