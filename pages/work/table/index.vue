@@ -3,7 +3,6 @@ import type { Rules } from 'common-form'
 import { showConfirmDialog } from 'vant'
 
 const { $toast } = useNuxtApp()
-
 const { addWorkbench, getWorkbenchList, delWorkbench, updateWorkbench, uploadIcon } = useWorkbenche()
 const { workBenchList } = storeToRefs(useWorkbenche())
 
