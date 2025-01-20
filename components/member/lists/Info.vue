@@ -30,6 +30,12 @@ const processDuring = () => {
     return diffDays
   }
 }
+
+const cutOut = (current: string | undefined) => {
+  if (current) {
+    return current.slice(0, 10)
+  }
+}
 </script>
 
 <template>
@@ -37,11 +43,8 @@ const processDuring = () => {
     <div class="col-12 flex flex-col gap-[16px] px-[16px] py-[16px]" uno-lg="col-8 offset-2">
       <common-gradient title="基础信息" theme="gradient" :italic="true" :foldable="true">
         <template #body>
-          <div class="flex flex-col gap-[12px]">
+          <div class="grid grid-cols-1 gap-[12px]" uno-md="grid-cols-2" uno-lg="grid-cols-2">
             <div class="flex flex-row gap-[32px]">
-              <div class="avatar">
-                <common-avatar :size="48" rounded="60px" />
-              </div>
               <div class="base flex flex-1 flex-col gap-[8px]">
                 <div class="item">
                   <div class="item-left">
@@ -112,9 +115,7 @@ const processDuring = () => {
               </div>
             </div>
 
-            <div class="h-0.4 bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
-
-            <div class="secendary flex flex-1 flex-col gap-[8px] pl-[80px]">
+            <div class="secendary flex flex-1 flex-col gap-[8px]">
               <div class="item">
                 <div class="item-left">
                   入会门店
@@ -128,7 +129,7 @@ const processDuring = () => {
                   入会时间
                 </div>
                 <div class="item-right">
-                  {{ memberParams.created_at || PERCH }}
+                  {{ cutOut(memberParams.created_at) || PERCH }}
                 </div>
               </div>
               <div class="item">
