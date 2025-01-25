@@ -82,3 +82,78 @@ interface StoreInfo {
    */
   salesVolume: number
 }
+
+interface addSale {
+  /**
+   * 抹零金额
+   */
+  amount_reduce: number
+  /**
+   * 收银员ID
+   */
+  cashier_id: string
+  /**
+   * 整单折扣
+   */
+  discount_rate: number
+  /**
+   * 使用积分
+   */
+  integral_use: number
+  /**
+   * 会员ID
+   */
+  member_id: string
+  products: saleProduct[]
+  /**
+   * 订单备注
+   */
+  remark: string
+  salesmens: Salesmen[]
+  /**
+   * 订单来源
+   */
+  source: number
+  /**
+   * 门店ID
+   */
+  store_id: string
+  /**
+   * 订单类型
+   */
+  type: number | string
+}
+
+interface saleProduct {
+  /**
+   * 折扣
+   */
+  discount?: number
+  /**
+   * 产品ID
+   */
+  product_id: string
+  /**
+   * 数量，默认 为1
+   */
+  quantity: number
+}
+
+interface Salesmen {
+  /**
+   * 是否主导购员，默认为 false
+   */
+  is_main?: boolean
+  /**
+   * 业绩金额
+   */
+  performance_amount?: number
+  /**
+   * 业绩比例
+   */
+  performance_rate?: number
+  /**
+   * 导购员ID
+   */
+  salesman_id: string
+}

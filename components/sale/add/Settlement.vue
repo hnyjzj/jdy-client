@@ -1,50 +1,51 @@
 <script lang="ts" setup>
-const props = defineProps<{
-  goodinfo: any[]
-}>()
+// const props = defineProps<{
+//   goodinfo: any[]
+// }>()
 
-const { $toast } = useNuxtApp()
+// const { $toast } = useNuxtApp()
 
-const options = [
-  {
-    label: '支付宝',
-    value: '支付宝',
-  },
-  {
-    label: '微信',
-    value: '微信',
-  },
-  {
-    label: '银联',
-    value: '银联',
-  },
-]
+// const options = [
+//   {
+//     label: '支付宝',
+//     value: '支付宝',
+//   },
+//   {
+//     label: '微信',
+//     value: '微信',
+//   },
+//   {
+//     label: '银联',
+//     value: '银联',
+//   },
+// ]
 
-const getInitialItems = () => [{ id: 1, multiple: '支付信息', isPopoverVisible: false, options, selected: '' }]
-const items = ref(getInitialItems())
-let id = items.value.length + 1
+// const getInitialItems = () => [{ id: 1, multiple: '支付信息', isPopoverVisible: false, options, selected: '' }]
+// const items = ref(getInitialItems())
+// const id = items.value.length + 1
 
-const insertItem = () => {
-  if (items.value.length >= 11) {
-    $toast.warning('最多添加11种支付方式')
-    return
-  }
-  // 添加新的支付信息栏并初始化状态
-  items.value.push({ id: id++, multiple: '支付信息', isPopoverVisible: false, options, selected: '' })
-}
+// const insertItem = () => {
+//   if (items.value.length >= 11) {
+//     $toast.warning('最多添加11种支付方式')
+//     return
+//   }
+//   // 添加新的支付信息栏并初始化状态
+//   items.value.push({ id: id++, multiple: '支付信息', isPopoverVisible: false, options, selected: '' })
+// }
 
-function removeItem(item: { id: number }) {
-  const i = items.value.findIndex(i => i.id === item.id)
-  if (i > -1) {
-    items.value.splice(i, 1)
-  }
-}
+// function removeItem(item: { id: number }) {
+//   const i = items.value.findIndex(i => i.id === item.id)
+//   if (i > -1) {
+//     items.value.splice(i, 1)
+//   }
+// }
 </script>
 
 <template>
-  <common-fold title="结算信息">
+  <common-fold title="结算信息" :is-collapse="false">
     <div class="p-[16px]">
-      <div class="grid-cols-[1fr] gap-[16px]" uno-lg="grid-cols-[1fr]" uno-md="grid">
+      <slot />
+      <!-- <div class="grid-cols-[1fr] gap-[16px]" uno-lg="grid-cols-[1fr]" uno-md="grid">
         <div class="flex flex-col gap-[12px]">
           <template v-for="(item, index) in props.goodinfo" :key="index">
             <div class="flex items-center justify-between">
@@ -79,17 +80,12 @@ function removeItem(item: { id: number }) {
           class="remark"
           placeholder="请输入内容"
         />
-        <div class="flex">
-          <div class="text-[#3971F3] text-[14px] px-[8px] bg-[#F1F5FE] rounded-[8px]">
-            常用备注
-          </div>
-        </div>
       </div>
       <div class="text-[#FF2F2F] text-[16px] font-semibold py-[12px]">
         <span class="mr-[4px]">剩余未支付:</span>
         <span>00.00</span>
-      </div>
-      <div class="flex flex-col gap-[12px] w-full">
+      </div> -->
+      <!-- <div class="flex flex-col gap-[12px] w-full">
         <TransitionGroup name="operation">
           <template v-for="item in items" :key="item.id">
             <div class="flex flex-row items-end items-center gap-[12px]">
@@ -130,7 +126,7 @@ function removeItem(item: { id: number }) {
             </div>
           </template>
         </TransitionGroup>
-      </div>
+      </div> -->
     </div>
   </common-fold>
 </template>

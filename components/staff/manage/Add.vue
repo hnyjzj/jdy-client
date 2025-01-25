@@ -51,7 +51,7 @@ function handleValidateButtonClick(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate((errors: any) => {
     if (!errors) {
-      message.success('验证成功')
+    //   message.success('验证成功')
       emits('submit')
     }
     else {
@@ -145,7 +145,7 @@ const beforeUpload = (data: any) => {
             <div
               class="text-size-[16px] font-semibold py-[16px] cursor-pointer" @click="handleValidateButtonClick">
               <div class="ok">
-                登录
+                确定
               </div>
             </div>
           </n-form>

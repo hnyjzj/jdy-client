@@ -7,7 +7,6 @@ const handleClick = async () => {
 
 <template>
   <common-fold title="产品信息" :is-collapse="false">
-    <common-empty />
     <div class="p-[16px]">
       <div class="btn grid-12 gap-[20px]">
         <div class="btn-left col-span-4 offset-2 cursor-pointer">
@@ -26,6 +25,16 @@ const handleClick = async () => {
         </div>
       </div>
     </div>
+    <template v-if="false">
+      <div class="flex justify-center">
+        <div class="w-[30%]">
+          <common-empty :show-r-t="false" />
+        </div>
+      </div>
+    </template>
+    <template v-else>
+      <slot />
+    </template>
   </common-fold>
 </template>
 

@@ -1,14 +1,15 @@
 <script lang="ts" setup>
-const handleClick = async () => {
-  // 跳转到搜索会员页
-  await navigateTo('/sale/search/member')
-}
+// const handleClick = async () => {
+//   // 跳转到搜索会员页
+//   await navigateTo('/sale/search/member')
+// }
 </script>
 
 <template>
-  <common-fold title="基础信息">
+  <common-fold title="基础信息" :is-collapse="false">
     <div class="p-[16px] w-auto flex flex-col gap-[12px]" uno-lg="grid grid-cols-1 gap-[16px] grid-cols-0">
-      <div class="box col-start-1 col-end-3">
+      <slot />
+      <!-- <div class="box col-start-1 col-end-3">
         <div class="inplabel">
           会员
         </div>
@@ -40,7 +41,7 @@ const handleClick = async () => {
           销售时间
         </div>
         <common-frame :disabled-style="true" tip="2024-04-08 12:10:24" :is-icon="true" height="40px" />
-      </div>
+      </div> -->
     </div>
   </common-fold>
 </template>
