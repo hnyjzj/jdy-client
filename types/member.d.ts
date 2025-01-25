@@ -83,6 +83,52 @@ interface Member {
 }
 
 /**
+ * 会员积分详情
+ */
+interface MemberIntegral {
+  /**
+   * 变动后积分
+   */
+  after: number
+  /**
+   * 变动前积分
+   */
+  before: number
+  /**
+   * 变动积分
+   */
+  change: number
+  /**
+   * 变动类型
+   */
+  change_type: number
+  /**
+   * 创建时间
+   */
+  created_at: string
+  /**
+   * 删除时间
+   */
+  deleted_at?: string
+  /**
+   * ID
+   */
+  id: string
+  /**
+   * 会员id
+   */
+  member_id: string
+  /**
+   * 备注
+   */
+  remark?: string
+  /**
+   * 更新时间
+   */
+  updated_at: string
+}
+
+/**
  * 会员等级
  */
 enum MemberLevel {

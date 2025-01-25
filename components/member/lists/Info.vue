@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   data: Member
+  integral: MemberIntegral
 }>()
 
 const emit = defineEmits<{
@@ -35,6 +36,11 @@ const cutOut = (current: string | undefined) => {
   if (current) {
     return current.slice(0, 10)
   }
+}
+
+const backtrack = () => {
+  const { back } = useRouter()
+  back()
 }
 </script>
 
@@ -274,10 +280,23 @@ const cutOut = (current: string | undefined) => {
           </div>
         </template>
       </common-gradient>
+
+      <common-gradient title="积分信息" theme="gradient" :italic="true" :foldable="true">
+        <template #body>
+          <div>
+            {{ props.integral }}
+          </div>
+        </template>
+      </common-gradient>
     </div>
   </div>
   <div class="h-[80px]">
-    <common-button-bottom confirm-text="编辑" cancel-text="返回" @confirm="() => emit('goEdit', memberParams.id)" />
+    <common-button-bottom
+      confirm-text="编辑"
+      cancel-text="返回"
+      @confirm="() => emit('goEdit', memberParams.id)"
+      @cancel="backtrack"
+    />
   </div>
 </template>
 

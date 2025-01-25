@@ -3,12 +3,14 @@ export const useMemberManage = defineStore('Member', {
     memberList: Member[]
     filterList: Where<Member>
     memberInfo: Member
+    memberIntegral: MemberIntegral
     memberListTotal: number
     filterListToArray: FilterWhere<Member>[]
   } => ({
     memberList: [],
     filterList: {},
     memberInfo: {} as Member,
+    memberIntegral: {} as MemberIntegral,
     memberListTotal: 0,
     filterListToArray: {} as FilterWhere<Member>[],
   }),
@@ -66,6 +68,18 @@ export const useMemberManage = defineStore('Member', {
       }
       catch (error) {
         throw new Error(`获取会员详情失败: ${error || '未知错误'}`)
+      }
+    },
+    // 获取会员积分详情
+    async getMemberIntegral(params: ReqList<MemberIntegral>) {
+      try {
+        const { data } = await https.post<MemberIntegral, ReqList<MemberIntegral>>('/member/integral', params)
+        if (data.value.code === HttpCode.SUCCESS) {
+          this.memberIntegral = data.value.data
+        }
+      }
+      catch (error) {
+        throw new Error(`获取会员积分失败: ${error || '未知错误'}`)
       }
     },
     // 更新
