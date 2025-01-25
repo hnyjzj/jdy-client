@@ -11,6 +11,7 @@ const formlist = ref<addStaffForm>({
     password: '',
     avatar: '',
     email: '',
+    store_id: '',
   },
 })
 const { useWxWork } = useWxworkStore()

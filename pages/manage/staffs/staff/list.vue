@@ -1,6 +1,9 @@
 <script lang="ts" setup>
+import type { SelectOption } from 'naive-ui'
+
 const { staffList, filterListToArray, total, staffInfo } = storeToRefs(useStaff())
 const { getStaffWhere, getStaffList, getStaffInfo } = useStaff()
+const { staffGetStoreList } = useStores()
 const complate = ref(0)
 const searchKey = ref('')
 const show = ref<boolean>(false)
@@ -53,6 +56,22 @@ const getInfo = async (val: string) => {
 const newAdd = () => {
   navigateTo('/manage/staffs/staff/add')
 }
+
+const storeList = ref<SelectOption[]>([])
+//
+const getStore = useDebounceFn(async (query) => {
+  const res = await staffGetStoreList({ page: 1, limit: 10, where: { name: query } })
+  if (res.length) {
+    storeList.value = res.map(item => ({
+      label: item.name,
+      value: item.id,
+    }))
+  }
+}, 500)
+const loading = ref(false)
+const handleSearch = (query: string) => {
+  getStore(query)
+}
 </script>
 
 <template>
@@ -79,7 +98,20 @@ const newAdd = () => {
       <staff-manage-info :info-detail="staffInfo" />
     </n-modal>
     <common-create @create="newAdd()" />
-    <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
+    <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere">
+      <template #store_id>
+        <n-select
+          v-model:value="filterData.store_id"
+          filterable
+          placeholder="搜索歌曲"
+          :options="storeList"
+          :loading="loading"
+          clearable
+          remote
+          @search="handleSearch"
+        />
+      </template>
+    </common-filter-where>
   </div>
 </template>
 
