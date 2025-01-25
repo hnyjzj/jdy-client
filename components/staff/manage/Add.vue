@@ -74,6 +74,18 @@ const beforeUpload = (data: any) => {
     return false
   }
 }
+const keyUpload = ref()
+const onChangeKey = () => {
+  keyUpload.value = Date.now()
+}
+const clearAvatar = () => {
+  previewFileList.value = []
+  onChangeKey()
+}
+
+defineExpose({
+  clearAvatar,
+})
 </script>
 
 <template>
@@ -133,6 +145,7 @@ const beforeUpload = (data: any) => {
             <n-form-item
               label="头像">
               <n-upload
+                :key="keyUpload"
                 action="#"
                 :custom-request="customRequest"
                 :default-file-list="previewFileList"
@@ -142,6 +155,9 @@ const beforeUpload = (data: any) => {
                 @preview="showModalRef = true"
               />
             </n-form-item>
+            <div @click="clearAvatar()">
+              12313
+            </div>
             <div
               class="text-size-[16px] font-semibold py-[16px] cursor-pointer" @click="handleValidateButtonClick">
               <div class="ok">
