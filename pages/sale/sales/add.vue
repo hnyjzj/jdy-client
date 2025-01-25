@@ -54,12 +54,10 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate((errors) => {
     if (!errors) {
-      console.log(123)
 
     //   message.success('验证成功')
     }
     else {
-      console.log(errors)
     //   message.error('验证失败')
     }
   })
