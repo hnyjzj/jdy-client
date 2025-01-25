@@ -64,7 +64,7 @@ const presetToSelect = (key: keyof Product): { label: string, value: any }[] => 
           <product-manage-company />
         </div>
         <div class="rounded-6 bg-white w-auto blur-bga top">
-          <common-gradient title="新增调拨单">
+          <common-gradient title="新增入库单">
             <template #body>
               <n-form :model="params">
                 <template v-for="(item, index) in filterListToArray" :key="index">
@@ -102,7 +102,7 @@ const presetToSelect = (key: keyof Product): { label: string, value: any }[] => 
       </div>
     </div>
     <div class="fixed bottom-0 left-0 w-full px-8 py-4 blur-bgc">
-      <common-button-rounded content="添加调拨单" @button-click="submit" />
+      <common-button-rounded content="新增入库单" @button-click="submit" />
     </div>
   </div>
 </template>
