@@ -113,6 +113,10 @@ async function submitWhere(f: Partial<Member>) {
   $toast.error(res.message ?? '筛选失败')
 }
 
+const goIntegral = (id: string) => {
+  jump('/member/integral/record', { id })
+}
+
 const userJump = (id: string) => {
   jump('/member/lists/info', { id })
 }
@@ -248,7 +252,12 @@ const userCancel = () => {
 
     <div class="pb-10 overflow-hidden">
       <common-list-pull :distance="height" :nomore="!nomore" @pull="pull">
-        <member-lists-list :info="memberList" @go-info="userJump" @change-integral="adjustment" />
+        <member-lists-list
+          :info="memberList"
+          @go-info="userJump"
+          @view-integral="goIntegral"
+          @change-integral="adjustment"
+        />
       </common-list-pull>
     </div>
   </div>

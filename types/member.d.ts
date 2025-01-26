@@ -89,11 +89,11 @@ interface MemberIntegral {
   /**
    * 变动后积分
    */
-  after: number
+  after?: number
   /**
    * 变动前积分
    */
-  before: number
+  before?: number
   /**
    * 变动积分
    */
@@ -102,6 +102,10 @@ interface MemberIntegral {
    * 变动类型
    */
   change_type: number
+  /**
+   * 变动原因
+   */
+  reason: string
   /**
    * 创建时间
    */

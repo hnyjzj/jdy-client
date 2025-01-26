@@ -3,14 +3,14 @@ export const useMemberManage = defineStore('Member', {
     memberList: Member[]
     filterList: Where<Member>
     memberInfo: Member
-    memberIntegral: MemberIntegral
+    memberIntegral: MemberIntegral[]
     memberListTotal: number
     filterListToArray: FilterWhere<Member>[]
   } => ({
     memberList: [],
     filterList: {},
     memberInfo: {} as Member,
-    memberIntegral: {} as MemberIntegral,
+    memberIntegral: {} as MemberIntegral[],
     memberListTotal: 0,
     filterListToArray: {} as FilterWhere<Member>[],
   }),
@@ -73,16 +73,23 @@ export const useMemberManage = defineStore('Member', {
     // 获取会员积分详情
     async getMemberIntegral(params: ReqList<MemberIntegral>) {
       try {
-        const { data } = await https.post<MemberIntegral, ReqList<MemberIntegral>>('/member/integral', params)
+        const { data } = await https.post<ResList<MemberIntegral>, ReqList<MemberIntegral>>('/member/integral/list', params)
         if (data.value.code === HttpCode.SUCCESS) {
-          this.memberIntegral = data.value.data
+          this.memberListTotal = data.value.data.total
+          if (params.page === 1) {
+            this.memberIntegral = data.value.data.list
+          }
+          else {
+            this.memberIntegral = this.memberIntegral.concat(data.value.data.list)
+          }
         }
       }
       catch (error) {
-        throw new Error(`获取会员积分失败: ${error || '未知错误'}`)
+        throw new Error(`获取会员积分详情失败: ${error || '未知错误'}`)
       }
     },
-    // 更新
+
+    // 更新会员信息
     async updateMemberInfo(params: Member) {
       try {
         const { data } = await https.put<Member, Member>('/member/update', params)
