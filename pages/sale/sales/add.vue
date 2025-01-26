@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 // 新增销售单
-import type { FormInst, FormItemRule } from 'naive-ui'
+import type { FormInst, FormRules } from 'naive-ui'
 
 useSeoMeta({
   title: '新增销售单',
@@ -8,7 +8,7 @@ useSeoMeta({
 
 const formRef = ref<FormInst | null>(null)
 const formData = ref<addSale>({
-  type: '1', // 订单类型
+  type: 1, // 订单类型
   source: 0, // 订单来源
   remark: '', // 备注
   discount_rate: 1, // 整单折扣
@@ -42,13 +42,13 @@ const sourceOptions = [{
 }]
 const typeOptions = [{
   label: '销售单',
-  value: '1',
+  value: 1,
 }, {
   label: '定金单',
-  value: '2',
+  value: 2,
 }, {
   label: '维修单',
-  value: '3',
+  value: 3,
 }]
 const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
@@ -62,16 +62,22 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
     }
   })
 }
-const rules = ref({
+const rules = ref<FormRules>({
   member_id: {
     required: true,
     trigger: ['blur'],
     message: '请输入 inputValue',
   },
   type: {
+    type: 'number',
     required: true,
     trigger: ['blur', 'change'],
     message: '请选择订单类型',
+  },
+  cashier_id: {
+    required: true,
+    trigger: ['blur', 'change'],
+    message: '请选择收银员',
   },
 })
 </script>
@@ -97,7 +103,7 @@ const rules = ref({
                 }"
               />
             </n-form-item>
-            <n-form-item label="收银员">
+            <n-form-item label="收银员" path="cashier_id">
               <n-select
                 v-model:value="formData.cashier_id"
                 placeholder="请选择收银员"
