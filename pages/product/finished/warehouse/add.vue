@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormInst, FormRules } from 'naive-ui'
+
 const { addEnter } = useEnter()
 const { $toast } = useNuxtApp()
 const { storesList } = storeToRefs(useStores())
@@ -8,6 +10,42 @@ const { filterListToArray, filterList } = storeToRefs(useProductManage())
 useSeoMeta({
   title: '新增入库单',
 })
+
+const formRef = ref<FormInst | null>(null)
+const rules = ref<FormRules>({})
+
+function forRules() {
+  filterListToArray.value.forEach((item) => {
+    if (item.required) {
+      if (item.input === 'text') {
+        rules.value[item.name] = {
+          required: true,
+          trigger: ['blur', 'input', 'change'],
+          message: `请输入${item.label}`,
+        }
+      }
+      if (item.input === 'select') {
+        rules.value[item.name] = {
+          required: true,
+          trigger: ['blur', 'input', 'change'],
+          message: `请选择${item.label}`,
+          type: 'number',
+        }
+      }
+    }
+  })
+}
+
+function handleValidateButtonClick() {
+  formRef.value?.validate((error) => {
+    if (!error) {
+      submit()
+    }
+    else {
+      $toast.error('请入库完善信息')
+    }
+  })
+}
 /** 门店选择列表 */
 const storeCol = ref()
 function changeStore() {
@@ -19,6 +57,7 @@ function changeStore() {
 await getProductWhere()
 await getStoreList({ page: 1, limit: 100 })
 await changeStore()
+forRules()
 const params = ref({} as Product)
 async function submit() {
   const res = await addEnter(params.value as Product)
@@ -66,7 +105,7 @@ const presetToSelect = (key: keyof Product): { label: string, value: any }[] => 
         <div class="rounded-6 bg-white w-auto blur-bga top">
           <common-gradient title="新增入库单">
             <template #body>
-              <n-form :model="params">
+              <n-form ref="formRef" :model="params" :rules="rules">
                 <template v-for="(item, index) in filterListToArray" :key="index">
                   <n-form-item :path="item.name" :required="item.required" :label="item.label">
                     <template v-if="item.input === 'select'">
@@ -102,7 +141,7 @@ const presetToSelect = (key: keyof Product): { label: string, value: any }[] => 
       </div>
     </div>
     <div class="fixed bottom-0 left-0 w-full px-8 py-4 blur-bgc">
-      <common-button-rounded content="新增入库单" @button-click="submit" />
+      <common-button-rounded content="新增入库单" @button-click="handleValidateButtonClick" />
     </div>
   </div>
 </template>
