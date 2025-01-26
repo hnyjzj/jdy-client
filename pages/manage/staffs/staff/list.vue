@@ -59,8 +59,10 @@ const newAdd = () => {
 
 const storeList = ref<SelectOption[]>([])
 //
+const loading = ref(false)
 const getStore = useDebounceFn(async (query) => {
   const res = await staffGetStoreList({ page: 1, limit: 10, where: { name: query } })
+  loading.value = false
   if (res.length) {
     storeList.value = res.map(item => ({
       label: item.name,
@@ -68,8 +70,9 @@ const getStore = useDebounceFn(async (query) => {
     }))
   }
 }, 500)
-const loading = ref(false)
+
 const handleSearch = (query: string) => {
+  loading.value = true
   getStore(query)
 }
 </script>

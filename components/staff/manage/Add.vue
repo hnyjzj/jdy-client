@@ -155,9 +155,6 @@ defineExpose({
                 @preview="showModalRef = true"
               />
             </n-form-item>
-            <div @click="clearAvatar()">
-              12313
-            </div>
             <div
               class="text-size-[16px] font-semibold py-[16px] cursor-pointer" @click="handleValidateButtonClick">
               <div class="ok">
