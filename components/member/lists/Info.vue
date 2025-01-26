@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
   data: Member
-  integral: MemberIntegral
 }>()
 
 const emit = defineEmits<{
@@ -277,14 +276,6 @@ const backtrack = () => {
                 </div>
               </div>
             </div>
-          </div>
-        </template>
-      </common-gradient>
-
-      <common-gradient title="积分信息" theme="gradient" :italic="true" :foldable="true">
-        <template #body>
-          <div>
-            {{ props.integral }}
           </div>
         </template>
       </common-gradient>
