@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { FormInst, FormRules } from 'naive-ui'
+
 const { createAllocate, getAllocateWhere } = useAllocate()
 const { allocateFilterList } = storeToRefs(useAllocate())
 const { $toast } = useNuxtApp()
@@ -68,6 +70,45 @@ const presetToSelect = (key: keyof AllocateReq): { label: string, value: any }[]
     }
   })
 }
+const formRef = ref<FormInst | null>(null)
+const rules = ref<FormRules>({
+  method: {
+    required: true,
+    trigger: ['blur', 'input', 'change'],
+    message: '请选择调拨方法',
+    type: 'number',
+  },
+  type: {
+    required: true,
+    trigger: ['blur', 'input', 'change'],
+    message: '请选择仓库类型',
+    type: 'number',
+  },
+  reason: {
+    required: true,
+    trigger: ['blur', 'input', 'change'],
+    message: '请选择调拨原因',
+    type: 'number',
+  },
+  from_store_id: {
+    required: true,
+    trigger: ['blur', 'input', 'change'],
+    message: '请选择调出门店',
+    type: 'number',
+  },
+  to_store_id: {
+    required: true,
+    trigger: ['blur', 'input', 'change'],
+    message: '请选择调入门店',
+    type: 'number',
+  },
+},
+)
+function handleValidateButtonClick() {
+  formRef.value?.validate(() => {
+    submit()
+  })
+}
 </script>
 
 <template>
@@ -80,7 +121,7 @@ const presetToSelect = (key: keyof AllocateReq): { label: string, value: any }[]
         <div class="rounded-6 bg-white w-auto blur-bga top">
           <common-gradient title="新增调拨单">
             <template #body>
-              <n-form :model="params">
+              <n-form ref="formRef" :model="params" :rules="rules">
                 <n-form-item path="method" required :label="allocateFilterList.method?.label">
                   <n-select
                     v-model:value="params.method"
@@ -88,7 +129,6 @@ const presetToSelect = (key: keyof AllocateReq): { label: string, value: any }[]
                     menu-size="large"
                     :placeholder="`选择${allocateFilterList.method?.label}`"
                     :options="presetToSelect('method')"
-
                     clearable
                   />
                 </n-form-item>
@@ -102,7 +142,7 @@ const presetToSelect = (key: keyof AllocateReq): { label: string, value: any }[]
                     clearable
                   />
                 </n-form-item>
-                <n-form-item label="调出门店">
+                <n-form-item path="from_store_id" label="调出门店">
                   <n-select
                     v-model:value="params.from_store_id"
                     :default-value="0 || '' || undefined || null"
@@ -135,7 +175,7 @@ const presetToSelect = (key: keyof AllocateReq): { label: string, value: any }[]
                 <n-form-item path="remark" label="备注">
                   <n-input v-model:value="params.remark" round placeholder="输入备注" />
                 </n-form-item>
-                <n-form-item label="状态">
+                <n-form-item path="status" label="状态">
                   <n-select
                     v-model:value="params.status"
                     :default-value="0 || '' || undefined || null"
@@ -151,7 +191,7 @@ const presetToSelect = (key: keyof AllocateReq): { label: string, value: any }[]
         </div>
       </div>
     </div>
-    <common-button-one text="添加调拨单" @confirm="submit" />
+    <common-button-one text="添加调拨单" @confirm="handleValidateButtonClick" />
   </div>
 </template>
 
