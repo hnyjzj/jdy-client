@@ -3,8 +3,12 @@ const { getMyStore, switchStore } = useStores()
 const { myStoreList, myStore } = storeToRefs(useStores())
 const columns = ref()
 await getMyStore({ page: 1, limit: 20 })
+const message = useMessage()
 function changeStoer() {
   columns.value = []
+  if (!myStoreList.value.length) {
+    message.error('暂未分配门店')
+  }
   myStoreList.value.forEach((item: Stores) => {
     columns.value.push({ label: item.name, key: item.id })
   })

@@ -13,7 +13,7 @@ const subsearch = () => {
       </div>
       <div class="text-size-[14px] line-height-[20px] flex-1">
         <input
-          v-model="searchKey" type="text" class="bg-transparent w-full border-0 placeholder-text-[#fff] flex-1 py-[6px] line-height-[24px]" placeholder="搜索"
+          v-model="searchKey" type="text" class="bg-transparent w-full border-0 placeholder-text-[#fff] flex-1 py-[6px] pl-[4px] line-height-[24px]" placeholder="搜索"
           @keyup.enter="subsearch()">
       </div>
     </div>

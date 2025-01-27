@@ -71,7 +71,7 @@ function changePageBench(bench: WorkBench) {
                   <div class="horn">
                     点击收起
                   </div>
-                  <icon name="i-icon:down" :size="12" color="rgba(128,128,137,1)" />
+                  <icon name="i-icon:down" :size="16" color="rgba(128,128,137,1)" />
                 </template>
                 <template v-else>
                   <div class="horn">
@@ -177,7 +177,7 @@ function changePageBench(bench: WorkBench) {
   --uno: 'h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]';
 }
 .top {
-  --uno: 'bg-gradient-linear-[90deg,#8CADF8,#D8E7FD] px-[16px] py-[8px] text-size-[14px] line-height-[20px] color-[#333] font-semibold flex-between';
+  --uno: 'bg-gradient-linear-[90deg,#8CADF8,#D8E7FD] px-[16px] py-[12px] h-[44px] text-size-[16px] line-height-[20px] color-[#333] font-semibold flex-between';
 }
 .hidden1 {
   height: 0px;
@@ -193,6 +193,6 @@ function changePageBench(bench: WorkBench) {
   transition: all 200ms ease;
 }
 .horn {
-  --uno: 'text-3 text-[rgba(128,128,137,1)] pr-1';
+  --uno: 'text-[14px] text-[rgba(128,128,137,1)] pr-1';
 }
 </style>
