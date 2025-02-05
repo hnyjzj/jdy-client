@@ -80,6 +80,14 @@ const rules = ref<FormRules>({
     message: '请选择收银员',
   },
 })
+
+const getStores = useDebounceFn((query: string) => {
+  console.log('searchStores', query)
+}, 500)
+
+const searchStores = (val: string) => {
+  getStores(val)
+}
 </script>
 
 <template>
@@ -120,8 +128,12 @@ const rules = ref<FormRules>({
             <n-form-item label="门店" path="store_id">
               <n-select
                 v-model:value="formData.store_id"
-                placeholder="请选择门店"
+                filterable
+                placeholder="搜索门店"
+                clearable
+                remote
                 :options="generalOptions"
+                @search="searchStores"
               />
             </n-form-item>
             <n-form-item label="来源" path="source">
