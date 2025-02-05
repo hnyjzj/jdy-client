@@ -11,12 +11,15 @@ const formlist = ref<addStaffForm>({
     password: '',
     avatar: '',
     email: '',
+    store_id: '',
   },
 })
 const { useWxWork } = useWxworkStore()
 const { createStaff, uploadAvatar } = useStaff()
 const dialog = useDialog()
 const router = useRouter()
+const addRef = ref()
+
 const handleConfirm = () => {
   dialog.success({
     title: '创建成功',
@@ -35,6 +38,7 @@ const handleConfirm = () => {
         avatar: '',
         email: '',
       } as addStaffForm['account']
+      addRef.value.clearAvatar()
     },
     onNegativeClick: () => {
       router.go(-1)
@@ -109,7 +113,7 @@ const uploadFile = async (file: any, onfinish?: () => void) => {
       </common-fold>
     </div>
     <div class="col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
-      <staff-manage-add v-model="formlist" @submit="addStaff" @upload="uploadFile" />
+      <staff-manage-add ref="addRef" v-model="formlist" @submit="addStaff" @upload="uploadFile" />
     </div>
   </div>
 </template>

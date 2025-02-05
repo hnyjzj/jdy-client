@@ -36,7 +36,7 @@ const modeFun = () => {
 <template>
   <div class="fixed bottom-0 left-0 flex-center-row w-full" uno-lg="h-full w-auto">
     <div
-      class="w-full bg-[#F8FAFF] dark:bg-[#515862] text-[12px] py-[12px] px-[40px] flex-between"
+      class="w-full bg-[#F8FAFF] dark:bg-[#515862] text-[12px] pt-[12px] pb-[18px] px-[40px] flex-between"
       uno-lg="w-auto px-8px py-12px flex-center-col rounded-8px">
       <template v-for="item in menuItems" :key="item.key">
         <div>
