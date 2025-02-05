@@ -15,9 +15,9 @@ const formData = ref<addSale>({
   discount_rate: 1, // 整单折扣
   amount_reduce: 0, // 抹零金额
   integral_use: 0, //  使用积分
-  member_id: '', // 会员ID
-  store_id: '', // 门店ID
-  cashier_id: '', // 收银员ID
+  member_id: null, // 会员ID
+  store_id: null, // 门店ID
+  cashier_id: null, // 收银员ID
   products: [], // 商品列表
   salesmens: [],
 })

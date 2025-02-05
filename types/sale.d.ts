@@ -91,7 +91,7 @@ interface addSale {
   /**
    * 收银员ID
    */
-  cashier_id: string
+  cashier_id: string | null
   /**
    * 整单折扣
    */
@@ -103,7 +103,7 @@ interface addSale {
   /**
    * 会员ID
    */
-  member_id: string
+  member_id: string | null
   products: saleProduct[]
   /**
    * 订单备注
@@ -117,7 +117,7 @@ interface addSale {
   /**
    * 门店ID
    */
-  store_id: string
+  store_id: string | null
   /**
    * 订单类型
    */
