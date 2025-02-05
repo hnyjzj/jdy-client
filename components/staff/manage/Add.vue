@@ -51,7 +51,6 @@ function handleValidateButtonClick(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate((errors: any) => {
     if (!errors) {
-    //   message.success('验证成功')
       emits('submit')
     }
     else {
@@ -74,6 +73,18 @@ const beforeUpload = (data: any) => {
     return false
   }
 }
+const keyUpload = ref()
+const onChangeKey = () => {
+  keyUpload.value = Date.now()
+}
+const clearAvatar = () => {
+  previewFileList.value = []
+  onChangeKey()
+}
+
+defineExpose({
+  clearAvatar,
+})
 </script>
 
 <template>
@@ -133,6 +144,7 @@ const beforeUpload = (data: any) => {
             <n-form-item
               label="头像">
               <n-upload
+                :key="keyUpload"
                 action="#"
                 :custom-request="customRequest"
                 :default-file-list="previewFileList"

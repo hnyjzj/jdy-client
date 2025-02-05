@@ -73,7 +73,7 @@ function toggleShow() {
 
   border-radius: 24px;
   .title {
-    --uno: 'flex justify-between items-center py-8px px-16px text-14px font-600 text-#333333 dark:text-#FFFFFF';
+    --uno: 'flex justify-between items-center py-8px px-16px text-14px font-600 h-[44px] text-#333333 dark:text-#FFFFFF';
   }
 }
 .collapse-item .v-enter-active,

@@ -58,6 +58,16 @@ export const useStores = defineStore('Store', {
         }
       }
     },
+    // 门店列表
+    async staffGetStoreList(req: ReqList<Stores>) {
+      const { data } = await https.post<ResList<Stores>, ReqList<Stores>>('/store/list', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return data.value.data.list
+      }
+      else {
+        return []
+      }
+    },
     // 创建门店
     async createStore(req: Partial<Stores>) {
       const { data } = await https.post<undefined, Partial<Stores>>('/store/create', req)

@@ -35,7 +35,7 @@ const onScroll = useDebounceFn((e: any) => {
       </div>
     </template>
     <template v-else-if="props.nomore">
-      <div class="flex-center-row py-[16px] color-[#666] text-[14px]">
+      <div class="flex-center-row py-[16px] color-[#333] text-[14px]">
         没有更多数据了~
       </div>
     </template>
