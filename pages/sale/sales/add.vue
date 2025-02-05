@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 // 新增销售单
-import type { FormInst, FormRules } from 'naive-ui'
+import type { FormInst, FormRules, SelectOption } from 'naive-ui'
 
+const { staffGetStoreList } = useStores()
 useSeoMeta({
   title: '新增销售单',
 })
@@ -54,11 +55,11 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate((errors) => {
     if (!errors) {
-
-    //   message.success('验证成功')
+      // 成功的操作
     }
     else {
-    //   message.error('验证失败')
+      // 失败操作
+
     }
   })
 }
@@ -66,7 +67,12 @@ const rules = ref<FormRules>({
   member_id: {
     required: true,
     trigger: ['blur'],
-    message: '请输入 inputValue',
+    message: '请选择会员',
+  },
+  store_id: {
+    required: true,
+    trigger: ['blur', 'change'],
+    message: '请选择门店',
   },
   type: {
     type: 'number',
@@ -80,11 +86,21 @@ const rules = ref<FormRules>({
     message: '请选择收银员',
   },
 })
-
-const getStores = useDebounceFn((_query: string) => {
+const storeList = ref<SelectOption[]>([])
+const loading = ref(false)
+const getStores = useDebounceFn(async (query: string) => {
+  const res = await staffGetStoreList({ page: 1, limit: 10, where: { name: query } })
+  loading.value = false
+  if (res.length) {
+    storeList.value = res.map(item => ({
+      label: item.name,
+      value: item.id,
+    }))
+  }
 }, 500)
 
 const searchStores = (val: string) => {
+  loading.value = true
   getStores(val)
 }
 </script>
@@ -131,7 +147,8 @@ const searchStores = (val: string) => {
                 placeholder="搜索门店"
                 clearable
                 remote
-                :options="generalOptions"
+                :loading="loading"
+                :options="storeList"
                 @search="searchStores"
               />
             </n-form-item>
