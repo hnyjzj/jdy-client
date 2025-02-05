@@ -7,6 +7,9 @@ if (!myStoreList.value.length) {
 }
 function changeStoer() {
   columns.value = []
+  if (!myStoreList.value.length) {
+    message.error('暂未分配门店')
+  }
   myStoreList.value.forEach((item: Stores) => {
     columns.value.push({ label: item.name, key: item.id })
   })
@@ -25,7 +28,7 @@ function handleSelect(id: Stores['id']) {
     <n-dropdown trigger="click" placement="bottom-start" :options="columns" @select="handleSelect">
       <div class="py-[6px] px-[12px] bg-[#FFFFFF66] border-rd-full flex-center-row shadow-lg cursor-pointer" @click="changeStoer">
         <div class="store-name font-bold text-size-[14px] mr-[4px]">
-          {{ myStore.name }}
+          {{ myStore.name || '选择门店' }}
         </div>
         <icon name="i-icon:product-toggle" :size="24" />
       </div>

@@ -12,7 +12,7 @@ interface Stores {
   name: string
   province: string
   sort: number
-  staffs: null
+  staffs: Staff[]
   updated_at: string
 
   // 省市区
