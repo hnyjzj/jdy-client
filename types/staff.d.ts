@@ -11,6 +11,7 @@ interface Staff {
   email: string
   gender: number
   is_disabled?: boolean
+  store_id: string
 }
 /**
  * 添加员工请求参数

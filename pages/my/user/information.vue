@@ -21,6 +21,7 @@ const userinfoForm = ref<Staff>({
   email: '',
   gender: 0,
   password: '',
+  store_id: '',
 })
 const againPass = ref('')
 // 初始化数据 给表单赋值 userinfoForm
