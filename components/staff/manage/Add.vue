@@ -6,7 +6,7 @@ const emits = defineEmits<{
   upload: [val: any, onFinish: () => void]
 }>()
 
-const message = useMessage()
+const { $toast } = useNuxtApp()
 const formlist = defineModel({ default: {
   account: {
     phone: '',
@@ -55,7 +55,7 @@ function handleValidateButtonClick(e: MouseEvent) {
       emits('submit')
     }
     else {
-      message.error('验证失败')
+      $toast.error('验证失败')
     }
   })
 }
@@ -70,7 +70,7 @@ const customRequest = ({ file, onFinish }: UploadCustomRequestOptions) => {
 // 校验上传文件
 const beforeUpload = (data: any) => {
   if (data.file.file?.type !== 'image/png' && data.file.file?.type !== 'image/jpeg') {
-    message.error('只能上传png,jpeg格式的图片文件,请重新上传')
+    $toast.error('只能上传png,jpeg格式的图片文件,请重新上传')
     return false
   }
 }
