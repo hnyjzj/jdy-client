@@ -65,7 +65,7 @@ const themeProcess = () => {
     :style="{ boxShadow: props.hasShadow ? '0px 8px 16px rgba(0, 0, 0, 0.1)' : 'none' }"
   >
     <div
-      class="flex flex-row items-center justify-between px-4 py-2 bg-gradient-linear-[90deg,#8CADF8,#D8E7FD]"
+      class="flex flex-row items-center justify-between h-[44px] px-4 py-2 bg-gradient-linear-[90deg,#8CADF8,#D8E7FD]"
       :style="{ background: themeProcess() }"
     >
       <div class="flex flex-row gap-[8px]" :style="{ justifyContent: props.alignDesc }">

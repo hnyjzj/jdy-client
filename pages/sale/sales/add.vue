@@ -20,7 +20,6 @@ const formData = ref<addSale>({
   cashier_id: '', // 收银员ID
   products: [], // 商品列表
   salesmens: [],
-
 })
 const generalOptions = ['groode', 'veli good', 'emazing', 'lidiculous'].map(
   v => ({
@@ -66,7 +65,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
 const rules = ref<FormRules>({
   member_id: {
     required: true,
-    trigger: ['blur'],
+    trigger: ['blur', 'change'],
     message: '请选择会员',
   },
   store_id: {
