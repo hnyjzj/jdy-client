@@ -117,6 +117,13 @@ const rules = ref<FormRules>({
                 :options="generalOptions"
               />
             </n-form-item>
+            <n-form-item label="门店" path="store_id">
+              <n-select
+                v-model:value="formData.store_id"
+                placeholder="请选择门店"
+                :options="generalOptions"
+              />
+            </n-form-item>
             <n-form-item label="来源" path="source">
               <n-select
                 v-model:value="formData.source"
