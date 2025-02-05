@@ -2,14 +2,6 @@
 const props = defineProps<{
   list: T[]
 }>()
-
-const emits = defineEmits<{
-  (e: 'edit', id: string): void
-}>()
-
-const edit = (code: string) => {
-  emits('edit', code)
-}
 </script>
 
 <template>
@@ -27,21 +19,7 @@ const edit = (code: string) => {
           </div>
           <slot name="info" :info="item" />
           <div class="bg-[#F3F5FE] dark:bg-[#F3F5FE1A] rounded-b-[24px] ">
-            <van-row justify="space-between">
-              <van-col span="8">
-                <div class="py-[8px] px-[16px]">
-                  <span
-                    class="bg-[#FFF4CD] px-[8px] text-size-[14px] line-height-5 color-[#DD9200] rounded-[8px] text-center">
-                    调拨在途
-                  </span>
-                </div>
-              </van-col>
-              <van-col span="12">
-                <div class="flex-end text-size-[14px]">
-                  <common-button-irregular text="编辑" @click="edit(item?.code)" />
-                </div>
-              </van-col>
-            </van-row>
+            <slot name="bottom" :info="item" />
           </div>
         </div>
       </template>
