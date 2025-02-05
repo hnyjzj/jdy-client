@@ -81,8 +81,7 @@ const rules = ref<FormRules>({
   },
 })
 
-const getStores = useDebounceFn((query: string) => {
-  console.log('searchStores', query)
+const getStores = useDebounceFn((_query: string) => {
 }, 500)
 
 const searchStores = (val: string) => {

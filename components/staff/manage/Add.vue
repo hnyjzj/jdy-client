@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
+import type { FormRules, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 
 const emits = defineEmits<{
   submit: []
@@ -41,11 +41,12 @@ const rules = {
   },
   gender: {
     required: true,
+    type: 'number',
     trigger: 'change',
     message: '请选择性别',
   },
 
-}
+} as FormRules
 const formRef = ref()
 function handleValidateButtonClick(e: MouseEvent) {
   e.preventDefault()
@@ -129,13 +130,13 @@ defineExpose({
             <n-form-item :span="12" label="性别" path="gender">
               <n-radio-group v-model:value="formlist.account.gender">
                 <n-space>
-                  <n-radio value="0">
+                  <n-radio :value="0">
                     未知
                   </n-radio>
-                  <n-radio value="1">
+                  <n-radio :value="1">
                     男
                   </n-radio>
-                  <n-radio value="2">
+                  <n-radio :value="2">
                     女
                   </n-radio>
                 </n-space>
