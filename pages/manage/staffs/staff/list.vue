@@ -106,7 +106,7 @@ const handleSearch = (query: string) => {
         <n-select
           v-model:value="filterData.store_id"
           filterable
-          placeholder="搜索歌曲"
+          placeholder="搜索"
           :options="storeList"
           :loading="loading"
           clearable
