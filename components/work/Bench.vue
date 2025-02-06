@@ -53,16 +53,14 @@ function changePageBench(bench: WorkBench) {
                     </div>
                   </div>
                 </button>
-                <template v-if="!work?.children?.length">
-                  <button style="all: unset;" @click="delBench(work.id)">
-                    <div class="flex items-center ml-4 cursor-pointer">
-                      <icon name="i-svg:delete" :size="12" color="#FF2F2F" />
-                      <div class="text-[12px] text-[#FF2F2F] pl-1">
-                        删除
-                      </div>
+                <button style="all: unset;" @click="delBench(work.id)">
+                  <div class="flex items-center ml-4 cursor-pointer">
+                    <icon name="i-svg:delete" :size="12" color="#FF2F2F" />
+                    <div class="text-[12px] text-[#FF2F2F] pl-1">
+                      删除
                     </div>
-                  </button>
-                </template>
+                  </div>
+                </button>
               </div>
             </template>
             <template v-else>
@@ -111,16 +109,14 @@ function changePageBench(bench: WorkBench) {
                               </div>
                             </div>
                           </button>
-                          <template v-if="!child?.children?.length">
-                            <button style="all: unset;" @click="delBench(child.id)">
-                              <div class="flex items-center ml-4 cursor-pointer">
-                                <icon name="i-svg:delete" :size="12" />
-                                <div class="text-[12px] text-[#FF2F2F] pl-1">
-                                  删除
-                                </div>
+                          <button style="all: unset;" @click="delBench(child.id)">
+                            <div class="flex items-center ml-4 cursor-pointer">
+                              <icon name="i-svg:delete" :size="12" />
+                              <div class="text-[12px] text-[#FF2F2F] pl-1">
+                                删除
                               </div>
-                            </button>
-                          </template>
+                            </div>
+                          </button>
                         </div>
                       </template>
                     </div>
