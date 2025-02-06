@@ -69,7 +69,7 @@ function changePageBench(bench: WorkBench) {
                   <div class="horn">
                     点击收起
                   </div>
-                  <icon name="i-icon:down" :size="16" color="rgba(128,128,137,1)" />
+                  <icon name="i-icon:down" :size="12" color="rgba(128,128,137,1)" />
                 </template>
                 <template v-else>
                   <div class="horn">
