@@ -1,12 +1,19 @@
 <script lang="ts" setup>
 // 新增销售单
-import type { FormInst, FormRules, SelectOption } from 'naive-ui'
+import type { FormInst, FormRules } from 'naive-ui'
 
-const { staffGetStoreList } = useStores()
 useSeoMeta({
   title: '新增销售单',
 })
-
+const { myStore } = storeToRefs(useStores())
+const { getProductList } = useProductManage()
+const { productList } = storeToRefs(useProductManage())
+const { getStoreStaffList, StoreStaffList } = useStores()
+const { getSaleWhere, getTodayPrice } = useSale()
+const { filterList, todayPrice } = storeToRefs(useSale())
+const { getMemberList } = useMemberManage()
+const { memberList } = storeToRefs(useMemberManage())
+const showModal = ref(false)
 const formRef = ref<FormInst | null>(null)
 const formData = ref<addSale>({
   type: 1, // 订单类型
@@ -21,35 +28,37 @@ const formData = ref<addSale>({
   products: [], // 商品列表
   salesmens: [],
 })
-const generalOptions = ['groode', 'veli good', 'emazing', 'lidiculous'].map(
+await getSaleWhere()
+await getMemberList({ page: 1, limit: 20, where: { id: myStore.value.id } })
+await getStoreStaffList({ id: myStore.value.id })
+await getTodayPrice()
+
+// 收银员列表参数
+const cashierOptions = StoreStaffList.map(
   v => ({
-    label: v,
-    value: v,
+    label: v.nickname,
+    value: v.id,
   }),
 )
-const sourceOptions = [{
-  label: '自然客流',
-  value: 0,
-}, {
-  label: '营销转化',
-  value: 1,
-}, {
-  label: '回访邀约',
-  value: 2,
-}, {
-  label: '老带新',
-  value: 3,
-}]
-const typeOptions = [{
-  label: '销售单',
-  value: 1,
-}, {
-  label: '定金单',
-  value: 2,
-}, {
-  label: '维修单',
-  value: 3,
-}]
+// 会员列表参数
+const memberListOptions = memberList.value.map(
+  v => ({
+    label: v.nickname ? v.nickname : v.name,
+    value: v.id,
+  }),
+)
+
+const PresetArr = (presetObject: SaleItemsPreset, radix: number = 20) => {
+  return Object.entries(presetObject).map(([key, value]) => ({
+    label: value,
+    value: Number.parseInt(key, radix),
+  }))
+}
+// 订单类型参数
+const typeOptions: { label: string, value: number }[] = PresetArr(filterList.value.type?.preset) || []
+// 订单来源参数
+const sourceOptions: { label: string, value: number }[] = PresetArr(filterList.value.source?.preset) || []
+// 点击验证表单
 const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate((errors) => {
@@ -68,11 +77,6 @@ const rules = ref<FormRules>({
     trigger: ['blur', 'change'],
     message: '请选择会员',
   },
-  store_id: {
-    required: true,
-    trigger: ['blur', 'change'],
-    message: '请选择门店',
-  },
   type: {
     type: 'number',
     required: true,
@@ -85,22 +89,28 @@ const rules = ref<FormRules>({
     message: '请选择收银员',
   },
 })
-const storeList = ref<SelectOption[]>([])
-const loading = ref(false)
-const getStores = useDebounceFn(async (query: string) => {
-  const res = await staffGetStoreList({ page: 1, limit: 10, where: { name: query } })
-  loading.value = false
-  if (res.length) {
-    storeList.value = res.map(item => ({
-      label: item.name,
-      value: item.id,
-    }))
-  }
-}, 500)
 
-const searchStores = (val: string) => {
-  loading.value = true
-  getStores(val)
+const searchProduct = ref('')
+
+const searchProductList = () => {
+  getProductList({ page: 1, limit: 10, where: { name: searchProduct.value } })
+}
+const showProductList = ref<Product[]>([])
+const addProduct = (product: Product) => {
+  // 判断是否已经添加过该商品,如果已经添加过,则数量加一
+  const index = showProductList.value.findIndex(item => item.id === product.id)
+  if (index !== -1 && showProductList.value[index].quantity) {
+    showProductList.value[index].quantity++
+    return
+  }
+  else if (
+    index !== -1 && !showProductList.value[index].quantity
+  ) {
+    showProductList.value[index].quantity = 1
+    return
+  }
+
+  showProductList.value.push({ ...product, quantity: 1, discount: undefined, payable_amount: 0 })
 }
 </script>
 
@@ -113,6 +123,9 @@ const searchStores = (val: string) => {
         :rules="rules"
         label-align="left"
       >
+        <div class="w-[120px] color-[#fff] pb-[12px]">
+          <product-manage-company />
+        </div>
         <sale-add-base>
           <div>
             <n-form-item label="订单类型" path="type">
@@ -120,37 +133,24 @@ const searchStores = (val: string) => {
                 v-model:value="formData.type"
                 placeholder="订单类型"
                 :options="typeOptions"
-                @blur="() => {
-                  console.log(formData);
-                }"
+
               />
             </n-form-item>
             <n-form-item label="收银员" path="cashier_id">
               <n-select
                 v-model:value="formData.cashier_id"
                 placeholder="请选择收银员"
-                :options="generalOptions"
+                :options="cashierOptions"
               />
             </n-form-item>
             <n-form-item label="会员" path="member_id">
               <n-select
                 v-model:value="formData.member_id"
                 placeholder="请选择会员"
-                :options="generalOptions"
+                :options="memberListOptions"
               />
             </n-form-item>
-            <n-form-item label="门店" path="store_id">
-              <n-select
-                v-model:value="formData.store_id"
-                filterable
-                placeholder="搜索门店"
-                clearable
-                remote
-                :loading="loading"
-                :options="storeList"
-                @search="searchStores"
-              />
-            </n-form-item>
+
             <n-form-item label="来源" path="source">
               <n-select
                 v-model:value="formData.source"
@@ -162,9 +162,12 @@ const searchStores = (val: string) => {
         </sale-add-base>
 
         <div class="py-[16px]">
-          <sale-add-product>
+          <sale-add-product
+            @open=" () => {
+              showModal = true
+            }">
             <div class=" px-[16px] pb-[16px]">
-              <sale-add-list />
+              <sale-add-list :list="showProductList" :price="todayPrice" />
             </div>
           </sale-add-product>
         </div>
@@ -204,7 +207,7 @@ const searchStores = (val: string) => {
 
             <div class="border-y-[#E6E6E8] border border-y-solid py-[12px]">
               <div class="text-[16px] color-[#3971F3] line-height-[24px] pb-[10px] text-right font-semibold">
-                实付金额:xxxx
+                实付金额:xxxxxxxx
               </div>
               <div class="text-[16px] color-[#3971F3] line-height-[24px] text-right font-semibold">
                 积分合计:xxxxxxxx
@@ -235,5 +238,34 @@ const searchStores = (val: string) => {
         <common-button-bottom confirm-text="开单" cancel-text="取消" />
       </div>
     </div>
+    <n-modal v-model:show="showModal">
+      <n-card
+        title="搜商品"
+        style="width: 600px"
+        :bordered="false"
+      >
+        <div class="flex items-center">
+          <div class="flex-1">
+            <n-input v-model:value="searchProduct" type="text" placeholder="请输入商品名称" />
+          </div>
+          <div class="pl-[16px]">
+            <n-button type="info" @click="searchProductList">
+              搜索商品
+            </n-button>
+          </div>
+        </div>
+        <div class="pt-[20px]">
+          <template v-for="(item, index) in productList" :key="index">
+            <div class="py-[6px] flex justify-between items-center">
+              <div>{{ item.name }} -- {{ item.code }}</div>
+              <n-button size="small" strong secondary round type="info" @click="addProduct(item)">
+                添加
+              </n-button>
+            </div>
+          </template>
+        </div>
+        <template #footer />
+      </n-card>
+    </n-modal>
   </div>
 </template>

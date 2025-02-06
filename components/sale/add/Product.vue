@@ -1,17 +1,16 @@
 <script setup lang="ts">
-const handleClick = async () => {
-  // 跳转到搜索商品页
-  await navigateTo('/sale/search/product')
-}
+const emits = defineEmits<{
+  (e: 'open'): void
+}>()
 </script>
 
 <template>
   <common-fold title="产品信息" :is-collapse="false">
     <div class="p-[16px]">
       <div class="btn grid-12 gap-[20px]">
-        <div class="btn-left col-span-4 offset-2 cursor-pointer">
+        <div class="btn-left col-span-4 offset-2 cursor-pointer" @click="emits('open')">
           <icon name="i-icon:search" color="#fff" :size="12" />
-          <div class="ml-2" @click="handleClick">
+          <div class="ml-2">
             搜商品
           </div>
         </div>

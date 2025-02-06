@@ -157,3 +157,29 @@ interface Salesmen {
    */
   salesman_id: string
 }
+
+interface WhereSale {
+  cashier_id: SaleItems
+  end_date: SaleItems
+  id: SaleItems
+  member_id: SaleItems
+  salesmen_id: SaleItems
+  source: SaleItems
+  start_date: SaleItems
+  status: SaleItems
+  store_id: SaleItems
+  type: SaleItems
+}
+interface SaleItems {
+  input: string
+  label: string
+  name: string
+  preset: SaleItemsPreset
+  required: boolean
+  show: boolean
+  sort: number
+  type: string
+}
+interface SaleItemsPreset {
+  [key: string]: string
+}

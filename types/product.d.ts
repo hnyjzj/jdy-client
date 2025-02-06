@@ -132,6 +132,18 @@ interface Product {
    * 杂料重
    */
   weight_other: number
+  /**
+   * 折扣
+   */
+  discount?: number
+  /**
+   * 数量
+   */
+  quantity?: number
+  /**
+   * 应付金额
+   */
+  payable_amount?: number
 }
 
 interface ProductDamage {
