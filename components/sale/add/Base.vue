@@ -1,9 +1,13 @@
 <script lang="ts" setup>
-
+const props = withDefaults(defineProps<{
+  title?: string
+}>(), {
+  title: '基础信息',
+})
 </script>
 
 <template>
-  <common-fold title="基础信息" :is-collapse="false">
+  <common-fold :title="props.title" :is-collapse="false">
     <div class="p-[16px] w-auto flex flex-col gap-[12px]" uno-lg="grid grid-cols-1 gap-[16px] grid-cols-0">
       <slot />
     </div>

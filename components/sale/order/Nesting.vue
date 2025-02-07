@@ -19,7 +19,7 @@ const toggleFold = () => {
         <template v-if="hasCheck">
           <common-check rounded="8px" />
         </template>
-        <slot name="right" />
+        <slot name="left" />
         <div class="text-[14px] font-semibold color-[#1B2129] dark:color-[#fff]">
           {{ props.title }}
         </div>

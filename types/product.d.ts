@@ -132,6 +132,8 @@ interface Product {
    * 杂料重
    */
   weight_other: number
+}
+interface OrderProduct extends Product {
   /**
    * 折扣
    */
@@ -143,9 +145,8 @@ interface Product {
   /**
    * 应付金额
    */
-  payable_amount?: number
+  payable_amount: number
 }
-
 interface ProductDamage {
   code: Product['code']
   reason: string

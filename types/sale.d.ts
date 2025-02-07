@@ -95,7 +95,7 @@ interface addSale {
   /**
    * 整单折扣
    */
-  discount_rate: number
+  discount_rate: number | undefined
   /**
    * 使用积分
    */
@@ -113,7 +113,7 @@ interface addSale {
   /**
    * 订单来源
    */
-  source: number
+  source?: number
   /**
    * 门店ID
    */
@@ -121,7 +121,7 @@ interface addSale {
   /**
    * 订单类型
    */
-  type: number | string
+  type?: number | string
 }
 
 interface saleProduct {
@@ -147,39 +147,26 @@ interface Salesmen {
   /**
    * 业绩金额
    */
-  performance_amount?: number
+  performance_amount: number
   /**
    * 业绩比例
    */
-  performance_rate?: number
+  performance_rate: number
   /**
    * 导购员ID
    */
   salesman_id: string
 }
 
-interface WhereSale {
-  cashier_id: SaleItems
-  end_date: SaleItems
-  id: SaleItems
-  member_id: SaleItems
-  salesmen_id: SaleItems
-  source: SaleItems
-  start_date: SaleItems
-  status: SaleItems
-  store_id: SaleItems
-  type: SaleItems
-}
-interface SaleItems {
-  input: string
-  label: string
-  name: string
-  preset: SaleItemsPreset
-  required: boolean
-  show: boolean
-  sort: number
-  type: string
-}
-interface SaleItemsPreset {
-  [key: string]: string
+interface Order {
+  cashier_id: string
+  end_date: string
+  id: string
+  member_id: string
+  salesmen_id: string
+  source: number
+  start_date: string
+  status: number
+  store_id: string
+  type: number
 }

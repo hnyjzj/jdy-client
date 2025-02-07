@@ -11,11 +11,6 @@
 </template>
 
 <style>
-.n-button {
-  border-radius: 60px;
-  height: 42px;
-}
-
 .n-border-hover {
   border-color: #3971f3;
 }

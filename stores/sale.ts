@@ -1,11 +1,12 @@
 export const useSale = defineStore('Sale', {
   state: () => ({
-    filterList: {} as Where<WhereSale>,
+    filterList: {} as Where<Order>,
     todayPrice: 0 as number,
   }),
   actions: {
+    // 获取筛选条件
     async getSaleWhere() {
-      const { data } = await https.get<Where<WhereSale>, null>('/order/where')
+      const { data } = await https.get<Where<Order>, null>('/order/where')
       if (data.value.code === HttpCode.SUCCESS) {
         this.filterList = data.value.data
       }
@@ -17,6 +18,9 @@ export const useSale = defineStore('Sale', {
       if (data.value.code === HttpCode.SUCCESS) {
         this.todayPrice = data.value.data.price
       }
+    },
+    async submitOrder(req: addSale) {
+      await https.post('/order/create', req)
     },
   },
 })
