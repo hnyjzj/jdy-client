@@ -11,10 +11,10 @@ const searchProduct = ref('')
 const searchType = ref('name')
 // 添加商品
 const addProduct = (product: Product) => {
-  // 判断是否已经添加过该商品,如果已经添加过,则数量加一
   const index = showProductList.value.findIndex(item => item.id === product.id)
   if (index !== -1 && showProductList.value[index].quantity) {
-    showProductList.value[index].quantity++
+    // 判断是否已经添加过该商品,如果已经添加过,则数量加一
+    // showProductList.value[index].quantity++
     return
   }
   else if (
