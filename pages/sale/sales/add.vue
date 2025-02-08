@@ -9,12 +9,11 @@ useSeoMeta({
 const { myStore } = storeToRefs(useStores())
 const { getProductList } = useProductManage()
 const { productList } = storeToRefs(useProductManage())
-const { getStoreStaffList, StoreStaffList } = useStores()
+const { getStoreStaffList } = useStores()
 const { getSaleWhere, getTodayPrice, submitOrder } = useSale()
-const { filterList, todayPrice } = storeToRefs(useSale())
+const { todayPrice } = storeToRefs(useSale())
 const { getMemberList } = useMemberManage()
-const { memberList } = storeToRefs(useMemberManage())
-const dialog = useDialog()
+
 const showModal = ref(false)
 const formRef = ref<FormInst | null>(null)
 const formData = ref<addSale>({
@@ -35,25 +34,6 @@ await getMemberList({ page: 1, limit: 20, where: { id: myStore.value.id } })
 await getStoreStaffList({ id: myStore.value.id })
 await getTodayPrice()
 
-// 收银员列表参数
-const cashierOptions = StoreStaffList.map(
-  v => ({
-    label: v.nickname,
-    value: v.id,
-  }),
-)
-// 会员列表参数
-const memberListOptions = memberList.value.map(
-  v => ({
-    label: v.nickname ? v.nickname : v.name,
-    value: v.id,
-  }),
-)
-// 订单类型参数
-const typeOptions = optonsToSelect(filterList.value.type?.preset)
-// 订单来源参数
-const sourceOptions = optonsToSelect(filterList.value.source?.preset)
-
 const rules = ref<FormRules>({
   member_id: {
     required: true,
@@ -71,6 +51,32 @@ const rules = ref<FormRules>({
     trigger: ['blur', 'change'],
     message: '请选择收银员',
   },
+  source: {
+    type: 'number',
+    required: true,
+    trigger: ['blur', 'change'],
+    message: '请选择订单来源',
+  },
+  salesmens: {
+    salesman_id: {
+      required: true,
+      trigger: ['blur', 'change'],
+      message: '请选择导购员',
+    },
+    performance_amount: {
+      type: 'number',
+      required: true,
+      trigger: ['blur', 'change'],
+      message: '请设置业绩金额',
+    },
+    performance_rate: {
+      type: 'number',
+      required: true,
+      trigger: ['blur', 'change'],
+      message: '请设置业绩比例',
+    },
+  },
+
 })
 const searchProduct = ref('')
 const searchProductList = () => {
@@ -96,6 +102,7 @@ const addProduct = (product: Product) => {
   }
   showProductList.value.push({ ...product, quantity: 1, discount: undefined, payable_amount: 0 })
 }
+const dialog = useDialog()
 
 // 删除商品
 const deleteProduct = (index: number) => {
@@ -143,37 +150,6 @@ const payMoney = computed(() => {
   total.value = calc('(t * r) | <=2,!n', { t: total.value, r: ((formData.value.discount_rate || 10) * 0.1) })
   return total.value
 })
-// 新增销售员
-const addNewSale = async () => {
-  formData.value.salesmens.push({
-    salesman_id: '1864219635784617985',
-    performance_amount: 0,
-    performance_rate: 0,
-    is_main: !formData.value.salesmens.length,
-  })
-}
-// 设置主销售员
-const handleSwitch = (index: number) => {
-  formData.value.salesmens.forEach((item) => {
-    item.is_main = false
-  })
-  formData.value.salesmens[index].is_main = true
-}
-// 删除销售
-const deleteSale = (index: number) => {
-  dialog.error({
-    title: '确定删除此导购吗',
-    negativeText: '取消',
-    positiveText: '确定',
-    onPositiveClick: () => {
-      formData.value.salesmens.splice(index, 1)
-      const aliveMain = formData.value.salesmens.filter(item => item.is_main === true)
-      if (!aliveMain.length) {
-        formData.value.salesmens[0].is_main = true
-      }
-    },
-  })
-}
 </script>
 
 <template>
@@ -188,96 +164,7 @@ const deleteSale = (index: number) => {
         <div class="w-[120px] color-[#fff] pb-[12px]">
           <product-manage-company />
         </div>
-        <sale-add-base>
-          <div>
-            <div class="flex justify-between">
-              <n-form-item label="订单类型" path="type" class="w-[45%]">
-                <n-select
-                  v-model:value="formData.type"
-                  placeholder="订单类型"
-                  :options="typeOptions"
-
-                />
-              </n-form-item>
-              <n-form-item label="收银员" path="cashier_id" class="w-[45%]">
-                <n-select
-                  v-model:value="formData.cashier_id"
-                  placeholder="请选择收银员"
-                  :options="cashierOptions"
-                />
-              </n-form-item>
-            </div>
-            <div class="flex justify-between">
-              <n-form-item label="会员" path="member_id" class="w-[45%]">
-                <n-select
-                  v-model:value="formData.member_id"
-                  placeholder="请选择会员"
-                  :options="memberListOptions"
-                />
-              </n-form-item>
-
-              <n-form-item label="来源" path="source" class="w-[45%]">
-                <n-select
-                  v-model:value="formData.source"
-                  placeholder="请选择来源"
-                  :options="sourceOptions"
-                />
-              </n-form-item>
-            </div>
-          </div>
-
-          <template v-for="(item, index) in formData.salesmens" :key="index">
-            <div class="pt-[26px] border-t-[1px] border-t-solid border-t-[#ccc]">
-              <div class="flex justify-between">
-                <n-form-item label="导购员" path="type" label-placement="top" class="w-[45%]">
-                  <n-select
-                    v-model:value="item.salesman_id"
-                    placeholder="导购员"
-                    :options="typeOptions"
-                  />
-                </n-form-item>
-                <n-form-item label="是否主销" label-placement="top" class="w-[45%]">
-                  <div class="flex justify-between items-center w-full">
-                    <n-switch v-model:value="item.is_main" @update:value="handleSwitch(index)">
-                      <template #checked>
-                        主销
-                      </template>
-                      <template #unchecked>
-                        辅销
-                      </template>
-                    </n-switch>
-                    <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteSale(index)">
-                      <icon name="i-svg:delete" :size="16" />
-                    </div>
-                  </div>
-                </n-form-item>
-              </div>
-              <div class="flex justify-between">
-                <n-form-item label="业绩金额" path="type" label-placement="top" class="w-[45%]">
-                  <n-input-number v-model:value="item.performance_amount" :precision="2" :min="0">
-                    <template #suffix>
-                      元
-                    </template>
-                  </n-input-number>
-                </n-form-item>
-                <n-form-item label="业绩比例" path="type" label-placement="top" class="w-[45%]">
-                  <n-input-number v-model:value="item.performance_rate" :min="0">
-                    <template #suffix>
-                      %
-                    </template>
-                  </n-input-number>
-                </n-form-item>
-              </div>
-
-              <div />
-            </div>
-          </template>
-          <div class="flex-center-row">
-            <n-button type="info" @click="addNewSale">
-              新增导购员
-            </n-button>
-          </div>
-        </sale-add-base>
+        <sale-add-base v-model="formData" />
 
         <div class="py-[16px]">
           <sale-add-product
