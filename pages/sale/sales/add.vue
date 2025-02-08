@@ -21,10 +21,15 @@ const formData = ref<addSale>({
   amount_reduce: 0, // 抹零金额
   integral_use: 0, //  使用积分
   member_id: null, // 会员ID
-  store_id: '', // 门店ID
-  cashier_id: '', // 收银员ID
+  store_id: '1872153787930513408', // 门店ID
+  cashier_id: '1864219635784617985', // 收银员ID
   products: [], // 商品列表
-  salesmens: [],
+  salesmens: [{
+    salesman_id: '1864219635784617985',
+    performance_amount: 0,
+    performance_rate: 0,
+    is_main: true,
+  }],
 })
 // 展示商品列表
 const showProductList = ref<OrderProduct[]>([])
@@ -78,8 +83,17 @@ const rules = ref<FormRules>({
 
 })
 // 搜索点击添加商品
-const searchProductList = (val: string) => {
-  getProductList({ page: 1, limit: 10, where: { name: val } })
+const searchProductList = (val: string, type: string) => {
+  if (val === '') {
+    $toast.error('请输入商品名称或编码')
+    return
+  }
+  if (type === 'name') {
+    getProductList({ page: 1, limit: 10, where: { name: val, status: 1 } })
+  }
+  else {
+    getProductList({ page: 1, limit: 10, where: { code: val, status: 1 } })
+  }
 }
 
 // 点击验证表单

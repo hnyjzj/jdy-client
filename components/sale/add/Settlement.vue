@@ -13,7 +13,12 @@ const formData = defineModel<addSale>('form', {
     store_id: '', // 门店ID
     cashier_id: '', // 收银员ID
     products: [], // 商品列表
-    salesmens: [],
+    salesmens: [{
+      salesman_id: '1864219635784617985',
+      performance_amount: 0,
+      performance_rate: 0,
+      is_main: true,
+    }],
   },
 })
 

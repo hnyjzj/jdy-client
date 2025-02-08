@@ -1,11 +1,14 @@
 <script setup lang="ts">
 const emits = defineEmits<{
-  search: [val: string]
+  search: [val: string, type: string]
 }>()
 const { productList } = storeToRefs(useProductManage())
 const showProductList = defineModel<OrderProduct[]>({ default: [] })
 const showModal = ref(false)
 const searchProduct = ref('')
+
+// 搜索商品 名称 和 条码   code
+const searchType = ref('name')
 // 添加商品
 const addProduct = (product: Product) => {
   // 判断是否已经添加过该商品,如果已经添加过,则数量加一
@@ -31,6 +34,7 @@ const addProduct = (product: Product) => {
       <div class="btn grid-12 gap-[20px]">
         <div
           class="btn-left col-span-4 offset-2 cursor-pointer" @click="() => {
+            productList = []
             showModal = true
           }">
           <icon name="i-icon:search" color="#fff" :size="12" />
@@ -60,16 +64,28 @@ const addProduct = (product: Product) => {
     </template>
     <n-modal v-model:show="showModal">
       <n-card
-        title="搜商品"
         style="width: 600px"
         :bordered="false"
       >
+        <div class="flex py-[12px] items-center">
+          <div class="pr-[20px] text-[16px]">
+            搜商品
+          </div>
+          <div class="flex">
+            <div class="px-[8px] py-[4px] rounded-3xl mr-[8px]" :style="{ backgroundColor: searchType === 'name' ? '#2080F0' : '#F3F3F3', color: searchType === 'name' ? '#fff' : '#000' } " @click="searchType = 'name'">
+              名称
+            </div>
+            <div class="px-[8px] py-[4px] rounded-3xl" :style="{ backgroundColor: searchType === 'code' ? '#2080F0' : '#F3F3F3', color: searchType === 'code' ? '#fff' : '#000' } " @click="searchType = 'code'">
+              条码
+            </div>
+          </div>
+        </div>
         <div class="flex items-center">
           <div class="flex-1">
-            <n-input v-model:value="searchProduct" type="text" placeholder="请输入商品名称" />
+            <n-input v-model:value="searchProduct" type="text" :placeholder="searchType === 'name' ? '请输入商品名称' : '请输入商品条码'" />
           </div>
           <div class="pl-[16px]">
-            <n-button type="info" @click="emits('search', searchProduct)">
+            <n-button type="info" @click="emits('search', searchProduct, searchType)">
               搜索商品
             </n-button>
           </div>
