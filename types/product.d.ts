@@ -133,20 +133,6 @@ interface Product {
    */
   weight_other: number
 }
-interface OrderProduct extends Product {
-  /**
-   * 折扣
-   */
-  discount?: number
-  /**
-   * 数量
-   */
-  quantity?: number
-  /**
-   * 应付金额
-   */
-  payable_amount: number
-}
 interface ProductDamage {
   code: Product['code']
   reason: string
