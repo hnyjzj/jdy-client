@@ -2,15 +2,12 @@
 import { calc } from 'a-calc'
 
 const Props = defineProps<{
-  list: OrderProduct[]
   price: number
 }>()
 
-const emits = defineEmits<{
-  deleteproduct: [index: number]
-}>()
-
-const hasCheck = defineModel({ type: Boolean, default: false })
+const dialog = useDialog()
+const showProductList = defineModel<OrderProduct[]>({ default: [] })
+const hasCheck = ref(false)
 // 计件方式
 const count = (product: OrderProduct) => {
   if (!product.quantity)
@@ -50,11 +47,23 @@ const count = (product: OrderProduct) => {
     return total
   }
 }
+
+// 删除商品
+const deleteProduct = (index: number) => {
+  dialog.error({
+    title: '确定删除此商品吗?',
+    negativeText: '取消',
+    positiveText: '确定',
+    onPositiveClick: () => {
+      showProductList.value.splice(index, 1)
+    },
+  })
+}
 </script>
 
 <template>
   <div>
-    <template v-for="(obj, ix) in Props.list" :key="ix">
+    <template v-for="(obj, ix) in showProductList" :key="ix">
       <div class="pb-[12px]">
         <sale-order-nesting v-model="hasCheck" :title="obj.name">
           <template #left>
@@ -104,7 +113,7 @@ const count = (product: OrderProduct) => {
                 </div>
                 <div class="flex justify-between items-center">
                   <div>
-                    <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="emits('deleteproduct', ix)">
+                    <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteProduct(ix)">
                       <icon name="i-svg:delete" :size="16" />
                     </div>
                   </div>

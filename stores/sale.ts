@@ -20,7 +20,8 @@ export const useSale = defineStore('Sale', {
       }
     },
     async submitOrder(req: addSale) {
-      await https.post('/order/create', req)
+      const { data } = await https.post<undefined, addSale>('/order/create', req)
+      return data.value
     },
   },
 })

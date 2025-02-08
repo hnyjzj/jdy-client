@@ -1,14 +1,38 @@
 <script setup lang="ts">
 const emits = defineEmits<{
-  (e: 'open'): void
+  search: [val: string]
 }>()
+const { productList } = storeToRefs(useProductManage())
+const showProductList = defineModel<OrderProduct[]>({ default: [] })
+const showModal = ref(false)
+const searchProduct = ref('')
+// 添加商品
+const addProduct = (product: Product) => {
+  // 判断是否已经添加过该商品,如果已经添加过,则数量加一
+  const index = showProductList.value.findIndex(item => item.id === product.id)
+  if (index !== -1 && showProductList.value[index].quantity) {
+    showProductList.value[index].quantity++
+    return
+  }
+  else if (
+    // 如果没添加 并且数量为空,则数量为1
+    index !== -1 && !showProductList.value[index].quantity
+  ) {
+    showProductList.value[index].quantity = 1
+    return
+  }
+  showProductList.value.push({ ...product, quantity: 1, discount: undefined, payable_amount: 0 })
+}
 </script>
 
 <template>
   <common-fold title="产品信息" :is-collapse="false">
     <div class="p-[16px]">
       <div class="btn grid-12 gap-[20px]">
-        <div class="btn-left col-span-4 offset-2 cursor-pointer" @click="emits('open')">
+        <div
+          class="btn-left col-span-4 offset-2 cursor-pointer" @click="() => {
+            showModal = true
+          }">
           <icon name="i-icon:search" color="#fff" :size="12" />
           <div class="ml-2">
             搜商品
@@ -34,6 +58,35 @@ const emits = defineEmits<{
     <template v-else>
       <slot />
     </template>
+    <n-modal v-model:show="showModal">
+      <n-card
+        title="搜商品"
+        style="width: 600px"
+        :bordered="false"
+      >
+        <div class="flex items-center">
+          <div class="flex-1">
+            <n-input v-model:value="searchProduct" type="text" placeholder="请输入商品名称" />
+          </div>
+          <div class="pl-[16px]">
+            <n-button type="info" @click="emits('search', searchProduct)">
+              搜索商品
+            </n-button>
+          </div>
+        </div>
+        <div class="pt-[20px]">
+          <template v-for="(item, index) in productList" :key="index">
+            <div class="py-[6px] flex justify-between items-center">
+              <div>{{ item.name }} -- {{ item.code }}</div>
+              <n-button size="small" strong secondary round type="info" @click="addProduct(item)">
+                添加
+              </n-button>
+            </div>
+          </template>
+        </div>
+        <template #footer />
+      </n-card>
+    </n-modal>
   </common-fold>
 </template>
 

@@ -1,20 +1,17 @@
 <script lang="ts" setup>
 // 新增销售单
 import type { FormInst, FormRules } from 'naive-ui'
-import { calc } from 'a-calc'
 
 useSeoMeta({
   title: '新增销售单',
 })
+const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 const { getProductList } = useProductManage()
-const { productList } = storeToRefs(useProductManage())
 const { getStoreStaffList } = useStores()
 const { getSaleWhere, getTodayPrice, submitOrder } = useSale()
 const { todayPrice } = storeToRefs(useSale())
 const { getMemberList } = useMemberManage()
-
-const showModal = ref(false)
 const formRef = ref<FormInst | null>(null)
 const formData = ref<addSale>({
   type: undefined, // 订单类型
@@ -29,10 +26,12 @@ const formData = ref<addSale>({
   products: [], // 商品列表
   salesmens: [],
 })
+// 展示商品列表
+const showProductList = ref<OrderProduct[]>([])
 await getSaleWhere()
+await getTodayPrice()
 await getMemberList({ page: 1, limit: 20, where: { id: myStore.value.id } })
 await getStoreStaffList({ id: myStore.value.id })
-await getTodayPrice()
 
 const rules = ref<FormRules>({
   member_id: {
@@ -78,50 +77,18 @@ const rules = ref<FormRules>({
   },
 
 })
-const searchProduct = ref('')
-const searchProductList = () => {
-  getProductList({ page: 1, limit: 10, where: { name: searchProduct.value } })
-}
-
-// 展示商品列表
-const showProductList = ref<OrderProduct[]>([])
-// 添加商品
-const addProduct = (product: Product) => {
-  // 判断是否已经添加过该商品,如果已经添加过,则数量加一
-  const index = showProductList.value.findIndex(item => item.id === product.id)
-  if (index !== -1 && showProductList.value[index].quantity) {
-    showProductList.value[index].quantity++
-    return
-  }
-  else if (
-    // 如果没添加 并且数量为空,则数量为1
-    index !== -1 && !showProductList.value[index].quantity
-  ) {
-    showProductList.value[index].quantity = 1
-    return
-  }
-  showProductList.value.push({ ...product, quantity: 1, discount: undefined, payable_amount: 0 })
-}
-const dialog = useDialog()
-
-// 删除商品
-const deleteProduct = (index: number) => {
-  dialog.error({
-    title: '确定删除此商品吗?',
-    negativeText: '取消',
-    positiveText: '确定',
-    onPositiveClick: () => {
-      showProductList.value.splice(index, 1)
-    },
-  })
+// 搜索点击添加商品
+const searchProductList = (val: string) => {
+  getProductList({ page: 1, limit: 10, where: { name: val } })
 }
 
 // 点击验证表单
 const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
-  formRef.value?.validate((errors) => {
+  formRef.value?.validate(async (errors) => {
     if (!errors) {
       // 成功的操作
+      formData.value.products = [] // 清空商品列表
       showProductList.value.forEach((item) => {
         formData.value.products.push({
           product_id: item.id,
@@ -129,27 +96,19 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
           discount: item.discount,
         })
       })
-
-      //   formData.value.products.
-
-      submitOrder(formData.value)
+      const res = await submitOrder(formData.value)
+      if (res.code === HttpCode.SUCCESS) {
+        $toast.success('添加成功')
+      }
+      else {
+        $toast.error(res.message)
+      }
     }
     else {
-      // 失败操作
-
+      $toast.error('请填写必填信息')
     }
   })
 }
-
-// 计算应付金额
-const payMoney = computed(() => {
-  const total = ref(0)
-  total.value = showProductList.value.reduce((total, item) => {
-    return calc('(t + i) | <=2,!n', { t: total, i: item.payable_amount })
-  }, 0)
-  total.value = calc('(t * r) | <=2,!n', { t: total.value, r: ((formData.value.discount_rate || 10) * 0.1) })
-  return total.value
-})
 </script>
 
 <template>
@@ -168,109 +127,36 @@ const payMoney = computed(() => {
 
         <div class="py-[16px]">
           <sale-add-product
-            @open=" () => {
-              showModal = true
-            }">
+            v-model="showProductList"
+            @search="searchProductList">
             <div class=" px-[16px] pb-[16px]">
-              <sale-add-list :list="showProductList" :price="todayPrice" @deleteproduct="deleteProduct" />
+              <sale-add-list v-model="showProductList" :price="todayPrice" />
             </div>
           </sale-add-product>
         </div>
-        <sale-add-settlement>
-          <div>
-            <div class="flex justify-between">
-              <n-form-item
-                label="整单折扣" label-placement="top"
-                class="w-[45%]"
-              >
-                <n-input-number
-                  v-model:value="formData.discount_rate"
-                  placeholder="请输入折扣"
-                  round
-                  :precision="2"
-                  min="1"
-                  max="10"
-                  type="text"
-                />
-              </n-form-item>
-
-              <n-form-item
-                label="抹零金额" label-placement="top"
-                class="w-[45%]"
-              >
-                <n-input-number
-                  v-model:value="formData.amount_reduce"
-                  placeholder="0"
-                  round
-                  min="0"
-                  type="text"
-                />
-              </n-form-item>
-            </div>
-            <div class="border-y-[#E6E6E8] border border-y-solid py-[12px]">
-              <div class="text-[16px] color-[#3971F3] line-height-[24px] pb-[10px] text-right font-semibold">
-                实付金额:{{ payMoney }}
-              </div>
-            </div>
-            <n-form-item
-              label="备注信息"
-            >
-              <n-input
-                v-model:value="formData.remark"
-                placeholder="备注信息"
-                type="textarea"
-              />
-            </n-form-item>
-            <div class="color-[#FF2F2F] text-[16px] line-height-[24px] font-semibold">
-              剩余未支付:0.00
-            </div>
+        <sale-add-settlement v-model:form="formData" v-model:show-list="showProductList" />
+        <div class="h-[80px]">
+          <div class="btn grid-12 offset-2">
+            <button class="btn-right col-span-12 cursor-pointer" @click="handleValidateButtonClick">
+              开单
+            </button>
           </div>
-        </sale-add-settlement>
-        <div class="">
-          <n-button round type="primary" @click="handleValidateButtonClick">
-            验证
-          </n-button>
         </div>
       </n-form>
-
-      <div class="h-[80px]">
-        <common-button-bottom confirm-text="开单" cancel-text="取消" />
-      </div>
     </div>
-    <n-modal v-model:show="showModal">
-      <n-card
-        title="搜商品"
-        style="width: 600px"
-        :bordered="false"
-      >
-        <div class="flex items-center">
-          <div class="flex-1">
-            <n-input v-model:value="searchProduct" type="text" placeholder="请输入商品名称" />
-          </div>
-          <div class="pl-[16px]">
-            <n-button type="info" @click="searchProductList">
-              搜索商品
-            </n-button>
-          </div>
-        </div>
-        <div class="pt-[20px]">
-          <template v-for="(item, index) in productList" :key="index">
-            <div class="py-[6px] flex justify-between items-center">
-              <div>{{ item.name }} -- {{ item.code }}</div>
-              <n-button size="small" strong secondary round type="info" @click="addProduct(item)">
-                添加
-              </n-button>
-            </div>
-          </template>
-        </div>
-        <template #footer />
-      </n-card>
-    </n-modal>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .n-input-number {
   width: 100%;
+}
+.btn {
+  --uno: 'fixed bottom-0 left-0 right-0 blur-bga p-[12px_16px] text-[16px] font-bold';
+  &-right {
+    background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
+    box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
+    --uno: 'text-[16px] py-[8px] border-none flex-1 rounded-[36px] ml-[8px] text-[#FFFFFF]';
+  }
 }
 </style>

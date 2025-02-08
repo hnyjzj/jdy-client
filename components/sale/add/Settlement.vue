@@ -1,11 +1,82 @@
 <script lang="ts" setup>
+import { calc } from 'a-calc'
 
+const formData = defineModel<addSale>('form', {
+  default: {
+    type: undefined, // 订单类型
+    source: undefined, // 订单来源
+    remark: '', // 备注
+    discount_rate: undefined, // 整单折扣
+    amount_reduce: 0, // 抹零金额
+    integral_use: 0, //  使用积分
+    member_id: null, // 会员ID
+    store_id: '1872153787930513408', // 门店ID
+    cashier_id: '1864219635784617985', // 收银员ID
+    products: [], // 商品列表
+    salesmens: [],
+  },
+})
+
+const showProductList = defineModel<OrderProduct[]>('showList', { default: [] })
+// 计算应付金额
+const payMoney = computed(() => {
+  const total = ref(0)
+  total.value = showProductList.value.reduce((total, item) => {
+    return calc('(t + i) | <=2,!n', { t: total, i: item.payable_amount })
+  }, 0)
+  total.value = calc('(t * r) | <=2,!n', { t: total.value, r: ((formData.value.discount_rate || 10) * 0.1) })
+  return total.value
+})
 </script>
 
 <template>
   <common-fold title="结算信息" :is-collapse="false">
     <div class="p-[16px]">
-      <slot />
+      <div>
+        <div class="flex justify-between">
+          <n-form-item
+            label="整单折扣" label-placement="top"
+            class="w-[45%]"
+          >
+            <n-input-number
+              v-model:value="formData.discount_rate"
+              placeholder="请输入折扣"
+              round
+              :precision="2"
+              min="1"
+              max="10"
+              type="text"
+            />
+          </n-form-item>
+
+          <n-form-item
+            label="抹零金额" label-placement="top"
+            class="w-[45%]"
+          >
+            <n-input-number
+              v-model:value="formData.amount_reduce"
+              placeholder="0"
+              round
+              min="0"
+              type="text"
+            />
+          </n-form-item>
+        </div>
+        <div class="border-y-[#E6E6E8] border border-y-solid py-[12px]">
+          <div class="text-[16px] color-[#3971F3] line-height-[24px] pb-[10px] text-right font-semibold">
+            实付金额:{{ payMoney }}
+          </div>
+        </div>
+        <n-form-item
+          label="备注信息"
+        >
+          <n-input
+            v-model:value="formData.remark"
+            placeholder="备注信息"
+            type="textarea"
+          />
+        </n-form-item>
+      </div>
     </div>
   </common-fold>
 </template>
