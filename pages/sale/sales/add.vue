@@ -152,7 +152,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   width: 100%;
 }
 .btn {
-  --uno: 'fixed bottom-0 left-0 right-0 blur-bga p-[12px_16px] text-[16px] font-bold';
+  --uno: 'fixed bottom-0 left-0 right-0 blur-bga p-[12px_16px] pb-[28px] text-[16px] font-bold';
   &-right {
     background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
     box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
