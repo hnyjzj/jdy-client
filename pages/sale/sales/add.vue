@@ -21,8 +21,8 @@ const formData = ref<addSale>({
   amount_reduce: 0, // 抹零金额
   integral_use: 0, //  使用积分
   member_id: null, // 会员ID
-  store_id: '1872153787930513408', // 门店ID
-  cashier_id: '1864219635784617985', // 收银员ID
+  store_id: '', // 门店ID
+  cashier_id: '', // 收银员ID
   products: [], // 商品列表
   salesmens: [],
 })
