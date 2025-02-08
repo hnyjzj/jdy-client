@@ -1,33 +1,14 @@
 <script lang="ts" setup>
 import { calc } from 'a-calc'
 
-const formData = defineModel<addSale>('form', {
-  default: {
-    type: undefined, // 订单类型
-    source: undefined, // 订单来源
-    remark: '', // 备注
-    discount_rate: undefined, // 整单折扣
-    amount_reduce: 0, // 抹零金额
-    integral_use: 0, //  使用积分
-    member_id: null, // 会员ID
-    store_id: '', // 门店ID
-    cashier_id: '', // 收银员ID
-    products: [], // 商品列表
-    salesmens: [{
-      salesman_id: '1864219635784617985',
-      performance_amount: 0,
-      performance_rate: 0,
-      is_main: true,
-    }],
-  },
-})
+const formData = defineModel<Orders>('form', { default: {} })
 
-const showProductList = defineModel<OrderProduct[]>('showList', { default: [] })
+const showProductList = defineModel<OrderProducts[]>('showList', { default: [] })
 // 计算应付金额
 const payMoney = computed(() => {
   const total = ref(0)
   total.value = showProductList.value.reduce((total, item) => {
-    return calc('(t + i) | <=2,!n', { t: total, i: item.payable_amount })
+    return calc('(t + i) | <=2,!n', { t: total, i: item.amount })
   }, 0)
   total.value = calc('(t * r) | <=2,!n', { t: total.value, r: ((formData.value.discount_rate || 10) * 0.1) })
   return total.value

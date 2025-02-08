@@ -9,30 +9,31 @@ const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 const { getProductList } = useProductManage()
 const { getStoreStaffList } = useStores()
-const { getSaleWhere, getTodayPrice, submitOrder } = useSale()
-const { todayPrice } = storeToRefs(useSale())
+const { getSaleWhere, getTodayPrice, submitOrder } = useOrder()
+const { todayPrice } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
 const formRef = ref<FormInst | null>(null)
-const formData = ref<addSale>({
+const formData = ref<Orders>({
+  amount: 0,
   type: undefined, // 订单类型
   source: undefined, // 订单来源
   remark: '', // 备注
   discount_rate: undefined, // 整单折扣
   amount_reduce: 0, // 抹零金额
   integral_use: 0, //  使用积分
-  member_id: null, // 会员ID
-  store_id: '1872153787930513408', // 门店ID
-  cashier_id: '1864219635784617985', // 收银员ID
+  member_id: '', // 会员ID
+  store_id: '', // 门店ID
+  cashier_id: '123', // 收银员ID
   products: [], // 商品列表
   salesmens: [{
-    salesman_id: '1864219635784617985',
+    salesman_id: '',
     performance_amount: 0,
     performance_rate: 0,
     is_main: true,
   }],
 })
 // 展示商品列表
-const showProductList = ref<OrderProduct[]>([])
+const showProductList = ref<OrderProducts[]>([])
 await getSaleWhere()
 await getTodayPrice()
 await getMemberList({ page: 1, limit: 20, where: { id: myStore.value.id } })
@@ -62,22 +63,12 @@ const rules = ref<FormRules>({
     message: '请选择订单来源',
   },
   salesmens: {
+    type: 'array',
+    required: true,
     salesman_id: {
       required: true,
       trigger: ['blur', 'change'],
       message: '请选择导购员',
-    },
-    performance_amount: {
-      type: 'number',
-      required: true,
-      trigger: ['blur', 'change'],
-      message: '请设置业绩金额',
-    },
-    performance_rate: {
-      type: 'number',
-      required: true,
-      trigger: ['blur', 'change'],
-      message: '请设置业绩比例',
     },
   },
 
@@ -110,6 +101,9 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
           discount: item.discount,
         })
       })
+      if (formData.value.amount === 0) {
+        return $toast.error('请设置业绩金额')
+      }
       const res = await submitOrder(formData.value)
       if (res.code === HttpCode.SUCCESS) {
         $toast.success('添加成功')

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // 退货明细
 const props = defineProps<{
-  info: SalesSlip[]
+  info: any[]
 }>()
 
 const emits = defineEmits(['userClick'])

@@ -6,44 +6,44 @@ const Props = defineProps<{
 }>()
 
 const dialog = useDialog()
-const showProductList = defineModel<OrderProduct[]>({ default: [] })
+const showProductList = defineModel<OrderProducts[]>({ default: [] })
 const hasCheck = ref(false)
 // 计件方式
-const count = (product: OrderProduct) => {
-  if (!product.quantity)
+const count = (p: OrderProducts) => {
+  if (!p.quantity)
     return
   // 如果是计件方式 标签价格x 数量 x 折扣
-  if (product.retail_type === 1) {
+  if (p.product?.retail_type === 1) {
     const total = calc('(price * quantity * discount) | <=2,!n', {
-      price: product.price,
-      quantity: product.quantity,
-      discount: ((product.discount || 10) * 0.1),
+      price: p.product?.price,
+      quantity: p.quantity,
+      discount: ((p.discount || 10) * 0.1),
     })
-    product.payable_amount = total
+    p.amount = total
     return total
   }
   // 计重工费按克 [（金价 + 工费）X克重] X件数 X折扣
-  if (product.retail_type === 2) {
+  if (p.product?.retail_type === 2) {
     const total = calc('(price + labor_fee) * weight_metal * quantity * discount | <=2,!n', {
       price: Props.price,
-      labor_fee: product.labor_fee,
-      weight_metal: product.weight_metal,
-      quantity: product.quantity,
-      discount: ((product.discount || 10) * 0.1),
+      labor_fee: p.product?.labor_fee,
+      weight_metal: p.product?.weight_metal,
+      quantity: p.quantity,
+      discount: ((p.discount || 10) * 0.1),
     })
-    product.payable_amount = total
+    p.amount = total
     return total
   }
   //   计重工费按件   （(金价X克重)) + 工费）X件数 X折扣
-  if (product.retail_type === 3) {
+  if (p.product?.retail_type === 3) {
     const total = calc('((price * weight_metal) + labor_fee) * quantity * discount | <=2,!n', {
       price: Props.price,
-      labor_fee: product.labor_fee,
-      weight_metal: product.weight_metal,
-      quantity: product.quantity,
-      discount: ((product.discount || 10) * 0.1),
+      labor_fee: p.product?.labor_fee,
+      weight_metal: p.product?.weight_metal,
+      quantity: p.quantity,
+      discount: ((p.discount || 10) * 0.1),
     })
-    product.payable_amount = total
+    p.amount = total
     return total
   }
 }
@@ -65,7 +65,7 @@ const deleteProduct = (index: number) => {
   <div>
     <template v-for="(obj, ix) in showProductList" :key="ix">
       <div class="pb-[12px]">
-        <sale-order-nesting v-model="hasCheck" :title="obj.name">
+        <sale-order-nesting v-model="hasCheck" :title="obj.product?.name || ''">
           <template #left>
             <common-tags type="pink" text="成品" :is-oval="true" />
           </template>
@@ -77,7 +77,7 @@ const deleteProduct = (index: number) => {
                     条码
                   </div>
                   <div class="right">
-                    {{ obj.code }}
+                    {{ obj.product?.code }}
                   </div>
                 </div>
               </div>

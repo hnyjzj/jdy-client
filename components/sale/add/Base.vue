@@ -6,8 +6,8 @@ const props = withDefaults(defineProps<{
 })
 const { StoreStaffList } = useStores()
 const { memberList } = storeToRefs(useMemberManage())
-const { filterList } = storeToRefs(useSale())
-const formData = defineModel<addSale>({ default: {
+const { filterList } = storeToRefs(useOrder())
+const formData = defineModel<Orders>({ default: {
   type: undefined, // 订单类型
   source: undefined, // 订单来源
   remark: '', // 备注

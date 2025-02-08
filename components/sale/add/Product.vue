@@ -3,7 +3,7 @@ const emits = defineEmits<{
   search: [val: string, type: string]
 }>()
 const { productList } = storeToRefs(useProductManage())
-const showProductList = defineModel<OrderProduct[]>({ default: [] })
+const showProductList = defineModel<OrderProducts[]>({ default: [] })
 const showModal = ref(false)
 const searchProduct = ref('')
 
@@ -24,7 +24,7 @@ const addProduct = (product: Product) => {
     showProductList.value[index].quantity = 1
     return
   }
-  showProductList.value.push({ ...product, quantity: 1, discount: undefined, payable_amount: 0 })
+  showProductList.value.push({ quantity: 1, discount: undefined, amount: 0, product_id: product.id, product })
 }
 </script>
 
