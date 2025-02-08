@@ -1,49 +1,28 @@
 <script lang="ts" setup>
 const props = withDefaults(defineProps<{
   title?: string
+  filterList: Where<Orders>
+  storeStaff: Staff[]
+  memberList: Member[]
+  getMember: (val: string) => void
 }>(), {
   title: '基础信息',
 })
-const { StoreStaffList } = useStores()
-const { memberList } = storeToRefs(useMemberManage())
-const { filterList } = storeToRefs(useOrder())
-const formData = defineModel<Orders>({ default: {
-  type: undefined, // 订单类型
-  source: undefined, // 订单来源
-  remark: '', // 备注
-  discount_rate: undefined, // 整单折扣
-  amount_reduce: 0, // 抹零金额
-  integral_use: 0, //  使用积分
-  member_id: null, // 会员ID
-  store_id: '', // 门店ID
-  cashier_id: '', // 收银员ID
-  products: [], // 商品列表
-  salesmens: [{
-    salesman_id: '1864219635784617985',
-    performance_amount: 0,
-    performance_rate: 0,
-    is_main: true,
-  }],
-} })
+
+const formData = defineModel<Orders>({ default: {} })
 
 // 收银员列表参数
-const cashierOptions = StoreStaffList.map(
+const cashierOptions = props.storeStaff.map(
   v => ({
     label: v.nickname,
     value: v.id,
   }),
 )
-// 会员列表参数
-const memberListOptions = memberList.value.map(
-  v => ({
-    label: v.nickname ? v.nickname : v.name,
-    value: v.id,
-  }),
-)
+
 // 订单类型参数
-const typeOptions = optonsToSelect(filterList.value.type?.preset)
+const typeOptions = optonsToSelect(props.filterList.type?.preset)
 // 订单来源参数
-const sourceOptions = optonsToSelect(filterList.value.source?.preset)
+const sourceOptions = optonsToSelect(props.filterList.source?.preset)
 
 // 设置主销售员
 const handleSwitch = (index: number) => {
@@ -77,6 +56,10 @@ const addNewSale = () => {
     is_main: !formData.value.salesmens.length,
   })
 }
+// 搜索会员 防抖
+const searchMember = useDebounceFn((val) => {
+  props.getMember(val)
+}, 500)
 </script>
 
 <template>
@@ -87,15 +70,14 @@ const addNewSale = () => {
           <n-form-item label="订单类型" path="type" class="w-[45%]">
             <n-select
               v-model:value="formData.type"
-              placeholder="订单类型"
+              placeholder="请选择"
               :options="typeOptions"
-
             />
           </n-form-item>
           <n-form-item label="收银员" path="cashier_id" class="w-[45%]">
             <n-select
               v-model:value="formData.cashier_id"
-              placeholder="请选择收银员"
+              placeholder="请选择"
               :options="cashierOptions"
             />
           </n-form-item>
@@ -104,15 +86,22 @@ const addNewSale = () => {
           <n-form-item label="会员" path="member_id" class="w-[45%]">
             <n-select
               v-model:value="formData.member_id"
-              placeholder="请选择会员"
-              :options="memberListOptions"
+              filterable
+              placeholder="输入手机号搜索"
+              :options="props.memberList.map(v => ({
+                label: v.nickname ? v.nickname : v.name,
+                value: v.id,
+              }))"
+              clearable
+              remote
+              @search="searchMember"
             />
           </n-form-item>
 
           <n-form-item label="来源" path="source" class="w-[45%]">
             <n-select
               v-model:value="formData.source"
-              placeholder="请选择来源"
+              placeholder="请选择"
               :options="sourceOptions"
             />
           </n-form-item>
@@ -122,13 +111,29 @@ const addNewSale = () => {
       <template v-for="(item, index) in formData.salesmens" :key="index">
         <div class="pt-[26px] border-t-[1px] border-t-solid border-t-[#ccc]">
           <div class="flex justify-between">
-            <n-form-item label="导购员" path="salesman_id" label-placement="top" class="w-[45%]">
+            <n-form-item
+              label="导购员" label-placement="top" class="w-[45%]"
+              :path="`salesmens[${index}].salesman_id`"
+              :rule="{
+                required: true,
+                message: `请选择导购员`,
+                trigger: ['change', 'blur'],
+              }">
               <n-select
                 v-model:value="item.salesman_id"
-                placeholder="导购员"
-                :options="typeOptions"
+                placeholder="请选择"
+                :options="cashierOptions"
               />
             </n-form-item>
+            <n-form-item label="业绩比例" path="performance_rate" label-placement="top" class="w-[45%]">
+              <n-input-number v-model:value="item.performance_rate" :min="0">
+                <template #suffix>
+                  %
+                </template>
+              </n-input-number>
+            </n-form-item>
+          </div>
+          <div class="flex justify-between">
             <n-form-item label="是否主销" label-placement="top" class="w-[45%]">
               <div class="flex justify-between items-center w-full">
                 <n-switch v-model:value="item.is_main" @update:value="handleSwitch(index)">
@@ -139,29 +144,12 @@ const addNewSale = () => {
                     辅销
                   </template>
                 </n-switch>
-                <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteSale(index)">
-                  <icon name="i-svg:delete" :size="16" />
-                </div>
               </div>
             </n-form-item>
+            <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteSale(index)">
+              <icon name="i-svg:delete" :size="16" />
+            </div>
           </div>
-          <div class="flex justify-between">
-            <n-form-item label="业绩金额" path="performance_amount" label-placement="top" class="w-[45%]">
-              <n-input-number v-model:value="item.performance_amount" :precision="2" :min="0">
-                <template #suffix>
-                  元
-                </template>
-              </n-input-number>
-            </n-form-item>
-            <n-form-item label="业绩比例" path="performance_rate" label-placement="top" class="w-[45%]">
-              <n-input-number v-model:value="item.performance_rate" :min="0">
-                <template #suffix>
-                  %
-                </template>
-              </n-input-number>
-            </n-form-item>
-          </div>
-
           <div />
         </div>
       </template>

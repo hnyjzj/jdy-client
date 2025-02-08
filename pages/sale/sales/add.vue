@@ -8,26 +8,27 @@ useSeoMeta({
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 const { getProductList } = useProductManage()
-const { getStoreStaffList } = useStores()
+const { getStoreStaffList, StoreStaffList } = useStores()
 const { getSaleWhere, getTodayPrice, submitOrder } = useOrder()
-const { todayPrice } = storeToRefs(useOrder())
+const { todayPrice, filterList } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
+const { memberList } = storeToRefs(useMemberManage())
+const { productList } = storeToRefs(useProductManage())
 const formRef = ref<FormInst | null>(null)
 const formData = ref<Orders>({
-  amount: 0,
+  amount: 0, // 应付金额
   type: undefined, // 订单类型
   source: undefined, // 订单来源
   remark: '', // 备注
   discount_rate: undefined, // 整单折扣
   amount_reduce: 0, // 抹零金额
   integral_use: 0, //  使用积分
-  member_id: '', // 会员ID
+  member_id: undefined, // 会员ID
   store_id: '', // 门店ID
-  cashier_id: '123', // 收银员ID
+  cashier_id: undefined, // 收银员ID
   products: [], // 商品列表
   salesmens: [{
-    salesman_id: '',
-    performance_amount: 0,
+    salesman_id: undefined,
     performance_rate: 0,
     is_main: true,
   }],
@@ -36,7 +37,8 @@ const formData = ref<Orders>({
 const showProductList = ref<OrderProducts[]>([])
 await getSaleWhere()
 await getTodayPrice()
-await getMemberList({ page: 1, limit: 20, where: { id: myStore.value.id } })
+const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
+
 await getStoreStaffList({ id: myStore.value.id })
 
 const rules = ref<FormRules>({
@@ -61,15 +63,6 @@ const rules = ref<FormRules>({
     required: true,
     trigger: ['blur', 'change'],
     message: '请选择订单来源',
-  },
-  salesmens: {
-    type: 'array',
-    required: true,
-    salesman_id: {
-      required: true,
-      trigger: ['blur', 'change'],
-      message: '请选择导购员',
-    },
   },
 
 })
@@ -117,6 +110,9 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
     }
   })
 }
+const openProductListFn = () => {
+  productList.value = []
+}
 </script>
 
 <template>
@@ -131,16 +127,21 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
         <div class="w-[120px] color-[#fff] pb-[12px]">
           <product-manage-company />
         </div>
-        <sale-add-base v-model="formData" />
+        <sale-add-base
+          v-model="formData"
+          :filter-list="filterList"
+          :store-staff="StoreStaffList"
+          :member-list="memberList"
+          :get-member="getMember" />
 
         <div class="py-[16px]">
           <sale-add-product
             v-model="showProductList"
-            @search="searchProductList">
-            <div class=" px-[16px] pb-[16px]">
-              <sale-add-list v-model="showProductList" :price="todayPrice" />
-            </div>
-          </sale-add-product>
+            :product-list="productList"
+            :price="todayPrice"
+            @search="searchProductList"
+            @open-product-list="openProductListFn"
+          />
         </div>
         <sale-add-settlement v-model:form="formData" v-model:show-list="showProductList" />
         <div class="h-[80px]">

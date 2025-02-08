@@ -2,7 +2,6 @@
 import { calc } from 'a-calc'
 
 const formData = defineModel<Orders>('form', { default: {} })
-
 const showProductList = defineModel<OrderProducts[]>('showList', { default: [] })
 // 计算应付金额
 const payMoney = computed(() => {

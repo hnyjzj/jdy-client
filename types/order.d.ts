@@ -21,7 +21,7 @@ interface Orders {
   /**
    * 收银员ID
    */
-  cashier_id: string
+  cashier_id?: string
   /**
    * 收银员信息
    */
@@ -57,7 +57,7 @@ interface Orders {
   /**
    * 会员ID
    */
-  member_id: string
+  member_id?: string
   /**
    * 会员信息
    */
@@ -127,7 +127,7 @@ interface OrderSalesmen {
   /**
    * 导购员ID
    */
-  salesman_id: string
+  salesman_id?: string
   /**
    * 导购员信息
    */
