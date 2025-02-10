@@ -147,8 +147,8 @@ const changeType = (type: string) => {
                   <div class="h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
 
                   <div class="pb-[16px]">
-                    <div class="flex justify-between items-center pb-[12px]">
-                      <n-form-item label="折扣" class="w-[49%]">
+                    <n-grid :cols="24" :x-gap="8">
+                      <n-form-item-gi :span="12" label="折扣">
                         <n-input-number
                           v-model:value="obj.discount"
                           :show-button="false"
@@ -163,8 +163,8 @@ const changeType = (type: string) => {
                             折
                           </template>
                         </n-input-number>
-                      </n-form-item>
-                      <n-form-item label="数量" class="w-[49%]">
+                      </n-form-item-gi>
+                      <n-form-item-gi :span="12" label="数量">
                         <n-input-number
                           v-model:value="obj.quantity"
                           placeholder="请输入折扣:单位(折)"
@@ -172,8 +172,8 @@ const changeType = (type: string) => {
                           min="1"
                           type="text"
                         />
-                      </n-form-item>
-                    </div>
+                      </n-form-item-gi>
+                    </n-grid>
                     <div class="flex justify-between items-center">
                       <div>
                         <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteProduct(ix)">
@@ -182,10 +182,10 @@ const changeType = (type: string) => {
                       </div>
                       <div class="flex">
                         <div class="item-left">
-                          应付金额
+                          应付金额：
                         </div>
                         <div class="color-[#FF2F2F] font-size-[14px] font-medium dark:color-[#FF624D]">
-                          {{ count(obj) }}
+                          ￥{{ count(obj) }}
                         </div>
                       </div>
                     </div>
@@ -265,5 +265,8 @@ const changeType = (type: string) => {
 }
 .defaultBtn {
   --uno: 'bg-[#F3F3F3] color-[#000]';
+}
+.n-input-number {
+  width: 100%;
 }
 </style>

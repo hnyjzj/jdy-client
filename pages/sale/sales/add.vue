@@ -116,7 +116,7 @@ const openProductListFn = () => {
 
 <template>
   <div class="grid-12">
-    <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
+    <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] col-12" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3">
       <n-form
         ref="formRef"
         :model="formData"
@@ -145,8 +145,8 @@ const openProductListFn = () => {
         </div>
         <sale-add-settlement v-model:form="formData" v-model:show-list="showProductList" />
         <div class="h-[80px]">
-          <div class="btn grid-12 offset-2">
-            <button class="btn-right col-span-12 cursor-pointer" @click="handleValidateButtonClick">
+          <div class="btn grid-12 px-[16px]">
+            <button class="btn-right col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
               开单
             </button>
           </div>
@@ -161,7 +161,7 @@ const openProductListFn = () => {
   width: 100%;
 }
 .btn {
-  --uno: 'fixed bottom-0 left-0 right-0 blur-bga p-[12px_16px] pb-[28px] text-[16px] font-bold';
+  --uno: 'fixed bottom-0 left-0 right-0 blur-bga pt-20px pb-[28px] text-[16px] font-bold border-t-[1px] border-t-solid border-[#E0E0E0]';
   &-right {
     background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
     box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;

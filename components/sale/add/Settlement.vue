@@ -19,33 +19,35 @@ const payMoney = computed(() => {
     <div class="p-[16px]">
       <div>
         <div class="flex justify-between">
-          <n-form-item
-            label="整单折扣" label-placement="top"
-            class="w-[45%]"
-          >
-            <n-input-number
-              v-model:value="formData.discount_rate"
-              placeholder="请输入折扣"
-              round
-              :precision="2"
-              min="1"
-              max="10"
-              type="text"
-            />
-          </n-form-item>
+          <n-grid :cols="24" :x-gap="8">
+            <n-form-item-gi
+              :span="12"
+              label="整单折扣" label-placement="top"
+            >
+              <n-input-number
+                v-model:value="formData.discount_rate"
+                placeholder="请输入折扣"
+                round
+                :precision="2"
+                min="1"
+                max="10"
+                type="text"
+              />
+            </n-form-item-gi>
 
-          <n-form-item
-            label="抹零金额" label-placement="top"
-            class="w-[45%]"
-          >
-            <n-input-number
-              v-model:value="formData.amount_reduce"
-              placeholder="0"
-              round
-              min="0"
-              type="text"
-            />
-          </n-form-item>
+            <n-form-item-gi
+              :span="12"
+              label="抹零金额" label-placement="top"
+            >
+              <n-input-number
+                v-model:value="formData.amount_reduce"
+                placeholder="0"
+                round
+                min="0"
+                type="text"
+              />
+            </n-form-item-gi>
+          </n-grid>
         </div>
         <div class="border-y-[#E6E6E8] border border-y-solid py-[12px]">
           <div class="text-[16px] color-[#3971F3] line-height-[24px] pb-[10px] text-right font-semibold">
@@ -67,12 +69,8 @@ const payMoney = computed(() => {
 </template>
 
 <style>
-.n-border-hover {
-  border-color: #3971f3;
-}
-
-.n-border-focus {
-  border-color: #3971f3;
+.n-input-number {
+  width: 100%;
 }
 </style>
 

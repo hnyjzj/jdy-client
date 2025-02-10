@@ -57,60 +57,56 @@ const searchMember = useDebounceFn((val) => {
 <template>
   <common-fold :title="props.title" :is-collapse="false">
     <div class="p-[16px] w-auto flex flex-col gap-[12px]" uno-lg="grid grid-cols-1 gap-[16px] grid-cols-0">
-      <div>
-        <div class="flex justify-between">
-          <n-form-item label="订单类型" path="type" class="w-[45%]">
-            <n-select
-              v-model:value="formData.type"
-              placeholder="请选择"
-              :options="typeOptions"
-            />
-          </n-form-item>
-          <n-form-item label="收银员" path="cashier_id" class="w-[45%]">
-            <n-select
-              v-model:value="formData.cashier_id"
-              placeholder="请输入收银员"
-              :options="props.storeStaff.map(v => ({
-                label: v.nickname,
-                value: v.id,
-              }))"
-              clearable
-              remote
-              @focus="() => { props.getStaff() }"
-            />
-          </n-form-item>
-        </div>
-        <div class="flex justify-between">
-          <n-form-item label="会员" path="member_id" class="w-[45%]">
-            <n-select
-              v-model:value="formData.member_id"
-              filterable
-              placeholder="输入手机号搜索"
-              :options="props.memberList.map(v => ({
-                label: v.nickname ? v.nickname : v.name,
-                value: v.id,
-              }))"
-              clearable
-              remote
-              @search="searchMember"
-            />
-          </n-form-item>
-
-          <n-form-item label="来源" path="source" class="w-[45%]">
-            <n-select
-              v-model:value="formData.source"
-              placeholder="请选择"
-              :options="sourceOptions"
-            />
-          </n-form-item>
-        </div>
-      </div>
+      <n-grid :cols="24" :x-gap="8">
+        <n-form-item-gi :span="12" label="订单类型" path="type" class="">
+          <n-select
+            v-model:value="formData.type"
+            placeholder="请选择"
+            :options="typeOptions"
+          />
+        </n-form-item-gi>
+        <n-form-item-gi :span="12" label="收银员" path="cashier_id" class="">
+          <n-select
+            v-model:value="formData.cashier_id"
+            placeholder="请输入收银员"
+            :options="props.storeStaff.map(v => ({
+              label: v.nickname,
+              value: v.id,
+            }))"
+            clearable
+            remote
+            @focus="() => { props.getStaff() }"
+          />
+        </n-form-item-gi>
+        <n-form-item-gi :span="12" label="会员" path="member_id" class="">
+          <n-select
+            v-model:value="formData.member_id"
+            filterable
+            placeholder="输入手机号搜索"
+            :options="props.memberList.map(v => ({
+              label: v.nickname ? v.nickname : v.name,
+              value: v.id,
+            }))"
+            clearable
+            remote
+            @search="searchMember"
+          />
+        </n-form-item-gi>
+        <n-form-item-gi :span="12" label="来源" path="source" class="">
+          <n-select
+            v-model:value="formData.source"
+            placeholder="请选择"
+            :options="sourceOptions"
+          />
+        </n-form-item-gi>
+      </n-grid>
 
       <template v-for="(item, index) in formData.salesmens" :key="index">
         <div class="pt-[26px] border-t-[1px] border-t-solid border-t-[#ccc]">
-          <div class="flex justify-between">
-            <n-form-item
-              label="导购员" label-placement="top" class="w-[45%]"
+          <n-grid :cols="24" :x-gap="8">
+            <n-form-item-gi
+              :span="12"
+              label="导购员" label-placement="top" class=""
               :path="`salesmens[${index}].salesman_id`"
               :rule="{
                 required: true,
@@ -128,17 +124,15 @@ const searchMember = useDebounceFn((val) => {
                 remote
                 @focus="() => { props.getStaff() }"
               />
-            </n-form-item>
-            <n-form-item label="业绩比例" path="performance_rate" label-placement="top" class="w-[45%]">
+            </n-form-item-gi>
+            <n-form-item-gi :span="12" label="业绩比例" path="performance_rate" label-placement="top" class="">
               <n-input-number v-model:value="item.performance_rate" :min="0" :max="100">
                 <template #suffix>
                   %
                 </template>
               </n-input-number>
-            </n-form-item>
-          </div>
-          <div class="flex justify-between">
-            <n-form-item label="是否主销" label-placement="top" class="w-[45%]">
+            </n-form-item-gi>
+            <n-form-item-gi :span="12" label="是否主销" label-placement="top" class="">
               <div class="flex justify-between items-center w-full">
                 <n-switch v-model:value="item.is_main" @update:value="handleSwitch(index)">
                   <template #checked>
@@ -149,11 +143,13 @@ const searchMember = useDebounceFn((val) => {
                   </template>
                 </n-switch>
               </div>
-            </n-form-item>
-            <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteSale(index)">
-              <icon name="i-svg:delete" :size="16" />
-            </div>
-          </div>
+            </n-form-item-gi>
+            <n-form-item-gi :span="3" :offset="9">
+              <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteSale(index)">
+                <icon name="i-svg:delete" :size="16" />
+              </div>
+            </n-form-item-gi>
+          </n-grid>
           <div />
         </div>
       </template>
@@ -173,5 +169,8 @@ const searchMember = useDebounceFn((val) => {
   .inplabel {
     --uno: 'color-[#333] dark:text-[#FFFFFF] font-size-[14px]';
   }
+}
+.n-input-number {
+  width: 100%;
 }
 </style>
