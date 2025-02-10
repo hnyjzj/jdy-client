@@ -134,7 +134,6 @@ interface Product {
    */
   weight_other: number
 }
-
 interface ProductDamage {
   code: Product['code']
   reason: string

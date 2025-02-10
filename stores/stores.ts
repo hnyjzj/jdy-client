@@ -19,6 +19,7 @@ export const useStores = defineStore('Store', {
     myStoreList: [] as Stores[],
     // 当前门店
     myStore: {} as Stores,
+    StoreStaffList: [] as StoresStaff[],
   }),
   getters: {
     filterListToArray: (state) => {
@@ -131,6 +132,14 @@ export const useStores = defineStore('Store', {
     async switchStore(params: Stores) {
       this.myStore = params
     },
+    // 门店员工列表
+    async getStoreStaffList(req: { id: StoresStaff['id'] }) {
+      const { data } = await https.post<StoresStaff[], { id: StoresStaff['id'] }>('/store/staff/list', req)
+      if (data.value.code === HttpCode.SUCCESS) {
+        this.StoreStaffList = data.value.data
+      }
+    },
+
   },
   persist: {
     storage: piniaPluginPersistedstate.cookies(),

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // 其他收支单_列表_组件
 const props = defineProps<{
-  info: SalesSlip[]
+  info: any[]
 }>()
 
 const emits = defineEmits(['amend', 'delete'])

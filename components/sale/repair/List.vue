@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // 维修单列表
 const props = defineProps<{
-  info: SalesSlip[]
+  info: any[]
 }>()
 
 const emits = defineEmits(['sign', 'cancel', 'info'])
