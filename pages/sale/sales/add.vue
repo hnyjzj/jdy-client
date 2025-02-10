@@ -6,9 +6,9 @@ useSeoMeta({
   title: '新增销售单',
 })
 const { $toast } = useNuxtApp()
-const { myStore } = storeToRefs(useStores())
+const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getProductList } = useProductManage()
-const { getStoreStaffList, StoreStaffList } = useStores()
+const { getStoreStaffList } = useStores()
 const { getSaleWhere, getTodayPrice, submitOrder } = useOrder()
 const { todayPrice, filterList } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
@@ -38,8 +38,7 @@ const showProductList = ref<OrderProducts[]>([])
 await getSaleWhere()
 await getTodayPrice()
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
-
-await getStoreStaffList({ id: myStore.value.id })
+const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
 
 const rules = ref<FormRules>({
   member_id: {
@@ -132,8 +131,9 @@ const openProductListFn = () => {
           :filter-list="filterList"
           :store-staff="StoreStaffList"
           :member-list="memberList"
-          :get-member="getMember" />
-
+          :get-member="getMember"
+          :get-staff="getStaff"
+        />
         <div class="py-[16px]">
           <sale-add-product
             v-model="showProductList"

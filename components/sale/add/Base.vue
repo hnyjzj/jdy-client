@@ -2,22 +2,14 @@
 const props = withDefaults(defineProps<{
   title?: string
   filterList: Where<Orders>
-  storeStaff: Staff[]
+  storeStaff: StoresStaff[]
   memberList: Member[]
   getMember: (val: string) => void
+  getStaff: () => void
 }>(), {
   title: '基础信息',
 })
-
 const formData = defineModel<Orders>({ default: {} })
-
-// 收银员列表参数
-const cashierOptions = props.storeStaff.map(
-  v => ({
-    label: v.nickname,
-    value: v.id,
-  }),
-)
 
 // 订单类型参数
 const typeOptions = optonsToSelect(props.filterList.type?.preset)
@@ -50,7 +42,7 @@ const deleteSale = (index: number) => {
 // 新增销售员
 const addNewSale = () => {
   formData.value.salesmens.push({
-    salesman_id: '1864219635784617985',
+    salesman_id: '',
     performance_amount: 0,
     performance_rate: 0,
     is_main: !formData.value.salesmens.length,
@@ -77,8 +69,14 @@ const searchMember = useDebounceFn((val) => {
           <n-form-item label="收银员" path="cashier_id" class="w-[45%]">
             <n-select
               v-model:value="formData.cashier_id"
-              placeholder="请选择"
-              :options="cashierOptions"
+              placeholder="请输入收银员"
+              :options="props.storeStaff.map(v => ({
+                label: v.nickname,
+                value: v.id,
+              }))"
+              clearable
+              remote
+              @focus="() => { props.getStaff() }"
             />
           </n-form-item>
         </div>
@@ -122,11 +120,17 @@ const searchMember = useDebounceFn((val) => {
               <n-select
                 v-model:value="item.salesman_id"
                 placeholder="请选择"
-                :options="cashierOptions"
+                :options="props.storeStaff.map(v => ({
+                  label: v.nickname,
+                  value: v.id,
+                }))"
+                clearable
+                remote
+                @focus="() => { props.getStaff() }"
               />
             </n-form-item>
             <n-form-item label="业绩比例" path="performance_rate" label-placement="top" class="w-[45%]">
-              <n-input-number v-model:value="item.performance_rate" :min="0">
+              <n-input-number v-model:value="item.performance_rate" :min="0" :max="100">
                 <template #suffix>
                   %
                 </template>

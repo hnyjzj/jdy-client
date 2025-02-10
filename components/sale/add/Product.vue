@@ -2,7 +2,7 @@
 import { calc } from 'a-calc'
 
 const Props = defineProps<{
-  price: number
+  price: string
   productList: Product[]
 }>()
 const emits = defineEmits<{
@@ -10,10 +10,10 @@ const emits = defineEmits<{
   openProductList: []
 }>()
 
+const dialog = useDialog()
 const showProductList = defineModel<OrderProducts[]>({ default: [] })
 const showModal = ref(false)
 const searchProduct = ref('')
-const dialog = useDialog()
 const hasCheck = ref(false)
 // 搜索商品 名称 和 条码   code
 const searchType = ref('name')
@@ -86,6 +86,11 @@ const deleteProduct = (index: number) => {
     },
   })
 }
+const changeType = (type: string) => {
+  searchType.value = type
+  searchProduct.value = ''
+  emits('openProductList')
+}
 </script>
 
 <template>
@@ -130,18 +135,18 @@ const deleteProduct = (index: number) => {
               <template #info>
                 <div class="flex flex-col gap-[12px] px-[16px]">
                   <div class="grid grid-flow-col w-full place-items-start gap-y-[12px] gap-x-[auto]">
-                    <div class="content">
-                      <div class="left">
+                    <div class="flex-center-row gap-[8px]">
+                      <div class="text-[14px] font-medium text-[#666666] dark:color-[#CBCDD1]">
                         条码
                       </div>
-                      <div class="right">
+                      <div class="text-[14px] font-medium text-[#666666] dark:color-[#CBCDD1]">
                         {{ obj.product?.code }}
                       </div>
                     </div>
                   </div>
-                  <div class="h-0.4 bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
+                  <div class="h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
 
-                  <div class="footer">
+                  <div class="pb-[16px]">
                     <div class="flex justify-between items-center pb-[12px]">
                       <n-form-item label="折扣" class="w-[49%]">
                         <n-input-number
@@ -202,17 +207,27 @@ const deleteProduct = (index: number) => {
             搜商品
           </div>
           <div class="flex">
-            <div class="px-[8px] py-[4px] rounded-3xl mr-[8px]" :style="{ backgroundColor: searchType === 'name' ? '#2080F0' : '#F3F3F3', color: searchType === 'name' ? '#fff' : '#000' } " @click="searchType = 'name'">
+            <div
+              class="px-[8px] py-[4px] rounded-3xl mr-[8px]"
+              :class="[searchType === 'name' ? 'activeBtn' : 'defaultBtn']"
+              @click="changeType('name')">
               名称
             </div>
-            <div class="px-[8px] py-[4px] rounded-3xl" :style="{ backgroundColor: searchType === 'code' ? '#2080F0' : '#F3F3F3', color: searchType === 'code' ? '#fff' : '#000' } " @click="searchType = 'code'">
+            <div
+              class="px-[8px] py-[4px] rounded-3xl"
+              :class="[searchType === 'code' ? 'activeBtn' : 'defaultBtn']"
+              @click="changeType('code')">
               条码
             </div>
           </div>
         </div>
         <div class="flex items-center">
           <div class="flex-1">
-            <n-input v-model:value="searchProduct" type="text" :placeholder="searchType === 'name' ? '请输入商品名称' : '请输入商品条码'" />
+            <n-input
+              v-model:value="searchProduct"
+              type="text"
+              clearable
+              :placeholder="searchType === 'name' ? '请输入商品名称' : '请输入商品条码'" />
           </div>
           <div class="pl-[16px]">
             <n-button type="info" @click="emits('search', searchProduct, searchType)">
@@ -244,47 +259,11 @@ const deleteProduct = (index: number) => {
 .btn-right {
   --uno: 'text-[16px] py-[8px] text-[#1a6beb] rounded-[36px] bg-[transparent] flex justify-center items-center border-[1px] border-solid border-[#1a6beb]';
 }
-.product {
-  --uno: 'w-[150px] h-[150px] rounded-[50%] relative';
-  box-shadow: rgba(239, 242, 255, 1) 0 5px 20px 0;
-  .bag {
-    --uno: 'absolute top-[26px] left-[14px]';
-  }
-  .super {
-    --uno: 'absolute top-[14px] right-[14px]';
-    &-bg {
-      --uno: 'w-[36px] h-[36px] rounded-[50%] bg-[#FFFFFF] flex justify-center items-center';
-      background: linear-gradient(to bottom, rgba(255, 152, 152, 1), rgba(255, 79, 79, 1));
-      box-shadow: 0 0 20px 2px rgba(255, 152, 152, 1);
-    }
-  }
+
+.activeBtn {
+  --uno: 'bg-[#2080F0] color-[#fff]';
 }
-
-.content {
-  --uno: 'flex-center-row gap-[8px]';
-
-  .left {
-    --uno: 'text-[14px] font-medium text-[#666666] dark:color-[#CBCDD1]';
-  }
-
-  .right {
-    --uno: 'text-[14px] font-medium text-[#333333] dark:color-[#FFFFFF]';
-  }
-}
-
-.footer {
-  --uno: 'pb-[16px]';
-
-  .item {
-    --uno: 'flex-end gap-[8px]';
-
-    &-left {
-      --uno: 'color-[#666] font-size-[14px] font-medium dark:color-[#CBCDD1]';
-    }
-
-    &-right {
-      --uno: 'bg-[#F5F5F5] color-[#000] font-size-[14px] font-medium rounded-[24px] border-solid border-1 border-[#E6E6E8] px-[12px] py-[2px] dark:color-[#666666] dark:bg-[rgb(245,245,245,0.5)] dark:border-[rgb(245,245,245,0.5)]';
-    }
-  }
+.defaultBtn {
+  --uno: 'bg-[#F3F3F3] color-[#000]';
 }
 </style>

@@ -1,7 +1,7 @@
 export const useOrder = defineStore('Order', {
   state: () => ({
     filterList: {} as Where<Orders>,
-    todayPrice: 0 as number,
+    todayPrice: '' as string,
   }),
   actions: {
     // 获取筛选条件

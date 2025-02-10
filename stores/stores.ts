@@ -135,7 +135,6 @@ export const useStores = defineStore('Store', {
     // 门店员工列表
     async getStoreStaffList(req: { id: StoresStaff['id'] }) {
       const { data } = await https.post<StoresStaff[], { id: StoresStaff['id'] }>('/store/staff/list', req)
-
       if (data.value.code === HttpCode.SUCCESS) {
         this.StoreStaffList = data.value.data
       }
