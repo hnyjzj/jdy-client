@@ -6,6 +6,11 @@ interface WorkBench {
   children?: WorkBench[]
   parent_id: string
   icon: string
+
+  /**
+   * 是否折叠
+   */
+  is_fold?: boolean
 }
 
 interface WorkBenchReq {

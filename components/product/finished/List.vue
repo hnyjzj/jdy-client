@@ -6,9 +6,12 @@ const props = defineProps<{
 }>()
 
 const goodsStatus = {
-  1: '在库',
+  0: '全部',
+  1: '正常',
   2: '报损',
-  3: '维修中',
+  3: '调拨',
+  4: '已售',
+  5: '退货',
 }
 </script>
 
