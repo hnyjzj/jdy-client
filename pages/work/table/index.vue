@@ -173,9 +173,7 @@ const afterRead = async (file: any) => {
   <div>
     <common-layout-center>
       <div class="color-[#fff] px-[16px] pt-[12px] flex justify-between">
-        <div>
-          <product-manage-company />
-        </div>
+        <product-manage-company />
         <div class="flex-1 px-2 sm:px-4">
           <product-filter-search />
         </div>
