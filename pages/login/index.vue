@@ -55,6 +55,7 @@ const QWLogin = async () => {
 }
 const otherList = ref([{
   name: 'wxwork',
+  title: '企业微信',
   icon: 'i-svg:qwicon',
 }])
 const otherLogin = (way: string) => {

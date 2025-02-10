@@ -66,7 +66,7 @@ const rules = ref<Rules<AccountReq>>({
         validate,
       }">
       <div class="pb-[32px]">
-        <div class="pb-[8px] text-[14px]">
+        <div class="pb-[8px] text-[14px] dark:color-[#fff]">
           手机号
         </div>
         <div class="">
@@ -83,7 +83,7 @@ const rules = ref<Rules<AccountReq>>({
         error,
         validate }">
       <div class="pb-[32px]">
-        <div class="pb-[8px]  text-[14px]">
+        <div class="pb-[8px]  text-[14px] dark:color-[#fff]">
           密码
         </div>
         <div class="">
@@ -103,7 +103,7 @@ const rules = ref<Rules<AccountReq>>({
         error,
         validate }">
       <div class="pb-[32px]">
-        <div class="pb-[8px]  text-[14px]">
+        <div class="pb-[8px]  text-[14px] dark:color-[#fff]">
           验证码
         </div>
         <div class="relative">
