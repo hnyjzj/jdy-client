@@ -13,6 +13,7 @@ const memberParams = ref<Member>({} as Member)
 async function getInfo() {
   if (route.query.id) {
     await getMemberInfo(route.query.id as string)
+
     memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
   }
 }

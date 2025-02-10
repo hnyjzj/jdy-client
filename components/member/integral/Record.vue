@@ -1,75 +1,37 @@
 <script setup lang="ts">
 const props = defineProps<{
-  data?: any[]
+  data: MemberIntegral[]
 }>()
 </script>
 
 <template>
   <div>
-    <template v-if="props.data">
+    <template v-if="props.data.length">
       <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
-        <template v-for="(item, index) in props.data" :key="index">
-          <common-gradient :title="item.orderId" theme="solid">
-            <template #before>
-              <common-avatar :size="16" />
-            </template>
-
-            <template #body>
-              <div class="flex flex-col gap-[8px]">
-                <div class="item">
-                  <div class="left">
-                    姓名
-                  </div>
-                  <div class="right">
-                    {{ item.userInfo.nickname || '-- --' }}
+        <common-gradient title="积分信息" theme="solid">
+          <template #body>
+            <div>
+              <template v-for="item in props.data" :key="item.id">
+                <div class="flex flex-col gap-[8px]">
+                  <div class="item">
+                    <div class="left">
+                      创建时间
+                    </div>
+                    <div class="right">
+                      {{ item.created_at }}
+                    </div>
                   </div>
                 </div>
-
-                <div class="item">
-                  <div class="left">
-                    记录类型
-                  </div>
-                  <div class="right">
-                    {{ item.type }}
-                  </div>
-                </div>
-
-                <div class="item">
-                  <div class="left">
-                    变化前
-                  </div>
-                  <div class="right">
-                    {{ item.before }}
-                  </div>
-                </div>
-
-                <div class="item">
-                  <div class="left">
-                    变化后
-                  </div>
-                  <div class="right">
-                    {{ item.after }}
-                  </div>
-                </div>
-
-                <div class="item">
-                  <div class="left">
-                    创建时间
-                  </div>
-                  <div class="right">
-                    {{ item.createTime }}
-                  </div>
-                </div>
-              </div>
-            </template>
-          </common-gradient>
-        </template>
+              </template>
+            </div>
+          </template>
+        </common-gradient>
       </div>
     </template>
 
     <template v-else>
-      <div class="px-[32px] py-[32px]">
-        <common-empty size="100%" text="暂无积分记录" />
+      <div class="pt-[160px] py-[32px]">
+        <common-empty size="100%" text="该用户暂无积分记录" />
       </div>
     </template>
   </div>

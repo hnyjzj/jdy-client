@@ -3,34 +3,25 @@ useSeoMeta({
   title: '积分记录',
 })
 
-const integrals: any[] = [
-  {
-    userInfo: {
-      nickname: '沈易',
-      phone: '13799000000',
-      level: 1,
-    },
-    type: '加积分',
-    reason: 2,
-    before: 150,
-    after: 250,
-    createTime: '2023-03-01 10:10:10',
-    orderId: 'DD131294379284',
-  },
-  {
-    userInfo: {
-      nickname: '沈易',
-      phone: '13799000000',
-      level: 1,
-    },
-    type: '加积分',
-    reason: 3,
-    before: 150,
-    after: 250,
-    createTime: '2023-03-01 10:10:10',
-    orderId: 'DD131294379284',
-  },
-]
+const route = useRoute()
+const limit = 10
+
+const { getMemberIntegral } = useMemberManage()
+const { memberIntegral } = storeToRefs(useMemberManage())
+
+const memberIntegralParams = ref<MemberIntegral[]>({} as MemberIntegral[])
+
+const req = { page: 1, limit, id: route.query.id as string }
+
+async function getIntegral() {
+  if (route.query.id) {
+    await getMemberIntegral(req)
+
+    memberIntegralParams.value = JSON.parse(JSON.stringify(memberIntegral.value))
+  }
+}
+
+await getIntegral()
 </script>
 
 <template>
@@ -41,7 +32,7 @@ const integrals: any[] = [
         <product-filter-senior class="color-[#fff]" />
       </div>
 
-      <member-integral-record :data="integrals" />
+      <member-integral-record :data="memberIntegralParams" />
     </div>
   </div>
 </template>
