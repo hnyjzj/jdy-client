@@ -9,9 +9,18 @@ useSeoMeta({
 
 const show = ref(false)
 const newGoldPrice = ref()
-await getGoldPrice()
-await getGoldPriceList({ page: 1, limit: 20 })
+try {
+  await getGoldPrice()
+  await getGoldPriceList({ page: 1, limit: 20 })
+}
+catch (error) {
+  throw new Error(`加载数据失败: ${error || '未知错误'}`)
+}
 async function submit() {
+  if (!newGoldPrice.value || newGoldPrice.value <= 0) {
+    $toast.error('请输入有效的金价')
+    return
+  }
   const data = await setGoldPrice(newGoldPrice.value)
   if (data.code === HttpCode.SUCCESS) {
     $toast.success('提交今日最新金价成功')
