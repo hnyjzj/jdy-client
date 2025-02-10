@@ -74,3 +74,38 @@ interface DelBenchRes {
 interface UploadBencheReq {
   image: File
 }
+
+interface searchListRouters {
+  /**
+   * 创建时间
+   */
+  created_at: Date
+  /**
+   * 删除时间
+   */
+  deleted_at?: Date
+  /**
+   * 图标
+   */
+  icon?: string
+  /**
+   * ID
+   */
+  id: string
+  /**
+   * 父级ID
+   */
+  parent_id?: string
+  /**
+   * 路径
+   */
+  path?: string
+  /**
+   * 标题
+   */
+  title?: string
+  /**
+   * 更新时间
+   */
+  updated_at: Date
+}

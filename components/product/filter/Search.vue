@@ -1,7 +1,10 @@
 <script setup lang="ts">
+const emits = defineEmits<{
+  searchList: []
+}>()
 const searchKey = defineModel('searchKey')
-
 const subsearch = () => {
+  emits('searchList')
 }
 </script>
 
