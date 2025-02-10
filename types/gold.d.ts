@@ -42,6 +42,8 @@ interface GoldPrices {
    * 更新时间
    */
   updated_at: Date
-  /** 发起申请人信息 */
+  /** 审批人信息 */
   approver: Staff
+  /** 发起人信息 */
+  initiator: Staff
 }

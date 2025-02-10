@@ -61,50 +61,60 @@ const approvedStatus = ref(['待审批', '已审批', '已驳回'])
         </div>
       </div>
       <div id="list" class="flex overflow-x-scroll gap-[20px]">
-        <div class="px-4 py-3">
-          <table>
-            <thead>
-              <tr>
-                <th class="text">
-                  申请人
-                </th>
-                <th class="text">
-                  金价
-                </th>
-                <th class="text">
-                  状态
-                </th>
-                <th class="text">
-                  审批时间
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(item, index) in goldList" :key="index">
-                <td class="text">
-                  {{ item.approver.nickname }}
-                </td>
-                <td class="text">
-                  {{ item.price }}
-                </td>
-                <td class="text">
-                  {{ approvedStatus[item.status] }}
-                </td>
-                <td class="text">
-                  {{ item.approved_at }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <template v-if="goldList.length">
+          <div class="px-4 py-3">
+            <table>
+              <thead>
+                <tr>
+                  <th class="text">
+                    发起人
+                  </th>
+                  <th class="text">
+                    金价
+                  </th>
+                  <th class="text">
+                    状态
+                  </th>
+                  <th class="text">
+                    审批人
+                  </th>
+                  <th class="text">
+                    审批时间
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in goldList" :key="index">
+                  <td class="text">
+                    {{ item.initiator?.nickname }}
+                  </td>
+                  <td class="text">
+                    {{ item.price }}
+                  </td>
+                  <td class="text">
+                    {{ approvedStatus[item.status] }}
+                  </td>
+                  <td class="text">
+                    {{ item.approver?.nickname }}
+                  </td>
+                  <td class="text">
+                    {{ item?.approved_at }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </template>
       </div>
-
-      <common-model v-model="show" title="变更金价" :show-ok="true" @confirm="submit">
-        <div class="min-h-[80px]">
-          <common-frame v-model="newGoldPrice" type="number" tip="请输入新的金价" />
-        </div>
-      </common-model>
+      <template v-if="!goldList.length">
+        <common-empty text="暂无历史数据" />
+      </template>
     </div>
+    <common-model v-model="show" title="变更金价" :show-ok="true" @confirm="submit">
+      <div class="min-h-[80px]">
+        <common-frame v-model="newGoldPrice" type="number" tip="请输入新的金价" />
+      </div>
+    </common-model>
   </div>
 </template>
 
@@ -124,11 +134,10 @@ const approvedStatus = ref(['待审批', '已审批', '已驳回'])
   text-overflow: ellipsis;
 }
 .text {
-  --uno: 'px-2';
+  --uno: 'px-2 text-center text-#333';
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-align: center;
 }
 ::-webkit-scrollbar {
   /* 隐藏Webkit浏览器的滚动条 */
