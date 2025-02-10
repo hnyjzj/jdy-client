@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // 销售单列表
 const props = defineProps<{
-  info: SalesSlip[]
+  info: any[]
 }>()
 
 const emits = defineEmits(['userClick'])

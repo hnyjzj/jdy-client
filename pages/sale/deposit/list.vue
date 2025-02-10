@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // 测试数据。待替换
-const depositList: SalesSlip[] = [
+const depositList: any[] = [
   {
     num: 'CZ-32493974',
     store: {

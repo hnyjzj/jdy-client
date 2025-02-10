@@ -23,6 +23,21 @@ interface Stores {
   }
 }
 
+interface StoresStaff {
+  account: null
+  accounts: null
+  avatar: string
+  created_at: string
+  email: string
+  gender: number
+  id: string
+  is_disabled: boolean
+  nickname: string
+  phone: string
+  stores: null
+  updated_at: string
+}
+
 interface uploadLogoFileReq {
   image: File | undefined
   store_id?: string

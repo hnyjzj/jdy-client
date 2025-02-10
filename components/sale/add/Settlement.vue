@@ -1,152 +1,76 @@
 <script lang="ts" setup>
-const props = defineProps<{
-  goodinfo: any[]
-}>()
+import { calc } from 'a-calc'
 
-const { $toast } = useNuxtApp()
-
-const options = [
-  {
-    label: '支付宝',
-    value: '支付宝',
-  },
-  {
-    label: '微信',
-    value: '微信',
-  },
-  {
-    label: '银联',
-    value: '银联',
-  },
-]
-
-const getInitialItems = () => [{ id: 1, multiple: '支付信息', isPopoverVisible: false, options, selected: '' }]
-const items = ref(getInitialItems())
-let id = items.value.length + 1
-
-const insertItem = () => {
-  if (items.value.length >= 11) {
-    $toast.warning('最多添加11种支付方式')
-    return
-  }
-  // 添加新的支付信息栏并初始化状态
-  items.value.push({ id: id++, multiple: '支付信息', isPopoverVisible: false, options, selected: '' })
-}
-
-function removeItem(item: { id: number }) {
-  const i = items.value.findIndex(i => i.id === item.id)
-  if (i > -1) {
-    items.value.splice(i, 1)
-  }
-}
+const formData = defineModel<Orders>('form', { default: {} })
+const showProductList = defineModel<OrderProducts[]>('showList', { default: [] })
+// 计算应付金额
+const payMoney = computed(() => {
+  const total = ref(0)
+  total.value = showProductList.value.reduce((total, item) => {
+    return calc('(t + i) | <=2,!n', { t: total, i: item.amount })
+  }, 0)
+  total.value = calc('(t * r) | <=2,!n', { t: total.value, r: ((formData.value.discount_rate || 10) * 0.1) })
+  return total.value
+})
 </script>
 
 <template>
-  <common-fold title="结算信息">
+  <common-fold title="结算信息" :is-collapse="false">
     <div class="p-[16px]">
-      <div class="grid-cols-[1fr] gap-[16px]" uno-lg="grid-cols-[1fr]" uno-md="grid">
-        <div class="flex flex-col gap-[12px]">
-          <template v-for="(item, index) in props.goodinfo" :key="index">
-            <div class="flex items-center justify-between">
-              <div class="color-[#333] dark:color-[#FFFFFF] text-[14px] font-normal">
-                {{ item.name }}
-              </div>
-              <common-frame
-                v-model="item.num"
+      <div>
+        <div class="flex justify-between">
+          <n-grid :cols="24" :x-gap="8">
+            <n-form-item-gi
+              :span="12"
+              label="整单折扣" label-placement="top"
+            >
+              <n-input-number
+                v-model:value="formData.discount_rate"
+                placeholder="请输入折扣"
+                round
+                :precision="2"
+                min="1"
+                max="10"
+                type="text"
               />
-            </div>
-          </template>
-        </div>
-      </div>
-      <div class="mt-[14px] py-[14px] border-y-[#E6E6E8] border-y-0.4 border-y-solid dark:border-y-[rgba(230,230,232,0.3)]">
-        <div class="flex flex-col gap-[10px] items-end">
-          <div class="text-[16px] font-semibold text-[#3971F3]">
-            <span class="mr-[4px]">实付金额:</span>
-            <span>00.00</span>
-          </div>
-          <div class="text-[16px] font-semibold text-[#3971F3]">
-            <span class="mr-[4px]">积分合计:</span>
-            <span>00.00</span>
-          </div>
-        </div>
-      </div>
-      <div class="flex flex-col gap-[8px] pt-[8px]">
-        <div class="font-size-[14px] font-normal color-[#333] dark:color-[#fff]">
-          备注信息
-        </div>
-        <textarea
-          id="remark" name="remark"
-          class="remark"
-          placeholder="请输入内容"
-        />
-        <div class="flex">
-          <div class="text-[#3971F3] text-[14px] px-[8px] bg-[#F1F5FE] rounded-[8px]">
-            常用备注
-          </div>
-        </div>
-      </div>
-      <div class="text-[#FF2F2F] text-[16px] font-semibold py-[12px]">
-        <span class="mr-[4px]">剩余未支付:</span>
-        <span>00.00</span>
-      </div>
-      <div class="flex flex-col gap-[12px] w-full">
-        <TransitionGroup name="operation">
-          <template v-for="item in items" :key="item.id">
-            <div class="flex flex-row items-end items-center gap-[12px]">
-              <div class="select-item">
-                <n-popselect
-                  v-model:value="item.multiple"
-                  :options="item.options"
-                  size="medium"
-                  scrollable
-                  trigger="click"
-                  @update:value="() => {
-                    item.selected = item.multiple
-                    const isExist = items.some(i => i !== item && i.selected === item.multiple)
-                    if (isExist) {
-                      item.multiple = '支付信息'
-                      item.selected = ''
-                      $toast.warning('该支付方式已被选择')
-                      return
-                    }
-                  }"
-                >
-                  <n-button style="width: auto; min-width: 100px; color: #333;">
-                    {{ item.multiple }}
-                  </n-button>
-                </n-popselect>
-              </div>
+            </n-form-item-gi>
 
-              <common-frame tip="金额" uno-lg="flex-1" uno-md="flex-1" />
-              <template v-if="item.id === 1">
-                <sale-plusminus
-                  @button-click="insertItem()" />
-              </template>
-              <template v-else>
-                <sale-plusminus
-                  :is-add="false"
-                  @button-click="removeItem(item)" />
-              </template>
-            </div>
-          </template>
-        </TransitionGroup>
+            <n-form-item-gi
+              :span="12"
+              label="抹零金额" label-placement="top"
+            >
+              <n-input-number
+                v-model:value="formData.amount_reduce"
+                placeholder="0"
+                round
+                min="0"
+                type="text"
+              />
+            </n-form-item-gi>
+          </n-grid>
+        </div>
+        <div class="border-y-[#E6E6E8] border border-y-solid py-[12px]">
+          <div class="text-[16px] color-[#3971F3] line-height-[24px] pb-[10px] text-right font-semibold">
+            实付金额:{{ payMoney }}
+          </div>
+        </div>
+        <n-form-item
+          label="备注信息"
+        >
+          <n-input
+            v-model:value="formData.remark"
+            placeholder="备注信息"
+            type="textarea"
+          />
+        </n-form-item>
       </div>
     </div>
   </common-fold>
 </template>
 
 <style>
-.n-button {
-  border-radius: 60px;
-  height: 42px;
-}
-
-.n-border-hover {
-  border-color: #3971f3;
-}
-
-.n-border-focus {
-  border-color: #3971f3;
+.n-input-number {
+  width: 100%;
 }
 </style>
 

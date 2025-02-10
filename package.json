@@ -37,6 +37,7 @@
     "@vueuse/nuxt": "^11.1.0",
     "@waset/unplugin-iconify": "1.4.0",
     "@wecom/jssdk": "^2.2.2",
+    "a-calc": "^2.2.14",
     "eslint-plugin-format": "^0.1.2",
     "lint-staged": "^15.2.10",
     "naive-ui": "^2.40.3",

@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<{
   isMaskClose?: boolean
 }>(), {
   placement: 'right',
-  width: '70%',
+  width: '80%',
   isMaskClose: true,
 })
 
@@ -37,7 +37,6 @@ function close() {
   <n-drawer
     v-model:show="show" :style="{
       '--n-color': 'transparent',
-      'top': '30px',
       '--n-header-padding': '0',
       '--n-header-border-bottom': 'none',
       '--n-body-padding': '0',
@@ -80,7 +79,7 @@ function close() {
 }
 .footer {
   border-top: 1px solid #e6e6e8;
-  --uno: 'block w-full bg-[#F1F5FE] dark:bg-[rgba(0,0,0,0.6)] blur-8px py-3 px-6';
+  --uno: 'block w-full bg-[#F1F5FE] dark:bg-[rgba(0,0,0,0.6)] blur-8px py-3';
 }
 .top {
   --uno: 'flex justify-end items-center h-34px border-rd-[20px_20px_0_0]';

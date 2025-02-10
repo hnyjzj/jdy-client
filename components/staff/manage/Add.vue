@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
+import type { FormRules, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 
 const emits = defineEmits<{
   submit: []
   upload: [val: any, onFinish: () => void]
 }>()
 
-const message = useMessage()
+const { $toast } = useNuxtApp()
 const formlist = defineModel({ default: {
   account: {
     phone: '',
@@ -41,11 +41,12 @@ const rules = {
   },
   gender: {
     required: true,
+    type: 'number',
     trigger: 'change',
     message: '请选择性别',
   },
 
-}
+} as FormRules
 const formRef = ref()
 function handleValidateButtonClick(e: MouseEvent) {
   e.preventDefault()
@@ -54,7 +55,7 @@ function handleValidateButtonClick(e: MouseEvent) {
       emits('submit')
     }
     else {
-      message.error('验证失败')
+      $toast.error('验证失败')
     }
   })
 }
@@ -69,7 +70,7 @@ const customRequest = ({ file, onFinish }: UploadCustomRequestOptions) => {
 // 校验上传文件
 const beforeUpload = (data: any) => {
   if (data.file.file?.type !== 'image/png' && data.file.file?.type !== 'image/jpeg') {
-    message.error('只能上传png,jpeg格式的图片文件,请重新上传')
+    $toast.error('只能上传png,jpeg格式的图片文件,请重新上传')
     return false
   }
 }
@@ -129,13 +130,13 @@ defineExpose({
             <n-form-item :span="12" label="性别" path="gender">
               <n-radio-group v-model:value="formlist.account.gender">
                 <n-space>
-                  <n-radio value="0">
+                  <n-radio :value="0">
                     未知
                   </n-radio>
-                  <n-radio value="1">
+                  <n-radio :value="1">
                     男
                   </n-radio>
-                  <n-radio value="2">
+                  <n-radio :value="2">
                     女
                   </n-radio>
                 </n-space>
@@ -157,7 +158,7 @@ defineExpose({
             <div
               class="text-size-[16px] font-semibold py-[16px] cursor-pointer" @click="handleValidateButtonClick">
               <div class="ok">
-                登录
+                确定
               </div>
             </div>
           </n-form>
