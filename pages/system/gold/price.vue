@@ -1,21 +1,29 @@
 <script lang="ts" setup>
 const { $toast } = useNuxtApp()
-const { goldPrice, goldList } = storeToRefs(useGoldPrice())
+const { goldPrice, goldList, totalPage } = storeToRefs(useGoldPrice())
 const { getGoldPrice, getGoldPriceList, setGoldPrice } = useGoldPrice()
 
 useSeoMeta({
-  title: '工作台',
+  title: '黄金价格',
 })
 
+const approvedStatus = ref(['待审批', '已审批', '已驳回'])
 const show = ref(false)
+const page = ref(1)
 const newGoldPrice = ref()
 try {
   await getGoldPrice()
-  await getGoldPriceList({ page: 1, limit: 20 })
+  await getGoldPriceList({ page: page.value, limit: 20 })
 }
 catch (error) {
   throw new Error(`加载数据失败: ${error || '未知错误'}`)
 }
+
+async function getMore() {
+  page.value++
+  await getGoldPriceList({ page: page.value, limit: 20 })
+}
+
 async function submit() {
   if (!newGoldPrice.value || newGoldPrice.value <= 0) {
     $toast.error('请输入有效的金价')
@@ -38,7 +46,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   stop()
 })
-const approvedStatus = ref(['待审批', '已审批', '已驳回'])
 </script>
 
 <template>
@@ -51,7 +58,7 @@ const approvedStatus = ref(['待审批', '已审批', '已驳回'])
           元/克
         </div>
         <div class="change" @click="show = true">
-          <icon name="i-icon:change" :size="12" color="#FFF" />
+          <icon name="i-icon:product-toggle" :size="18" color="#FFF" />
           <div class="pl-1">
             变更金价
           </div>
@@ -69,49 +76,56 @@ const approvedStatus = ref(['待审批', '已审批', '已驳回'])
           </div>
         </div>
       </div>
-      <div id="list" class="flex overflow-x-scroll gap-[20px]">
-        <template v-if="goldList.length">
-          <div class="px-4 py-3">
-            <table>
-              <thead>
-                <tr>
-                  <th class="text">
-                    发起人
-                  </th>
-                  <th class="text">
-                    金价
-                  </th>
-                  <th class="text">
-                    状态
-                  </th>
-                  <th class="text">
-                    审批人
-                  </th>
-                  <th class="text">
-                    审批时间
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) in goldList" :key="index">
-                  <td class="text">
-                    {{ item.initiator?.nickname }}
-                  </td>
-                  <td class="text">
-                    {{ item.price }}
-                  </td>
-                  <td class="text">
-                    {{ approvedStatus[item.status] }}
-                  </td>
-                  <td class="text">
-                    {{ item.approver?.nickname }}
-                  </td>
-                  <td class="text">
-                    {{ item?.approved_at }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+      <div class="p-3">
+        <div id="list" class="flex overflow-x-scroll">
+          <template v-if="goldList.length">
+            <div>
+              <table>
+                <thead>
+                  <tr class="text-color">
+                    <th class="text">
+                      发起人
+                    </th>
+                    <th class="text">
+                      金价
+                    </th>
+                    <th class="text">
+                      状态
+                    </th>
+                    <th class="text">
+                      审批人
+                    </th>
+                    <th class="text">
+                      审批时间
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in goldList" :key="index" class="my-1 text-color-light">
+                    <td class="text" style="padding-left: 0;">
+                      {{ item.initiator?.nickname }}
+                    </td>
+                    <td class="text">
+                      {{ item.price }}
+                    </td>
+                    <td class="text">
+                      {{ approvedStatus[item.status] }}
+                    </td>
+                    <td class="text">
+                      {{ item.approver?.nickname }}
+                    </td>
+                    <td class="text">
+                      {{ item?.approved_at }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </template>
+        </div>
+        <template v-if="page < totalPage">
+          <div class="text-center text-[rgba(0,104,255,1)] decoration-underline" @click="getMore">
+            更多历史
           </div>
         </template>
       </div>
@@ -131,10 +145,10 @@ const approvedStatus = ref(['待审批', '已审批', '已驳回'])
 .gold {
   --uno: 'p-4';
   .gold-price {
-    --uno: 'px-4 py-3 rounded-[16px] bg-[rgba(255,255,255,0.8)] flex justify-between items-center';
+    --uno: 'px-4 py-3 rounded-[16px] blur-bgc flex justify-between items-center p4 text-color';
   }
   .change {
-    --uno: 'bg-[rgba(0,104,255,1)] py-2 px-4 rounded-[14px] text-white text-sm flex items-center';
+    --uno: 'bg-[rgba(0,104,255,1)] py-2 px-4 rounded-[14px] text-sm flex items-center text-#fff';
   }
 }
 .history {
@@ -143,7 +157,7 @@ const approvedStatus = ref(['待审批', '已审批', '已驳回'])
   text-overflow: ellipsis;
 }
 .text {
-  --uno: 'px-2 text-center text-#333';
+  --uno: 'px-2 text-center';
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -151,5 +165,8 @@ const approvedStatus = ref(['待审批', '已审批', '已驳回'])
 ::-webkit-scrollbar {
   /* 隐藏Webkit浏览器的滚动条 */
   display: none;
+}
+#list {
+  max-height: calc(100vh - 140px);
 }
 </style>

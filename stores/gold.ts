@@ -2,9 +2,11 @@ export const useGoldPrice = defineStore('goldPrice', {
   state: (): {
     goldPrice: number
     goldList: GoldPrices[]
+    totalPage: number
   } => ({
     goldPrice: 0,
     goldList: [],
+    totalPage: 0,
   }),
   actions: {
     /** 获取今日黄金价格 */
@@ -24,7 +26,17 @@ export const useGoldPrice = defineStore('goldPrice', {
       try {
         const { data } = await https.post<ResList<GoldPrices>, ReqList>('/setting/gold_price/list', params)
         if (data.value.code === HttpCode.SUCCESS) {
-          this.goldList = data.value.data.list
+          if (params.page === 1) {
+            this.goldList = data.value.data.list
+          }
+          else {
+            this.goldList = this.goldList.concat(data.value.data.list)
+          }
+          let result = data.value.data.total / 2
+          if (result % 1 !== 0) {
+            result = Math.floor(result) + 1
+          }
+          this.totalPage = result
         }
       }
       catch (error) {
