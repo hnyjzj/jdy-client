@@ -8,7 +8,7 @@ const emits = defineEmits<{
   add: [id: string]
   del: [id: string]
   update: [bench: WorkBench]
-  fold: [id: string]
+  fold: [index: number]
   changePage: [bench: WorkBench]
   updateList: [val: WorkBench[]]
 }>()
@@ -27,8 +27,8 @@ function delBench(id: string) {
   emits('del', id)
 }
 
-function fold(id: string) {
-  emits('fold', id)
+function fold(index: number) {
+  emits('fold', index)
 }
 
 function changePageBench(bench: WorkBench) {
@@ -68,12 +68,12 @@ function changePageBench(bench: WorkBench) {
               </div>
             </template>
             <template v-else>
-              <div class="flex items-center cursor-pointer" @click="fold(work.id)">
-                <template v-if="!foldStatus[work.id]">
+              <div class="flex items-center cursor-pointer" @click="fold(index)">
+                <template v-if="!work.is_fold">
                   <div class="horn">
                     点击收起
                   </div>
-                  <icon name="i-icon:down" :size="16" color="rgba(128,128,137,1)" />
+                  <icon name="i-icon:down" :size="12" color="rgba(128,128,137,1)" />
                 </template>
                 <template v-else>
                   <div class="horn">
@@ -84,8 +84,8 @@ function changePageBench(bench: WorkBench) {
               </div>
             </template>
           </div>
-          <div class="blur-bgc px-[16px]" :class="!foldStatus[work.id] ? 'block1' : 'hidden1'">
-            <div class="pt-[12px] pb-[16px] text-size-[14px]" :class="!foldStatus[work.id] ? 'block2' : 'hidden2'">
+          <div class="blur-bgc px-[16px]" :class="!work.is_fold ? 'block1' : 'hidden1'">
+            <div class="pt-[12px] pb-[16px] text-size-[14px]" :class="!work.is_fold ? 'block2' : 'hidden2'">
               <template v-if="isSetup">
                 <button style="all: unset;" @click="addBench(work.id)">
                   <div class="flex items-center mb-3 cursor-pointer">
@@ -168,7 +168,7 @@ function changePageBench(bench: WorkBench) {
   --uno: 'text-[rgba(51,51,51,1)] font-bold text-14px';
 }
 .son-title {
-  --uno: 'text-[12px] color-[#333] font-medium dark:color-[#fff]';
+  --uno: 'text-[12px] text-center color-[#333] font-medium dark:color-[#fff]';
 }
 
 .sector {

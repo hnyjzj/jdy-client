@@ -47,24 +47,16 @@ const foldStatus = useState('allFold', () => {
   return foldType.value
 })
 
-// 初始化折叠状态
-const initFold = () => {
-  workBenchList.value.forEach((item: WorkBench) => {
-    if (!(item.id in foldStatus.value)) {
-      foldStatus.value[item.id] = false
-    }
-  })
-}
 // 打开所有工作台
 const allFold = () => {
-  workBenchList.value.forEach((item: WorkBench) => {
-    foldStatus.value[item.id] = false
+  workBenchList.value.forEach((item) => {
+    item.is_fold = false
   })
 }
 
 // 切换单个工作台的折叠状态
-const fold = (id: string) => {
-  foldStatus.value[id] = !foldStatus.value[id]
+const fold = (index: number) => {
+  workBenchList.value[index].is_fold = !workBenchList.value[index].is_fold
 }
 
 // 添加/更新工作台表单
@@ -116,8 +108,9 @@ const set = () => {
 }
 
 // 页面显示时获取工作台列表
-await getWorkbenchList()
-await initFold()
+if (!workBenchList.value.length) {
+  await getWorkbenchList()
+}
 
 // 新增/更新工作台
 async function submit(val: AddWorkbencheReq) {
@@ -200,7 +193,7 @@ const searchListFn = async (clear: boolean = false) => {
           </div>
         </div>
       </div>
-      <div class="px-[16px]">
+      <div class="px-[16px] pb-10">
         <!-- 工作台入口 -->
         <div class="mt-6 mb-14 col-12">
           <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="delBench" @update="updateBench" @fold="fold" @change-page="changePage" />
