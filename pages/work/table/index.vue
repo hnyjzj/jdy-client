@@ -136,6 +136,9 @@ async function changePage(bench: WorkBench) {
   if (isSetup.value) {
     return updateBench(bench)
   }
+  if (!bench.path) {
+    return
+  }
   jump(bench.path)
 }
 
@@ -167,6 +170,17 @@ const afterRead = async (file: any) => {
     throw new Error(`更新工作台失败: ${error || '未知错误'}`)
   }
 }
+
+const searchKey = ref('')
+const searchListFn = async (clear: boolean = false) => {
+  await getWorkbenchList()
+  if (clear) {
+    searchKey.value = ''
+    return
+  }
+  const filteredData = filterByKeyword(workBenchList.value, searchKey.value)
+  workBenchList.value = filteredData
+}
 </script>
 
 <template>
@@ -175,7 +189,7 @@ const afterRead = async (file: any) => {
       <div class="color-[#fff] px-[16px] pt-[12px] flex justify-between">
         <product-manage-company />
         <div class="flex-1 px-2 sm:px-4">
-          <product-filter-search />
+          <product-filter-search v-model:search-key="searchKey" @search-list="searchListFn" />
         </div>
         <div
           class="flex items-center justify-end cursor-pointer"

@@ -2,6 +2,7 @@
 const props = defineProps<{
   list: WorkBench[]
   foldStatus: WorkTablesStatus
+  keyword?: string
 }>()
 const emits = defineEmits<{
   add: [id: string]
@@ -9,6 +10,7 @@ const emits = defineEmits<{
   update: [bench: WorkBench]
   fold: [id: string]
   changePage: [bench: WorkBench]
+  updateList: [val: WorkBench[]]
 }>()
 
 const isSetup = defineModel({ type: Boolean, default: false })

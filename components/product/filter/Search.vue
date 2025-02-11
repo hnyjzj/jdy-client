@@ -1,10 +1,10 @@
 <script setup lang="ts">
 const emits = defineEmits<{
-  searchList: []
+  searchList: [clear: boolean ]
 }>()
 const searchKey = defineModel('searchKey')
-const subsearch = () => {
-  emits('searchList')
+const subsearch = (clear: boolean = false) => {
+  emits('searchList', clear)
 }
 </script>
 
@@ -18,6 +18,9 @@ const subsearch = () => {
         <input
           v-model="searchKey" type="text" class="bg-transparent w-full border-0 placeholder-text-[#fff] flex-1 py-[6px] pl-[4px] line-height-[24px]" placeholder="搜索"
           @keyup.enter="subsearch()">
+      </div>
+      <div @click="subsearch(true)">
+        <icon name="i-icon:search-close" />
       </div>
     </div>
   </div>
