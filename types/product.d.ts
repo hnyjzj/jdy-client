@@ -105,9 +105,10 @@ interface Product {
    */
   size: number
   /**
-   * 状态
+   * 产品状态--
+   * 0 "全部",1 "正常",2 "报损",3 "调拨",4 "已售",5 "退货"
    */
-  status: 1 | 2 | 3
+  status: 0 | 1 | 2 | 3 | 4 | 5
   /**
    * 款式
    */
@@ -133,7 +134,6 @@ interface Product {
    */
   weight_other: number
 }
-
 interface ProductDamage {
   code: Product['code']
   reason: string

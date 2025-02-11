@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useDialog, useMessage } from 'naive-ui'
+import { useDialog } from 'naive-ui'
 
-const message = useMessage()
+const { $toast } = useNuxtApp()
 const formlist = ref<addStaffForm>({
   platform: 'account',
   account: {
@@ -11,12 +11,15 @@ const formlist = ref<addStaffForm>({
     password: '',
     avatar: '',
     email: '',
+    store_id: '',
   },
 })
 const { useWxWork } = useWxworkStore()
 const { createStaff, uploadAvatar } = useStaff()
 const dialog = useDialog()
 const router = useRouter()
+const addRef = ref()
+
 const handleConfirm = () => {
   dialog.success({
     title: '创建成功',
@@ -35,6 +38,7 @@ const handleConfirm = () => {
         avatar: '',
         email: '',
       } as addStaffForm['account']
+      addRef.value.clearAvatar()
     },
     onNegativeClick: () => {
       router.go(-1)
@@ -48,11 +52,11 @@ const addStaff = async () => {
   formlist.value.platform = 'account'
   const res = await createStaff(formlist.value)
   if (res.code === HttpCode.SUCCESS) {
-    message.success('创建成功')
+    $toast.success('创建成功')
     handleConfirm()
   }
   else {
-    message.error(res.message)
+    $toast.error(res.message)
   }
 }
 // /jssdk/wxwork  企业微信授权添加
@@ -72,18 +76,18 @@ const wxwordAdd = async () => {
   }
   const res = await createStaff(params.value)
   if (res.code === HttpCode.SUCCESS) {
-    message.success('创建成功')
+    $toast.success('创建成功')
     handleConfirm()
   }
   else {
-    message.error(res.message)
+    $toast.error(res.message)
   }
 }
 const uploadFile = async (file: any, onfinish?: () => void) => {
   try {
     const res = await uploadAvatar({ avatar: file || undefined })
     if (res.data.value.code !== HttpCode.SUCCESS) {
-      message.error(res.data.value?.message || '上传失败')
+      $toast.error(res.data.value?.message || '上传失败')
       return false
     }
     const url = res.data.value.data.url
@@ -92,7 +96,7 @@ const uploadFile = async (file: any, onfinish?: () => void) => {
     onfinish?.()
   }
   catch {
-    message.error('上传失败，请重试')
+    $toast.error('上传失败，请重试')
   }
 }
 </script>
@@ -109,7 +113,7 @@ const uploadFile = async (file: any, onfinish?: () => void) => {
       </common-fold>
     </div>
     <div class="col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
-      <staff-manage-add v-model="formlist" @submit="addStaff" @upload="uploadFile" />
+      <staff-manage-add ref="addRef" v-model="formlist" @submit="addStaff" @upload="uploadFile" />
     </div>
   </div>
 </template>

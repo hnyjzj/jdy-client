@@ -4,7 +4,7 @@ useSeoMeta({
 })
 
 // 测试数据。待替换
-const refundDetail: SalesSlip[] = [
+const refundDetail: any[] = [
   {
     num: 'CZ-32493974',
     store: {

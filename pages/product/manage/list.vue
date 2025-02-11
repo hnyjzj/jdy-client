@@ -185,6 +185,11 @@ function edit(code: string) {
               </van-row>
             </div>
           </template>
+          <template #bottom="{ info }">
+            <div class="flex-end text-size-[14px]">
+              <common-button-irregular text="编辑" @click="edit(info.code)" />
+            </div>
+          </template>
         </product-manage-card>
       </common-list-pull>
     </div>
@@ -193,7 +198,7 @@ function edit(code: string) {
       <common-create @click="create" />
     </div>
     <common-model v-model="isModel" title="入库" :show-ok="true" confirm-text="导入货品" @confirm="submitGoods">
-      <div class="mb-8 relative">
+      <div class="mb-8 relative min-h-[60px]">
         <input class="h-[40px] absolute top-0 w-full opacity-0" type="file" @change="FileUpload">
         <div class="uploadInp cursor-pointer">
           <div>请添加文件</div>

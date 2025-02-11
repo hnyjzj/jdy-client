@@ -5,8 +5,8 @@ useSeoMeta({
 
 const { storesList, addorUpdateForm, storeDetails, filterListToArray, total } = storeToRefs(useStores())
 const { getStoreDetail, reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
-const message = useMessage()
 
+const { $toast } = useNuxtApp()
 // 新增门店弹窗
 const addOrUpdateShow = ref<boolean>(false)
 // 搜索弹窗显示状态
@@ -61,14 +61,14 @@ const newAdd = () => {
 const newStore = async () => {
   const res = await createStore(addorUpdateForm.value)
   if (res.code === HttpCode.SUCCESS) {
-    message.success('创建门店成功')
+    $toast.success('创建门店成功')
     reastAddForm()
     addOrUpdateShow.value = false
     storesList.value = []
     await getStoreList({ page: 1, limit: 12 })
   }
   else {
-    message.error(res.message)
+    $toast.error(res.message)
   }
 }
 
@@ -85,7 +85,7 @@ const deleteStoreFn = async (val: string) => {
 const confirmDelete = async () => {
   const res = await deleteStore(nowDeleteId.value)
   if (res.code === HttpCode.SUCCESS) {
-    message.success('删除成功')
+    $toast.success('删除成功')
     storesList.value = []
     await getStoreList({ page: 1, limit: 12 })
   }
@@ -109,7 +109,7 @@ const edit = (val: string) => {
 const editStore = async () => {
   const res = await updateStore(addorUpdateForm.value)
   if (res.code === HttpCode.SUCCESS) {
-    message.success('更新成功')
+    $toast.success('更新成功')
     addOrUpdateShow.value = false
     storesList.value = []
     await getStoreList({ page: 1, limit: 12 })
@@ -131,7 +131,7 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
   try {
     const res = await uploadImage({ image: file, store_id: id || undefined })
     if (res.data.value.code !== HttpCode.SUCCESS) {
-      message.error(res.data.value?.message || '上传失败')
+      $toast.error(res.data.value?.message || '上传失败')
       return false
     }
     const url = res.data.value.data.url
@@ -140,7 +140,7 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
     onfinish && onfinish()
   }
   catch {
-    message.error('上传失败，请重试')
+    $toast.error('上传失败，请重试')
   }
 }
 // 获取头部高度

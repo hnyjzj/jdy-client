@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { darkTheme, dateZhCN, type GlobalThemeOverrides, zhCN } from 'naive-ui'
-
+// 黑白主题切换
 const { $colorMode } = useNuxtApp()
-
 const locale = zhCN
-
 const dateLocale = dateZhCN
-
 const themeOverrides: GlobalThemeOverrides = {
   Drawer: {
     BackgroundColor: 'transparent',
@@ -23,6 +20,9 @@ const themeOverrides: GlobalThemeOverrides = {
     borderFocus: '1px solid #0068ff',
     borderActive: '1px solid #0068ff',
     borderRadius: '60px',
+  },
+  DatePicker: {
+    borderRadius: '20px',
   },
 }
 </script>

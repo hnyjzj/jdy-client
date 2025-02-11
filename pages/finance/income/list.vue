@@ -5,7 +5,7 @@ useSeoMeta({
 })
 
 // 测试数据。需删除替换
-const incomeList: SalesSlip[] = [
+const incomeList: any[] = [
   {
     num: 'CZ-32493974',
     store: {

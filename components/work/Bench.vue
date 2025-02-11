@@ -7,7 +7,7 @@ const emits = defineEmits<{
   add: [id: string]
   del: [id: string]
   update: [bench: WorkBench]
-  fold: [id: string]
+  fold: [index: number]
   changePage: [bench: WorkBench]
 }>()
 
@@ -25,8 +25,8 @@ function delBench(id: string) {
   emits('del', id)
 }
 
-function fold(id: string) {
-  emits('fold', id)
+function fold(index: number) {
+  emits('fold', index)
 }
 
 function changePageBench(bench: WorkBench) {
@@ -66,8 +66,8 @@ function changePageBench(bench: WorkBench) {
               </div>
             </template>
             <template v-else>
-              <div class="flex items-center cursor-pointer" @click="fold(work.id)">
-                <template v-if="!foldStatus[work.id]">
+              <div class="flex items-center cursor-pointer" @click="fold(index)">
+                <template v-if="!work.is_fold">
                   <div class="horn">
                     点击收起
                   </div>
@@ -82,8 +82,8 @@ function changePageBench(bench: WorkBench) {
               </div>
             </template>
           </div>
-          <div class="blur-bgc px-[16px]" :class="!foldStatus[work.id] ? 'block1' : 'hidden1'">
-            <div class="pt-[12px] pb-[16px] text-size-[14px]" :class="!foldStatus[work.id] ? 'block2' : 'hidden2'">
+          <div class="blur-bgc px-[16px]" :class="!work.is_fold ? 'block1' : 'hidden1'">
+            <div class="pt-[12px] pb-[16px] text-size-[14px]" :class="!work.is_fold ? 'block2' : 'hidden2'">
               <template v-if="isSetup">
                 <button style="all: unset;" @click="addBench(work.id)">
                   <div class="flex items-center mb-3 cursor-pointer">
@@ -166,7 +166,7 @@ function changePageBench(bench: WorkBench) {
   --uno: 'text-[rgba(51,51,51,1)] font-bold text-14px';
 }
 .son-title {
-  --uno: 'text-[12px] color-[#333] font-medium dark:color-[#fff]';
+  --uno: 'text-[12px] text-center color-[#333] font-medium dark:color-[#fff]';
 }
 
 .sector {
@@ -177,7 +177,7 @@ function changePageBench(bench: WorkBench) {
   --uno: 'h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]';
 }
 .top {
-  --uno: 'bg-gradient-linear-[90deg,#8CADF8,#D8E7FD] px-[16px] py-[8px] text-size-[14px] line-height-[20px] color-[#333] font-semibold flex-between';
+  --uno: 'bg-gradient-linear-[90deg,#8CADF8,#D8E7FD] px-[16px] py-[12px] h-[44px] text-size-[16px] line-height-[20px] color-[#333] font-semibold flex-between';
 }
 .hidden1 {
   height: 0px;
@@ -193,6 +193,6 @@ function changePageBench(bench: WorkBench) {
   transition: all 200ms ease;
 }
 .horn {
-  --uno: 'text-3 text-[rgba(128,128,137,1)] pr-1';
+  --uno: 'text-[14px] text-[rgba(128,128,137,1)] pr-1';
 }
 </style>

@@ -6,11 +6,12 @@ interface Staff {
   id?: string
   phone: string
   nickname: string
-  password: string
+  password?: string
   avatar: string
   email: string
   gender: number
   is_disabled?: boolean
+  store_id?: string
 }
 /**
  * 添加员工请求参数
@@ -31,7 +32,7 @@ interface wxUserid {
  */
 interface addStaffForm {
   platform: string
-  account: Staff
+  account: Staff & { password: string }
 }
 
 interface updateStaffReq {

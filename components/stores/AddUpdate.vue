@@ -6,7 +6,7 @@ const emits = defineEmits<{
   submit: []
   editSubmit: []
 }>()
-const message = useMessage()
+const { $toast } = useNuxtApp()
 const { addorUpdateForm } = storeToRefs(useStores())
 // 展示预览图
 const showModalRef = ref(false)
@@ -52,7 +52,7 @@ const rules = {
 // 校验上传文件
 const beforeUpload = (data: any) => {
   if (data.file.file?.type !== 'image/png' && data.file.file?.type !== 'image/jpeg') {
-    message.error('只能上传png,jpeg格式的图片文件,请重新上传')
+    $toast.error('只能上传png,jpeg格式的图片文件,请重新上传')
     return false
   }
 }
@@ -73,11 +73,11 @@ const handleValidateButtonClick = (e: MouseEvent) => {
       }
       else {
         areaError.value = true
-        message.error('请选择省市区')
+        $toast.error('请选择省市区')
       }
     }
     else {
-      message.error(errors[0][0].message)
+      $toast.error(errors[0][0].message)
       if (!addorUpdateForm.value.district) {
         areaError.value = true
       }
