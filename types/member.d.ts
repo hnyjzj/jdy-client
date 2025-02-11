@@ -83,6 +83,52 @@ interface Member {
 }
 
 /**
+ * 会员积分详情
+ */
+interface IntegralRecord {
+  /**
+   * 变动后积分
+   */
+  after: number
+  /**
+   * 变动前积分
+   */
+  before: number
+  /**
+   * 变动积分
+   */
+  change: number
+  /**
+   * 变动类型
+   */
+  change_type: ChangeType
+  /**
+   * 创建时间
+   */
+  created_at: string
+  /**
+   * 删除时间
+   */
+  deleted_at: string
+  /**
+   * ID
+   */
+  id: string
+  /**
+   * 会员id
+   */
+  member_id: string
+  /**
+   * 变动原因
+   */
+  remark: string
+  /**
+   * 更新时间
+   */
+  updated_at: string
+}
+
+/**
  * 会员等级
  */
 enum MemberLevel {
@@ -122,10 +168,50 @@ enum Gender {
   Woman = 2,
 }
 
+enum ChangeType {
+  /**
+   * 消费
+   */
+  Consume = 1,
+  /**
+   * 充值
+   */
+  Recharge = 2,
+  /**
+   * 兑换
+   */
+  Exchange = 3,
+  /**
+   * 退款
+   */
+  Refund = 4,
+  /**
+   * 取消兑换
+   */
+  CancelExchange = 5,
+  /**
+   * 取消退款
+   */
+  CancelRefund = 6,
+  /**
+   * 人工调整
+   */
+  ManualChange = 7,
+}
+
 type WhereParams = { [key in keyof Member]?: Member[key] }
 
-interface MemberReq {
-  page: number
-  limit: number
-  where?: member
+interface IntegralReq {
+  /**
+   * 会员id
+   */
+  id: string
+  /**
+   * 变动积分数量
+   */
+  change: number
+  /**
+   * 原因
+   */
+  remark: string
 }

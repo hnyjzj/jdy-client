@@ -5,6 +5,7 @@ const props = defineProps<{
 
 const emits = defineEmits<{
   goInfo: [id: string]
+  viewIntegral: [id: string]
   changeIntegral: [id: string]
 }>()
 
@@ -80,7 +81,11 @@ const getStatusType = (status: number) => {
 
             <template #footer>
               <div class="footer gap-[32px]" uno-lg="gap-[40px]">
-                <div class="flex flex-row gap-[24px] cursor-pointer">
+                <div class="flex flex-row gap-[24px] cursor-pointer" uno-lg="gap-[32px]">
+                  <div class="accidental" @click="emits('viewIntegral', item.id)">
+                    查看积分
+                  </div>
+
                   <div class="accidental" @click="emits('changeIntegral', item.id)">
                     调整积分
                   </div>
