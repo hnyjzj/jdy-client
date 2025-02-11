@@ -36,7 +36,9 @@ const sex = (val: number) => {
                   email
                 </div>
                 <div class="text-align-end col-6">
-                  {{ item.email || '暂无' }}
+                  <div class="break-words">
+                    {{ item.email || '暂无' }}
+                  </div>
                 </div>
               </div>
               <div class="flex-between p-[4px]">
