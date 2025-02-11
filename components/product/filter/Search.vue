@@ -16,7 +16,7 @@ const subsearch = (clear: boolean = false) => {
       </div>
       <div class="text-size-[14px] line-height-[20px] flex-1">
         <input
-          v-model="searchKey" type="text" class="bg-transparent w-full border-0 placeholder-text-[#fff] flex-1 py-[6px] pl-[4px] line-height-[24px]" placeholder="搜索"
+          v-model="searchKey" type="search" autocomplete="off" class="bg-transparent w-full border-0 placeholder-text-[#fff] flex-1 py-[6px] pl-[4px] line-height-[24px]" placeholder="搜索"
           @keyup.enter="subsearch()">
       </div>
       <div @click="subsearch(true)">
@@ -27,5 +27,7 @@ const subsearch = (clear: boolean = false) => {
 </template>
 
 <style lang="scss" scoped>
-
+input[type='search']::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
 </style>
