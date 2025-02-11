@@ -1,12 +1,11 @@
 interface WorkBench {
   id: string
-  title?: string
+  title: string
   name?: string
-  path: string
+  path?: string
   children?: WorkBench[]
-  parent_id: string
-  icon: string
-
+  parent_id?: string
+  icon?: string
   /**
    * 是否折叠
    */
