@@ -5,80 +5,81 @@ useSeoMeta({
   title: '销售单列表',
 })
 
-// 测试数据。需删除替换
-const saleList: any[] = [
-  {
-    num: 'CZ-32493974',
-    store: {
-      name: '青青草原一号店',
-      salesVolume: 100000,
-    },
-    member: {
-      nickname: '张三',
-      phone: '13800138000',
-      level: 2,
-    },
-    mainSalesman: '李四',
-    goodsInfo: '足金挂坠',
-    quantity: 55789,
-    realAmount: 25000,
-    goodsAmount: 15000,
-    discountAmount: '100',
-    oldDiscountAmount: '20',
-    integral: '32',
-    openType: '线下开单',
-    createTime: '2021-11-11 11:11:11',
-    slipStatus: 2,
-  },
-  {
-    num: 'CZ-32493974',
-    store: {
-      name: '青青草原一号店',
-      salesVolume: 100000,
-    },
-    member: {
-      nickname: '张三',
-      phone: '13800138000',
-      level: 2,
-    },
-    mainSalesman: '李四',
-    goodsInfo: '足金挂坠',
-    quantity: 55789,
-    realAmount: 25000,
-    goodsAmount: 15000,
-    discountAmount: '100',
-    oldDiscountAmount: '20',
-    integral: '32',
-    openType: '线下开单',
-    createTime: '2021-11-11 11:11:11',
-    slipStatus: 2,
-  },
-]
+const { filterListToArray, OrdersList, total } = storeToRefs(useOrder())
+const { getSaleWhere, getOrderList } = useOrder()
+const filterData = ref({} as Partial<Orders>)
+const filterShow = ref(false)
 
+// 搜索条件 页码
+const searchPage = ref<number>(1)
+// 是否有更多数据
+const nomore = ref<boolean>(false)
+// 获取列表
+const getList = async (where = {} as Partial<Orders>) => {
+  if (nomore.value)
+    return
+  const params = { page: searchPage.value, limit: 12 } as ReqList<Orders>
+  if (JSON.stringify(where) !== '{}') {
+    params.where = where
+  }
+  const res = await getOrderList(params)
+  res ? nomore.value = false : nomore.value = true
+}
+await getList()
+await getSaleWhere()
 const handleClick = async () => {
 // 跳转到详情页
   await navigateTo('/sale/sales/order')
 }
+// 打开高级筛选
+const openFilter = () => {
+  // 打开筛选
+  filterShow.value = true
+}
+const submitWhere = () => {
+
+}
+
+// 获取头部高度
+const height = ref<number | undefined>(0)
+onMounted(() => {
+  height.value = getHeight('header')
+})
 </script>
 
 <template>
-  <div class="grid-12">
-    <div class="flex flex-col gap-[16px] px-[16px] py-[16px] col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-      <!-- header -->
-      <div class="flex flex-row gap-2">
-        <product-manage-company class="color-[#fff]" />
-        <product-filter-search class="color-[#fff] flex-1" />
-      </div>
-      <!-- data -->
-      <div class="flex-center-between gap-2">
-        <div class="text-size-[14px] color-[#fff]">
-          共{{ saleList[0].store.salesVolume }}条数据
+  <div>
+    <div class="grid-12">
+      <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
+        <!-- header -->
+        <div id="header" class="px-[16px] pt-[16px]">
+          <div class="flex flex-row gap-2">
+            <product-manage-company class="color-[#fff]" />
+            <product-filter-search class="color-[#fff] flex-1" />
+          </div>
+          <!-- data -->
+          <div class="flex-center-between gap-2">
+            <div class="text-size-[14px] color-[#fff]">
+              共{{ total }}条数据
+            </div>
+            <div @click="openFilter()">
+              <product-filter-senior class="color-[#fff]" />
+            </div>
+          </div>
         </div>
-        <product-filter-senior class="color-[#fff]" />
+        <!-- cards -->
+        <common-list-pull
+          :distance="height"
+          :nomore="nomore"
+          @pull="() => {
+            searchPage += 1
+            getList()
+          }">
+          <sale-sales-list :info="OrdersList" @user-click="handleClick" />
+        </common-list-pull>
       </div>
-      <!-- cards -->
-      <sale-sales-list :info="saleList" @user-click="handleClick" />
     </div>
+    <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
   </div>
 </template>
 

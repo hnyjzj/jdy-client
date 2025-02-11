@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // 销售单列表
 const props = defineProps<{
-  info: any[]
+  info: Orders[]
 }>()
 
 const emits = defineEmits(['userClick'])
@@ -13,7 +13,7 @@ const handleClick = () => {
 <template>
   <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
-      <sale-cards :title="item.num" :tag-text="item.openType" :info="item">
+      <sale-cards :title="item?.id" :tag-text="item.type">
         <template #info>
           <div class="grid grid-cols-1 gap-[12px]">
             <div class="info">
@@ -23,15 +23,15 @@ const handleClick = () => {
               </div>
               <div class="part">
                 <span class="part-left">会员</span>
-                <span class="part-right">{{ item.member.nickname || '--' }}</span>
+                <span class="part-right">{{ item.member?.nickname || '--' }}</span>
               </div>
               <div class="part">
                 <span class="part-left">会员手机</span>
-                <span class="part-right">{{ item.member.phone || '--' }}</span>
+                <span class="part-right">{{ item.member?.phone || '--' }}</span>
               </div>
               <div class="part">
-                <span class="part-left">主销</span>
-                <span class="part-right">{{ item.mainSalesman || '--' }}</span>
+                <span class="part-left">收银员</span>
+                <span class="part-right">{{ item.cashier?.nickname || '--' }}</span>
               </div>
             </div>
           </div>

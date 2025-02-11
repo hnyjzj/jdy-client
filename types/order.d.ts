@@ -191,3 +191,14 @@ interface OrderProducts {
    */
   updated_at?: Date
 }
+
+enum OrderType {
+  // 销售单
+  Sale = 1,
+  //   定金单
+  Deposit = 2,
+  // 维修单
+  Maintenance = 3,
+  //   其他
+  Other = 4,
+}

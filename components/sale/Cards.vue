@@ -1,8 +1,8 @@
 <script setup lang="ts">
 // 通用_列表_卡片
 const props = defineProps<{
-  title: string
-  tagText?: string
+  title?: string | number
+  tagText?: string | number
 }>()
 </script>
 
