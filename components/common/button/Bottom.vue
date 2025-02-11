@@ -20,7 +20,7 @@ const confirm = () => {
 </script>
 
 <template>
-  <div class="btn grid-12 offset-2">
+  <div class="btn grid-12 offset-2 z-999">
     <button class="btn-left col-span-4 offset-1 cursor-pointer" @click="cancel">
       {{ props.cancelText }}
     </button>

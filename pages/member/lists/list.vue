@@ -1,12 +1,20 @@
 <script setup lang="ts">
-const { getMemberList, getMemberInfo, getMemberWhere, updateMemberInfo } = useMemberManage()
-const { memberList, memberInfo, filterListToArray, memberListTotal } = storeToRefs(useMemberManage())
-
-const { $toast } = useNuxtApp()
-
 useSeoMeta({
   title: '会员列表',
 })
+const { $toast } = useNuxtApp()
+
+// 获取头部高度
+const height = ref<number | undefined>(0)
+onMounted(() => {
+  height.value = getHeight('header')
+  if (height.value) {
+    height.value = height.value + 40
+  }
+})
+
+const { getMemberList, getMemberInfo, getMemberWhere, updateIntegral } = useMemberManage()
+const { memberList, memberInfo, filterListToArray, memberListTotal } = storeToRefs(useMemberManage())
 
 const actions = [
   { id: 1, text: '增加' },
@@ -52,50 +60,55 @@ const openFilter = () => {
   isFilter.value = true
 }
 
-// 获取头部高度
-const height = ref<number | undefined>(0)
-onMounted(() => {
-  height.value = getHeight('header')
-  if (height.value) {
-    height.value = height.value + 40
-  }
-})
 function pull() {
   getList()
 }
 
 const show = ref(false)
+
 const memberParams = ref<Member>({} as Member)
+const integralParams = ref<IntegralReq>({} as IntegralReq)
+
+// 获取当前用户积分信息，并显示弹窗
 const adjustment = async (id: string) => {
-  show.value = !show.value
+  show.value = true
   await getMemberInfo(id as string)
   memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
+
+  integralParams.value.id = memberParams.value.id
 }
 
 // 调整方式
 const adjustWay = ref(0)
-const afterAdjusting = (initValue: number, adjustValue: number) => {
-  return adjustWay.value === 1 ? initValue + adjustValue : initValue - adjustValue
+// 变更积分的绝对值
+const fluctuant = ref()
+
+// 初始化弹窗信息
+const initPopup = () => {
+  show.value = false
+  adjustWay.value = 0
+  fluctuant.value = 0
+  integralParams.value.remark = ''
 }
 
-const showTo = ref(0)
-// 调整数量
-const capture = defineModel()
-const updateShowTo = () => {
-  if (adjustWay.value !== 0 && capture.value !== undefined && capture.value !== '') {
-    const adjustValue = Number(capture.value)
-    showTo.value = afterAdjusting(memberParams.value.integral || 0, adjustValue)
-  }
-}
-
-const updateIntegral = async () => {
-  memberParams.value.integral = showTo.value
-  await updateMemberInfo(memberParams.value)
-  if (adjustWay.value !== 0 && capture.value !== '') {
-    show.value = false
+const disposeNumerical = () => {
+  if (adjustWay.value === 1) {
+    integralParams.value.change = fluctuant.value
   }
   else {
-    $toast.warning('当前积分调整无效')
+    integralParams.value.change = -fluctuant.value
+  }
+}
+
+const adjustIntegral = async () => {
+  if (adjustWay.value !== 0 && fluctuant.value !== 0 && fluctuant.value !== undefined && integralParams.value.remark) {
+    disposeNumerical()
+    await updateIntegral(integralParams.value)
+
+    initPopup()
+  }
+  else {
+    $toast.warning('当前积分调整无效，请检查输入信息')
   }
 }
 
@@ -113,15 +126,16 @@ async function submitWhere(f: Partial<Member>) {
   $toast.error(res.message ?? '筛选失败')
 }
 
+const goIntegral = (id: string) => {
+  jump('/member/integral/record', { id })
+}
+
 const userJump = (id: string) => {
   jump('/member/lists/info', { id })
 }
 
 const userCancel = () => {
-  show.value = false
-  adjustWay.value = 0
-  showTo.value = 0
-  capture.value = 0
+  initPopup()
 }
 </script>
 
@@ -129,8 +143,9 @@ const userCancel = () => {
   <div class="overflow-hidden">
     <common-model
       v-model:model-value="show"
-      :show-ok="true" title="调整积分"
-      @confirm="updateIntegral"
+      :show-ok="true"
+      title="调整积分"
+      @confirm="adjustIntegral"
       @cancel="userCancel"
     >
       <div class="pb-[16px] flex flex-col gap-[16px]">
@@ -142,35 +157,6 @@ const userCancel = () => {
             <div class="item-specific">
               <div class="disabled">
                 {{ memberParams.integral }}
-              </div>
-            </div>
-          </div>
-          <div class="item flex-1">
-            <div class="item-caption">
-              调整后积分
-            </div>
-            <div class="item-specific">
-              <div class="disabled">
-                <div class="show">
-                  <input v-model="showTo" class="border-none bg-[#fff] bg-opacity-0" disabled>
-                </div>
-                <template v-if="adjustWay !== 0 && capture !== undefined && capture !== ''">
-                  <div class="variational">
-                    <template v-if="adjustWay === 1">
-                      <div class="increase color-[#2ED653]">
-                        +
-                      </div>
-                    </template>
-                    <template v-else>
-                      <div class="decrease color-[#FF2F2F]">
-                        -
-                      </div>
-                    </template>
-                    <div class="capture" :style="{ color: adjustWay === 1 ? '#2ED653' : '#FF2F2F' }">
-                      {{ capture }}
-                    </div>
-                  </div>
-                </template>
               </div>
             </div>
           </div>
@@ -189,7 +175,6 @@ const userCancel = () => {
                     @select="(action: any) => {
                       item.selected = action.text
                       adjustWay = action.id
-                      updateShowTo()
                     }"
                   >
                     <template #reference>
@@ -207,10 +192,9 @@ const userCancel = () => {
                     </template>
                   </van-popover>
                   <input
-                    v-model="capture"
+                    v-model="fluctuant"
                     placeholder="请输入积分数量"
                     class="input"
-                    @blur="updateShowTo"
                   >
                 </div>
               </template>
@@ -223,11 +207,12 @@ const userCancel = () => {
           </div>
           <div class="item-specific">
             <textarea
+              v-model="integralParams.remark"
               name="textarea"
               rows="5"
               cols="30"
               wrap="soft"
-              placeholder="非必填"
+              placeholder="此项为必填项，请填写调整原因"
               class="area"
             />
           </div>
@@ -248,7 +233,12 @@ const userCancel = () => {
 
     <div class="pb-10 overflow-hidden">
       <common-list-pull :distance="height" :nomore="!nomore" @pull="pull">
-        <member-lists-list :info="memberList" @go-info="userJump" @change-integral="adjustment" />
+        <member-lists-list
+          :info="memberList"
+          @go-info="userJump"
+          @view-integral="goIntegral"
+          @change-integral="adjustment"
+        />
       </common-list-pull>
     </div>
   </div>
