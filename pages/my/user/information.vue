@@ -12,7 +12,7 @@ const staff = useStaff()
 // 头像列表
 const fileList = ref<fileListArr[]>([])
 // 其他授权方式列表
-const otherList = ref<{ name: string, icon: string }[]>([])
+const otherList = ref<{ name: string, icon: string, title: string }[]>([])
 // 上传参数
 const userinfoForm = ref<Staff>({
   avatar: '',
@@ -58,6 +58,7 @@ onMounted(() => {
   if ((isWxWorkClient() || isWeChatClient())) {
     otherList.value.push({
       name: 'wxwork',
+      title: '微信企业',
       icon: 'i-svg:qwicon',
     })
   }
