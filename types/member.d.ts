@@ -203,15 +203,15 @@ type WhereParams = { [key in keyof Member]?: Member[key] }
 
 interface IntegralReq {
   /**
-   * 变动积分数量
-   */
-  change: number
-  /**
    * 会员id
    */
   id: string
   /**
+   * 变动积分数量
+   */
+  change: number
+  /**
    * 原因
    */
-  reason: string
+  remark: string
 }

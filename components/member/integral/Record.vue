@@ -73,7 +73,7 @@ const changeTypeDesc = (type: number) => {
                   <div class="mod">
                     <div class="flex flex-col gap-[8px]">
                       <div class="title">
-                        变更原因
+                        基础信息
                       </div>
                       <div class="replenish">
                         <div class="item">
@@ -86,18 +86,18 @@ const changeTypeDesc = (type: number) => {
                         </div>
                         <div class="item">
                           <div class="left">
-                            记录类型
-                          </div>
-                          <div class="right">
-                            {{ disposeType(item.change) }}
-                          </div>
-                        </div>
-                        <div class="item">
-                          <div class="left">
                             变更类型
                           </div>
                           <div class="right">
                             {{ changeTypeDesc(item.change_type) }}
+                          </div>
+                        </div>
+                        <div class="item">
+                          <div class="left">
+                            创建时间
+                          </div>
+                          <div class="right">
+                            {{ cutOut(item.created_at) }}
                           </div>
                         </div>
                       </div>
@@ -107,9 +107,17 @@ const changeTypeDesc = (type: number) => {
 
                     <div class="flex flex-col gap-[8px]">
                       <div class="title">
-                        变更数值
+                        数值信息
                       </div>
                       <div class="replenish">
+                        <div class="item">
+                          <div class="left">
+                            记录类型
+                          </div>
+                          <div class="right">
+                            {{ disposeType(item.change) }}
+                          </div>
+                        </div>
                         <div class="item">
                           <div class="left">
                             变更数额
@@ -132,14 +140,6 @@ const changeTypeDesc = (type: number) => {
                           </div>
                           <div class="right">
                             {{ item.after }}
-                          </div>
-                        </div>
-                        <div class="item">
-                          <div class="left">
-                            创建时间
-                          </div>
-                          <div class="right">
-                            {{ cutOut(item.created_at) }}
                           </div>
                         </div>
                       </div>
