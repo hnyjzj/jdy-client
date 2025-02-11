@@ -4,6 +4,13 @@ import { defineNuxtConfig } from 'nuxt/config'
 export default defineNuxtConfig({
   telemetry: false,
   compatibilityDate: '2024-11-06',
+  nitro: {
+    replace: {
+      // replace the browser detection in a server lib
+      'globalThis.navigator': 'undefined',
+      'global.navigator': 'undefined',
+    },
+  },
   devtools: {
     enabled: true,
   },
