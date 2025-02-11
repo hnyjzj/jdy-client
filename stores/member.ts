@@ -3,16 +3,22 @@ export const useMemberManage = defineStore('Member', {
     memberList: Member[]
     filterList: Where<Member>
     memberInfo: Member
-    memberIntegral: MemberIntegral[]
+    integralRecord: IntegralRecord[]
+    filterIntegralList: Where<IntegralRecord>
     memberListTotal: number
+    integralRecordTotal: number
     filterListToArray: FilterWhere<Member>[]
+    filterIntegralListToArray: FilterWhere<IntegralRecord>[]
   } => ({
     memberList: [],
     filterList: {},
     memberInfo: {} as Member,
-    memberIntegral: {} as MemberIntegral[],
+    integralRecord: {} as IntegralRecord[],
+    filterIntegralList: {},
     memberListTotal: 0,
+    integralRecordTotal: 0,
     filterListToArray: {} as FilterWhere<Member>[],
+    filterIntegralListToArray: {} as FilterWhere<IntegralRecord>[],
   }),
 
   actions: {
@@ -71,24 +77,47 @@ export const useMemberManage = defineStore('Member', {
       }
     },
     // 获取会员积分详情
-    async getMemberIntegral(params: ReqList<MemberIntegral>) {
+    async getIntegralRecord(params: ReqList<IntegralRecord>) {
       try {
-        const { data } = await https.post<ResList<MemberIntegral>, ReqList<MemberIntegral>>('/member/integral/list', params)
+        const { data } = await https.post<ResList<IntegralRecord>, ReqList<IntegralRecord>>('/member/integral/list', params)
         if (data.value.code === HttpCode.SUCCESS) {
-          this.memberListTotal = data.value.data.total
+          this.integralRecordTotal = data.value.data.total
           if (params.page === 1) {
-            this.memberIntegral = data.value.data.list
+            this.integralRecord = data.value.data.list
           }
           else {
-            this.memberIntegral = this.memberIntegral.concat(data.value.data.list)
+            this.integralRecord = this.integralRecord.concat(data.value.data.list)
           }
         }
+        return data.value
       }
       catch (error) {
         throw new Error(`获取会员积分详情失败: ${error || '未知错误'}`)
       }
     },
-
+    // 获取积分筛选列表
+    async getIntegralWhere() {
+      try {
+        const { data } = await https.get<Where<IntegralRecord>>('/member/integral/where')
+        if (data.value?.code === HttpCode.SUCCESS) {
+          this.filterIntegralList = data.value.data
+          this.filterIntegralListToArray = sortArr(this.filterIntegralList)
+        }
+      }
+      catch (error) {
+        throw new Error(`筛选失败: ${error || '未知错误'}`)
+      }
+    },
+    // 更新会员积分
+    async updateIntegral(params: IntegralReq) {
+      try {
+        const { data } = await https.post<IntegralRecord, IntegralReq>('/member/integral/change', params)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`更新失败: ${error || '未知错误'}`)
+      }
+    },
     // 更新会员信息
     async updateMemberInfo(params: Member) {
       try {

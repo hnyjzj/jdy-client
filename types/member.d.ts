@@ -85,15 +85,15 @@ interface Member {
 /**
  * 会员积分详情
  */
-interface MemberIntegral {
+interface IntegralRecord {
   /**
    * 变动后积分
    */
-  after?: number
+  after: number
   /**
    * 变动前积分
    */
-  before?: number
+  before: number
   /**
    * 变动积分
    */
@@ -101,11 +101,7 @@ interface MemberIntegral {
   /**
    * 变动类型
    */
-  change_type: number
-  /**
-   * 变动原因
-   */
-  reason: string
+  change_type: ChangeType
   /**
    * 创建时间
    */
@@ -113,7 +109,7 @@ interface MemberIntegral {
   /**
    * 删除时间
    */
-  deleted_at?: string
+  deleted_at: string
   /**
    * ID
    */
@@ -123,9 +119,9 @@ interface MemberIntegral {
    */
   member_id: string
   /**
-   * 备注
+   * 变动原因
    */
-  remark?: string
+  remark: string
   /**
    * 更新时间
    */
@@ -172,10 +168,50 @@ enum Gender {
   Woman = 2,
 }
 
+enum ChangeType {
+  /**
+   * 消费
+   */
+  Consume = 1,
+  /**
+   * 充值
+   */
+  Recharge = 2,
+  /**
+   * 兑换
+   */
+  Exchange = 3,
+  /**
+   * 退款
+   */
+  Refund = 4,
+  /**
+   * 取消兑换
+   */
+  CancelExchange = 5,
+  /**
+   * 取消退款
+   */
+  CancelRefund = 6,
+  /**
+   * 人工调整
+   */
+  ManualChange = 7,
+}
+
 type WhereParams = { [key in keyof Member]?: Member[key] }
 
-interface MemberReq {
-  page: number
-  limit: number
-  where?: member
+interface IntegralReq {
+  /**
+   * 变动积分数量
+   */
+  change: number
+  /**
+   * 会员id
+   */
+  id: string
+  /**
+   * 原因
+   */
+  reason: string
 }
