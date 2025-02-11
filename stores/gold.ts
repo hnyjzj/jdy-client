@@ -32,7 +32,7 @@ export const useGoldPrice = defineStore('goldPrice', {
           else {
             this.goldList = this.goldList.concat(data.value.data.list)
           }
-          let result = data.value.data.total / 2
+          let result = data.value.data.total / 20
           if (result % 1 !== 0) {
             result = Math.floor(result) + 1
           }
