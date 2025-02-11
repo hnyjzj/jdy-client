@@ -7,22 +7,22 @@ const props = withDefaults(defineProps<Toast>(), {
 })
 const THEME: ToastStyles = {
   error: {
-    backgroundColor: '#FFEDED',
+    backgroundColor: 'rgb(255, 237, 237, 0.8)',
     color: '#FF2F2F',
     iconBg: '#FF2F2F',
   },
   warning: {
-    backgroundColor: '#F6EFE3',
+    backgroundColor: 'rgb(246, 239, 227, 0.8)',
     color: '#FFB931',
     iconBg: 'rgb(255, 170, 4, 0.8)',
   },
   success: {
-    backgroundColor: '#EFF4F2',
+    backgroundColor: 'rgb(239, 244, 242, 0.8)',
     color: '#106633',
     iconBg: 'rgb(0, 205, 45, 0.8)',
   },
   primary: {
-    backgroundColor: '#F1F5FE',
+    backgroundColor: 'rgb(241, 245, 254, 0.8)',
     color: '#2E74FF',
     iconBg: 'rgb(0, 85, 255, 0.8)',
   },
