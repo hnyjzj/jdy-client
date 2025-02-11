@@ -115,7 +115,7 @@ onBeforeUnmount(() => {
                       {{ item.approver?.nickname }}
                     </td>
                     <td class="text">
-                      {{ item?.approved_at }}
+                      {{ formatTimestampToDateTime(item?.approved_at) }}
                     </td>
                   </tr>
                 </tbody>
