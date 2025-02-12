@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { getProductInfo, getProductWhere, damageProduct } = useProductManage()
+const { getProductInfo, getProductWhere, damageProduct, convertProduct } = useProductManage()
 const { productInfo, filterList, filterListToArray } = storeToRefs(useProductManage())
 
 const { $toast } = useNuxtApp()
@@ -37,20 +37,41 @@ async function loss() {
     $toast.error(res.message ?? '报损失败')
   }
 }
+
+// 转换
+async function convert() {
+  const res = await convertProduct({ code: productInfo.value.code, type: 2 })
+  if (res.code === HttpCode.SUCCESS) {
+    isModel.value = false
+    reason.value = ''
+    getProductInfo(productInfo.value.code)
+    $toast.success('转换成功')
+  }
+  else {
+    $toast.error(res.message ?? '转换失败')
+  }
+}
 </script>
 
 <template>
-  <div class="py-6">
-    <product-finished-list :product-info="productInfo" :filter-list="filterList" :filter-list-to-array="filterListToArray" @go-loss="goLoss" />
-    <div class="bottom">
-      <div class="">
+  <div>
+    <div class="pt-6 pb-18">
+      <product-finished-list :product-info="productInfo" :filter-list="filterList" :filter-list-to-array="filterListToArray" @go-loss="goLoss" />
+      <div class="bottom">
         <div class="flex-center-row grid-12 gap-4 px-4 py-2 col-12" uno-lg="col-8 offset-2" uno-md="col-12 flex-shrink-1">
-          <div class="flex-1">
-            <common-button-rounded content="操作记录" color="#fff" bgc="#FFF" />
-          </div>
-          <div class="flex-1">
-            <common-button-rounded content="报损" color="#fff" bgc="#FFF" @button-click="goLoss" />
-          </div>
+          <!-- <div class="flex-1">
+            <common-button-rounded content="操作记录" color="#000" bgc="#FFF" />
+          </div> -->
+          <template v-if="productInfo.type === 2">
+            <div class="flex-1">
+              <common-button-rounded content="转换" color="#000" bgc="#FFF" @button-click="convert" />
+            </div>
+          </template>
+          <template v-if="productInfo.status !== 2">
+            <div class="flex-1">
+              <common-button-rounded content="报损" color="#000" bgc="#FFF" @button-click="goLoss" />
+            </div>
+          </template>
           <div class="flex-1">
             <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: productInfo.code })" />
           </div>

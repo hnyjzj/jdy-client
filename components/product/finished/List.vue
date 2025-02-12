@@ -24,7 +24,7 @@ const goodsStatus = {
       <div class="flex flex-col gap-3 px-4 py-3">
         <template v-for="(item, index) in props.filterListToArray" :key="index">
           <template v-if="item.label">
-            <div class="flex-center-between text-sm font-normal even:bg-[rgba(215,215,215,0.2)]">
+            <div class="flex-center-between text-sm font-normal">
               <div class="text-color-light">
                 {{ item?.label }}
               </div>

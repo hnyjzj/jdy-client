@@ -158,7 +158,7 @@ function edit(code: string) {
       <common-list-pull :distance="height" :nomore="!isCanPull" @pull="pull">
         <product-manage-card :list="productList" @edit="edit">
           <template #info="{ info }">
-            <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]" @click="jump('/product/finished/list', { code: info.code })">
+            <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]" @click="jump('/product/manage/info', { code: info.code })">
               <van-row justify="space-between" class="py-[4px]">
                 <van-col span="12">
                   <div class="">
@@ -187,7 +187,7 @@ function edit(code: string) {
           </template>
           <template #bottom="{ info }">
             <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="编辑" @click="edit(info.code)" />
+              <common-button-irregular text="详情" @click="jump('/product/manage/info', { code: info.code })" />
             </div>
           </template>
         </product-manage-card>
