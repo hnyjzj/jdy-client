@@ -30,42 +30,51 @@ const { $colorMode } = useNuxtApp()
         :columns="[
           {
             title: '门店',
-            key: 'no',
-            width: '150px',
+            key: 'store',
+            width: '100px',
             fixed: 'left',
             className: 'age',
+            align: 'center',
           },
           {
             title: '总业绩',
-            key: 'title',
+            key: 'performance',
+            fixed: 'left',
+            width: '100px',
           },
           {
             title: '中回收旧料抵扣',
-            key: 'title',
+            key: 'title1',
+            width: '100px',
           },
 
           {
             title: '中回收旧料抵扣',
-            key: 'title',
+            key: 'title2',
+            width: '100px',
           },
           {
             title: '低毛利',
             key: 'length',
+            width: '100px',
           },
           {
             title: '低销售额',
             key: 'length',
+
           }]"
         :data="[
-          { no: '郑州紫金山店', title: '2313131', length: '2313131' },
-          { no: '郑州郑州火车站店', title: '2313131', length: '2313131' },
-          { no: '高新区莲花街店', title: '2313131', length: '2313131' },
-          { no: '管城回族区万达店', title: '2313131', length: '2313131' },
-          { no: '高新区莲花街店', title: '2313131', length: '2313131' },
-          { no: '郑州紫金山店', title: '34343242', length: '2313131' },
+          { store: '郑州紫金山店', title: '2313131', title1: '342354.454', length: '2313131', performance: '102222.00', title2: 12000.00 },
+          { store: '郑州紫金山店', title: '2313131', title1: '342354.454', length: '2313131', performance: '102222.00', title2: 12000.00 },
+          { store: '郑州紫金山店', title: '2313131', title1: '342354.454', length: '2313131', performance: '102222.00', title2: 12000.00 },
+          { store: '郑州紫金山店', title: '2313131', title1: '342354.454', length: '2313131', performance: '102222.00', title2: 12000.00 },
+          { store: '郑州紫金山店', title: '2313131', title1: '342354.454', length: '2313131', performance: '102222.00', title2: 12000.00 },
+          { store: '郑州紫金山店', title: '2313131', title1: '342354.454', length: '2313131', performance: '102222.00', title2: 12000.00 },
+          { store: '郑州紫金山店', title: '2313131', title1: '342354.454', length: '2313131', performance: '102222.00', title2: 12000.00 },
+          { store: '郑州紫金山店', title: '2313131', title1: '342354.454', length: '2313131', performance: '102222.00', title2: 12000.00 },
         ]"
         :max-height="300"
-        :scroll-x="2000"
+        :scroll-x="600"
         :bordered="true"
       />
     </div>
