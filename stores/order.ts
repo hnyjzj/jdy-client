@@ -4,6 +4,7 @@ export const useOrder = defineStore('Order', {
     filterList: {} as Where<Orders>,
     todayPrice: '' as string,
     total: 0 as number,
+    OrderDetail: {} as Orders,
   }),
   getters: {
     filterListToArray: (state) => {
@@ -26,6 +27,9 @@ export const useOrder = defineStore('Order', {
       }
     },
     async getOrderList(req: ReqList<Orders>) {
+      if (req.page === 1) {
+        this.OrdersList = []
+      }
       const { data } = await https.post<ResList<Orders>, ReqList<Orders>>('/order/list', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.total = data.value.data.total
@@ -49,9 +53,14 @@ export const useOrder = defineStore('Order', {
         this.todayPrice = data.value.data.price
       }
     },
+    // 提交订单
     async submitOrder(req: Orders) {
       const { data } = await https.post<undefined, Orders>('/order/create', req)
       return data.value
+    },
+    async getOrderDetail(req: { id: string }) {
+      const { data } = await https.post<ResList<Orders>, { id: string }>('/order/info', req)
+      console.log(data)
     },
   },
 })

@@ -25,11 +25,13 @@ const getList = async (where = {} as Partial<Orders>) => {
   const res = await getOrderList(params)
   res ? nomore.value = false : nomore.value = true
 }
-await getList()
-await getSaleWhere()
+const showOrder = ref(false)
 const handleClick = async () => {
 // 跳转到详情页
-  await navigateTo('/sale/sales/order')
+  showOrder.value = true
+//   await navigateTo({ path: '/sale/sales/order', query: {
+//     id,
+//   } })
 }
 // 打开高级筛选
 const openFilter = () => {
@@ -40,9 +42,11 @@ const submitWhere = () => {
 
 }
 
+await getList()
+await getSaleWhere()
 // 获取头部高度
 const height = ref<number | undefined>(0)
-onMounted(() => {
+onMounted(async () => {
   height.value = getHeight('header')
 })
 </script>
@@ -52,7 +56,7 @@ onMounted(() => {
     <div class="grid-12">
       <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <!-- header -->
-        <div id="header" class="px-[16px] pt-[16px]">
+        <div id="header" class="px-[16px] pt-[16px] w-full z-1 sticky top-0 bg-[#E6E6E8]">
           <div class="flex flex-row gap-2">
             <product-manage-company class="color-[#fff]" />
             <product-filter-search class="color-[#fff] flex-1" />
@@ -77,11 +81,20 @@ onMounted(() => {
           }">
           <sale-sales-list :info="OrdersList" @user-click="handleClick" />
         </common-list-pull>
+        <div class="px-[16px]">
+          <!-- <sale-sales-list :info="OrdersList" @user-click="handleClick" /> -->
+        </div>
       </div>
     </div>
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
+    <n-drawer v-model:show="showOrder" width="90%">
+      <n-drawer-content title="斯通纳" closable>
+        《斯通纳》是美国作家约翰·威廉姆斯在 1965 年出版的小说。
+      </n-drawer-content>
+    </n-drawer>
   </div>
 </template>
 
 <style lang="scss" scoped>
+
 </style>

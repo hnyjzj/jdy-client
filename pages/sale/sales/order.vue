@@ -27,12 +27,17 @@ const list = ref([
     value: '0.00',
   },
 ])
+const router = useRouter()
 </script>
 
 <template>
   <div class="grid-12">
     <div class="col-12 flex flex-col gap-[16px] px-[16px] py-[16px]" uno-lg="col-8 offset-2">
       <sale-add-card title="标题" :list="list" />
+
+      <button @click="router.back()">
+        123123
+      </button>
       <!-- 切换 -->
       <div class="nav">
         <template v-for="(item, index) in nav" :key="index">

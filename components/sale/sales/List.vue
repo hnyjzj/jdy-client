@@ -4,16 +4,46 @@ const props = defineProps<{
   info: Orders[]
 }>()
 
-const emits = defineEmits(['userClick'])
-const handleClick = () => {
-  emits('userClick')
+const emits = defineEmits<{
+  userClick: [id: string]
+}>()
+const handleClick = (id?: string) => {
+  if (!id) {
+    return
+  }
+  emits('userClick', id)
+}
+enum OrderType {
+  // 销售单
+  Sale = 1,
+  //   定金单
+  Deposit = 2,
+  // 维修单
+  Maintenance = 3,
+  //   其他
+  Other = 4,
+}
+
+const showType = (type: number) => {
+  switch (type) {
+    case OrderType.Sale:
+      return '销售单'
+    case OrderType.Deposit:
+      return '定金单'
+    case OrderType.Maintenance:
+      return '维修单'
+    case OrderType.Other:
+      return '其他'
+    default:
+      return ''
+  }
 }
 </script>
 
 <template>
   <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
-      <sale-cards :title="item?.id" :tag-text="item.type">
+      <sale-cards :title="item.id" :tag-text="showType(item.type || 0)">
         <template #info>
           <div class="grid grid-cols-1 gap-[12px]">
             <div class="info">
@@ -36,7 +66,7 @@ const handleClick = () => {
             </div>
           </div>
           <div class="flex-end bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
-            <common-button-irregular text="查看详情" @click="handleClick" />
+            <common-button-irregular text="查看详情" @click="handleClick(item.id)" />
           </div>
         </template>
       </sale-cards>
