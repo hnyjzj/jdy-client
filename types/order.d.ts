@@ -191,3 +191,16 @@ interface OrderProducts {
    */
   updated_at?: Date
 }
+
+interface OrderWhere {
+  cashier_id?: string
+  end_date?: string
+  id?: string
+  member_id?: string
+  salesman_id?: string
+  source?: number
+  start_date?: string
+  status?: number
+  store_id?: string
+  type?: number
+}

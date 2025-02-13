@@ -4,10 +4,12 @@
 useSeoMeta({
   title: '销售单列表',
 })
+const { StoreStaffList, myStore } = storeToRefs(useStores())
 
+const { getStoreStaffList } = useStores()
 const { filterListToArray, OrdersList, total, OrderDetail } = storeToRefs(useOrder())
 const { getSaleWhere, getOrderList, getOrderDetail } = useOrder()
-const filterData = ref({} as Partial<Orders>)
+const filterData = ref({} as Partial<OrderWhere>)
 const filterShow = ref(false)
 
 // 搜索条件 页码
@@ -36,8 +38,12 @@ const openFilter = () => {
   // 打开筛选
   filterShow.value = true
 }
-const submitWhere = () => {
-
+const submitWhere = async (f: OrderWhere) => {
+  filterData.value = f
+  OrdersList.value = []
+  nomore.value = false
+  searchPage.value = 1
+  await getList(filterData.value)
 }
 
 await getList()
@@ -47,8 +53,6 @@ const height = ref<number | undefined>(0)
 onMounted(async () => {
   height.value = getHeight('header')
 })
-
-// const hasCheck = ref(false)
 </script>
 
 <template>
@@ -61,7 +65,6 @@ onMounted(async () => {
             <product-manage-company class="color-[#fff]" />
             <product-filter-search class="color-[#fff] flex-1" />
           </div>
-          <!-- data -->
           <div class="flex-center-between gap-2">
             <div class="text-size-[14px] color-[#fff]">
               共{{ total }}条数据
@@ -71,7 +74,7 @@ onMounted(async () => {
             </div>
           </div>
         </div>
-        <!-- cards -->
+        <!-- list -->
         <common-list-pull
           v-model:info-show="showOrder"
           :distance="height"
@@ -80,11 +83,14 @@ onMounted(async () => {
             searchPage += 1
             getList()
           }">
+          <!-- card -->
           <sale-sales-list :info="OrdersList" @user-click="handleClick" />
           <template #info>
+            <!-- info -->
             <sale-order-detail :orders="OrderDetail" />
           </template>
           <template #footer>
+            <!-- actions -->
             <div class="grid-12 gap-[12px] px-[16px]">
               <div class="col-6" uno-sm="col-4 offset-2">
                 <common-button-rounded content="取消" bgc="#fff" color="#000" @button-click="showOrder = false" />
@@ -97,7 +103,35 @@ onMounted(async () => {
         </common-list-pull>
       </div>
     </div>
-    <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
+    <!-- filter -->
+    <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere">
+      <template #cashier_id>
+        <n-select
+          v-model:value="filterData.cashier_id"
+          placeholder="请输入收银员"
+          :options="StoreStaffList.map(v => ({
+            label: v.nickname,
+            value: v.id,
+          }))"
+          clearable
+          remote
+          @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+        />
+      </template>
+      <template #salesman_id>
+        <n-select
+          v-model:value="filterData.salesman_id"
+          placeholder="请选择"
+          :options="StoreStaffList.map(v => ({
+            label: v.nickname,
+            value: v.id,
+          }))"
+          clearable
+          remote
+          @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+        />
+      </template>
+    </common-filter-where>
   </div>
 </template>
 

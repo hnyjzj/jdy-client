@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const props = withDefaults(defineProps<{
   title?: string
-  filterList: Where<Orders>
+  filterList: Where<OrderWhere>
   storeStaff: StoresStaff[]
   memberList: Member[]
   getMember: (val: string) => void

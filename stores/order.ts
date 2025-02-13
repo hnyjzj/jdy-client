@@ -1,14 +1,14 @@
 export const useOrder = defineStore('Order', {
   state: () => ({
     OrdersList: [] as Orders[], // 门店列表
-    filterList: {} as Where<Orders>,
+    filterList: {} as Where<OrderWhere>,
     todayPrice: '' as string,
     total: 0 as number,
     OrderDetail: {} as Orders,
   }),
   getters: {
     filterListToArray: (state) => {
-      const arr: FilterWhere<Orders>[] = []
+      const arr: FilterWhere<OrderWhere>[] = []
       for (const [_k, item] of Object.entries(state.filterList)) {
         arr.push({
           ...item,
@@ -21,7 +21,7 @@ export const useOrder = defineStore('Order', {
   actions: {
     // 获取筛选条件
     async getSaleWhere() {
-      const { data } = await https.get<Where<Orders>, null>('/order/where')
+      const { data } = await https.get<Where<OrderWhere>, null>('/order/where')
       if (data.value.code === HttpCode.SUCCESS) {
         this.filterList = data.value.data
       }
