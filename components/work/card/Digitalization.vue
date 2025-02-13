@@ -30,42 +30,99 @@ const { $colorMode } = useNuxtApp()
         :columns="[
           {
             title: '门店',
-            key: 'no',
-            width: '150px',
+            key: 'store',
+            width: '100px',
             fixed: 'left',
             className: 'age',
+            align: 'center',
           },
           {
             title: '总业绩',
-            key: 'title',
+            key: 'performance',
+            fixed: 'left',
+            width: '100px',
+            align: 'center',
           },
           {
-            title: '中回收旧料抵扣',
-            key: 'title',
+            title: '银饰',
+            key: 'silver',
+            width: '100px',
+            align: 'center',
           },
 
           {
-            title: '中回收旧料抵扣',
-            key: 'title',
+            title: '足金（件）',
+            key: 'gold_pieces',
+            width: '100px',
+            align: 'center',
           },
           {
-            title: '低毛利',
-            key: 'length',
+            title: '足金件兑换旧料抵扣',
+            key: 'gold_pieces_for_old',
+            width: '100px',
+            align: 'center',
           },
           {
-            title: '低销售额',
-            key: 'length',
+            title: '足金克',
+            key: 'gold_gram',
+            width: '100px',
+            align: 'center',
+          },
+          {
+            title: '足金克兑换旧料抵扣',
+            key: 'gold_gram_for_old',
+            width: '100px',
+            align: 'center',
+          },
+          {
+            title: '计件配件',
+            key: 'accessories',
+            width: '100px',
+            align: 'center',
           }]"
+
         :data="[
-          { no: '郑州紫金山店', title: '2313131', length: '2313131' },
-          { no: '郑州郑州火车站店', title: '2313131', length: '2313131' },
-          { no: '高新区莲花街店', title: '2313131', length: '2313131' },
-          { no: '管城回族区万达店', title: '2313131', length: '2313131' },
-          { no: '高新区莲花街店', title: '2313131', length: '2313131' },
-          { no: '郑州紫金山店', title: '34343242', length: '2313131' },
+          {
+            store: '门店1',
+            performance: '1000',
+            silver: '100',
+            gold_pieces: '100',
+            gold_pieces_for_old: '100',
+            gold_gram: '100',
+            gold_gram_for_old: '100',
+            accessories: '100',
+          },
+          {
+            store: '门店2',
+            performance: '1000',
+            silver: '100',
+            gold_pieces: '100',
+            gold_pieces_for_old: '100',
+            gold_gram: '100',
+            gold_gram_for_old: '100',
+            accessories: '100',
+          }, {
+            store: '门店2',
+            performance: '1000',
+            silver: '100',
+            gold_pieces: '100',
+            gold_pieces_for_old: '100',
+            gold_gram: '100',
+            gold_gram_for_old: '100',
+            accessories: '100',
+          }, {
+            store: '门店2',
+            performance: '1000',
+            silver: '100',
+            gold_pieces: '100',
+            gold_pieces_for_old: '100',
+            gold_gram: '100',
+            gold_gram_for_old: '100',
+            accessories: '100',
+          },
         ]"
         :max-height="300"
-        :scroll-x="2000"
+        :scroll-x="800"
         :bordered="true"
       />
     </div>
