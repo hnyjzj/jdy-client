@@ -81,30 +81,86 @@ async function submitWhere(f: Partial<Product>) {
         <product-manage-card :list="productList">
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-              <van-row justify="space-between" class="py-[4px]">
-                <van-col span="12">
-                  <div class="">
-                    所属大类
-                  </div>
-                </van-col>
-                <van-col span="12">
-                  <div class="text-align-end">
-                    {{ filterList.class?.preset[info.class] }}
-                  </div>
-                </van-col>
-              </van-row>
-              <van-row justify="space-between" class="py-[4px]">
-                <van-col span="12">
-                  <div class="">
-                    材质
-                  </div>
-                </van-col>
-                <van-col span="12">
-                  <div class="text-align-end">
-                    {{ filterList.material?.preset[info.class] }}
-                  </div>
-                </van-col>
-              </van-row>
+              <div class="flex-between">
+                <div>
+                  旧料条码
+                </div>
+                <div class="text-align-end">
+                  {{ info.code }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  所属大类
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.class?.preset[info.class] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  货品名称
+                </div>
+                <div class="text-align-end">
+                  {{ info.name }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  货品品牌
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.brand?.preset[info.brand] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  供应商
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.supplier?.preset[info.supplier] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  材质
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.material?.preset[info.material] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  成色
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.quality?.preset[info.quality] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  宝石
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.gem?.preset[info.gem] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  品类
+                </div>
+                <div class="text-align-end">
+                  {{ info.style }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  工艺
+                </div>
+                <div class="text-align-end">
+                  {{ info.craft }}
+                </div>
+              </div>
             </div>
           </template>
           <template #bottom="{ info }">

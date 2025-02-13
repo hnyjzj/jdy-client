@@ -158,9 +158,17 @@ function edit(code: string) {
       <common-list-pull :distance="height" :nomore="!isCanPull" @pull="pull">
         <product-manage-card :list="productList" @edit="edit">
           <template #info="{ info }">
-            <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]" @click="jump('/product/manage/info', { code: info.code })">
+            <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
               <div class="flex-between">
-                <div class="">
+                <div>
+                  旧料条码
+                </div>
+                <div class="text-align-end">
+                  {{ info.code }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
                   所属大类
                 </div>
                 <div class="text-align-end">
@@ -168,11 +176,67 @@ function edit(code: string) {
                 </div>
               </div>
               <div class="flex-between">
-                <div class="">
+                <div>
+                  货品名称
+                </div>
+                <div class="text-align-end">
+                  {{ info.name }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  货品品牌
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.brand?.preset[info.brand] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  供应商
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.supplier?.preset[info.supplier] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
                   材质
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.material?.preset[info.class] }}
+                  {{ filterList.material?.preset[info.material] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  成色
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.quality?.preset[info.quality] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  宝石
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.gem?.preset[info.gem] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  品类
+                </div>
+                <div class="text-align-end">
+                  {{ info.style }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  工艺
+                </div>
+                <div class="text-align-end">
+                  {{ info.craft }}
                 </div>
               </div>
             </div>
