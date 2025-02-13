@@ -122,7 +122,7 @@ const { $colorMode } = useNuxtApp()
           },
         ]"
         :max-height="300"
-        :scroll-x="600"
+        :scroll-x="800"
         :bordered="true"
       />
     </div>
