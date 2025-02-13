@@ -11,12 +11,14 @@ const filter = () => {
 
 <template>
   <div class="grid-12 py-[12px] px-[16px] color-[#Fff]">
-    <div class="col-12 grid-12 lg:col-8 lg:offset-2">
-      <div class="col-4 ">
-        <slot name="company" />
-      </div>
-      <div class="col-8 offset-4 ml-4">
-        <product-filter-search v-model:search-key="search" />
+    <div class="col-12 lg:col-8 lg:offset-2">
+      <div class="flex justify-between">
+        <div>
+          <slot name="company" />
+        </div>
+        <div class="flex-1 px-2 sm:px-4">
+          <product-filter-search v-model:search-key="search" />
+        </div>
       </div>
     </div>
     <div class="col-12 grid-12 lg:col-8 lg:offset-2 pt-[12px] pb-[16px]">
