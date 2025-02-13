@@ -133,8 +133,18 @@ interface Product {
    * 杂料重
    */
   weight_other: number
+  /**
+   * 产品类型
+   * 0:全部 1:成品 2:旧料
+   */
+  type: number
 }
 interface ProductDamage {
   code: Product['code']
   reason: string
+}
+
+interface ProductTransfer {
+  code: Product['code']
+  type: Product['type']
 }

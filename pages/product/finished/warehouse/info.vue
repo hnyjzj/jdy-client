@@ -22,7 +22,7 @@ function sum(key: ProductKey) {
   <div class="storage pb-20">
     <div class="grid-12 pt-4">
       <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-        <div class="w-[40%]">
+        <div class="w-[40%] text-[#fff]">
           <product-manage-company />
         </div>
         <div class="rounded-6 bg-white w-auto blur-bga top">
@@ -52,7 +52,7 @@ function sum(key: ProductKey) {
                         创建时间
                       </div>
                       <div class="color-[#333333]">
-                        {{ enterInfo.created_at }}
+                        {{ formatTimestampToDateTime(enterInfo.created_at) }}
                       </div>
                     </div>
                     <div class="flex-start gap-3 text-sm font-normal">
@@ -60,7 +60,7 @@ function sum(key: ProductKey) {
                         完成时间
                       </div>
                       <div class="color-[#333333]">
-                        {{ enterInfo.updated_at }}
+                        {{ formatTimestampToDateTime(enterInfo.updated_at) }}
                       </div>
                     </div>
                   </div>

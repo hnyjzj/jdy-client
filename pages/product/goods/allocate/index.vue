@@ -21,7 +21,7 @@ const isFilter = ref(false)
 const pages = ref(1)
 const isCanPull = ref(true)
 useSeoMeta({
-  title: '货品管理',
+  title: '货品调拨',
 })
 const openFilter = () => {
   isFilter.value = true
