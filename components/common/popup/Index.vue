@@ -89,7 +89,7 @@ function close() {
   }
 }
 .title-content {
-  --uno: 'absolute left-20 top-6 z-3 text-#fff font-bold';
+  --uno: 'absolute left-24 top-6 z-3 text-#fff font-bold';
   transform: skewY(-4deg);
   transform-origin: bottom left;
 }

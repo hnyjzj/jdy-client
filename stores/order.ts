@@ -59,8 +59,10 @@ export const useOrder = defineStore('Order', {
       return data.value
     },
     async getOrderDetail(req: { id: string }) {
-      const { data } = await https.post<ResList<Orders>, { id: string }>('/order/info', req)
-      console.log(data)
+      const { data } = await https.post<Orders, { id: string }>('/order/info', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.OrderDetail = data.value.data
+      }
     },
   },
 })

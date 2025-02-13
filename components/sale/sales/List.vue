@@ -13,35 +13,10 @@ const handleClick = (id?: string) => {
   }
   emits('userClick', id)
 }
-enum OrderType {
-  // 销售单
-  Sale = 1,
-  //   定金单
-  Deposit = 2,
-  // 维修单
-  Maintenance = 3,
-  //   其他
-  Other = 4,
-}
-
-const showType = (type: number) => {
-  switch (type) {
-    case OrderType.Sale:
-      return '销售单'
-    case OrderType.Deposit:
-      return '定金单'
-    case OrderType.Maintenance:
-      return '维修单'
-    case OrderType.Other:
-      return '其他'
-    default:
-      return ''
-  }
-}
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
+  <div class="grid grid-cols-1 gap-[16px] py-[16px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
       <sale-cards :title="item.id" :tag-text="showType(item.type || 0)">
         <template #info>

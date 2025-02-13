@@ -10,6 +10,7 @@ const emits = defineEmits<{
   // 触底
   pull: []
 }>()
+const infoShow = defineModel('infoShow', { default: false })
 const loadingShow = ref<boolean>(false)
 const onScroll = useDebounceFn((e: any) => {
   const scrollTop = e.target.scrollTop
@@ -21,12 +22,38 @@ const onScroll = useDebounceFn((e: any) => {
     emits('pull')
   }
 }, 300)
+
+const width = ref<string>('')
+const getViewWidth = () => {
+  const viewportWidth = window.innerWidth
+  if (viewportWidth < 600) {
+    width.value = '90%'
+  }
+  else if (viewportWidth >= 600 && viewportWidth <= 768) {
+    width.value = '70%'
+  }
+  else if (viewportWidth >= 1024 && viewportWidth < 1440) {
+    width.value = '40%'
+  }
+  else if (viewportWidth >= 1440) {
+    width.value = '400px'
+  }
+}
+onMounted(() => {
+  getViewWidth()
+})
 </script>
 
 <template>
   <div
     class="pullList" :style="{ height: `calc(100vh - (${props.distance}px))` }" @scroll="onScroll">
     <slot name="default" />
+    <common-popup v-model="infoShow" placement="left" width="90%" title="订单详情">
+      <slot name="info" />
+      <template #footer>
+        <slot name="footer" />
+      </template>
+    </common-popup>
     <template v-if="loadingShow && !props.nomore">
       <div class="flex-center-row py-[16px]">
         <van-loading color="#0094ff">
