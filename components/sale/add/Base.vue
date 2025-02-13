@@ -84,7 +84,7 @@ const searchMember = useDebounceFn((val) => {
             filterable
             placeholder="输入手机号搜索"
             :options="props.memberList.map(v => ({
-              label: v.nickname ? v.nickname : v.name,
+              label: `${v.phone} (${v.nickname ? v.nickname : v.name})`,
               value: v.id,
             }))"
             clearable
