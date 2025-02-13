@@ -16,18 +16,11 @@ const typeOptions = optonsToSelect(props.filterList.type?.preset)
 // 订单来源参数
 const sourceOptions = optonsToSelect(props.filterList.source?.preset)
 
-// 设置主销售员
-const handleSwitch = (index: number) => {
-  formData.value.salesmens.forEach((item) => {
-    item.is_main = false
-  })
-  formData.value.salesmens[index].is_main = true
-}
 const dialog = useDialog()
 // 删除销售
 const deleteSale = (index: number) => {
   dialog.error({
-    title: '确定删除此导购吗',
+    title: '确定删除此导购员吗?',
     negativeText: '取消',
     positiveText: '确定',
     onPositiveClick: () => {
@@ -45,7 +38,7 @@ const addNewSale = () => {
     salesman_id: '',
     performance_amount: 0,
     performance_rate: 0,
-    is_main: !formData.value.salesmens.length,
+    is_main: false,
   })
 }
 // 搜索会员 防抖
@@ -102,11 +95,11 @@ const searchMember = useDebounceFn((val) => {
       </n-grid>
 
       <template v-for="(item, index) in formData.salesmens" :key="index">
-        <div class="pt-[26px] border-t-[1px] border-t-solid border-t-[#ccc]">
+        <div class="">
           <n-grid :cols="24" :x-gap="8">
             <n-form-item-gi
-              :span="12"
-              label="导购员" label-placement="top" class=""
+              :span="11"
+              :label="item.is_main ? '主销' : '辅销'" label-placement="top" class=""
               :path="`salesmens[${index}].salesman_id`"
               :rule="{
                 required: true,
@@ -125,39 +118,29 @@ const searchMember = useDebounceFn((val) => {
                 @focus="() => { props.getStaff() }"
               />
             </n-form-item-gi>
-            <n-form-item-gi :span="12" label="业绩比例" path="performance_rate" label-placement="top" class="">
-              <n-input-number v-model:value="item.performance_rate" :min="0" :max="100">
+            <n-form-item-gi :span="10" label="业绩比例" path="performance_rate" label-placement="top">
+              <n-input-number v-model:value="item.performance_rate" :min="0" :max="100" size="large">
                 <template #suffix>
                   %
                 </template>
               </n-input-number>
             </n-form-item-gi>
-            <n-form-item-gi :span="12" label="是否主销" label-placement="top" class="">
-              <div class="flex justify-between items-center w-full">
-                <n-switch v-model:value="item.is_main" @update:value="handleSwitch(index)">
-                  <template #checked>
-                    主销
-                  </template>
-                  <template #unchecked>
-                    辅销
-                  </template>
-                </n-switch>
-              </div>
-            </n-form-item-gi>
-            <n-form-item-gi :span="3" :offset="9">
-              <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteSale(index)">
-                <icon name="i-svg:delete" :size="16" />
-              </div>
+            <n-form-item-gi :span="3" class="flex items-center">
+              <template v-if="index === 0">
+                <div class="wh-[32px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3]  text-[26px]" @click="addNewSale()">
+                  +
+                </div>
+              </template>
+              <template v-if="index !== 0">
+                <div class="wh-[32px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3]  text-[26px]" @click="deleteSale(index)">
+                  <div class="w-[10px] h-[2px] bg-[#3971F3]" />
+                </div>
+              </template>
             </n-form-item-gi>
           </n-grid>
           <div />
         </div>
       </template>
-      <div class="flex-center-row">
-        <n-button type="info" @click="addNewSale">
-          新增导购员
-        </n-button>
-      </div>
     </div>
   </common-fold>
 </template>
