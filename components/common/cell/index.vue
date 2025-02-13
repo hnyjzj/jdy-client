@@ -7,10 +7,10 @@ const props = defineProps<{
 
 <template>
   <div class="part">
-    <div class="part-left">
+    <div class="part-left break-words">
       {{ props.label }}
     </div>
-    <div class="part-right">
+    <div class="part-right break-words">
       {{ props.value }}
     </div>
   </div>
@@ -18,12 +18,12 @@ const props = defineProps<{
 
 <style lang="scss" scoped>
   .part {
-  --uno: 'flex-center-between';
+  --uno: ' grid-12';
   &-left {
-    --uno: 'flex-1 text-size-[14px] color-[#666] dark:color-[#CBCDD1]';
+    --uno: ' text-size-[14px] color-[#666] dark:color-[#CBCDD1] col-6';
   }
   &-right {
-    --uno: 'text-size-[14px] color-[#333] dark:color-[#fff]';
+    --uno: 'text-size-[14px] text-end color-[#333] dark:color-[#fff] col-6';
     white-space: wrap;
   }
 }
