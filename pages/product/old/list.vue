@@ -44,7 +44,7 @@ onMounted(() => {
   }
 })
 
-const filterData = ref({} as Partial<Product>)
+const filterData = ref({ type: 2, disabled: ['type'] } as Partial<Product>)
 function pull() {
   getList(filterData.value)
 }
