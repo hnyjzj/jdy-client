@@ -159,30 +159,22 @@ function edit(code: string) {
         <product-manage-card :list="productList" @edit="edit">
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]" @click="jump('/product/manage/info', { code: info.code })">
-              <van-row justify="space-between" class="py-[4px]">
-                <van-col span="12">
-                  <div class="">
-                    所属大类
-                  </div>
-                </van-col>
-                <van-col span="12">
-                  <div class="text-align-end">
-                    {{ filterList.class?.preset[info.class] }}
-                  </div>
-                </van-col>
-              </van-row>
-              <van-row justify="space-between" class="py-[4px]">
-                <van-col span="12">
-                  <div class="">
-                    材质
-                  </div>
-                </van-col>
-                <van-col span="12">
-                  <div class="text-align-end">
-                    {{ filterList.material?.preset[info.class] }}
-                  </div>
-                </van-col>
-              </van-row>
+              <div class="flex-between">
+                <div class="">
+                  所属大类
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.class?.preset[info.class] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div class="">
+                  材质
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.material?.preset[info.class] }}
+                </div>
+              </div>
             </div>
           </template>
           <template #bottom="{ info }">

@@ -102,7 +102,7 @@ function edit(id: string) {
               <div class="py-[4px] flex justify-between">
                 <div>入库时间</div>
                 <div class="text-align-end">
-                  {{ info.created_at }}
+                  {{ formatTimestampToDateTime(info.created_at) }}
                 </div>
               </div>
             </div>
