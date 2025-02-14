@@ -22,26 +22,6 @@ const onScroll = useDebounceFn((e: any) => {
     emits('pull')
   }
 }, 300)
-
-const width = ref<string>('')
-const getViewWidth = () => {
-  const viewportWidth = window.innerWidth
-  if (viewportWidth < 600) {
-    width.value = '90%'
-  }
-  else if (viewportWidth >= 600 && viewportWidth <= 768) {
-    width.value = '70%'
-  }
-  else if (viewportWidth >= 1024 && viewportWidth < 1440) {
-    width.value = '40%'
-  }
-  else if (viewportWidth >= 1440) {
-    width.value = '400px'
-  }
-}
-onMounted(() => {
-  getViewWidth()
-})
 </script>
 
 <template>
