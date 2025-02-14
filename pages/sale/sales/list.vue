@@ -60,6 +60,16 @@ const searchProduct = async (e: string) => {
     await getProductList({ page: 1, limit: 5, where: { name: e } })
   }
 }
+
+const searchOrder = async (e: string) => {
+  await getOrderList({ page: 1, limit: 5, where: { id: e } })
+}
+const clearFn = async () => {
+  OrdersList.value = []
+  nomore.value = false
+  searchPage.value = 1
+  await getList()
+}
 </script>
 
 <template>
@@ -70,7 +80,8 @@ const searchProduct = async (e: string) => {
         <div id="header" class="px-[16px] pt-[16px] w-full ">
           <div class="flex flex-row gap-2">
             <product-manage-company class="color-[#fff]" />
-            <product-filter-search class="color-[#fff] flex-1" />
+            <product-filter-search
+              placeholder="搜索订单号" class="color-[#fff] flex-1" @submit="searchOrder" @clear="clearFn" />
           </div>
           <div class="flex-center-between gap-2">
             <div class="text-size-[14px] color-[#fff]">
