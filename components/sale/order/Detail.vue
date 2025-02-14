@@ -15,9 +15,9 @@ const isMain = (val?: boolean) => {
           <div class="grid grid-cols-1 gap-[12px]">
             <div class="info">
               <common-cell label="订单编号" :value="props.orders.id" />
-              <common-cell label="订单类型" :value="showType(props.orders.type)" />
-              <common-cell label="订单状态" :value="showStatus(props.orders.status)" />
-              <common-cell label="订单来源" :value="showSource(props.orders.source)" />
+              <common-cell label="订单类型" :value="showOrderType(props.orders.type)" />
+              <common-cell label="订单状态" :value="showOrderStatus(props.orders.status)" />
+              <common-cell label="订单来源" :value="showOrderSource(props.orders.source)" />
               <common-cell label="收银员" :value="props.orders.cashier?.nickname" />
               <common-cell label="收银员手机号" :value="props.orders.cashier?.phone" />
             </div>
@@ -34,7 +34,7 @@ const isMain = (val?: boolean) => {
               <common-cell label="昵称" :value="props.orders.member?.nickname || ''" />
               <common-cell label="等级" :value="props.orders.member?.level" />
               <common-cell label="积分" :value="props.orders.member?.integral" />
-              <common-cell label="来源" :value="showSource(props.orders.member?.source)" />
+              <common-cell label="来源" :value="showOrderSource(props.orders.member?.source)" />
               <common-cell label="手机号" :value="props.orders.member?.phone" />
             </div>
           </div>

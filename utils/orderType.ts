@@ -9,7 +9,7 @@ enum OrderType {
   Other = 4,
 }
 // 定单类型
-export const showType = (type?: number | string) => {
+export const showOrderType = (type?: number | string) => {
   switch (type) {
     case OrderType.Sale:
       return '销售单'
@@ -31,7 +31,7 @@ enum OrderSource {
   transform,
 }
 
-export const showSource = (type?: number | string) => {
+export const showOrderSource = (type?: number | string) => {
   switch (type) {
     case OrderSource.all:
       return '全部'
@@ -59,7 +59,7 @@ enum OrderStatus {
   Booked,
   Verified,
 }
-export const showStatus = (type?: number | string) => {
+export const showOrderStatus = (type?: number | string) => {
   switch (type) {
     case OrderStatus.All:
       return '全部'
