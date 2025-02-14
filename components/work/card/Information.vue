@@ -37,7 +37,7 @@ onBeforeUnmount(() => {
           <div class="flex-grow-1 flex-shrink-0">
             <div class="flex-start">
               <div class="w-[4px] h-[10px] bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] rounded-[2px]" />
-              <div class="color-[#428EFF] dark:color-[#fff] ml-[4px] text-[12px]  line-height-[24px]">
+              <div class="color-[#333] dark:color-[#fff] ml-[4px] text-[12px]  line-height-[24px]">
                 {{ item.title }}
               </div>
             </div>
@@ -53,7 +53,7 @@ onBeforeUnmount(() => {
         <div class="color-[#4B576D] bg-[#C7DAFF] text-[12px] line-height-[24px] px-[10px] rounded-[60px]">
           金价：12313
         </div>
-        <div class="color-[#3971F3]  dark:color-[#fff] text-[12px] line-height-[24px] ">
+        <div class="color-[#333]  dark:color-[#fff] text-[12px] line-height-[24px] ">
           <span>
             {{ rbText }}
           </span>

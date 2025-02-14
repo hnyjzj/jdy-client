@@ -26,13 +26,14 @@ const addProduct = (product: Product) => {
     return
   }
   else if (
-    // 如果没添加 并且数量为空,则数量为1
+  // 如果没添加 并且数量为空,则数量为1
     index !== -1 && !showProductList.value[index].quantity
   ) {
     showProductList.value[index].quantity = 1
     return
   }
-  showProductList.value.push({ quantity: 1, discount: undefined, amount: 0, product_id: product.id, product })
+  const data = { quantity: 1, discount: undefined, amount: 0, product_id: product.id, product }
+  showProductList.value.push(data)
 }
 
 // 计件方式
