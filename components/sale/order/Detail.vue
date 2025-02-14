@@ -99,7 +99,7 @@ const isMain = (val?: boolean) => {
             <div class="grid grid-cols-1 gap-[12px]">
               <div class="info">
                 <template v-for="(item, index) in props.orders.salesmans" :key="index">
-                  <common-cell label="导购员" :value="item.id" />
+                  <common-cell label="导购员" :value="item.salesman?.nickname" />
                   <common-cell label="业绩比例" :value="item.performance_rate" />
                   <common-cell label="是否主导购" :value="isMain(item.is_main)" />
                   <div class="border-b-solid border-b-[#E0E0E0] border" />

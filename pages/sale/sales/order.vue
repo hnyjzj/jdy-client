@@ -21,13 +21,7 @@ if (route.query.id) {
       <div class="grid-12 gap-[12px] px-[16px]">
         <div class="col-6" uno-sm="col-4 offset-2">
           <common-button-rounded
-            content="取消" bgc="#fff" color="#000" @button-click="() => {
-              router.back()
-            }" />
-        </div>
-        <div class="col-6" uno-sm="col-4 offset6">
-          <common-button-rounded
-            content="确定" @button-click="() => {
+            content="返回" bgc="#fff" color="#000" @button-click="() => {
               router.back()
             }" />
         </div>
