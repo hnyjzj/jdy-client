@@ -93,7 +93,7 @@ interface Orders {
   /**
    * 导购员列表
    */
-  salesmens: OrderSalesmen[]
+  salesmans: OrderSalesmen[]
   /**
    * 商品列表
    */
@@ -202,5 +202,6 @@ interface OrderWhere {
   start_date?: string
   status?: number
   store_id?: string
+  product_id?: string
   type?: number
 }

@@ -5,8 +5,9 @@ useSeoMeta({
   title: '销售单列表',
 })
 const { StoreStaffList, myStore } = storeToRefs(useStores())
-
 const { getStoreStaffList } = useStores()
+const { getProductList } = useProductManage()
+const { productList } = storeToRefs(useProductManage())
 const { filterListToArray, OrdersList, total, OrderDetail } = storeToRefs(useOrder())
 const { getSaleWhere, getOrderList, getOrderDetail } = useOrder()
 const filterData = ref({} as Partial<OrderWhere>)
@@ -31,6 +32,7 @@ const showOrder = ref(false)
 const handleClick = async (id: string) => {
   await getOrderDetail({ id })
   // 跳转到详情页
+
   showOrder.value = true
 }
 // 打开高级筛选
@@ -53,6 +55,11 @@ const height = ref<number | undefined>(0)
 onMounted(async () => {
   height.value = getHeight('header')
 })
+const searchProduct = async (e: string) => {
+  if (e.length > 0) {
+    await getProductList({ page: 1, limit: 5, where: { name: e } })
+  }
+}
 </script>
 
 <template>
@@ -129,6 +136,20 @@ onMounted(async () => {
           clearable
           remote
           @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+        />
+      </template>
+      <template #product_id>
+        <n-select
+          v-model:value="filterData.product_id"
+          filterable
+          placeholder="输入商品名称"
+          :options="productList.map(v => ({
+            label: v.name,
+            value: v.id,
+          }))"
+          clearable
+          remote
+          @search="searchProduct"
         />
       </template>
     </common-filter-where>

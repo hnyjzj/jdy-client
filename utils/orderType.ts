@@ -45,3 +45,47 @@ export const showSource = (type?: number | string) => {
       return ''
   }
 }
+enum OrderStatus {
+  All = 0,
+  PendingPayment,
+  Cancelled,
+  Completed,
+  RefundReceived,
+  ReceivedGoods,
+  DispatchMaintenance,
+  UnderRepair,
+  Repaired,
+  ToBePicked,
+  Booked,
+  Verified,
+}
+export const showStatus = (type?: number | string) => {
+  switch (type) {
+    case OrderStatus.All:
+      return '全部'
+    case OrderStatus.PendingPayment:
+      return '待付款'
+    case OrderStatus.Cancelled:
+      return '已取消'
+    case OrderStatus.Completed:
+      return '已完成'
+    case OrderStatus.RefundReceived:
+      return '已退款'
+    case OrderStatus.ReceivedGoods:
+      return '已收货'
+    case OrderStatus.DispatchMaintenance:
+      return '派维修'
+    case OrderStatus.UnderRepair:
+      return '维修中'
+    case OrderStatus.Repaired:
+      return '已维修'
+    case OrderStatus.ToBePicked:
+      return '待取件'
+    case OrderStatus.Booked:
+      return '已预约'
+    case OrderStatus.Verified:
+      return '已核销'
+    default:
+      return ''
+  }
+}

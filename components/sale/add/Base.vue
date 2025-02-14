@@ -24,17 +24,17 @@ const deleteSale = (index: number) => {
     negativeText: '取消',
     positiveText: '确定',
     onPositiveClick: () => {
-      formData.value.salesmens.splice(index, 1)
-      const aliveMain = formData.value.salesmens.filter(item => item.is_main === true)
+      formData.value.salesmans.splice(index, 1)
+      const aliveMain = formData.value.salesmans.filter(item => item.is_main === true)
       if (!aliveMain.length) {
-        formData.value.salesmens[0].is_main = true
+        formData.value.salesmans[0].is_main = true
       }
     },
   })
 }
 // 新增销售员
 const addNewSale = () => {
-  formData.value.salesmens.push({
+  formData.value.salesmans.push({
     salesman_id: '',
     performance_amount: 0,
     performance_rate: 0,
@@ -45,6 +45,19 @@ const addNewSale = () => {
 const searchMember = useDebounceFn((val) => {
   props.getMember(val)
 }, 500)
+const { $toast } = useNuxtApp()
+
+// 检查比例
+const checkRatio = () => {
+  const result = ref(0)
+  formData.value.salesmans.forEach((item) => {
+    result.value += item.performance_rate || 0
+  })
+  if (result.value > 100) {
+    $toast.error('业绩比例总合不能超过100%')
+    return false
+  }
+}
 </script>
 
 <template>
@@ -94,13 +107,13 @@ const searchMember = useDebounceFn((val) => {
         </n-form-item-gi>
       </n-grid>
 
-      <template v-for="(item, index) in formData.salesmens" :key="index">
+      <template v-for="(item, index) in formData.salesmans" :key="index">
         <div class="">
           <n-grid :cols="24" :x-gap="8">
             <n-form-item-gi
               :span="11"
               :label="item.is_main ? '主销' : '辅销'" label-placement="top" class=""
-              :path="`salesmens[${index}].salesman_id`"
+              :path="`salesmans[${index}].salesman_id`"
               :rule="{
                 required: true,
                 message: `请选择导购员`,
@@ -119,7 +132,7 @@ const searchMember = useDebounceFn((val) => {
               />
             </n-form-item-gi>
             <n-form-item-gi :span="10" label="业绩比例" path="performance_rate" label-placement="top">
-              <n-input-number v-model:value="item.performance_rate" :min="0" :max="100" size="large">
+              <n-input-number v-model:value="item.performance_rate" :min="0" :max="100" size="large" @blur="checkRatio()">
                 <template #suffix>
                   %
                 </template>

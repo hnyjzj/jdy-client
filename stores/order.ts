@@ -55,13 +55,14 @@ export const useOrder = defineStore('Order', {
     },
     // 提交订单
     async submitOrder(req: Orders) {
-      const { data } = await https.post<undefined, Orders>('/order/create', req)
+      const { data } = await https.post<Orders, Orders>('/order/create', req)
       return data.value
     },
     async getOrderDetail(req: { id: string }) {
       const { data } = await https.post<Orders, { id: string }>('/order/info', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.OrderDetail = data.value.data
+        return true
       }
     },
   },
