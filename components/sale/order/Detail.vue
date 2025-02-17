@@ -15,9 +15,9 @@ const isMain = (val?: boolean) => {
           <div class="grid grid-cols-1 gap-[12px]">
             <div class="info">
               <common-cell label="订单编号" :value="props.orders.id" />
-              <common-cell label="订单类型" :value="showOrderType(props.orders.type)" />
-              <common-cell label="订单状态" :value="showOrderStatus(props.orders.status)" />
-              <common-cell label="订单来源" :value="showOrderSource(props.orders.source)" />
+              <common-cell label="订单类型" :value="OrderTypeMap[props.orders.type || OrderType.Other ]" />
+              <common-cell label="订单状态" :value="OrderStatusMap[props.orders.status || OrderStatus.all]" />
+              <common-cell label="订单来源" :value="OrderSourceMap[props.orders.source || OrderSource.all]" />
               <common-cell label="收银员" :value="props.orders.cashier?.nickname" />
               <common-cell label="收银员手机号" :value="props.orders.cashier?.phone" />
             </div>

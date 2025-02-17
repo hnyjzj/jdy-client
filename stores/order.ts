@@ -5,25 +5,16 @@ export const useOrder = defineStore('Order', {
     todayPrice: '' as string,
     total: 0 as number,
     OrderDetail: {} as Orders,
+    filterListToArray: [] as FilterWhere<OrderWhere>[],
   }),
-  getters: {
-    filterListToArray: (state) => {
-      const arr: FilterWhere<OrderWhere>[] = []
-      for (const [_k, item] of Object.entries(state.filterList)) {
-        arr.push({
-          ...item,
-        })
-      }
-      return arr.sort((a, b) => a.sort - b.sort)
-    },
 
-  },
   actions: {
     // 获取筛选条件
     async getSaleWhere() {
       const { data } = await https.get<Where<OrderWhere>, null>('/order/where')
       if (data.value.code === HttpCode.SUCCESS) {
         this.filterList = data.value.data
+        this.filterListToArray = sortArr(this.filterList)
       }
     },
     async getOrderList(req: ReqList<Orders>) {

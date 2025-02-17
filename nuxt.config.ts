@@ -32,6 +32,9 @@ export default defineNuxtConfig({
     '@bg-dev/nuxt-naiveui',
     'nuxt-echarts',
   ],
+  imports: {
+    dirs: ['enums'],
+  },
   app: {
     head: {
       viewport: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',

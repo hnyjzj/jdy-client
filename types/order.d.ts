@@ -69,11 +69,11 @@ interface Orders {
   /**
    * 订单来源
    */
-  source?: number
+  source?: OrderSource
   /**
    * 订单状态
    */
-  status?: number
+  status?: OrderStatus
   /**
    * 门店ID
    */
@@ -85,7 +85,7 @@ interface Orders {
   /**
    * 订单类型
    */
-  type?: number
+  type?: OrderType
   /**
    * 更新时间
    */
