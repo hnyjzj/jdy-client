@@ -7,7 +7,7 @@ interface Member {
   /**
    * 性别
    */
-  gender: number & { value: number, text: string }
+  gender: EnumRes<number>
   /**
    * 身份证号
    */

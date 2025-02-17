@@ -1,7 +1,7 @@
 /**
  * Orders
  */
-interface Orders<Read = false> {
+interface Orders {
   /**
    * 应付金额
    */

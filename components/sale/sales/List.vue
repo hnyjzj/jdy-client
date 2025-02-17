@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // 销售单列表
 const props = defineProps<{
-  info: Orders<true>[]
+  info: Orders[]
 }>()
 
 const emits = defineEmits<{
