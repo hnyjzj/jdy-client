@@ -1,13 +1,6 @@
 <script setup lang="ts">
 // 测试数据。待替换
-const memberInfo: Partial<Member> = {
-  id: '122222',
-  nickname: '懒羊羊',
-  phone: '19222222222',
-  birthday: '0000-01-01',
-  gender: 1 as any,
-  level: 3 as any,
-}
+const memberInfo: Partial<Member> = {}
 
 // 搜索会员页
 useSeoMeta({
