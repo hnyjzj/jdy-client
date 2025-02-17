@@ -9,7 +9,7 @@ const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getProductList } = useProductManage()
 const { getStoreStaffList } = useStores()
-const { getSaleWhere, getTodayPrice, submitOrder } = useOrder()
+const { getSaleWhere, getTodayPrice, submitOrder, getOrderDetail } = useOrder()
 const { todayPrice, filterList } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
@@ -27,9 +27,9 @@ const formData = ref<Orders>({
   store_id: '', // 门店ID
   cashier_id: undefined, // 收银员ID
   products: [], // 商品列表
-  salesmens: [{
+  salesmans: [{
     salesman_id: undefined,
-    performance_rate: 0,
+    performance_rate: 100,
     is_main: true,
   }],
 })
@@ -87,18 +87,31 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
       // 成功的操作
       formData.value.products = [] // 清空商品列表
       showProductList.value.forEach((item) => {
-        formData.value.products.push({
-          product_id: item.id,
+        const data = {
+          product_id: item.product?.id || item.product_id,
           quantity: item.quantity || 1,
           discount: item.discount,
-        })
+        }
+        formData.value.products.push(data)
       })
-      if (formData.value.amount === 0) {
-        return $toast.error('请设置业绩金额')
+      const result = ref(0)
+      formData.value.salesmans.forEach((item) => {
+        result.value += item.performance_rate || 0
+      })
+      if (result.value > 100) {
+        $toast.error('业绩比例总合必须等于100%')
+        return false
       }
+      else if (result.value < 100) {
+        $toast.error('业绩比例总合必须等于100%')
+        return false
+      }
+      formData.value.store_id = myStore.value.id
       const res = await submitOrder(formData.value)
       if (res.code === HttpCode.SUCCESS) {
         $toast.success('添加成功')
+        await getOrderDetail({ id: res.data.id as string })
+        await navigateTo({ path: '/sale/sales/order' })
       }
       else {
         $toast.error(res.message)

@@ -10,7 +10,10 @@ export function UrlAndParams(url: string, param: object) {
     return url
   const urlParams = getQueryParams(url)
   const params = { ...param, ...urlParams }
-  const str = Object.entries(params).filter(([_, value]) => value !== undefined && value !== null).map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`).join('&')
+  const str = Object.entries(params)
+    .filter(([_, value]) => value !== undefined && value !== null)
+    .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value as string | number | boolean)}`)
+    .join('&')
   if (!str)
     return url
   return `${url}?${str}`
@@ -22,7 +25,7 @@ export function UrlAndParams(url: string, param: object) {
  * @param url 请求地址
  * @returns object
  */
-export function getQueryParams<T extends { [key in string]?: any }>(url: string | undefined): T {
+export function getQueryParams<T extends object>(url: string | undefined): T {
   if (!url)
     return {} as T
     // 解码URL的查询部分
@@ -33,10 +36,11 @@ export function getQueryParams<T extends { [key in string]?: any }>(url: string 
   const params = queryString.split('&')
 
   // 将所有参数转换为对象
-  const queryParams = {} as any
+  const queryParams = {} as Record<string, string>
   params.forEach((param) => {
     const [key, value] = param.split('=')
     queryParams[key] = decodeURIComponent(value)
   })
-  return queryParams
+
+  return queryParams as T
 }

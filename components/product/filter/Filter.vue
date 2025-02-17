@@ -3,7 +3,7 @@ const props = defineProps({
   productListTotal: Number,
 })
 const emits = defineEmits(['filter'])
-const search = defineModel('search')
+const search = defineModel<string>('search', { default: '' })
 const filter = () => {
   emits('filter')
 }

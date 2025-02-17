@@ -4,17 +4,10 @@ export const useStaff = defineStore('staffStore', {
     staffList: [] as Staff[],
     staffInfo: {} as Staff,
     total: 0,
+    filterListToArray: [] as FilterWhere<Staff>[],
   }),
   getters: {
-    filterListToArray: (state) => {
-      const arr: FilterWhere<Staff>[] = []
-      for (const [_k, item] of Object.entries(state.filterList)) {
-        arr.push({
-          ...item,
-        })
-      }
-      return arr.sort((a, b) => a.sort - b.sort)
-    },
+
   },
   actions: {
     // 门店列表
@@ -71,6 +64,7 @@ export const useStaff = defineStore('staffStore', {
       const { data } = await https.get<Where<Staff>, null>('/staff/where')
       if (data.value.code === HttpCode.SUCCESS) {
         this.filterList = data.value.data
+        this.filterListToArray = sortArr(this.filterList)
       }
     },
     async getStaffInfo(req: { id: string }) {

@@ -10,6 +10,7 @@ const emits = defineEmits<{
   // 触底
   pull: []
 }>()
+const infoShow = defineModel('infoShow', { default: false })
 const loadingShow = ref<boolean>(false)
 const onScroll = useDebounceFn((e: any) => {
   const scrollTop = e.target.scrollTop
@@ -27,6 +28,12 @@ const onScroll = useDebounceFn((e: any) => {
   <div
     class="pullList" :style="{ height: `calc(100vh - (${props.distance}px))` }" @scroll="onScroll">
     <slot name="default" />
+    <common-popup v-model="infoShow" placement="left" width="90%" title="订单详情">
+      <slot name="info" />
+      <template #footer>
+        <slot name="footer" />
+      </template>
+    </common-popup>
     <template v-if="loadingShow && !props.nomore">
       <div class="flex-center-row py-[16px]">
         <van-loading color="#0094ff">

@@ -164,14 +164,9 @@ const afterRead = async (file: any) => {
   }
 }
 
-const searchKey = ref('')
-const searchListFn = async (clear: boolean = false) => {
+const searchListFn = async (val: string) => {
   await getWorkbenchList()
-  if (clear) {
-    searchKey.value = ''
-    return
-  }
-  const filteredData = filterByKeyword(workBenchList.value, searchKey.value)
+  const filteredData = filterByKeyword(workBenchList.value, val)
   workBenchList.value = filteredData
 }
 </script>
@@ -182,7 +177,7 @@ const searchListFn = async (clear: boolean = false) => {
       <div class="color-[#fff] px-[16px] pt-[12px] flex justify-between">
         <product-manage-company />
         <div class="flex-1 px-2 sm:px-4">
-          <product-filter-search v-model:search-key="searchKey" @search-list="searchListFn" />
+          <product-filter-search @submit="searchListFn" />
         </div>
         <div
           class="flex items-center justify-end cursor-pointer"

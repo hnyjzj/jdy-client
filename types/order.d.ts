@@ -69,11 +69,11 @@ interface Orders {
   /**
    * 订单来源
    */
-  source?: number
+  source?: EnumRes<number>
   /**
    * 订单状态
    */
-  status?: number
+  status?: EnumRes<number>
   /**
    * 门店ID
    */
@@ -85,7 +85,7 @@ interface Orders {
   /**
    * 订单类型
    */
-  type?: number
+  type?: EnumRes<number>
   /**
    * 更新时间
    */
@@ -93,7 +93,7 @@ interface Orders {
   /**
    * 导购员列表
    */
-  salesmens: OrderSalesmen[]
+  salesmans: OrderSalesmen[]
   /**
    * 商品列表
    */
@@ -190,4 +190,18 @@ interface OrderProducts {
    * 更新时间
    */
   updated_at?: Date
+}
+
+interface OrderWhere {
+  cashier_id?: string
+  end_date?: string
+  id?: string
+  member_id?: string
+  salesman_id?: string
+  source?: number
+  start_date?: string
+  status?: number
+  store_id?: string
+  product_id?: string
+  type?: number
 }
