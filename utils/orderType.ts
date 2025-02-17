@@ -8,6 +8,34 @@ enum OrderType {
   //   其他
   Other = 4,
 }
+
+enum OrderStatus {
+  All = 0,
+  PendingPayment,
+  Cancelled,
+  Completed,
+  RefundReceived,
+  ReceivedGoods,
+  DispatchMaintenance,
+  UnderRepair,
+  Repaired,
+  ToBePicked,
+  Booked,
+  Verified,
+}
+
+enum OrderSource {
+  all = 0,
+  nature,
+  returnVisit,
+  transform,
+}
+
+enum MemberSource {
+  all = 0,
+  staffWrite,
+  wxwork,
+}
 // 定单类型
 export const showOrderType = (type?: number | string) => {
   switch (type) {
@@ -24,13 +52,6 @@ export const showOrderType = (type?: number | string) => {
   }
 }
 
-enum OrderSource {
-  all = 0,
-  nature,
-  returnVisit,
-  transform,
-}
-
 export const showOrderSource = (type?: number | string) => {
   switch (type) {
     case OrderSource.all:
@@ -45,20 +66,7 @@ export const showOrderSource = (type?: number | string) => {
       return ''
   }
 }
-enum OrderStatus {
-  All = 0,
-  PendingPayment,
-  Cancelled,
-  Completed,
-  RefundReceived,
-  ReceivedGoods,
-  DispatchMaintenance,
-  UnderRepair,
-  Repaired,
-  ToBePicked,
-  Booked,
-  Verified,
-}
+
 export const showOrderStatus = (type?: number | string) => {
   switch (type) {
     case OrderStatus.All:
@@ -87,5 +95,16 @@ export const showOrderStatus = (type?: number | string) => {
       return '已核销'
     default:
       return ''
+  }
+}
+
+export const showMemberSource = (type?: number | string) => {
+  switch (type) {
+    case MemberSource.all:
+      return '全部'
+    case MemberSource.staffWrite:
+      return '员工录入'
+    case MemberSource.wxwork:
+      return '企业微信'
   }
 }

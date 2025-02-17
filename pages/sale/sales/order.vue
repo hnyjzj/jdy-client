@@ -19,7 +19,7 @@ if (route.query.id) {
     </div>
     <div class="footer">
       <div class="grid-12 gap-[12px] px-[16px]">
-        <div class="col-6" uno-sm="col-4 offset-2">
+        <div class="col-6 offset-3" uno-sm="col-6 offset-3">
           <common-button-rounded
             content="返回" bgc="#fff" color="#000" @button-click="() => {
               router.back()

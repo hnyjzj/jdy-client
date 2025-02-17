@@ -34,7 +34,7 @@ const isMain = (val?: boolean) => {
               <common-cell label="昵称" :value="props.orders.member?.nickname || ''" />
               <common-cell label="等级" :value="props.orders.member?.level" />
               <common-cell label="积分" :value="props.orders.member?.integral" />
-              <common-cell label="来源" :value="showOrderSource(props.orders.member?.source)" />
+              <common-cell label="来源" :value="showMemberSource(props.orders.member?.source)" />
               <common-cell label="手机号" :value="props.orders.member?.phone" />
             </div>
           </div>
@@ -49,6 +49,7 @@ const isMain = (val?: boolean) => {
               <div class="info">
                 <template v-for="(item, index) in props.orders.products" :key="index">
                   <common-cell label="商品名称" :value="item.product.name" />
+                  <common-cell label="商品条码" :value="item.product.code" />
                   <common-cell label="折扣" :value="item.discount" />
                   <common-cell label="原价" :value="item.amount_original" />
                   <common-cell label="应付金额" :value="item.amount" />
