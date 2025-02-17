@@ -1,7 +1,7 @@
 /**
  * Orders
  */
-interface Orders {
+interface Orders<Read = false> {
   /**
    * 应付金额
    */
@@ -69,11 +69,11 @@ interface Orders {
   /**
    * 订单来源
    */
-  source?: OrderSource
+  source?: EnumRes<number>
   /**
    * 订单状态
    */
-  status?: OrderStatus
+  status?: EnumRes<number>
   /**
    * 门店ID
    */
@@ -85,7 +85,7 @@ interface Orders {
   /**
    * 订单类型
    */
-  type?: OrderType
+  type?: EnumRes<number>
   /**
    * 更新时间
    */

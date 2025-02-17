@@ -2,9 +2,6 @@
 const props = defineProps<{
   orders: Orders
 }>()
-const isMain = (val?: boolean) => {
-  return val ? '是' : '否'
-}
 </script>
 
 <template>
@@ -15,9 +12,9 @@ const isMain = (val?: boolean) => {
           <div class="grid grid-cols-1 gap-[12px]">
             <div class="info">
               <common-cell label="订单编号" :value="props.orders.id" />
-              <common-cell label="订单类型" :value="OrderTypeMap[props.orders.type || OrderType.Other ]" />
-              <common-cell label="订单状态" :value="OrderStatusMap[props.orders.status || OrderStatus.all]" />
-              <common-cell label="订单来源" :value="OrderSourceMap[props.orders.source || OrderSource.all]" />
+              <common-cell label="订单类型" :value="props.orders.type?.text" />
+              <common-cell label="订单状态" :value="props.orders.status?.text" />
+              <common-cell label="订单来源" :value="props.orders.source?.text" />
               <common-cell label="收银员" :value="props.orders.cashier?.nickname" />
               <common-cell label="收银员手机号" :value="props.orders.cashier?.phone" />
             </div>
@@ -32,9 +29,9 @@ const isMain = (val?: boolean) => {
             <div class="info">
               <common-cell label="姓名" :value="props.orders.member?.name || ''" />
               <common-cell label="昵称" :value="props.orders.member?.nickname || ''" />
-              <common-cell label="等级" :value="props.orders.member?.level" />
+              <common-cell label="等级" :value="props.orders.member?.level?.text" />
               <common-cell label="积分" :value="props.orders.member?.integral" />
-              <common-cell label="来源" :value="showMemberSource(props.orders.member?.source)" />
+              <common-cell label="来源" :value="props.orders.member?.source?.text" />
               <common-cell label="手机号" :value="props.orders.member?.phone" />
             </div>
           </div>
@@ -102,7 +99,7 @@ const isMain = (val?: boolean) => {
                 <template v-for="(item, index) in props.orders.salesmans" :key="index">
                   <common-cell label="导购员" :value="item.salesman?.nickname" />
                   <common-cell label="业绩比例" :value="item.performance_rate" />
-                  <common-cell label="是否主导购" :value="isMain(item.is_main)" />
+                  <common-cell label="是否主导购" :value="item.is_main ? '是' : '-'" />
                   <div class="border-b-solid border-b-[#E0E0E0] border" />
                 </template>
               </div>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // 销售单列表
 const props = defineProps<{
-  info: Orders[]
+  info: Orders<true>[]
 }>()
 
 const emits = defineEmits<{
@@ -18,7 +18,7 @@ const handleClick = (id?: string) => {
 <template>
   <div class="grid grid-cols-1 gap-[16px] py-[16px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
-      <sale-cards :title="item.id" :tag-text="OrderTypeMap[item.type || OrderType.Other]">
+      <sale-cards :title="item.id" :tag-text="item.type?.text">
         <template #info>
           <div class="grid grid-cols-1 gap-[12px]">
             <div class="info">

@@ -7,7 +7,7 @@ interface Member {
   /**
    * 性别
    */
-  gender: Gender
+  gender: number & { value: number, text: string }
   /**
    * 身份证号
    */
@@ -43,7 +43,7 @@ interface Member {
   /**
    * 来源
    */
-  source?: number
+  source?: EnumRes<number>
   /**
    * 来源id
    */
@@ -51,11 +51,11 @@ interface Member {
   /**
    * 会员等级
    */
-  level?: MemberLevel
+  level?: EnumRes<number>
   /**
    * 状态
    */
-  status?: MemberStatus
+  status?: EnumRes<number>
   /**
    * 创建时间
    */
@@ -101,7 +101,7 @@ interface IntegralRecord {
   /**
    * 变动类型
    */
-  change_type: ChangeType
+  change_type: EnumRes<number>
   /**
    * 创建时间
    */

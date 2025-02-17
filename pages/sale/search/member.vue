@@ -5,8 +5,8 @@ const memberInfo: Partial<Member> = {
   nickname: '懒羊羊',
   phone: '19222222222',
   birthday: '0000-01-01',
-  gender: 1,
-  level: 3,
+  gender: 1 as any,
+  level: 3 as any,
 }
 
 // 搜索会员页

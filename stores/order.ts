@@ -1,6 +1,6 @@
 export const useOrder = defineStore('Order', {
   state: () => ({
-    OrdersList: [] as Orders[], // 门店列表
+    OrdersList: [] as Orders<true>[], // 门店列表
     filterList: {} as Where<OrderWhere>,
     todayPrice: '' as string,
     total: 0 as number,
@@ -21,7 +21,7 @@ export const useOrder = defineStore('Order', {
       if (req.page === 1) {
         this.OrdersList = []
       }
-      const { data } = await https.post<ResList<Orders>, ReqList<Orders>>('/order/list', req)
+      const { data } = await https.post<ResList<Orders<true>>, ReqList<Orders>>('/order/list', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.total = data.value.data.total
         if (data.value.data.list.length > 0) {

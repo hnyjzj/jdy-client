@@ -205,7 +205,7 @@ const execute = async () => {
                         :options="selectOptions"
                         menu-size="large"
                         @blur="() => {
-                          memberParams.gender = Number(showToUser) as Gender
+                          memberParams.gender = Number(showToUser) as any
                         }"
                       />
                     </div>

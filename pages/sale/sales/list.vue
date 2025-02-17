@@ -45,7 +45,7 @@ const submitWhere = async (f: OrderWhere) => {
   OrdersList.value = []
   nomore.value = false
   searchPage.value = 1
-  await getList(filterData.value)
+  await getList(filterData.value as any)
 }
 
 await getList()
