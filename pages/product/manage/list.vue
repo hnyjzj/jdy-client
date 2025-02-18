@@ -163,7 +163,7 @@ function edit(code: string) {
                 <div>
                   旧料条码
                 </div>
-                <div class="text-align-end">
+                <div class="text-align-end val">
                   {{ info.code }}
                 </div>
               </div>
@@ -171,7 +171,7 @@ function edit(code: string) {
                 <div>
                   所属大类
                 </div>
-                <div class="text-align-end">
+                <div class="text-align-end val">
                   {{ filterList.class?.preset[info.class] }}
                 </div>
               </div>
@@ -179,7 +179,7 @@ function edit(code: string) {
                 <div>
                   货品名称
                 </div>
-                <div class="text-align-end">
+                <div class="text-align-end val">
                   {{ info.name }}
                 </div>
               </div>
@@ -187,7 +187,7 @@ function edit(code: string) {
                 <div>
                   货品品牌
                 </div>
-                <div class="text-align-end">
+                <div class="text-align-end val">
                   {{ filterList.brand?.preset[info.brand] }}
                 </div>
               </div>
@@ -195,7 +195,7 @@ function edit(code: string) {
                 <div>
                   供应商
                 </div>
-                <div class="text-align-end">
+                <div class="text-align-end val">
                   {{ filterList.supplier?.preset[info.supplier] }}
                 </div>
               </div>
@@ -203,7 +203,7 @@ function edit(code: string) {
                 <div>
                   材质
                 </div>
-                <div class="text-align-end">
+                <div class="text-align-end val">
                   {{ filterList.material?.preset[info.material] }}
                 </div>
               </div>
@@ -211,7 +211,7 @@ function edit(code: string) {
                 <div>
                   成色
                 </div>
-                <div class="text-align-end">
+                <div class="text-align-end val">
                   {{ filterList.quality?.preset[info.quality] }}
                 </div>
               </div>
@@ -219,7 +219,7 @@ function edit(code: string) {
                 <div>
                   宝石
                 </div>
-                <div class="text-align-end">
+                <div class="text-align-end val">
                   {{ filterList.gem?.preset[info.gem] }}
                 </div>
               </div>
@@ -227,7 +227,7 @@ function edit(code: string) {
                 <div>
                   品类
                 </div>
-                <div class="text-align-end">
+                <div class="text-align-end val">
                   {{ info.style }}
                 </div>
               </div>
@@ -235,7 +235,7 @@ function edit(code: string) {
                 <div>
                   工艺
                 </div>
-                <div class="text-align-end">
+                <div class="text-align-end val">
                   {{ info.craft }}
                 </div>
               </div>
@@ -279,5 +279,11 @@ function edit(code: string) {
     background: linear-gradient(to bottom, #1b6ceb, #6da6ff);
     box-shadow: #1111113d 0px 2px 2px 1px;
   }
+}
+.val {
+  width: 66%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
