@@ -111,7 +111,7 @@ const checkRatio = () => {
         <div class="">
           <n-grid :cols="24" :x-gap="8">
             <n-form-item-gi
-              :span="11"
+              :span="12"
               :label="item.is_main ? '主销' : '辅销'" label-placement="top" class=""
               :path="`salesmans[${index}].salesman_id`"
               :rule="{
@@ -131,24 +131,26 @@ const checkRatio = () => {
                 @focus="() => { props.getStaff() }"
               />
             </n-form-item-gi>
-            <n-form-item-gi :span="10" label="业绩比例" path="performance_rate" label-placement="top">
-              <n-input-number v-model:value="item.performance_rate" :min="0" :max="100" size="large" @blur="checkRatio()">
-                <template #suffix>
-                  %
+            <n-form-item-gi :span="12" label="业绩比例" path="performance_rate" label-placement="top">
+              <div class="w-full">
+                <n-input-number v-model:value="item.performance_rate" :min="0" :max="100" size="large" @blur="checkRatio()">
+                  <template #suffix>
+                    %
+                  </template>
+                </n-input-number>
+              </div>
+              <div>
+                <template v-if="index === 0">
+                  <div class="wh-[32px] ml-[5px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3] text-[26px]" @click="addNewSale()">
+                    +
+                  </div>
                 </template>
-              </n-input-number>
-            </n-form-item-gi>
-            <n-form-item-gi :span="3" class="flex items-center">
-              <template v-if="index === 0">
-                <div class="wh-[32px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3]  text-[26px]" @click="addNewSale()">
-                  +
-                </div>
-              </template>
-              <template v-if="index !== 0">
-                <div class="wh-[32px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3]  text-[26px]" @click="deleteSale(index)">
-                  <div class="w-[10px] h-[2px] bg-[#3971F3]" />
-                </div>
-              </template>
+                <template v-if="index !== 0">
+                  <div class="wh-[32px] ml-[5px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3]  text-[26px]" @click="deleteSale(index)">
+                    <div class="w-[10px] h-[2px] bg-[#3971F3]" />
+                  </div>
+                </template>
+              </div>
             </n-form-item-gi>
           </n-grid>
           <div />

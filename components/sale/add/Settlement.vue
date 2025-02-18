@@ -23,6 +23,7 @@ const payMoney = computed(() => {
             <n-form-item-gi
               :span="12"
               label="整单折扣" label-placement="top"
+              size="large"
             >
               <n-input-number
                 v-model:value="formData.discount_rate"
@@ -38,6 +39,7 @@ const payMoney = computed(() => {
             <n-form-item-gi
               :span="12"
               label="抹零金额" label-placement="top"
+              size="large"
             >
               <n-input-number
                 v-model:value="formData.amount_reduce"
@@ -59,6 +61,7 @@ const payMoney = computed(() => {
         >
           <n-input
             v-model:value="formData.remark"
+            :style="{ '--n-border-radius': '20px' }"
             placeholder="备注信息"
             type="textarea"
           />
