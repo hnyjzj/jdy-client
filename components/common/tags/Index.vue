@@ -8,7 +8,7 @@ interface Props {
   /**
    * 文本内容
    */
-  text: string
+  text?: string | number
   /**
    * 是否为异形标签
    */

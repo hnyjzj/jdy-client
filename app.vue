@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { darkTheme, dateZhCN, type GlobalThemeOverrides, zhCN } from 'naive-ui'
-// 黑白主题切换
+// 黑白主题
 const { $colorMode } = useNuxtApp()
 const locale = zhCN
 const dateLocale = dateZhCN

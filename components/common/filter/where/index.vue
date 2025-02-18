@@ -104,7 +104,7 @@ const presetToSelect = (filter: FilterWhere<T>): { label: string, value: any }[]
                     <n-input v-model:value="datas[f.name as string]" :placeholder="`输入${f?.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
                   </template>
                   <template v-if="f?.input === 'date'">
-                    <n-date-picker v-model:value="datas[f.name as string]" value-format="yyyy.MM.dd HH:mm:ss" type="datetime" size="large" :placeholder="`选择${f?.label}`" round clearable />
+                    <n-date-picker v-model:formatted-value="datas[f.name as string]" value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" size="large" :placeholder="`选择${f?.label}`" round clearable />
                   </template>
                 </slot>
               </div>
