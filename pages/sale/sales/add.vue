@@ -157,7 +157,7 @@ const openProductListFn = () => {
           />
         </div>
         <sale-add-settlement v-model:form="formData" v-model:show-list="showProductList" />
-        <div class="h-[80px]">
+        <div class="h-[80px] bg-[#fff] fixed z-999">
           <div class="btn grid-12 px-[16px]">
             <button class="btn-right col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
               开单
