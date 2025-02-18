@@ -103,17 +103,20 @@ const uploadFile = async (file: any, onfinish?: () => void) => {
 
 <template>
   <div class="grid-12">
-    <div class="pb-[16px] col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
+    <div class="p-[16px] col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
       <common-fold title="其他新增方式" from-color="#9EBAF9" to-color="#fff">
-        <div class="flex-center-row py-[16px] cursor-pointer">
-          <div class="wh-[40px] rounded-full flex-center-row" @click="wxwordAdd()">
+        <div class="flex-center-row py-[16px] cursor-pointer" @click="wxwordAdd()">
+          <div class=" rounded-full flex-center-col">
             <icon name="i-svg:qwicon" :size="32" />
+            <div class="color-[#333]">
+              企业微信
+            </div>
           </div>
         </div>
       </common-fold>
-    </div>
-    <div class="col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
-      <staff-manage-add ref="addRef" v-model="formlist" @submit="addStaff" @upload="uploadFile" />
+      <div class="pt-[16px]">
+        <staff-manage-add ref="addRef" v-model="formlist" @submit="addStaff" @upload="uploadFile" />
+      </div>
     </div>
   </div>
 </template>
