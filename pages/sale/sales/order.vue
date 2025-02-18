@@ -3,19 +3,23 @@
 useSeoMeta({
   title: '销售单详情',
 })
-const { OrderDetail } = storeToRefs(useOrder())
-const { getOrderDetail } = useOrder()
+const { getMemberWhere } = useMemberManage()
+const { filterList: memberFiler } = storeToRefs(useMemberManage())
+const { OrderDetail, filterList } = storeToRefs(useOrder())
+const { getOrderDetail, getSaleWhere } = useOrder()
 const router = useRouter()
 const route = useRoute()
 if (route.query.id) {
   await getOrderDetail({ id: route.query.id as string })
+  await getMemberWhere()
+  await getSaleWhere()
 }
 </script>
 
 <template>
   <div>
     <div class="p-[16px] pb-[80px]">
-      <sale-order-detail :orders="OrderDetail" />
+      <sale-order-detail :member-filer="memberFiler" :where="filterList" :orders="OrderDetail" />
     </div>
     <div class="footer">
       <div class="grid-12 gap-[12px] px-[16px]">
