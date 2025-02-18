@@ -20,18 +20,9 @@ export const useStores = defineStore('Store', {
     // 当前门店
     myStore: {} as Stores,
     StoreStaffList: [] as StoresStaff[],
+    filterListToArray: [] as FilterWhere<Stores>[],
   }),
-  getters: {
-    filterListToArray: (state) => {
-      const arr: FilterWhere<Stores>[] = []
-      for (const [_k, item] of Object.entries(state.filterList)) {
-        arr.push({
-          ...item,
-        })
-      }
-      return arr.sort((a, b) => a.sort - b.sort)
-    },
-  },
+
   actions: {
     // 门店列表
     async getStoreList(req: ReqList<Stores>, search?: boolean) {
@@ -94,6 +85,7 @@ export const useStores = defineStore('Store', {
       const { data } = await https.get<Where<Stores>, null>('/store/where', null)
       if (data.value.code === HttpCode.SUCCESS) {
         this.filterList = data.value.data
+        this.filterListToArray = sortArr(this.filterList)
       }
     },
     async uploadImage(req: uploadLogoFileReq) {

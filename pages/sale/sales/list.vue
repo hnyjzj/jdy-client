@@ -4,83 +4,169 @@
 useSeoMeta({
   title: '销售单列表',
 })
+const { StoreStaffList, myStore } = storeToRefs(useStores())
+const { getStoreStaffList } = useStores()
+const { getProductList } = useProductManage()
+const { productList } = storeToRefs(useProductManage())
+const { filterListToArray, OrdersList, total, OrderDetail } = storeToRefs(useOrder())
+const { getSaleWhere, getOrderList, getOrderDetail } = useOrder()
+const filterData = ref({} as Partial<OrderWhere>)
+const filterShow = ref(false)
 
-// 测试数据。需删除替换
-const saleList: any[] = [
-  {
-    num: 'CZ-32493974',
-    store: {
-      name: '青青草原一号店',
-      salesVolume: 100000,
-    },
-    member: {
-      nickname: '张三',
-      phone: '13800138000',
-      level: 2,
-    },
-    mainSalesman: '李四',
-    goodsInfo: '足金挂坠',
-    quantity: 55789,
-    realAmount: 25000,
-    goodsAmount: 15000,
-    discountAmount: '100',
-    oldDiscountAmount: '20',
-    integral: '32',
-    openType: '线下开单',
-    createTime: '2021-11-11 11:11:11',
-    slipStatus: 2,
-  },
-  {
-    num: 'CZ-32493974',
-    store: {
-      name: '青青草原一号店',
-      salesVolume: 100000,
-    },
-    member: {
-      nickname: '张三',
-      phone: '13800138000',
-      level: 2,
-    },
-    mainSalesman: '李四',
-    goodsInfo: '足金挂坠',
-    quantity: 55789,
-    realAmount: 25000,
-    goodsAmount: 15000,
-    discountAmount: '100',
-    oldDiscountAmount: '20',
-    integral: '32',
-    openType: '线下开单',
-    createTime: '2021-11-11 11:11:11',
-    slipStatus: 2,
-  },
-]
+// 搜索条件 页码
+const searchPage = ref<number>(1)
+// 是否有更多数据
+const nomore = ref<boolean>(false)
+// 获取列表
+const getList = async (where = {} as Partial<Orders>) => {
+  if (nomore.value)
+    return
+  const params = { page: searchPage.value, limit: 12 } as ReqList<Orders>
+  if (JSON.stringify(where) !== '{}') {
+    params.where = where
+  }
+  const res = await getOrderList(params)
+  res ? nomore.value = false : nomore.value = true
+}
+const showOrder = ref(false)
+const handleClick = async (id: string) => {
+  await getOrderDetail({ id })
+  // 跳转到详情页
 
-const handleClick = async () => {
-// 跳转到详情页
-  await navigateTo('/sale/sales/order')
+  showOrder.value = true
+}
+// 打开高级筛选
+const openFilter = () => {
+  // 打开筛选
+  filterShow.value = true
+}
+const submitWhere = async (f: OrderWhere) => {
+  filterData.value = f
+  OrdersList.value = []
+  nomore.value = false
+  searchPage.value = 1
+  await getList(filterData.value as any)
+}
+
+await getList()
+await getSaleWhere()
+// 获取头部高度
+const height = ref<number | undefined>(0)
+onMounted(async () => {
+  height.value = getHeight('header')
+})
+const searchProduct = async (e: string) => {
+  if (e.length > 0) {
+    await getProductList({ page: 1, limit: 5, where: { name: e } })
+  }
+}
+
+const searchOrder = async (e: string) => {
+  await getOrderList({ page: 1, limit: 5, where: { id: e } })
+}
+const clearFn = async () => {
+  OrdersList.value = []
+  nomore.value = false
+  searchPage.value = 1
+  await getList()
 }
 </script>
 
 <template>
-  <div class="grid-12">
-    <div class="flex flex-col gap-[16px] px-[16px] py-[16px] col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-      <!-- header -->
-      <div class="flex flex-row gap-2">
-        <product-manage-company class="color-[#fff]" />
-        <product-filter-search class="color-[#fff] flex-1" />
-      </div>
-      <!-- data -->
-      <div class="flex-center-between gap-2">
-        <div class="text-size-[14px] color-[#fff]">
-          共{{ saleList[0].store.salesVolume }}条数据
+  <div>
+    <div class="grid-12">
+      <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
+        <!-- header -->
+        <div id="header" class="px-[16px] pt-[16px] w-full ">
+          <div class="flex flex-row gap-2">
+            <product-manage-company class="color-[#fff]" />
+            <product-filter-search
+              placeholder="搜索订单号" class="color-[#fff] flex-1" @submit="searchOrder" @clear="clearFn" />
+          </div>
+          <div class="flex-center-between gap-2">
+            <div class="text-size-[14px] color-[#fff]">
+              共{{ total }}条数据
+            </div>
+            <div @click="openFilter()">
+              <product-filter-senior class="color-[#fff]" />
+            </div>
+          </div>
         </div>
-        <product-filter-senior class="color-[#fff]" />
+        <!-- list -->
+        <common-list-pull
+          v-model:info-show="showOrder"
+          :distance="height"
+          :nomore="nomore"
+          @pull="() => {
+            searchPage += 1
+            getList()
+          }">
+          <!-- card -->
+          <sale-sales-list :info="OrdersList" @user-click="handleClick" />
+          <template #info>
+            <!-- info -->
+            <sale-order-detail :orders="OrderDetail" />
+          </template>
+          <template #footer>
+            <!-- actions -->
+            <div class="grid-12 gap-[12px] px-[16px]">
+              <div class="col-6" uno-sm="col-4 offset-2">
+                <common-button-rounded content="取消" bgc="#fff" color="#000" @button-click="showOrder = false" />
+              </div>
+              <div class="col-6" uno-sm="col-4 offset6">
+                <common-button-rounded content="确定" @button-click="showOrder = false" />
+              </div>
+            </div>
+          </template>
+        </common-list-pull>
       </div>
-      <!-- cards -->
-      <sale-sales-list :info="saleList" @user-click="handleClick" />
     </div>
+    <!-- filter -->
+    <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere">
+      <template #cashier_id>
+        <n-select
+          v-model:value="filterData.cashier_id"
+          placeholder="请输入收银员"
+          :options="StoreStaffList.map(v => ({
+            label: v.nickname,
+            value: v.id,
+          }))"
+          clearable
+          remote
+          @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+        />
+      </template>
+      <template #salesman_id>
+        <n-select
+          v-model:value="filterData.salesman_id"
+          placeholder="请选择"
+          :options="StoreStaffList.map(v => ({
+            label: v.nickname,
+            value: v.id,
+          }))"
+          clearable
+          remote
+          @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+        />
+      </template>
+      <template #product_id>
+        <n-select
+          v-model:value="filterData.product_id"
+          filterable
+          placeholder="输入商品名称"
+          :options="productList.map(v => ({
+            label: v.name,
+            value: v.id,
+          }))"
+          clearable
+          remote
+          @search="searchProduct"
+        />
+      </template>
+    </common-filter-where>
   </div>
 </template>
 
 <style lang="scss" scoped>
+
 </style>

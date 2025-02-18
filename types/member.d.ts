@@ -7,7 +7,7 @@ interface Member {
   /**
    * 性别
    */
-  gender: Gender
+  gender: EnumRes<number>
   /**
    * 身份证号
    */
@@ -43,7 +43,7 @@ interface Member {
   /**
    * 来源
    */
-  source?: number
+  source?: EnumRes<number>
   /**
    * 来源id
    */
@@ -51,11 +51,11 @@ interface Member {
   /**
    * 会员等级
    */
-  level?: MemberLevel
+  level?: EnumRes<number>
   /**
    * 状态
    */
-  status?: MemberStatus
+  status?: EnumRes<number>
   /**
    * 创建时间
    */
@@ -101,7 +101,7 @@ interface IntegralRecord {
   /**
    * 变动类型
    */
-  change_type: ChangeType
+  change_type: EnumRes<number>
   /**
    * 创建时间
    */
@@ -127,78 +127,6 @@ interface IntegralRecord {
    */
   updated_at: string
 }
-
-/**
- * 会员等级
- */
-enum MemberLevel {
-  /**
-   * 银卡
-   */
-  Silver = 1,
-  /**
-   * 金卡
-   */
-  Gold = 2,
-  /**
-   * 钻石卡
-   */
-  Diamond = 3,
-}
-
-/**
- * 会员状态
- */
-enum MemberStatus {
-  /**
-   * 正常
-   */
-  Normal = 1,
-  /**
-   * 未审核
-   */
-  Unreviewed = 2,
-}
-
-/**
- * 性别
- */
-enum Gender {
-  Man = 1,
-  Woman = 2,
-}
-
-enum ChangeType {
-  /**
-   * 消费
-   */
-  Consume = 1,
-  /**
-   * 充值
-   */
-  Recharge = 2,
-  /**
-   * 兑换
-   */
-  Exchange = 3,
-  /**
-   * 退款
-   */
-  Refund = 4,
-  /**
-   * 取消兑换
-   */
-  CancelExchange = 5,
-  /**
-   * 取消退款
-   */
-  CancelRefund = 6,
-  /**
-   * 人工调整
-   */
-  ManualChange = 7,
-}
-
 type WhereParams = { [key in keyof Member]?: Member[key] }
 
 interface IntegralReq {
