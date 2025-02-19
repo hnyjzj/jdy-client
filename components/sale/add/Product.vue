@@ -87,10 +87,21 @@ const deleteProduct = (index: number) => {
     },
   })
 }
-const changeType = (type: string) => {
+const changeType = (type: 'name' | 'code') => {
   searchType.value = type
   searchProduct.value = ''
   emits('openProductList')
+}
+const { useWxWork } = useWxworkStore()
+// 扫码
+const scanCode = async () => {
+  const wx = await useWxWork()
+  const code = await wx?.scanQRCode()
+  if (code) {
+    showModal.value = true
+    changeType('code')
+    searchProduct.value = code
+  }
 }
 </script>
 
@@ -109,7 +120,7 @@ const changeType = (type: string) => {
           </div>
         </div>
         <div
-          class="btn-right col-span-4 cursor-pointer"
+          class="btn-right col-span-4 cursor-pointer" @click="scanCode()"
         >
           <icon name="i-icon:scanit" color="#1a6beb" :size="12" />
           <div class="ml-2">
@@ -158,7 +169,6 @@ const changeType = (type: string) => {
                           min="1"
                           max="10"
                           :precision="2"
-                          type="text"
                         >
                           <template #suffix>
                             折
@@ -166,13 +176,38 @@ const changeType = (type: string) => {
                         </n-input-number>
                       </n-form-item-gi>
                       <n-form-item-gi :span="12" label="数量">
-                        <n-input-number
-                          v-model:value="obj.quantity"
-                          placeholder="请输入折扣:单位(折)"
-                          round
-                          min="1"
-                          type="text"
-                        />
+                        <div class="flex items-center justify-between">
+                          <div class="w-full">
+                            <n-input-number
+                              v-model:value="obj.quantity"
+                              placeholder="请输入折扣:单位(折)"
+                              round
+                              min="1"
+                              :precision="0"
+                              :show-button="false"
+                              @blur="() => {
+                                obj.quantity ? obj.quantity : obj.quantity = 1
+                              }"
+                            />
+                          </div>
+                          <div class="flex items-center justify-between">
+                            <div
+                              class="wh-[32px] ml-[5px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3] text-[26px]"
+                              @click="() => {
+                                obj.quantity ? obj.quantity++ : obj.quantity = 1
+                              }">
+                              +
+                            </div>
+                            <div
+                              class="wh-[32px] ml-[5px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3]  text-[26px]"
+                              @click="() => {
+                                if (obj.quantity && obj.quantity > 1)
+                                  obj.quantity ? obj.quantity-- : obj.quantity = 1
+                              }">
+                              <div class="w-[10px] h-[2px] bg-[#3971F3]" />
+                            </div>
+                          </div>
+                        </div>
                       </n-form-item-gi>
                     </n-grid>
                     <div class="flex justify-between items-center">

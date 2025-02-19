@@ -32,7 +32,7 @@ const payMoney = computed(() => {
                 :precision="2"
                 min="1"
                 max="10"
-                type="text"
+                :show-button="false"
               />
             </n-form-item-gi>
 
@@ -46,7 +46,7 @@ const payMoney = computed(() => {
                 placeholder="0"
                 round
                 min="0"
-                type="text"
+                :show-button="false"
               />
             </n-form-item-gi>
           </n-grid>
