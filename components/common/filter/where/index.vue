@@ -91,8 +91,8 @@ const presetToSelect = (filter: FilterWhere<T>): { label: string, value: any }[]
   <div>
     <common-popup v-model="showFilter" title="高级筛选">
       <div :id="Key" :key="Key">
-        <template v-for="({ name, label, show, input }, i) in props.filter" :key="i">
-          <template v-if="show">
+        <template v-for="({ name, label, find, input }, i) in props.filter" :key="i">
+          <template v-if="find">
             <div class="mb-2">
               <div class="text-color">
                 {{ label }}

@@ -116,7 +116,7 @@ function sum(key: ProductKey) {
                   <template #info>
                     <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
                       <template v-for="(filter, findex) in filterListToArray" :key="findex">
-                        <template v-if="filter.show">
+                        <template v-if="filter.find">
                           <div class="flex">
                             <div class="key">
                               {{ filter.label }}

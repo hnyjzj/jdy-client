@@ -69,7 +69,7 @@ async function submit() {
     $toast.error(res.message ?? '创建失败')
   }
 }
-const presetToSelect = (key: keyof Product): { label: string, value: any }[] => {
+const presetToSelect = (key: keyof Product) => {
   if (!key)
     return []
   const filter = filterList.value[key]
@@ -78,20 +78,7 @@ const presetToSelect = (key: keyof Product): { label: string, value: any }[] => 
   if (!filter.preset) {
     return []
   }
-  return Object.keys(filter.preset).map((key) => {
-    switch (filter.type) {
-      case 'number':
-        return {
-          label: filter.preset[key],
-          value: Number(key),
-        }
-      default:
-        return {
-          label: filter.preset[key],
-          value: key,
-        }
-    }
-  })
+  return optonsToSelect(filter.preset)
 }
 </script>
 
