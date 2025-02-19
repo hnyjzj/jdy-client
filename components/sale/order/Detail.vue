@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 const props = defineProps<{
   orders: Orders
+  where: Where<OrderWhere>
+  memberFiler: Where<Member>
 }>()
 </script>
 
@@ -12,9 +14,9 @@ const props = defineProps<{
           <div class="grid grid-cols-1 gap-[12px]">
             <div class="info">
               <common-cell label="订单编号" :value="props.orders.id" />
-              <common-cell label="订单类型" :value="props.orders.type?.text" />
-              <common-cell label="订单状态" :value="props.orders.status?.text" />
-              <common-cell label="订单来源" :value="props.orders.source?.text" />
+              <common-cell label="订单类型" :value="where.type?.preset[props.orders.type]" />
+              <common-cell label="订单状态" :value="where.status?.preset[props.orders.status]" />
+              <common-cell label="订单来源" :value="where.source?.preset[props.orders.source]" />
               <common-cell label="收银员" :value="props.orders.cashier?.nickname" />
               <common-cell label="收银员手机号" :value="props.orders.cashier?.phone" />
             </div>
@@ -29,9 +31,9 @@ const props = defineProps<{
             <div class="info">
               <common-cell label="姓名" :value="props.orders.member?.name || ''" />
               <common-cell label="昵称" :value="props.orders.member?.nickname || ''" />
-              <common-cell label="等级" :value="props.orders.member?.level?.text" />
+              <common-cell label="等级" :value="props.orders.member?.level" />
               <common-cell label="积分" :value="props.orders.member?.integral" />
-              <common-cell label="来源" :value="props.orders.member?.source?.text" />
+              <common-cell label="来源" :value="memberFiler.source?.preset[props.orders.member?.source]" />
               <common-cell label="手机号" :value="props.orders.member?.phone" />
             </div>
           </div>

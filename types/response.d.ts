@@ -7,5 +7,3 @@ interface ResList<T = undefined> {
 interface UploadRes {
   url: string
 }
-
-type EnumRes<V, O = { value: T, text: string }> = V & O

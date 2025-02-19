@@ -47,7 +47,7 @@ const demoListt = ref<DemoItem[]>([{ title: '销售金额', number: 100 }, { tit
           <div class="flex-1 dark:color-[#fff]">
             郑州紫金山与二七总店联合经营店
           </div>
-          <div class="bg-[#0068FF] py-[8px] px-[16px] rounded-[40px] color-[#fff] flex items-center w-auto">
+          <div class="bg-[#0068FF] py-[10px] px-[16px] rounded-[40px] color-[#fff] flex items-center w-auto">
             <icon name="i-icon:product-toggle" :size="16" /> <div class="pl-[4px]">
               切换门店
             </div>

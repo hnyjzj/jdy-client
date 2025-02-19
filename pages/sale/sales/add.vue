@@ -129,12 +129,13 @@ const openProductListFn = () => {
 
 <template>
   <div class="grid-12">
-    <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] col-12" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3">
+    <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] pb-[80px] col-12" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3">
       <n-form
         ref="formRef"
         :model="formData"
         :rules="rules"
         label-align="left"
+        size="large"
       >
         <div class="w-[120px] color-[#fff] pb-[12px]">
           <product-manage-company />
@@ -157,11 +158,11 @@ const openProductListFn = () => {
           />
         </div>
         <sale-add-settlement v-model:form="formData" v-model:show-list="showProductList" />
-        <div class="h-[80px]">
+        <div class="h-[80px] bg-[#fff] fixed z-999">
           <div class="btn grid-12 px-[16px]">
-            <button class="btn-right col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
-              开单
-            </button>
+            <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
+              <common-button-rounded content="开单" />
+            </div>
           </div>
         </div>
       </n-form>

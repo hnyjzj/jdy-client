@@ -24,7 +24,7 @@ const handleClick = () => {
       color: props.color ? props.color : '#fff',
       background: props.bgc ? props.bgc : 'linear-gradient(0deg, #6ea6ffbf 11%, #1a6beb)',
       boxShadow: props.shadow ? '0px 5px 10px 0px rgba(57, 113, 243, 0.24)' : '',
-      padding: props.padding ? props.padding : '8px 16px',
+      padding: props.padding ? props.padding : '10px 16px',
     }"
     @click="handleClick"
   >
