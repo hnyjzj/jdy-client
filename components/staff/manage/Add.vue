@@ -161,9 +161,9 @@ defineExpose({
             </n-form-item>
             <div class="fixed bottom-0 left-0 bg-[#fff] w-full grid-12 px-[26px]">
               <div
-                class="text-size-[16px] font-semibold pt-[16px] pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4" @click="handleValidateButtonClick">
-                <div class="ok">
-                  确定
+                class="text-size-[16px] font-semibold pt-[16px] pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
+                <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
+                  <common-button-rounded content="确定" />
                 </div>
               </div>
             </div>
@@ -182,9 +182,6 @@ defineExpose({
 </template>
 
 <style lang="scss" scoped>
-    .ok {
-  --uno: 'bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] line-height-[24px] px-[77px] py-[6px] text-center rounded-[36px] color-[#fff] shadow-[0_8px_8px_0px_#3971F33D]';
-}
 .input-item {
   --uno: 'h-full w-full border-none bg-transparent dark:placeholder-color-[#fff]';
 }

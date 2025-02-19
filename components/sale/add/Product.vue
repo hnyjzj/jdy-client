@@ -254,11 +254,11 @@ const changeType = (type: string) => {
 
 <style lang="scss" scoped>
 .btn-left {
-  --uno: 'text-[16px] py-[8px] border-none rounded-[36px] text-[#FFFFFF] flex justify-center items-center';
+  --uno: 'text-[16px] border-none rounded-[36px] text-[#FFFFFF] flex justify-center items-center';
   background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
 }
 .btn-right {
-  --uno: 'text-[16px] py-[8px] text-[#1a6beb] rounded-[36px] bg-[transparent] flex justify-center items-center border-[1px] border-solid border-[#1a6beb]';
+  --uno: 'text-[16px] py-[9px] text-[#1a6beb] rounded-[36px] bg-[transparent] flex justify-center items-center border-[1px] border-solid border-[#1a6beb]';
 }
 
 .activeBtn {
