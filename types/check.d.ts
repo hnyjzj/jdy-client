@@ -139,7 +139,7 @@ interface CheckInfo {
    * 产品材质
    */
   material?: number[]
-  products?: Product
+  products?: checkProduct[]
   /**
    * 产品成色
    */
@@ -154,8 +154,14 @@ interface CheckInfo {
   remark?: null | string
   /**
    * 盘点状态
+   * 0: "全部", 1: "草稿", 2: "盘点中", 3: "待验证", 4: "盘点完成", 5: "盘点异常", 6: "盘点取消"
    */
-  status?: number
+  status: number
+  /**
+   * 产品状态
+   * 0: "应盘", 1: "实盘", 2: "盘盈", 3: "盘亏"
+   */
+  product_status: number
   /**
    * 门店
    */
@@ -172,4 +178,8 @@ interface CheckInfo {
    * 更新时间
    */
   updated_at?: Date
+}
+
+interface checkProduct {
+  product: Product
 }

@@ -32,6 +32,7 @@ const goodsStatus = {
   3: '调拨',
   4: '已售',
   5: '退货',
+  6: '盘点中',
 }
 async function cancel() {
   const res = await cancelAllcate(allocateInfo.value?.id)
@@ -256,7 +257,7 @@ async function scanit() {
             <template v-for="(item, index) in allocateInfo.product" :key="index">
               <div class="grid mb-3">
                 <sale-order-nesting :title="item.name" :info="allocateInfo">
-                  <template #right>
+                  <template #left>
                     <!-- 状态为盘点中时可以删除 -->
                     <template v-if="allocateInfo.status === 1">
                       <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="delProduct(item.code)" />

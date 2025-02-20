@@ -12,6 +12,7 @@ const goodsStatus = {
   3: '调拨',
   4: '已售',
   5: '退货',
+  6: '盘点中',
 }
 </script>
 
