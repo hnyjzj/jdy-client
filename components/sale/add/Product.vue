@@ -198,9 +198,15 @@ const changeType = (type: string) => {
         </template>
       </div>
     </template>
-    <n-modal v-model:show="showModal">
+    <n-modal
+      v-model:show="showModal" :style="{
+        position: 'fixed',
+        top: '46px',
+        left: 0,
+        right: 0,
+        maxWidth: '600px',
+      }">
       <n-card
-        style="width: 600px"
         :bordered="false"
       >
         <div class="flex py-[12px] items-center">
