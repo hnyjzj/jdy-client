@@ -69,11 +69,11 @@ interface Orders {
   /**
    * 订单来源
    */
-  source?: EnumRes<number>
+  source?: number
   /**
    * 订单状态
    */
-  status?: EnumRes<number>
+  status?: number
   /**
    * 门店ID
    */
@@ -85,7 +85,7 @@ interface Orders {
   /**
    * 订单类型
    */
-  type?: EnumRes<number>
+  type?: number
   /**
    * 更新时间
    */
