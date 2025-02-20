@@ -4,11 +4,13 @@
 useSeoMeta({
   title: '销售单列表',
 })
+const { getMemberWhere } = useMemberManage()
+const { filterList: memberFiler } = storeToRefs(useMemberManage())
 const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 const { getProductList } = useProductManage()
 const { productList } = storeToRefs(useProductManage())
-const { filterListToArray, OrdersList, total, OrderDetail } = storeToRefs(useOrder())
+const { filterListToArray, OrdersList, total, OrderDetail, filterList } = storeToRefs(useOrder())
 const { getSaleWhere, getOrderList, getOrderDetail } = useOrder()
 const filterData = ref({} as Partial<OrderWhere>)
 const filterShow = ref(false)
@@ -50,6 +52,7 @@ const submitWhere = async (f: OrderWhere) => {
 
 await getList()
 await getSaleWhere()
+await getMemberWhere()
 // 获取头部高度
 const height = ref<number | undefined>(0)
 onMounted(async () => {
@@ -102,10 +105,10 @@ const clearFn = async () => {
             getList()
           }">
           <!-- card -->
-          <sale-sales-list :info="OrdersList" @user-click="handleClick" />
+          <sale-sales-list :info="OrdersList" :where="filterList" @user-click="handleClick" />
           <template #info>
             <!-- info -->
-            <sale-order-detail :orders="OrderDetail" />
+            <sale-order-detail :member-filer="memberFiler" :where="filterList" :orders="OrderDetail" />
           </template>
           <template #footer>
             <!-- actions -->

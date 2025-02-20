@@ -29,8 +29,7 @@ function handleSelect(id: Stores['id']) {
   <div>
     <n-dropdown trigger="click" placement="bottom-start" :options="columns" @select="handleSelect">
       <div
-        class="py-[6px] px-[12px] w-[150px] bg-[#FFFFFF66] border-rd-full h-full flex-center-row shadow-lg cursor-pointer "
-        uno-sm="w-[200px]"
+        class="py-[6px] px-[12px]  bg-[#FFFFFF66] border-rd-full h-full flex-center-row shadow-lg cursor-pointer "
         @click="changeStoer">
         <div class="store-name font-bold text-size-[14px] mr-[4px]">
           {{ myStore.name || '选择门店' }}

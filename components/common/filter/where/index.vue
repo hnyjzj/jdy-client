@@ -168,7 +168,7 @@ const presetToSelect = (filter: FilterWhere<T>): { label: string, value: any }[]
   .left {
     background: #ffffff;
     box-shadow: 0px 6px 6px rgba(110, 166, 255, 0.3);
-    --uno: 'text-[16px] dark:color-#2D79F0 py-[6px] border-none text-center rounded-[36px] mr-[8px]';
+    --uno: 'text-[16px] dark:color-#2D79F0 py-[10px] border-none text-center rounded-[36px] mr-[8px]';
   }
 
   .right {
