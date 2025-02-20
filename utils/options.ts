@@ -1,5 +1,5 @@
 interface SaleItemsPreset {
-  [key: string]: string
+  [key: string | number]: string
 }
 interface options {
   label: string
@@ -12,9 +12,16 @@ interface options {
  * @param obj Object
  * @returns  Array
  */
-export const optonsToSelect = (obj: SaleItemsPreset) => {
+export const optonsToSelect = (obj: SaleItemsPreset, hasZero = false) => {
   const list = ref<options[]>([])
-  Object.keys(obj).filter(key => key !== '0').forEach((key) => {
+  Object.keys(obj).filter((key) => {
+    if (hasZero) {
+      return true
+    }
+    else {
+      return Number(key) !== 0
+    }
+  }).forEach((key) => {
     list.value.push({
       label: obj[key],
       value: Number(key),
