@@ -46,20 +46,7 @@ const presetToSelect = (key: keyof AllocateReq): { label: string, value: any }[]
   if (!filter.preset) {
     return []
   }
-  return Object.keys(filter.preset).map((key) => {
-    switch (filter.type) {
-      case 'number':
-        return {
-          label: filter.preset[key],
-          value: Number(key),
-        }
-      default:
-        return {
-          label: filter.preset[key],
-          value: key,
-        }
-    }
-  })
+  return optonsToSelect(filter.preset)
 }
 const formRef = ref<FormInst | null>(null)
 const rules = ref<FormRules>({
@@ -111,7 +98,7 @@ function handleValidateButtonClick() {
   <div>
     <div class="grid-12 pt-4 pb-20">
       <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-        <div class="w-[40%]">
+        <div class="w-[40%] text-[#FFF] pl-4">
           <product-manage-company />
         </div>
         <div class="rounded-6 bg-white w-auto blur-bga top">
