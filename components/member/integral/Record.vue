@@ -59,6 +59,10 @@ const changeTypeDesc = (type: number) => {
   }
   return ''
 }
+
+const absoluteValue = (value: number) => {
+  return Math.abs(value)
+}
 </script>
 
 <template>
@@ -123,7 +127,7 @@ const changeTypeDesc = (type: number) => {
                             变更数额
                           </div>
                           <div class="right">
-                            {{ item.change }}
+                            {{ absoluteValue(item.change) }}
                           </div>
                         </div>
                         <div class="item">
