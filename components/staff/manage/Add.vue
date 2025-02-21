@@ -90,7 +90,7 @@ defineExpose({
 
 <template>
   <div>
-    <div class="pb-[70px]">
+    <div class="">
       <common-fold title="新增员工" from-color="#9EBAF9" to-color="#fff">
         <div class="p-[16px]">
           <n-form
@@ -100,34 +100,52 @@ defineExpose({
             label-placement="top"
             size="large"
           >
-            <n-form-item :span="12" label="手机号" path="phone">
-              <n-input
-                v-model:value="formlist.account.phone"
-                placeholder="请输入手机号"
-                round
+            <n-form-item
+              label="头像">
+              <n-upload
+                :key="keyUpload"
+                :style="{ '--n-dragger-border-hover': '#0068ff' }"
+                action="#"
+                :custom-request="customRequest"
+                :default-file-list="previewFileList"
+                list-type="image-card"
+                :max="1"
+
+                @before-upload="beforeUpload"
+                @preview="showModalRef = true"
               />
             </n-form-item>
-            <n-form-item :span="12" label="姓名" path="nickname">
-              <n-input
-                v-model:value="formlist.account.nickname"
-                placeholder="请输入姓名"
-                round
-              />
-            </n-form-item>
-            <n-form-item :span="12" label="密码" path="password">
-              <n-input
-                v-model:value="formlist.account.password"
-                placeholder="请输入密码"
-                round
-              />
-            </n-form-item>
-            <n-form-item :span="12" label="email" path="email">
-              <n-input
-                v-model:value="formlist.account.email"
-                placeholder="请输入email"
-                round
-              />
-            </n-form-item>
+            <n-grid :cols="24" :x-gap="8">
+              <n-form-item-gi :span="12" label="手机号" path="phone">
+                <n-input
+                  v-model:value="formlist.account.phone"
+                  placeholder="请输入手机号"
+                  round
+                />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="姓名" path="nickname">
+                <n-input
+                  v-model:value="formlist.account.nickname"
+                  placeholder="请输入姓名"
+                  round
+                />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="密码" path="password">
+                <n-input
+                  v-model:value="formlist.account.password"
+                  placeholder="请输入密码"
+                  round
+                />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="email" path="email">
+                <n-input
+                  v-model:value="formlist.account.email"
+                  placeholder="请输入email"
+                  round
+                />
+              </n-form-item-gi>
+            </n-grid>
+
             <n-form-item :span="12" label="性别" path="gender">
               <n-radio-group v-model:value="formlist.account.gender">
                 <n-space>
@@ -144,25 +162,10 @@ defineExpose({
                 </n-space>
               </n-radio-group>
             </n-form-item>
-            <n-form-item
-              label="头像">
-              <n-upload
-                :key="keyUpload"
-                :style="{ '--n-dragger-border-hover': '#0068ff' }"
-                action="#"
-                :custom-request="customRequest"
-                :default-file-list="previewFileList"
-                list-type="image-card"
-                :max="1"
-
-                @before-upload="beforeUpload"
-                @preview="showModalRef = true"
-              />
-            </n-form-item>
-            <div class="fixed bottom-0 left-0 bg-[#fff] w-full grid-12 px-[26px]">
+            <div class="grid-12 px-[26px]">
               <div
-                class="text-size-[16px] font-semibold pt-[16px] pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
-                <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
+                class="font-semibold pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
+                <div @click="handleValidateButtonClick">
                   <common-button-rounded content="确定" />
                 </div>
               </div>
