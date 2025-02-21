@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { SelectOption } from 'naive-ui'
+import type { FormRules, SelectOption } from 'naive-ui'
 
 useHead({
   title: '分配员工',
@@ -13,11 +13,19 @@ const model = ref<AssignStaff>({
   id: undefined,
   staff_id: [],
 })
-const rules = {
+const rules = ref<FormRules>({
   id: {
     required: true,
+    trigger: ['blur', 'input', 'change'],
+    message: '请选择门店',
   },
-}
+  staff_id: {
+    required: true,
+    trigger: ['blur', 'input', 'change'],
+    message: '请选择员工',
+    type: 'array',
+  },
+})
 // 门店列表
 const storeList = ref<SelectOption[]>([])
 // 员工列表
@@ -95,7 +103,7 @@ const handleValidateButtonClick = (e: MouseEvent) => {
                 @search="searchStore"
               />
             </n-form-item>
-            <n-form-item label="分配员工" path="id">
+            <n-form-item label="分配员工" path="staff_id">
               <n-select
                 v-model:value="model.staff_id"
                 filterable
