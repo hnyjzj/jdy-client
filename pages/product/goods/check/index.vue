@@ -7,7 +7,7 @@ const { checkList, checkFilterListToArray, checkTotal } = storeToRefs(useCheck()
 const { storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const storeCol = ref()
-function changeStoer() {
+async function changeStoer() {
   storeCol.value = []
   storesList.value.forEach((item: Stores) => {
     storeCol.value.push({ label: item.name, value: item.id })
@@ -61,6 +61,9 @@ onMounted(() => {
 const filterData = ref({} as Partial<Check>)
 
 function pull() {
+  if (pages.value === 1) {
+    return
+  }
   getList(filterData.value)
 }
 const store_id = ref()
@@ -109,9 +112,9 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
 </script>
 
 <template>
-  <div class="overflow-hidden">
+  <div>
     <!-- 筛选 -->
-    <div id="header">
+    <div id="header" class="sticky top-0 bg-[#3875C5] z-1">
       <product-filter
         v-model:id="complate" v-model:search="searchKey" :product-list-total="checkTotal" @filter="openFilter">
         <template #company>
@@ -120,7 +123,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
       </product-filter>
     </div>
     <!-- 小卡片组件 -->
-    <div class="pb-10 overflow-hidden">
+    <div class="pb-10">
       <common-list-pull :distance="height" :nomore="!isCanPull" @pull="pull">
         <product-manage-card :list="checkList">
           <template #info="{ info }">

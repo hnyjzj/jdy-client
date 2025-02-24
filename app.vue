@@ -46,7 +46,7 @@ const themeOverrides: GlobalThemeOverrides = {
         <n-dialog-provider>
           <nuxt-layout>
             <common-layout-watermark>
-              <nuxt-page />
+              <nuxt-page :keepalive="{ max: 1 }" />
             </common-layout-watermark>
           </nuxt-layout>
         </n-dialog-provider>

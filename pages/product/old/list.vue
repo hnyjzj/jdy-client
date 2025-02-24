@@ -35,15 +35,6 @@ async function getList(where = {} as Partial<Product>) {
 await getList()
 await getProductWhere()
 
-// 获取头部高度
-const height = ref<number | undefined>(0)
-onMounted(() => {
-  height.value = getHeight('header')
-  if (height.value) {
-    height.value = height.value + 40
-  }
-})
-
 const filterData = ref({ type: 2, disabled: ['type'] } as Partial<Product>)
 function pull() {
   getList(filterData.value)
@@ -65,19 +56,17 @@ async function submitWhere(f: Partial<Product>) {
 </script>
 
 <template>
-  <div class="overflow-hidden">
+  <div>
     <!-- 筛选 -->
-    <div id="header">
-      <product-filter
-        v-model:id="complate" v-model:search="searchKey" :product-list-total="productListTotal" @filter="openFilter">
-        <template #company>
-          <product-manage-company />
-        </template>
-      </product-filter>
-    </div>
+    <product-filter
+      v-model:id="complate" v-model:search="searchKey" :product-list-total="productListTotal" @filter="openFilter">
+      <template #company>
+        <product-manage-company />
+      </template>
+    </product-filter>
     <!-- 小卡片组件 -->
-    <div class="pb-10 overflow-hidden">
-      <common-list-pull :distance="height" :nomore="!isCanPull" @pull="pull">
+    <div>
+      <common-list-pull :nomore="!isCanPull" @pull="pull">
         <product-manage-card :list="productList">
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">

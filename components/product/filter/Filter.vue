@@ -10,23 +10,25 @@ const filter = () => {
 </script>
 
 <template>
-  <div class="grid-12 py-[12px] px-[16px] color-[#Fff]">
-    <div class="col-12 lg:col-8 lg:offset-2">
-      <div class="flex justify-between">
-        <div>
-          <slot name="company" />
-        </div>
-        <div class="flex-1 px-2 sm:px-4">
-          <product-filter-search v-model:search-key="search" />
+  <div class="sticky top-0 bg-[#3875C5] z-1">
+    <div class="grid-12 py-[12px] px-[16px] color-[#Fff]">
+      <div class="col-12 lg:col-8 lg:offset-2">
+        <div class="flex justify-between">
+          <div>
+            <slot name="company" />
+          </div>
+          <div class="flex-1 px-2 sm:px-4">
+            <product-filter-search v-model:search-key="search" />
+          </div>
         </div>
       </div>
-    </div>
-    <div class="col-12 grid-12 lg:col-8 lg:offset-2 pt-[12px] pb-[16px]">
-      <div class="col-8 py-[6px] px-[12px] line-height-[20px]">
-        共 {{ props.productListTotal }} 条数据
-      </div>
-      <div class="col-4 ">
-        <product-filter-Senior @filter="filter" />
+      <div class="col-12 grid-12 lg:col-8 lg:offset-2 pt-[12px] pb-[16px]">
+        <div class="col-8 py-[6px] px-[12px] line-height-[20px]">
+          共 {{ props.productListTotal }} 条数据
+        </div>
+        <div class="col-4 ">
+          <product-filter-Senior @filter="filter" />
+        </div>
       </div>
     </div>
   </div>
