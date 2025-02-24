@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import type { SelectOption } from 'naive-ui'
+
 useSeoMeta({
   title: '门店列表',
 })
-
+const { getOptionsStafflist } = useStaff()
 const { storesList, addorUpdateForm, storeDetails, filterListToArray, total } = storeToRefs(useStores())
-const { getStoreDetail, reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage, deleteStaff } = useStores()
-
+const { getStoreDetail, reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage, deleteStaff, assignStaff } = useStores()
 const { $toast } = useNuxtApp()
 // 新增门店弹窗
 const addOrUpdateShow = ref<boolean>(false)
@@ -19,6 +20,9 @@ const nomore = ref<boolean>(false)
 const showModal = ref<boolean>(false)
 // 筛选请求数据
 const filterData = ref({} as Partial<Stores>)
+// 显示分配组件
+const assginShow = ref<boolean>(false)
+
 // 获取列表
 const getList = async (where = {} as Partial<Stores>) => {
   if (nomore.value)
@@ -194,6 +198,34 @@ function updateWidth() {
     wid.value = '90%'
   }
 }
+const assignModel = ref<AssignStaff>({
+  id: undefined,
+  staff_id: [],
+})
+
+const assignFn = async () => {
+  assignModel.value.id = storeDetails.value.id
+  const res = await assignStaff(assignModel.value)
+  if (res) {
+    $toast.success('分配成功')
+    assignModel.value = {
+      id: undefined,
+      staff_id: [],
+    }
+    await getStoreDetail(storeDetails.value.id)
+  }
+}
+const staffList = ref<SelectOption[]>([])
+const searchStaffOptions = async (val: string) => {
+  const res = await getOptionsStafflist({ page: 1, limit: 10, where: { nickname: val } })
+  if (res.length) {
+    staffList.value = res.map(item => ({
+      label: item.nickname,
+      value: item.id,
+    }))
+  }
+}
+
 // 添加防抖监听（避免频繁触发）
 const resizeTimer = ref()
 onMounted(() => {
@@ -244,7 +276,7 @@ onMounted(() => {
     <common-popup v-model="showModal" title="门店详情" placement="left" :width="wid">
       <div>
         <stores-info :info-detail="storeDetails" />
-        <staff-assign-card :list="storeDetails.staffs" @delete-store-staff="deleteStoreStaffFn" />
+        <staff-assign-card :list="storeDetails.staffs" @delete-store-staff="deleteStoreStaffFn" @confirm="assginShow = true" />
       </div>
     </common-popup>
 
@@ -260,6 +292,13 @@ onMounted(() => {
         <common-area-select :is-required="false" :showtitle="false" :form="filterData.region" @update="updateArea" />
       </template>
     </common-filter-where>
+    <stores-assign
+      :id="storeDetails.id"
+      v-model:assign-model="assignModel"
+      v-model:assgin-show="assginShow"
+      :staff-list="staffList"
+      @search-staff-options="searchStaffOptions"
+      @assign="assignFn" />
   </div>
 </template>
 

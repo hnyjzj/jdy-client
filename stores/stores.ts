@@ -133,7 +133,6 @@ export const useStores = defineStore('Store', {
     },
     // 为门店分配员工
     async assignStaff(req: AssignStaff) {
-      // /store/staff/add
       const { data } = await https.post<any, AssignStaff>('/store/staff/add', req)
       if (data.value.code === HttpCode.SUCCESS) {
         return true

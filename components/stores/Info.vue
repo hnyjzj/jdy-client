@@ -66,29 +66,6 @@ const addressName = computed(() => {
                 </div>
               </div>
             </div>
-            <template v-if="props.infoDetail.staffs.length > 0">
-              <div class="flex flex-col px-4 py-[6px]">
-                <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
-                  <div class="color-[#666666] dark:color-[#fff]">
-                    门店员工
-                  </div>
-                  <div class="color-[#333333] dark:color-[#fff] flex">
-                    <template v-for="(staff, index) in props.infoDetail.staffs" :key="index">
-                      <template v-if="index === props.infoDetail.staffs.length - 1">
-                        <div>
-                          {{ staff.nickname }}
-                        </div>
-                      </template>
-                      <template v-else>
-                        <div>
-                          {{ `${staff.nickname},` }}
-                        </div>
-                      </template>
-                    </template>
-                  </div>
-                </div>
-              </div>
-            </template>
           </template>
         </common-gradient>
       </div>

@@ -5,6 +5,7 @@ const props = defineProps<{
 
 const emits = defineEmits<{
   deleteStoreStaff: [val: string, index: number]
+  confirm: []
 }>()
 const sex = (val: number) => {
   return val === 0 ? '未知' : val === 1 ? '男' : '女'
@@ -17,7 +18,7 @@ const sex = (val: number) => {
       门店员工
     </div>
     <div>
-      <common-button-rounded content="分配员工" />
+      <common-button-rounded content="分配员工" @button-click="emits('confirm')" />
     </div>
   </div>
   <div class="grid-12 gap-[16px] py-[16px] ">
