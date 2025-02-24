@@ -13,19 +13,20 @@ const assignModel = defineModel('assign-model', { default: {
   id: undefined,
   staff_id: [],
 } })
+// 显示弹窗
 const assignShow = defineModel('assignShow', { default: false })
 // 员工列表
-
 const loadingStaff = ref(false)
-
 const getStaff = useDebounceFn(async (query) => {
   emit('searchStaffOptions', query)
   loadingStaff.value = false
 }, 500)
+// 搜索员工
 const searchStaff = (query: string) => {
   loadingStaff.value = true
   getStaff(query)
 }
+// 确定按钮
 const onPositiveClick = async () => {
   emit('assign')
   assignShow.value = false
@@ -42,7 +43,6 @@ const onNegativeClick = () => {
       :mask-closable="false"
       preset="dialog"
       title="分配员工"
-
     >
       <div>
         <n-select
