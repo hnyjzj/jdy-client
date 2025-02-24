@@ -135,7 +135,7 @@ interface Product {
   weight_other: number
   /**
    * 产品类型
-   * 0:全部 1:成品 2:旧料
+   * 0:全部 1:成品 2:旧料 3:配件
    */
   type: number
 }

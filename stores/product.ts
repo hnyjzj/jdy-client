@@ -38,7 +38,7 @@ export const useProductManage = defineStore('ProductManage', {
     // 货品导入
     async importProduct(products: Product[]) {
       try {
-        const { data } = await https.post<any, { products: Product[] }>('/product/enter', { products })
+        const { data } = await https.post<any, { products: Product[] }>('/product/enter/create', { products })
         return data.value
       }
       catch (error) {

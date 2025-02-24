@@ -6,7 +6,6 @@ const searchKey = ref('')
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
-const isModel = ref(false)
 const pages = ref(1)
 const isCanPull = ref(true)
 useSeoMeta({
@@ -38,10 +37,6 @@ await getList()
 await getEnterWhere()
 
 const filterData = ref({} as Partial<Enter>)
-
-const create = () => {
-  isModel.value = true
-}
 
 function pull() {
   getList(filterData.value)
@@ -106,7 +101,7 @@ function edit(id: string) {
     </div>
     <product-manage-bottom />
     <div class="cursor-pointer">
-      <common-create @click="create" />
+      <common-create @click="jump('/product/finished/warehouse/add')" />
     </div>
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" />
   </div>

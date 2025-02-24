@@ -1,14 +1,12 @@
 <script setup lang="ts">
 const { checkInfo, checkFilterList } = storeToRefs(useCheck())
 const { getCheckInfo, getCheckWhere, changeCheckStatus } = useCheck()
+const { userinfo } = useUser()
 const { $toast } = useNuxtApp()
 const route = useRoute()
 
 // 当前选择的盘点类型
 const product_status = ref(0)
-const changeShow = ref(false)
-const changeStatusVal = ref()
-const statusCol = ref()
 
 // 盘点单详情
 useSeoMeta({ title: '盘点单详情' })
@@ -18,10 +16,34 @@ if (route.query.id) {
   await getCheckWhere()
 }
 
+interface funBtn {
+  status: CheckInfo['status']
+  text: string
+}
+
+const funbtns = ref<funBtn[]>([])
+const getFunBtn = async () => {
+  funbtns.value = []
+  // userinfo.id === checkInfo.value.inventory_person_id &&
+  if (checkInfo.value.status === 1) {
+    funbtns.value.push({ status: 6, text: '取消盘点' })
+    funbtns.value.push({ status: 2, text: '开始盘点' })
+  }
+  //   userinfo.id === checkInfo.value.inspector_id &&
+  if (userinfo.id === checkInfo.value.inspector_id && checkInfo.value.status === 2) {
+    funbtns.value.push({ status: 6, text: '取消盘点' })
+    funbtns.value.push({ status: 3, text: '盘点完成' })
+  }
+  if (userinfo.id === checkInfo.value.inspector_id && checkInfo.value.status === 3) {
+    funbtns.value.push({ status: 6, text: '取消盘点' })
+    funbtns.value.push({ status: 4, text: '盘点完成' })
+  }
+}
 /** 获取详情 */
 async function getInfo() {
   if (route.query.id) {
     await getCheckInfo(route.query.id as string, product_status.value)
+    await getFunBtn()
   }
 }
 
@@ -59,38 +81,11 @@ function changeStatus(val: number) {
   getInfo()
 }
 
-/** 获取可选状态 */
-function getSelectStatus() {
-  const statusOptions: Record<number, { label: string, value: number }[]> = {
-    1: [
-      { label: '盘点中', value: 2 },
-      { label: '盘点取消', value: 6 },
-    ],
-    2: [
-      { label: '待验证', value: 3 },
-      { label: '盘点异常', value: 5 },
-      { label: '盘点取消', value: 6 },
-    ],
-    3: [
-      { label: '盘点完场', value: 4 },
-      { label: '盘点异常', value: 5 },
-      { label: '盘点取消', value: 6 },
-    ],
-    5: [
-      { label: '盘点中', value: 2 },
-      { label: '盘点取消', value: 6 },
-    ],
-    6: [{ label: '盘点中', value: 2 }],
-  }
-  statusCol.value = statusOptions[checkInfo.value.status] || []
-}
-
 /** 提交盘点更改状态 */
-async function sumbitChange() {
-  const res = await changeCheckStatus(checkInfo.value.id, changeStatusVal.value)
+async function sumbitChange(status: CheckInfo['status']) {
+  const res = await changeCheckStatus(checkInfo.value.id, status)
   if (res.code === 200) {
     $toast.success('变更成功')
-    changeShow.value = false
     getInfo()
   }
 }
@@ -108,8 +103,7 @@ const goodsStatus = {
 
 <template>
   <div class="pt-6">
-    <common-dark />
-    <div class="grid-12">
+    <div class="grid-12 pb-10">
       <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <div class="rounded-6 w-auto top">
           <common-gradient title="基础信息">
@@ -318,22 +312,15 @@ const goodsStatus = {
         </div>
       </div>
     </div>
-    <common-model v-model="changeShow" title="更改状态" :show-ok="true" @confirm="sumbitChange">
-      <div class="min-h-[100px]">
-        <n-select
-          v-model:value="changeStatusVal"
-          :default-value="0 || '' || undefined || null"
-          menu-size="large"
-          filterable
-          placeholder="更改盘点单状态"
-          :options="statusCol"
-          @focus="() => getSelectStatus()"
-        />
+
+    <template v-if="funbtns?.length">
+      <div class="btn">
+        <template v-for="(item, index) in funbtns" :key="index">
+          <button class="btntext cursor-pointer" @click="sumbitChange(item.status)">
+            {{ item.text }}
+          </button>
+        </template>
       </div>
-    </common-model>
-    <!-- 盘点单完成时 盘点结束不更改状态 -->
-    <template v-if="checkInfo.status !== 4">
-      <common-button-one text="变换盘点单状态" @confirm="changeShow = true" />
     </template>
   </div>
 </template>
@@ -359,5 +346,21 @@ const goodsStatus = {
   text-overflow: ellipsis; /* 超出显示省略号 */
   white-space: nowrap; /* 禁止换行 */
   overflow: hidden;
+}
+
+.btn {
+  --uno: 'z-99 fixed bottom-0 left-0 right-0 blur-bga p-[12px_16px] text-[16px] font-bold grid-12 offset-2';
+}
+
+.btntext:first-child {
+  background: #ffffff;
+  box-shadow: 0px 6px 6px rgba(110, 166, 255, 0.3);
+  --uno: 'text-[16px] py-[8px] border-none text-center rounded-[36px] mr-[8px] col-span-4 offset-1';
+}
+
+.btntext:last-child {
+  background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
+  box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
+  --uno: 'text-[16px] py-[8px] border-none flex-1 rounded-[36px] ml-[8px] text-[#FFFFFF] col-span-6';
 }
 </style>

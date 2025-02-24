@@ -22,6 +22,7 @@ interface FilterWhere<T, N = keyof T> {
   sort: number
   find: boolean
   create: boolean
+  update: boolean
   name: unknown & string & N
 }
 /**
