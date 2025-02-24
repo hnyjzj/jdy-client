@@ -2,7 +2,7 @@
 import type { FormItemRule, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 
 const emits = defineEmits<{
-  upload: [val: any, onFinish: () => void]
+  upload: [val: any, onFinish: () => void, id: string]
   submit: []
   editSubmit: []
 }>()
@@ -88,7 +88,7 @@ const handleValidateButtonClick = (e: MouseEvent) => {
 // 上传
 const customRequest = ({ file, onFinish }: UploadCustomRequestOptions) => {
   // 上传接口
-  emits('upload', file.file, onFinish)
+  emits('upload', file.file, onFinish, addorUpdateForm.value.id as string)
 }
 const areaRef = ref()
 const { province, city, district } = addorUpdateForm.value

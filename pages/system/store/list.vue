@@ -129,7 +129,11 @@ const heightSearchFn = () => {
 // 上传图片文件
 const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
   try {
-    const res = await uploadImage({ image: file, store_id: id || undefined })
+    const upParams = { image: file, store_id: id }
+    if (!id) {
+      delete (upParams.store_id)
+    }
+    const res = await uploadImage(upParams)
     if (res.data.value.code !== HttpCode.SUCCESS) {
       $toast.error(res.data.value?.message || '上传失败')
       return false
