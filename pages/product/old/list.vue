@@ -154,7 +154,7 @@ async function submitWhere(f: Partial<Product>) {
           </template>
           <template #bottom="{ info }">
             <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="详情" @click="jump('/product/manage/info', { code: info.code })" />
+              <common-button-irregular text="详情" @click="jump('/product/finished/info', { code: info.code })" />
             </div>
           </template>
         </product-manage-card>

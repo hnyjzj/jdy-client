@@ -73,7 +73,7 @@ async function convert() {
             </div>
           </template>
           <div class="flex-1">
-            <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: productInfo.code })" />
+            <common-button-rounded content="编辑" @button-click="jump('/product/finished/edit', { code: productInfo.code })" />
           </div>
         </div>
       </div>
