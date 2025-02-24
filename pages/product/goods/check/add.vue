@@ -49,9 +49,14 @@ await getCheckWhere()
 await getStoreList({ page: 1, limit: 100 })
 await changeStore()
 forRules()
+/**
+ * 表单唯一标识
+ */
+const Key = ref(useId())
 const params = ref({ store_id: myStore.value?.id } as Check)
 async function submit() {
   const res = await createCheck(params.value as Check)
+  Key.value = Date.now().toString()
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     params.value = {} as Check
@@ -91,7 +96,7 @@ function handleValidateButtonClick() {
         <div class="w-[40%] text-[#FFF] pl-4">
           <product-manage-company />
         </div>
-        <div class="rounded-6 bg-white w-auto blur-bga top">
+        <div :id="Key" :key="Key" class="rounded-6 bg-white w-auto blur-bga top">
           <common-gradient title="新增盘点单">
             <template #body>
               <n-form ref="formRef" :model="params" :rules="rules">
@@ -126,7 +131,7 @@ function handleValidateButtonClick() {
                         <template v-if="item.name === 'inventory_person_id' || item.name === 'inspector_id'">
                           <n-select
                             v-model:value="params[item.name]"
-                            placeholder="请输入收银员"
+                            :placeholder="`请输入${item.label}`"
                             :options="StoreStaffList.map(v => ({
                               label: v.nickname,
                               value: v.id,
