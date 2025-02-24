@@ -2,7 +2,9 @@
 const props = withDefaults(defineProps<{
   leftTitle: string
   marginBottom?: string
+  list: StorePerformance[]
 }>(), {
+
   marginBottom: '16px',
 })
 const { $colorMode } = useNuxtApp()
@@ -30,7 +32,7 @@ const { $colorMode } = useNuxtApp()
         :columns="[
           {
             title: '门店',
-            key: 'store',
+            key: 'name',
             width: '100px',
             fixed: 'left',
             className: 'age',
@@ -38,7 +40,7 @@ const { $colorMode } = useNuxtApp()
           },
           {
             title: '总业绩',
-            key: 'performance',
+            key: 'total',
             fixed: 'left',
             width: '100px',
             align: 'center',
@@ -52,75 +54,36 @@ const { $colorMode } = useNuxtApp()
 
           {
             title: '足金（件）',
-            key: 'gold_pieces',
+            key: 'gold',
             width: '100px',
             align: 'center',
           },
           {
             title: '足金件兑换旧料抵扣',
-            key: 'gold_pieces_for_old',
+            key: 'gold_deduction',
             width: '100px',
             align: 'center',
           },
           {
             title: '足金克',
-            key: 'gold_gram',
+            key: 'gold_weight',
             width: '100px',
             align: 'center',
           },
           {
             title: '足金克兑换旧料抵扣',
-            key: 'gold_gram_for_old',
+            key: 'gold_weight_deduction',
             width: '100px',
             align: 'center',
           },
           {
             title: '计件配件',
-            key: 'accessories',
+            key: 'piece_accessories',
             width: '100px',
             align: 'center',
           }]"
 
-        :data="[
-          {
-            store: '门店1',
-            performance: '1000',
-            silver: '100',
-            gold_pieces: '100',
-            gold_pieces_for_old: '100',
-            gold_gram: '100',
-            gold_gram_for_old: '100',
-            accessories: '100',
-          },
-          {
-            store: '门店2',
-            performance: '1000',
-            silver: '100',
-            gold_pieces: '100',
-            gold_pieces_for_old: '100',
-            gold_gram: '100',
-            gold_gram_for_old: '100',
-            accessories: '100',
-          }, {
-            store: '门店2',
-            performance: '1000',
-            silver: '100',
-            gold_pieces: '100',
-            gold_pieces_for_old: '100',
-            gold_gram: '100',
-            gold_gram_for_old: '100',
-            accessories: '100',
-          }, {
-            store: '门店2',
-            performance: '1000',
-            silver: '100',
-            gold_pieces: '100',
-            gold_pieces_for_old: '100',
-            gold_gram: '100',
-            gold_gram_for_old: '100',
-            accessories: '100',
-          },
-        ]"
+        :data="props.list"
         :max-height="300"
         :scroll-x="800"
         :bordered="true"

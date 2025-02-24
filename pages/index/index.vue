@@ -4,7 +4,8 @@ useSeoMeta({
 })
 
 interface DemoItem { title: string, number: number }
-
+const { StorePerformance } = homeDataStore()
+const { StorePerformanceList } = storeToRefs(homeDataStore())
 const demoList = ref<DemoItem[]>([
   { title: '销售金额', number: 100 },
   { title: '销售件数', number: 100 },
@@ -12,6 +13,7 @@ const demoList = ref<DemoItem[]>([
   { title: '退货金额', number: 100 },
 ])
 
+await StorePerformance()
 const actlist = ref<actionList[]>([{
   icon: 'i-svg:product-target',
   title: '销售目标',
@@ -54,7 +56,7 @@ const demoListt = ref<DemoItem[]>([{ title: '销售金额', number: 100 }, { tit
           </div>
         </div>
       </div>
-      <work-card-digitalization left-title="今日销售" />
+      <work-card-digitalization left-title="BOSS看板" :list="StorePerformanceList" />
       <work-card-action :action-list="actlist" @user-jump="userJump" />
       <work-card-information left-title="今日销售" :list="demoList" />
       <work-card-information left-title="销售目标" :list="demoList" />
