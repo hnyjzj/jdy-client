@@ -71,7 +71,7 @@ const absoluteValue = (value: number) => {
       <template v-if="props.data.length">
         <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
           <template v-for="(item, index) in props.data" :key="index">
-            <common-gradient :title="cutOut(item.created_at)" theme="solid">
+            <common-gradient :title="cutOut(item.created_at)" theme="gradient">
               <template #body>
                 <div>
                   <div class="mod">
@@ -170,11 +170,11 @@ const absoluteValue = (value: number) => {
   --uno: 'flex flex-row items-center justify-between gap-[32px]';
 
   .left {
-    --uno: 'font-size-[14px] color-[#666] text-nowrap';
+    --uno: 'font-size-[14px] color-[#666] text-nowrap dark:color-[#CBCDD1]';
   }
 
   .right {
-    --uno: 'font-size-[14px] color-[#333]';
+    --uno: 'font-size-[14px] color-[#333] dark:color-[#fff]';
   }
 }
 
@@ -183,7 +183,7 @@ const absoluteValue = (value: number) => {
 }
 
 .title {
-  --uno: 'color-[#333] font-size-[14px] font-bold';
+  --uno: 'color-[#333] font-size-[14px] font-bold dark:color-[#fff]';
 }
 
 .replenish {
