@@ -13,7 +13,7 @@ const assignModel = defineModel('assign-model', { default: {
   id: undefined,
   staff_id: [],
 } })
-const assginShow = defineModel('assginShow', { default: false })
+const assignShow = defineModel('assignShow', { default: false })
 // 员工列表
 
 const loadingStaff = ref(false)
@@ -28,7 +28,7 @@ const searchStaff = (query: string) => {
 }
 const onPositiveClick = async () => {
   emit('assign')
-  assginShow.value = false
+  assignShow.value = false
 }
 const onNegativeClick = () => {
 
@@ -38,7 +38,7 @@ const onNegativeClick = () => {
 <template>
   <div>
     <n-modal
-      v-model:show="assginShow"
+      v-model:show="assignShow"
       :mask-closable="false"
       preset="dialog"
       title="分配员工"

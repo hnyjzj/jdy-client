@@ -21,7 +21,7 @@ const showModal = ref<boolean>(false)
 // 筛选请求数据
 const filterData = ref({} as Partial<Stores>)
 // 显示分配组件
-const assginShow = ref<boolean>(false)
+const assignShow = ref<boolean>(false)
 
 // 获取列表
 const getList = async (where = {} as Partial<Stores>) => {
@@ -198,11 +198,12 @@ function updateWidth() {
     wid.value = '90%'
   }
 }
+// 分配员工的参数
 const assignModel = ref<AssignStaff>({
   id: undefined,
   staff_id: [],
 })
-
+// 详情弹窗里的分配员工
 const assignFn = async () => {
   assignModel.value.id = storeDetails.value.id
   const res = await assignStaff(assignModel.value)
@@ -215,6 +216,7 @@ const assignFn = async () => {
     await getStoreDetail(storeDetails.value.id)
   }
 }
+// 搜索员工列表，用于分配员工参数
 const staffList = ref<SelectOption[]>([])
 const searchStaffOptions = async (val: string) => {
   const res = await getOptionsStafflist({ page: 1, limit: 10, where: { nickname: val } })
@@ -235,7 +237,6 @@ onMounted(() => {
     clearTimeout(resizeTimer.value)
     resizeTimer.value = setTimeout(updateWidth, 100)
   })
-
   height.value = getHeight('header')
 })
 </script>
@@ -276,7 +277,7 @@ onMounted(() => {
     <common-popup v-model="showModal" title="门店详情" placement="left" :width="wid">
       <div>
         <stores-info :info-detail="storeDetails" />
-        <staff-assign-card :list="storeDetails.staffs" @delete-store-staff="deleteStoreStaffFn" @confirm="assginShow = true" />
+        <staff-assign-card :list="storeDetails.staffs" @delete-store-staff="deleteStoreStaffFn" @confirm="assignShow = true" />
       </div>
     </common-popup>
 
@@ -295,7 +296,7 @@ onMounted(() => {
     <stores-assign
       :id="storeDetails.id"
       v-model:assign-model="assignModel"
-      v-model:assgin-show="assginShow"
+      v-model:assign-show="assignShow"
       :staff-list="staffList"
       @search-staff-options="searchStaffOptions"
       @assign="assignFn" />
