@@ -142,6 +142,16 @@ export const useStores = defineStore('Store', {
         return false
       }
     },
+    // 移除员工
+    async deleteStaff(req: AssignStaff) {
+      const { data } = await https.delete<any, AssignStaff>('/store/staff/del', req)
+      if (data.value.code === HttpCode.SUCCESS) {
+        return true
+      }
+      else {
+        return false
+      }
+    },
   },
   persist: {
     storage: piniaPluginPersistedstate.cookies(),

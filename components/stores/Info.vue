@@ -11,10 +11,10 @@ const addressName = computed(() => {
 </script>
 
 <template>
-  <div class="w-full" uno-md="w-50%" uno-sm="w-50%" uno-lg="w-40%">
+  <div class="w-full">
     <div class="w-auto bg-white blur-bga rounded-[24px] border-solid border-[#EFF0F6] col-12 overflow-hidden">
       <div class="rounded-[24px]">
-        <common-gradient :title="props.infoDetail?.name">
+        <common-gradient title="基本信息">
           <template #body>
             <div class="flex flex-col px-4 py-[6px]">
               <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
@@ -23,6 +23,16 @@ const addressName = computed(() => {
                 </div>
                 <div>
                   <img :src="ImageUrl(props.infoDetail?.logo)" mode="asc" class="w-auto max-w-[150px] h-[100px]">
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col px-4 py-[6px]">
+              <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
+                <div class="color-[#666666] dark:color-[#fff]">
+                  门店名称
+                </div>
+                <div class="color-[#333333] max-w-[60%] dark:color-[#fff]">
+                  {{ props.infoDetail.name }}
                 </div>
               </div>
             </div>

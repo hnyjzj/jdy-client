@@ -4,7 +4,7 @@ useSeoMeta({
 })
 
 const { storesList, addorUpdateForm, storeDetails, filterListToArray, total } = storeToRefs(useStores())
-const { getStoreDetail, reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
+const { getStoreDetail, reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage, deleteStaff } = useStores()
 
 const { $toast } = useNuxtApp()
 // 新增门店弹窗
@@ -143,9 +143,63 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
     $toast.error('上传失败，请重试')
   }
 }
+// 移除的员工
+const deleteModel = ref<AssignStaff>({
+  id: undefined,
+  staff_id: [],
+})
+const dialog = useDialog()
+
+//  移除员工
+const deleteStoreStaffFn = async (id: string, index: number) => {
+  dialog.error({
+    title: '确定移除此员工吗?',
+    negativeText: '取消',
+    positiveText: '确定',
+    onPositiveClick: async () => {
+      deleteModel.value.id = storeDetails.value.id
+      deleteModel.value.staff_id = [id]
+      const res = await deleteStaff(deleteModel.value)
+      if (res) {
+        $toast.success('移除成功')
+        storeDetails.value.staffs.splice(index, 1)
+      }
+    },
+  })
+}
+
 // 获取头部高度
 const height = ref<number | undefined>(0)
+
+const wid = ref('90%')
+function updateWidth() {
+  const width = window.innerWidth || document.documentElement.clientWidth
+  if (width >= 1500) {
+    wid.value = '30%'
+  }
+  else if (width >= 1024) {
+    wid.value = '40%'
+  }
+  else if (width > 768) {
+    wid.value = '50%'
+  }
+  else if (width > 600) {
+    wid.value = '70%'
+  }
+  else {
+    wid.value = '90%'
+  }
+}
+// 添加防抖监听（避免频繁触发）
+const resizeTimer = ref()
 onMounted(() => {
+  updateWidth()
+  // 添加防抖监听（避免频繁触发）
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer.value)
+    resizeTimer.value = setTimeout(updateWidth, 100)
+  })
+
   height.value = getHeight('header')
 })
 </script>
@@ -183,9 +237,13 @@ onMounted(() => {
         @edit-submit="editStore" />
     </common-popup>
 
-    <n-modal v-model:show="showModal">
-      <stores-info :info-detail="storeDetails" />
-    </n-modal>
+    <common-popup v-model="showModal" title="门店详情" placement="left" :width="wid">
+      <div>
+        <stores-info :info-detail="storeDetails" />
+        <staff-assign-card :list="storeDetails.staffs" @delete-store-staff="deleteStoreStaffFn" />
+      </div>
+    </common-popup>
+
     <van-dialog v-model:show="deleteDialog" title="删除门店" show-cancel-button @confirm="confirmDelete">
       <div class="text-center py-[16px]">
         确认删除此门店吗?
