@@ -5,14 +5,14 @@ const { allocateList, allocateFilterListToArray, allocateFilterList, allocateTot
 const { storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const storeCol = ref()
-function changeStoer() {
+function changeStore() {
   storeCol.value = []
   storesList.value.forEach((item: Stores) => {
     storeCol.value.push({ label: item.name, value: item.id })
   })
 }
 await getStoreList({ page: 1, limit: 20 })
-await changeStoer()
+await changeStore()
 await getAllocateWhere()
 const searchKey = ref('')
 const complate = ref(0)

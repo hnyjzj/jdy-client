@@ -88,8 +88,6 @@ const rules = ref<FormRules>({
 },
 )
 function handleValidateButtonClick() {
-  console.log(11, params.value)
-
   formRef.value?.validate((error) => {
     if (!error) {
       submit()
