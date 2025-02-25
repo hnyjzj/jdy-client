@@ -28,6 +28,9 @@ interface Product {
    * 证书
    */
   certificate: string[]
+  /** 证书1 */
+  certificate1: string
+  certificate2: string
   /**
    * 净度
    */

@@ -54,6 +54,8 @@ async function submitGoods(data: Product[]) {
     const { code, message } = await importProduct(data)
     if (code === HttpCode.SUCCESS) {
       isModel.value = false
+      pages.value = 1
+      await getList()
       return $toast.success('导入成功')
     }
     $toast.error(message ?? '导入失败')
@@ -189,7 +191,7 @@ function edit(code: string) {
     <div class="cursor-pointer">
       <common-create @click="create" />
     </div>
-    <product-upload-warehouse v-model="isModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
+    <product-upload-warehouse v-model="isModel" :filter-list="filterList" :type="3" @upload="submitGoods" />
 
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
   </div>
