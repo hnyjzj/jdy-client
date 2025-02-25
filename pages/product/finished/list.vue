@@ -47,66 +47,14 @@ function pull() {
   getList(filterData.value)
 }
 
-// 上传xlsx文件数据
-const sheetData = ref([])
-/**
- * 上传xlsx文件并解析数据
- * @param event input上传文件
- */
-function FileUpload(event: any) {
-  uploadXlsx(event).then((data) => {
-    sheetData.value = data as never[]
-  })
-}
-/**
- * 将二维数组转换为对象数组
- * @param data 二维数组，第一行是表头，其余是数据行
- * @returns 对象数组
- */
-function transformData(data: any[][]) {
-  if (!data || data.length < 2) {
-    $toast.error('数据格式不正确，至少需要表头和一行数据')
-    return []
-  }
-  // 第一行是表头 对应着字段名
-  type ProductKey = keyof Product
-  const headers: ProductKey[] = data[0]
-  return data.slice(1).map((row) => {
-    const obj = {} as Record<ProductKey, any>
-    headers.forEach((header: ProductKey, index) => {
-      const type = filterList.value[header]?.type
-      switch (type) {
-        case 'number':
-          row[index] = Number(row[index])
-          break
-        case 'float':
-          row[index] = Number.parseFloat(row[index])
-          break
-        case 'string':
-          row[index] = String(row[index])
-          break
-        case 'bool':
-          row[index] = Boolean(row[index])
-          break
-        case 'string[]':
-          row[index] = JSON.parse(JSON.stringify(row[index]))
-          break
-        default:
-          break
-      }
-      obj[header] = row[index] ?? '' // 将表头与对应的数据行匹配
-    })
-    return obj
-  })
-}
-
 // 提交入库
-async function submitGoods() {
-  const data: Product[] = transformData(sheetData.value)
+async function submitGoods(data: Product[]) {
   if (data?.length) {
     const { code, message } = await importProduct(data)
     if (code === HttpCode.SUCCESS) {
       isModel.value = false
+      pages.value = 1
+      await getList()
       return $toast.success('导入成功')
     }
     $toast.error(message ?? '导入失败')
@@ -239,36 +187,15 @@ function edit(code: string) {
       </common-list-pull>
     </div>
     <product-manage-bottom />
+    <product-upload-warehouse v-model="isModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
     <div class="cursor-pointer">
       <common-create @click="create" />
     </div>
-    <common-model v-model="isModel" title="入库" :show-ok="true" confirm-text="导入货品" @confirm="submitGoods">
-      <div class="mb-8 relative min-h-[60px]">
-        <input class="h-[40px] absolute top-0 w-full opacity-0" type="file" @change="FileUpload">
-        <div class="uploadInp cursor-pointer">
-          <div>请添加文件</div>
-          <div class="uploadInp-right">
-            <icon name="i-svg:upload" :size="16" color="#666" />
-            <div class="ml-2">
-              点击上传
-            </div>
-          </div>
-        </div>
-      </div>
-    </common-model>
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
   </div>
 </template>
 
 <style lang="scss" scoped>
-.uploadInp {
-  --uno: 'text-14px px-[12px] py-[4px] rounded-[36px] flex-between text-color-light bg-#fff border-[#e6e6e8] border-1px border-solid dark:bg-[rgba(255,255,255,0.2)] dark:border-[rgba(230,230,232,0.2)]';
-  &-right {
-    --uno: 'flex items-center py-[6px] px-4 rounded-[36px] text-#FFF';
-    background: linear-gradient(to bottom, #1b6ceb, #6da6ff);
-    box-shadow: #1111113d 0px 2px 2px 1px;
-  }
-}
 .val {
   width: 66%;
   overflow: hidden;
