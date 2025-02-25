@@ -6,7 +6,13 @@ const { allocateFilterList } = storeToRefs(useAllocate())
 const { $toast } = useNuxtApp()
 const { storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
-
+const params = ref({} as AllocateReq)
+const route = useRoute()
+const type = ref()
+if (route.query?.type) {
+  type.value = route.query.type
+  params.value.type = Number(type.value)
+}
 useSeoMeta({
   title: '新增调拨单',
 })
@@ -22,9 +28,8 @@ function changeStoer() {
 }
 
 await getAllocateWhere()
-await getStoreList({ page: 1, limit: 100 })
+await getStoreList({ page: 1, limit: 20 })
 await changeStoer()
-const params = ref({} as AllocateReq)
 async function submit() {
   const res = await createAllocate(params.value as AllocateReq)
   if (res.code === HttpCode.SUCCESS) {
@@ -83,6 +88,8 @@ const rules = ref<FormRules>({
 },
 )
 function handleValidateButtonClick() {
+  console.log(11, params.value)
+
   formRef.value?.validate((error) => {
     if (!error) {
       submit()
@@ -108,7 +115,6 @@ function handleValidateButtonClick() {
                 <n-form-item path="method" required :label="allocateFilterList.method?.label">
                   <n-select
                     v-model:value="params.method"
-                    :default-value="0 || '' || undefined || null"
                     menu-size="large"
                     :placeholder="`选择${allocateFilterList.method?.label}`"
                     :options="presetToSelect('method')"
@@ -118,17 +124,16 @@ function handleValidateButtonClick() {
                 <n-form-item path="type" required :label="allocateFilterList.type?.label">
                   <n-select
                     v-model:value="params.type"
-                    :default-value="0 || '' || undefined || null"
                     menu-size="large"
                     :placeholder="`选择${allocateFilterList.type?.label}`"
                     :options="presetToSelect('type')"
                     clearable
+                    :disabled="type"
                   />
                 </n-form-item>
                 <n-form-item path="from_store_id" label="调出门店" required>
                   <n-select
                     v-model:value="params.from_store_id"
-                    :default-value="0 || '' || undefined || null"
                     menu-size="large"
                     placeholder="选择调出门店"
                     :options="storeCol"
@@ -138,7 +143,6 @@ function handleValidateButtonClick() {
                 <n-form-item path="to_store_id" label="调入门店" required>
                   <n-select
                     v-model:value="params.to_store_id"
-                    :default-value="0 || '' || undefined || null"
                     menu-size="large"
                     placeholder="选择调入门店"
                     :options="storeCol"
@@ -148,7 +152,6 @@ function handleValidateButtonClick() {
                 <n-form-item path="reason" required label="调拨原因">
                   <n-select
                     v-model:value="params.reason"
-                    :default-value="0 || '' || undefined || null"
                     menu-size="large"
                     placeholder="选择调拨原因"
                     :options="presetToSelect('reason') "
@@ -161,7 +164,6 @@ function handleValidateButtonClick() {
                 <n-form-item path="status" label="状态">
                   <n-select
                     v-model:value="params.status"
-                    :default-value="0 || '' || undefined || null"
                     menu-size="large"
                     placeholder="选择调拨状态 "
                     :options="presetToSelect('status') "

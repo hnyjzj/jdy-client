@@ -21,7 +21,7 @@ const isFilter = ref(false)
 const pages = ref(1)
 const isCanPull = ref(true)
 useSeoMeta({
-  title: '货品调拨',
+  title: '配件调拨',
 })
 const openFilter = () => {
   isFilter.value = true
@@ -31,9 +31,8 @@ async function getList(where = {} as Partial<Allocate>) {
   if (!isCanPull.value)
     return
   const params = { page: pages.value, limit: 20 } as ReqList<Allocate>
-  if (JSON.stringify(where) !== '{}') {
-    params.where = where
-  }
+  where.type = 3
+  params.where = where
 
   const res = await getAllocate(params)
   if (res.data?.list.length) {
@@ -47,7 +46,7 @@ async function getList(where = {} as Partial<Allocate>) {
 
 await getList()
 
-const filterData = ref({} as Partial<Allocate>)
+const filterData = ref({ type: 3, disabled: ['type'] } as Partial<Allocate>)
 
 function pull() {
   getList(filterData.value)
@@ -138,7 +137,7 @@ async function submitWhere(f: Partial<Allocate>) {
     </div>
     <product-manage-bottom />
     <div class="cursor-pointer">
-      <common-create @click="jump('/product/finished/allocate/add')" />
+      <common-create @click="jump('/product/finished/allocate/add', { type: 3 })" />
     </div>
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="allocateFilterListToArray" @submit="submitWhere">
       <template #store_id>

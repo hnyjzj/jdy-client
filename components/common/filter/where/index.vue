@@ -40,6 +40,9 @@ const Init = ref<T>({ ...props.data })
  * 提交
  */
 function submit() {
+  if (datas.value?.disabled) {
+    delete datas.value.disabled
+  }
   emits('submit', datas.value)
 }
 
