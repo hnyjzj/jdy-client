@@ -4,8 +4,9 @@ useSeoMeta({
 })
 
 interface DemoItem { title: string, number: number }
-const { StorePerformance } = homeDataStore()
-const { StorePerformanceList } = storeToRefs(homeDataStore())
+const { StorePerformance, myStoreTadaySale } = homeDataStore()
+const { StorePerformanceList, todaySaleData } = storeToRefs(homeDataStore())
+const { myStore } = storeToRefs(useStores())
 const demoList = ref<DemoItem[]>([
   { title: '销售金额', number: 100 },
   { title: '销售件数', number: 100 },
@@ -13,27 +14,35 @@ const demoList = ref<DemoItem[]>([
   { title: '退货金额', number: 100 },
 ])
 
-await StorePerformance()
-const actlist = ref<actionList[]>([{
-  icon: 'i-svg:product-target',
-  title: '销售目标',
-  url: '',
+await StorePerformance({ duration: 'today' })
+await myStoreTadaySale({ store_id: myStore.value.id })
+const todaySaleDataList = ref<{ title: string, key: string, number: number | string }[]>([{
+  title: '销售金额',
+  key: 'sales_amount',
+  number: 0,
 }, {
-  icon: 'i-svg:product-neworder',
-  title: '门店任务',
-  url: '',
+  title: '销售件数',
+  key: 'sales_count',
+  number: 0,
 }, {
-  icon: 'i-svg:product-newuser',
-  title: '新增会员',
-  url: '/member/lists/new',
+  title: '旧货抵值',
+  key: 'old_goods_amount',
+  number: 0,
+}, {
+  title: '退货金额',
+  key: 'return_amount',
+  number: 0,
 }])
-
-const userJump = (url: string) => {
-  jump(url)
+for (const key in todaySaleData.value) {
+  const typedKey = key as keyof typeof todaySaleData.value
+  todaySaleDataList.value.forEach((item) => {
+    if (typedKey === item.key) {
+      item.number = todaySaleData.value[typedKey]
+    }
+  })
 }
 
-const demoListt = ref<DemoItem[]>([{ title: '销售金额', number: 100 }, { title: '销售金额', number: 100 }, { title: '销售件数', number: 100 }, { title: '旧货抵扣', number: 100 }, { title: '退货金额', number: 100 },
-])
+const demoListt = ref<DemoItem[]>([{ title: '销售金额', number: 100 }, { title: '销售金额', number: 100 }, { title: '销售件数', number: 100 }, { title: '旧货抵扣', number: 100 }, { title: '退货金额', number: 100 }])
 </script>
 
 <template>
@@ -57,11 +66,11 @@ const demoListt = ref<DemoItem[]>([{ title: '销售金额', number: 100 }, { tit
         </div>
       </div>
       <work-card-digitalization left-title="BOSS看板" :list="StorePerformanceList" />
-      <work-card-action :action-list="actlist" @user-jump="userJump" />
-      <work-card-information left-title="今日销售" :list="demoList" />
+      <work-card-action />
+      <work-card-information left-title="本店今日销售" :list="todaySaleDataList" :gold-price="todaySaleData.gold_price" />
       <work-card-information left-title="销售目标" :list="demoList" />
       <work-card-information left-title="今日销售" :list="demoList" />
-      <work-card-information left-title="会员数据" :list="demoListt" rb-text="查看员工排行" />
+      <work-card-information left-title="会员数据" rb-text="查看员工排行" :list="demoListt" />
     </div>
 
     <common-tabbar text="todo" />

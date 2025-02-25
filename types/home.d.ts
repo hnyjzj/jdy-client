@@ -32,3 +32,26 @@ interface StorePerformance {
    */
   total: number | string
 }
+
+interface todaySales {
+  /**
+   * 今日金价
+   */
+  gold_price: string
+  /**
+   * 旧货抵值
+   */
+  old_goods_amount: string
+  /**
+   * 退货金额
+   */
+  return_amount: string
+  /**
+   * 销售金额
+   */
+  sales_amount: string
+  /**
+   * 销售件数
+   */
+  sales_count: number
+}

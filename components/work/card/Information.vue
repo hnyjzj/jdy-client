@@ -2,8 +2,9 @@
 const props = withDefaults(defineProps<{
   leftTitle: string
   rbText?: string
-  list: { title: string, number: number }[]
+  list: todaySales | any
   marginBottom?: string
+  goldPrice?: string
 }>(), {
   rbText: '查看排行',
   marginBottom: '16px',
@@ -23,9 +24,9 @@ onBeforeUnmount(() => {
   <div class="blur-bgc rounded-[16px]  cursor-pointer" :style="{ marginBottom: props.marginBottom }">
     <div class="grid-12">
       <div
-        class="skew col-4">
+        class="skew col-6" uno-md="col-4">
         <div class="skew-right" />
-        <div class="skew-text ">
+        <div class="skew-text pl-[15px]">
           {{ props.leftTitle }}
         </div>
       </div>
@@ -43,7 +44,6 @@ onBeforeUnmount(() => {
             </div>
             <div class="color-[#3971F3] dark:color-[#fff] font-semibold  line-height-[24px]">
               <span class="text-[16px]">{{ item.number }}</span>
-              <span class="text-[12px]">万</span>
             </div>
           </div>
         </template>
@@ -51,7 +51,11 @@ onBeforeUnmount(() => {
       <div class="bg-[#c7dafF] dark:opacity-[0.5] h-[1px] w-full mt-[8px]" />
       <div class="mt-[12px] flex-between">
         <div class="color-[#4B576D] bg-[#C7DAFF] text-[12px] line-height-[24px] px-[10px] rounded-[60px]">
-          金价：12313
+          <template v-if="props.goldPrice">
+            <div>
+              金价: ￥{{ props.goldPrice || 0 }}/g
+            </div>
+          </template>
         </div>
         <div class="color-[#333]  dark:color-[#fff] text-[12px] line-height-[24px] ">
           <span>
@@ -68,5 +72,9 @@ onBeforeUnmount(() => {
 ::-webkit-scrollbar {
   /* 隐藏Webkit浏览器的滚动条 */
   display: none;
+}
+.skew-text {
+  display: flex;
+  align-items: flex-start;
 }
 </style>

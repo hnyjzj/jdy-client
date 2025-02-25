@@ -14,9 +14,9 @@ const { $colorMode } = useNuxtApp()
   <div class="blur-bgc rounded-[16px] overflow-hidden" :style="{ marginBottom: props.marginBottom }" data-allow-mismatch="style">
     <div class="grid-12">
       <div
-        class="skew col-4">
+        class="skew col-6" uno-md="col-4">
         <div class="skew-right" />
-        <div class="skew-text " data-allow-mismatch="text">
+        <div class="skew-text pl-[15px]" data-allow-mismatch="text">
           {{ props.leftTitle }}
         </div>
       </div>
@@ -102,5 +102,9 @@ const { $colorMode } = useNuxtApp()
 ::-webkit-scrollbar {
   /* 隐藏Webkit浏览器的滚动条 */
   display: none;
+}
+.skew-text {
+  display: flex;
+  align-items: flex-start;
 }
 </style>
