@@ -146,7 +146,7 @@ function customRequest(e: any) {
         </div>
         <div class="pb-20">
           <template v-for="(item, index) in filterListToArray" :key="index">
-            <template v-if="item.show">
+            <template v-if="item.update">
               <div class="mb-4">
                 <template v-if="item.input === 'text'">
                   <div class="label">

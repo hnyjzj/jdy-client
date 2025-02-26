@@ -69,7 +69,7 @@ async function submit() {
     $toast.error(res.message ?? '创建失败')
   }
 }
-const presetToSelect = (key: keyof Product): { label: string, value: any }[] => {
+const presetToSelect = (key: keyof Product) => {
   if (!key)
     return []
   const filter = filterList.value[key]
@@ -78,20 +78,7 @@ const presetToSelect = (key: keyof Product): { label: string, value: any }[] => 
   if (!filter.preset) {
     return []
   }
-  return Object.keys(filter.preset).map((key) => {
-    switch (filter.type) {
-      case 'number':
-        return {
-          label: filter.preset[key],
-          value: Number(key),
-        }
-      default:
-        return {
-          label: filter.preset[key],
-          value: key,
-        }
-    }
-  })
+  return optonsToSelect(filter.preset)
 }
 </script>
 
@@ -99,7 +86,7 @@ const presetToSelect = (key: keyof Product): { label: string, value: any }[] => 
   <div>
     <div class="grid-12 pt-4 pb-20">
       <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-        <div class="w-[40%]">
+        <div class="w-[40%] text-[#FFF] pl-4">
           <product-manage-company />
         </div>
         <div class="rounded-6 bg-white w-auto blur-bga top">

@@ -11,7 +11,7 @@ function changeStoer() {
     storeCol.value.push({ label: item.name, value: item.id })
   })
 }
-await getStoreList({ page: 1, limit: 100 })
+await getStoreList({ page: 1, limit: 20 })
 await changeStoer()
 await getAllocateWhere()
 const searchKey = ref('')
@@ -21,7 +21,7 @@ const isFilter = ref(false)
 const pages = ref(1)
 const isCanPull = ref(true)
 useSeoMeta({
-  title: '货品管理',
+  title: '货品调拨',
 })
 const openFilter = () => {
   isFilter.value = true
@@ -46,15 +46,6 @@ async function getList(where = {} as Partial<Allocate>) {
 }
 
 await getList()
-
-// 获取头部高度
-const height = ref<number | undefined>(0)
-onMounted(() => {
-  height.value = getHeight('header')
-  if (height.value) {
-    height.value = height.value + 40
-  }
-})
 
 const filterData = ref({} as Partial<Allocate>)
 
@@ -81,19 +72,17 @@ async function submitWhere(f: Partial<Allocate>) {
 </script>
 
 <template>
-  <div class="overflow-hidden">
+  <div>
     <!-- 筛选 -->
-    <div id="header">
-      <product-filter
-        v-model:id="complate" v-model:search="searchKey" :product-list-total="allocateTotal" @filter="openFilter">
-        <template #company>
-          <product-manage-company />
-        </template>
-      </product-filter>
-    </div>
+    <product-filter
+      v-model:id="complate" v-model:search="searchKey" :product-list-total="allocateTotal" @filter="openFilter">
+      <template #company>
+        <product-manage-company />
+      </template>
+    </product-filter>
     <!-- 小卡片组件 -->
-    <div class="pb-10 overflow-hidden">
-      <common-list-pull :distance="height" :nomore="!isCanPull" @pull="pull">
+    <div class="pb-10">
+      <common-list-pull :nomore="!isCanPull" @pull="pull">
         <product-manage-card :list="allocateList">
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
@@ -141,7 +130,7 @@ async function submitWhere(f: Partial<Allocate>) {
           </template>
           <template #bottom="{ info }">
             <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="详情" @click="jump('/product/goods/allocate/info', { id: info.id })" />
+              <common-button-irregular text="详情" @click="jump('/product/finished/allocate/info', { id: info.id })" />
             </div>
           </template>
         </product-manage-card>
@@ -149,7 +138,7 @@ async function submitWhere(f: Partial<Allocate>) {
     </div>
     <product-manage-bottom />
     <div class="cursor-pointer">
-      <common-create @click="jump('/product/goods/allocate/add')" />
+      <common-create @click="jump('/product/finished/allocate/add')" />
     </div>
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="allocateFilterListToArray" @submit="submitWhere">
       <template #store_id>

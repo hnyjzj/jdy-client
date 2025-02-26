@@ -15,30 +15,55 @@ const emits = defineEmits<{
    * @param params 筛选结果
    */
   submit: [params: T]
+  /**
+   * 重置
+   */
+  reset: []
 }>()
 
 /**
  * 弹出筛选
  */
-const show = defineModel<boolean>('show', { default: false, required: true })
+const showFilter = defineModel<boolean>('show', { default: false, required: true })
 
 /**
  * 筛选结果
  */
-const datas = ref<T>(props.data)
+const datas = ref<T>({ ...props.data })
+
+/**
+ * 初始化数据
+ */
+const Init = ref<T>({ ...props.data })
+
 /**
  * 提交
  */
 function submit() {
+  if (datas.value?.disabled) {
+    delete datas.value.disabled
+  }
   emits('submit', datas.value)
 }
+
+/**
+ * 表单唯一标识
+ */
+const Key = ref(useId())
 
 /**
  * 重置
  */
 function reset() {
-  datas.value = {} as T
+  datas.value = { ...Init.value }
+  Key.value = Date.now().toString()
+
+  emits('reset')
 }
+
+defineExpose({
+  reset,
+})
 
 /**
  * 预设转换为选择项
@@ -67,44 +92,45 @@ const presetToSelect = (filter: FilterWhere<T>): { label: string, value: any }[]
 
 <template>
   <div>
-    <common-popup v-model="show" title="高级筛选">
-      <div class="">
-        <template v-for="(f, i) in props.filter" :key="i">
-          <template v-if="f.show">
+    <common-popup v-model="showFilter" title="高级筛选">
+      <div :id="Key" :key="Key">
+        <template v-for="({ name, label, find, input }, i) in props.filter" :key="i">
+          <template v-if="find">
             <div class="mb-2">
               <div class="text-color">
-                {{ f?.label }}
+                {{ label }}
               </div>
               <div class="mt-2">
-                <slot :name="f?.name" :filter="f">
-                  <template v-if="f?.input === 'text'">
+                <slot :name="name" :filter="props.filter[i]">
+                  <template v-if="input === 'text'">
                     <div>
-                      <n-input v-model:value="datas[f.name as string]" size="large" :placeholder="`输入${f?.label}`" round />
+                      <n-input v-model:value="datas[name as string]" size="large" :placeholder="`输入${label}`" round :disabled="datas?.disabled?.includes(name)" />
                     </div>
                   </template>
-                  <template v-if="f?.input === 'number'">
+                  <template v-if="input === 'number'">
                     <div>
-                      <n-input-number v-model:value="datas[f.name as string]" size="large" :placeholder="`输入${f?.label}`" round />
+                      <n-input-number v-model:value="datas[name as string]" size="large" :placeholder="`输入${label}`" round :disabled="datas?.disabled?.includes(name)" />
                     </div>
                   </template>
-                  <template v-if="f?.input === 'switch'">
-                    <n-switch v-model:value="datas[f.name as string]" size="large" :style="{ 'border-radius': '20px' }" round />
+                  <template v-if="input === 'switch'">
+                    <n-switch v-model:value="datas[name as string]" size="large" :style="{ 'border-radius': '20px' }" round :disabled="datas?.disabled?.includes(name)" />
                   </template>
-                  <template v-if="f?.input === 'select'">
+                  <template v-if="input === 'select'">
                     <n-select
-                      v-model:value="datas[f.name as string]"
+                      v-model:value="datas[name as string]"
                       :default-value="0 || '' || undefined || null"
                       menu-size="large"
                       fable
-                      :placeholder="`请选择${f?.label}`"
-                      :options="presetToSelect(f) "
+                      :placeholder="`请选择${label}`"
+                      :options="presetToSelect(props.filter[i]) "
+                      :disabled="datas?.disabled?.includes(name)"
                     />
                   </template>
-                  <template v-if="f?.input === 'textarea'">
-                    <n-input v-model:value="datas[f.name as string]" :placeholder="`输入${f?.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
+                  <template v-if="input === 'textarea'">
+                    <n-input v-model:value="datas[name as string]" :placeholder="`输入${label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" :disabled="datas?.disabled?.includes(name)" />
                   </template>
-                  <template v-if="f?.input === 'date'">
-                    <n-date-picker v-model:formatted-value="datas[f.name as string]" value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" size="large" :placeholder="`选择${f?.label}`" round clearable />
+                  <template v-if="input === 'date'">
+                    <n-date-picker v-model:value="datas[name as string]" value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" size="large" :placeholder="`选择${label}`" round clearable :disabled="datas?.disabled?.includes(name)" />
                   </template>
                 </slot>
               </div>
