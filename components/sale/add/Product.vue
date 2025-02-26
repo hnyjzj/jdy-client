@@ -10,6 +10,7 @@ const emits = defineEmits<{
   openProductList: []
 }>()
 
+const { $toast } = useNuxtApp()
 const dialog = useDialog()
 const showProductList = defineModel<OrderProducts[]>({ default: [] })
 const showModal = ref(false)
@@ -19,10 +20,16 @@ const hasCheck = ref(false)
 const searchType = ref('name')
 // 添加商品
 const addProduct = (product: Product) => {
+  if (!product) {
+    $toast.error('请选择商品')
+    return
+  }
+
   const index = showProductList.value.findIndex(item => item.product?.id === product.id)
   if (index !== -1 && showProductList.value[index].quantity) {
     // 判断是否已经添加过该商品,如果已经添加过,则数量加一
     // showProductList.value[index].quantity++
+    $toast.error('该商品已经添加过')
     return
   }
   else if (
@@ -34,8 +41,12 @@ const addProduct = (product: Product) => {
   }
   const data = { quantity: 1, discount: undefined, amount: 0, product_id: product.id, product }
   showProductList.value.push(data)
+  showModal.value = false
 }
-
+const readyAddproduct = ref()
+const setAddProduct = (product: Product) => {
+  readyAddproduct.value = product
+}
 // 计件方式
 const count = (p: OrderProducts) => {
   if (!p.quantity)
@@ -113,6 +124,8 @@ const scanCode = async () => {
           class="btn-left col-span-4 offset-2 cursor-pointer" @click="() => {
             emits('openProductList')
             showModal = true
+            searchProduct = ''
+            readyAddproduct = null
           }">
           <icon name="i-icon:search" color="#fff" :size="12" />
           <div class="ml-2">
@@ -233,63 +246,63 @@ const scanCode = async () => {
         </template>
       </div>
     </template>
-    <n-modal
-      v-model:show="showModal" :style="{
-        position: 'fixed',
-        top: '46px',
-        left: 0,
-        right: 0,
-        maxWidth: '600px',
-      }">
-      <n-card
-        :bordered="false"
-      >
-        <div class="flex py-[12px] items-center">
-          <div class="pr-[20px] text-[16px]">
-            搜商品
-          </div>
-          <div class="flex">
-            <div
-              class="px-[8px] py-[4px] rounded-3xl mr-[8px]"
-              :class="[searchType === 'name' ? 'activeBtn' : 'defaultBtn']"
-              @click="changeType('name')">
-              名称
-            </div>
-            <div
-              class="px-[8px] py-[4px] rounded-3xl"
-              :class="[searchType === 'code' ? 'activeBtn' : 'defaultBtn']"
-              @click="changeType('code')">
-              条码
+
+    <common-popup v-model:show="showModal" placement="bottom" title="搜商品" width="50%" @close="showModal = false">
+      <div class="grid-12">
+        <div class="col-12" uno-md="col-4 offset-4" uno-sm="col-8 offset-2">
+          <div>
+            <div class="flex justify-around py-[12px]">
+              <div
+                class="flex-center-col"
+                @click="changeType('name')">
+                <div class="text-[16px] pb-[2px] font-semibold line-height-[24px]" :style="{ color: searchType === 'name' ? '#333' : '#53565C' }">
+                  名称搜索
+                </div>
+                <div class="w-[32px] h-[4px] rounded " :style="{ background: searchType === 'name' ? '#2080F0' : '' }" />
+              </div>
+              <div
+                class="flex-center-col"
+                @click="changeType('code')">
+                <div class="text-[16px] pb-[2px] font-semibold line-height-[24px]" :style="{ color: searchType === 'code' ? '#333' : '#53565C' }">
+                  条码搜索
+                </div>
+                <div class="w-[32px] h-[4px] rounded" :style="{ background: searchType === 'code' ? '#2080F0' : '' }" />
+              </div>
             </div>
           </div>
-        </div>
-        <div class="flex items-center">
-          <div class="flex-1">
-            <n-input
-              v-model:value="searchProduct"
-              type="text"
-              clearable
-              :placeholder="searchType === 'name' ? '请输入商品名称' : '请输入商品条码'" />
-          </div>
-          <div class="pl-[16px]">
-            <n-button type="info" @click="emits('search', searchProduct, searchType)">
-              搜索商品
-            </n-button>
-          </div>
-        </div>
-        <div class="pt-[20px]">
-          <template v-for="(item, index) in Props.productList" :key="index">
-            <div class="py-[6px] flex justify-between items-center">
-              <div>{{ item.name }} -- {{ item.code }}</div>
-              <n-button size="small" strong secondary round type="info" @click="addProduct(item)">
-                添加
+          <div class="flex items-center pb-[16px]">
+            <div class="flex-1">
+              <n-input
+                v-model:value="searchProduct"
+                type="text"
+                clearable
+                :placeholder="searchType === 'name' ? '请输入商品名称' : '请输入商品条码'" />
+            </div>
+            <div class="pl-[16px]">
+              <n-button type="info" round @click="emits('search', searchProduct, searchType)">
+                搜索
               </n-button>
             </div>
-          </template>
+          </div>
+          <div class="h-[150px] overflow-y-auto">
+            <template v-for="(item, index) in Props.productList" :key="index">
+              <div
+                class="py-[8px] px-[8px] rounded-2xl flex justify-between items-center"
+                :style="{ color: readyAddproduct && item.id === readyAddproduct.id ? '#2080F0' : '',
+                          background: readyAddproduct && item.id === readyAddproduct.id ? '#fff' : '' }"
+                @click="setAddProduct(item)">
+                <div class="">
+                  {{ item.name }} -- {{ item.code }}
+                </div>
+              </div>
+            </template>
+          </div>
         </div>
-        <template #footer />
-      </n-card>
-    </n-modal>
+      </div>
+      <template #footer>
+        <common-button-bottom @confirm="addProduct(readyAddproduct)" @cancel="showModal = false" />
+      </template>
+    </common-popup>
   </common-fold>
 </template>
 
