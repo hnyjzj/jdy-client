@@ -55,29 +55,28 @@ async function convert() {
 
 <template>
   <div>
-    <div class="pt-6 pb-18">
-      <product-finished-list :product-info="productInfo" :filter-list="filterList" :filter-list-to-array="filterListToArray" @go-loss="goLoss" />
-      <div class="bottom">
-        <div class="flex-center-row grid-12 gap-4 px-4 py-2 col-12" uno-lg="col-8 offset-2" uno-md="col-12 flex-shrink-1">
-          <!-- <div class="flex-1">
-            <common-button-rounded content="操作记录" color="#000" bgc="#FFF" />
-          </div> -->
-          <template v-if="productInfo.type === 2">
+    <common-layout-center>
+      <div class="pt-6 pb-18">
+        <product-finished-list :product-info="productInfo" :filter-list="filterList" :filter-list-to-array="filterListToArray" @go-loss="goLoss" />
+        <div class="bottom">
+          <div class="flex-center-row grid-12 gap-4 px-4 py-2 col-12" uno-lg="col-8 offset-2" uno-md="col-12 flex-shrink-1">
+            <template v-if="productInfo.type === 2">
+              <div class="flex-1">
+                <common-button-rounded content="转换" color="#000" bgc="#FFF" @button-click="convert" />
+              </div>
+            </template>
+            <template v-if="productInfo.status !== 2">
+              <div class="flex-1">
+                <common-button-rounded content="报损" color="#000" bgc="#FFF" @button-click="goLoss" />
+              </div>
+            </template>
             <div class="flex-1">
-              <common-button-rounded content="转换" color="#000" bgc="#FFF" @button-click="convert" />
+              <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: productInfo.code })" />
             </div>
-          </template>
-          <template v-if="productInfo.status !== 2">
-            <div class="flex-1">
-              <common-button-rounded content="报损" color="#000" bgc="#FFF" @button-click="goLoss" />
-            </div>
-          </template>
-          <div class="flex-1">
-            <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: productInfo.code })" />
           </div>
         </div>
       </div>
-    </div>
+    </common-layout-center>
     <common-model v-model="isModel" title="报损" :show-ok="true" @confirm="loss">
       <div>
         <div class="title">

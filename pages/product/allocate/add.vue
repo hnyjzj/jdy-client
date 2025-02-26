@@ -110,64 +110,66 @@ function handleValidateButtonClick() {
           <common-gradient title="新增调拨单">
             <template #body>
               <n-form ref="formRef" :model="params" :rules="rules">
-                <n-form-item path="method" required :label="allocateFilterList.method?.label">
-                  <n-select
-                    v-model:value="params.method"
-                    menu-size="large"
-                    :placeholder="`选择${allocateFilterList.method?.label}`"
-                    :options="presetToSelect('method')"
-                    clearable
-                  />
-                </n-form-item>
-                <n-form-item path="type" required :label="allocateFilterList.type?.label">
-                  <n-select
-                    v-model:value="params.type"
-                    menu-size="large"
-                    :placeholder="`选择${allocateFilterList.type?.label}`"
-                    :options="presetToSelect('type')"
-                    clearable
-                    :disabled="type"
-                  />
-                </n-form-item>
-                <n-form-item path="from_store_id" label="调出门店" required>
-                  <n-select
-                    v-model:value="params.from_store_id"
-                    menu-size="large"
-                    placeholder="选择调出门店"
-                    :options="storeCol"
-                    clearable
-                  />
-                </n-form-item>
-                <n-form-item path="to_store_id" label="调入门店" required>
-                  <n-select
-                    v-model:value="params.to_store_id"
-                    menu-size="large"
-                    placeholder="选择调入门店"
-                    :options="storeCol"
-                    clearable
-                  />
-                </n-form-item>
-                <n-form-item path="reason" required label="调拨原因">
-                  <n-select
-                    v-model:value="params.reason"
-                    menu-size="large"
-                    placeholder="选择调拨原因"
-                    :options="presetToSelect('reason') "
-                    clearable
-                  />
-                </n-form-item>
-                <n-form-item path="remark" label="备注">
-                  <n-input v-model:value="params.remark" round placeholder="输入备注" />
-                </n-form-item>
-                <n-form-item path="status" label="状态">
-                  <n-select
-                    v-model:value="params.status"
-                    menu-size="large"
-                    placeholder="选择调拨状态 "
-                    :options="presetToSelect('status') "
-                    clearable
-                  />
-                </n-form-item>
+                <n-grid :cols="24" :x-gap="8">
+                  <n-form-item-gi :span="12" path="method" required :label="allocateFilterList.method?.label">
+                    <n-select
+                      v-model:value="params.method"
+                      menu-size="large"
+                      :placeholder="`选择${allocateFilterList.method?.label}`"
+                      :options="presetToSelect('method')"
+                      clearable
+                    />
+                  </n-form-item-gi>
+                  <n-form-item-gi :span="12" path="type" required :label="allocateFilterList.type?.label">
+                    <n-select
+                      v-model:value="params.type"
+                      menu-size="large"
+                      :placeholder="`选择${allocateFilterList.type?.label}`"
+                      :options="presetToSelect('type')"
+                      clearable
+                      :disabled="type"
+                    />
+                  </n-form-item-gi>
+                  <n-form-item-gi :span="12" path="from_store_id" label="调出门店" required>
+                    <n-select
+                      v-model:value="params.from_store_id"
+                      menu-size="large"
+                      placeholder="选择调出门店"
+                      :options="storeCol"
+                      clearable
+                    />
+                  </n-form-item-gi>
+                  <n-form-item-gi :span="12" path="to_store_id" label="调入门店" required>
+                    <n-select
+                      v-model:value="params.to_store_id"
+                      menu-size="large"
+                      placeholder="选择调入门店"
+                      :options="storeCol"
+                      clearable
+                    />
+                  </n-form-item-gi>
+                  <n-form-item-gi :span="12" path="reason" required label="调拨原因">
+                    <n-select
+                      v-model:value="params.reason"
+                      menu-size="large"
+                      placeholder="选择调拨原因"
+                      :options="presetToSelect('reason') "
+                      clearable
+                    />
+                  </n-form-item-gi>
+                  <n-form-item-gi :span="12" path="remark" label="备注">
+                    <n-input v-model:value="params.remark" round placeholder="输入备注" />
+                  </n-form-item-gi>
+                  <n-form-item-gi :span="12" path="status" label="状态">
+                    <n-select
+                      v-model:value="params.status"
+                      menu-size="large"
+                      placeholder="选择调拨状态 "
+                      :options="presetToSelect('status') "
+                      clearable
+                    />
+                  </n-form-item-gi>
+                </n-grid>
               </n-form>
             </template>
           </common-gradient>
