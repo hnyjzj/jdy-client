@@ -82,7 +82,7 @@ function changeStatus(val: number) {
 }
 
 /** 提交盘点更改状态 */
-async function sumbitChange(status: CheckInfo['status']) {
+async function submitChange(status: CheckInfo['status']) {
   const res = await changeCheckStatus(checkInfo.value.id, status)
   if (res.code === 200) {
     $toast.success('变更成功')
@@ -316,7 +316,7 @@ const goodsStatus = {
     <template v-if="funbtns?.length">
       <div class="btn">
         <template v-for="(item, index) in funbtns" :key="index">
-          <button class="btntext cursor-pointer" @click="sumbitChange(item.status)">
+          <button class="btntext cursor-pointer" @click="submitChange(item.status)">
             {{ item.text }}
           </button>
         </template>

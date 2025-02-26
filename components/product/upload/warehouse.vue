@@ -90,7 +90,7 @@ async function transformData(data: any[][]) {
     // 证书合成数组
     const transformedObj = {
       ...obj,
-      certificate: [obj.certificate1, obj.certificate2],
+      certificate: [obj.certificate1, obj.certificate2].filter(Boolean),
     }
 
     // 删除不需要的字段
@@ -112,10 +112,12 @@ const downloadLocalFile = () => {
     url = '/excel/finishedTemplate.xlsx'
     name = '成品入库模板.xlsx'
   }
-  else if (props.type === 3) {
+
+  if (props.type === 3) {
     url = '/excel/assessoryTemplate.xlsx'
     name = '配件入库模板.xlsx'
   }
+
   const link = document.createElement('a')
   link.href = url
   link.setAttribute('download', name)
