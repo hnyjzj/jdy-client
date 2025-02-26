@@ -66,16 +66,27 @@ const rules = ref<FormRules>({
 
 })
 // 搜索点击添加商品
-const searchProductList = (val: string, type: string) => {
-  if (val === '') {
-    $toast.error('请输入商品名称或编码')
+const searchProductList = async (val: string, type: string) => {
+  if (val === '' && type === 'name') {
+    $toast.error('请输入商品名称')
     return
   }
+  else if (val === '' && type === 'code') {
+    $toast.error('请输入商品条码')
+    return
+  }
+
   if (type === 'name') {
-    getProductList({ page: 1, limit: 10, where: { name: val, status: 1 } })
+    const res = await getProductList({ page: 1, limit: 10, where: { name: val, status: 1 } })
+    if (res.data.total === 0) {
+      $toast.error('商品不存在')
+    }
   }
   else {
-    getProductList({ page: 1, limit: 10, where: { code: val, status: 1 } })
+    const res = await getProductList({ page: 1, limit: 10, where: { code: val, status: 1 } })
+    if (res.data.total === 0) {
+      $toast.error('商品不存在')
+    }
   }
 }
 

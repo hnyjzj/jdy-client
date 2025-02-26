@@ -80,13 +80,13 @@ const clearFn = async () => {
     <div class="grid-12">
       <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <!-- header -->
-        <div id="header" class="px-[16px] pt-[16px] w-full ">
+        <div id="header" class="px-[16px] py-[12px] w-full">
           <div class="flex flex-row gap-2">
             <product-manage-company class="color-[#fff]" />
             <product-filter-search
               placeholder="搜索订单号" class="color-[#fff] flex-1" @submit="searchOrder" @clear="clearFn" />
           </div>
-          <div class="flex-center-between gap-2">
+          <div class="flex-center-between gap-2 pt-[12px] pb-[16px]">
             <div class="text-size-[14px] color-[#fff]">
               共{{ total }}条数据
             </div>
