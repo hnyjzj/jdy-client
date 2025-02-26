@@ -49,15 +49,6 @@ async function getList(where = {} as Partial<Check>) {
 
 await getList()
 
-// 获取头部高度
-const height = ref<number | undefined>(0)
-onMounted(() => {
-  height.value = getHeight('header')
-  if (height.value) {
-    height.value = height.value + 40
-  }
-})
-
 const filterData = ref({} as Partial<Check>)
 
 function pull() {
@@ -124,7 +115,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
     </div>
     <!-- 小卡片组件 -->
     <div class="pb-10">
-      <common-list-pull :distance="height" :nomore="!isCanPull" @pull="pull">
+      <common-list-pull :nomore="!isCanPull" @pull="pull">
         <product-manage-card :list="checkList">
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
