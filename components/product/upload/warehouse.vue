@@ -129,11 +129,11 @@ const downloadLocalFile = () => {
 
 <template>
   <div>
-    <common-model v-model="isModel" title="入库" :show-ok="true" confirm-text="导入货品" @confirm="submitGoods">
+    <common-model v-model="isModel" title="批量入库" :show-ok="true" confirm-text="导入货品" @confirm="submitGoods">
       <div class="mb-8 relative min-h-[60px]">
-        <div class="text-[14px] flex pb-4">
-          请按照模板整理数据信息
-          <div class="text-[rgba(57,113,243,1)] flex" @click="downloadLocalFile">
+        <div class="text-[14px] text-color flex pb-4">
+          1、请按照模板整理数据信息
+          <div class="text-[rgba(57,113,243,1)] flex ml-4" @click="downloadLocalFile">
             <icon name="i-svg:download" :size="16" color="#666" />
             下载模板
           </div>
