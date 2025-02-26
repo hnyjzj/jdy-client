@@ -6,7 +6,6 @@ const searchKey = ref('')
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
-const isModel = ref(false)
 const pages = ref(1)
 const isCanPull = ref(true)
 useSeoMeta({
@@ -37,20 +36,7 @@ async function getList(where = {} as Partial<Enter>) {
 await getList()
 await getEnterWhere()
 
-// 获取头部高度
-const height = ref<number | undefined>(0)
-onMounted(() => {
-  height.value = getHeight('header')
-  if (height.value) {
-    height.value = height.value + 40
-  }
-})
-
 const filterData = ref({} as Partial<Enter>)
-
-const create = () => {
-  isModel.value = true
-}
 
 function pull() {
   getList(filterData.value)
@@ -77,19 +63,17 @@ function edit(id: string) {
 </script>
 
 <template>
-  <div class="overflow-hidden">
+  <div>
     <!-- 筛选 -->
-    <div id="header">
-      <product-filter
-        v-model:id="complate" v-model:search="searchKey" :product-list-total="EnterListTotal" @filter="openFilter">
-        <template #company>
-          <product-manage-company />
-        </template>
-      </product-filter>
-    </div>
+    <product-filter
+      v-model:id="complate" v-model:search="searchKey" :product-list-total="EnterListTotal" @filter="openFilter">
+      <template #company>
+        <product-manage-company />
+      </template>
+    </product-filter>
     <!-- 小卡片组件 -->
-    <div class="pb-10 overflow-hidden">
-      <common-list-pull :distance="height" :nomore="!isCanPull" @pull="pull">
+    <div class="pb-10">
+      <common-list-pull :nomore="!isCanPull" @pull="pull">
         <product-manage-card :list="EnterList" @edit="edit">
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
@@ -102,7 +86,7 @@ function edit(id: string) {
               <div class="py-[4px] flex justify-between">
                 <div>入库时间</div>
                 <div class="text-align-end">
-                  {{ info.created_at }}
+                  {{ formatTimestampToDateTime(info.created_at) }}
                 </div>
               </div>
             </div>
@@ -117,7 +101,7 @@ function edit(id: string) {
     </div>
     <product-manage-bottom />
     <div class="cursor-pointer">
-      <common-create @click="create" />
+      <common-create @click="jump('/product/finished/warehouse/add')" />
     </div>
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" />
   </div>

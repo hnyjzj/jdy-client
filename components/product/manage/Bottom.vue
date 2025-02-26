@@ -3,9 +3,9 @@
 </script>
 
 <template>
-  <div>
+  <div class="sticky bottom-0">
     <div
-      class="text-black dark:text-[#FFF] pos-fixed bottom-0 w-full px-[16px] py-[10px]  blur-bgc dark:border-[#0000001A] b-t-solid border-color-[#999] b-t-[1px]">
+      class="text-black dark:text-[#FFF] px-[16px] py-[10px]  blur-bgc dark:border-[#0000001A] b-t-solid border-color-[#E6E6E8] b-t-[1px]">
       <van-row justify="space-between">
         <van-col span="6">
           <div class=" item">

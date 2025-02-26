@@ -38,7 +38,7 @@ export const useProductManage = defineStore('ProductManage', {
     // 货品导入
     async importProduct(products: Product[]) {
       try {
-        const { data } = await https.post<any, { products: Product[] }>('/product/enter', { products })
+        const { data } = await https.post<any, { products: Product[] }>('/product/enter/create', { products })
         return data.value
       }
       catch (error) {
@@ -90,6 +90,15 @@ export const useProductManage = defineStore('ProductManage', {
         throw new Error(`报损失败: ${error || '未知错误'}`)
       }
     },
-
+    // 转换
+    async convertProduct(pamars: ProductTransfer) {
+      try {
+        const { data } = await https.put<any, ProductTransfer>('/product/conversion', pamars)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`报损失败: ${error || '未知错误'}`)
+      }
+    },
   },
 })

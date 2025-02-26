@@ -12,7 +12,7 @@ const themeOverrides: GlobalThemeOverrides = {
     caretColor: '#0068ff',
     borderHover: '1px solid #0068ff',
     borderFocus: '1px solid #0068ff',
-    borderRadius: '60px',
+    borderRadius: '20px',
     boxShadowFocus: '0 0 0 2px rgba(0, 104, 255, 0.2)',
     boxShadowActive: '0 0 0 2px rgba(0, 104, 255, 0.2)',
   },
@@ -26,6 +26,14 @@ const themeOverrides: GlobalThemeOverrides = {
   },
   DatePicker: {
     borderRadius: '20px',
+  },
+  Switch: {
+    railColorActive: '#0068ff',
+    borderColor: '#0068ff',
+    caretColor: '#0068ff',
+    borderHover: '1px solid #0068ff',
+    borderFocus: '1px solid #0068ff',
+    boxShadowFocus: '0 0 0 2px rgba(0, 104, 255, 0.2)',
   },
 }
 </script>
@@ -41,7 +49,7 @@ const themeOverrides: GlobalThemeOverrides = {
         <n-dialog-provider>
           <nuxt-layout>
             <common-layout-watermark>
-              <nuxt-page />
+              <nuxt-page :keepalive="{ max: 1 }" />
             </common-layout-watermark>
           </nuxt-layout>
         </n-dialog-provider>

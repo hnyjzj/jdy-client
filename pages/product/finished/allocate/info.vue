@@ -32,6 +32,7 @@ const goodsStatus = {
   3: '调拨',
   4: '已售',
   5: '退货',
+  6: '盘点中',
 }
 async function cancel() {
   const res = await cancelAllcate(allocateInfo.value?.id)
@@ -116,7 +117,7 @@ async function scanit() {
   <div class="storage pb-20">
     <div class="grid-12 pt-4">
       <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-        <div class="w-[40%]">
+        <div class="w-[40%] text-[#fff]">
           <product-manage-company />
         </div>
         <div class="rounded-6 bg-white w-auto blur-bga top">
@@ -256,7 +257,7 @@ async function scanit() {
             <template v-for="(item, index) in allocateInfo.product" :key="index">
               <div class="grid mb-3">
                 <sale-order-nesting :title="item.name" :info="allocateInfo">
-                  <template #right>
+                  <template #left>
                     <!-- 状态为盘点中时可以删除 -->
                     <template v-if="allocateInfo.status === 1">
                       <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="delProduct(item.code)" />
@@ -266,7 +267,7 @@ async function scanit() {
                   <template #info>
                     <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
                       <template v-for="(filter, findex) in filterListToArray" :key="findex">
-                        <template v-if="filter.show">
+                        <template v-if="filter.find">
                           <div class="flex">
                             <div class="key">
                               {{ filter.label }}
