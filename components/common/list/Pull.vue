@@ -11,22 +11,18 @@ const emits = defineEmits<{
   pull: []
 }>()
 const infoShow = defineModel('infoShow', { default: false })
-const loadingShow = ref<boolean>(false)
-const onScroll = useDebounceFn((e: any) => {
-  const scrollTop = e.target.scrollTop
-  const scrollHeight = e.target.scrollHeight
-  const offsetHeight = Math.ceil(e.target.getBoundingClientRect().height)
-  const currentHeight = scrollTop + offsetHeight
-  if (currentHeight + 20 >= scrollHeight) {
-    loadingShow.value = true
+const loading = useTemplateRef('loading')
+const targetIsVisible = useElementVisibility(loading)
+watch(targetIsVisible, (val) => {
+  if (val) {
     emits('pull')
   }
-}, 300)
+})
 </script>
 
 <template>
   <div
-    class="pullList" :style="{ height: `calc(100vh - (${props.distance}px))` }" @scroll="onScroll">
+    class="pullList">
     <slot name="default" />
     <common-popup v-model="infoShow" placement="left" width="90%" title="订单详情">
       <slot name="info" />
@@ -34,8 +30,8 @@ const onScroll = useDebounceFn((e: any) => {
         <slot name="footer" />
       </template>
     </common-popup>
-    <template v-if="loadingShow && !props.nomore">
-      <div class="flex-center-row py-[16px]">
+    <template v-if="!props.nomore">
+      <div ref="loading" class="flex-center-row py-[16px]">
         <van-loading color="#0094ff">
           加载中...
         </van-loading>
@@ -51,7 +47,7 @@ const onScroll = useDebounceFn((e: any) => {
 
 <style lang="scss" scoped>
 .pullList {
-  --uno: 'px-[16px] pb-10px';
+  --uno: 'px-[16px] pb-10px min-h-[80vh] bg-gradient-linear-[180deg,#3875C5,#F1F5FE] dark:bg-gradient-linear-[180deg,#3875C5,#07111F]';
   overflow: auto;
 }
 

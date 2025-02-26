@@ -28,6 +28,9 @@ interface Product {
    * 证书
    */
   certificate: string[]
+  /** 证书1 */
+  certificate1: string
+  certificate2: string
   /**
    * 净度
    */
@@ -106,9 +109,9 @@ interface Product {
   size: number
   /**
    * 产品状态--
-   * 0 "全部",1 "正常",2 "报损",3 "调拨",4 "已售",5 "退货"
+   * 0 "全部",1 "正常",2 "已报损",3 "已调拨",4 "已出售",5 "退货" ,6 "盘点中"
    */
-  status: 0 | 1 | 2 | 3 | 4 | 5
+  status: 0 | 1 | 2 | 3 | 4 | 5 | 6
   /**
    * 款式
    */
@@ -133,8 +136,18 @@ interface Product {
    * 杂料重
    */
   weight_other: number
+  /**
+   * 产品类型
+   * 0:全部 1:成品 2:旧料 3:配件
+   */
+  type: number
 }
 interface ProductDamage {
   code: Product['code']
   reason: string
+}
+
+interface ProductTransfer {
+  code: Product['code']
+  type: Product['type']
 }

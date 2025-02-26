@@ -17,7 +17,7 @@ export const getGreeting = () => {
 }
 
 /**
- *
+ * 转化为日期格式
  * @param timestamp 时间戳
  * @returns 日期时间
  */

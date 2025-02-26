@@ -17,7 +17,7 @@ const handleClick = (id?: string) => {
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-[16px] py-[16px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
+  <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
       <sale-cards :title="item.id" :tag-text="where.type?.preset[item.type]">
         <template #info>
