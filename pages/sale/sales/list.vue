@@ -7,7 +7,7 @@ useSeoMeta({
 const { getMemberWhere } = useMemberManage()
 const { filterList: memberFiler } = storeToRefs(useMemberManage())
 const { StoreStaffList, myStore } = storeToRefs(useStores())
-const { getStoreStaffList } = useStores()
+const { getStoreStaffList, getMyStore } = useStores()
 const { getProductList } = useProductManage()
 const { productList } = storeToRefs(useProductManage())
 const { filterListToArray, OrdersList, total, OrderDetail, filterList } = storeToRefs(useOrder())
@@ -49,7 +49,7 @@ const submitWhere = async (f: OrderWhere) => {
   searchPage.value = 1
   await getList(filterData.value as any)
 }
-
+await getMyStore({ page: 1, limit: 20 })
 await getList()
 await getSaleWhere()
 await getMemberWhere()
