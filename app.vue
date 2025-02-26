@@ -14,12 +14,15 @@ const themeOverrides: GlobalThemeOverrides = {
     borderFocus: '1px solid #0068ff',
     borderRadius: '20px',
     boxShadowFocus: '0 0 0 2px rgba(0, 104, 255, 0.2)',
+    boxShadowActive: '0 0 0 2px rgba(0, 104, 255, 0.2)',
   },
   InternalSelection: {
     borderHover: '1px solid #0068ff',
     borderFocus: '1px solid #0068ff',
     borderActive: '1px solid #0068ff',
     borderRadius: '60px',
+    boxShadowFocus: '0 0 0 2px rgba(0, 104, 255, 0.2)',
+    boxShadowActive: '0 0 0 2px rgba(0, 104, 255, 0.2)',
   },
   DatePicker: {
     borderRadius: '20px',

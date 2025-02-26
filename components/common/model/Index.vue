@@ -84,7 +84,7 @@ watch(show, (val) => {
       background: linear-gradient(to right, rgba(147, 211, 245, 1), rgba(56, 101, 252, 1));
 
       .close {
-        --uno: 'absolute top-[10px] right-[20px]';
+        --uno: 'absolute top-[10px] right-[20px] cursor-pointer';
       }
 
       .title {
