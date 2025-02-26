@@ -9,9 +9,30 @@ const isFilter = ref(false)
 const isModel = ref(false)
 const pages = ref(1)
 const isCanPull = ref(true)
+
+const type = ref(0)
+const route = useRoute()
+if (route.query.type) {
+  type.value = Number(route.query.type)
+}
+
+function getTitle() {
+  switch (type.value) {
+    case 1:
+      return '成品列表'
+    case 2:
+      return '旧料列表'
+    case 3:
+      return '配件列表'
+    default:
+      return ''
+  }
+}
+
 useSeoMeta({
-  title: '货品管理',
+  title: getTitle(),
 })
+
 const openFilter = () => {
   isFilter.value = true
 }
@@ -20,10 +41,8 @@ async function getList(where = {} as Partial<Product>) {
   if (!isCanPull.value)
     return
   const params = { page: pages.value, limit: 20 } as ReqList<Product>
-  if (JSON.stringify(where) !== '{}') {
-    params.where = where
-  }
-
+  params.where = where
+  params.where.type = type.value
   const res = await getProductList(params)
   if (res.data?.list.length) {
     pages.value++
@@ -77,7 +96,7 @@ async function submitWhere(f: Partial<Product>) {
 
 /** 编辑 */
 function edit(code: string) {
-  jump('/product/finished/edit', { code })
+  jump('/product/manage/edit', { code })
 }
 </script>
 
@@ -180,7 +199,7 @@ function edit(code: string) {
           </template>
           <template #bottom="{ info }">
             <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="详情" @click="jump('/product/finished/info', { code: info.code })" />
+              <common-button-irregular text="详情" @click="jump('/product/manage/info', { code: info.code })" />
             </div>
           </template>
         </product-manage-card>
@@ -191,7 +210,7 @@ function edit(code: string) {
     <div class="cursor-pointer">
       <common-create @click="create" />
     </div>
-    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
+    <common-filter-where v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="filterListToArray" @submit="submitWhere" />
   </div>
 </template>
 

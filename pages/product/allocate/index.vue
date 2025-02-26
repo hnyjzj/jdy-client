@@ -130,7 +130,7 @@ async function submitWhere(f: Partial<Allocate>) {
           </template>
           <template #bottom="{ info }">
             <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="详情" @click="jump('/product/finished/allocate/info', { id: info.id })" />
+              <common-button-irregular text="详情" @click="jump('/product/allocate/info', { id: info.id })" />
             </div>
           </template>
         </product-manage-card>
@@ -138,7 +138,7 @@ async function submitWhere(f: Partial<Allocate>) {
     </div>
     <product-manage-bottom />
     <div class="cursor-pointer">
-      <common-create @click="jump('/product/finished/allocate/add')" />
+      <common-create @click="jump('/product/allocate/add')" />
     </div>
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="allocateFilterListToArray" @submit="submitWhere">
       <template #store_id>

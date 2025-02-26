@@ -155,7 +155,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
           </template>
           <template #bottom="{ info }">
             <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="详情" @click="jump('/product/finished/check/info', { id: info.id })" />
+              <common-button-irregular text="详情" @click="jump('/product/check/info', { id: info.id })" />
             </div>
           </template>
         </product-manage-card>
@@ -163,7 +163,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
     </div>
     <product-manage-bottom />
     <div class="cursor-pointer">
-      <common-create @click="jump('/product/finished/check/add')" />
+      <common-create @click="jump('/product/check/add')" />
     </div>
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="checkFilterListToArray" @submit="submitWhere">
       <template #inspector_id>
