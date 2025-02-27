@@ -155,3 +155,8 @@ interface ProductTransfer {
   code: Product['code']
   type: Product['type']
 }
+
+interface inportReq {
+  products: Product[]
+  store_id: string
+}

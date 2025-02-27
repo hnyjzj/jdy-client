@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
+const { myStore } = storeToRefs(useStores())
 const { getProductList, getProductWhere, importProduct } = useProductManage()
 const { productList, filterList, filterListToArray, productListTotal } = storeToRefs(useProductManage())
 const searchKey = ref('')
@@ -52,7 +53,8 @@ function pull() {
 // 提交入库
 async function submitGoods(data: Product[]) {
   if (data?.length) {
-    const { code, message } = await importProduct(data)
+    const { code, message } = await importProduct({ products: data, store_id: myStore.value?.id })
+
     if (code === HttpCode.SUCCESS) {
       isModel.value = false
       pages.value = 1

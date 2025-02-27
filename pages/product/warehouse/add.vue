@@ -1,13 +1,14 @@
 <script lang="ts" setup>
 import type { FormInst, FormRules } from 'naive-ui'
 
-const { addEnter } = useEnter()
+// const { addEnter } = useEnter()
 const { $toast } = useNuxtApp()
-const { storesList } = storeToRefs(useStores())
+const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList } = useStores()
-const { getProductWhere } = useProductManage()
+const { getProductWhere, importProduct } = useProductManage()
 const { filterListToArray, filterList } = storeToRefs(useProductManage())
 const route = useRoute()
+const router = useRouter()
 useSeoMeta({
   title: '新增入库单',
 })
@@ -62,14 +63,21 @@ function changeStore() {
   })
 }
 await getProductWhere()
-await getStoreList({ page: 1, limit: 100 })
+await getStoreList({ page: 1, limit: 20 })
 await changeStore()
 forRules()
 async function submit() {
-  const res = await addEnter(params.value as Product)
+  const impParams = {
+    products: [params.value],
+    store_id: myStore.value.id,
+  }
+  const res = await importProduct(impParams)
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     params.value = {} as Product
+    setTimeout(() => {
+      router.back()
+    }, 1000)
   }
   else {
     $toast.error(res.message ?? '创建失败')
