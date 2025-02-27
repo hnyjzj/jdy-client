@@ -1,6 +1,10 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
+const { myStore } = storeToRefs(useStores())
 const { getEnterList, getEnterWhere } = useEnter()
+const { importProduct } = useProductManage()
+const { filterList } = storeToRefs(useProductManage())
+
 const { EnterList, EnterToArray, EnterListTotal } = storeToRefs(useEnter())
 const searchKey = ref('')
 const complate = ref(0)
@@ -8,6 +12,9 @@ const complate = ref(0)
 const isFilter = ref(false)
 const pages = ref(1)
 const isCanPull = ref(true)
+const isModel = ref(false)
+const isBatchImportModel = ref(false)
+
 useSeoMeta({
   title: '入库单',
 })
@@ -60,6 +67,32 @@ async function submitWhere(f: Partial<Enter>) {
 function edit(id: string) {
   jump('/product/warehouse/info', { id })
 }
+// 提交入库
+async function submitGoods(data: Product[]) {
+  if (data?.length) {
+    const { code, message } = await importProduct({ products: data, store_id: myStore.value?.id })
+    if (code === HttpCode.SUCCESS) {
+      isModel.value = false
+      isBatchImportModel.value = false
+      pages.value = 1
+      await getList()
+      return $toast.success('导入成功')
+    }
+    $toast.error(message ?? '导入失败')
+  }
+}
+
+const create = () => {
+  if (!myStore.value?.id) {
+    return $toast.error('请先选择门店')
+  }
+  isModel.value = true
+}
+
+function goAdd() {
+  isModel.value = false
+  jump('/product/warehouse/add')
+}
 </script>
 
 <template>
@@ -106,9 +139,9 @@ function edit(id: string) {
       </common-list-pull>
     </div>
     <product-manage-bottom />
-    <div class="cursor-pointer">
-      <common-create @click="jump('/product/warehouse/add')" />
-    </div>
+    <common-create @click="create" />
+    <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
+    <product-upload-warehouse v-model="isBatchImportModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" />
   </div>
 </template>
