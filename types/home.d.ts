@@ -3,6 +3,12 @@ interface homeDataListCard {
   key: string
   number: number | string
 }
+type DataCardList<T, O = keyof T> = {
+  [key in keyof Omit<T, O>]: {
+    key: string
+    value: any
+  }
+}
 interface StorePerformance {
   /**
    * 足金（件）

@@ -19,13 +19,13 @@ onMounted(() => {
 onBeforeUnmount(() => {
   stop()
 })
-watch(
-  () => myStore.value.id, // 监听 myStore 的 id 属性变化
-  async (newId) => {
-    // 这里可以触发重新获取销售数据
-    await myStoreTodaySale({ store_id: newId })
-  },
-)
+
+const todaySale = ref<DataCardList<todaySales>>({
+  sales_amount: '销售金额',
+  sales_count: '销售件数',
+  old_goods_amount: '旧货抵值',
+  return_amount: '退货金额',
+})
 </script>
 
 <template>
@@ -42,50 +42,19 @@ watch(
 
     <div class="p-[16px] ">
       <div :id="id" class="flex overflow-x-scroll gap-[20px]">
-        <div class="flex-grow-1 flex-shrink-0">
-          <div class="flex-start">
-            <div class="w-[4px] h-[10px] bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] rounded-[2px]" />
-            <div class="color-[#333] dark:color-[#fff] ml-[4px] text-[12px]  line-height-[24px]">
-              销售金额
+        <template v-for="(item, key) in todaySale" :key="key">
+          <div class="flex-grow-1 flex-shrink-0">
+            <div class="flex-start">
+              <div class="w-[4px] h-[10px] bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] rounded-[2px]" />
+              <div class="color-[#333] dark:color-[#fff] ml-[4px] text-[12px]  line-height-[24px]">
+                {{ todaySale[key] }}
+              </div>
+            </div>
+            <div class="color-[#3971F3] dark:color-[#fff] font-semibold  line-height-[24px]">
+              <span class="text-[16px]">{{ todaySaleData[key] }}</span>
             </div>
           </div>
-          <div class="color-[#3971F3] dark:color-[#fff] font-semibold  line-height-[24px]">
-            <span class="text-[16px]">{{ todaySaleData.sales_amount }}</span>
-          </div>
-        </div>
-        <div class="flex-grow-1 flex-shrink-0">
-          <div class="flex-start">
-            <div class="w-[4px] h-[10px] bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] rounded-[2px]" />
-            <div class="color-[#333] dark:color-[#fff] ml-[4px] text-[12px]  line-height-[24px]">
-              销售件数
-            </div>
-          </div>
-          <div class="color-[#3971F3] dark:color-[#fff] font-semibold  line-height-[24px]">
-            <span class="text-[16px]">{{ todaySaleData.sales_count }}</span>
-          </div>
-        </div>
-        <div class="flex-grow-1 flex-shrink-0">
-          <div class="flex-start">
-            <div class="w-[4px] h-[10px] bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] rounded-[2px]" />
-            <div class="color-[#333] dark:color-[#fff] ml-[4px] text-[12px]  line-height-[24px]">
-              旧货抵值
-            </div>
-          </div>
-          <div class="color-[#3971F3] dark:color-[#fff] font-semibold  line-height-[24px]">
-            <span class="text-[16px]">{{ todaySaleData.old_goods_amount }}</span>
-          </div>
-        </div>
-        <div class="flex-grow-1 flex-shrink-0">
-          <div class="flex-start">
-            <div class="w-[4px] h-[10px] bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] rounded-[2px]" />
-            <div class="color-[#333] dark:color-[#fff] ml-[4px] text-[12px]  line-height-[24px]">
-              退货金额
-            </div>
-          </div>
-          <div class="color-[#3971F3] dark:color-[#fff] font-semibold  line-height-[24px]">
-            <span class="text-[16px]">{{ todaySaleData.return_amount }}</span>
-          </div>
-        </div>
+        </template>
       </div>
       <div class="bg-[#c7dafF] dark:opacity-[0.5] h-[1px] w-full mt-[8px]" />
       <div class="mt-[12px] flex-between">

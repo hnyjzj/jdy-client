@@ -2,6 +2,21 @@
 useSeoMeta({
   title: '待办',
 })
+const { myStoreTodaySale, myStoreTodayInventory } = homeDataStore()
+const { myStore, myStoreList } = storeToRefs(useStores())
+const { getMyStore, switchStore } = useStores()
+
+await getMyStore({ page: 1, limit: 20 })
+
+// 切换门店
+const handleSelectFn = async (id: Stores['id']) => {
+  const stored = myStoreList.value.find(item => item.id === id)
+  if (stored) {
+    switchStore(stored)
+    await myStoreTodaySale({ store_id: myStore.value.id })
+    await myStoreTodayInventory({ store_id: myStore.value.id })
+  }
+}
 </script>
 
 <template>
@@ -12,7 +27,13 @@ useSeoMeta({
       </div>
       <home-greet />
       <common-dark />
-      <home-store />
+      <home-store
+        v-model:store="myStore"
+        :store-list="myStoreList"
+        @handle-select="handleSelectFn"
+        @get-store-list="() => {
+          getMyStore({ page: 1, limit: 20 })
+        }" />
       <home-boss />
       <home-action />
       <home-sale />
