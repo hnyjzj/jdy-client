@@ -1,15 +1,13 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  count: number
+  total: number
   limit: number
 }>()
-const emits = defineEmits<{
-  updatePage: [page: number]
-}>()
-const searchPage = defineModel('searchPage', { default: 1 })
+
+const page = defineModel('page', { default: 1 })
 const pageCount = computed(() => {
   // 总数 除以  请求条数 =  页数
-  return Math.ceil(props.count / props.limit)
+  return Math.ceil(props.total / props.limit)
 })
 // 回到顶部  点击分页触发
 const goTop = () => {
@@ -17,13 +15,17 @@ const goTop = () => {
     block: 'start',
   })
 }
+const updatePage = (p: number) => {
+  goTop()
+  page.value = p
+}
 </script>
 
 <template>
   <div>
     <div class="py-[16px] flex-center-row">
       <n-pagination
-        v-model:page="searchPage"
+        v-model:page="page"
         :style="{
           '--n-item-text-color-active': '#4678B9',
           '--n-item-border-active': '1px solid #2976EF',
@@ -32,10 +34,7 @@ const goTop = () => {
         :page-slot="6"
 
         size="large"
-        @update:page="(page:number) => {
-          goTop()
-          emits('updatePage', page)
-        }"
+        @update:page="updatePage"
       />
     </div>
   </div>

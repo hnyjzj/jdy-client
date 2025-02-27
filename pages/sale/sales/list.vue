@@ -91,7 +91,7 @@ const updatePage = async (page: number) => {
       <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <div class="p-[16px]">
           <sale-sales-list :info="OrdersList" :where="filterList" @user-click="handleClick" />
-          <common-page v-model:search-page="searchPage" :count="total" :limit="12" @update-page="updatePage" />
+          <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
         </div>
       </div>
     </div>
