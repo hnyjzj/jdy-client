@@ -89,6 +89,12 @@ function edit(id: string) {
                   {{ formatTimestampToDateTime(info.created_at) }}
                 </div>
               </div>
+              <div class="py-[4px] flex justify-between">
+                <div>产品数量</div>
+                <div class="text-align-end">
+                  {{ info.products?.length || 0 }}
+                </div>
+              </div>
             </div>
           </template>
           <template #bottom="{ info }">

@@ -205,6 +205,14 @@ function goAdd() {
                   {{ info.craft }}
                 </div>
               </div>
+              <div class="flex-between">
+                <div>
+                  库存
+                </div>
+                <div class="text-align-end val">
+                  {{ info.stock }}
+                </div>
+              </div>
             </div>
           </template>
           <template #bottom="{ info }">
