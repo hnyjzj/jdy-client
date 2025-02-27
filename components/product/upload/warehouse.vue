@@ -15,6 +15,7 @@ const emits = defineEmits<{
 
 const { $toast } = useNuxtApp()
 const isModel = defineModel({ type: Boolean, default: false })
+const fileName = ref()
 // 上传xlsx文件数据
 const sheetData = ref([])
 
@@ -23,6 +24,7 @@ const sheetData = ref([])
  * @param event input上传文件
  */
 function FileUpload(event: any) {
+  fileName.value = event.target.files[0].name
   uploadXlsx(event).then((data) => {
     sheetData.value = cleanExcelData(data as never[])
   })
@@ -90,7 +92,7 @@ async function transformData(data: any[][]) {
     // 证书合成数组
     const transformedObj = {
       ...obj,
-      certificate: [obj.certificate1, obj.certificate2].filter(Boolean),
+      certificate: [String(obj.certificate1), String(obj.certificate2)].filter(Boolean),
     }
 
     // 删除不需要的字段
@@ -138,9 +140,9 @@ const downloadLocalFile = () => {
             下载模板
           </div>
         </div>
-        <input class="h-[40px] absolute top-0 w-full opacity-0" type="file" @change="FileUpload">
+        <input class="h-[40px] absolute bottom-0 w-full opacity-0" type="file" @change="FileUpload">
         <div class="uploadInp cursor-pointer">
-          <div>请添加文件</div>
+          <div>{{ fileName || '请添加文件' }}</div>
           <div class="uploadInp-right">
             <icon name="i-svg:upload" :size="16" color="#666" />
             <div class="ml-2">
