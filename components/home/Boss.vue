@@ -1,23 +1,18 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
-  leftTitle: string
-  marginBottom?: string
-  list: StorePerformance[]
-}>(), {
-
-  marginBottom: '16px',
-})
+const { StorePerformance } = homeDataStore()
+const { StorePerformanceList } = storeToRefs(homeDataStore())
+await StorePerformance({ duration: 'today' })
 const { $colorMode } = useNuxtApp()
 </script>
 
 <template>
-  <div class="blur-bgc rounded-[16px] overflow-hidden" :style="{ marginBottom: props.marginBottom }" data-allow-mismatch="style">
+  <div class="blur-bgc rounded-[16px] overflow-hidden mb-[16px]" data-allow-mismatch="style">
     <div class="grid-12">
       <div
         class="skew col-6" uno-md="col-4">
         <div class="skew-right" />
         <div class="skew-text pl-[15px]" data-allow-mismatch="text">
-          {{ props.leftTitle }}
+          BOSS看板
         </div>
       </div>
     </div>
@@ -83,7 +78,7 @@ const { $colorMode } = useNuxtApp()
             align: 'center',
           }]"
 
-        :data="props.list"
+        :data="StorePerformanceList"
         :max-height="300"
         :scroll-x="800"
         :bordered="true"
