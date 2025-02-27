@@ -6,6 +6,7 @@ export const useOrder = defineStore('Order', {
     total: 0 as number,
     OrderDetail: {} as Orders,
     filterListToArray: [] as FilterWhere<OrderWhere>[],
+    searchPage: 1 as number, // 订单列表页面搜索页数
   }),
 
   actions: {
@@ -25,7 +26,7 @@ export const useOrder = defineStore('Order', {
       if (data.value?.code === HttpCode.SUCCESS) {
         this.total = data.value.data.total
         if (data.value.data.list.length > 0) {
-          this.OrdersList = [...this.OrdersList, ...data.value.data.list]
+          this.OrdersList = data.value.data.list
           if (this.OrdersList.length === this.total) {
             return false
           }
