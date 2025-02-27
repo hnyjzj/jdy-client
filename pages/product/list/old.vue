@@ -43,6 +43,9 @@ await getProductWhere()
 const filterData = ref({} as Partial<Product>)
 
 const create = () => {
+  if (!myStore.value?.id) {
+    return $toast.error('请先选择门店')
+  }
   isModel.value = true
 }
 
@@ -54,8 +57,6 @@ function pull() {
 async function submitGoods(data: Product[]) {
   if (data?.length) {
     const impParams = { products: data, store_id: myStore.value?.id }
-    console.log(impParams)
-
     const { code, message } = await importProduct(impParams)
 
     if (code === HttpCode.SUCCESS) {
@@ -89,7 +90,7 @@ function edit(code: string) {
 
 function goAdd() {
   isModel.value = false
-  jump('/product/warehouse/add', { type: 1 })
+  jump('/product/warehouse/add', { type: type.value })
 }
 </script>
 

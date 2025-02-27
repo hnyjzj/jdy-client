@@ -8,6 +8,7 @@ const { storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const { getCheckWhere, createCheck } = useCheck()
 const { checkFilterListToArray, checkFilterList } = storeToRefs(useCheck())
+const router = useRouter()
 useSeoMeta({
   title: '新增盘点单',
 })
@@ -60,6 +61,9 @@ async function submit() {
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     params.value = {} as Check
+    setTimeout(() => {
+      router.back()
+    }, 1000)
   }
   else {
     $toast.error(res.message ?? '创建失败')

@@ -8,6 +8,7 @@ const { storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const params = ref({} as AllocateReq)
 const route = useRoute()
+const router = useRouter()
 const type = ref()
 if (route.query?.type) {
   type.value = route.query.type
@@ -35,6 +36,7 @@ async function submit() {
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     params.value = {} as AllocateReq
+    router.back()
   }
   else {
     $toast.error(res.message ?? '创建失败')

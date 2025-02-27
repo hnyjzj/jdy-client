@@ -137,9 +137,8 @@ async function submitWhere(f: Partial<Allocate>) {
       </common-list-pull>
     </div>
     <product-manage-bottom />
-    <div class="cursor-pointer">
-      <common-create @click="jump('/product/allocate/add')" />
-    </div>
+    <common-create @click="jump('/product/allocate/add')" />
+
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="allocateFilterListToArray" @submit="submitWhere">
       <template #store_id>
         <n-select

@@ -60,19 +60,19 @@ async function convert() {
         <product-finished-list :product-info="productInfo" :filter-list="filterList" :filter-list-to-array="filterListToArray" @go-loss="goLoss" />
         <div class="bottom">
           <div class="flex-center-row grid-12 gap-4 px-4 py-2 col-12" uno-lg="col-8 offset-2" uno-md="col-12 flex-shrink-1">
-            <template v-if="productInfo.type === 2">
-              <div class="flex-1">
-                <common-button-rounded content="转换" color="#000" bgc="#FFF" @button-click="convert" />
-              </div>
-            </template>
             <template v-if="productInfo.status !== 2">
+              <template v-if="productInfo.type === 2">
+                <div class="flex-1">
+                  <common-button-rounded content="转换" color="#000" bgc="#FFF" @button-click="convert" />
+                </div>
+              </template>
               <div class="flex-1">
                 <common-button-rounded content="报损" color="#000" bgc="#FFF" @button-click="goLoss" />
               </div>
+              <div class="flex-1">
+                <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: productInfo.code })" />
+              </div>
             </template>
-            <div class="flex-1">
-              <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: productInfo.code })" />
-            </div>
           </div>
         </div>
       </div>

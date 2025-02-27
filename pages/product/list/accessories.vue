@@ -43,6 +43,9 @@ await getProductWhere()
 const filterData = ref({} as Partial<Product>)
 
 const create = () => {
+  if (!myStore.value?.id) {
+    return $toast.error('请先选择门店')
+  }
   isModel.value = true
 }
 
@@ -86,7 +89,7 @@ function edit(code: string) {
 
 function goAdd() {
   isModel.value = false
-  jump('/product/warehouse/add', { type: 1 })
+  jump('/product/warehouse/add', { type: type.value })
 }
 </script>
 

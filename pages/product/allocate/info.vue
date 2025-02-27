@@ -314,9 +314,10 @@ async function scanit() {
     <template v-if="allocateInfo.status === 2">
       <common-button-bottom cancel-text="取消调拨" confirm-text="完成调拨" @cancel="cancel" @confirm="finish" />
     </template>
-    <div class="cursor-pointer">
+    <!-- 状态为盘点中 增加产品 -->
+    <template v-if="allocateInfo.status === 1">
       <common-create @click="create" />
-    </div>
+    </template>
   </div>
 </template>
 

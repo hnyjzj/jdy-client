@@ -35,7 +35,7 @@ async function getList(where = {} as Partial<Product>) {
 await getList()
 await getProductWhere()
 
-const filterData = ref({ status: 2, disabled: ['status'] } as Partial<Product>)
+const filterData = ref({ status: 2 } as Partial<Product>)
 function pull() {
   getList(filterData.value)
 }
@@ -161,7 +161,7 @@ async function submitWhere(f: Partial<Product>) {
       </common-list-pull>
     </div>
     <product-manage-bottom />
-    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
+    <common-filter-where v-model:show="isFilter" :data="filterData" :disabled="['status']" :filter="filterListToArray" @submit="submitWhere" />
   </div>
 </template>
 

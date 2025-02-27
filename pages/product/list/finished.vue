@@ -42,6 +42,9 @@ await getProductWhere()
 const filterData = ref({} as Partial<Product>)
 
 const create = () => {
+  if (!myStore.value?.id) {
+    return $toast.error('请先选择门店')
+  }
   isModel.value = true
 }
 
@@ -55,6 +58,7 @@ async function submitGoods(data: Product[]) {
     const { code, message } = await importProduct({ products: data, store_id: myStore.value?.id })
     if (code === HttpCode.SUCCESS) {
       isModel.value = false
+      isBatchImportModel.value = false
       pages.value = 1
       await getList()
       return $toast.success('导入成功')
@@ -84,7 +88,7 @@ function edit(code: string) {
 
 function goAdd() {
   isModel.value = false
-  jump('/product/warehouse/add', { type: 1 })
+  jump('/product/warehouse/add', { type: type.value })
 }
 </script>
 
