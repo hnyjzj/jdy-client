@@ -34,10 +34,10 @@ const handleSelectFn = async (id: Stores['id']) => {
         @get-store-list="() => {
           getMyStore({ page: 1, limit: 20 })
         }" />
-      <home-boss />
+      <summary-card-boss />
       <home-action />
-      <home-sale />
-      <home-inventory />
+      <summary-card-sale />
+      <summary-card-inventory />
     </div>
 
     <common-tabbar text="todo" />

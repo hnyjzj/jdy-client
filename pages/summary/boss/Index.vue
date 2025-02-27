@@ -26,9 +26,9 @@ const handleSelectFn = async (id: Stores['id']) => {
         @get-store-list="() => {
           getMyStore({ page: 1, limit: 20 })
         }" />
-      <home-boss />
-      <home-sale />
-      <home-inventory />
+      <summary-card-boss />
+      <summary-card-sale />
+      <summary-card-inventory />
     </div>
   </div>
 </template>
