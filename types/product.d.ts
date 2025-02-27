@@ -145,6 +145,10 @@ interface Product {
    * 库存
    */
   stock: number
+  /**
+   * 门店
+   */
+  store_id: string
 }
 interface ProductDamage {
   code: Product['code']
