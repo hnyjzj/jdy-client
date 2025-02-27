@@ -58,23 +58,11 @@ const searchOrder = async (e: string) => {
 }
 const clearFn = async () => {
   OrdersList.value = []
-
   searchPage.value = 1
   await getList()
 }
-const pageCount = computed(() => {
-  return Math.ceil(total.value / 12)
-})
 
-const goTop = () => {
-  document.documentElement.scrollIntoView({
-
-    block: 'start',
-  })
-}
 const updatePage = async (page: number) => {
-  await goTop()
-
   searchPage.value = page
   await getList()
 }
@@ -82,7 +70,6 @@ const updatePage = async (page: number) => {
 
 <template>
   <div>
-    <!-- bg-gradient-linear-[180deg,#3875C5,#467EC9] -->
     <div class="grid-12 sticky top-0 bg-gradient-linear-[180deg,#3875C5,#467EC9]  z-1">
       <div id="header" class="px-[16px] py-[12px] w-full   col-12" uno-lg="col-8 offset-2">
         <div class="flex flex-row gap-2">
@@ -104,20 +91,7 @@ const updatePage = async (page: number) => {
       <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <div class="p-[16px]">
           <sale-sales-list :info="OrdersList" :where="filterList" @user-click="handleClick" />
-          <div class="py-[16px] flex-center-row">
-            <n-pagination
-              v-model:page="searchPage"
-              :style="{
-                '--n-item-text-color-active': '#4678B9',
-                '--n-item-border-active': '1px solid #2976EF',
-                '--n-item-text-color-hover': '#333',
-              }" :page-count="pageCount"
-              :page-slot="6"
-
-              size="large"
-              @update:page="updatePage"
-            />
-          </div>
+          <common-page v-model:search-page="searchPage" :count="total" :limit="12" @update-page="updatePage" />
         </div>
       </div>
     </div>
