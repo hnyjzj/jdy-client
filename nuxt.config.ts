@@ -41,7 +41,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.scss'],
   vite: {
     server: {
-      allowedHosts: ['sbf.chowmein.cn'],
+      allowedHosts: true,
     },
     css: {
       preprocessorOptions: {

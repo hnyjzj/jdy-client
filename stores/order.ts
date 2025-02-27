@@ -26,7 +26,6 @@ export const useOrder = defineStore('Order', {
       if (data.value?.code === HttpCode.SUCCESS) {
         this.total = data.value.data.total
         if (data.value.data.list.length > 0) {
-        //   this.OrdersList = [...this.OrdersList, ...data.value.data.list]
           this.OrdersList = data.value.data.list
           if (this.OrdersList.length === this.total) {
             return false
