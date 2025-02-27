@@ -3,20 +3,14 @@ useSeoMeta({
   title: '待办',
 })
 
-interface DemoItem { title: string, number: number }
-const { StorePerformance, myStoreTadaySale } = homeDataStore()
-const { StorePerformanceList, todaySaleData } = storeToRefs(homeDataStore())
+const { StorePerformance, myStoreTodaySale, myStoreTodayInventory } = homeDataStore()
+const { StorePerformanceList, todaySaleData, TodayInventory } = storeToRefs(homeDataStore())
 const { myStore } = storeToRefs(useStores())
-const demoList = ref<DemoItem[]>([
-  { title: '销售金额', number: 100 },
-  { title: '销售件数', number: 100 },
-  { title: '旧货抵扣', number: 100 },
-  { title: '退货金额', number: 100 },
-])
 
 await StorePerformance({ duration: 'today' })
-await myStoreTadaySale({ store_id: myStore.value.id })
-const todaySaleDataList = ref<{ title: string, key: string, number: number | string }[]>([{
+await myStoreTodaySale({ store_id: myStore.value.id })
+await myStoreTodayInventory({ store_id: myStore.value.id })
+const todaySaleDataList = ref<homeDataListCard[]>([{
   title: '销售金额',
   key: 'sales_amount',
   number: 0,
@@ -33,16 +27,37 @@ const todaySaleDataList = ref<{ title: string, key: string, number: number | str
   key: 'return_amount',
   number: 0,
 }])
-for (const key in todaySaleData.value) {
-  const typedKey = key as keyof typeof todaySaleData.value
-  todaySaleDataList.value.forEach((item) => {
-    if (typedKey === item.key) {
-      item.number = todaySaleData.value[typedKey]
-    }
-  })
-}
+const TodayInventoryList = ref<homeDataListCard[]>([{
+  title: '旧料库存件数',
+  key: 'old_stock_count',
+  number: 0,
+}, {
+  title: '旧料库存金重',
+  key: 'old_stock_weight',
+  number: 0,
+}, {
+  title: '成品库存件数',
+  key: 'product_stock_count',
+  number: 0,
+}, {
+  title: '滞销货品件数',
+  key: 'unsalable_count',
+  number: 0,
+}])
 
-const demoListt = ref<DemoItem[]>([{ title: '销售金额', number: 100 }, { title: '销售金额', number: 100 }, { title: '销售件数', number: 100 }, { title: '旧货抵扣', number: 100 }, { title: '退货金额', number: 100 }])
+const setListArray = (initData: todaySales | TodayInventory, targetList: homeDataListCard[]) => {
+  for (const key in initData) {
+    const typedKey = key as keyof typeof initData
+    targetList.forEach((item) => {
+      if (typedKey === item.key) {
+        item.number = initData[typedKey]
+      }
+    })
+  }
+}
+setListArray(todaySaleData.value, todaySaleDataList.value)
+
+setListArray(TodayInventory.value, TodayInventoryList.value)
 </script>
 
 <template>
@@ -68,9 +83,7 @@ const demoListt = ref<DemoItem[]>([{ title: '销售金额', number: 100 }, { tit
       <work-card-digitalization left-title="BOSS看板" :list="StorePerformanceList" />
       <work-card-action />
       <work-card-information left-title="本店今日销售" :list="todaySaleDataList" :gold-price="todaySaleData.gold_price" />
-      <work-card-information left-title="销售目标" :list="demoList" />
-      <work-card-information left-title="今日销售" :list="demoList" />
-      <work-card-information left-title="会员数据" rb-text="查看员工排行" :list="demoListt" />
+      <work-card-information left-title="本店今日库存" :list="TodayInventoryList" />
     </div>
 
     <common-tabbar text="todo" />

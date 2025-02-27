@@ -1,3 +1,8 @@
+interface homeDataListCard {
+  title: string
+  key: string
+  number: number | string
+}
 interface StorePerformance {
   /**
    * 足金（件）
@@ -54,4 +59,24 @@ interface todaySales {
    * 销售件数
    */
   sales_count: number
+}
+
+interface TodayInventory {
+
+  /**
+   * 旧料库存件数
+   */
+  old_stock_count: number
+  /**
+   * 旧料库存金重
+   */
+  old_stock_weight: number | string
+  /**
+   * 成品库存件数
+   */
+  product_stock_count: number
+  /**
+   * 滞销货品件数
+   */
+  unsalable_count: number
 }

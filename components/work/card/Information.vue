@@ -2,7 +2,7 @@
 const props = withDefaults(defineProps<{
   leftTitle: string
   rbText?: string
-  list: todaySales | any
+  list: homeDataListCard[]
   marginBottom?: string
   goldPrice?: string
 }>(), {
