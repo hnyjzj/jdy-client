@@ -36,9 +36,17 @@ const goodsStatus = {
                   </span>
                 </template>
                 <template v-else-if="item.input === 'text'">
-                  <span>
-                    {{ props.productInfo[item.name] ?? '' }}
-                  </span>
+                  <template v-if="item.label === '门店'">
+                    <span>
+                      {{ props.productInfo.store.name ?? '' }}
+                      {{ item.name }}
+                    </span>
+                  </template>
+                  <template v-else>
+                    <span>
+                      {{ props.productInfo[item.name] ?? '' }}
+                    </span>
+                  </template>
                 </template>
                 <template v-else-if="item.input === 'number'">
                   <span>

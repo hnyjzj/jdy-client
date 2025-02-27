@@ -73,7 +73,6 @@ watch(show, (val) => {
 
   .center {
     background: linear-gradient(to bottom, rgba(147, 211, 245, 1), transparent);
-    // margin-top: -2px;
   }
 
   .content {
@@ -97,8 +96,8 @@ watch(show, (val) => {
         }
 
         &-content {
-          --uno: 'absolute left-[80px] top-[2px] z-[9] text-[rgba(255,255,255,1)] font-bold';
-          transform: skewY(-6deg);
+          --uno: 'absolute left-[82px] top-[6px] z-[9] text-[rgba(255,255,255,1)] font-bold';
+          transform: skewY(-4deg);
           transform-origin: bottom left;
         }
       }

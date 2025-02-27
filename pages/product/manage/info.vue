@@ -3,13 +3,24 @@ const { getProductInfo, getProductWhere, damageProduct, convertProduct } = usePr
 const { productInfo, filterList, filterListToArray } = storeToRefs(useProductManage())
 
 const { $toast } = useNuxtApp()
+const productName = ref('')
 // 成品列表详情
 useSeoMeta({
-  title: '列表详情',
+  title: productInfo.value.name,
 })
+productName.value = productInfo.value.name
 
 const route = useRoute()
 const isModel = ref(false)
+const convertModel = ref(false)
+const selectConvertType = ref()
+const converOption = ref([{
+  label: '成品',
+  value: 1,
+}, {
+  label: '旧料',
+  value: 2,
+}])
 // 报损原因
 const reason = ref('')
 if (route.query.code) {
@@ -39,8 +50,8 @@ async function loss() {
 }
 
 // 转换
-async function convert() {
-  const res = await convertProduct({ code: productInfo.value.code, type: 2 })
+async function convert(type: number) {
+  const res = await convertProduct({ code: productInfo.value.code, type })
   if (res.code === HttpCode.SUCCESS) {
     isModel.value = false
     reason.value = ''
@@ -51,32 +62,62 @@ async function convert() {
     $toast.error(res.message ?? '转换失败')
   }
 }
+
+function submitConvert() {
+  if (!selectConvertType.value) {
+    $toast.error('请选择转换类型')
+    return
+  }
+  convert(selectConvertType.value)
+}
 </script>
 
 <template>
   <div>
     <common-layout-center>
       <div class="pt-6 pb-18">
-        <product-finished-list :product-info="productInfo" :filter-list="filterList" :filter-list-to-array="filterListToArray" @go-loss="goLoss" />
+        <product-manage-info :product-info="productInfo" :filter-list="filterList" :filter-list-to-array="filterListToArray" @go-loss="goLoss" />
         <div class="bottom">
-          <div class="flex-center-row grid-12 gap-4 px-4 py-2 col-12" uno-lg="col-8 offset-2" uno-md="col-12 flex-shrink-1">
-            <template v-if="productInfo.status !== 2">
-              <template v-if="productInfo.type === 2">
-                <div class="flex-1">
-                  <common-button-rounded content="转换" color="#000" bgc="#FFF" @button-click="convert" />
-                </div>
-              </template>
-              <div class="flex-1">
-                <common-button-rounded content="报损" color="#000" bgc="#FFF" @button-click="goLoss" />
+          <div class="sm:grid-12">
+            <div uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
+              <div class="px-2 py-2 flex gap-2">
+                <!-- 旧料转成品 -->
+                <template v-if="productInfo.type === 2">
+                  <div class="flex-1">
+                    <common-button-rounded content="转成品" color="#000" bgc="#FFF" @button-click="convert(1)" />
+                  </div>
+                </template>
+                <!-- 报损转换成品/旧料 -->
+                <template v-if="productInfo.status === 2">
+                  <div class="flex-1">
+                    <common-button-rounded content="转成品/旧料" color="#000" bgc="#FFF" @button-click="convertModel = true" />
+                  </div>
+                </template>
+                <template v-else>
+                  <div class="flex-1">
+                    <common-button-rounded content="报损" color="#000" bgc="#FFF" @button-click="goLoss" />
+                  </div>
+                  <div class="flex-1">
+                    <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: productInfo.code })" />
+                  </div>
+                </template>
               </div>
-              <div class="flex-1">
-                <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: productInfo.code })" />
-              </div>
-            </template>
+            </div>
           </div>
         </div>
       </div>
     </common-layout-center>
+    <common-model v-model="convertModel" title="转成品/旧料" :show-ok="true" @confirm="submitConvert">
+      <div class="min-h-[100px]">
+        <n-select
+          v-model:value="selectConvertType"
+          menu-size="large"
+          fable
+          placeholder="转换为成品或旧料"
+          :options="converOption"
+        />
+      </div>
+    </common-model>
     <common-model v-model="isModel" title="报损" :show-ok="true" @confirm="loss">
       <div>
         <div class="title">
