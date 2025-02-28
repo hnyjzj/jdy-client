@@ -11,33 +11,29 @@ const addOrUpdateShow = ref<boolean>(false)
 // 搜索弹窗显示状态
 const show = ref<boolean>(false)
 
-// 是否有更多数据
-const nomore = ref<boolean>(false)
-
 // 筛选请求数据
 const filterData = ref({} as Partial<Stores>)
 
 // 获取列表
 const getList = async (where = {} as Partial<Stores>) => {
-  if (nomore.value)
-    return
   const params = { page: searchPage.value, limit: 12 } as ReqList<Stores>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
-  const res = await getStoreList(params)
-  res ? nomore.value = false : nomore.value = true
+  await getStoreList(params)
 }
 
 // 筛选列表
 const submitWhere = async (f: Partial<Stores>) => {
-  filterData.value = f
+  filterData.value = { ...f, ...filterData.value }
   storesList.value = []
-  nomore.value = false
   searchPage.value = 1
   await getList(filterData.value)
 }
 
+const resetwhere = () => {
+  filterData.value = {}
+}
 // 获取列表数据
 await getList()
 // 获取筛选条件
@@ -145,45 +141,10 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
   }
 }
 
-// 获取头部高度
-const height = ref<number | undefined>(0)
-
-const wid = ref('90%')
-function updateWidth() {
-  const width = window.innerWidth || document.documentElement.clientWidth
-  if (width >= 1500) {
-    wid.value = '30%'
-  }
-  else if (width >= 1024) {
-    wid.value = '40%'
-  }
-  else if (width > 768) {
-    wid.value = '50%'
-  }
-  else if (width > 600) {
-    wid.value = '70%'
-  }
-  else {
-    wid.value = '90%'
-  }
-}
-
 const updatePage = async (page: number) => {
   searchPage.value = page
   await getList()
 }
-
-// 添加防抖监听（避免频繁触发）
-const resizeTimer = ref()
-onMounted(() => {
-  updateWidth()
-  // 添加防抖监听（避免频繁触发）
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer.value)
-    resizeTimer.value = setTimeout(updateWidth, 100)
-  })
-  height.value = getHeight('header')
-})
 </script>
 
 <template>
@@ -220,18 +181,10 @@ onMounted(() => {
     </van-dialog>
     <common-create @create="newAdd()" />
 
-    <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere">
+    <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetwhere">
       <template #region>
         <common-area-select :is-required="false" :showtitle="false" :form="filterData.region" @update="updateArea" />
       </template>
     </common-filter-where>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.right {
-  background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-  box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
-  --uno: 'text-[16px] py-[6px] border-none flex-1 rounded-[36px] ml-[8px] text-[#FFFFFF]';
-}
-</style>
