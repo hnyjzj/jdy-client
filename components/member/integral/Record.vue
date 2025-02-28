@@ -162,7 +162,7 @@ const absoluteValue = (value: number) => {
             deg="45deg"
             size="120px"
             :is-shadow="false"
-            text="该用户暂无积分记录" />
+            text="该会员暂无积分记录" />
         </div>
       </template>
     </div>
