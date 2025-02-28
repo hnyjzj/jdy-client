@@ -32,7 +32,7 @@ const getStatusType = (status: number) => {
 <template>
   <div class="grid-12">
     <div class="col-12 gap-[20px]" uno-lg="col-8 offset-2">
-      <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
+      <div class="grid grid-cols-1 gap-[16px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
         <template v-for="(item, index) in props.info" :key="index">
           <common-gradient :title="item.name || '--'" theme="theme">
             <template #right>

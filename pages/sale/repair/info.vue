@@ -25,9 +25,7 @@ const repair = [
     <div class="col-12 flex flex-col gap-[16px] px-[16px] py-[16px]" uno-lg="col-8 offset-2">
       <sale-repair-info :info="repair" />
     </div>
-    <div class="h-[80px]">
-      <common-button-bottom confirm-text="开单" cancel-text="取消" />
-    </div>
+    <common-button-bottom confirm-text="开单" cancel-text="取消" />
   </div>
 </template>
 

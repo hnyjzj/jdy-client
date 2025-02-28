@@ -10,9 +10,7 @@ useSeoMeta({
   <div class="grid-12">
     <div class="flex flex-col gap-[16px] px-[16px] py-[16px] col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
       <sale-other-info />
-      <div class="h-[80px]">
-        <common-button-bottom confirm-text="确定" cancel-text="取消" />
-      </div>
+      <common-button-bottom confirm-text="确定" cancel-text="取消" />
     </div>
   </div>
 </template>

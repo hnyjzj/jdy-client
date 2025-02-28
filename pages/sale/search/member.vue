@@ -31,9 +31,7 @@ const handleClick = async () => {
         <sale-sales-grades :member-info="memberInfo" />
       </div>
       <!-- 操作栏 -->
-      <div class="h-[80px]">
-        <common-button-bottom confirm-text="确认" cancel-text="取消" />
-      </div>
+      <common-button-bottom confirm-text="确认" cancel-text="取消" />
     </div>
   </div>
 </template>
