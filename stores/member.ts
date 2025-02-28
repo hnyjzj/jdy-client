@@ -24,23 +24,24 @@ export const useMemberManage = defineStore('Member', {
   }),
 
   actions: {
-    // 会员列表
+    // 获取会员列表
     async getMemberList(params: ReqList<Member>) {
-      try {
-        const { data } = await https.post<ResList<Member>, ReqList<Member>>('/member/list', params)
-        if (data.value.code === HttpCode.SUCCESS) {
-          this.memberListTotal = data.value.data.total
-          if (params.page === 1) {
-            this.memberList = data.value.data.list
-          }
-          else {
-            this.memberList = this.memberList.concat(data.value.data.list)
-          }
-        }
-        return data.value
+      if (params.page === 1) {
+        this.memberList = []
       }
-      catch (error) {
-        throw new Error(`获取用户列表失败: ${error || '未知错误'}`)
+      const { data } = await https.post<ResList<Member>, ReqList<Member>>('/member/list', params)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.memberListTotal = data.value.data.total
+        if (data.value.data.list.length > 0) {
+          this.memberList = data.value.data.list
+          if (this.memberList.length === this.memberListTotal) {
+            return false
+          }
+          return true
+        }
+        else {
+          return false
+        }
       }
     },
     // 获取筛选列表
