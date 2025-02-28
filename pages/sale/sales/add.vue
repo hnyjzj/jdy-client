@@ -7,13 +7,13 @@ useSeoMeta({
 })
 const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
-const { getProductList } = useProductManage()
+const { getAddOrderProductList } = useProductManage()
 const { getStoreStaffList } = useStores()
 const { getSaleWhere, getTodayPrice, submitOrder, getOrderDetail } = useOrder()
 const { todayPrice, filterList } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
-const { productList } = storeToRefs(useProductManage())
+const { productList, partsList, masterialsList } = storeToRefs(useProductManage())
 const formRef = ref<FormInst | null>(null)
 const formData = ref<Orders>({
   amount: 0, // 应付金额
@@ -35,6 +35,8 @@ const formData = ref<Orders>({
 })
 // 展示商品列表
 const showProductList = ref<OrderProducts[]>([])
+const showPartsList = ref<OrderProducts[]>([])
+const showMasterialsList = ref<OrderProducts[]>([])
 await getSaleWhere()
 await getTodayPrice()
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
@@ -65,8 +67,8 @@ const rules = ref<FormRules>({
   },
 
 })
-// 搜索点击添加商品
-const searchProductList = async (val: string, type: string) => {
+// 搜索点击,查询list
+const searchProductList = async (val: string, type: string, select: number) => {
   if (val === '' && type === 'name') {
     $toast.error('请输入商品名称')
     return
@@ -76,17 +78,17 @@ const searchProductList = async (val: string, type: string) => {
     return
   }
 
+  const where = ref<ReqList<Product>['where']>({ status: 1 })
   if (type === 'name') {
-    const res = await getProductList({ page: 1, limit: 10, where: { name: val, status: 1 } })
-    if (res.data.total === 0) {
-      $toast.error('商品不存在')
-    }
+    where.value = { ...where.value, name: val, type: select } as ReqList<Product>['where']
   }
   else {
-    const res = await getProductList({ page: 1, limit: 10, where: { code: val, status: 1 } })
-    if (res.data.total === 0) {
-      $toast.error('商品不存在')
-    }
+    where.value = { ...where.value, code: val, type: select } as ReqList<Product>['where']
+  }
+
+  const res = await getAddOrderProductList({ page: 1, limit: 10, where: where.value })
+  if (res.data.total === 0) {
+    $toast.error('商品不存在')
   }
 }
 
@@ -151,23 +153,47 @@ const openProductListFn = () => {
         <div class="w-[120px] color-[#fff] pb-[12px]">
           <product-manage-company />
         </div>
-        <sale-add-base
-          v-model="formData"
-          :filter-list="filterList"
-          :store-staff="StoreStaffList"
-          :member-list="memberList"
-          :get-member="getMember"
-          :get-staff="getStaff"
-        />
-        <div class="py-[16px]">
+        <div class="pb-[16px]">
+          <sale-add-base
+            v-model="formData"
+            :filter-list="filterList"
+            :store-staff="StoreStaffList"
+            :member-list="memberList"
+            :get-member="getMember"
+            :get-staff="getStaff"
+          />
+        </div>
+        <div class="pb-[16px]">
           <sale-add-product
             v-model="showProductList"
+            :type="1"
             :product-list="productList"
             :price="todayPrice"
             @search="searchProductList"
             @open-product-list="openProductListFn"
           />
         </div>
+        <div class="pb-[16px]">
+          <sale-add-product
+            v-model="showMasterialsList"
+            :type="2"
+            :product-list="masterialsList"
+            :price="todayPrice"
+            @search="searchProductList"
+            @open-product-list="openProductListFn"
+          />
+        </div>
+        <div class="pb-[16px]">
+          <sale-add-product
+            v-model="showPartsList"
+            :type="3"
+            :product-list="partsList"
+            :price="todayPrice"
+            @search="searchProductList"
+            @open-product-list="openProductListFn"
+          />
+        </div>
+
         <sale-add-settlement v-model:form="formData" v-model:show-list="showProductList" />
         <div class="h-[80px] bg-[#fff] fixed z-999">
           <div class="btn grid-12 px-[16px]">

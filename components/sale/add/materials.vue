@@ -4,22 +4,11 @@ import { calc } from 'a-calc'
 const Props = defineProps<{
   price: string
   productList: Product[]
-  type: number
 }>()
 const emits = defineEmits<{
-  search: [val: string, type: string, select: number]
+  search: [val: string, type: string]
   openProductList: []
 }>()
-const cardTitle = () => {
-  switch (Props.type) {
-    case 1:
-      return '成品信息'
-    case 2:
-      return '旧料信息'
-    case 3:
-      return '配件信息'
-  }
-}
 
 const { $toast } = useNuxtApp()
 const dialog = useDialog()
@@ -128,7 +117,7 @@ const scanCode = async () => {
 </script>
 
 <template>
-  <common-fold :title="cardTitle()" :is-collapse="false">
+  <common-fold title="产品信息" :is-collapse="false">
     <div class="p-[16px]">
       <div class="btn grid-12 gap-[20px]">
         <div
@@ -258,7 +247,7 @@ const scanCode = async () => {
       </div>
     </template>
 
-    <common-popup v-model:show="showModal" placement="bottom" :title="cardTitle()" width="50%" @close="showModal = false">
+    <common-popup v-model:show="showModal" placement="bottom" title="搜商品" width="50%" @close="showModal = false">
       <div class="grid-12">
         <div class="col-12" uno-md="col-4 offset-4" uno-sm="col-8 offset-2">
           <div>
@@ -290,7 +279,7 @@ const scanCode = async () => {
                 :placeholder="searchType === 'name' ? '请输入商品名称' : '请输入商品条码'" />
             </div>
             <div class="pl-[16px]">
-              <n-button type="info" round @click="emits('search', searchProduct, searchType, Props.type)">
+              <n-button type="info" round @click="emits('search', searchProduct, searchType)">
                 搜索
               </n-button>
             </div>
