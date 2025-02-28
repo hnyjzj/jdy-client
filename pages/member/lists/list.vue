@@ -74,8 +74,12 @@ const fluctuant = ref()
 const initPopup = () => {
   show.value = false
   adjustWay.value = 0
-  fluctuant.value = 0
+  fluctuant.value = ''
   integralParams.value.remark = ''
+  items.value.forEach((item) => {
+    item.isPopoverVisible = false
+    item.selected = ''
+  })
 }
 
 const disposeNumerical = () => {
