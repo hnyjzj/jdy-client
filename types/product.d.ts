@@ -168,3 +168,84 @@ interface inportReq {
   products: Product[]
   store_id: string
 }
+
+/**
+ * 货品记录参数
+ */
+interface HistoryWhere {
+  /**
+   * 操作
+   */
+  action: number
+  /**
+   * 产品ID
+   */
+  product_id: string
+  /**
+   * 门店 ID
+   */
+  store_id: string
+}
+
+/**
+ * ProductHistories
+ */
+interface ProductHistories {
+  /**
+   * 操作
+   */
+  action: number
+  /**
+   * 创建时间
+   */
+  created_at?: Date
+  /**
+   * ID
+   */
+  id: string
+  /**
+   * IP
+   */
+  ip: string
+  /**
+   * 键
+   */
+  key: string
+  /**
+   * 旧值
+   */
+  old_value: any[] | boolean | number | number | { [key: string]: any } | null | string
+  /**
+   * 操作人ID
+   */
+  operator_id: string
+  /**
+   * 操作人信息
+   */
+
+  operator: Staff
+  /**
+   * 产品信息
+   */
+  product: Product
+  /**
+   * 产品ID
+   */
+  product_id: string
+  /**
+   * 来源id
+   */
+  source_id: string
+  /**
+   * 门店 ID
+   */
+  store_id: string
+  /**
+   * 更新时间
+   */
+  updated_at: Date | null
+  /**
+   * 值
+   */
+  value: any[] | boolean | number | number | { [key: string]: any } | null | string
+}

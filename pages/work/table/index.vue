@@ -57,9 +57,10 @@ const allFold = () => {
 const fold = (index: number) => {
   workBenchList.value[index].is_fold = !workBenchList.value[index].is_fold
 }
-
+const modelType = ref()
 // 添加/更新工作台表单
-const addBench = (id: string) => {
+const addBench = (id: string, type: number) => {
+  modelType.value = type
   resetForm(true)
   submitStatus.value = 'add'
   params.value.parent_id = id
@@ -168,6 +169,12 @@ const searchListFn = async (val: string) => {
   const filteredData = filterByKeyword(workBenchList.value, val)
   workBenchList.value = filteredData
 }
+
+/** 获取新增添加标题 */
+function getModelTitle() {
+//   submitStatus.value === 'add' ? '新增' : '编辑'
+  return '11'
+}
 </script>
 
 <template>
@@ -193,7 +200,7 @@ const searchListFn = async (val: string) => {
           <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="delBench" @update="updateBench" @fold="fold" @change-page="changePage" />
           <template v-if="isSetup">
             <button style="all: unset;">
-              <div class="flex items-center mb-4 cursor-pointer" @click="resetForm(true);show = true">
+              <div class="flex items-center mb-4 cursor-pointer" @click="resetForm(true);show = true;modelType = 1">
                 <icon name="i-icon:addsth" :size="26" color="#000" />
                 <div class="text-[14px] text-[#000] pl-1">
                   添加模块
@@ -204,8 +211,8 @@ const searchListFn = async (val: string) => {
         </div>
       </div>
     </common-layout-center>
-    <common-model v-model:model-value="show" :title="submitStatus === 'add' ? '新增' : '编辑'" :show-ok="true" @confirm="() => addWorkbenchform?.submit()">
-      <div class="py-[16px]">
+    <common-model v-model:model-value="show" :title="getModelTitle()" :show-ok="true" @confirm="() => addWorkbenchform?.submit()">
+      <div class="py-[16px] text-color">
         <common-form ref="addWorkbenchform" v-model="params" :rules="rules" @submit="(val: AddWorkbencheReq) => submit(val)">
           <template #title="{ label, error }">
             <div class="pb-[16px]">
@@ -218,7 +225,7 @@ const searchListFn = async (val: string) => {
               </div>
             </div>
           </template>
-          <template #icon>
+          <template v-if="modelType !== 1" #icon>
             <div class="pb-[16px]">
               <div class="add-row">
                 <div>图标</div>
@@ -233,7 +240,7 @@ const searchListFn = async (val: string) => {
               </div>
             </div>
           </template>
-          <template #path="{ label, error }">
+          <template v-if="modelType !== 1" #path="{ label, error }">
             <div class="pb-[16px]">
               <div class="add-row">
                 <div>跳转地址</div>

@@ -5,7 +5,11 @@ const props = defineProps<{
   keyword?: string
 }>()
 const emits = defineEmits<{
-  add: [id: string]
+  /**
+   * @params id: string
+   * @params type: number 1: 添加分类 2: 添加栏目
+   */
+  add: [id: string, type: number]
   del: [id: string]
   update: [bench: WorkBench]
   fold: [index: number]
@@ -15,8 +19,8 @@ const emits = defineEmits<{
 
 const isSetup = defineModel({ type: Boolean, default: false })
 
-function addBench(id: string) {
-  emits('add', id)
+function addBench(id: string, type: number = 0) {
+  emits('add', id, type)
 }
 
 function updateBench(bench: WorkBench) {
@@ -129,7 +133,7 @@ function changePageBench(bench: WorkBench) {
                     <div class="line" />
                     <template v-if="isSetup">
                       <button style="all: unset;">
-                        <div class="flex items-center cursor-pointer" @click="addBench(child?.id)">
+                        <div class="flex items-center cursor-pointer" @click="addBench(child?.id, 1)">
                           <icon name="i-icon:addsth" color="#666666" />
                           <div class="text-[12px] text-[#666666] pl-1">
                             添加栏目

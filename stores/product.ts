@@ -8,12 +8,21 @@ export const useProductManage = defineStore('ProductManage', {
      * 排序后的筛选条件列表
      */
     filterListToArray: FilterWhere<Product>[]
+    /** 记录列表 */
+    productRocordList: ProductHistories[]
+    /** 记录筛选列表 */
+    historyFilterList: Where<ProductHistories>
+    /** 排序后记录筛选列表 */
+    HistoryFilterListToArray: FilterWhere<ProductHistories>[]
   } => ({
     filterList: {} as Where<Product>,
     productList: [],
     productInfo: {} as Product,
     productListTotal: 0,
     filterListToArray: {} as FilterWhere<Product>[],
+    productRocordList: [],
+    historyFilterList: {} as Where<ProductHistories>,
+    HistoryFilterListToArray: {} as FilterWhere<ProductHistories>[],
   }),
   actions: {
     // 货品列表
@@ -99,6 +108,39 @@ export const useProductManage = defineStore('ProductManage', {
       }
       catch (error) {
         throw new Error(`报损失败: ${error || '未知错误'}`)
+      }
+    },
+    /** 货品记录 */
+    async getProductHistory(pamars: ReqList<HistoryWhere>) {
+      try {
+        pamars = { ...pamars, where: { ...pamars.where } }
+        const { data } = await https.post<ResList<ProductHistories>, ReqList<HistoryWhere>>('/product/history/list', pamars)
+        if (data.value.code === HttpCode.SUCCESS) {
+          this.productListTotal = data.value.data.total
+          if (pamars.page === 1) {
+            this.productRocordList = data.value.data.list
+          }
+          else {
+            this.productRocordList = this.productRocordList.concat(data.value.data.list)
+          }
+        }
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`获取货品记录失败: ${error || '未知错误'}`)
+      }
+    },
+    // 获取记录筛选列表
+    async getHistoryWhere() {
+      try {
+        const { data } = await https.get<Where<ProductHistories>>('/product/history/where')
+        if (data.value?.code === HttpCode.SUCCESS) {
+          this.historyFilterList = data.value.data
+          this.HistoryFilterListToArray = sortArr(this.historyFilterList)
+        }
+      }
+      catch (error) {
+        throw new Error(`筛选失败: ${error || '未知错误'}`)
       }
     },
   },
