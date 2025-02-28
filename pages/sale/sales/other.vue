@@ -2,7 +2,7 @@
 // 销售单列表页
 
 useSeoMeta({
-  title: '销售单列表',
+  title: '其他收支单',
 })
 const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
@@ -15,7 +15,7 @@ const filterShow = ref(false)
 
 // 获取列表
 const getList = async (where = {} as Partial<Orders>) => {
-  const params = { page: searchPage.value, limit: 12, where: { ...where, type: 1 } } as ReqList<Orders>
+  const params = { page: searchPage.value, limit: 12, where: { ...where, type: 3 } } as ReqList<Orders>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
@@ -51,7 +51,7 @@ const searchProduct = async (e: string) => {
 }
 
 const searchOrder = async (e: string) => {
-  await getOrderList({ page: 1, limit: 5, where: { id: e, type: 1 } })
+  await getOrderList({ page: 1, limit: 5, where: { id: e } })
 }
 const clearFn = async () => {
   OrdersList.value = []

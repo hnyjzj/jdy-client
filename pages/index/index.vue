@@ -28,17 +28,28 @@ const handleSelectFn = async (id: Stores['id']) => {
       </div>
       <home-greet />
       <common-dark />
-      <home-store
-        v-model:store="myStore"
-        :store-list="myStoreList"
-        @handle-select="handleSelectFn"
-        @get-store-list="() => {
-          getMyStore({ page: 1, limit: 20 })
-        }" />
-      <summary-card-boss />
-      <home-action />
-      <summary-card-sale />
-      <summary-card-inventory />
+
+      <template v-if="myStore.id">
+        <home-store
+          v-model:store="myStore"
+          :store-list="myStoreList"
+          @handle-select="handleSelectFn"
+          @get-store-list="() => {
+            getMyStore({ page: 1, limit: 20 })
+          }" />
+        <summary-card-boss />
+        <home-action />
+        <summary-card-sale />
+        <summary-card-inventory />
+      </template>
+      <template v-else>
+        <div class="pt-[100px]">
+          <icon name="i-svg:empty" dark="dark:i-svg:empty-dark" class="!text-[150px]" :size="200" />
+          <div class="flex-center-row text-[16px] dark:color-[#fff]">
+            暂未分配门店
+          </div>
+        </div>
+      </template>
     </div>
 
     <common-tabbar text="todo" />
