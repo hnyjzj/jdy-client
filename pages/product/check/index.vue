@@ -72,7 +72,7 @@ async function submitWhere(f: Partial<Check>, isSearch = false) {
   if (store_id.value) {
     f.store_id = store_id.value
   }
-  filterData.value = { ...f }
+  filterData.value = { ...f, ...filterData }
   pages.value = 1
   isCanPull.value = true
   checkList.value = []
@@ -181,7 +181,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
       <template #inspector_id>
         <n-select
           v-model:value="filterData.inspector_id"
-          placeholder="请选择盘点人"
+          placeholder="请选择审核人"
           :options="StoreStaffList.map(v => ({
             label: v.nickname,
             value: v.id,
@@ -194,7 +194,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
       <template #inventory_person_id>
         <n-select
           v-model:value="filterData.inventory_person_id"
-          placeholder="请选择审核人"
+          placeholder="请选择盘点人"
           :options="StoreStaffList.map(v => ({
             label: v.nickname,
             value: v.id,

@@ -152,16 +152,6 @@ async function submitWhere(f: Partial<HistoryWhere>) {
       </product-manage-card>
     </common-list-pull>
 
-    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="HistoryFilterListToArray" @submit="submitWhere">
-      <template #store_id>
-        <n-select
-          v-model:value="store_id"
-          menu-size="large"
-          filterable
-          placeholder="选择调入门店"
-          :options="storeCol"
-        />
-      </template>
-    </common-filter-where>
+    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="HistoryFilterListToArray" @submit="submitWhere" />
   </div>
 </template>

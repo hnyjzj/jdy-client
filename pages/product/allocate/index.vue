@@ -60,13 +60,9 @@ const filterData = ref({} as Partial<Allocate>)
 function pull() {
   getList(filterData.value)
 }
-const store_id = ref()
 // 筛选列表
 async function submitWhere(f: Partial<Allocate>) {
-  if (store_id.value) {
-    f.store_id = store_id.value
-  }
-  filterData.value = { ...f }
+  filterData.value = { ...f, ...filterData.value }
   pages.value = 1
   isCanPull.value = true
   allocateList.value = []
@@ -147,11 +143,19 @@ async function submitWhere(f: Partial<Allocate>) {
     <product-manage-bottom />
     <common-create @click="jump('/product/allocate/add')" />
 
-    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="allocateFilterListToArray" @submit="submitWhere">
-      <template #store_id>
+    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="allocateFilterListToArray" @submit="submitWhere" @reset="filterData = {}">
+      <template #from_store_id>
         <n-select
-          v-model:value="store_id"
-          :default-value="0 || '' || undefined || null"
+          v-model:value="filterData.from_store_id"
+          menu-size="large"
+          filterable
+          placeholder="选择调出门店"
+          :options="storeCol"
+        />
+      </template>
+      <template #to_store_id>
+        <n-select
+          v-model:value="filterData.to_store_id"
           menu-size="large"
           filterable
           placeholder="选择调入门店"
