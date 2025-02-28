@@ -4,17 +4,8 @@ useSeoMeta({
 })
 const { $toast } = useNuxtApp()
 
-// 获取头部高度
-const height = ref<number | undefined>(0)
-onMounted(() => {
-  height.value = getHeight('header')
-  if (height.value) {
-    height.value = height.value + 40
-  }
-})
-
 const { getMemberList, getMemberInfo, getMemberWhere, updateIntegral } = useMemberManage()
-const { memberList, memberInfo, filterListToArray, memberListTotal } = storeToRefs(useMemberManage())
+const { memberList, memberInfo, filterListToArray, memberListTotal, searchPage } = storeToRefs(useMemberManage())
 
 const actions = [
   { id: 1, text: '增加' },
@@ -58,10 +49,6 @@ await getMemberWhere()
 
 const openFilter = () => {
   isFilter.value = true
-}
-
-function pull() {
-  getList()
 }
 
 const show = ref(false)
@@ -126,6 +113,11 @@ async function submitWhere(f: Partial<Member>) {
   $toast.error(res.message ?? '筛选失败')
 }
 
+const updatePage = async (page: number) => {
+  searchPage.value = page
+  await getList()
+}
+
 const goIntegral = (id: string) => {
   jump('/member/integral/record', { id })
 }
@@ -140,7 +132,7 @@ const userCancel = () => {
 </script>
 
 <template>
-  <div class="overflow-hidden">
+  <div>
     <common-model
       v-model:model-value="show"
       :show-ok="true"
@@ -220,26 +212,18 @@ const userCancel = () => {
       </div>
     </common-model>
 
+    <product-filter
+      v-model:id="complate" v-model:search="searchKey" :product-list-total="memberListTotal" @filter="openFilter">
+      <template #company>
+        <product-manage-company />
+      </template>
+    </product-filter>
+
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
 
-    <div id="header">
-      <product-filter
-        v-model:id="complate" v-model:search="searchKey" :product-list-total="memberListTotal" @filter="openFilter">
-        <template #company>
-          <product-manage-company />
-        </template>
-      </product-filter>
-    </div>
-
-    <div class="pb-10 overflow-hidden">
-      <common-list-pull :distance="height" :nomore="!nomore" @pull="pull">
-        <member-lists-list
-          :info="memberList"
-          @go-info="userJump"
-          @view-integral="goIntegral"
-          @change-integral="adjustment"
-        />
-      </common-list-pull>
+    <div class="flex flex-col px-[16px] py-[16px]">
+      <member-lists-list :info="memberList" @go-info="userJump" @view-integral="goIntegral" @change-integral="adjustment" />
+      <common-page v-model:page="searchPage" :total="memberListTotal" :limit="12" @update:page="updatePage" />
     </div>
   </div>
 </template>

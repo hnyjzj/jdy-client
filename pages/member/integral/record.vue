@@ -1,17 +1,4 @@
 <script setup lang="ts">
-useSeoMeta({
-  title: '积分记录',
-})
-
-// 获取头部高度
-const height = ref<number | undefined>(0)
-onMounted(() => {
-  height.value = getHeight('header')
-  if (height.value) {
-    height.value = height.value + 40
-  }
-})
-
 const { $toast } = useNuxtApp()
 
 const route = useRoute()
@@ -22,8 +9,26 @@ const nomore = ref(true)
 const isFilter = ref(false)
 const filterData = ref({} as Partial<IntegralRecord>)
 
-const { getIntegralRecord, getIntegralWhere } = useMemberManage()
-const { integralRecord, filterIntegralListToArray, integralRecordTotal } = storeToRefs(useMemberManage())
+const { getIntegralRecord, getIntegralWhere, getMemberInfo } = useMemberManage()
+const { integralRecord, filterIntegralListToArray, integralRecordTotal, memberInfo, searchPage } = storeToRefs(useMemberManage())
+
+const memberParams = ref<Member>({} as Member)
+async function getInfo() {
+  if (route.query.id) {
+    await getMemberInfo(route.query.id as string)
+    memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
+  }
+}
+
+await getInfo()
+
+const memberName = () => {
+  return memberParams.value.name ?? '会员积分记录'
+}
+
+useSeoMeta({
+  title: () => `${memberName()}`,
+})
 
 async function getIntegral(where = {} as Partial<IntegralRecord>) {
   if (!nomore.value)
@@ -69,41 +74,43 @@ async function submitWhere(f: Partial<IntegralRecord>) {
   $toast.error(res.message ?? '筛选失败')
 }
 
-function pull() {
-  getIntegral()
+const updatePage = async (page: number) => {
+  searchPage.value = page
+  await getIntegral()
 }
 </script>
 
 <template>
-  <div class="overflow-hidden">
-    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterIntegralListToArray" @submit="submitWhere" />
+  <div class="flex flex-col">
+    <div class="grid-12 sticky top-0 bg-gradient-linear-[180deg,#3875C5,#467EC9] z-1">
+      <div class="flex items-center justify-between px-[16px] py-[24px] col-12" uno-lg="col-8 offset-2">
+        <div class="flex items-center gap-[8px] font-size-[14px] text-color-#fff">
+          <span>
+            <span>当前会员</span>
+            <span class="px-[2px] font-600">{{ memberName() }}</span>
+            <span>共</span>
+          </span>
+          <span>
+            {{ integralRecordTotal }}
+          </span>
+          <span>
+            条数据
+          </span>
+        </div>
 
-    <div id="header">
-      <div class="grid-12">
-        <div class="flex items-center justify-between px-[16px] py-[16px] col-12" uno-lg="col-8 offset-2">
-          <div class="flex items-center gap-[8px] font-size-[14px] text-color-#fff">
-            <span>
-              当前用户共
-            </span>
-            <span>
-              {{ integralRecordTotal }}
-            </span>
-            <span>
-              条数据
-            </span>
-          </div>
-
-          <div>
-            <product-filter-Senior class="color-[#fff]" @filter="openFilter" />
-          </div>
+        <div>
+          <product-filter-Senior class="color-[#fff]" @filter="openFilter" />
         </div>
       </div>
     </div>
 
-    <div class="pb-10 overflow-hidden">
-      <common-list-pull :distance="height" :nomore="!nomore" @pull="pull">
-        <member-integral-record :data="integralRecord" />
-      </common-list-pull>
+    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterIntegralListToArray" @submit="submitWhere" />
+
+    <div class="px-[16px]">
+      <member-integral-record :data="integralRecord" />
+      <template v-if="integralRecordTotal !== 0">
+        <common-page v-model:page="searchPage" :total="integralRecordTotal" :limit="12" @update:page="updatePage" />
+      </template>
     </div>
   </div>
 </template>
