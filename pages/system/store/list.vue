@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import type { SelectOption } from 'naive-ui'
-
 useSeoMeta({
   title: '门店列表',
 })
-const { getOptionsStafflist } = useStaff()
-const { storesList, addorUpdateForm, storeDetails, filterListToArray, total, searchPage } = storeToRefs(useStores())
-const { getStoreDetail, reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage, deleteStaff, assignStaff } = useStores()
+
+const { storesList, addorUpdateForm, filterListToArray, total, searchPage } = storeToRefs(useStores())
+const { reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
 const { $toast } = useNuxtApp()
 // 新增门店弹窗
 const addOrUpdateShow = ref<boolean>(false)
@@ -15,12 +13,9 @@ const show = ref<boolean>(false)
 
 // 是否有更多数据
 const nomore = ref<boolean>(false)
-// 显示详情页
-const showModal = ref<boolean>(false)
+
 // 筛选请求数据
 const filterData = ref({} as Partial<Stores>)
-// 显示分配组件
-const assignShow = ref<boolean>(false)
 
 // 获取列表
 const getList = async (where = {} as Partial<Stores>) => {
@@ -149,30 +144,6 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
     $toast.error('上传失败，请重试')
   }
 }
-// 移除的员工
-const deleteModel = ref<AssignStaff>({
-  id: undefined,
-  staff_id: [],
-})
-const dialog = useDialog()
-
-//  移除员工
-const deleteStoreStaffFn = async (id: string, index: number) => {
-  dialog.error({
-    title: '确定移除此员工吗?',
-    negativeText: '取消',
-    positiveText: '确定',
-    onPositiveClick: async () => {
-      deleteModel.value.id = storeDetails.value.id
-      deleteModel.value.staff_id = [id]
-      const res = await deleteStaff(deleteModel.value)
-      if (res) {
-        $toast.success('移除成功')
-        storeDetails.value.staffs.splice(index, 1)
-      }
-    },
-  })
-}
 
 // 获取头部高度
 const height = ref<number | undefined>(0)
@@ -194,35 +165,6 @@ function updateWidth() {
   }
   else {
     wid.value = '90%'
-  }
-}
-// 分配员工的参数
-const assignModel = ref<AssignStaff>({
-  id: undefined,
-  staff_id: [],
-})
-// 详情弹窗里的分配员工
-const assignFn = async () => {
-  assignModel.value.id = storeDetails.value.id
-  const res = await assignStaff(assignModel.value)
-  if (res) {
-    $toast.success('分配成功')
-    assignModel.value = {
-      id: undefined,
-      staff_id: [],
-    }
-    await getStoreDetail(storeDetails.value.id)
-  }
-}
-// 搜索员工列表，用于分配员工参数
-const staffList = ref<SelectOption[]>([])
-const searchStaffOptions = async (val: string) => {
-  const res = await getOptionsStafflist({ page: 1, limit: 10, where: { nickname: val } })
-  if (res.length) {
-    staffList.value = res.map(item => ({
-      label: item.nickname,
-      value: item.id,
-    }))
   }
 }
 
@@ -271,13 +213,6 @@ onMounted(() => {
         @edit-submit="editStore" />
     </common-popup>
 
-    <common-popup v-model="showModal" title="门店详情" placement="left" :width="wid">
-      <div>
-        <stores-info :info-detail="storeDetails" />
-        <staff-assign-card :list="storeDetails.staffs" @delete-store-staff="deleteStoreStaffFn" @confirm="assignShow = true" />
-      </div>
-    </common-popup>
-
     <van-dialog v-model:show="deleteDialog" title="删除门店" show-cancel-button @confirm="confirmDelete">
       <div class="text-center py-[16px]">
         确认删除此门店吗?
@@ -290,13 +225,6 @@ onMounted(() => {
         <common-area-select :is-required="false" :showtitle="false" :form="filterData.region" @update="updateArea" />
       </template>
     </common-filter-where>
-    <stores-assign
-      :id="storeDetails.id"
-      v-model:assign-model="assignModel"
-      v-model:assign-show="assignShow"
-      :staff-list="staffList"
-      @search-staff-options="searchStaffOptions"
-      @assign="assignFn" />
   </div>
 </template>
 
