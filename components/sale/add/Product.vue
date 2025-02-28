@@ -129,7 +129,7 @@ const scanCode = async () => {
           }">
           <icon name="i-icon:search" color="#fff" :size="12" />
           <div class="ml-2">
-            搜商品
+            搜索
           </div>
         </div>
         <div
@@ -137,7 +137,7 @@ const scanCode = async () => {
         >
           <icon name="i-icon:scanit" color="#1a6beb" :size="12" />
           <div class="ml-2">
-            扫商品
+            扫码
           </div>
         </div>
       </div>

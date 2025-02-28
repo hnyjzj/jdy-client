@@ -17,6 +17,7 @@ export default defineNuxtConfig({
   devServer: {
     port: 80,
   },
+
   typescript: {
     typeCheck: true,
   },
@@ -39,6 +40,9 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/css/main.scss'],
   vite: {
+    server: {
+      allowedHosts: true,
+    },
     css: {
       preprocessorOptions: {
         scss: {
