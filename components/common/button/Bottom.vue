@@ -20,7 +20,7 @@ const confirm = () => {
 </script>
 
 <template>
-  <div class="btn grid-12 z-999">
+  <div class="btn grid-12 bottom-0 sticky z-1">
     <div class="col-12" uno-lg="col-8 offset-2">
       <div class="flex flex-row gap-2">
         <button class="btn-left cursor-pointer" @click="cancel">
