@@ -4,7 +4,6 @@ const { myStore } = storeToRefs(useStores())
 
 const { getProductList, getProductWhere, importProduct } = useProductManage()
 const { productList, filterList, filterListToArray, productListTotal } = storeToRefs(useProductManage())
-const searchKey = ref('')
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
@@ -16,9 +15,17 @@ const type = ref(2)
 useSeoMeta({
   title: '旧料列表',
 })
-
+/** 打开高级筛选 */
 const openFilter = () => {
   isFilter.value = true
+}
+/** 搜索 */
+async function search(e: string) {
+  await submitWhere({ code: e }, true)
+}
+/** 关闭搜索 */
+async function clearSearch() {
+  await submitWhere({ }, true)
 }
 // 获取货品列表
 async function getList(where = {} as Partial<Product>) {
@@ -70,7 +77,7 @@ async function submitGoods(data: Product[]) {
 }
 
 // 筛选列表
-async function submitWhere(f: Partial<Product>) {
+async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
   filterData.value = { ...f }
   pages.value = 1
   isCanPull.value = true
@@ -78,9 +85,12 @@ async function submitWhere(f: Partial<Product>) {
   const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
     isFilter.value = false
-    return $toast.success('筛选成功')
+    if (!isSearch) {
+      $toast.success('筛选成功')
+    }
+    return
   }
-  $toast.error(res.message ?? '筛选失败')
+  $toast.error(res.message ?? '失败')
 }
 
 /** 编辑 */
@@ -98,7 +108,7 @@ function goAdd() {
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:id="complate" v-model:search="searchKey" :product-list-total="productListTotal" @filter="openFilter">
+      v-model:id="complate" :product-list-total="productListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company />
       </template>

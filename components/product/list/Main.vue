@@ -19,7 +19,7 @@ const edit = (code: string) => {
         <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
           <div class="flex-between">
             <div>
-              旧料条码
+              条码
             </div>
             <div class="text-align-end val">
               {{ info.code }}

@@ -39,7 +39,6 @@ const goodsStatus = {
                   <template v-if="item.label === '门店'">
                     <span>
                       {{ props.productInfo.store.name ?? '' }}
-                      {{ item.name }}
                     </span>
                   </template>
                   <template v-else>

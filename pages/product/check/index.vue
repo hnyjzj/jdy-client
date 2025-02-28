@@ -16,7 +16,6 @@ async function changeStoer() {
 await getStoreList({ page: 1, limit: 100 })
 await changeStoer()
 await getCheckWhere()
-const searchKey = ref('')
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
@@ -25,8 +24,17 @@ const isCanPull = ref(true)
 useSeoMeta({
   title: '货品盘点',
 })
+/** 打开高级筛选 */
 const openFilter = () => {
   isFilter.value = true
+}
+/** 搜索 */
+async function search(e: string) {
+  await submitWhere({ id: e }, true)
+}
+/** 关闭搜索 */
+async function clearSearch() {
+  await submitWhere({ }, true)
 }
 // 获取货品列表
 async function getList(where = {} as Partial<Check>) {
@@ -59,7 +67,7 @@ function pull() {
 }
 const store_id = ref()
 // 筛选列表
-async function submitWhere(f: Partial<Check>) {
+async function submitWhere(f: Partial<Check>, isSearch = false) {
   if (store_id.value) {
     f.store_id = store_id.value
   }
@@ -70,7 +78,10 @@ async function submitWhere(f: Partial<Check>) {
   const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
     isFilter.value = false
-    return $toast.success('筛选成功')
+    if (!isSearch) {
+      $toast.success('筛选成功')
+    }
+    return
   }
   $toast.error(res.message ?? '筛选失败')
 }
@@ -107,7 +118,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
     <!-- 筛选 -->
     <div id="header" class="sticky top-0 bg-[#3875C5] z-1">
       <product-filter
-        v-model:id="complate" v-model:search="searchKey" :product-list-total="checkTotal" @filter="openFilter">
+        v-model:id="complate" :product-list-total="checkTotal" placeholder="搜索盘点单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
         <template #company>
           <product-manage-company />
         </template>
@@ -123,7 +134,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
                 <template v-if="item.input === 'text'">
                   <div class="flex py-[4px] justify-between">
                     <div>
-                      {{ item.label }}
+                      {{ item.label === 'ID' ? '盘点单号' : item.label }}
                     </div>
                     <div class="text-align-end">
                       {{ info[item.name] }}

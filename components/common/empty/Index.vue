@@ -5,7 +5,6 @@ const props = withDefaults(defineProps<{
   deg?: string
   size?: string
   isShadow?: boolean
-
   text?: string
 }>(), {
   img: '/images/empty/record.png',

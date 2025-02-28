@@ -1,11 +1,22 @@
 <script setup lang="ts">
 const props = defineProps({
   productListTotal: Number,
+  placeholder: String,
 })
-const emits = defineEmits(['filter'])
-const search = defineModel<string>('search', { default: '' })
+const emits = defineEmits<{
+  search: [e: string]
+  clear: []
+  filter: []
+  clearSearch: []
+}>()
+const search = (e: string) => {
+  emits('search', e)
+}
 const filter = () => {
   emits('filter')
+}
+const clearSearch = () => {
+  emits('clearSearch')
 }
 </script>
 
@@ -17,7 +28,7 @@ const filter = () => {
           <slot name="company" />
         </div>
         <div class="col-8 offset-4 ml-4">
-          <product-filter-search v-model:search-key="search" />
+          <product-filter-search :placeholder="placeholder" @submit="search" @clear="clearSearch" />
         </div>
       </div>
       <div class="col-12 grid-12 lg:col-8 lg:offset-2 pt-[12px] pb-[16px]">

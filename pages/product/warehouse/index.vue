@@ -6,7 +6,6 @@ const { importProduct } = useProductManage()
 const { filterList } = storeToRefs(useProductManage())
 
 const { EnterList, EnterToArray, EnterListTotal } = storeToRefs(useEnter())
-const searchKey = ref('')
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
@@ -18,8 +17,17 @@ const isBatchImportModel = ref(false)
 useSeoMeta({
   title: '入库单',
 })
+/** 打开高级筛选 */
 const openFilter = () => {
   isFilter.value = true
+}
+/** 搜索 */
+async function search(e: string) {
+  await submitWhere({ id: e }, true)
+}
+/** 关闭搜索 */
+async function clearSearch() {
+  await submitWhere({ }, true)
 }
 // 获取货品列表
 async function getList(where = {} as Partial<Enter>) {
@@ -50,7 +58,7 @@ function pull() {
 }
 
 // 筛选列表
-async function submitWhere(f: Partial<Enter>) {
+async function submitWhere(f: Partial<Enter>, isSearch: boolean = false) {
   filterData.value = { ...f }
   pages.value = 1
   isCanPull.value = true
@@ -58,7 +66,10 @@ async function submitWhere(f: Partial<Enter>) {
   const res = await getList(filterData.value)
   if (res?.code === HttpCode.SUCCESS) {
     isFilter.value = false
-    return $toast.success('筛选成功')
+    if (!isSearch) {
+      $toast.success('筛选成功')
+    }
+    return
   }
   $toast.error(res?.message ?? '筛选失败')
 }
@@ -99,7 +110,7 @@ function goAdd() {
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:id="complate" v-model:search="searchKey" :product-list-total="EnterListTotal" @filter="openFilter">
+      v-model:id="complate" :product-list-total="EnterListTotal" placeholder="搜索入库单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company />
       </template>

@@ -14,7 +14,6 @@ function changeStoer() {
 await getStoreList({ page: 1, limit: 20 })
 await changeStoer()
 await getAllocateWhere()
-const searchKey = ref('')
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
@@ -23,8 +22,17 @@ const isCanPull = ref(true)
 useSeoMeta({
   title: '货品调拨',
 })
+/** 打开高级筛选 */
 const openFilter = () => {
   isFilter.value = true
+}
+/** 搜索 */
+async function search(e: string) {
+  await submitWhere({ id: e })
+}
+/** 关闭搜索 */
+async function clearSearch() {
+  await submitWhere({ })
 }
 // 获取货品列表
 async function getList(where = {} as Partial<Allocate>) {
@@ -75,7 +83,7 @@ async function submitWhere(f: Partial<Allocate>) {
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:id="complate" v-model:search="searchKey" :product-list-total="allocateTotal" @filter="openFilter">
+      v-model:id="complate" :product-list-total="allocateTotal" placeholder="搜索调拨单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company />
       </template>
