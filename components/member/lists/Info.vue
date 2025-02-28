@@ -185,6 +185,7 @@ const backtrack = () => {
                 <div class="secondary-bottom">
                   <textarea
                     name="textarea"
+                    placeholder="该会员暂无地址"
                     rows="5"
                     cols="30"
                     disabled
