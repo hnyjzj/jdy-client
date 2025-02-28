@@ -43,9 +43,7 @@ const ruleList: Rule[] = [
     <div class="flex flex-col gap-[16px] px-[16px] py-[16px] col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
       <finance-achievement-rule :lists="ruleList" />
     </div>
-    <div class="h-[80px]">
-      <common-button-bottom />
-    </div>
+    <common-button-bottom />
   </div>
 </template>
 

@@ -282,14 +282,12 @@ const backtrack = () => {
       </common-gradient>
     </div>
   </div>
-  <div class="h-[80px]">
-    <common-button-bottom
-      confirm-text="编辑"
-      cancel-text="返回"
-      @confirm="() => emit('goEdit', memberParams.id)"
-      @cancel="backtrack"
-    />
-  </div>
+  <common-button-bottom
+    confirm-text="编辑"
+    cancel-text="返回"
+    @confirm="() => emit('goEdit', memberParams.id)"
+    @cancel="backtrack"
+  />
 </template>
 
 <style scoped lang="scss">

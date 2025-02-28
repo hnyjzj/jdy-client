@@ -50,9 +50,7 @@ const list = ref([
           </div>
         </template>
       </sale-add-card>
-      <div class="h-[80px]">
-        <common-button-bottom />
-      </div>
+      <common-button-bottom />
     </div>
   </div>
 </template>
