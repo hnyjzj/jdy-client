@@ -106,4 +106,8 @@ interface AllocateReq {
    * 产品类型
    */
   type: number
+  /**
+   * 门店id
+   */
+  store_id: string
 }

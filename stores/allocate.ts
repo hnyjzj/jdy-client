@@ -18,6 +18,7 @@ export const useAllocate = defineStore('Allocate', {
     // 调拨列表
     async getAllocate(pamars: ReqList<Allocate>) {
       try {
+        pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
         const { data } = await https.post<ResList<Allocate>, ReqList<Allocate>>('/product/allocate/list', pamars)
         if (data.value.code === HttpCode.SUCCESS) {
           this.allocateTotal = data.value.data.total
@@ -113,6 +114,7 @@ export const useAllocate = defineStore('Allocate', {
     /** 创建调拨单 */
     async createAllocate(params: AllocateReq) {
       try {
+        params = { ...params, store_id: useStores().myStore.id }
         const { data } = await https.post<AllocateReq, any >('/product/allocate/create', params)
         return data.value
       }

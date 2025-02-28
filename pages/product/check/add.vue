@@ -47,7 +47,7 @@ function changeStore() {
   })
 }
 await getCheckWhere()
-await getStoreList({ page: 1, limit: 100 })
+await getStoreList({ page: 1, limit: 20 })
 await changeStore()
 forRules()
 /**

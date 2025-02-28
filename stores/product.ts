@@ -113,7 +113,7 @@ export const useProductManage = defineStore('ProductManage', {
     /** 货品记录 */
     async getProductHistory(pamars: ReqList<HistoryWhere>) {
       try {
-        pamars = { ...pamars, where: { ...pamars.where } }
+        pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
         const { data } = await https.post<ResList<ProductHistories>, ReqList<HistoryWhere>>('/product/history/list', pamars)
         if (data.value.code === HttpCode.SUCCESS) {
           this.productListTotal = data.value.data.total

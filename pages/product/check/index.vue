@@ -5,7 +5,7 @@ const { getStoreStaffList } = useStores()
 const { getCheckList, getCheckWhere } = useCheck()
 const { checkList, checkFilterListToArray, checkTotal } = storeToRefs(useCheck())
 const { storesList } = storeToRefs(useStores())
-const { getStoreList } = useStores()
+const { getStoreList, getMyStore } = useStores()
 const storeCol = ref()
 async function changeStoer() {
   storeCol.value = []
@@ -13,7 +13,8 @@ async function changeStoer() {
     storeCol.value.push({ label: item.name, value: item.id })
   })
 }
-await getStoreList({ page: 1, limit: 100 })
+await getStoreList({ page: 1, limit: 20 })
+await getMyStore({ page: 1, limit: 20 })
 await changeStoer()
 await getCheckWhere()
 const complate = ref(0)
