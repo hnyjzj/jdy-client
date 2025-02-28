@@ -62,7 +62,7 @@ const checkRatio = () => {
 
 <template>
   <common-fold :title="props.title" :is-collapse="false">
-    <div class="p-[16px] w-auto flex flex-col gap-[12px]" uno-lg="grid grid-cols-1 gap-[16px] grid-cols-0">
+    <div class="p-[16px] w-auto flex flex-col" uno-lg="grid grid-cols-1 gap-[16px] grid-cols-0">
       <n-grid :cols="24" :x-gap="8">
         <n-form-item-gi :span="12" label="订单类型" path="type" class="">
           <n-select

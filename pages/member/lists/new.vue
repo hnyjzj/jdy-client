@@ -295,9 +295,7 @@ const execute = async () => {
         </div>
       </div>
     </div>
-    <div class="h-[80px]">
-      <common-button-bottom :confirm-text="`确认${guideTxt()}`" cancel-text="取消" @confirm="execute" @cancel="backtrack" />
-    </div>
+    <common-button-bottom :confirm-text="`确认${guideTxt()}`" cancel-text="取消" @confirm="execute" @cancel="backtrack" />
   </div>
 </template>
 

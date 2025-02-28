@@ -5,7 +5,8 @@ import { showConfirmDialog } from 'vant'
 const { $toast } = useNuxtApp()
 const { addWorkbench, getWorkbenchList, delWorkbench, updateWorkbench, uploadIcon } = useWorkbenche()
 const { workBenchList } = storeToRefs(useWorkbenche())
-
+const { searchPage } = storeToRefs(useOrder())
+searchPage.value = 1
 useSeoMeta({
   title: '工作台',
 })
