@@ -23,19 +23,21 @@ const updatePage = (p: number) => {
 
 <template>
   <div>
-    <div class="py-[16px] flex-center-row">
-      <n-pagination
-        v-model:page="page"
-        :style="{
-          '--n-item-text-color-active': '#4678B9',
-          '--n-item-border-active': '1px solid #2976EF',
-          '--n-item-text-color-hover': '#333',
-        }" :page-count="pageCount"
-        :page-slot="6"
+    <template v-if="pageCount !== 1">
+      <div class="py-[16px] flex-center-row">
+        <n-pagination
+          v-model:page="page"
+          :style="{
+            '--n-item-text-color-active': '#4678B9',
+            '--n-item-border-active': '1px solid #2976EF',
+            '--n-item-text-color-hover': '#333',
+          }" :page-count="pageCount"
+          :page-slot="6"
 
-        size="large"
-        @update:page="updatePage"
-      />
-    </div>
+          size="large"
+          @update:page="updatePage"
+        />
+      </div>
+    </template>
   </div>
 </template>
