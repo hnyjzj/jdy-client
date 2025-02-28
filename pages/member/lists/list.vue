@@ -25,7 +25,6 @@ const isFilter = ref(false)
 const filterData = ref({} as Partial<Member>)
 const limit = 12
 
-// const pages = ref(1)
 async function getList(where = {} as Partial<Member>) {
   const params = { page: searchPage.value, limit } as ReqList<Member>
   if (JSON.stringify(where) !== '{}') {

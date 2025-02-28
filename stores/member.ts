@@ -81,21 +81,22 @@ export const useMemberManage = defineStore('Member', {
     },
     // 获取会员积分详情
     async getIntegralRecord(params: ReqList<IntegralRecord>) {
-      try {
-        const { data } = await https.post<ResList<IntegralRecord>, ReqList<IntegralRecord>>('/member/integral/list', params)
-        if (data.value.code === HttpCode.SUCCESS) {
-          this.integralRecordTotal = data.value.data.total
-          if (params.page === 1) {
-            this.integralRecord = data.value.data.list
-          }
-          else {
-            this.integralRecord = this.integralRecord.concat(data.value.data.list)
-          }
-        }
-        return data.value
+      if (params.page === 1) {
+        this.integralRecord = []
       }
-      catch (error) {
-        throw new Error(`获取会员积分详情失败: ${error || '未知错误'}`)
+      const { data } = await https.post<ResList<IntegralRecord>, ReqList<IntegralRecord>>('/member/integral/list', params)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.integralRecordTotal = data.value.data.total
+        if (data.value.data.list.length > 0) {
+          this.integralRecord = data.value.data.list
+          if (this.integralRecord.length === this.integralRecordTotal) {
+            return false
+          }
+          return true
+        }
+        else {
+          return false
+        }
       }
     },
     // 获取积分筛选列表
