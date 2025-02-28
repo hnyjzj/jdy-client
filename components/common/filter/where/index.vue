@@ -8,6 +8,10 @@ const props = defineProps<{
    * 筛选条件
    */
   filter: FilterWhere<T>[]
+  /**
+   * 表单禁用
+   */
+  disabled?: Array<keyof T>
 }>()
 const emits = defineEmits<{
   /**
@@ -40,9 +44,6 @@ const Init = ref<T>({ ...props.data })
  * 提交
  */
 function submit() {
-  if (datas.value?.disabled) {
-    delete datas.value.disabled
-  }
   emits('submit', datas.value)
 }
 
@@ -104,16 +105,16 @@ const presetToSelect = (filter: FilterWhere<T>): { label: string, value: any }[]
                 <slot :name="name" :filter="props.filter[i]">
                   <template v-if="input === 'text'">
                     <div>
-                      <n-input v-model:value="datas[name as string]" size="large" :placeholder="`输入${label}`" round :disabled="datas?.disabled?.includes(name)" />
+                      <n-input v-model:value="datas[name as string]" size="large" :placeholder="`输入${label}`" round :disabled="disabled?.includes(name)" />
                     </div>
                   </template>
                   <template v-if="input === 'number'">
                     <div>
-                      <n-input-number v-model:value="datas[name as string]" size="large" :placeholder="`输入${label}`" round :disabled="datas?.disabled?.includes(name)" />
+                      <n-input-number v-model:value="datas[name as string]" size="large" :placeholder="`输入${label}`" round :disabled="disabled?.includes(name)" />
                     </div>
                   </template>
                   <template v-if="input === 'switch'">
-                    <n-switch v-model:value="datas[name as string]" size="large" :style="{ 'border-radius': '20px' }" round :disabled="datas?.disabled?.includes(name)" />
+                    <n-switch v-model:value="datas[name as string]" size="large" :style="{ 'border-radius': '20px' }" round :disabled="disabled?.includes(name)" />
                   </template>
                   <template v-if="input === 'select'">
                     <n-select
@@ -123,14 +124,14 @@ const presetToSelect = (filter: FilterWhere<T>): { label: string, value: any }[]
                       fable
                       :placeholder="`请选择${label}`"
                       :options="presetToSelect(props.filter[i]) "
-                      :disabled="datas?.disabled?.includes(name)"
+                      :disabled="disabled?.includes(name)"
                     />
                   </template>
                   <template v-if="input === 'textarea'">
-                    <n-input v-model:value="datas[name as string]" :placeholder="`输入${label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" :disabled="datas?.disabled?.includes(name)" />
+                    <n-input v-model:value="datas[name as string]" :placeholder="`输入${label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" :disabled="disabled?.includes(name)" />
                   </template>
                   <template v-if="input === 'date'">
-                    <n-date-picker v-model:value="datas[name as string]" value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" size="large" :placeholder="`选择${label}`" round clearable :disabled="datas?.disabled?.includes(name)" />
+                    <n-date-picker v-model:value="datas[name as string]" value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" size="large" :placeholder="`选择${label}`" round clearable :disabled="disabled?.includes(name)" />
                   </template>
                 </slot>
               </div>

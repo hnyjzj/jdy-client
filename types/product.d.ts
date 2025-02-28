@@ -141,6 +141,18 @@ interface Product {
    * 0:全部 1:成品 2:旧料 3:配件
    */
   type: number
+  /**
+   * 库存
+   */
+  stock: number
+  /**
+   * 门店id
+   */
+  store_id: string
+  /**
+   * 门店
+   */
+  store: Stores
 }
 interface ProductDamage {
   code: Product['code']
@@ -150,4 +162,9 @@ interface ProductDamage {
 interface ProductTransfer {
   code: Product['code']
   type: Product['type']
+}
+
+interface inportReq {
+  products: Product[]
+  store_id: string
 }

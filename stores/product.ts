@@ -19,6 +19,7 @@ export const useProductManage = defineStore('ProductManage', {
     // 货品列表
     async getProductList(pamars: ReqList<Product>) {
       try {
+        pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
         const { data } = await https.post<ResList<Product>, ReqList<Product>>('/product/list', pamars)
         if (data.value.code === HttpCode.SUCCESS) {
           this.productListTotal = data.value.data.total
@@ -36,9 +37,9 @@ export const useProductManage = defineStore('ProductManage', {
       }
     },
     // 货品导入
-    async importProduct(products: Product[]) {
+    async importProduct(params: inportReq) {
       try {
-        const { data } = await https.post<any, { products: Product[] }>('/product/enter/create', { products })
+        const { data } = await https.post<any, inportReq>('/product/enter/create', params)
         return data.value
       }
       catch (error) {

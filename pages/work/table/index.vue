@@ -21,7 +21,6 @@ const params = ref<AddWorkbencheReq>({
 })
 const rules = ref<Rules<AddWorkbencheReq>>({
   title: [{ message: '标题不能为空', validator: 'required' }],
-  path: [{ message: '跳转地址不能为空', validator: 'required' }],
 })
 // 折叠状态
 const foldType = ref<Record<string, boolean>>({})
@@ -133,7 +132,7 @@ async function changePage(bench: WorkBench) {
   if (!bench.path) {
     return
   }
-  jump(bench.path)
+  navigateTo(bench.path)
 }
 
 // 删除头像

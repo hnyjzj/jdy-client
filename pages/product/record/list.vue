@@ -1,13 +1,11 @@
 <script lang="ts" setup>
 useSeoMeta({
-  title: '条目管理',
+  title: '货品记录',
 })
 </script>
 
 <template>
-  <div>
-    条目管理
-  </div>
+  <div />
 </template>
 
 <style lang="scss" scoped>
