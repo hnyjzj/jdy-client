@@ -1,12 +1,13 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
-  name: string
-  dark?: string
+  name?: string
+  dark?: `dark:${string}`
   color?: string
   size?: number | string
 }>(), {
   color: 'currentColor',
   size: 16,
+  name: 'i-svg:empty',
 })
 
 const attrs = useAttrs()

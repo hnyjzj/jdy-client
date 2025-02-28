@@ -43,12 +43,7 @@ const handleSelectFn = async (id: Stores['id']) => {
         <summary-card-inventory />
       </template>
       <template v-else>
-        <div class="pt-[100px]">
-          <icon name="i-svg:empty" dark="dark:i-svg:empty-dark" class="!text-[150px]" :size="200" />
-          <div class="flex-center-row text-[16px] dark:color-[#fff]">
-            暂未分配门店
-          </div>
-        </div>
+        <common-emptys text="暂未分配门店" />
       </template>
     </div>
 
