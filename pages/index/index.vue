@@ -2,6 +2,7 @@
 useSeoMeta({
   title: '待办',
 })
+
 const { myStoreTodaySale, myStoreTodayInventory } = homeDataStore()
 const { myStore, myStoreList } = storeToRefs(useStores())
 const { getMyStore, switchStore } = useStores()
