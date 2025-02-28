@@ -5,15 +5,14 @@ useSeoMeta({
   title: '门店列表',
 })
 const { getOptionsStafflist } = useStaff()
-const { storesList, addorUpdateForm, storeDetails, filterListToArray, total } = storeToRefs(useStores())
+const { storesList, addorUpdateForm, storeDetails, filterListToArray, total, searchPage } = storeToRefs(useStores())
 const { getStoreDetail, reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage, deleteStaff, assignStaff } = useStores()
 const { $toast } = useNuxtApp()
 // 新增门店弹窗
 const addOrUpdateShow = ref<boolean>(false)
 // 搜索弹窗显示状态
 const show = ref<boolean>(false)
-// 搜索条件 页码
-const searchPage = ref<number>(1)
+
 // 是否有更多数据
 const nomore = ref<boolean>(false)
 // 显示详情页
@@ -51,8 +50,7 @@ await getStoreWhere()
 
 // 展示详情
 const getStoreInfo = async (id: string) => {
-  await getStoreDetail(id)
-  showModal.value = true
+  navigateTo(`/system/store/info?id=${id}`)
 }
 
 // 开发新增门店弹窗, 清空表单数据
@@ -228,6 +226,11 @@ const searchStaffOptions = async (val: string) => {
   }
 }
 
+const updatePage = async (page: number) => {
+  searchPage.value = page
+  await getList()
+}
+
 // 添加防抖监听（避免频繁触发）
 const resizeTimer = ref()
 onMounted(() => {
@@ -255,17 +258,11 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <common-list-pull
-      :distance="height"
-      :nomore="nomore"
-      @pull="() => {
-        searchPage += 1
-        getList()
-      }">
-      <template #default>
-        <stores-card @get-detail="getStoreInfo" @edit-store="edit" @delete-store="deleteStoreFn" />
-      </template>
-    </common-list-pull>
+
+    <div class="p-[16px]">
+      <stores-card @get-detail="getStoreInfo" @edit-store="edit" @delete-store="deleteStoreFn" />
+    </div>
+    <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
     <!-- 新增或更新门店弹窗 -->
     <common-popup v-model="addOrUpdateShow" :title="addorUpdateForm.id ? '编辑门店' : '新增门店'">
       <stores-add-update
