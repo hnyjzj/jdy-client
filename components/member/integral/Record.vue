@@ -158,11 +158,7 @@ const absoluteValue = (value: number) => {
 
       <template v-else>
         <div class="pt-[160px] py-[32px]">
-          <common-empty
-            deg="45deg"
-            size="120px"
-            :is-shadow="false"
-            text="该会员暂无积分记录" />
+          <common-emptys text="暂无数据" />
         </div>
       </template>
     </div>

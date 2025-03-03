@@ -220,7 +220,7 @@ const userCancel = () => {
   --uno: 'flex flex-col gap-[6px]';
 
   &-caption {
-    --uno: 'font-size-[14px] color-[#333333]';
+    --uno: 'font-size-[14px] color-[#333333] dark:color-[#fff]';
   }
 
   &-specific {
@@ -229,7 +229,7 @@ const userCancel = () => {
 }
 
 .disabled {
-  --uno: 'flex flex-row justify-between font-size-[14px] text-[#808089] rounded-[60px] bg-[rgba(222,222,222,0.5)] border-solid border-[1px] border-[rgba(230,230,232,0.7)] px-[10px] py-[8px] flex flex-row justify-items-start';
+  --uno: 'flex flex-row justify-between font-size-[14px] text-[#808089] dark:text-[#CBCDD1] rounded-[60px] bg-[rgba(222,222,222,0.5)] dark:bg-[rgba(222,222,222,0.3)] border-solid border-[1px] border-[rgba(230,230,232,0.7)] dark:border-[rgba(230,230,232,0.4)] px-[10px] py-[8px] flex flex-row justify-items-start cursor-not-allowed';
 
   .variational {
     --uno: 'flex-center-row gap-[2px]';
@@ -241,7 +241,7 @@ const userCancel = () => {
 }
 
 .area {
-  --uno: 'rounded-[8px] bg-[#fff] text-[#333] min-w-full max-h-[80px] px-[12px] py-[8px] font-size-[14px] border-solid border-[#E6E6E8] focus:border-[#3971F3] resize-none';
+  --uno: 'rounded-[8px] bg-[rgba(255,255,255,0.5)] dark:bg-[rgba(255,255,255,0.2)] text-[#333] dark:text-[#666] dark:border-[rgba(230,230,232,0.2)] min-w-full max-h-[80px] px-[12px] py-[8px] font-size-[14px] border-solid border-[#E6E6E8] focus:border-[#3971F3] resize-none';
 }
 
 .input {
