@@ -143,5 +143,10 @@ export const useProductManage = defineStore('ProductManage', {
         throw new Error(`筛选失败: ${error || '未知错误'}`)
       }
     },
+    // 上传产品图
+    async uploadProductImg(req: UploadProductImg) {
+      const { data } = await https.upload<UploadRes, UploadProductImg>('/upload/product', req)
+      return data.value
+    },
   },
 })

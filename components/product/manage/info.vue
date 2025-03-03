@@ -22,6 +22,11 @@ const goodsStatus = {
       <common-tags type="orange" :text="goodsStatus[props.productInfo.status] ?? ''" />
     </template>
     <template #body>
+      <div class="flex gap-4">
+        <template v-for="(img, index) in productInfo.images" :key="index">
+          <img class="" :src="ImageUrl(img)" width="100" height="100">
+        </template>
+      </div>
       <div class="flex flex-col gap-3 px-4 py-3">
         <template v-for="(item, index) in props.filterListToArray" :key="index">
           <template v-if="item.label">

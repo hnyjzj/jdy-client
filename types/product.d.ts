@@ -153,6 +153,7 @@ interface Product {
    * 门店
    */
   store: Stores
+  images: string[]
 }
 interface ProductDamage {
   code: Product['code']
@@ -248,4 +249,12 @@ interface ProductHistories {
    * 值
    */
   value: any[] | boolean | number | number | { [key: string]: any } | null | string
+}
+
+/**
+ * 上传产品图参数
+ */
+interface UploadProductImg {
+  image: file
+  product_id: string
 }

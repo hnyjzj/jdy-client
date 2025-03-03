@@ -1,10 +1,12 @@
 <script lang="ts" setup>
+import type { UploadCustomRequestOptions } from 'naive-ui'
+
 useSeoMeta({
   title: '查看/编辑货品',
 })
 const { $toast } = useNuxtApp()
 
-const { getProductInfo, getProductWhere, updateProductInfo } = useProductManage()
+const { getProductInfo, getProductWhere, updateProductInfo, uploadProductImg } = useProductManage()
 const { productInfo, filterList, filterListToArray } = storeToRefs(useProductManage())
 
 // 成品列表详情
@@ -12,12 +14,13 @@ useSeoMeta({
   title: '列表详情',
 })
 const route = useRoute()
-const productPamas = ref<Product>({} as Product)
-
+const productParams = ref<Product>({} as Product)
+/** 文件上传列表 */
+const previewFileList = ref<any[]>([])
 async function getInfo() {
   if (route.query.code) {
     await getProductInfo(route.query.code as string)
-    productPamas.value = JSON.parse(JSON.stringify(productInfo.value))
+    productParams.value = JSON.parse(JSON.stringify(productInfo.value))
   }
 }
 
@@ -26,9 +29,9 @@ await getProductWhere()
 
 // 参数转换相应类型
 function transformData() {
-  for (const key in productPamas.value) {
+  for (const key in productParams.value) {
     const k = key as keyof Product
-    let v = productPamas.value[k]
+    let v = productParams.value[k]
     switch (filterList.value[k]?.type) {
       case 'number':
         if (v) {
@@ -47,13 +50,13 @@ function transformData() {
       default:
         break
     }
-    productPamas.value = { ...productPamas.value, [k]: v }
+    productParams.value = { ...productParams.value, [k]: v }
   }
   updata()
 }
 
 async function updata() {
-  const res = await updateProductInfo(productPamas.value)
+  const res = await updateProductInfo(productParams.value)
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('更新成功')
     await getInfo()
@@ -64,7 +67,7 @@ async function updata() {
 }
 // 取消更新 数据恢复为修改之前
 function cancelUpdata() {
-  productPamas.value = JSON.parse(JSON.stringify(productInfo.value))
+  productParams.value = JSON.parse(JSON.stringify(productInfo.value))
 }
 const presetToSelect = (filter: FilterWhere<Product>): { label: string, value: any }[] => {
   if (!filter.preset) {
@@ -76,6 +79,11 @@ const presetToSelect = (filter: FilterWhere<Product>): { label: string, value: a
         return {
           label: filter.preset[key],
           value: Number(key),
+        }
+      case 'float':
+        return {
+          label: filter.preset[key],
+          value: Number.parseFloat(key),
         }
       default:
         return {
@@ -92,9 +100,28 @@ const beforeUpload = (data: any) => {
     return false
   }
 }
-const file = ref()
-function customRequest(e: any) {
-  file.value.image = e.file.file?.name
+
+/** 产品状态 */
+const goodsStatus = {
+  0: '全部',
+  1: '正常',
+  2: '报损',
+  3: '调拨',
+  4: '已售',
+  5: '退货',
+  6: '盘点中',
+}
+// 上传
+async function customRequest({ file }: UploadCustomRequestOptions) {
+  // 上传接口
+  const params = {
+    image: file.file,
+    product_id: productInfo.value.code,
+  }
+  const res = await uploadProductImg(params)
+  if (res.code === HttpCode.SUCCESS) {
+    productParams.value.images.push(res.data.url)
+  }
 }
 </script>
 
@@ -102,45 +129,34 @@ function customRequest(e: any) {
   <div>
     <common-layout-center>
       <div class="px-4 pt-5">
-        <div class="flex">
-          <div>
-            <n-upload
-              action="#"
-              :custom-request="customRequest"
-              list-type="image-card"
-              :max="1"
-              @before-upload="beforeUpload"
-            />
+        <div>
+          <div class="flex items-center">
+            <div class="flex gap-4 flex-wrap">
+              <template v-for="(img, index) in productInfo.images" :key="index">
+                <img :src="ImageUrl(img)" width="100" height="100">
+              </template>
+              <n-upload
+                action="#"
+                :style="{ width: '100px', height: '100px' }"
+                list-type="image-card"
+                :default-file-list="previewFileList"
+                :custom-request="customRequest"
+                @before-upload="beforeUpload"
+              />
+            </div>
           </div>
-          <div class="flex-1 ml-4 grid gap-y-2 text-[#FFF] text-[12px]">
+          <div class="flex-1 grid gap-y-2 text-[#FFF] text-[12px] my-4">
             <div class="flex justify-between">
               <div>状态</div>
-              <div class="flex">
-                <div class="flex items-center">
-                  <icon name="i-svg:selected" :size="16" />
-                  <div class="ml-1">
-                    在库
-                  </div>
-                </div>
-                <div class="flex items-center ml-6">
-                  <van-icon name="circle" size="16" />
-                  <div class="ml-1">
-                    在库
-                  </div>
-                </div>
-              </div>
+              <common-tags type="orange" :text="goodsStatus[productInfo.status] ?? ''" />
             </div>
             <div class="flex justify-between">
-              <div>所在仓库</div>
-              <div />
-            </div>
-            <div class="flex justify-between">
-              <div>大类</div>
-              <div>成品仓</div>
+              <div>所在门店</div>
+              <div>{{ productInfo.store.name }}</div>
             </div>
             <div class="flex justify-between">
               <div>供应商</div>
-              <div>{{ productInfo.supplier }}</div>
+              <div>{{ filterList.supplier?.preset[productInfo.supplier] }}</div>
             </div>
           </div>
         </div>
@@ -148,23 +164,39 @@ function customRequest(e: any) {
           <template v-for="(item, index) in filterListToArray" :key="index">
             <template v-if="item.update">
               <div class="mb-4">
+                <div class="label">
+                  {{ item.label }}
+                </div>
                 <template v-if="item.input === 'text'">
-                  <div class="label">
-                    {{ item.label }}
-                  </div>
-                  <common-frame v-model="productPamas[item.name]" :type="item?.type" :tip="String(productPamas[item.name])" />
+                  <n-input
+                    v-model:value="productParams[item.name]"
+                    :placeholder="String(productParams[item.name])"
+                  />
+                </template>
+                <template v-else-if="item.input === 'number'">
+                  <n-input-number
+                    v-model:value="productParams[item.name]"
+                    :placeholder="String(productParams[item.name])"
+                    :default-value="0"
+                  />
                 </template>
                 <template v-else-if="item?.input === 'select'">
-                  <div class="label">
-                    {{ item?.label }}
-                  </div>
                   <n-select
-                    v-model:value="productPamas[item.name]"
-                    :default-value="0 || '' || undefined || null"
+                    v-model:value="productParams[item.name]"
+                    :default-value="0"
                     menu-size="large"
                     fable
                     :placeholder="`请选择${item.label}`"
                     :options="presetToSelect(item) "
+                  />
+                </template>
+                <template v-else-if="item?.input === 'switch'">
+                  <n-switch v-model:value="productParams[item.name]" />
+                </template>
+                <template v-else-if="item?.input === 'textarea'">
+                  <n-input
+                    v-model:value="productParams[item.name]"
+                    :placeholder="String(productParams[item.name])"
                   />
                 </template>
               </div>
