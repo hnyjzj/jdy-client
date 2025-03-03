@@ -10,6 +10,7 @@ export const useMemberManage = defineStore('Member', {
     filterListToArray: FilterWhere<Member>[]
     filterIntegralListToArray: FilterWhere<IntegralRecord>[]
     searchPage: number
+    searchIntegralPage: number
   } => ({
     memberList: [],
     filterList: {},
@@ -21,6 +22,7 @@ export const useMemberManage = defineStore('Member', {
     filterListToArray: {} as FilterWhere<Member>[],
     filterIntegralListToArray: {} as FilterWhere<IntegralRecord>[],
     searchPage: 1,
+    searchIntegralPage: 1,
   }),
 
   actions: {

@@ -6,7 +6,7 @@ const filterData = ref({} as Partial<IntegralRecord>)
 const limit = 12
 
 const { getIntegralRecord, getIntegralWhere, getMemberInfo } = useMemberManage()
-const { integralRecord, filterIntegralListToArray, integralRecordTotal, memberInfo, searchPage } = storeToRefs(useMemberManage())
+const { integralRecord, filterIntegralListToArray, integralRecordTotal, memberInfo, searchIntegralPage } = storeToRefs(useMemberManage())
 
 const memberParams = ref<Member>({} as Member)
 async function getInfo() {
@@ -28,7 +28,7 @@ useSeoMeta({
 
 async function getIntegral(where = {} as Partial<IntegralRecord>) {
   const params = {
-    page: searchPage.value,
+    page: searchIntegralPage.value,
     limit,
     where: {
       member_id: route.query.id as string,
@@ -54,7 +54,7 @@ async function submitWhere(f: Partial<IntegralRecord>) {
 }
 
 const updatePage = async (page: number) => {
-  searchPage.value = page
+  searchIntegralPage.value = page
   await getIntegral()
 }
 </script>
@@ -88,7 +88,7 @@ const updatePage = async (page: number) => {
     <div class="px-[16px]">
       <member-integral-record :data="integralRecord" />
       <template v-if="integralRecordTotal !== 0">
-        <common-page v-model:page="searchPage" :total="integralRecordTotal" :limit="12" @update:page="updatePage" />
+        <common-page v-model:page="searchIntegralPage" :total="integralRecordTotal" :limit="12" @update:page="updatePage" />
       </template>
     </div>
   </div>
