@@ -66,7 +66,8 @@ const addBench = (id: string, type: number) => {
   params.value.parent_id = id
 }
 
-const updateBench = (bench: WorkBench) => {
+const updateBench = (bench: WorkBench, type: number = 1) => {
+  modelType.value = type
   resetForm(true)
   submitStatus.value = 'update'
   params.value.id = bench.id
@@ -126,8 +127,9 @@ async function submit(val: AddWorkbencheReq) {
 
 // 编辑或跳转分页
 async function changePage(bench: WorkBench) {
+  modelType.value = 3
   if (isSetup.value) {
-    return updateBench(bench)
+    return updateBench(bench, 3)
   }
   if (!bench.path) {
     return
@@ -172,8 +174,22 @@ const searchListFn = async (val: string) => {
 
 /** 获取新增添加标题 */
 function getModelTitle() {
-//   submitStatus.value === 'add' ? '新增' : '编辑'
-  return '11'
+  let modelName = ''
+  switch (modelType.value) {
+    case 1:
+      modelName = '模块'
+      break
+    case 2:
+      modelName = '分类'
+      break
+    case 3:
+      modelName = '栏目'
+      break
+  }
+  if (submitStatus.value === 'add') {
+    return `添加${modelName}`
+  }
+  return `编辑${modelName}`
 }
 </script>
 
@@ -200,7 +216,7 @@ function getModelTitle() {
           <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="delBench" @update="updateBench" @fold="fold" @change-page="changePage" />
           <template v-if="isSetup">
             <button style="all: unset;">
-              <div class="flex items-center mb-4 cursor-pointer" @click="resetForm(true);show = true;modelType = 1">
+              <div class="flex items-center mb-4 cursor-pointer" @click="resetForm(true);show = true;modelType = 1 ">
                 <icon name="i-icon:addsth" :size="26" color="#000" />
                 <div class="text-[14px] text-[#000] pl-1">
                   添加模块
@@ -225,7 +241,7 @@ function getModelTitle() {
               </div>
             </div>
           </template>
-          <template v-if="modelType !== 1" #icon>
+          <template v-if="modelType === 3" #icon>
             <div class="pb-[16px]">
               <div class="add-row">
                 <div>图标</div>
@@ -240,7 +256,7 @@ function getModelTitle() {
               </div>
             </div>
           </template>
-          <template v-if="modelType !== 1" #path="{ label, error }">
+          <template v-if="modelType === 3" #path="{ label, error }">
             <div class="pb-[16px]">
               <div class="add-row">
                 <div>跳转地址</div>
