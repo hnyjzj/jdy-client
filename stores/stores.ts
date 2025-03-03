@@ -3,6 +3,7 @@ export const useStores = defineStore('Store', {
     filterList: {} as Where<Stores>, // 筛选条件
     storesList: [] as Stores[], // 门店列表
     total: 0,
+    searchPage: 1, // 页码
     storeDetails: {} as Stores, //  门店详情
     addorUpdateForm: {
       id: undefined,
@@ -136,7 +137,26 @@ export const useStores = defineStore('Store', {
         this.StoreStaffList = data.value.data
       }
     },
-
+    // 为门店分配员工
+    async assignStaff(req: AssignStaff) {
+      const { data } = await https.post<any, AssignStaff>('/store/staff/add', req)
+      if (data.value.code === HttpCode.SUCCESS) {
+        return true
+      }
+      else {
+        return false
+      }
+    },
+    // 移除员工
+    async deleteStaff(req: AssignStaff) {
+      const { data } = await https.delete<any, AssignStaff>('/store/staff/del', req)
+      if (data.value.code === HttpCode.SUCCESS) {
+        return true
+      }
+      else {
+        return false
+      }
+    },
   },
   persist: {
     storage: piniaPluginPersistedstate.cookies(),

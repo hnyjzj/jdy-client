@@ -10,7 +10,7 @@ export const useStaff = defineStore('staffStore', {
 
   },
   actions: {
-    // 门店列表
+    // 员工列表
     async getStaffList(req: ReqList<Staff>) {
       if (req.page === 1) {
         this.staffList = []
@@ -29,6 +29,16 @@ export const useStaff = defineStore('staffStore', {
           // 当前页没有数据，则不进行下一页
           return false
         }
+      }
+    },
+    // 获取员工列表，返回选择参数
+    async getOptionsStafflist(req: ReqList<Staff>) {
+      const { data } = await https.post<ResList<Staff>, ReqList<Staff>>('/staff/list', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return data.value.data.list
+      }
+      else {
+        return []
       }
     },
     /**

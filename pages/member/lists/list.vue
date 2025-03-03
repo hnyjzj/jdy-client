@@ -23,25 +23,14 @@ const complate = ref(0)
 const searchKey = ref('')
 const isFilter = ref(false)
 const filterData = ref({} as Partial<Member>)
-// 没有更多数据了
-const nomore = ref(true)
+const limit = 12
 
-const pages = ref(1)
 async function getList(where = {} as Partial<Member>) {
-  if (!nomore.value)
-    return
-  const params = { page: pages.value, limit: 20 } as ReqList<Member>
+  const params = { page: searchPage.value, limit } as ReqList<Member>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
-  const res = await getMemberList(params)
-  if (res.data?.list.length) {
-    pages.value++
-  }
-  else {
-    nomore.value = false
-  }
-  return res as any
+  await getMemberList(params)
 }
 
 await getList()
@@ -74,8 +63,12 @@ const fluctuant = ref()
 const initPopup = () => {
   show.value = false
   adjustWay.value = 0
-  fluctuant.value = 0
+  fluctuant.value = ''
   integralParams.value.remark = ''
+  items.value.forEach((item) => {
+    item.isPopoverVisible = false
+    item.selected = ''
+  })
 }
 
 const disposeNumerical = () => {
@@ -102,15 +95,8 @@ const adjustIntegral = async () => {
 // 筛选列表
 async function submitWhere(f: Partial<Member>) {
   filterData.value = { ...f }
-  pages.value = 1
-  nomore.value = true
   memberList.value = []
-  const res = await getList(filterData.value)
-  if (res.code === HttpCode.SUCCESS) {
-    isFilter.value = false
-    return $toast.success('筛选成功')
-  }
-  $toast.error(res.message ?? '筛选失败')
+  await getList(filterData.value)
 }
 
 const updatePage = async (page: number) => {
@@ -223,8 +209,9 @@ const userCancel = () => {
 
     <div class="flex flex-col px-[16px] py-[16px]">
       <member-lists-list :info="memberList" @go-info="userJump" @view-integral="goIntegral" @change-integral="adjustment" />
-      <common-page v-model:page="searchPage" :total="memberListTotal" :limit="12" @update:page="updatePage" />
     </div>
+
+    <common-page v-model:page="searchPage" :total="memberListTotal" :limit="limit" @update:page="updatePage" />
   </div>
 </template>
 
