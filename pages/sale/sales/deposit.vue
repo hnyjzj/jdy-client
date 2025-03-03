@@ -1,7 +1,6 @@
 <script setup lang="ts">
-// 销售单列表页
 useSeoMeta({
-  title: '销售单列表',
+  title: '定金单列表',
 })
 const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
@@ -18,7 +17,7 @@ const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5
 
 // 获取列表
 const getList = async (where = {} as Partial<Orders>) => {
-  const params = { page: searchPage.value, limit: 12, where: { type: 1, store_id: myStore.value.id } } as ReqList<Orders>
+  const params = { page: searchPage.value, limit: 12, where: { type: 2, store_id: myStore.value.id } } as ReqList<Orders>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
