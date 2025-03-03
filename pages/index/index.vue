@@ -28,8 +28,8 @@ const handleSelectFn = async (id: Stores['id']) => {
       </div>
       <home-greet />
       <common-dark />
-
-      <template v-if="myStore.id">
+      <!-- 判断门店是否存在，id为空字符串则是管理员权限，也显示 -->
+      <template v-if="myStore.id || myStore.id === ''">
         <home-store
           v-model:store="myStore"
           :store-list="myStoreList"
