@@ -174,7 +174,7 @@ const openProductListFn = () => {
           />
         </div>
         <div class="pb-[16px]">
-          <sale-add-product
+          <sale-add-masterials
             v-model="showMasterialsList"
             :type="2"
             :product-list="masterialsList"
