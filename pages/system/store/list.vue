@@ -3,43 +3,37 @@ useSeoMeta({
   title: '门店列表',
 })
 
-const { storesList, addorUpdateForm, storeDetails, filterListToArray, total } = storeToRefs(useStores())
-const { getStoreDetail, reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
-
+const { storesList, addorUpdateForm, filterListToArray, total, searchPage } = storeToRefs(useStores())
+const { reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
 const { $toast } = useNuxtApp()
 // 新增门店弹窗
 const addOrUpdateShow = ref<boolean>(false)
 // 搜索弹窗显示状态
 const show = ref<boolean>(false)
-// 搜索条件 页码
-const searchPage = ref<number>(1)
-// 是否有更多数据
-const nomore = ref<boolean>(false)
-// 显示详情页
-const showModal = ref<boolean>(false)
+
 // 筛选请求数据
 const filterData = ref({} as Partial<Stores>)
+
 // 获取列表
 const getList = async (where = {} as Partial<Stores>) => {
-  if (nomore.value)
-    return
   const params = { page: searchPage.value, limit: 12 } as ReqList<Stores>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
-  const res = await getStoreList(params)
-  res ? nomore.value = false : nomore.value = true
+  await getStoreList(params)
 }
 
 // 筛选列表
 const submitWhere = async (f: Partial<Stores>) => {
-  filterData.value = f
+  filterData.value = { ...f, ...filterData.value }
   storesList.value = []
-  nomore.value = false
   searchPage.value = 1
   await getList(filterData.value)
 }
 
+const resetwhere = () => {
+  filterData.value = {}
+}
 // 获取列表数据
 await getList()
 // 获取筛选条件
@@ -47,8 +41,7 @@ await getStoreWhere()
 
 // 展示详情
 const getStoreInfo = async (id: string) => {
-  await getStoreDetail(id)
-  showModal.value = true
+  navigateTo(`/system/store/info?id=${id}`)
 }
 
 // 开发新增门店弹窗, 清空表单数据
@@ -129,7 +122,11 @@ const heightSearchFn = () => {
 // 上传图片文件
 const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
   try {
-    const res = await uploadImage({ image: file, store_id: id || undefined })
+    const upParams = { image: file, store_id: id }
+    if (!id) {
+      delete (upParams.store_id)
+    }
+    const res = await uploadImage(upParams)
     if (res.data.value.code !== HttpCode.SUCCESS) {
       $toast.error(res.data.value?.message || '上传失败')
       return false
@@ -143,11 +140,11 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
     $toast.error('上传失败，请重试')
   }
 }
-// 获取头部高度
-const height = ref<number | undefined>(0)
-onMounted(() => {
-  height.value = getHeight('header')
-})
+
+const updatePage = async (page: number) => {
+  searchPage.value = page
+  await getList()
+}
 </script>
 
 <template>
@@ -164,17 +161,11 @@ onMounted(() => {
         </div>
       </div>
     </div>
-    <common-list-pull
-      :distance="height"
-      :nomore="nomore"
-      @pull="() => {
-        searchPage += 1
-        getList()
-      }">
-      <template #default>
-        <stores-card @get-detail="getStoreInfo" @edit-store="edit" @delete-store="deleteStoreFn" />
-      </template>
-    </common-list-pull>
+
+    <div class="p-[16px]">
+      <stores-card @get-detail="getStoreInfo" @edit-store="edit" @delete-store="deleteStoreFn" />
+    </div>
+    <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
     <!-- 新增或更新门店弹窗 -->
     <common-popup v-model="addOrUpdateShow" :title="addorUpdateForm.id ? '编辑门店' : '新增门店'">
       <stores-add-update
@@ -183,9 +174,6 @@ onMounted(() => {
         @edit-submit="editStore" />
     </common-popup>
 
-    <n-modal v-model:show="showModal">
-      <stores-info :info-detail="storeDetails" />
-    </n-modal>
     <van-dialog v-model:show="deleteDialog" title="删除门店" show-cancel-button @confirm="confirmDelete">
       <div class="text-center py-[16px]">
         确认删除此门店吗?
@@ -193,18 +181,10 @@ onMounted(() => {
     </van-dialog>
     <common-create @create="newAdd()" />
 
-    <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere">
+    <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetwhere">
       <template #region>
         <common-area-select :is-required="false" :showtitle="false" :form="filterData.region" @update="updateArea" />
       </template>
     </common-filter-where>
   </div>
 </template>
-
-<style lang="scss" scoped>
-.right {
-  background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-  box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
-  --uno: 'text-[16px] py-[6px] border-none flex-1 rounded-[36px] ml-[8px] text-[#FFFFFF]';
-}
-</style>

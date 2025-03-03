@@ -99,24 +99,38 @@ const uploadFile = async (file: any, onfinish?: () => void) => {
     $toast.error('上传失败，请重试')
   }
 }
+
+const other_ways = ref<{
+  icon: string
+  name: string
+  click: () => void
+}[]>([
+      {
+        icon: 'i-svg:qwicon',
+        name: '企业微信',
+        click: () => wxwordAdd(),
+      },
+    ])
 </script>
 
 <template>
-  <div class="grid-12">
-    <div class="p-[16px] col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
-      <common-fold title="其他新增方式" from-color="#9EBAF9" to-color="#fff">
-        <div class="flex-center-row py-[16px] cursor-pointer" @click="wxwordAdd()">
-          <div class=" rounded-full flex-center-col">
-            <icon name="i-svg:qwicon" :size="32" />
-            <div class="color-[#333]">
-              企业微信
+  <div class="grid-12 gap-[16px] p-[16px]">
+    <div class="col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
+      <staff-manage-add ref="addRef" v-model="formlist" @submit="addStaff" @upload="uploadFile" />
+    </div>
+    <div class="col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
+      <common-fold title="其他方式" from-color="#9EBAF9" to-color="#fff">
+        <div class="flex-center-row cursor-pointer">
+          <template v-for="item in other_ways" :key="item.name">
+            <div class=" rounded-full flex-center-col p-[16px]" @click="item.click()">
+              <icon :name="item.icon" :size="32" />
+              <div class="color-[#333]">
+                {{ item.name }}
+              </div>
             </div>
-          </div>
+          </template>
         </div>
       </common-fold>
-      <div class="pt-[16px]">
-        <staff-manage-add ref="addRef" v-model="formlist" @submit="addStaff" @upload="uploadFile" />
-      </div>
     </div>
   </div>
 </template>
