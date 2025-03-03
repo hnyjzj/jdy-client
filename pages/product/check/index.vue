@@ -72,7 +72,7 @@ async function submitWhere(f: Partial<Check>, isSearch = false) {
   if (store_id.value) {
     f.store_id = store_id.value
   }
-  filterData.value = { ...f, ...filterData }
+  filterData.value = { ...f, ...filterData.value }
   pages.value = 1
   isCanPull.value = true
   checkList.value = []

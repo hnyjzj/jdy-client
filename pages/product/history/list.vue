@@ -26,6 +26,14 @@ useSeoMeta({
 const openFilter = () => {
   isFilter.value = true
 }
+/** 搜索 */
+async function search(e: string) {
+  await submitWhere({ product_id: e }, true)
+}
+/** 关闭搜索 */
+async function clearSearch() {
+  await submitWhere({ }, true)
+}
 // 获取货品列表
 async function getList(where = {} as Partial<HistoryWhere>) {
   if (!isCanPull.value)
@@ -58,15 +66,17 @@ function pull() {
 }
 
 // 筛选列表
-async function submitWhere(f: Partial<HistoryWhere>) {
+async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) {
   filterData.value = { ...f }
   pages.value = 1
   isCanPull.value = true
   productRocordList.value = []
   const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
-    isFilter.value = false
-    return $toast.success('筛选成功')
+    if (!isSearch) {
+      $toast.success('筛选成功')
+    }
+    return
   }
   $toast.error(res.message ?? '筛选失败')
 }
@@ -76,7 +86,7 @@ async function submitWhere(f: Partial<HistoryWhere>) {
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:id="complate" v-model:search="searchKey" :product-list-total="productListTotal" @filter="openFilter">
+      v-model:id="complate" v-model:search="searchKey" :product-list-total="productListTotal" placeholder="搜素关联产品单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company />
       </template>

@@ -28,11 +28,11 @@ const openFilter = () => {
 }
 /** 搜索 */
 async function search(e: string) {
-  await submitWhere({ id: e })
+  await submitWhere({ id: e }, true)
 }
 /** 关闭搜索 */
 async function clearSearch() {
-  await submitWhere({ })
+  await submitWhere({ }, true)
 }
 // 获取货品列表
 async function getList(where = {} as Partial<Allocate>) {
@@ -61,7 +61,7 @@ function pull() {
   getList(filterData.value)
 }
 // 筛选列表
-async function submitWhere(f: Partial<Allocate>) {
+async function submitWhere(f: Partial<Allocate>, isSearch: boolean = false) {
   filterData.value = { ...f, ...filterData.value }
   pages.value = 1
   isCanPull.value = true
@@ -69,7 +69,10 @@ async function submitWhere(f: Partial<Allocate>) {
   const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
     isFilter.value = false
-    return $toast.success('筛选成功')
+    if (!isSearch) {
+      $toast.success('筛选成功')
+    }
+    return
   }
   $toast.error(res.message ?? '筛选失败')
 }
