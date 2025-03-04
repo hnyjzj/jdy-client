@@ -69,7 +69,7 @@ const absoluteValue = (value: number) => {
   <div class="grid-12">
     <div class="col-12 gap-[20px]" uno-lg="col-8 offset-2">
       <template v-if="props.data.length">
-        <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
+        <div class="grid grid-cols-1 gap-[16px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
           <template v-for="(item, index) in props.data" :key="index">
             <common-gradient :title="cutOut(item.created_at)" theme="gradient">
               <template #body>
@@ -158,7 +158,7 @@ const absoluteValue = (value: number) => {
 
       <template v-else>
         <div class="pt-[160px] py-[32px]">
-          <common-empty size="100%" text="该用户暂无积分记录" />
+          <common-emptys text="暂无数据" />
         </div>
       </template>
     </div>

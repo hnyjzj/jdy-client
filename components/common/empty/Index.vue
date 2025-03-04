@@ -5,7 +5,6 @@ const props = withDefaults(defineProps<{
   deg?: string
   size?: string
   isShadow?: boolean
-
   text?: string
 }>(), {
   img: '/images/empty/record.png',
@@ -19,7 +18,7 @@ const props = withDefaults(defineProps<{
 <template>
   <div class="flex flex-col justify-center items-center py-[16px]">
     <div class="empty" :style="{ boxShadow: isShadow ? 'rgba(239, 242, 255, 1) 0 5px 20px 0' : 'none' }">
-      <img class="block" :src="props.img" :width="props.size" :height="props.size">
+      <img class="block h-auto" :src="props.img" :width="props.size">
       <template v-if="props.showRT">
         <slot name="rt">
           <div class="super">
@@ -43,7 +42,7 @@ const props = withDefaults(defineProps<{
   --uno: 'rounded-[50%] relative';
   //   box-shadow: rgba(239, 242, 255, 1) 0 5px 20px 0;
   .super {
-    --uno: 'absolute top-[14px] right-[14px]';
+    --uno: 'absolute top-[0px] right-[0px]';
     .bg {
       --uno: 'w-[36px] h-[36px] rounded-[50%] bg-[#FFFFFF] flex justify-center items-center';
       background: linear-gradient(to bottom, rgba(255, 152, 152, 1), rgba(255, 79, 79, 1));

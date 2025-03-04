@@ -28,17 +28,23 @@ const handleSelectFn = async (id: Stores['id']) => {
       </div>
       <home-greet />
       <common-dark />
-      <home-store
-        v-model:store="myStore"
-        :store-list="myStoreList"
-        @handle-select="handleSelectFn"
-        @get-store-list="() => {
-          getMyStore({ page: 1, limit: 20 })
-        }" />
-      <summary-card-boss />
-      <home-action />
-      <summary-card-sale />
-      <summary-card-inventory />
+      <!-- 判断门店是否存在，id为空字符串则是管理员权限，也显示 -->
+      <template v-if="myStore.id || myStore.id === ''">
+        <home-store
+          v-model:store="myStore"
+          :store-list="myStoreList"
+          @handle-select="handleSelectFn"
+          @get-store-list="() => {
+            getMyStore({ page: 1, limit: 20 })
+          }" />
+        <summary-card-boss />
+        <home-action />
+        <summary-card-sale />
+        <summary-card-inventory />
+      </template>
+      <template v-else>
+        <common-emptys text="暂未分配门店" />
+      </template>
     </div>
 
     <common-tabbar text="todo" />

@@ -4,10 +4,15 @@ const { $toast } = useNuxtApp()
 const { getMyStore, switchStore } = useStores()
 const { myStoreList, myStore } = storeToRefs(useStores())
 const columns = ref()
+
+const getList = async () => await getMyStore({ page: 1, limit: 20 })
+
 if (!myStoreList.value.length) {
-  await getMyStore({ page: 1, limit: 20 })
+  await getList()
 }
-function changeStoer() {
+
+async function changeStoer() {
+  await getList()
   columns.value = []
   if (!myStoreList.value.length) {
     $toast.error('暂未分配门店')
