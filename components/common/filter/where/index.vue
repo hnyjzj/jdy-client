@@ -94,7 +94,7 @@ const presetToSelect = (filter: FilterWhere<T>): { label: string, value: any }[]
 <template>
   <div>
     <common-popup v-model="showFilter" title="高级筛选">
-      <div :id="Key" :key="Key">
+      <div :id="Key" :key="Key" class="filter-container">
         <template v-for="({ name, label, find, input }, i) in props.filter" :key="i">
           <template v-if="find">
             <div class="mb-2">
@@ -168,6 +168,11 @@ const presetToSelect = (filter: FilterWhere<T>): { label: string, value: any }[]
 </style>
 
 <style lang="scss" scoped>
+.filter-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 16px;
+}
 .footer {
   .left {
     background: #ffffff;
