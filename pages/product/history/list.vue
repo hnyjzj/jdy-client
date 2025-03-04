@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
 const { getProductHistory, getHistoryWhere, getProductWhere } = useProductManage()
-const { productRocordList, filterList, historyFilterList, HistoryFilterListToArray, productListTotal } = storeToRefs(useProductManage())
+const { productRocordList, filterList, historyFilterList, HistoryFilterListToArray, historyListTotal } = storeToRefs(useProductManage())
 const { storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 
@@ -86,7 +86,7 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:id="complate" v-model:search="searchKey" :product-list-total="productListTotal" placeholder="搜素关联产品单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:id="complate" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜素关联产品单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company />
       </template>

@@ -14,6 +14,8 @@ export const useProductManage = defineStore('ProductManage', {
     historyFilterList: Where<ProductHistories>
     /** 排序后记录筛选列表 */
     HistoryFilterListToArray: FilterWhere<ProductHistories>[]
+    /** 操作记录列表总数 */
+    historyListTotal: number
   } => ({
     filterList: {} as Where<Product>,
     productList: [],
@@ -23,6 +25,7 @@ export const useProductManage = defineStore('ProductManage', {
     productRocordList: [],
     historyFilterList: {} as Where<ProductHistories>,
     HistoryFilterListToArray: {} as FilterWhere<ProductHistories>[],
+    historyListTotal: 0,
   }),
   actions: {
     // 货品列表
@@ -116,7 +119,7 @@ export const useProductManage = defineStore('ProductManage', {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
         const { data } = await https.post<ResList<ProductHistories>, ReqList<HistoryWhere>>('/product/history/list', pamars)
         if (data.value.code === HttpCode.SUCCESS) {
-          this.productListTotal = data.value.data.total
+          this.historyListTotal = data.value.data.total
           if (pamars.page === 1) {
             this.productRocordList = data.value.data.list
           }
