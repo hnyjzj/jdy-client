@@ -255,6 +255,6 @@ interface ProductHistories {
  * 上传产品图参数
  */
 interface UploadProductImg {
-  image: file
+  image: File
   product_id: string
 }

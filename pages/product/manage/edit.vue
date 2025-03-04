@@ -113,11 +113,14 @@ const goodsStatus = {
 }
 // 上传
 async function customRequest({ file }: UploadCustomRequestOptions) {
+  if (!file?.file)
+    return
   // 上传接口
   const params = {
     image: file.file,
     product_id: productInfo.value.code,
   }
+
   const res = await uploadProductImg(params)
   if (res.code === HttpCode.SUCCESS) {
     productParams.value.images.push(res.data.url)
