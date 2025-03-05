@@ -141,6 +141,11 @@ interface Product {
    * 0:全部 1:成品 2:旧料 3:配件
    */
   type: number
+  /**
+   *
+   */
+  store_id: string
+
 }
 interface ProductDamage {
   code: Product['code']

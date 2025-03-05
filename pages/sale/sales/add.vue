@@ -9,7 +9,7 @@ const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getAddOrderProductList } = useProductManage()
 const { getStoreStaffList } = useStores()
-const { getSaleWhere, getTodayPrice, submitOrder, getOrderDetail } = useOrder()
+const { getSaleWhere, submitOrder, getOrderDetail } = useOrder()
 const { todayPrice, filterList } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
@@ -38,8 +38,8 @@ const showProductList = ref<OrderProducts[]>([])
 const showPartsList = ref<OrderProducts[]>([])
 const showMasterialsList = ref<OrderProducts[]>([])
 await getSaleWhere()
-await getTodayPrice()
-const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
+// await getTodayPrice()
+const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { store_id: myStore.value.id, phone: val } })
 const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
 
 const rules = ref<FormRules>({
@@ -86,7 +86,7 @@ const searchProductList = async (val: string, type: string, select: number) => {
     where.value = { ...where.value, code: val, type: select } as ReqList<Product>['where']
   }
 
-  const res = await getAddOrderProductList({ page: 1, limit: 10, where: where.value })
+  const res = await getAddOrderProductList({ page: 1, limit: 10, where: { ...where.value, store_id: myStore.value.id } })
   if (res.data.total === 0) {
     $toast.error('商品不存在')
   }
