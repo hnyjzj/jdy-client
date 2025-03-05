@@ -1,15 +1,16 @@
 <script lang="ts" setup>
 import type { SelectOption } from 'naive-ui'
 
-const { staffList, filterListToArray, total, staffInfo } = storeToRefs(useStaff())
+const { staffList, filterListToArray, total, staffInfo, searchPage } = storeToRefs(useStaff())
 const { getStaffWhere, getStaffList, getStaffInfo } = useStaff()
 const { staffGetStoreList } = useStores()
+const { myStore } = storeToRefs(useStores())
 const complate = ref(0)
 const searchKey = ref('')
 const show = ref<boolean>(false)
 const showModal = ref<boolean>(false)
 // 搜索条件 页码
-const searchPage = ref<number>(1)
+// const searchPage = ref<number>(1)
 // 是否有更多数据
 const nomore = ref<boolean>(false)
 // 筛选请求数据
@@ -18,9 +19,9 @@ const filterData = ref({} as StaffWhere)
 const getList = async (where = {} as StaffWhere) => {
   if (nomore.value)
     return
-  const params = { page: searchPage.value, limit: 12 } as ReqList<Staff>
+  const params = { page: searchPage.value, limit: 12, where: { store_id: myStore.value.id } } as ReqList<Staff>
   if (JSON.stringify(where) !== '{}') {
-    params.where = where
+    params.where = { ...params.where, ...where }
   }
   const res = await getStaffList(params)
   res ? nomore.value = false : nomore.value = true
@@ -88,15 +89,26 @@ const handleSearch = (query: string) => {
       </product-filter>
     </div>
 
-    <common-list-pull
+    <!-- <common-list-pull
       :distance="height"
       :nomore="nomore"
       @pull="() => {
         searchPage += 1
         getList()
       }">
+
+    </common-list-pull> -->
+
+    <div class="px-[16px]">
       <staff-manage-card :list="staffList" @get-detail="getInfo" />
-    </common-list-pull>
+    </div>
+    <div class="p-[16px]">
+      <common-page
+        v-model:page="searchPage" :total="total" :limit="12" @update:page="() => {
+          getList()
+        }
+        " />
+    </div>
     <n-modal v-model:show="showModal">
       <staff-manage-info :info-detail="staffInfo" />
     </n-modal>
