@@ -59,8 +59,6 @@ async function submit() {
 }
 function addGold() {
   goldParams.value.push({
-    price: 0,
-    product_material: 0,
     product_quality: [],
     product_type: 0,
     product_brand: [],
@@ -117,7 +115,7 @@ function subtract(i: number) {
         </div>
       </div>
     </common-layout-center>
-    <common-model v-model="changeShow" title="变更金价" :show-ok="true" @confirm="submit">
+    <common-model v-model="changeShow" title="变更金价">
       <div class="pb-4 min-h-[320px] max-h-[400px] overflow-auto">
         <template v-for="(item, index) in goldParams" :key="index">
           <div class="flex justify-between items-center mb-2">
@@ -153,6 +151,21 @@ function subtract(i: number) {
           </div>
         </template>
       </div>
+      <template #footer>
+        <div class="w-[100%]">
+          <div class="grid grid-cols-[26%_26%_auto] gap-2">
+            <div class="cursor-pointer cancel-btn" @click="changeShow = false">
+              取消
+            </div>
+            <div class="cursor-pointer cancel-btn" @click="getGlodParams">
+              重置金价
+            </div>
+            <div class="cursor-pointer confirm-btn" @click="submit">
+              确定
+            </div>
+          </div>
+        </div>
+      </template>
     </common-model>
     <common-model v-model="recordShow" :show-cancel="false" title="操作记录">
       <div class="flex overflow-x-scroll">
@@ -222,5 +235,15 @@ function subtract(i: number) {
 }
 .updata-time {
   --uno: 'bg-[rgba(199,218,255,1)] px-[10px] py-[4px] text-[rgba(75,87,109,1)] rounded-full';
+}
+.confirm-btn {
+  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#fff] font-bold ';
+  background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
+  box-shadow: rgba(57, 113, 243, 0.24) 0px 8px 8px 0;
+}
+.cancel-btn {
+  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#1a6beb] font-bold';
+  background: #fff;
+  box-shadow: rgba(82, 130, 241, 0.24) 0px 8px 8px 0;
 }
 </style>

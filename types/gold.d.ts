@@ -54,7 +54,7 @@ interface UpdataGoldParams {
   /**
    * 金价
    */
-  price: number
+  price?: number
   /**
    * 产品品牌
    */
@@ -62,7 +62,7 @@ interface UpdataGoldParams {
   /**
    * 产品材质
    */
-  product_material: number
+  product_material?: number
   /**
    * 产品成色
    */
