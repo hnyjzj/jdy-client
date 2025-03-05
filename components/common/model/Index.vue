@@ -51,17 +51,24 @@ watch(show, (val) => {
       <div class="center">
         <div class="box">
           <slot />
-          <div class="flex-between">
-            <template v-if="props.showCancel">
-              <div class="cursor-pointer" :class="[props.showOk ? 'cancel-btn' : 'ok']" :style="{ marginRight: props.showOk ? '10px' : '0' }" @click="close">
-                {{ props.cancelText }}
-              </div>
-            </template>
-            <template v-if="showOk">
-              <div class="ok cursor-pointer" @click="emits('confirm')">
-                {{ props.confirmText }}
-              </div>
-            </template>
+          <div class="bottom-fun">
+            <slot name="footer">
+              <template v-if="props.showCancel">
+                <div
+                  class="cursor-pointer"
+                  :class="[props.showOk ? 'cancel-btn' : 'ok']"
+                  :style="{ marginRight: props.showOk ? '10px' : '0' }"
+                  @click="close"
+                >
+                  {{ props.cancelText }}
+                </div>
+              </template>
+              <template v-if="props.showOk">
+                <div class="ok cursor-pointer" @click="emits('confirm')">
+                  {{ props.confirmText }}
+                </div>
+              </template>
+            </slot>
           </div>
         </div>
       </div>
@@ -109,8 +116,12 @@ watch(show, (val) => {
     }
 
     .box {
-      --uno: 'border-rd-[16px_0_0_0] dark:bg-[rgba(0,0,0,0.8)] sm:border-rd-[16px_0_16px_16px] px-[16px] py-[30px] bg-[#F1F5FE]';
+      --uno: 'border-rd-[16px_0_0_0] dark:bg-[rgba(0,0,0,0.8)] sm:border-rd-[16px_0_16px_16px] px-[16px] py-[20px] bg-[#F1F5FE]';
       margin-top: 0;
+      .bottom-fun {
+        --uno: 'flex-between pt-4';
+        border-top: rgba(230, 230, 232, 1) solid 1px;
+      }
       .ok {
         --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#fff] font-bold ';
         background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
