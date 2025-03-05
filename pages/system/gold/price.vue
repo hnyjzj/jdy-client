@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const { $toast } = useNuxtApp()
 const { goldList } = storeToRefs(useGoldPrice())
-const { getGoldPrice } = useGoldPrice()
+const { getGoldPrice, setGoldPrice } = useGoldPrice()
 const { getProductWhere } = useProductManage()
 const { filterList } = storeToRefs(useProductManage())
 const { myStore } = storeToRefs(useStores())
@@ -11,14 +11,30 @@ useSeoMeta({
 
 const recordShow = ref(false)
 const changeShow = ref(false)
-const newGoldPrice = ref()
+const goldParams = ref([] as UpdataGoldParams[])
 await getProductWhere()
-console.log('mystore.id', myStore.value.id)
-
 if (myStore.value.id) {
   await getGoldPrice(myStore.value.id)
+  await getGlodParams()
 }
-
+async function getGlodParams() {
+  goldList.value.forEach((item) => {
+    goldParams.value.push({
+      price: Number(item.price),
+      product_material: item.product_material,
+      product_quality: item.product_quality,
+      product_type: item.product_type,
+      product_brand: item.product_brand,
+      store_id: myStore.value.id,
+      id: item.id,
+    })
+  })
+}
+/** 获取下拉消息信息 */
+function getOptions(name: keyof Product) {
+  const preset = filterList.value[name]?.preset
+  return optonsToSelect(preset, true)
+}
 const productType = {
   0: '全部',
   1: '成品',
@@ -26,24 +42,34 @@ const productType = {
   3: '配件',
 }
 async function submit() {
-  if (!newGoldPrice.value || newGoldPrice.value <= 0) {
-    $toast.error('请输入有效的金价')
+  const data = await setGoldPrice(goldParams.value)
+  if (data.code === HttpCode.SUCCESS) {
+    $toast.success('提交今日最新金价成功')
+    goldParams.value = []
+    await getGoldPrice(myStore.value.id)
+    await getGlodParams()
   }
-//   const data = await setGoldPrice(newGoldPrice.value)
-//   if (data.code === HttpCode.SUCCESS) {
-//     $toast.success('提交今日最新金价成功')
-//   }
-//   else {
-//     $toast.error(data.message ?? '提交失败')
-//   }
-//   changeShow.value = false
+  else {
+    $toast.error(data.message ?? '提交失败')
+  }
+  changeShow.value = false
+}
+function addGold() {
+  goldParams.value.push({
+    price: 0,
+    product_material: 0,
+    product_quality: [],
+    product_type: 0,
+    product_brand: [],
+    store_id: myStore.value.id,
+  })
 }
 </script>
 
 <template>
   <div>
     <common-layout-center>
-      <div class="pt-4">
+      <div class="pt-4 pb-20">
         <div class="mx-4 mb-4 text-[#fff]">
           <product-manage-company />
         </div>
@@ -65,17 +91,17 @@ async function submit() {
           </div>
           <div class="p-3">
             <template v-for="item in goldList" :key="item.id">
-              <div class="grid grid-cols-[60px_auto] pb-4">
+              <div class="grid grid-cols-[60px_auto] pb-4 items-center">
                 <div class="text-[rgba(0,104,255,1)] text-[24px] pr-2">
                   {{ item.price }}
                 </div>
-                <div class="flex gap-1">
+                <div class="flex flex-wrap gap-1">
                   <div>
                     {{ productType[item.product_type] ?? '' }}
                   </div>
                   <div>{{ filterList.material?.preset[item.product_material] ?? '' }}</div>
-                  <div>{{ item.product_brand?.map(item => filterList.material?.preset[item]).join(' ') ?? '' }}</div>
-                  <div>{{ filterList.quality?.preset[item.product_quality] ?? '' }}</div>
+                  <div>{{ item.product_brand?.map(item => filterList.brand?.preset[item]).join(' ') ?? '' }}</div>
+                  <div>{{ item.product_quality.map(quality => filterList.quality?.preset[quality]).join(' ') ?? '' }}</div>
                 </div>
               </div>
             </template>
@@ -84,18 +110,40 @@ async function submit() {
       </div>
     </common-layout-center>
     <common-model v-model="changeShow" title="变更金价" :show-ok="true" @confirm="submit">
-      <div>
-        <div class="flex justify-between items-center mb-2">
-          <div>
-            金价1
-            <span class="text-red">*</span>
+      <div class="pb-4 max-h-[400px] overflow-auto">
+        <template v-for="(item, index) in goldParams" :key="index">
+          <div class="flex justify-between items-center mb-2">
+            <div>
+              {{ productType[item.product_type] }}
+              <span class="text-red">*</span>
+            </div>
           </div>
-          <div class="w-[32px] h-[32px] rounded-full bg-[#FFF]" />
-        </div>
-        <n-input-number placeholder="价格" />
-        <div>
-          <n-select />
-        </div>
+          <div class="grid grid-cols-[auto_72px] gap-2 items-center">
+            <div>
+              <n-input-number v-model:value="item.price" placeholder="价格" :min="0" />
+              <div class="grid grid-cols-[1fr_1fr] gap-2 mt-2">
+                <n-select v-model:value="item.product_material" placeholder="材质" :options="getOptions('material')" />
+                <n-select v-model:value="item.product_type" placeholder="类型" :options="getOptions('type')" />
+              </div>
+              <div class="mt-2">
+                <n-select v-model:value="item.product_brand" placeholder="品牌(多选),不选默认为全部品牌" multiple :options="getOptions('brand')" />
+              </div>
+              <div class="mt-2">
+                <n-select v-model:value="item.product_quality" placeholder="成色(多选)" multiple :options="getOptions('quality')" />
+              </div>
+            </div>
+            <div class="flex gap-1">
+              <div class="w-[32px] h-[32px] rounded-full bg-[#FFF] flex justify-center items-center" @click="addGold">
+                <icon name="i-svg:subtract" size="16" />
+              </div>
+              <template v-if="index === goldParams.length - 1">
+                <div class="w-[32px] h-[32px] rounded-full bg-[#FFF] flex justify-center items-center" @click="addGold">
+                  <icon name="i-svg:add" size="16" />
+                </div>
+              </template>
+            </div>
+          </div>
+        </template>
       </div>
     </common-model>
     <common-model v-model="recordShow" :show-cancel="false" title="操作记录">
