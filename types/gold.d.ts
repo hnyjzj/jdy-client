@@ -3,17 +3,9 @@
  */
 interface GoldPrices {
   /**
-   * 审批时间
-   */
-  approved_at: Date
-  /**
-   * 审批人ID
-   */
-  approver_id: string
-  /**
    * 创建时间
    */
-  created_at: Date
+  created_at?: Date
   /**
    * 删除时间
    */
@@ -21,29 +13,34 @@ interface GoldPrices {
   /**
    * ID
    */
-  id: string
-  /**
-   * 发起人ID
-   */
-  initiator_id: string
-  /**
-   * IP地址
-   */
-  ip: string
+  id?: string
   /**
    * 金价
    */
-  price?: number
+  price?: number | string
   /**
-   * 状态，0待审批、1已审批、2已驳回
+   * 产品品牌
    */
-  status: number
+  product_brand?: number[]
+  /**
+   * 产品材质
+   */
+  product_material?: number
+  /**
+   * 产品成色
+   */
+  product_quality?: number[]
+  /**
+   * 产品类型
+   * 0: 全部 1: 成品 2: 旧料 3: 配件
+   */
+  product_type: 0 | 1 | 2 | 3
+  /**
+   * 店铺ID
+   */
+  store_id: string
   /**
    * 更新时间
    */
-  updated_at: Date
-  /** 审批人信息 */
-  approver: Staff
-  /** 发起人信息 */
-  initiator: Staff
+  updated_at?: Date
 }

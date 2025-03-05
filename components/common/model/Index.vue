@@ -4,10 +4,12 @@ interface Props {
   showOk?: boolean
   confirmText?: string
   cancelText?: string
+  showCancel?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
   title: '',
   showOk: false,
+  showCancel: true,
   confirmText: '确定',
   cancelText: '取消',
 })
@@ -50,9 +52,11 @@ watch(show, (val) => {
         <div class="box">
           <slot />
           <div class="flex-between">
-            <div class="cursor-pointer" :class="[props.showOk ? 'cancel-btn' : 'ok']" :style="{ marginRight: props.showOk ? '10px' : '0' }" @click="close">
-              {{ props.cancelText }}
-            </div>
+            <template v-if="props.showCancel">
+              <div class="cursor-pointer" :class="[props.showOk ? 'cancel-btn' : 'ok']" :style="{ marginRight: props.showOk ? '10px' : '0' }" @click="close">
+                {{ props.cancelText }}
+              </div>
+            </template>
             <template v-if="showOk">
               <div class="ok cursor-pointer" @click="emits('confirm')">
                 {{ props.confirmText }}
@@ -105,7 +109,7 @@ watch(show, (val) => {
     }
 
     .box {
-      --uno: 'border-rd-[16px_0_0_0] dark:bg-[rgba(0,0,0,0.8)] sm:border-rd-[16px_0_16px_16px] px-[30px] py-[42px] bg-[#F1F5FE]';
+      --uno: 'border-rd-[16px_0_0_0] dark:bg-[rgba(0,0,0,0.8)] sm:border-rd-[16px_0_16px_16px] px-[16px] py-[30px] bg-[#F1F5FE]';
       margin-top: 0;
       .ok {
         --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#fff] font-bold ';
