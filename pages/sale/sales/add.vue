@@ -9,8 +9,9 @@ const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getProductList } = useProductManage()
 const { getStoreStaffList } = useStores()
-const { getSaleWhere, getTodayPrice, submitOrder, getOrderDetail } = useOrder()
-const { todayPrice, filterList } = storeToRefs(useOrder())
+const { getSaleWhere, submitOrder, getOrderDetail } = useOrder()
+const { filterList } = storeToRefs(useOrder())
+const { getGoldPrice } = useGoldPrice()
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
 const { productList } = storeToRefs(useProductManage())
@@ -36,7 +37,7 @@ const formData = ref<Orders>({
 // 展示商品列表
 const showProductList = ref<OrderProducts[]>([])
 await getSaleWhere()
-await getTodayPrice()
+await getGoldPrice(myStore.value.id)
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
 const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
 
@@ -163,7 +164,7 @@ const openProductListFn = () => {
           <sale-add-product
             v-model="showProductList"
             :product-list="productList"
-            :price="todayPrice"
+            price="222"
             @search="searchProductList"
             @open-product-list="openProductListFn"
           />
