@@ -21,7 +21,7 @@ const cardTitle = () => {
   }
 }
 
-const { $toast } = useNuxtApp()
+// const { $toast } = useNuxtApp()
 const dialog = useDialog()
 const showProductList = defineModel<OrderProducts[]>({ default: [] })
 const showModal = ref(false)
@@ -30,34 +30,34 @@ const hasCheck = ref(false)
 // 搜索商品 名称 和 条码   code
 const searchType = ref('name')
 // 添加商品
-const addProduct = (product: Product) => {
-  if (!product) {
-    $toast.error('请选择商品')
-    return
-  }
+// const addProduct = (product: Product) => {
+//   if (!product) {
+//     $toast.error('请选择商品')
+//     return
+//   }
 
-  const index = showProductList.value.findIndex(item => item.product?.id === product.id)
-  if (index !== -1 && showProductList.value[index].quantity) {
-    // 判断是否已经添加过该商品,如果已经添加过,则数量加一
-    // showProductList.value[index].quantity++
-    $toast.error('该商品已经添加过')
-    return
-  }
-  else if (
-  // 如果没添加 并且数量为空,则数量为1
-    index !== -1 && !showProductList.value[index].quantity
-  ) {
-    showProductList.value[index].quantity = 1
-    return
-  }
-  const data = { quantity: 1, discount: undefined, amount: 0, product_id: product.id, product }
-  showProductList.value.push(data)
-  showModal.value = false
-}
+//   const index = showProductList.value.findIndex(item => item.product?.id === product.id)
+//   if (index !== -1 && showProductList.value[index].quantity) {
+//     // 判断是否已经添加过该商品,如果已经添加过,则数量加一
+//     // showProductList.value[index].quantity++
+//     $toast.error('该商品已经添加过')
+//     return
+//   }
+//   else if (
+//   // 如果没添加 并且数量为空,则数量为1
+//     index !== -1 && !showProductList.value[index].quantity
+//   ) {
+//     showProductList.value[index].quantity = 1
+//     return
+//   }
+//   const data = { quantity: 1, discount: undefined, amount: 0, product_id: product.id, product }
+//   showProductList.value.push(data)
+//   showModal.value = false
+// }
 const readyAddproduct = ref()
-const setAddProduct = (product: Product) => {
-  readyAddproduct.value = product
-}
+// const setAddProduct = (product: Product) => {
+//   readyAddproduct.value = product
+// }
 // 计件方式
 const count = (p: OrderProducts) => {
   if (!p.quantity)
@@ -124,6 +124,44 @@ const scanCode = async () => {
     changeType('code')
     searchProduct.value = code
   }
+}
+const MformRef = ref()
+const MformValue = ref({
+  user: '',
+  age: '',
+})
+const rules = {
+  material: {
+    required: true,
+    trigger: ['blur', 'change'],
+    message: '请选择材质',
+  },
+  fineness: {
+    required: true,
+    trigger: ['blur', 'change'],
+    message: '请选择成色',
+  },
+  main: {
+    required: true,
+    trigger: ['blur', 'change'],
+    message: '请选择主石',
+  },
+  recovery: {
+    required: true,
+    trigger: ['blur', 'change'],
+    message: '请输入回收金额',
+  },
+}
+const submitMasterialsForm = () => {
+  MformRef.value?.validate((errors: any) => {
+    if (!errors) {
+    //   console.log(errors)
+    }
+    else {
+    //   console.log(errors)
+    //   message.error('验证失败')
+    }
+  })
 }
 </script>
 
@@ -258,60 +296,124 @@ const scanCode = async () => {
       </div>
     </template>
 
-    <common-popup v-model:show="showModal" placement="bottom" :title="cardTitle()" width="50%" @close="showModal = false">
-      <div class="grid-12">
+    <common-popup v-model:show="showModal" placement="bottom" :title="cardTitle()" height="600px" width="50%" @close="showModal = false">
+      <div class="grid-12 ">
         <div class="col-12" uno-md="col-4 offset-4" uno-sm="col-8 offset-2">
-          <div>
-            <div class="flex justify-around py-[12px]">
-              <div
-                class="flex-center-col"
-                @click="changeType('name')">
-                <div class="text-[16px] pb-[2px] font-semibold line-height-[24px]" :style="{ color: searchType === 'name' ? '#333' : '#53565C' }">
-                  名称搜索
-                </div>
-                <div class="w-[32px] h-[4px] rounded " :style="{ background: searchType === 'name' ? '#2080F0' : '' }" />
-              </div>
-              <div
-                class="flex-center-col"
-                @click="changeType('code')">
-                <div class="text-[16px] pb-[2px] font-semibold line-height-[24px]" :style="{ color: searchType === 'code' ? '#333' : '#53565C' }">
-                  条码搜索
-                </div>
-                <div class="w-[32px] h-[4px] rounded" :style="{ background: searchType === 'code' ? '#2080F0' : '' }" />
-              </div>
-            </div>
-          </div>
-          <div class="flex items-center pb-[16px]">
-            <div class="flex-1">
-              <n-input
-                v-model:value="searchProduct"
-                type="text"
-                clearable
-                :placeholder="searchType === 'name' ? '请输入商品名称' : '请输入商品条码'" />
-            </div>
-            <div class="pl-[16px]">
-              <n-button type="info" round @click="emits('search', searchProduct, searchType, Props.type)">
-                搜索
-              </n-button>
-            </div>
-          </div>
-          <div class="h-[150px] overflow-y-auto">
-            <template v-for="(item, index) in Props.productList" :key="index">
-              <div
-                class="py-[8px] px-[8px] rounded-2xl flex justify-between items-center"
-                :style="{ color: readyAddproduct && item.id === readyAddproduct.id ? '#2080F0' : '',
-                          background: readyAddproduct && item.id === readyAddproduct.id ? '#fff' : '' }"
-                @click="setAddProduct(item)">
-                <div class="">
-                  {{ item.name }} -- {{ item.code }}
-                </div>
-              </div>
-            </template>
-          </div>
+          <n-form
+            ref="MformRef"
+            :model="MformValue"
+            :rules="rules"
+            label-placement="top"
+            label-width="80"
+            label-align="left"
+          >
+            <n-grid :cols="24" :x-gap="8">
+              <n-form-item-gi :span="24" label="条码">
+                <n-input v-model:value="MformValue.user" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="24" label="货品名称">
+                <n-input v-model:value="MformValue.user" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="是否本店">
+                <n-input v-model:value="MformValue.age" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="回收金价">
+                <n-input v-model:value="MformValue.user" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="回收方式">
+                <n-input v-model:value="MformValue.age" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="回收工费">
+                <n-input v-model:value="MformValue.user" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="回收类型">
+                <n-input v-model:value="MformValue.age" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="备注">
+                <n-input v-model:value="MformValue.user" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="品牌">
+                <n-input v-model:value="MformValue.age" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="主石重">
+                <n-input v-model:value="MformValue.user" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="材质" path="material">
+                <n-input v-model:value="MformValue.age" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="主石颜色">
+                <n-input v-model:value="MformValue.user" />
+              </n-form-item-gi>
+              <n-form-item-gi
+                :span="12" label="成色" path="fineness">
+                <n-input v-model:value="MformValue.age" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="主石净度">
+                <n-input v-model:value="MformValue.user" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="主石" path="main">
+                <n-input v-model:value="MformValue.age" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="主石切工">
+                <n-input v-model:value="MformValue.age" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="实际成色">
+                <n-input v-model:value="MformValue.age" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="品类">
+                <n-input v-model:value="MformValue.age" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="折足重">
+                <n-input v-model:value="MformValue.age" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="工艺">
+                <n-input v-model:value="MformValue.age" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="金重">
+                <n-input v-model:value="MformValue.age" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="标签价">
+                <n-input v-model:value="MformValue.age" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="回收金额" path="recovery">
+                <n-input v-model:value="MformValue.age" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="积分">
+                <n-input v-model:value="MformValue.age" />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" />
+            </n-grid>
+          </n-form>
         </div>
+
+        <!-- <div class="col-12">
+          <n-form
+            ref="MformRef"
+            :model="MformValue"
+            :rules="rules"
+            label-placement="left"
+            label-width="auto"
+
+          >
+            <n-form-item label="Input" path="inputValue">
+              <n-input v-model:value="MformValue.user" placeholder="Input" />
+            </n-form-item>
+            <n-form-item label="Textarea" path="textareaValue">
+              <n-input
+                v-model:value="MformValue.age"
+                placeholder="Textarea"
+                type="textarea"
+                :autosize="{
+                  minRows: 3,
+                  maxRows: 5,
+                }"
+              />
+            </n-form-item>
+          </n-form>
+        </div> -->
       </div>
       <template #footer>
-        <common-button-bottom @confirm="addProduct(readyAddproduct)" @cancel="showModal = false" />
+        <common-button-bottom @confirm="submitMasterialsForm" @cancel="showModal = false" />
       </template>
     </common-popup>
   </common-fold>

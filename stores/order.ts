@@ -38,13 +38,7 @@ export const useOrder = defineStore('Order', {
         }
       }
     },
-    // 获取今日金价
-    async getTodayPrice() {
-      const { data } = await https.get<any, null>('/setting/gold_price/get')
-      if (data.value.code === HttpCode.SUCCESS) {
-        this.todayPrice = data.value.data.price
-      }
-    },
+
     // 提交订单
     async submitOrder(req: Orders) {
       const { data } = await https.post<Orders, Orders>('/order/create', req)

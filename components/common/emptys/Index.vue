@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
   <div>
     <div class="pt-[100px]">
       <Icon :name="props.icon" :dark="props.dark" class="!text-[150px]" :size="200" />
-      <div class="flex-center-row text-[16px] dark:color-[#fff]">
+      <div class="flex-center-row text-[16px] color-[#666] dark:color-[#fff]">
         {{ props.text }}
       </div>
     </div>
