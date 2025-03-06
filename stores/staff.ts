@@ -5,6 +5,7 @@ export const useStaff = defineStore('staffStore', {
     staffInfo: {} as Staff,
     total: 0,
     filterListToArray: [] as FilterWhere<Staff>[],
+    searchPage: 1 as number,
   }),
   getters: {
 
