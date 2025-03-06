@@ -1,5 +1,5 @@
 /**
- * GoldPrices
+ * 金价列表
  */
 interface GoldPrices {
   /**
@@ -71,7 +71,7 @@ interface UpdataGoldParams {
    * 产品类型
    * 0: 全部 1: 成品 2: 旧料 3: 配件
    */
-  product_type: 0 | 1 | 2 | 3
+  product_type?: 0 | 1 | 2 | 3
   /**
    * 店铺ID
    */

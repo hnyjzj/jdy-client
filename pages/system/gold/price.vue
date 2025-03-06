@@ -23,20 +23,30 @@ else {
 
 /** 绑定参数 */
 async function getGoldParams() {
-  goldParams.value = JSON.parse(JSON.stringify(goldList.value.map(item => ({
-    price: Number(item.price),
-    product_material: item.product_material,
-    product_quality: item.product_quality,
-    product_type: item.product_type,
-    product_brand: item.product_brand,
-    store_id: myStore.value.id,
-    id: item.id,
-  }))))
+  if (goldList.value?.length) {
+    goldParams.value = JSON.parse(JSON.stringify(goldList.value.map(item => ({
+      price: Number(item.price),
+      product_material: item.product_material,
+      product_quality: item.product_quality,
+      product_type: item.product_type,
+      product_brand: item.product_brand,
+      store_id: myStore.value.id,
+      id: item.id,
+    }))))
+  }
+  else {
+    goldParams.value = [{
+      product_quality: [],
+      product_type: undefined,
+      product_brand: [],
+      store_id: myStore.value.id,
+    }]
+  }
 }
 /** 获取下拉消息信息 */
 function getOptions(name: keyof Product) {
   const preset = filterList.value[name]?.preset
-  return optonsToSelect(preset, true)
+  return optonsToSelect(preset)
 }
 const productType = {
   0: '全部',
@@ -59,8 +69,9 @@ async function submit() {
 }
 function addGold() {
   goldParams.value.push({
+    price: undefined,
     product_quality: [],
-    product_type: 0,
+    product_type: undefined,
     product_brand: [],
     store_id: myStore.value.id,
   })
@@ -87,28 +98,35 @@ function subtract(i: number) {
                 金价历史
               </div>
             </div>
-            <div class="col-8 flex justify-end pt-6 pr-6">
-              <div class="updata-time">
-                最近更新：
-                {{ formatTimestampToDateTime(goldList[0]?.updated_at ?? '') }}
-              </div>
+          </div>
+          <div class="col-8 flex pl-4 pt-4 pb-1">
+            <div class="updata-time">
+              最近更新：
+              {{ formatTimestampToDateTime(goldList[0]?.updated_at ?? '') }}
             </div>
           </div>
           <div class="p-3">
-            <template v-for="item in goldList" :key="item.id">
-              <div class="grid grid-cols-[60px_auto] pb-4 items-center">
-                <div class="text-[rgba(0,104,255,1)] text-[24px] pr-2 flex items-end">
-                  {{ item.price }}
-                  <span class="pl-[2px]">/g</span>
-                </div>
-                <div class="flex flex-wrap gap-1 text-color">
-                  <div>
-                    {{ productType[item.product_type] ?? '' }}
+            <template v-if="goldList.length">
+              <template v-for="item in goldList" :key="item.id">
+                <div class="grid grid-cols-[68px_auto] items-start pb-5">
+                  <div class="text-[rgba(0,104,255,1)] text-[20px] pr-2 flex items-end">
+                    {{ Number(item.price).toFixed(2) }}
                   </div>
-                  <div>{{ filterList.material?.preset[item.product_material] ?? '' }}</div>
-                  <div>{{ item.product_brand?.map(item => filterList.brand?.preset[item]).join(' ') ?? '' }}</div>
-                  <div>{{ item.product_quality.map(quality => filterList.quality?.preset[quality]).join(' ') ?? '' }}</div>
+                  <div>
+                    <div class="pb-1 font-bold">
+                      {{ productType[item.product_type] ?? '' }}
+                    </div>                  <div class="flex flex-wrap gap-1 text-color">
+                      <div>{{ filterList.material?.preset[item.product_material] ?? '' }}</div>
+                      <div>{{ item.product_brand?.map(item => filterList.brand?.preset[item]).join(' ') ?? '' }}</div>
+                      <div>{{ item.product_quality.map(quality => filterList.quality?.preset[quality]).join(' ') ?? '' }}</div>
+                    </div>
+                  </div>
                 </div>
+              </template>
+            </template>
+            <template v-else>
+              <div>
+                <common-empty text="暂未设置金价" />
               </div>
             </template>
           </div>
@@ -118,9 +136,9 @@ function subtract(i: number) {
     <common-model v-model="changeShow" title="变更金价">
       <div class="pb-4 min-h-[320px] max-h-[400px] overflow-auto">
         <template v-for="(item, index) in goldParams" :key="index">
-          <div class="flex justify-between items-center mb-2">
+          <div class="flex justify-between items-center mb-2 mt-2">
             <div class="text-color">
-              {{ productType[item.product_type] }}
+              金价{{ index + 1 }}
               <span class="text-red">*</span>
             </div>
           </div>
@@ -158,7 +176,7 @@ function subtract(i: number) {
               取消
             </div>
             <div class="cursor-pointer cancel-btn" @click="getGoldParams">
-              重置金价
+              重置
             </div>
             <div class="cursor-pointer confirm-btn" @click="submit">
               确定
@@ -234,7 +252,7 @@ function subtract(i: number) {
   display: none;
 }
 .updata-time {
-  --uno: 'bg-[rgba(199,218,255,1)] px-[10px] py-[4px] text-[rgba(75,87,109,1)] rounded-full';
+  --uno: 'bg-[rgba(199,218,255,1)] py-[4px] text-[rgba(75,87,109,1)] rounded-full';
 }
 .confirm-btn {
   --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#fff] font-bold ';
