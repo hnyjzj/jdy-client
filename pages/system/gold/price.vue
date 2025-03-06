@@ -15,14 +15,14 @@ const goldParams = ref([] as UpdataGoldParams[])
 await getProductWhere()
 if (myStore.value.id) {
   await getGoldPrice(myStore.value.id)
-  await getGlodParams()
+  await getGoldParams()
 }
 else {
   $toast.error('请先选择门店')
 }
 
 /** 绑定参数 */
-async function getGlodParams() {
+async function getGoldParams() {
   goldParams.value = JSON.parse(JSON.stringify(goldList.value.map(item => ({
     price: Number(item.price),
     product_material: item.product_material,
@@ -50,7 +50,7 @@ async function submit() {
     $toast.success('提交今日最新金价成功')
     goldParams.value = []
     await getGoldPrice(myStore.value.id)
-    await getGlodParams()
+    await getGoldParams()
   }
   else {
     $toast.error(data.message ?? '提交失败')
@@ -101,7 +101,7 @@ function subtract(i: number) {
                   {{ item.price }}
                   <span class="pl-[2px]">/g</span>
                 </div>
-                <div class="flex flex-wrap gap-1 text-color-light">
+                <div class="flex flex-wrap gap-1 text-color">
                   <div>
                     {{ productType[item.product_type] ?? '' }}
                   </div>
@@ -153,11 +153,11 @@ function subtract(i: number) {
       </div>
       <template #footer>
         <div class="w-[100%]">
-          <div class="grid grid-cols-[26%_26%_auto] gap-2">
+          <div class="bottom-fun grid grid-cols-[26%_26%_auto] gap-2">
             <div class="cursor-pointer cancel-btn" @click="changeShow = false">
               取消
             </div>
-            <div class="cursor-pointer cancel-btn" @click="getGlodParams">
+            <div class="cursor-pointer cancel-btn" @click="getGoldParams">
               重置金价
             </div>
             <div class="cursor-pointer confirm-btn" @click="submit">
@@ -204,7 +204,7 @@ function subtract(i: number) {
         </template>
       </div>
     </common-model>
-    <common-button-bottom confirm-text="变更金价" cancel-text="操作记录" @confirm="getGlodParams();changeShow = true" @cancel="recordShow = true" />
+    <common-button-bottom confirm-text="变更金价" cancel-text="操作记录" @confirm="getGoldParams();changeShow = true" @cancel="recordShow = true" />
   </div>
 </template>
 
@@ -245,5 +245,9 @@ function subtract(i: number) {
   --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#1a6beb] font-bold';
   background: #fff;
   box-shadow: rgba(82, 130, 241, 0.24) 0px 8px 8px 0;
+}
+.bottom-fun {
+  --uno: 'flex-between pt-4';
+  border-top: rgba(230, 230, 232, 1) solid 1px;
 }
 </style>

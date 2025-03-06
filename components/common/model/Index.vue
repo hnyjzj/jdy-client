@@ -51,8 +51,8 @@ watch(show, (val) => {
       <div class="center">
         <div class="box">
           <slot />
-          <div class="bottom-fun">
-            <slot name="footer">
+          <slot name="footer">
+            <div v-if="props.showCancel || props.showOk" class="bottom-fun">
               <template v-if="props.showCancel">
                 <div
                   class="cursor-pointer"
@@ -68,8 +68,8 @@ watch(show, (val) => {
                   {{ props.confirmText }}
                 </div>
               </template>
-            </slot>
-          </div>
+            </div>
+          </slot>
         </div>
       </div>
     </div>
