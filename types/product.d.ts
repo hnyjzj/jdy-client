@@ -140,12 +140,7 @@ interface Product {
    * 产品类型
    * 0:全部 1:成品 2:旧料 3:配件
    */
-  type: number
-  /**
-   *
-   */
-  store_id: string
-
+  type: 0 | 1 | 2 | 3
 }
 interface ProductDamage {
   code: Product['code']

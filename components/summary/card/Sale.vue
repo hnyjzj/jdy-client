@@ -26,6 +26,10 @@ const todaySale = ref<DataCardList<todaySales>>({
   old_goods_amount: '旧货抵值',
   return_amount: '退货金额',
 })
+
+const toTodayPrice = () => {
+  navigateTo('/system/gold/price')
+}
 </script>
 
 <template>
@@ -58,7 +62,7 @@ const todaySale = ref<DataCardList<todaySales>>({
       </div>
       <div class="bg-[#c7dafF] dark:opacity-[0.5] h-[1px] w-full mt-[8px]" />
       <div class="mt-[12px] flex-between">
-        <div class="color-[#4B576D] bg-[#C7DAFF] text-[12px] line-height-[24px] px-[10px] rounded-[60px]">
+        <div class="color-[#4B576D] bg-[#C7DAFF] text-[12px] line-height-[24px] px-[10px] rounded-[60px]" @click="toTodayPrice">
           <div>
             金价: ￥{{ todaySaleData.gold_price || 0 }}/g
           </div>
