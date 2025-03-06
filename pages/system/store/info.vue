@@ -3,6 +3,9 @@ const { $toast } = useNuxtApp()
 const { storeDetails } = storeToRefs(useStores())
 const { getStoreDetail, deleteStaff } = useStores()
 const route = useRoute()
+useSeoMeta({
+  title: '门店详情',
+})
 
 if (route.query.id) {
   await getStoreDetail(route.query.id as Stores['id'])
@@ -32,7 +35,7 @@ const deleteStoreStaffFn = async (id: string) => {
   })
 }
 const assign = () => {
-  navigateTo('/system/store/assign')
+  navigateTo(`/system/store/assign?id=${storeDetails.value.id}`)
 }
 </script>
 
@@ -41,6 +44,9 @@ const assign = () => {
     <div class="col-12" uno-md="col-8 offset-2" uno-lg="col-6 offset-3">
       <stores-info :info-detail="storeDetails" />
       <staff-assign-card :list="storeDetails.staffs" @delete-store-staff="deleteStoreStaffFn" @confirm="assign" />
+      <template v-if="storeDetails.staffs.length === 0">
+        <common-emptys text="暂未分配员工" />
+      </template>
     </div>
   </div>
 </template>
