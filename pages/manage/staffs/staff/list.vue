@@ -9,8 +9,7 @@ const complate = ref(0)
 const searchKey = ref('')
 const show = ref<boolean>(false)
 const showModal = ref<boolean>(false)
-// 搜索条件 页码
-// const searchPage = ref<number>(1)
+
 // 是否有更多数据
 const nomore = ref<boolean>(false)
 // 筛选请求数据
@@ -88,16 +87,6 @@ const handleSearch = (query: string) => {
         </template>
       </product-filter>
     </div>
-
-    <!-- <common-list-pull
-      :distance="height"
-      :nomore="nomore"
-      @pull="() => {
-        searchPage += 1
-        getList()
-      }">
-
-    </common-list-pull> -->
 
     <div class="px-[16px]">
       <staff-manage-card :list="staffList" @get-detail="getInfo" />
