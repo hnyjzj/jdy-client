@@ -6,10 +6,9 @@ const { getProductWhere } = useProductManage()
 const { filterList } = storeToRefs(useProductManage())
 const { myStore } = storeToRefs(useStores())
 useSeoMeta({
-  title: '黄金价格',
+  title: '今日金价',
 })
 
-const recordShow = ref(false)
 const changeShow = ref(false)
 const goldParams = ref([] as UpdataGoldParams[])
 await getProductWhere()
@@ -115,7 +114,8 @@ function subtract(i: number) {
                   <div>
                     <div class="pb-1 font-bold">
                       {{ productType[item.product_type] ?? '' }}
-                    </div>                  <div class="flex flex-wrap gap-1 text-color">
+                    </div>
+                    <div class="gap-1 text-color">
                       <div>{{ filterList.material?.preset[item.product_material] ?? '' }}</div>
                       <div>{{ item.product_brand?.map(item => filterList.brand?.preset[item]).join(' ') ?? '' }}</div>
                       <div>{{ item.product_quality.map(quality => filterList.quality?.preset[quality]).join(' ') ?? '' }}</div>
@@ -185,44 +185,7 @@ function subtract(i: number) {
         </div>
       </template>
     </common-model>
-    <common-model v-model="recordShow" :show-cancel="false" title="操作记录">
-      <div class="flex overflow-x-scroll">
-        <template v-if="goldList.length">
-          <div>
-            <table>
-              <thead>
-                <tr class="text-color">
-                  <th class="text">
-                    金价
-                  </th>
-                  <th class="text">
-                    类型
-                  </th>
-                  <th class="text">
-                    材质
-                  </th>
-                  <th class="text">
-                    成色
-                  </th><th class="text">
-                    品牌
-                  </th>
-                  <th class="text">
-                    操作人
-                  </th>
-                  <th class="text">
-                    操作时间
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) in goldList" :key="index" class="my-1 text-color-light" />
-              </tbody>
-            </table>
-          </div>
-        </template>
-      </div>
-    </common-model>
-    <common-button-bottom confirm-text="变更金价" cancel-text="操作记录" @confirm="getGoldParams();changeShow = true" @cancel="recordShow = true" />
+    <common-button-one text="变更金价" @confirm="getGoldParams();changeShow = true" />
   </div>
 </template>
 
