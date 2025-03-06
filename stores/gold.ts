@@ -2,11 +2,9 @@ export const useGoldPrice = defineStore('goldPrice', {
   state: (): {
     goldPrice: number
     goldList: GoldPrices[]
-    totalPage: number
   } => ({
     goldPrice: 0,
     goldList: [],
-    totalPage: 0,
   }),
   actions: {
     // 获取今日金价
