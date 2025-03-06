@@ -112,11 +112,13 @@ function subtract(i: number) {
                     {{ Number(item.price).toFixed(2) }}
                   </div>
                   <div>
-                    <div class="pb-1 font-bold">
-                      {{ productType[item.product_type] ?? '' }}
+                    <div class="pb-1 flex gap-2">
+                      <div class="font-bold">
+                        {{ productType[item.product_type] ?? '' }}
+                      </div>
+                      <div>{{ filterList.material?.preset[item.product_material] ?? '' }}</div>
                     </div>
                     <div class="gap-1 text-color">
-                      <div>{{ filterList.material?.preset[item.product_material] ?? '' }}</div>
                       <div>{{ item.product_brand?.map(item => filterList.brand?.preset[item]).join(' ') ?? '' }}</div>
                       <div>{{ item.product_quality.map(quality => filterList.quality?.preset[quality]).join(' ') ?? '' }}</div>
                     </div>
