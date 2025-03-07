@@ -166,42 +166,44 @@ async function customRequest({ file }: UploadCustomRequestOptions) {
         <div class="pb-20">
           <template v-for="(item, index) in filterListToArray" :key="index">
             <template v-if="item.update">
-              <div class="mb-4">
-                <div class="label">
-                  {{ item.label }}
+              <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
+                <div class="mb-4">
+                  <div class="label">
+                    {{ item.label }}
+                  </div>
+                  <template v-if="item.input === 'text'">
+                    <n-input
+                      v-model:value="productParams[item.name]"
+                      :placeholder="String(productParams[item.name])"
+                    />
+                  </template>
+                  <template v-else-if="item.input === 'number'">
+                    <n-input-number
+                      v-model:value="productParams[item.name]"
+                      :placeholder="String(productParams[item.name])"
+                      :default-value="0"
+                    />
+                  </template>
+                  <template v-else-if="item?.input === 'select'">
+                    <n-select
+                      v-model:value="productParams[item.name]"
+                      :default-value="0"
+                      menu-size="large"
+                      fable
+                      :placeholder="`请选择${item.label}`"
+                      :options="presetToSelect(item) "
+                    />
+                  </template>
+                  <template v-else-if="item?.input === 'switch'">
+                    <n-switch v-model:value="productParams[item.name]" />
+                  </template>
+                  <template v-else-if="item?.input === 'textarea'">
+                    <n-input
+                      v-model:value="productParams[item.name]"
+                      :placeholder="String(productParams[item.name])"
+                    />
+                  </template>
                 </div>
-                <template v-if="item.input === 'text'">
-                  <n-input
-                    v-model:value="productParams[item.name]"
-                    :placeholder="String(productParams[item.name])"
-                  />
-                </template>
-                <template v-else-if="item.input === 'number'">
-                  <n-input-number
-                    v-model:value="productParams[item.name]"
-                    :placeholder="String(productParams[item.name])"
-                    :default-value="0"
-                  />
-                </template>
-                <template v-else-if="item?.input === 'select'">
-                  <n-select
-                    v-model:value="productParams[item.name]"
-                    :default-value="0"
-                    menu-size="large"
-                    fable
-                    :placeholder="`请选择${item.label}`"
-                    :options="presetToSelect(item) "
-                  />
-                </template>
-                <template v-else-if="item?.input === 'switch'">
-                  <n-switch v-model:value="productParams[item.name]" />
-                </template>
-                <template v-else-if="item?.input === 'textarea'">
-                  <n-input
-                    v-model:value="productParams[item.name]"
-                    :placeholder="String(productParams[item.name])"
-                  />
-                </template>
               </div>
             </template>
           </template>

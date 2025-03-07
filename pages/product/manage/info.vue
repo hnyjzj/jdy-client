@@ -50,7 +50,7 @@ async function loss() {
 }
 
 // 转换
-async function convert(type: number) {
+async function convert(type: Product['type']) {
   const res = await convertProduct({ code: productInfo.value.code, type })
   if (res.code === HttpCode.SUCCESS) {
     isModel.value = false

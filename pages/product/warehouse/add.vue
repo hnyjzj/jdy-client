@@ -16,7 +16,7 @@ useSeoMeta({
 const params = ref({} as Product)
 const isDisables = ref()
 if (route.query?.type) {
-  params.value.type = Number(route.query.type)
+  params.value.type = Number(route.query.type) as Product['type']
   isDisables.value = ['type']
 }
 const formRef = ref<FormInst | null>(null)

@@ -10,7 +10,7 @@ const isModel = ref(false)
 const isBatchImportModel = ref(false)
 const pages = ref(1)
 const isCanPull = ref(true)
-const type = ref(2)
+const type = ref(2 as Product['type'])
 useSeoMeta({
   title: '配件列表',
 })
