@@ -110,7 +110,7 @@ export const useProductManage = defineStore('ProductManage', {
         return data.value
       }
       catch (error) {
-        throw new Error(`报损失败: ${error || '未知错误'}`)
+        throw new Error(`转换失败: ${error || '未知错误'}`)
       }
     },
     /** 货品记录 */
@@ -148,8 +148,13 @@ export const useProductManage = defineStore('ProductManage', {
     },
     // 上传产品图
     async uploadProductImg(req: UploadProductImg) {
-      const { data } = await https.upload<UploadRes, UploadProductImg>('/upload/product', req)
-      return data.value
+      try {
+        const { data } = await https.upload<UploadRes, UploadProductImg>('/upload/product', req)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`上传产品图片失败: ${error || '未知错误'}`)
+      }
     },
   },
 })

@@ -13,7 +13,7 @@ const pages = ref(1)
 const isCanPull = ref(true)
 const storeCol = ref()
 const store_id = ref()
-function changeStoer() {
+function changeStore() {
   storeCol.value = []
   storesList.value.forEach((item: Stores) => {
     storeCol.value.push({ label: item.name, value: item.id })
@@ -52,12 +52,17 @@ async function getList(where = {} as Partial<HistoryWhere>) {
   }
   return res as any
 }
-
-await getList()
-await getHistoryWhere()
-await getProductWhere()
-await changeStoer()
-await getStoreList({ page: 1, limit: 20 })
+try {
+  await getList()
+  await getHistoryWhere()
+  await getProductWhere()
+  await changeStore()
+  await getStoreList({ page: 1, limit: 20 })
+}
+catch (error) {
+  $toast.error('初始化数据失败')
+  console.error('初始化数据失败:', error)
+}
 
 const filterData = ref({} as Partial<ProductHistories>)
 
