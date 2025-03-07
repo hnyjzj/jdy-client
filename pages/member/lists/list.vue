@@ -4,17 +4,8 @@ useSeoMeta({
 })
 const { $toast } = useNuxtApp()
 
-// 获取头部高度
-const height = ref<number | undefined>(0)
-onMounted(() => {
-  height.value = getHeight('header')
-  if (height.value) {
-    height.value = height.value + 40
-  }
-})
-
 const { getMemberList, getMemberInfo, getMemberWhere, updateIntegral } = useMemberManage()
-const { memberList, memberInfo, filterListToArray, memberListTotal } = storeToRefs(useMemberManage())
+const { memberList, memberInfo, filterListToArray, memberListTotal, searchPage } = storeToRefs(useMemberManage())
 
 const actions = [
   { id: 1, text: '增加' },
@@ -32,25 +23,14 @@ const complate = ref(0)
 const searchKey = ref('')
 const isFilter = ref(false)
 const filterData = ref({} as Partial<Member>)
-// 没有更多数据了
-const nomore = ref(true)
+const limit = 12
 
-const pages = ref(1)
 async function getList(where = {} as Partial<Member>) {
-  if (!nomore.value)
-    return
-  const params = { page: pages.value, limit: 20 } as ReqList<Member>
+  const params = { page: searchPage.value, limit } as ReqList<Member>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
-  const res = await getMemberList(params)
-  if (res.data?.list.length) {
-    pages.value++
-  }
-  else {
-    nomore.value = false
-  }
-  return res as any
+  await getMemberList(params)
 }
 
 await getList()
@@ -58,10 +38,6 @@ await getMemberWhere()
 
 const openFilter = () => {
   isFilter.value = true
-}
-
-function pull() {
-  getList()
 }
 
 const show = ref(false)
@@ -87,8 +63,12 @@ const fluctuant = ref()
 const initPopup = () => {
   show.value = false
   adjustWay.value = 0
-  fluctuant.value = 0
+  fluctuant.value = ''
   integralParams.value.remark = ''
+  items.value.forEach((item) => {
+    item.isPopoverVisible = false
+    item.selected = ''
+  })
 }
 
 const disposeNumerical = () => {
@@ -115,15 +95,13 @@ const adjustIntegral = async () => {
 // 筛选列表
 async function submitWhere(f: Partial<Member>) {
   filterData.value = { ...f }
-  pages.value = 1
-  nomore.value = true
   memberList.value = []
-  const res = await getList(filterData.value)
-  if (res.code === HttpCode.SUCCESS) {
-    isFilter.value = false
-    return $toast.success('筛选成功')
-  }
-  $toast.error(res.message ?? '筛选失败')
+  await getList(filterData.value)
+}
+
+const updatePage = async (page: number) => {
+  searchPage.value = page
+  await getList()
 }
 
 const goIntegral = (id: string) => {
@@ -140,7 +118,7 @@ const userCancel = () => {
 </script>
 
 <template>
-  <div class="overflow-hidden">
+  <div>
     <common-model
       v-model:model-value="show"
       :show-ok="true"
@@ -220,27 +198,20 @@ const userCancel = () => {
       </div>
     </common-model>
 
+    <product-filter
+      v-model:id="complate" v-model:search="searchKey" :product-list-total="memberListTotal" @filter="openFilter">
+      <template #company>
+        <product-manage-company />
+      </template>
+    </product-filter>
+
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
 
-    <div id="header">
-      <product-filter
-        v-model:id="complate" v-model:search="searchKey" :product-list-total="memberListTotal" @filter="openFilter">
-        <template #company>
-          <product-manage-company />
-        </template>
-      </product-filter>
+    <div class="flex flex-col px-[16px] py-[16px]">
+      <member-lists-list :info="memberList" @go-info="userJump" @view-integral="goIntegral" @change-integral="adjustment" />
     </div>
 
-    <div class="pb-10 overflow-hidden">
-      <common-list-pull :distance="height" :nomore="!nomore" @pull="pull">
-        <member-lists-list
-          :info="memberList"
-          @go-info="userJump"
-          @view-integral="goIntegral"
-          @change-integral="adjustment"
-        />
-      </common-list-pull>
-    </div>
+    <common-page v-model:page="searchPage" :total="memberListTotal" :limit="limit" @update:page="updatePage" />
   </div>
 </template>
 
@@ -249,7 +220,7 @@ const userCancel = () => {
   --uno: 'flex flex-col gap-[6px]';
 
   &-caption {
-    --uno: 'font-size-[14px] color-[#333333]';
+    --uno: 'font-size-[14px] color-[#333333] dark:color-[#fff]';
   }
 
   &-specific {
@@ -258,7 +229,7 @@ const userCancel = () => {
 }
 
 .disabled {
-  --uno: 'flex flex-row justify-between font-size-[14px] text-[#808089] rounded-[60px] bg-[rgba(222,222,222,0.5)] border-solid border-[1px] border-[rgba(230,230,232,0.7)] px-[10px] py-[8px] flex flex-row justify-items-start';
+  --uno: 'flex flex-row justify-between font-size-[14px] text-[#808089] dark:text-[#CBCDD1] rounded-[60px] bg-[rgba(222,222,222,0.5)] dark:bg-[rgba(222,222,222,0.3)] border-solid border-[1px] border-[rgba(230,230,232,0.7)] dark:border-[rgba(230,230,232,0.4)] px-[10px] py-[8px] flex flex-row justify-items-start cursor-not-allowed';
 
   .variational {
     --uno: 'flex-center-row gap-[2px]';
@@ -270,7 +241,7 @@ const userCancel = () => {
 }
 
 .area {
-  --uno: 'rounded-[8px] bg-[#fff] text-[#333] min-w-full max-h-[80px] px-[12px] py-[8px] font-size-[14px] border-solid border-[#E6E6E8] focus:border-[#3971F3] resize-none';
+  --uno: 'rounded-[8px] bg-[rgba(255,255,255,0.5)] dark:bg-[rgba(255,255,255,0.2)] text-[#333] dark:text-[#666] dark:border-[rgba(230,230,232,0.2)] min-w-full max-h-[80px] px-[12px] py-[8px] font-size-[14px] border-solid border-[#E6E6E8] focus:border-[#3971F3] resize-none';
 }
 
 .input {

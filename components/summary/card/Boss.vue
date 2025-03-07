@@ -1,21 +1,18 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
-  leftTitle: string
-  marginBottom?: string
-}>(), {
-  marginBottom: '16px',
-})
+const { StorePerformance } = homeDataStore()
+const { StorePerformanceList } = storeToRefs(homeDataStore())
+await StorePerformance({ duration: 'today' })
 const { $colorMode } = useNuxtApp()
 </script>
 
 <template>
-  <div class="blur-bgc rounded-[16px] overflow-hidden" :style="{ marginBottom: props.marginBottom }" data-allow-mismatch="style">
+  <div class="blur-bgc rounded-[16px] overflow-hidden mb-[16px]" data-allow-mismatch="style">
     <div class="grid-12">
       <div
-        class="skew col-4">
+        class="skew col-6" uno-md="col-4">
         <div class="skew-right" />
-        <div class="skew-text " data-allow-mismatch="text">
-          {{ props.leftTitle }}
+        <div class="skew-text pl-[15px]" data-allow-mismatch="text">
+          BOSS看板
         </div>
       </div>
     </div>
@@ -30,7 +27,7 @@ const { $colorMode } = useNuxtApp()
         :columns="[
           {
             title: '门店',
-            key: 'store',
+            key: 'name',
             width: '100px',
             fixed: 'left',
             className: 'age',
@@ -38,7 +35,7 @@ const { $colorMode } = useNuxtApp()
           },
           {
             title: '总业绩',
-            key: 'performance',
+            key: 'total',
             fixed: 'left',
             width: '100px',
             align: 'center',
@@ -52,75 +49,36 @@ const { $colorMode } = useNuxtApp()
 
           {
             title: '足金（件）',
-            key: 'gold_pieces',
+            key: 'gold',
             width: '100px',
             align: 'center',
           },
           {
             title: '足金件兑换旧料抵扣',
-            key: 'gold_pieces_for_old',
+            key: 'gold_deduction',
             width: '100px',
             align: 'center',
           },
           {
             title: '足金克',
-            key: 'gold_gram',
+            key: 'gold_weight',
             width: '100px',
             align: 'center',
           },
           {
             title: '足金克兑换旧料抵扣',
-            key: 'gold_gram_for_old',
+            key: 'gold_weight_deduction',
             width: '100px',
             align: 'center',
           },
           {
             title: '计件配件',
-            key: 'accessories',
+            key: 'piece_accessories',
             width: '100px',
             align: 'center',
           }]"
 
-        :data="[
-          {
-            store: '门店1',
-            performance: '1000',
-            silver: '100',
-            gold_pieces: '100',
-            gold_pieces_for_old: '100',
-            gold_gram: '100',
-            gold_gram_for_old: '100',
-            accessories: '100',
-          },
-          {
-            store: '门店2',
-            performance: '1000',
-            silver: '100',
-            gold_pieces: '100',
-            gold_pieces_for_old: '100',
-            gold_gram: '100',
-            gold_gram_for_old: '100',
-            accessories: '100',
-          }, {
-            store: '门店2',
-            performance: '1000',
-            silver: '100',
-            gold_pieces: '100',
-            gold_pieces_for_old: '100',
-            gold_gram: '100',
-            gold_gram_for_old: '100',
-            accessories: '100',
-          }, {
-            store: '门店2',
-            performance: '1000',
-            silver: '100',
-            gold_pieces: '100',
-            gold_pieces_for_old: '100',
-            gold_gram: '100',
-            gold_gram_for_old: '100',
-            accessories: '100',
-          },
-        ]"
+        :data="StorePerformanceList"
         :max-height="300"
         :scroll-x="800"
         :bordered="true"
@@ -139,5 +97,9 @@ const { $colorMode } = useNuxtApp()
 ::-webkit-scrollbar {
   /* 隐藏Webkit浏览器的滚动条 */
   display: none;
+}
+.skew-text {
+  display: flex;
+  align-items: flex-start;
 }
 </style>

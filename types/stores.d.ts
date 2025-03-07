@@ -43,3 +43,8 @@ interface uploadLogoFileReq {
   store_id?: string
 }
 // 门店列表筛选请求参数
+
+interface AssignStaff {
+  id?: string
+  staff_id: string[]
+}

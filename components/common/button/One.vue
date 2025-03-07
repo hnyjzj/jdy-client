@@ -14,10 +14,12 @@ const confirm = () => {
 </script>
 
 <template>
-  <div class="bottom grid-12">
-    <button class="btn offset-2 col-span-8 cursor-pointer" @click="confirm">
-      {{ props.text }}
-    </button>
+  <div class="bottom">
+    <common-layout-center>
+      <button class="btn cursor-pointer w-100%" @click="confirm">
+        {{ props.text }}
+      </button>
+    </common-layout-center>
   </div>
 </template>
 
