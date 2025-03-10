@@ -135,7 +135,7 @@ async function scanit() {
                   </div>
                   <div class="flex-start gap-3 text-sm font-normal">
                     <div class="color-[#666666]">
-                      入库单号
+                      调拨单号
                     </div>
                     <div class="color-[#333333]">
                       {{ allocateInfo.id }}
@@ -151,6 +151,22 @@ async function scanit() {
                   </div>
                   <div class="h-0.5 bg-[#E6E6E8]" />
                   <div class="other-information flex flex-col gap-1">
+                    <div class="flex-start gap-3 text-sm font-normal">
+                      <div class="color-[#666666]">
+                        调出门店
+                      </div>
+                      <div class="color-[#333333]">
+                        {{ allocateInfo.from_store.name }}
+                      </div>
+                    </div>
+                    <div class="flex-start gap-3 text-sm font-normal">
+                      <div class="color-[#666666]">
+                        调入门店
+                      </div>
+                      <div class="color-[#333333]">
+                        {{ allocateInfo.to_store.name }}
+                      </div>
+                    </div>
                     <div class="flex-start gap-3 text-sm font-normal">
                       <div class="color-[#666666]">
                         调拨方式
@@ -314,9 +330,10 @@ async function scanit() {
     <template v-if="allocateInfo.status === 2">
       <common-button-bottom cancel-text="取消调拨" confirm-text="完成调拨" @cancel="cancel" @confirm="finish" />
     </template>
-    <div class="cursor-pointer">
+    <!-- 状态为盘点中 增加产品 -->
+    <template v-if="allocateInfo.status === 1">
       <common-create @click="create" />
-    </div>
+    </template>
   </div>
 </template>
 

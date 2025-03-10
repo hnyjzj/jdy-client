@@ -1,35 +1,41 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
+const { myStore } = storeToRefs(useStores())
 const { getEnterList, getEnterWhere } = useEnter()
+const { importProduct } = useProductManage()
+const { filterList } = storeToRefs(useProductManage())
+
 const { EnterList, EnterToArray, EnterListTotal } = storeToRefs(useEnter())
-const searchKey = ref('')
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const pages = ref(1)
-const isCanPull = ref(true)
+const isModel = ref(false)
+const isBatchImportModel = ref(false)
+
 useSeoMeta({
   title: '入库单',
 })
+/** 打开高级筛选 */
 const openFilter = () => {
   isFilter.value = true
 }
+/** 搜索 */
+async function search(e: string) {
+  await submitWhere({ id: e }, true)
+}
+/** 关闭搜索 */
+async function clearSearch() {
+  await submitWhere({ }, true)
+}
 // 获取货品列表
 async function getList(where = {} as Partial<Enter>) {
-  if (!isCanPull.value)
-    return
-  const params = { page: pages.value, limit: 20 } as ReqList<Enter>
+  const params = { page: pages.value, limit: 10 } as ReqList<Enter>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
 
   const res = await getEnterList(params)
-  if (res.data?.list.length) {
-    pages.value++
-  }
-  else {
-    isCanPull.value = false
-  }
   return res
 }
 
@@ -43,22 +49,50 @@ function pull() {
 }
 
 // 筛选列表
-async function submitWhere(f: Partial<Enter>) {
+async function submitWhere(f: Partial<Enter>, isSearch: boolean = false) {
   filterData.value = { ...f }
   pages.value = 1
-  isCanPull.value = true
   EnterList.value = []
   const res = await getList(filterData.value)
   if (res?.code === HttpCode.SUCCESS) {
     isFilter.value = false
-    return $toast.success('筛选成功')
+    if (!isSearch) {
+      $toast.success('筛选成功')
+    }
+    return
   }
   $toast.error(res?.message ?? '筛选失败')
 }
 
 /** 编辑 */
 function edit(id: string) {
-  jump('/product/finished/warehouse/info', { id })
+  jump('/product/warehouse/info', { id })
+}
+// 提交入库
+async function submitGoods(data: Product[]) {
+  if (data?.length) {
+    const { code, message } = await importProduct({ products: data, store_id: myStore.value?.id })
+    if (code === HttpCode.SUCCESS) {
+      isModel.value = false
+      isBatchImportModel.value = false
+      pages.value = 1
+      await getList()
+      return $toast.success('导入成功')
+    }
+    $toast.error(message ?? '导入失败')
+  }
+}
+
+const create = () => {
+  if (!myStore.value?.id) {
+    return $toast.error('请先选择门店')
+  }
+  isModel.value = true
+}
+
+function goAdd() {
+  isModel.value = false
+  jump('/product/warehouse/add')
 }
 </script>
 
@@ -66,14 +100,14 @@ function edit(id: string) {
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:id="complate" v-model:search="searchKey" :product-list-total="EnterListTotal" @filter="openFilter">
+      v-model:id="complate" :product-list-total="EnterListTotal" placeholder="搜索入库单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company />
       </template>
     </product-filter>
     <!-- 小卡片组件 -->
-    <div class="pb-10">
-      <common-list-pull :nomore="!isCanPull" @pull="pull">
+    <div class="px-[16px] pb-20">
+      <template v-if="EnterList?.length">
         <product-manage-card :list="EnterList" @edit="edit">
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
@@ -89,20 +123,34 @@ function edit(id: string) {
                   {{ formatTimestampToDateTime(info.created_at) }}
                 </div>
               </div>
+              <div class="py-[4px] flex justify-between">
+                <div>产品数量</div>
+                <div class="text-align-end">
+                  {{ info.products?.length || 0 }}
+                </div>
+              </div>
             </div>
           </template>
           <template #bottom="{ info }">
             <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="详情" @click="jump('/product/finished/warehouse/info', { id: info.id })" />
+              <common-button-irregular text="详情" @click="jump('/product/warehouse/info', { id: info.id })" />
             </div>
           </template>
         </product-manage-card>
-      </common-list-pull>
+        <common-page
+          v-model:page="pages" :total="EnterListTotal" :limit="10" @update:page="() => {
+            pull()
+          }
+          " />
+      </template>
+      <template v-else>
+        <common-empty width="100px" />
+      </template>
     </div>
     <product-manage-bottom />
-    <div class="cursor-pointer">
-      <common-create @click="jump('/product/finished/warehouse/add')" />
-    </div>
+    <common-create @click="create" />
+    <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
+    <product-upload-warehouse v-model="isBatchImportModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" />
   </div>
 </template>

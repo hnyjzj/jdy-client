@@ -13,8 +13,7 @@ export const useWorkbenche = defineStore('workbencheStore', {
         return data.value
       }
       catch (error) {
-        console.error('添加失败:', error)
-        throw error
+        throw new Error(`${error || '未知错误'}`)
       }
     },
     async getWorkbenchList() {

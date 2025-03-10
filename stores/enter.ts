@@ -19,15 +19,11 @@ export const useEnter = defineStore('EnterStore', {
     // 入库单列表
     async getEnterList(pamars: ReqList<Enter>) {
       try {
+        pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
         const { data } = await https.post<ResList<Enter>, ReqList<Enter>>('/product/enter/list', pamars)
         if (data.value.code === HttpCode.SUCCESS) {
           this.EnterListTotal = data.value.data.total
-          if (pamars.page === 1) {
-            this.EnterList = data.value.data.list
-          }
-          else {
-            this.EnterList = this.EnterList.concat(data.value.data.list)
-          }
+          this.EnterList = data.value.data.list
         }
         return data.value
       }
@@ -46,16 +42,6 @@ export const useEnter = defineStore('EnterStore', {
       }
       catch (error) {
         throw new Error(`筛选失败: ${error || '未知错误'}`)
-      }
-    },
-    // 新增入库单
-    async addEnter(pamars: Product) {
-      try {
-        const { data } = await https.post<Enter, Product>('/product/enter/create', pamars)
-        return data.value
-      }
-      catch (error) {
-        throw new Error(`新增入库失败: ${error || '未知错误'}`)
       }
     },
     // 获取入库单详情

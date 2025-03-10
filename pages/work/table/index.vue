@@ -21,7 +21,6 @@ const params = ref<AddWorkbencheReq>({
 })
 const rules = ref<Rules<AddWorkbencheReq>>({
   title: [{ message: '标题不能为空', validator: 'required' }],
-  path: [{ message: '跳转地址不能为空', validator: 'required' }],
 })
 // 折叠状态
 const foldType = ref<Record<string, boolean>>({})
@@ -59,15 +58,17 @@ const allFold = () => {
 const fold = (index: number) => {
   workBenchList.value[index].is_fold = !workBenchList.value[index].is_fold
 }
-
+const modelType = ref()
 // 添加/更新工作台表单
-const addBench = (id: string) => {
+const addBench = (id: string, type: number) => {
+  modelType.value = type
   resetForm(true)
   submitStatus.value = 'add'
   params.value.parent_id = id
 }
 
-const updateBench = (bench: WorkBench) => {
+const updateBench = (bench: WorkBench, type: number = 1) => {
+  modelType.value = type
   resetForm(true)
   submitStatus.value = 'update'
   params.value.id = bench.id
@@ -127,13 +128,14 @@ async function submit(val: AddWorkbencheReq) {
 
 // 编辑或跳转分页
 async function changePage(bench: WorkBench) {
+  modelType.value = 3
   if (isSetup.value) {
-    return updateBench(bench)
+    return updateBench(bench, 3)
   }
   if (!bench.path) {
     return
   }
-  jump(bench.path)
+  navigateTo(bench.path)
 }
 
 // 删除头像
@@ -170,6 +172,26 @@ const searchListFn = async (val: string) => {
   const filteredData = filterByKeyword(workBenchList.value, val)
   workBenchList.value = filteredData
 }
+
+/** 获取新增添加标题 */
+function getModelTitle() {
+  let modelName = ''
+  switch (modelType.value) {
+    case 1:
+      modelName = '模块'
+      break
+    case 2:
+      modelName = '分类'
+      break
+    case 3:
+      modelName = '栏目'
+      break
+  }
+  if (submitStatus.value === 'add') {
+    return `添加${modelName}`
+  }
+  return `编辑${modelName}`
+}
 </script>
 
 <template>
@@ -195,7 +217,7 @@ const searchListFn = async (val: string) => {
           <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="delBench" @update="updateBench" @fold="fold" @change-page="changePage" />
           <template v-if="isSetup">
             <button style="all: unset;">
-              <div class="flex items-center mb-4 cursor-pointer" @click="resetForm(true);show = true">
+              <div class="flex items-center mb-4 cursor-pointer" @click="resetForm(true);show = true;modelType = 1 ">
                 <icon name="i-icon:addsth" :size="26" color="#000" />
                 <div class="text-[14px] text-[#000] pl-1">
                   添加模块
@@ -206,8 +228,8 @@ const searchListFn = async (val: string) => {
         </div>
       </div>
     </common-layout-center>
-    <common-model v-model:model-value="show" :title="submitStatus === 'add' ? '新增' : '编辑'" :show-ok="true" @confirm="() => addWorkbenchform?.submit()">
-      <div class="py-[16px]">
+    <common-model v-model:model-value="show" :title="getModelTitle()" :show-ok="true" @confirm="() => addWorkbenchform?.submit()">
+      <div class="py-[16px] text-color">
         <common-form ref="addWorkbenchform" v-model="params" :rules="rules" @submit="(val: AddWorkbencheReq) => submit(val)">
           <template #title="{ label, error }">
             <div class="pb-[16px]">
@@ -220,7 +242,7 @@ const searchListFn = async (val: string) => {
               </div>
             </div>
           </template>
-          <template #icon>
+          <template v-if="modelType === 3" #icon>
             <div class="pb-[16px]">
               <div class="add-row">
                 <div>图标</div>
@@ -235,7 +257,7 @@ const searchListFn = async (val: string) => {
               </div>
             </div>
           </template>
-          <template #path="{ label, error }">
+          <template v-if="modelType === 3" #path="{ label, error }">
             <div class="pb-[16px]">
               <div class="add-row">
                 <div>跳转地址</div>

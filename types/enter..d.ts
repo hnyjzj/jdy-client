@@ -13,4 +13,5 @@ interface Enter {
   operator_id: string
   products: Product[]
   updated_at: string
+  store_id: string
 }
