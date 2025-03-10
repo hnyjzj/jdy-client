@@ -4,19 +4,28 @@ const props = withDefaults(defineProps<{
   title?: string
   text?: string
   icon?: string
+  cancelText?: string
+  confirmText?: string
 }>(), {
-  title: '删除提示',
+  title: '提示',
   text: '确认删除此数据吗',
   icon: 'none',
+  cancelText: '取消',
+  confirmText: '确认',
 })
 const emits = defineEmits<{
   submit: []
+  cancel: []
 }>()
 const show = defineModel('show', { default: false })
 
 const submit = () => {
   emits('submit')
   show.value = false
+}
+const cancle = () => {
+  show.value = false
+  emits('cancel')
 }
 </script>
 
@@ -57,14 +66,14 @@ const submit = () => {
            py-[6px] text-[16px] font-semibold line-height-[24px] color-[#3971F3] bg-[#fff] rounded-3xl
            shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)]
           "
-          @click="show = false">
-          取消
+          @click="cancle">
+          {{ props.cancelText }}
         </div>
         <div
           class="shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)] px-[63px] py-[6px] text-[16px] font-semibold line-height-[24px] color-[#fff] bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] rounded-3xl
           shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)]
 " @click="submit">
-          确定
+          {{ props.confirmText }}
         </div>
       </div>
     </div>
