@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { calc } from 'a-calc'
+// import { calc } from 'a-calc'
 
 const Props = defineProps<{
   price: GoldPrices[]
