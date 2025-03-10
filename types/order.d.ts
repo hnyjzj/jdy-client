@@ -139,6 +139,10 @@ interface OrderSalesmen {
 }
 interface OrderProducts {
   /**
+   * 工费
+   */
+  labor_fee?: number
+  /**
    * 应付金额
    */
   amount?: number

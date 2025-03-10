@@ -36,31 +36,22 @@ const addProduct = (product: Product) => {
     return
   }
 
-  const index = showProductList.value?.findIndex(item => item?.product_id === product.id)
-  if (index === -1) {
-    const data = { price: 0, quantity: 1, discount: undefined, amount: 0, product_id: product.id, labor_fee: Number(product.labor_fee), product }
-    // 判断是否为  成品
-    const filtered = Props.price.filter(item => item.product_type === 1)
-    const exists = filtered.some(item =>
-      item.product_type === 1
-      && item.product_material === product.material
-      && item.product_quality.includes(product.quality)
-      && item.product_brand?.includes(product.brand),
-    )
-    if (exists) {
-      console.log('c')
-    }
-    else {
-      data.price = 0
-    }
-    // data.labor_fee = product.labor_fee
-    showProductList.value.push(data)
-  }
-  else {
+  const index = showProductList.value.findIndex(item => item.product?.id === product.id)
+  if (index !== -1 && showProductList.value[index].quantity) {
+    // 判断是否已经添加过该商品,如果已经添加过,则数量加一
+    // showProductList.value[index].quantity++
     $toast.error('该商品已经添加过')
     return
   }
-
+  else if (
+  // 如果没添加 并且数量为空,则数量为1
+    index !== -1 && !showProductList.value[index].quantity
+  ) {
+    showProductList.value[index].quantity = 1
+    return
+  }
+  const data = { quantity: 1, discount: undefined, amount: 0, product_id: product.id, product }
+  showProductList.value.push(data)
   showModal.value = false
 }
 const readyAddproduct = ref()
@@ -71,39 +62,60 @@ const setAddProduct = (product: Product) => {
 const count = (p: OrderProducts) => {
   if (!p.quantity)
     return
+    // 判断是否为  成品
+  console.log(p.product)
+  console.log(Props.price)
 
-  // 如果是计件方式 标签价格x 数量 x 折扣
-  if (p.product?.retail_type === 1) {
-    const total = calc('(price * discount) | <=2,!n', {
-      price: p.product.price,
-      discount: ((p.discount || 10) * 0.1),
+  if (p.product?.type === 1) {
+    Props.price.forEach((item) => {
+      if (item.product_type === 1) {
+        const index = item.product_quality.findIndex(quality => quality === p.product?.quality)
+        if (index !== -1) {
+          if (item.product_material === p.product?.material) {
+            const brand = item.product_brand?.findIndex(brand => brand === p.product?.brand)
+            if (brand !== -1) {
+              console.log('存在')
+            }
+          }
+        }
+      }
     })
-    p.amount = total
-    return total
   }
 
-  // 计重工费按克 [（金价 + 工费）X克重] X折扣
-  if (p.product?.retail_type === 2) {
-    const total = calc('(price + labor_fee) * weight_metal * discount | <=2,!n', {
-      price: p.price,
-      labor_fee: p?.labor_fee,
-      weight_metal: p.product?.weight_metal,
-      discount: ((p.discount || 10) * 0.1),
-    })
-    p.amount = total
-    return total
-  }
-  //   计重工费按件   （(金价X克重)) + 工费）X件数 X折扣
-  if (p.product?.retail_type === 3) {
-    const total = calc('((price * weight_metal) + labor_fee)  * discount | <=2,!n', {
-      price: p.price,
-      labor_fee: p?.labor_fee,
-      weight_metal: p.product?.weight_metal,
-      discount: ((p.discount || 10) * 0.1),
-    })
-    p.amount = total
-    return total
-  }
+//   // 如果是计件方式 标签价格x 数量 x 折扣
+//   if (p.product?.retail_type === 1) {
+//     const total = calc('(price * quantity * discount) | <=2,!n', {
+//       price: p.product?.price,
+//       quantity: p.quantity,
+//       discount: ((p.discount || 10) * 0.1),
+//     })
+//     p.amount = total
+//     return total
+//   }
+//   // 计重工费按克 [（金价 + 工费）X克重] X件数 X折扣
+//   if (p.product?.retail_type === 2) {
+//     const total = calc('(price + labor_fee) * weight_metal * quantity * discount | <=2,!n', {
+//       price: Props.price,
+//       labor_fee: p.product?.labor_fee,
+//       weight_metal: p.product?.weight_metal,
+//       quantity: p.quantity,
+//       discount: ((p.discount || 10) * 0.1),
+//     })
+//     p.amount = total
+//     return total
+//   }
+//   //   计重工费按件   （(金价X克重)) + 工费）X件数 X折扣
+//   if (p.product?.retail_type === 3) {
+//     const total = calc('((price * weight_metal) + labor_fee) * quantity * discount | <=2,!n', {
+//       price: Props.price,
+//       labor_fee: p.product?.labor_fee,
+//       weight_metal: p.product?.weight_metal,
+//       quantity: p.quantity,
+//       discount: ((p.discount || 10) * 0.1),
+//     })
+//     p.amount = total
+//     return total
+//   }
 }
 
 // 删除商品
@@ -122,17 +134,6 @@ const changeType = (type: 'name' | 'code') => {
   searchProduct.value = ''
   emits('openProductList')
 }
-const realtype = (val?: number) => {
-  switch (val) {
-    case 1:
-      return '一口价'
-    case 2:
-      return '计重工费按克'
-    case 3:
-      return '计重工费按件'
-  }
-}
-
 const { useWxWork } = useWxworkStore()
 // 扫码
 const scanCode = async () => {
@@ -189,27 +190,20 @@ const scanCode = async () => {
               </template>
               <template #info>
                 <div class="flex flex-col gap-[12px] px-[16px]">
-                  <common-cell label="名称" :value="obj.product?.name" />
-                  <common-cell label="条码" :value="obj.product?.code" />
-                  <common-cell label="金重" :value="obj.product?.weight_metal" />
-                  <common-cell label="零售方式" :value="realtype(obj.product?.retail_type)" />
+                  <div class="grid grid-flow-col w-full place-items-start gap-y-[12px] gap-x-[auto]">
+                    <div class="flex-center-row gap-[8px]">
+                      <div class="text-[14px] font-medium text-[#666666] dark:color-[#CBCDD1]">
+                        条码
+                      </div>
+                      <div class="text-[14px] font-medium text-[#666666] dark:color-[#CBCDD1]">
+                        {{ obj.product?.code }}
+                      </div>
+                    </div>
+                  </div>
                   <div class="h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
 
                   <div class="pb-[16px]">
                     <n-grid :cols="24" :x-gap="8">
-                      <template v-if="obj.product?.retail_type !== 1">
-                        <n-form-item-gi :span="12" label="金价(元/g)">
-                          <n-input-number
-                            v-model:value="obj.price"
-                            :show-button="false"
-                            placeholder="请输入金价(元/g)"
-                            round
-                            min="0"
-                            :precision="2"
-                          />
-                        </n-form-item-gi>
-                      </template>
-
                       <n-form-item-gi :span="12" label="折扣">
                         <n-input-number
                           v-model:value="obj.discount"
@@ -225,19 +219,40 @@ const scanCode = async () => {
                           </template>
                         </n-input-number>
                       </n-form-item-gi>
-                      <template v-if="obj.product?.retail_type !== 1">
-                        <n-form-item-gi :span="12" label="工费">
-                          <n-input-number
-                            v-model:value="obj.labor_fee"
-                            :show-button="false"
-                            placeholder="请输入工费"
-                            :default-value="Number(obj.product?.labor_fee)"
-                            round
-                            min="0"
-                            :precision="2"
-                          />
-                        </n-form-item-gi>
-                      </template>
+                      <n-form-item-gi :span="12" label="数量">
+                        <div class="flex items-center justify-between">
+                          <div class="w-full">
+                            <n-input-number
+                              v-model:value="obj.quantity"
+                              placeholder="请输入折扣:单位(折)"
+                              round
+                              min="1"
+                              :precision="0"
+                              :show-button="false"
+                              @blur="() => {
+                                obj.quantity ? obj.quantity : obj.quantity = 1
+                              }"
+                            />
+                          </div>
+                          <div class="flex items-center justify-between">
+                            <div
+                              class="wh-[32px] ml-[5px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3] text-[26px]"
+                              @click="() => {
+                                obj.quantity ? obj.quantity++ : obj.quantity = 1
+                              }">
+                              +
+                            </div>
+                            <div
+                              class="wh-[32px] ml-[5px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3]  text-[26px]"
+                              @click="() => {
+                                if (obj.quantity && obj.quantity > 1)
+                                  obj.quantity ? obj.quantity-- : obj.quantity = 1
+                              }">
+                              <div class="w-[10px] h-[2px] bg-[#3971F3]" />
+                            </div>
+                          </div>
+                        </div>
+                      </n-form-item-gi>
                     </n-grid>
                     <div class="flex justify-between items-center">
                       <div>
@@ -262,9 +277,10 @@ const scanCode = async () => {
         </template>
       </div>
     </template>
-    <common-model v-model="showModal" title="选择成品" :show-ok="true" :show-cancel="true" @confirm="addProduct(readyAddproduct)" @cancel="showModal = false">
+
+    <common-popup v-model:show="showModal" placement="bottom" :title="cardTitle()" width="50%" @close="showModal = false">
       <div class="grid-12">
-        <div class="col-12">
+        <div class="col-12" uno-md="col-4 offset-4" uno-sm="col-8 offset-2">
           <div>
             <div class="flex justify-around py-[12px]">
               <div
@@ -299,48 +315,25 @@ const scanCode = async () => {
               </n-button>
             </div>
           </div>
-          <div class="grid-12 px-[12px] color-[#333] font-semibold !text-[16px]">
-            <div class="col-4">
-              条码
-            </div>
-            <div class="col-4">
-              名称
-            </div>
-            <div class="col-3">
-              销售方式
-            </div>
-            <div class="col-1">
-              金重
-            </div>
-          </div>
-          <div class="h-[300px] overflow-y-auto py-[16px]">
+          <div class="h-[150px] overflow-y-auto">
             <template v-for="(item, index) in Props.productList" :key="index">
               <div
-                class="py-[12px] px-[8px] rounded-2xl grid-12 "
+                class="py-[8px] px-[8px] rounded-2xl flex justify-between items-center"
                 :style="{ color: readyAddproduct && item.id === readyAddproduct.id ? '#2080F0' : '',
                           background: readyAddproduct && item.id === readyAddproduct.id ? '#fff' : '' }"
                 @click="setAddProduct(item)">
-                <div class="col-4 whitespace-nowrap text-ellipsis overflow-hidden">
-                  {{ item.code }}
-                </div>
-                <div class="col-4 whitespace-nowrap text-ellipsis overflow-hidden">
-                  {{ item.name }}
-                </div>
-                <div class="col-3">
-                  {{ realtype(item.retail_type) }}
-                </div>
-                <div class="col-1">
-                  {{ item.weight_metal }}
+                <div class="">
+                  {{ item.name }} -- {{ item.code }}
                 </div>
               </div>
-            </template>
-            <template v-if="Props.productList.length === 0">
-              <common-emptys text="暂无数据" />
             </template>
           </div>
         </div>
       </div>
-    </common-model>
+      <template #footer>
+        <common-button-bottom @confirm="addProduct(readyAddproduct)" @cancel="showModal = false" />
+      </template>
+    </common-popup>
   </common-fold>
 </template>
 

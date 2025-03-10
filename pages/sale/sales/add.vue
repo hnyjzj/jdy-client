@@ -10,7 +10,9 @@ const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getAddOrderProductList } = useProductManage()
 const { getStoreStaffList } = useStores()
 const { getSaleWhere, submitOrder, getOrderDetail } = useOrder()
-const { todayPrice, filterList } = storeToRefs(useOrder())
+const { getGoldPrice } = useGoldPrice()
+const { goldList } = storeToRefs(useGoldPrice())
+const { filterList } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
 const { productList, partsList, masterialsList } = storeToRefs(useProductManage())
@@ -38,7 +40,7 @@ const showProductList = ref<OrderProducts[]>([])
 const showPartsList = ref<OrderProducts[]>([])
 const showMasterialsList = ref<OrderProducts[]>([])
 await getSaleWhere()
-// await getTodayPrice()
+await getGoldPrice(myStore.value.id)
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { store_id: myStore.value.id, phone: val } })
 const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
 
@@ -168,7 +170,7 @@ const openProductListFn = () => {
             v-model="showProductList"
             :type="1"
             :product-list="productList"
-            :price="todayPrice"
+            :price="goldList"
             @search="searchProductList"
             @open-product-list="openProductListFn"
           />
@@ -178,7 +180,7 @@ const openProductListFn = () => {
             v-model="showMasterialsList"
             :type="2"
             :product-list="masterialsList"
-            :price="todayPrice"
+            :price="goldList"
             @search="searchProductList"
             @open-product-list="openProductListFn"
           />
@@ -188,14 +190,14 @@ const openProductListFn = () => {
             v-model="showPartsList"
             :type="3"
             :product-list="partsList"
-            :price="todayPrice"
+            :price="goldList"
             @search="searchProductList"
             @open-product-list="openProductListFn"
           />
         </div>
 
         <sale-add-settlement v-model:form="formData" v-model:show-list="showProductList" />
-        <div class="h-[80px] bg-[#fff] fixed z-999">
+        <div class="h-[80px] bg-[#fff] fixed z-1">
           <div class="btn grid-12 px-[16px]">
             <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
               <common-button-rounded content="开单" />

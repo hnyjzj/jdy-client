@@ -36,7 +36,7 @@ const confirm = () => {
 
 <style lang="scss" scoped>
 .btn {
-  --uno: 'fixed bottom-0 left-0 right-0 blur-bgc p-[12px_16px] text-[16px] font-bold';
+  --uno: 'fixed bottom-0 left-0 right-0 blur-bgc p-[12px_16px] text-[16px] font-bold ';
   border-top: rgba(230, 230, 232, 1) solid 1px;
   &-left {
     background: #ffffff;

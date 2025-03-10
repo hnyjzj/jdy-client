@@ -2,7 +2,7 @@
 import { calc } from 'a-calc'
 
 const Props = defineProps<{
-  price: string
+  price: GoldPrices[]
   productList: Product[]
   type: number
 }>()
@@ -296,9 +296,9 @@ const submitMasterialsForm = () => {
       </div>
     </template>
 
-    <common-popup v-model:show="showModal" placement="bottom" :title="cardTitle()" height="600px" width="50%" @close="showModal = false">
-      <div class="grid-12 ">
-        <div class="col-12" uno-md="col-4 offset-4" uno-sm="col-8 offset-2">
+    <common-model v-model="showModal" title="选择旧料" :show-ok="true" :show-cancel="true" @confirm="submitMasterialsForm">
+      <div class="grid-12 h-[500px] overflow-y-auto">
+        <div class="col-12 px-[12px]">
           <n-form
             ref="MformRef"
             :model="MformValue"
@@ -381,41 +381,11 @@ const submitMasterialsForm = () => {
               <n-form-item-gi :span="12" label="积分">
                 <n-input v-model:value="MformValue.age" />
               </n-form-item-gi>
-              <n-form-item-gi :span="12" />
             </n-grid>
           </n-form>
         </div>
-
-        <!-- <div class="col-12">
-          <n-form
-            ref="MformRef"
-            :model="MformValue"
-            :rules="rules"
-            label-placement="left"
-            label-width="auto"
-
-          >
-            <n-form-item label="Input" path="inputValue">
-              <n-input v-model:value="MformValue.user" placeholder="Input" />
-            </n-form-item>
-            <n-form-item label="Textarea" path="textareaValue">
-              <n-input
-                v-model:value="MformValue.age"
-                placeholder="Textarea"
-                type="textarea"
-                :autosize="{
-                  minRows: 3,
-                  maxRows: 5,
-                }"
-              />
-            </n-form-item>
-          </n-form>
-        </div> -->
       </div>
-      <template #footer>
-        <common-button-bottom @confirm="submitMasterialsForm" @cancel="showModal = false" />
-      </template>
-    </common-popup>
+    </common-model>
   </common-fold>
 </template>
 

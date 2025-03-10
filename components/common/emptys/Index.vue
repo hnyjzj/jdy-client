@@ -12,7 +12,7 @@ const props = withDefaults(defineProps<{
 
 <template>
   <div>
-    <div class="pt-[100px]">
+    <div class="pt-[50px]">
       <Icon :name="props.icon" :dark="props.dark" class="!text-[150px]" :size="200" />
       <div class="flex-center-row text-[16px] color-[#666] dark:color-[#fff]">
         {{ props.text }}
