@@ -11,28 +11,25 @@ if (route.query.id) {
   await getStoreDetail(route.query.id as Stores['id'])
 }
 
-const dialog = useDialog()
 // 移除的员工
 const deleteModel = ref<AssignStaff>({
   id: undefined,
   staff_id: [],
 })
+
+const dialogShow = ref(false)
 //  移除员工
 const deleteStoreStaffFn = async (id: string) => {
-  dialog.error({
-    title: '确定移除此员工吗?',
-    negativeText: '取消',
-    positiveText: '确定',
-    onPositiveClick: async () => {
-      deleteModel.value.id = storeDetails.value.id
-      deleteModel.value.staff_id = [id]
-      const res = await deleteStaff(deleteModel.value)
-      if (res) {
-        $toast.success('移除成功')
-        await getStoreDetail(route.query.id as Stores['id'])
-      }
-    },
-  })
+  dialogShow.value = true
+  deleteModel.value.id = storeDetails.value.id
+  deleteModel.value.staff_id = [id]
+}
+const confirmDelete = async () => {
+  const res = await deleteStaff(deleteModel.value)
+  if (res) {
+    $toast.success('移除成功')
+    await getStoreDetail(route.query.id as Stores['id'])
+  }
 }
 const assign = () => {
   navigateTo(`/system/store/assign?id=${storeDetails.value.id}`)
@@ -47,6 +44,7 @@ const assign = () => {
       <template v-if="storeDetails.staffs.length === 0">
         <common-emptys text="暂未分配员工" />
       </template>
+      <common-confirm v-model:show="dialogShow" title="提示" text="确认移除此员工吗?" @submit="confirmDelete" />
     </div>
   </div>
 </template>
