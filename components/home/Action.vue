@@ -25,7 +25,7 @@ const actlist = ref<actionList[]>([{
         @click="userJump(item.url)"
       >
         <icon :name="item.icon" :size="30" />
-        <span class="text-[12px] sm:text-[14px] line-height-[24px] color-[#428EFF] dark:color-[#fff] ml-[8px]">{{ item.title }}</span>
+        <span class="text-[16px]  line-height-[24px] color-[#428EFF] dark:color-[#fff] ml-[8px]">{{ item.title }}</span>
       </div>
     </template>
   </div>
