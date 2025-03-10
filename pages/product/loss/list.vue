@@ -6,7 +6,6 @@ const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const pages = ref(1)
-const isCanPull = ref(true)
 useSeoMeta({
   title: '报损列表',
 })
@@ -24,19 +23,10 @@ async function clearSearch() {
 }
 // 获取货品列表
 async function getList(where = {} as Partial<Product>) {
-  if (!isCanPull.value)
-    return
-  const params = { page: pages.value, limit: 20 } as ReqList<Product>
+  const params = { page: pages.value, limit: 10 } as ReqList<Product>
   where.status = 2
   params.where = where
-
   const res = await getProductList(params)
-  if (res?.data?.list.length) {
-    pages.value++
-  }
-  else {
-    isCanPull.value = false
-  }
   return res as any
 }
 
@@ -52,7 +42,6 @@ function pull() {
 async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
   filterData.value = { ...f }
   pages.value = 1
-  isCanPull.value = true
   productList.value = []
   const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
@@ -76,8 +65,8 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
       </template>
     </product-filter>
     <!-- 小卡片组件 -->
-    <div class="pb-10 overflow-hidden">
-      <common-list-pull :nomore="!isCanPull" @pull="pull">
+    <div class="px-[16px] pb-20">
+      <template v-if="productList?.length">
         <product-manage-card :list="productList">
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
@@ -169,7 +158,15 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
             </div>
           </template>
         </product-manage-card>
-      </common-list-pull>
+        <common-page
+          v-model:page="pages" :total="productListTotal" :limit="10" @update:page="() => {
+            pull()
+          }
+          " />
+      </template>
+      <template v-else>
+        <common-empty width="100px" />
+      </template>
     </div>
     <product-manage-bottom />
     <common-filter-where v-model:show="isFilter" :data="filterData" :disabled="['status']" :filter="filterListToArray" @submit="submitWhere" />

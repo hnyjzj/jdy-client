@@ -21,7 +21,6 @@ const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const pages = ref(1)
-const isCanPull = ref(true)
 useSeoMeta({
   title: '货品盘点',
 })
@@ -39,20 +38,12 @@ async function clearSearch() {
 }
 // 获取货品列表
 async function getList(where = {} as Partial<Check>) {
-  if (!isCanPull.value)
-    return
-  const params = { page: pages.value, limit: 20 } as ReqList<Check>
+  const params = { page: pages.value, limit: 10 } as ReqList<Check>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
 
   const res = await getCheckList(params)
-  if (res.data?.list.length) {
-    pages.value++
-  }
-  else {
-    isCanPull.value = false
-  }
   return res as any
 }
 
@@ -74,7 +65,6 @@ async function submitWhere(f: Partial<Check>, isSearch = false) {
   }
   filterData.value = { ...f, ...filterData.value }
   pages.value = 1
-  isCanPull.value = true
   checkList.value = []
   const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
@@ -126,8 +116,8 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
       </product-filter>
     </div>
     <!-- 小卡片组件 -->
-    <div class="pb-10">
-      <common-list-pull :nomore="!isCanPull" @pull="pull">
+    <div class="px-[16px] pb-20">
+      <template v-if="checkList?.length">
         <product-manage-card :list="checkList">
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
@@ -171,7 +161,15 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
             </div>
           </template>
         </product-manage-card>
-      </common-list-pull>
+        <common-page
+          v-model:page="pages" :total="checkTotal" :limit="10" @update:page="() => {
+            pull()
+          }
+          " />
+      </template>
+      <template v-else>
+        <common-empty width="100px" />
+      </template>
     </div>
     <product-manage-bottom />
     <div class="cursor-pointer">

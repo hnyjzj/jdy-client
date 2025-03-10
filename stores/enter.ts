@@ -23,12 +23,7 @@ export const useEnter = defineStore('EnterStore', {
         const { data } = await https.post<ResList<Enter>, ReqList<Enter>>('/product/enter/list', pamars)
         if (data.value.code === HttpCode.SUCCESS) {
           this.EnterListTotal = data.value.data.total
-          if (pamars.page === 1) {
-            this.EnterList = data.value.data.list
-          }
-          else {
-            this.EnterList = this.EnterList.concat(data.value.data.list)
-          }
+          this.EnterList = data.value.data.list
         }
         return data.value
       }

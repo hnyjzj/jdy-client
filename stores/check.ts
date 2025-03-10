@@ -20,13 +20,7 @@ export const useCheck = defineStore('check', {
         const { data } = await https.post<ResList<Check>, ReqList<Check>>('/product/inventory/list', pamars)
         if (data.value.code === HttpCode.SUCCESS) {
           this.checkTotal = data.value.data.total
-
-          if (pamars.page === 1) {
-            this.checkList = data.value.data.list
-          }
-          else {
-            this.checkList = this.checkList.concat(data.value.data.list)
-          }
+          this.checkList = data.value.data.list
         }
         return data.value
       }

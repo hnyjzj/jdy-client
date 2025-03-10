@@ -35,12 +35,7 @@ export const useProductManage = defineStore('ProductManage', {
         const { data } = await https.post<ResList<Product>, ReqList<Product>>('/product/list', pamars)
         if (data.value.code === HttpCode.SUCCESS) {
           this.productListTotal = data.value.data.total
-          if (pamars.page === 1) {
-            this.productList = data.value.data.list
-          }
-          else {
-            this.productList = this.productList.concat(data.value.data.list)
-          }
+          this.productList = data.value.data.list
         }
         return data.value
       }
@@ -60,16 +55,6 @@ export const useProductManage = defineStore('ProductManage', {
     },
     // 获取筛选列表
     async getProductWhere() {
-      try {
-        const { data } = await https.get<Where<Product>>('/product/where')
-        if (data.value?.code === HttpCode.SUCCESS) {
-          this.filterList = data.value.data
-          this.filterListToArray = sortArr(this.filterList)
-        }
-      }
-      catch (error) {
-        throw new Error(`筛选失败: ${error || '未知错误'}`)
-      }
     },
     // 货品详情
     async getProductInfo(code: Product['code']) {
@@ -120,12 +105,7 @@ export const useProductManage = defineStore('ProductManage', {
         const { data } = await https.post<ResList<ProductHistories>, ReqList<HistoryWhere>>('/product/history/list', pamars)
         if (data.value.code === HttpCode.SUCCESS) {
           this.historyListTotal = data.value.data.total
-          if (pamars.page === 1) {
-            this.productRocordList = data.value.data.list
-          }
-          else {
-            this.productRocordList = this.productRocordList.concat(data.value.data.list)
-          }
+          this.productRocordList = data.value.data.list
         }
         return data.value
       }

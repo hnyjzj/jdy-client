@@ -10,7 +10,6 @@ const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const pages = ref(1)
-const isCanPull = ref(true)
 const isModel = ref(false)
 const isBatchImportModel = ref(false)
 
@@ -31,20 +30,12 @@ async function clearSearch() {
 }
 // 获取货品列表
 async function getList(where = {} as Partial<Enter>) {
-  if (!isCanPull.value)
-    return
-  const params = { page: pages.value, limit: 20 } as ReqList<Enter>
+  const params = { page: pages.value, limit: 10 } as ReqList<Enter>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
 
   const res = await getEnterList(params)
-  if (res.data?.list.length) {
-    pages.value++
-  }
-  else {
-    isCanPull.value = false
-  }
   return res
 }
 
@@ -61,7 +52,6 @@ function pull() {
 async function submitWhere(f: Partial<Enter>, isSearch: boolean = false) {
   filterData.value = { ...f }
   pages.value = 1
-  isCanPull.value = true
   EnterList.value = []
   const res = await getList(filterData.value)
   if (res?.code === HttpCode.SUCCESS) {
@@ -116,8 +106,8 @@ function goAdd() {
       </template>
     </product-filter>
     <!-- 小卡片组件 -->
-    <div class="pb-10">
-      <common-list-pull :nomore="!isCanPull" @pull="pull">
+    <div class="px-[16px] pb-20">
+      <template v-if="EnterList?.length">
         <product-manage-card :list="EnterList" @edit="edit">
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
@@ -147,7 +137,15 @@ function goAdd() {
             </div>
           </template>
         </product-manage-card>
-      </common-list-pull>
+        <common-page
+          v-model:page="pages" :total="EnterListTotal" :limit="10" @update:page="() => {
+            pull()
+          }
+          " />
+      </template>
+      <template v-else>
+        <common-empty width="100px" />
+      </template>
     </div>
     <product-manage-bottom />
     <common-create @click="create" />

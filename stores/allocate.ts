@@ -22,12 +22,7 @@ export const useAllocate = defineStore('Allocate', {
         const { data } = await https.post<ResList<Allocate>, ReqList<Allocate>>('/product/allocate/list', pamars)
         if (data.value.code === HttpCode.SUCCESS) {
           this.allocateTotal = data.value.data.total
-          if (pamars.page === 1) {
-            this.allocateList = data.value.data.list
-          }
-          else {
-            this.allocateList = this.allocateList.concat(data.value.data.list)
-          }
+          this.allocateList = data.value.data.list
         }
         return data.value
       }

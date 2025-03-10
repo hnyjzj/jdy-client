@@ -9,7 +9,6 @@ const isFilter = ref(false)
 const isModel = ref(false)
 const isBatchImportModel = ref(false)
 const pages = ref(1)
-const isCanPull = ref(true)
 const type = ref(2 as Product['type'])
 useSeoMeta({
   title: '配件列表',
@@ -28,18 +27,10 @@ async function clearSearch() {
 }
 // 获取货品列表
 async function getList(where = {} as Partial<Product>) {
-  if (!isCanPull.value)
-    return
-  const params = { page: pages.value, limit: 20 } as ReqList<Product>
+  const params = { page: pages.value, limit: 10 } as ReqList<Product>
   params.where = where
   params.where.type = type.value
   const res = await getProductList(params)
-  if (res.data?.list.length) {
-    pages.value++
-  }
-  else {
-    isCanPull.value = false
-  }
   return res as any
 }
 
@@ -78,7 +69,6 @@ async function submitGoods(data: Product[]) {
 async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
   filterData.value = { ...f }
   pages.value = 1
-  isCanPull.value = true
   productList.value = []
   const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
@@ -112,10 +102,18 @@ function goAdd() {
       </template>
     </product-filter>
     <!-- 列表 -->
-    <div class="pb-10">
-      <common-list-pull @pull="pull">
+    <div class="px-[16px] pb-20">
+      <template v-if="productList?.length">
         <product-list-main :product-list="productList" :filter-list="filterList" @edit="edit" />
-      </common-list-pull>
+        <common-page
+          v-model:page="pages" :total="productListTotal" :limit="10" @update:page="() => {
+            pull()
+          }
+          " />
+      </template>
+      <template v-else>
+        <common-empty width="100px" />
+      </template>
     </div>
     <product-manage-bottom />
     <product-upload-warehouse v-model="isBatchImportModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
