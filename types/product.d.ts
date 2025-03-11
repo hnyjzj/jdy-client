@@ -86,7 +86,7 @@ interface Product {
   /**
    * 价格
    */
-  price: number
+  label_price: number
   /**
    * 产品入库单ID
    */
@@ -123,7 +123,7 @@ interface Product {
   /**
    * 总重量
    */
-  weight: number
+  weight_total: number
   /**
    * 主石重
    */

@@ -284,7 +284,7 @@ const goodsStatus = {
                         金重
                       </div>
                       <div class="value">
-                        {{ item.product.weight }}
+                        {{ item.product.weight_total }}
                       </div>
                     </div>
                     <div class="flex">
@@ -292,7 +292,7 @@ const goodsStatus = {
                         价格
                       </div>
                       <div class="value text-[rgba(57,113,243,1)]">
-                        {{ item.product.price }}
+                        {{ item.product.label_price }}
                       </div>
                     </div>
                     <div class="flex">

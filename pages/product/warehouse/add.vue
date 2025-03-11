@@ -67,6 +67,9 @@ await getStoreList({ page: 1, limit: 20 })
 await changeStore()
 forRules()
 async function submit() {
+  if (!myStore.value?.id) {
+    return $toast.error('请先选择门店')
+  }
   const impParams = {
     products: [params.value],
     store_id: myStore.value.id,

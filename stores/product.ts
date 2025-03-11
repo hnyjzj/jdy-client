@@ -55,6 +55,16 @@ export const useProductManage = defineStore('ProductManage', {
     },
     // 获取筛选列表
     async getProductWhere() {
+      try {
+        const { data } = await https.get<Where<Product>>('/product/where')
+        if (data.value?.code === HttpCode.SUCCESS) {
+          this.filterList = data.value.data
+          this.filterListToArray = sortArr(this.filterList)
+        }
+      }
+      catch (error) {
+        throw new Error(`筛选失败: ${error || '未知错误'}`)
+      }
     },
     // 货品详情
     async getProductInfo(code: Product['code']) {

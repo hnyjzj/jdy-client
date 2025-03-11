@@ -88,7 +88,7 @@ function sum(key: ProductKey) {
                       总标价
                     </div>
                     <div class="color-[#333333]">
-                      {{ sum('price') }}
+                      {{ sum('label_price') }}
                     </div>
                   </div>
                   <div class="flex-start gap-3 text-sm font-normal">

@@ -43,7 +43,7 @@ const count = (p: OrderProducts) => {
   // 如果是计件方式 标签价格x 数量 x 折扣
   if (p.product?.retail_type === 1) {
     const total = calc('(price * quantity * discount) | <=2,!n', {
-      price: p.product?.price,
+      price: p.product?.label_price,
       quantity: p.quantity,
       discount: ((p.discount || 10) * 0.1),
     })
