@@ -266,3 +266,17 @@ interface CreateProductEnter {
   store_id: Stores['id']
   remark?: string
 }
+
+/**
+ * 删除入库单产品
+ */
+interface DelEnterProduct {
+  /**
+   * 入库单ID
+   */
+  product_enter_id: string
+  /**
+   * 商品ID列表
+   */
+  product_ids: string[]
+}

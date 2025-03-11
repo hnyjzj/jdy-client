@@ -3,8 +3,8 @@ const { $toast } = useNuxtApp()
 const { myStore, storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 
-const { getEnterList, getEnterWhere } = useEnter()
-const { importProduct, createProductEnter } = useProductManage()
+const { getEnterList, getEnterWhere, createProductEnter } = useEnter()
+const { importProduct } = useProductManage()
 const { filterList } = storeToRefs(useProductManage())
 
 const { EnterList, EnterToArray, EnterListTotal } = storeToRefs(useEnter())
@@ -16,6 +16,11 @@ const isModel = ref(false)
 const isCreateModel = ref(false)
 const isBatchImportModel = ref(false)
 const enterParams = ref({} as CreateProductEnter)
+const enterStatus = {
+  1: '草稿',
+  2: '已完成',
+  3: '已撤销',
+}
 /** 门店选择列表 */
 const storeCol = ref()
 
@@ -136,6 +141,11 @@ function goAdd() {
     <div class="px-[16px] pb-20">
       <template v-if="EnterList?.length">
         <product-manage-card :list="EnterList" @edit="edit">
+          <template #top="{ info }">
+            <div class="enter-title" :class="info.status === 1 ? 'caogao' : info.status === 2 ? 'wancheng' : 'chexiao'">
+              {{ enterStatus[info.status] }}
+            </div>
+          </template>
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
               <div class="py-[4px] flex justify-between">
@@ -145,15 +155,51 @@ function goAdd() {
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
-                <div>入库时间</div>
+                <div>备注</div>
                 <div class="text-align-end">
-                  {{ formatTimestampToDateTime(info.created_at) }}
+                  {{ info?.remark }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
-                <div>产品数量</div>
+                <div>所属门店</div>
+                <div class="text-align-end">
+                  {{ info.store.name }}
+                </div>
+              </div>
+              <div class="py-[4px] flex justify-between">
+                <div>入库数量</div>
                 <div class="text-align-end">
                   {{ info.products?.length || 0 }}
+                </div>
+              </div>
+              <div class="py-[4px] flex justify-between">
+                <div>入网费合计</div>
+                <div class="text-align-end">
+                  {{ info.products?.reduce((pre, cur:Product) => pre + Number(cur?.access_fee), 0) || 0 }}
+                </div>
+              </div>
+              <div class="py-[4px] flex justify-between">
+                <div>标签价合计</div>
+                <div class="text-align-end">
+                  {{ info.products?.reduce((pre, cur:Product) => pre + Number(cur?.label_price), 0) || 0 }}
+                </div>
+              </div>
+              <div class="py-[4px] flex justify-between">
+                <div>金重合计</div>
+                <div class="text-align-end">
+                  {{ info.products?.reduce((pre, cur:Product) => pre + Number(cur?.weight_metal), 0) || 0 }}
+                </div>
+              </div>
+              <div class="py-[4px] flex justify-between">
+                <div>操作人</div>
+                <div class="text-align-end">
+                  {{ info?.operator?.nickname }}
+                </div>
+              </div>
+              <div class="py-[4px] flex justify-between">
+                <div>入库时间</div>
+                <div class="text-align-end">
+                  {{ formatTimestampToDateTime(info?.created_at) }}
                 </div>
               </div>
             </div>
@@ -208,5 +254,17 @@ function goAdd() {
     background: linear-gradient(to bottom, #1b6ceb, #6da6ff);
     box-shadow: #1111113d 0px 2px 2px 1px;
   }
+}
+.enter-title {
+  --uno: 'px-2 rounded-[8px] text-#FFF';
+}
+.caogao {
+  --uno: 'bg-[rgba(221,146,0,1)]';
+}
+.wancheng {
+  --uno: 'bg-#1b6ceb';
+}
+.chexiao {
+  --uno: 'bg-[rgba(255,98,76,1)]';
 }
 </style>

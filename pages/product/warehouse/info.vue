@@ -1,25 +1,23 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { myStore } = storeToRefs(useStores())
-const { getEnterInfo } = useEnter()
+// const { myStore } = storeToRefs(useStores())
+const { getEnterInfo, delEnterProduct } = useEnter()
 const { enterInfo } = storeToRefs(useEnter())
 const { filterList, filterListToArray } = storeToRefs(useProductManage())
-
-const { getProductWhere, importProduct } = useProductManage()
+const { getProductWhere } = useProductManage()
 
 useSeoMeta({
   title: '入库单详情',
 })
 const route = useRoute()
-const isBatchImportModel = ref(false)
 
-const goodsStatus = {
-  0: '全部',
-  1: '成品',
-  2: '旧料',
-  3: '配件',
+const enterStatus = {
+  1: '草稿',
+  2: '已完成',
+  3: '已撤销',
 }
 const isImportModel = ref(false)
+const isChooseModel = ref(false)
 
 if (route.query.id) {
   await getEnterInfo(route.query.id as string)
@@ -30,20 +28,41 @@ type ProductKey = keyof Product
 function sum(key: ProductKey) {
   return enterInfo.value?.products?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
 }
-// 提交入库
-async function submitGoods(data: Product[]) {
-  if (data?.length) {
-    const { code, message } = await importProduct({ products: data, store_id: myStore.value?.id })
-    if (code === HttpCode.SUCCESS) {
-      isBatchImportModel.value = false
-      return $toast.success('导入成功')
-    }
-    $toast.error(message ?? '导入失败')
+async function del(params: DelEnterProduct) {
+  const res = await delEnterProduct(params)
+  if (res.code === HttpCode.SUCCESS) {
+    return $toast.success('删除成功')
   }
+  $toast.error(res.message ?? '删除失败')
 }
 /** 删除入库单里的产品 */
-function delProduct(code: Product['code']) {
-  console.log(code)
+async function delProduct(code: Product['code']) {
+  if (!code)
+    return
+  const params = {
+    product_enter_id: enterInfo.value.id,
+    product_ids: [code],
+  }
+  await del(params)
+}
+function goAdd() {
+  isChooseModel.value = false
+  jump('/product/warehouse/add', { type: 1 })
+}
+// 提交入库
+async function submitGoods(data: Product[]) {
+  console.log(data)
+
+//   if (data?.length) {
+//     const { code, message } = await importProduct({ products: data, store_id: myStore.value?.id })
+//     if (code === HttpCode.SUCCESS) {
+//       isChooseModel.value = false
+//       isImportModel.value = false
+//       pages.value = 1
+//       return $toast.success('导入成功')
+//     }
+//     $toast.error(message ?? '导入失败')
+//   }
 }
 </script>
 
@@ -64,7 +83,7 @@ function delProduct(code: Product['code']) {
                       操作人
                     </div>
                     <div class="color-[#333333]">
-                      {{ enterInfo.operator?.nickname }}
+                      {{ enterInfo?.operator?.nickname }}
                     </div>
                   </div>
                   <div class="flex-start gap-3 text-sm font-normal">
@@ -73,6 +92,22 @@ function delProduct(code: Product['code']) {
                     </div>
                     <div class="color-[#333333]">
                       {{ enterInfo.id }}
+                    </div>
+                  </div>
+                  <div class="flex-start gap-3 text-sm font-normal">
+                    <div class="color-[#666666]">
+                      状态
+                    </div>
+                    <div class="color-[#333333]">
+                      {{ enterStatus[enterInfo.status] }}
+                    </div>
+                  </div>
+                  <div class="flex-start gap-3 text-sm font-normal">
+                    <div class="color-[#666666]">
+                      备注
+                    </div>
+                    <div class="color-[#333333]">
+                      {{ enterInfo.remark }}
                     </div>
                   </div>
                   <div class="other-information flex flex-col gap-1">
@@ -98,7 +133,7 @@ function delProduct(code: Product['code']) {
                 <div class="product-information flex flex-col gap-1">
                   <div class="flex-start gap-3 text-sm font-normal">
                     <div class="color-[#666666]">
-                      总件数
+                      入库数量
                     </div>
                     <div class="color-[#333333]">
                       {{ enterInfo.products?.length }}
@@ -106,15 +141,15 @@ function delProduct(code: Product['code']) {
                   </div>
                   <div class="flex-start gap-3 text-sm font-normal">
                     <div class="color-[#666666]">
-                      总金重
+                      入网费合计
                     </div>
                     <div class="color-[#333333]">
-                      {{ sum('weight_metal') }}
+                      {{ sum('access_fee') }}
                     </div>
                   </div>
                   <div class="flex-start gap-3 text-sm font-normal">
                     <div class="color-[#666666]">
-                      总标价
+                      标签价合计
                     </div>
                     <div class="color-[#333333]">
                       {{ sum('label_price') }}
@@ -122,10 +157,10 @@ function delProduct(code: Product['code']) {
                   </div>
                   <div class="flex-start gap-3 text-sm font-normal">
                     <div class="color-[#666666]">
-                      总入网费
+                      金重合计
                     </div>
                     <div class="color-[#333333]">
-                      {{ sum('access_fee') }}
+                      {{ sum('weight_metal') }}
                     </div>
                   </div>
                 </div>
@@ -137,7 +172,7 @@ function delProduct(code: Product['code']) {
         <template v-if="enterInfo.products?.length">
           <div class="p-4 blur-bgc rounded-6">
             <div class="text-[14px] pb-4">
-              共 {{ enterInfo.products.length }} 条数据
+              共 {{ enterInfo.products.length }}
             </div>
             <template v-for="(item, index) in enterInfo.products" :key="index">
               <div class="grid mb-3">
@@ -146,7 +181,7 @@ function delProduct(code: Product['code']) {
                     <template v-if="1">
                       <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="delProduct(item.code)" />
                     </template>
-                    <common-tags type="pink" :text="goodsStatus[item.type]" :is-oval="true" />
+                    <common-tags type="pink" text="sdf" :is-oval="true" />
                   </template>
                   <template #info>
                     <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -178,8 +213,11 @@ function delProduct(code: Product['code']) {
         </template>
       </div>
     </div>
+    <product-upload-choose v-model:is-model="isChooseModel" @go-add="goAdd" @batch="isImportModel = true" />
     <product-upload-warehouse v-model="isImportModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
-    <common-create @create="jump('/product/warehouse/add', { type: 1, storageId: enterInfo.id })" />
+    <!-- <common-create @create="jump('/product/warehouse/add', { type: 1, storageId: enterInfo.id })" /> -->
+
+    <common-create @create="isChooseModel = true" />
     <common-button-bottom>
       <template #content>
         <div class="w-[100%]">

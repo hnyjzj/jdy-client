@@ -16,7 +16,7 @@ export const useEnter = defineStore('EnterStore', {
     enterInfo: {} as Enter,
   }),
   actions: {
-    // 入库单列表
+    // 获取入库单列表
     async getEnterList(pamars: ReqList<Enter>) {
       try {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
@@ -31,7 +31,7 @@ export const useEnter = defineStore('EnterStore', {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
       }
     },
-    // 获取筛选列表
+    // 获取入库单筛选列表
     async getEnterWhere() {
       try {
         const { data } = await https.get<Where<Enter>>('/product/enter/where')
@@ -44,6 +44,16 @@ export const useEnter = defineStore('EnterStore', {
         throw new Error(`筛选失败: ${error || '未知错误'}`)
       }
     },
+    /** 添加入库单 */
+    async createProductEnter(params: CreateProductEnter) {
+      try {
+        const { data } = await https.post<any, CreateProductEnter>('/product/enter/create', params)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`添加入库单失败: ${error || '未知错误'}`)
+      }
+    },
     // 获取入库单详情
     async getEnterInfo(id: Enter['id']) {
       try {
@@ -54,6 +64,16 @@ export const useEnter = defineStore('EnterStore', {
       }
       catch (error) {
         throw new Error(`获取入库单详情失败: ${error || '未知错误'}`)
+      }
+    },
+    // 删除入库单产品
+    async delEnterProduct(params: DelEnterProduct) {
+      try {
+        const { data } = await https.delete<any, DelEnterProduct>('/product/enter/del_product', params)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`删除入库单产品失败: ${error || '未知错误'}`)
       }
     },
   },
