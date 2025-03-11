@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { useDialog } from 'naive-ui'
-
 const { $toast } = useNuxtApp()
 const formlist = ref<addStaffForm>({
   platform: 'account',
@@ -16,44 +14,33 @@ const formlist = ref<addStaffForm>({
 })
 const { useWxWork } = useWxworkStore()
 const { createStaff, uploadAvatar } = useStaff()
-const dialog = useDialog()
+
 const router = useRouter()
 const addRef = ref()
 
-const handleConfirm = () => {
-  dialog.success({
-    title: '创建成功',
-    content: '是否继续添加新员工?',
-    closable: false,
-    closeOnEsc: false,
-    maskClosable: false,
-    positiveText: '继续添加',
-    negativeText: '返回上一页',
-    onPositiveClick: () => {
-      formlist.value.account = {
-        phone: '',
-        nickname: '',
-        gender: 0,
-        password: '',
-        avatar: '',
-        email: '',
-      } as addStaffForm['account']
-      addRef.value.clearAvatar()
-    },
-    onNegativeClick: () => {
-      router.go(-1)
-    },
+const dialogShow = ref(false)
 
-  })
+const continueAdd = () => {
+  formlist.value.account = {
+    phone: '',
+    nickname: '',
+    gender: 0,
+    password: '',
+    avatar: '',
+    email: '',
+  } as addStaffForm['account']
+  addRef.value.clearAvatar()
 }
-
+const cancelAdd = () => {
+  router.go(-1)
+}
 // 手动新增员工
 const addStaff = async () => {
   formlist.value.platform = 'account'
   const res = await createStaff(formlist.value)
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
-    handleConfirm()
+    dialogShow.value = true
   }
   else {
     $toast.error(res.message)
@@ -77,7 +64,7 @@ const wxwordAdd = async () => {
   const res = await createStaff(params.value)
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
-    handleConfirm()
+    dialogShow.value = true
   }
   else {
     $toast.error(res.message)
@@ -132,6 +119,16 @@ const other_ways = ref<{
         </div>
       </common-fold>
     </div>
+    <common-confirm
+      v-model:show="dialogShow"
+      title="创建成功"
+      text="是否继续添加新员工?"
+      icon="success"
+      cancel-text="否"
+      confirm-text="是"
+      @submit="continueAdd"
+      @cancel="cancelAdd"
+    />
   </div>
 </template>
 

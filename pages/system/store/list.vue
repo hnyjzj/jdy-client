@@ -173,12 +173,8 @@ const updatePage = async (page: number) => {
         @submit="newStore"
         @edit-submit="editStore" />
     </common-popup>
+    <common-confirm v-model:show="deleteDialog" text="确认删除此门店吗?" @submit="confirmDelete" />
 
-    <van-dialog v-model:show="deleteDialog" title="删除门店" show-cancel-button @confirm="confirmDelete">
-      <div class="text-center py-[16px]">
-        确认删除此门店吗?
-      </div>
-    </van-dialog>
     <common-create @create="newAdd()" />
 
     <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetwhere">

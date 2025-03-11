@@ -102,7 +102,10 @@ const handleSearch = (query: string) => {
       <staff-manage-info :info-detail="staffInfo" />
     </n-modal>
     <common-create @create="newAdd()" />
-    <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere">
+    <common-filter-where
+      v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="() => {
+        filterData.store_id = undefined
+      }">
       <template #store_id>
         <n-select
           v-model:value="filterData.store_id"
