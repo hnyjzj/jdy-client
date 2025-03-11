@@ -43,6 +43,16 @@ export const useProductManage = defineStore('ProductManage', {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
       }
     },
+    /** 创建入库单 */
+    async createProductEnter(params: CreateProductEnter) {
+      try {
+        const { data } = await https.post<any, CreateProductEnter>('/product/enter/create', params)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`创建入库单失败: ${error || '未知错误'}`)
+      }
+    },
     // 货品导入
     async importProduct(params: inportReq) {
       try {

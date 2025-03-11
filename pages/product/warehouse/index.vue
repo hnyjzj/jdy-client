@@ -1,8 +1,10 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { myStore } = storeToRefs(useStores())
+const { myStore, storesList } = storeToRefs(useStores())
+const { getStoreList } = useStores()
+
 const { getEnterList, getEnterWhere } = useEnter()
-const { importProduct } = useProductManage()
+const { importProduct, createProductEnter } = useProductManage()
 const { filterList } = storeToRefs(useProductManage())
 
 const { EnterList, EnterToArray, EnterListTotal } = storeToRefs(useEnter())
@@ -11,7 +13,20 @@ const complate = ref(0)
 const isFilter = ref(false)
 const pages = ref(1)
 const isModel = ref(false)
+const isCreateModel = ref(false)
 const isBatchImportModel = ref(false)
+const enterParams = ref({} as CreateProductEnter)
+/** 门店选择列表 */
+const storeCol = ref()
+
+function changeStoer() {
+  storeCol.value = []
+  storesList.value.forEach((item: Stores) => {
+    storeCol.value.push({ label: item.name, value: item.id })
+  })
+}
+await getStoreList({ page: 1, limit: 20 })
+await changeStoer()
 
 useSeoMeta({
   title: '入库单',
@@ -46,6 +61,21 @@ const filterData = ref({} as Partial<Enter>)
 
 function pull() {
   getList(filterData.value)
+}
+
+/** 创建入库单 */
+async function createEnter() {
+  if (!enterParams.value?.store_id) {
+    return $toast.error('请选择门店')
+  }
+  const res = await createProductEnter(enterParams.value)
+  if (res?.code === HttpCode.SUCCESS) {
+    isFilter.value = false
+    isCreateModel.value = false
+    await getList()
+    return $toast.success('添加入库单成功')
+  }
+  $toast.error(res?.message ?? '添加入库单失败')
 }
 
 // 筛选列表
@@ -84,10 +114,7 @@ async function submitGoods(data: Product[]) {
 }
 
 const create = () => {
-  if (!myStore.value?.id) {
-    return $toast.error('请先选择门店')
-  }
-  isModel.value = true
+  isCreateModel.value = true
 }
 
 function goAdd() {
@@ -152,6 +179,24 @@ function goAdd() {
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
     <product-upload-warehouse v-model="isBatchImportModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" />
+    <common-model v-model="isCreateModel" title="添加入库单" :show-ok="true" @confirm="createEnter">
+      <div class="mb-8 min-h-[60px]">
+        <div class="flex items-center mb-4">
+          <div class="w-[100px]">
+            入库门店：
+          </div>
+          <n-select
+            v-model:value="enterParams.store_id" :options="storeCol"
+            clearable />
+        </div>
+        <div class="flex mb-4">
+          <div class="w-[100px] pt-2">
+            添加备注：
+          </div>
+          <n-input v-model:value="enterParams.remark" type="textarea" />
+        </div>
+      </div>
+    </common-model>
   </div>
 </template>
 

@@ -258,3 +258,11 @@ interface UploadProductImg {
   image: File
   product_id: string
 }
+
+/**
+ * 创建入库单参数
+ */
+interface CreateProductEnter {
+  store_id: Stores['id']
+  remark?: string
+}

@@ -1,12 +1,26 @@
 <script setup lang="ts">
+const { $toast } = useNuxtApp()
+const { myStore } = storeToRefs(useStores())
 const { getEnterInfo } = useEnter()
 const { enterInfo } = storeToRefs(useEnter())
-const { getProductWhere } = useProductManage()
-const { filterListToArray } = storeToRefs(useProductManage())
+const { filterList, filterListToArray } = storeToRefs(useProductManage())
+
+const { getProductWhere, importProduct } = useProductManage()
+
 useSeoMeta({
   title: '入库单详情',
 })
 const route = useRoute()
+const isBatchImportModel = ref(false)
+
+const goodsStatus = {
+  0: '全部',
+  1: '成品',
+  2: '旧料',
+  3: '配件',
+}
+const isImportModel = ref(false)
+
 if (route.query.id) {
   await getEnterInfo(route.query.id as string)
   await getProductWhere()
@@ -15,6 +29,21 @@ type ProductKey = keyof Product
 /** 汇总 */
 function sum(key: ProductKey) {
   return enterInfo.value?.products?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
+}
+// 提交入库
+async function submitGoods(data: Product[]) {
+  if (data?.length) {
+    const { code, message } = await importProduct({ products: data, store_id: myStore.value?.id })
+    if (code === HttpCode.SUCCESS) {
+      isBatchImportModel.value = false
+      return $toast.success('导入成功')
+    }
+    $toast.error(message ?? '导入失败')
+  }
+}
+/** 删除入库单里的产品 */
+function delProduct(code: Product['code']) {
+  console.log(code)
 }
 </script>
 
@@ -113,6 +142,12 @@ function sum(key: ProductKey) {
             <template v-for="(item, index) in enterInfo.products" :key="index">
               <div class="grid mb-3">
                 <sale-order-nesting :title="item.name" :info="enterInfo">
+                  <template #left>
+                    <template v-if="1">
+                      <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="delProduct(item.code)" />
+                    </template>
+                    <common-tags type="pink" :text="goodsStatus[item.type]" :is-oval="true" />
+                  </template>
                   <template #info>
                     <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
                       <template v-for="(filter, findex) in filterListToArray" :key="findex">
@@ -143,6 +178,25 @@ function sum(key: ProductKey) {
         </template>
       </div>
     </div>
+    <product-upload-warehouse v-model="isImportModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
+    <common-create @create="jump('/product/warehouse/add', { type: 1, storageId: enterInfo.id })" />
+    <common-button-bottom>
+      <template #content>
+        <div class="w-[100%]">
+          <div class="bottom-fun grid grid-cols-[26%_26%_auto] gap-2">
+            <div class="cursor-pointer cancel-btn">
+              清空列表
+            </div>
+            <div class="cursor-pointer cancel-btn">
+              撤销
+            </div>
+            <div class="cursor-pointer confirm-btn">
+              完成入库
+            </div>
+          </div>
+        </div>
+      </template>
+    </common-button-bottom>
   </div>
 </template>
 
@@ -155,5 +209,15 @@ function sum(key: ProductKey) {
   text-overflow: ellipsis; /* 超出显示省略号 */
   white-space: nowrap; /* 禁止换行 */
   overflow: hidden;
+}
+.confirm-btn {
+  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#fff] font-bold ';
+  background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
+  box-shadow: rgba(57, 113, 243, 0.24) 0px 8px 8px 0;
+}
+.cancel-btn {
+  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#1a6beb] font-bold';
+  background: #fff;
+  box-shadow: rgba(82, 130, 241, 0.24) 0px 8px 8px 0;
 }
 </style>
