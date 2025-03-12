@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-// const { myStore } = storeToRefs(useStores())
-const { getEnterInfo, delEnterProduct, cancelEnter, finishEnter, addEnterProduct } = useEnter()
+const { getEnterInfo, delEnterProduct, cancelEnter, finishEnter, addEnterProduct, editEnterProduct } = useEnter()
 const { enterInfo } = storeToRefs(useEnter())
 const { filterList, filterListToArray } = storeToRefs(useProductManage())
 const { getProductWhere } = useProductManage()
@@ -11,17 +10,22 @@ useSeoMeta({
 })
 const route = useRoute()
 
+// 入库状态
 const enterStatus = {
   1: '草稿',
   2: '已完成',
   3: '已撤销',
 }
+
 const isImportModel = ref(false)
 const isChooseModel = ref(false)
+const isEditModel = ref(false)
 const deleteDialog = ref(false)
 const clearDialog = ref(false)
 const cancelDialog = ref(false)
 const finishDialog = ref(false)
+
+const productParams = ref({} as Partial<Product>)
 
 /** 要删除的产品code */
 const deleteId = ref('')
@@ -75,14 +79,21 @@ function goAdd() {
 }
 
 // 提交入库
-async function submitGoods(data: Product[]) {
-  if (data?.length) {
-    const { code, message } = await addEnterProduct({ products: data, product_enter_id: enterInfo.value.id })
+async function submitGoods(req: Product[]) {
+  if (req?.length) {
+    const { code, message, data } = await addEnterProduct({ products: req, product_enter_id: enterInfo.value.id })
     if (code === HttpCode.SUCCESS) {
       isChooseModel.value = false
       isImportModel.value = false
       await getInfo()
       return $toast.success('批量导入成功')
+    }
+    else if (code === HttpCode.ERROR) {
+      let msg = message
+      Object.keys(data).forEach((key) => {
+        msg += `\n条码【${key}】：${data[key]}`
+      })
+      return $toast.error(msg)
     }
     $toast.error(message ?? '上传失败')
   }
@@ -105,7 +116,6 @@ function clearFun() {
   clearDialog.value = true
 }
 
-/** 完成入库 */
 function finishFun() {
   if (!enterInfo.value.products?.length) {
     return $toast.error('请添加货品入库记录')
@@ -113,6 +123,7 @@ function finishFun() {
   finishDialog.value = true
 }
 
+/** 完成入库 */
 async function finish() {
   const res = await finishEnter(enterInfo.value.id)
   if (res.code === HttpCode.SUCCESS) {
@@ -120,6 +131,31 @@ async function finish() {
     return $toast.success('完成入库成功')
   }
   $toast.error(res.message ?? '完成入库失败')
+}
+const productEdittIng = ref({} as Product)
+function edit(product: Product) {
+  productEdittIng.value = product
+  filterListToArray.value.forEach((item) => {
+    if (item.update) {
+      productParams.value[item.name] = product[item.name]
+    }
+  })
+  isEditModel.value = true
+}
+
+/** 编辑货品 */
+async function submitEdit() {
+  const params = {
+    product_enter_id: enterInfo.value.id,
+    product_id: productEdittIng.value.id,
+    product: productParams.value,
+  }
+  const res = await editEnterProduct(params)
+  if (res.code === HttpCode.SUCCESS) {
+    isEditModel.value = false
+    await getInfo()
+    return $toast.success('编辑成功')
+  }
 }
 </script>
 
@@ -236,29 +272,48 @@ async function finish() {
                 <sale-order-nesting :title="item.name" :info="enterInfo">
                   <template #left>
                     <template v-if="enterInfo.status === 1">
+                      <!-- <div class="text-[rgba(221,146,0,1)] cursor-pointer" @click="edit(item)">
+                        编辑
+                      </div> -->
                       <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="deleteDialog = true;deleteId = item.id" />
                     </template>
-                    <!-- <common-tags type="pink" text="sdf" :is-oval="true" /> -->
+                    <div class="text-[rgba(221,146,0,1)] cursor-pointer" @click="edit(item)">
+                      <common-tags type="orange" text="编辑" :is-oval="true" />
+                    </div>
                   </template>
                   <template #info>
                     <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
                       <template v-for="(filter, findex) in filterListToArray" :key="findex">
                         <template v-if="filter.find">
-                          <div class="flex">
-                            <div class="key">
-                              {{ filter.label }}
+                          <template v-if="filter.input === 'list'">
+                            <template v-for="(certificate, i) in item[filter.name]" :key="i">
+                              <div class="flex">
+                                <div class="key">
+                                  证书{{ i + 1 }}
+                                </div>
+                                <div class="value">
+                                  {{ certificate }}
+                                </div>
+                              </div>
+                            </template>
+                          </template>
+                          <template v-else>
+                            <div class="flex">
+                              <div class="key">
+                                {{ filter.label }}
+                              </div>
+                              <template v-if="filter.input === 'select'">
+                                <div class="value">
+                                  {{ filter.preset[item[filter.name]] }}
+                                </div>
+                              </template>
+                              <template v-else>
+                                <div class="value">
+                                  {{ item[filter.name] }}
+                                </div>
+                              </template>
                             </div>
-                            <template v-if="filter.input === 'select'">
-                              <div class="value">
-                                {{ filter.preset[item[filter.name]] }}
-                              </div>
-                            </template>
-                            <template v-else>
-                              <div class="value">
-                                {{ item[filter.name] }}
-                              </div>
-                            </template>
-                          </div>
+                          </template>
                         </template>
                       </template>
                     </div>
@@ -272,6 +327,7 @@ async function finish() {
     </div>
     <product-upload-choose v-model:is-model="isChooseModel" @go-add="goAdd" @batch="isImportModel = true" />
     <product-upload-warehouse v-model="isImportModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
+    <!-- 状态为草稿时 功能操作 -->
     <template v-if="enterInfo.status === 1">
       <common-create @create="isChooseModel = true" />
       <common-button-bottom>
@@ -296,6 +352,77 @@ async function finish() {
     <common-confirm v-model:show="clearDialog" icon="error" title="清空列表" text="确认要清空所有入库的产品吗?" @submit="clearProduct" />
     <common-confirm v-model:show="cancelDialog" icon="error" title="撤销" text="确认要撤销入库单吗? 撤销后将不可进行其他操作" @submit="cancel" />
     <common-confirm v-model:show="finishDialog" icon="success" title="完成入库" text="确认要完成此入库单吗?" @submit="finish" />
+    <common-model v-model="isEditModel" title="编辑" :show-ok="true" @confirm="submitEdit">
+      <div class="max-h-[400px] overflow-auto">
+        <template v-for="(item, index) in filterListToArray" :key="index">
+          <template v-if="item.update">
+            <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
+              <div class="mb-4">
+                <div class="label">
+                  {{ item.label }}
+                </div>
+                <template v-if="item.input === 'text'">
+                  <n-input
+                    v-model:value="productParams[item.name]"
+                    :placeholder="String(productParams[item.name])"
+                  />
+                </template>
+                <template v-else-if="item.input === 'number'">
+                  <n-input-number
+                    v-model:value="productParams[item.name]"
+                    :placeholder="String(productParams[item.name])"
+                    :default-value="0"
+                    min="0"
+                  />
+                </template>
+                <template v-else-if="item?.input === 'select'">
+                  <n-select
+                    v-model:value="productParams[item.name]"
+                    :default-value="0"
+                    menu-size="large"
+                    fable
+                    :placeholder="`请选择${item.label}`"
+                    :options="optonsToSelect(item.preset) "
+                  />
+                </template>
+                <template v-else-if="item?.input === 'switch'">
+                  <n-switch v-model:value="productParams[item.name]" />
+                </template>
+                <template v-else-if="item?.input === 'textarea'">
+                  <n-input
+                    v-model:value="productParams[item.name]"
+                    :placeholder="String(productParams[item.name])"
+                  />
+                </template>
+                <template v-else-if="item?.input === 'list'">
+                  <template v-for="(certific, i) in productParams[item.name]" :key="i">
+                    <div class="grid grid-cols-[50px_auto_80px] gap-2 items-center">
+                      <div class="w-[60px] text-[14px] text-[rgba(102,102,102,1)]">
+                        编号{{ i + 1 }}：
+                      </div>
+                      <n-input
+                        v-model:value="productParams[item.name][i]"
+                        :placeholder="certific"
+                      />
+                      <div class="w-[100px] flex gap-1 pb-2">
+                        <div class="w-[32px] h-[32px] rounded-full bg-[#FFF] flex justify-center items-center" @click="productParams[item.name].splice(i, 1)">
+                          <icon name="i-svg:subtract" size="16" />
+                        </div>
+                        <template v-if="i === productParams[item.name].length - 1">
+                          <div class="w-[32px] h-[32px] rounded-full bg-[#FFF] flex justify-center items-center" @click="productParams[item.name].push('')">
+                            <icon name="i-svg:add" size="16" />
+                          </div>
+                        </template>
+                      </div>
+                    </div>
+                  </template>
+                </template>
+              </div>
+            </div>
+          </template>
+        </template>
+      </div>
+    </common-model>
   </div>
 </template>
 

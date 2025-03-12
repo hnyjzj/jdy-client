@@ -18,7 +18,7 @@ interface FilterWhere<T, N = keyof T> {
   /**
    * 筛选类型 选择或输入
    */
-  input: 'select' | 'text' | 'search' | 'switch' | 'number' | 'textarea' | 'date' | 'multiple'
+  input: 'select' | 'text' | 'search' | 'switch' | 'number' | 'textarea' | 'date' | 'multiple' | 'list'
   sort: number
   find: boolean
   create: boolean

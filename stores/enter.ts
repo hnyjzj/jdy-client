@@ -64,6 +64,16 @@ export const useEnter = defineStore('EnterStore', {
         throw new Error(`货品导入失败: ${error || '未知错误'}`)
       }
     },
+    /** 编辑入库单产品 */
+    async editEnterProduct(params: editEnterProductReq) {
+      try {
+        const { data } = await https.put<any, editEnterProductReq>('/product/enter/edit_product', params)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`编辑失败: ${error || '未知错误'}`)
+      }
+    },
     // 获取入库单详情
     async getEnterInfo(id: Enter['id']) {
       try {

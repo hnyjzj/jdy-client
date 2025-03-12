@@ -58,3 +58,18 @@ interface EnterProductReq {
   products: Product[]
   product_enter_id: string
 }
+
+/**
+ * 编辑入库单产品
+ */
+interface editEnterProductReq {
+  product: Partial<Product>
+  /**
+   * 入库单 ID
+   */
+  product_enter_id: string
+  /**
+   * 产品 ID
+   */
+  product_id: string
+}
