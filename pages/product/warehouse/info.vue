@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
 // const { myStore } = storeToRefs(useStores())
-const { getEnterInfo, delEnterProduct } = useEnter()
+const { getEnterInfo, delEnterProduct, cancelEnter, finishEnter, addEnterProduct } = useEnter()
 const { enterInfo } = storeToRefs(useEnter())
 const { filterList, filterListToArray } = storeToRefs(useProductManage())
 const { getProductWhere } = useProductManage()
@@ -18,10 +18,21 @@ const enterStatus = {
 }
 const isImportModel = ref(false)
 const isChooseModel = ref(false)
+const deleteDialog = ref(false)
+const clearDialog = ref(false)
+const cancelDialog = ref(false)
+const finishDialog = ref(false)
 
+/** 要删除的产品code */
+const deleteId = ref('')
+const enterId = ref('')
 if (route.query.id) {
-  await getEnterInfo(route.query.id as string)
+  enterId.value = route.query.id as string
+  await getInfo()
   await getProductWhere()
+}
+async function getInfo() {
+  getEnterInfo(enterId.value)
 }
 type ProductKey = keyof Product
 /** 汇总 */
@@ -31,38 +42,84 @@ function sum(key: ProductKey) {
 async function del(params: DelEnterProduct) {
   const res = await delEnterProduct(params)
   if (res.code === HttpCode.SUCCESS) {
+    await getInfo()
     return $toast.success('删除成功')
   }
   $toast.error(res.message ?? '删除失败')
 }
 /** 删除入库单里的产品 */
-async function delProduct(code: Product['code']) {
-  if (!code)
+async function delProduct() {
+  if (!deleteId.value)
     return
   const params = {
     product_enter_id: enterInfo.value.id,
-    product_ids: [code],
+    product_ids: [deleteId.value],
+  }
+  await del(params)
+}
+/** 清空产品列表 */
+async function clearProduct() {
+  const idAll = enterInfo.value?.products?.map(item => item.id)
+  if (!idAll || !idAll.length) {
+    return
+  }
+  const params = {
+    product_enter_id: enterInfo.value.id,
+    product_ids: idAll,
   }
   await del(params)
 }
 function goAdd() {
   isChooseModel.value = false
-  jump('/product/warehouse/add', { type: 1 })
+  jump('/product/warehouse/add', { type: 1, id: enterInfo.value.id })
 }
+
 // 提交入库
 async function submitGoods(data: Product[]) {
-  console.log(data)
+  if (data?.length) {
+    const { code, message } = await addEnterProduct({ products: data, product_enter_id: enterInfo.value.id })
+    if (code === HttpCode.SUCCESS) {
+      isChooseModel.value = false
+      isImportModel.value = false
+      await getInfo()
+      return $toast.success('批量导入成功')
+    }
+    $toast.error(message ?? '上传失败')
+  }
+}
 
-//   if (data?.length) {
-//     const { code, message } = await importProduct({ products: data, store_id: myStore.value?.id })
-//     if (code === HttpCode.SUCCESS) {
-//       isChooseModel.value = false
-//       isImportModel.value = false
-//       pages.value = 1
-//       return $toast.success('导入成功')
-//     }
-//     $toast.error(message ?? '导入失败')
-//   }
+/** 撤销入库 */
+async function cancel() {
+  const res = await cancelEnter(enterInfo.value.id)
+  if (res.code === HttpCode.SUCCESS) {
+    await getInfo()
+    return $toast.success('撤销成功')
+  }
+  $toast.error(res.message ?? '撤销失败')
+}
+
+function clearFun() {
+  if (!enterInfo.value.products?.length) {
+    return $toast.warning('货品为空')
+  }
+  clearDialog.value = true
+}
+
+/** 完成入库 */
+function finishFun() {
+  if (!enterInfo.value.products?.length) {
+    return $toast.error('请添加货品入库记录')
+  }
+  finishDialog.value = true
+}
+
+async function finish() {
+  const res = await finishEnter(enterInfo.value.id)
+  if (res.code === HttpCode.SUCCESS) {
+    await getInfo()
+    return $toast.success('完成入库成功')
+  }
+  $toast.error(res.message ?? '完成入库失败')
 }
 </script>
 
@@ -178,10 +235,10 @@ async function submitGoods(data: Product[]) {
               <div class="grid mb-3">
                 <sale-order-nesting :title="item.name" :info="enterInfo">
                   <template #left>
-                    <template v-if="1">
-                      <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="delProduct(item.code)" />
+                    <template v-if="enterInfo.status === 1">
+                      <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="deleteDialog = true;deleteId = item.id" />
                     </template>
-                    <common-tags type="pink" text="sdf" :is-oval="true" />
+                    <!-- <common-tags type="pink" text="sdf" :is-oval="true" /> -->
                   </template>
                   <template #info>
                     <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -215,26 +272,30 @@ async function submitGoods(data: Product[]) {
     </div>
     <product-upload-choose v-model:is-model="isChooseModel" @go-add="goAdd" @batch="isImportModel = true" />
     <product-upload-warehouse v-model="isImportModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
-    <!-- <common-create @create="jump('/product/warehouse/add', { type: 1, storageId: enterInfo.id })" /> -->
-
-    <common-create @create="isChooseModel = true" />
-    <common-button-bottom>
-      <template #content>
-        <div class="w-[100%]">
-          <div class="bottom-fun grid grid-cols-[26%_26%_auto] gap-2">
-            <div class="cursor-pointer cancel-btn">
-              清空列表
-            </div>
-            <div class="cursor-pointer cancel-btn">
-              撤销
-            </div>
-            <div class="cursor-pointer confirm-btn">
-              完成入库
+    <template v-if="enterInfo.status === 1">
+      <common-create @create="isChooseModel = true" />
+      <common-button-bottom>
+        <template #content>
+          <div class="w-[100%]">
+            <div class="bottom-fun grid grid-cols-[26%_26%_auto] gap-2">
+              <div class="cursor-pointer cancel-btn" @click="clearFun">
+                清空列表
+              </div>
+              <div class="cursor-pointer cancel-btn" @click="cancelDialog = true">
+                撤销
+              </div>
+              <div class="cursor-pointer confirm-btn" @click="finishFun">
+                完成入库
+              </div>
             </div>
           </div>
-        </div>
-      </template>
-    </common-button-bottom>
+        </template>
+      </common-button-bottom>
+    </template>
+    <common-confirm v-model:show="deleteDialog" icon="error" title="删除产品" text="确认要删除此产品吗?" @submit="delProduct" />
+    <common-confirm v-model:show="clearDialog" icon="error" title="清空列表" text="确认要清空所有入库的产品吗?" @submit="clearProduct" />
+    <common-confirm v-model:show="cancelDialog" icon="error" title="撤销" text="确认要撤销入库单吗? 撤销后将不可进行其他操作" @submit="cancel" />
+    <common-confirm v-model:show="finishDialog" icon="success" title="完成入库" text="确认要完成此入库单吗?" @submit="finish" />
   </div>
 </template>
 

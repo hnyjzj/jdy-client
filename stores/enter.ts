@@ -54,6 +54,16 @@ export const useEnter = defineStore('EnterStore', {
         throw new Error(`添加入库单失败: ${error || '未知错误'}`)
       }
     },
+    /** 添加入库单产品 */
+    async addEnterProduct(params: EnterProductReq) {
+      try {
+        const { data } = await https.post<any, EnterProductReq>('/product/enter/add_product', params)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`货品导入失败: ${error || '未知错误'}`)
+      }
+    },
     // 获取入库单详情
     async getEnterInfo(id: Enter['id']) {
       try {
@@ -74,6 +84,26 @@ export const useEnter = defineStore('EnterStore', {
       }
       catch (error) {
         throw new Error(`删除入库单产品失败: ${error || '未知错误'}`)
+      }
+    },
+    // 取消入库
+    async cancelEnter(product_enter_id: Enter['id']) {
+      try {
+        const { data } = await https.put<any, { product_enter_id: Enter['id'] }>('/product/enter/cancel', { product_enter_id })
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`取消入库失败: ${error || '未知错误'}`)
+      }
+    },
+    // 完成入库
+    async finishEnter(product_enter_id: Enter['id']) {
+      try {
+        const { data } = await https.put<any, { product_enter_id: Enter['id'] }>('/product/enter/finish', { product_enter_id })
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`完成入库失败: ${error || '未知错误'}`)
       }
     },
   },

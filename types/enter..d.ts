@@ -37,7 +37,7 @@ interface Enter {
   remark?: string
   /**
    * 状态
-   * 0:草稿 1:已完成 3:已撤销
+   * 1:草稿 2:已完成 3:已撤销
    */
   status: 1 | 2 | 3
   store: Stores
@@ -49,4 +49,12 @@ interface Enter {
    * 更新时间
    */
   updated_at: Date
+}
+
+/**
+ * 添加入库单产品
+ */
+interface EnterProductReq {
+  products: Product[]
+  product_enter_id: string
 }

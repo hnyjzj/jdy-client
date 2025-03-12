@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import type { FormInst, FormRules } from 'naive-ui'
 
-// const { addEnter } = useEnter()
 const { $toast } = useNuxtApp()
 const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList } = useStores()
-const { getProductWhere, importProduct } = useProductManage()
+const { getProductWhere } = useProductManage()
+const { addEnterProduct } = useEnter()
 const { filterListToArray, filterList } = storeToRefs(useProductManage())
 const route = useRoute()
 const router = useRouter()
@@ -14,10 +14,14 @@ useSeoMeta({
 })
 
 const params = ref({} as Product)
+const enterId = ref()
 const isDisables = ref()
 if (route.query?.type) {
   params.value.type = Number(route.query.type) as Product['type']
   isDisables.value = ['type']
+}
+if (route.query?.id) {
+  enterId.value = route.query.id
 }
 const formRef = ref<FormInst | null>(null)
 const rules = ref<FormRules>({})
@@ -72,9 +76,9 @@ async function submit() {
   }
   const impParams = {
     products: [params.value],
-    store_id: myStore.value.id,
+    product_enter_id: enterId.value,
   }
-  const res = await importProduct(impParams)
+  const res = await addEnterProduct(impParams)
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     params.value = {} as Product

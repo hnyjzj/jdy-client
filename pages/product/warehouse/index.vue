@@ -252,7 +252,7 @@ function goAdd() {
   &-right {
     --uno: 'flex items-center py-[6px] px-4 rounded-[36px] text-#FFF';
     background: linear-gradient(to bottom, #1b6ceb, #6da6ff);
-    box-shadow: #1111113d 0px 2px 2px 1px;
+    box-shadow: #2927273d 0px 2px 2px 1px;
   }
 }
 .enter-title {
@@ -265,6 +265,6 @@ function goAdd() {
   --uno: 'bg-#1b6ceb';
 }
 .chexiao {
-  --uno: 'bg-[rgba(255,98,76,1)]';
+  --uno: 'bg-[#999]';
 }
 </style>
