@@ -23,6 +23,7 @@ function close() {
   show.value = false
   emits('cancel')
 }
+
 watch(show, (val) => {
   if (val) {
     document.body.style.overflow = 'hidden'// 禁止滚动
@@ -30,6 +31,12 @@ watch(show, (val) => {
   else {
     document.body.style.overflow = ''
   }
+})
+
+/** 销毁时 */
+onBeforeUnmount (() => {
+  show.value = false
+  document.body.style.overflow = ''
 })
 </script>
 
