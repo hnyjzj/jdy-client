@@ -16,6 +16,7 @@ useSeoMeta({
 const params = ref({} as Product)
 const enterId = ref()
 const isDisables = ref()
+const certificate = ref(['', ''])
 if (route.query?.type) {
   params.value.type = Number(route.query.type) as Product['type']
   isDisables.value = ['type']
@@ -74,6 +75,11 @@ async function submit() {
   if (!myStore.value?.id) {
     return $toast.error('请先选择门店')
   }
+  // 证书添加到参数里
+  const arr = certificate.value.filter(item => item)
+  if (arr?.length) {
+    params.value.certificate = arr
+  }
   const impParams = {
     products: [params.value],
     product_enter_id: enterId.value,
@@ -117,31 +123,38 @@ const presetToSelect = (key: keyof Product) => {
                 <n-form ref="formRef" :model="params" :rules="rules">
                   <n-grid :cols="24" :x-gap="8">
                     <template v-for="(item, index) in filterListToArray" :key="index">
-                      <n-form-item-gi :span="12" :path="item.name" :required="item.required" :label="item.label">
-                        <template v-if="item.input === 'select'">
-                          <n-select
-                            v-model:value="params[item.name]"
-                            menu-size="large"
-                            :placeholder="`选择${item.label}`"
-                            :options="presetToSelect(item.name)"
-                            clearable
-                            :disabled="isDisables?.includes(item.name)"
-                          />
-                        </template>
-                        <template v-if="item.input === 'text'">
-                          <n-input v-model:value="params[item.name]" round :placeholder="`输入${item.label}`" />
-                        </template>
-                        <template v-if="item.input === 'number'">
-                          <div class="w-[100%]">
-                            <n-input-number v-model:value="params[item.name]" round :placeholder="`输入${item.label}`" />
-                          </div>
-                        </template>
-                        <template v-if="item.input === 'switch'">
-                          <n-switch v-model:value="params[item.name]" :style="{ 'border-radius': '20px' }" round />
-                        </template>
-                        <template v-if="item.input === 'textarea'">
-                          <n-input v-model:value="params[item.name]" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
-                        </template>
+                      <template v-if="item.input !== 'list'">
+                        <n-form-item-gi :span="12" :path="item.name" :required="item.required" :label="item.label">
+                          <template v-if="item.input === 'select'">
+                            <n-select
+                              v-model:value="params[item.name]"
+                              menu-size="large"
+                              :placeholder="`选择${item.label}`"
+                              :options="presetToSelect(item.name)"
+                              clearable
+                              :disabled="isDisables?.includes(item.name)"
+                            />
+                          </template>
+                          <template v-if="item.input === 'text'">
+                            <n-input v-model:value="params[item.name]" round :placeholder="`输入${item.label}`" />
+                          </template>
+                          <template v-if="item.input === 'number'">
+                            <div class="w-[100%]">
+                              <n-input-number v-model:value="params[item.name]" round :placeholder="`输入${item.label}`" />
+                            </div>
+                          </template>
+                          <template v-if="item.input === 'switch'">
+                            <n-switch v-model:value="params[item.name]" :style="{ 'border-radius': '20px' }" round />
+                          </template>
+                          <template v-if="item.input === 'textarea'">
+                            <n-input v-model:value="params[item.name]" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
+                          </template>
+                        </n-form-item-gi>
+                      </template>
+                    </template>
+                    <template v-for="(item, index) in certificate" :key="index">
+                      <n-form-item-gi :span="12" :label="`证书${index + 1}`">
+                        <n-input v-model:value="certificate[index]" type="text" round :placeholder="`输入证书${index + 1}`" />
                       </n-form-item-gi>
                     </template>
                   </n-grid>

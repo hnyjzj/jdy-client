@@ -404,7 +404,7 @@ async function submitEdit() {
                         v-model:value="productParams[item.name][i]"
                         :placeholder="certific"
                       />
-                      <div class="w-[100px] flex gap-1 pb-2">
+                      <div class="flex gap-1 pb-2">
                         <div class="w-[32px] h-[32px] rounded-full bg-[#FFF] flex justify-center items-center" @click="productParams[item.name].splice(i, 1)">
                           <icon name="i-svg:subtract" size="16" />
                         </div>
