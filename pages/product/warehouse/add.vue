@@ -37,6 +37,13 @@ function forRules() {
           message: `请输入${item.label}`,
         }
       }
+      if (item.input === 'number') {
+        rules.value[item.name] = {
+          required: true,
+          trigger: ['blur', 'input', 'change'],
+          message: `请输入${item.label}`,
+        }
+      }
       if (item.input === 'select') {
         rules.value[item.name] = {
           required: true,
@@ -75,6 +82,8 @@ async function submit() {
   if (!myStore.value?.id) {
     return $toast.error('请先选择门店')
   }
+  if (!enterId.value)
+    return
   // 证书添加到参数里
   const arr = certificate.value.filter(item => item)
   if (arr?.length) {

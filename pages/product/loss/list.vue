@@ -30,8 +30,13 @@ async function getList(where = {} as Partial<Product>) {
   return res as any
 }
 
-await getList()
-await getProductWhere()
+try {
+  await getList()
+  await getProductWhere()
+}
+catch (error) {
+  throw new Error(`初始化失败: ${error || '未知错误'}`)
+}
 
 const filterData = ref({ status: 2 } as Partial<Product>)
 function pull() {

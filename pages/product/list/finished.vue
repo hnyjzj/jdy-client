@@ -10,6 +10,7 @@ const isModel = ref(false)
 const isBatchImportModel = ref(false)
 const pages = ref(1)
 const type = ref(1 as Product['type'])
+const filterData = ref({} as Partial<Product>)
 useSeoMeta({
   title: '成品列表',
 })
@@ -34,10 +35,13 @@ async function getList(where = {} as Partial<Product>) {
   return res as any
 }
 
-await getList()
-await getProductWhere()
-
-const filterData = ref({} as Partial<Product>)
+try {
+  await getList()
+  await getProductWhere()
+}
+catch (error) {
+  throw new Error(`初始化失败: ${error || '未知错误'}`)
+}
 
 const create = () => {
   if (!myStore.value?.id) {
@@ -53,6 +57,9 @@ function pull() {
 // 提交入库
 async function submitGoods(data: Product[]) {
   if (data?.length) {
+    if (!myStore.value?.id) {
+      return $toast.error('未选择门店，请先选择门店')
+    }
     const { code, message } = await importProduct({ products: data, store_id: myStore.value?.id })
     if (code === HttpCode.SUCCESS) {
       isModel.value = false

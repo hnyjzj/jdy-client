@@ -36,7 +36,7 @@ if (route.query.id) {
   await getProductWhere()
 }
 async function getInfo() {
-  getEnterInfo(enterId.value)
+  await getEnterInfo(enterId.value)
 }
 type ProductKey = keyof Product
 /** 汇总 */
@@ -161,170 +161,172 @@ async function submitEdit() {
 
 <template>
   <div class="storage pb-20">
-    <div class="grid-12 pt-4">
-      <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-        <div class="w-[40%] text-[#fff]">
-          <product-manage-company />
-        </div>
-        <div class="rounded-6 bg-white w-auto blur-bga top">
-          <common-gradient title="基础信息">
-            <template #body>
-              <div class="flex flex-col gap-4">
-                <div class="operation-information flex flex-col gap-1">
-                  <div class="flex-start gap-3 text-sm font-normal">
-                    <div class="color-[#666666]">
-                      操作人
-                    </div>
-                    <div class="color-[#333333]">
-                      {{ enterInfo?.operator?.nickname }}
-                    </div>
-                  </div>
-                  <div class="flex-start gap-3 text-sm font-normal">
-                    <div class="color-[#666666]">
-                      入库单号
-                    </div>
-                    <div class="color-[#333333]">
-                      {{ enterInfo.id }}
-                    </div>
-                  </div>
-                  <div class="flex-start gap-3 text-sm font-normal">
-                    <div class="color-[#666666]">
-                      状态
-                    </div>
-                    <div class="color-[#333333]">
-                      {{ enterStatus[enterInfo.status] }}
-                    </div>
-                  </div>
-                  <div class="flex-start gap-3 text-sm font-normal">
-                    <div class="color-[#666666]">
-                      备注
-                    </div>
-                    <div class="color-[#333333]">
-                      {{ enterInfo.remark }}
-                    </div>
-                  </div>
-                  <div class="other-information flex flex-col gap-1">
+    <common-layout-center>
+      <div class="pt-4">
+        <div class="flex flex-col gap-4">
+          <div class="w-[40%] text-[#fff]">
+            <product-manage-company />
+          </div>
+          <div class="rounded-6 bg-white w-auto blur-bga top">
+            <common-gradient title="基础信息">
+              <template #body>
+                <div class="flex flex-col gap-4">
+                  <div class="operation-information flex flex-col gap-1">
                     <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="color-[#666666]">
-                        创建时间
+                      <div class="info-title">
+                        操作人
                       </div>
-                      <div class="color-[#333333]">
-                        {{ formatTimestampToDateTime(enterInfo.created_at) }}
+                      <div class="info-val">
+                        {{ enterInfo?.operator?.nickname }}
                       </div>
                     </div>
                     <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="color-[#666666]">
-                        完成时间
+                      <div class="info-title">
+                        入库单号
                       </div>
-                      <div class="color-[#333333]">
-                        {{ formatTimestampToDateTime(enterInfo.updated_at) }}
+                      <div class="info-val">
+                        {{ enterInfo.id }}
+                      </div>
+                    </div>
+                    <div class="flex-start gap-3 text-sm font-normal">
+                      <div class="info-title">
+                        状态
+                      </div>
+                      <div class="info-val">
+                        {{ enterStatus[enterInfo.status] }}
+                      </div>
+                    </div>
+                    <div class="flex-start gap-3 text-sm font-normal">
+                      <div class="info-title">
+                        备注
+                      </div>
+                      <div class="info-val">
+                        {{ enterInfo.remark }}
+                      </div>
+                    </div>
+                    <div class="other-information flex flex-col gap-1">
+                      <div class="flex-start gap-3 text-sm font-normal">
+                        <div class="info-title">
+                          创建时间
+                        </div>
+                        <div class="info-val">
+                          {{ formatTimestampToDateTime(enterInfo.created_at) }}
+                        </div>
+                      </div>
+                      <div class="flex-start gap-3 text-sm font-normal">
+                        <div class="info-title">
+                          完成时间
+                        </div>
+                        <div class="info-val">
+                          {{ formatTimestampToDateTime(enterInfo.updated_at) }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="h-0.5 bg-[#E6E6E8]" />
+                  <div class="product-information flex flex-col gap-1">
+                    <div class="flex-start gap-3 text-sm font-normal">
+                      <div class="info-title">
+                        入库数量
+                      </div>
+                      <div class="info-val">
+                        {{ enterInfo.products?.length }}
+                      </div>
+                    </div>
+                    <div class="flex-start gap-3 text-sm font-normal">
+                      <div class="info-title">
+                        入网费合计
+                      </div>
+                      <div class="info-val">
+                        {{ sum('access_fee') }}
+                      </div>
+                    </div>
+                    <div class="flex-start gap-3 text-sm font-normal">
+                      <div class="info-title">
+                        标签价合计
+                      </div>
+                      <div class="info-val">
+                        {{ sum('label_price') }}
+                      </div>
+                    </div>
+                    <div class="flex-start gap-3 text-sm font-normal">
+                      <div class="info-title">
+                        金重合计
+                      </div>
+                      <div class="info-val">
+                        {{ sum('weight_metal') }}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="h-0.5 bg-[#E6E6E8]" />
-                <div class="product-information flex flex-col gap-1">
-                  <div class="flex-start gap-3 text-sm font-normal">
-                    <div class="color-[#666666]">
-                      入库数量
-                    </div>
-                    <div class="color-[#333333]">
-                      {{ enterInfo.products?.length }}
-                    </div>
-                  </div>
-                  <div class="flex-start gap-3 text-sm font-normal">
-                    <div class="color-[#666666]">
-                      入网费合计
-                    </div>
-                    <div class="color-[#333333]">
-                      {{ sum('access_fee') }}
-                    </div>
-                  </div>
-                  <div class="flex-start gap-3 text-sm font-normal">
-                    <div class="color-[#666666]">
-                      标签价合计
-                    </div>
-                    <div class="color-[#333333]">
-                      {{ sum('label_price') }}
-                    </div>
-                  </div>
-                  <div class="flex-start gap-3 text-sm font-normal">
-                    <div class="color-[#666666]">
-                      金重合计
-                    </div>
-                    <div class="color-[#333333]">
-                      {{ sum('weight_metal') }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </template>
-          </common-gradient>
-        </div>
+              </template>
+            </common-gradient>
+          </div>
 
-        <template v-if="enterInfo.products?.length">
-          <div class="p-4 blur-bgc rounded-6">
-            <div class="text-[14px] pb-4">
-              共 {{ enterInfo.products.length }}
-            </div>
-            <template v-for="(item, index) in enterInfo.products" :key="index">
-              <div class="grid mb-3">
-                <sale-order-nesting :title="item.name" :info="enterInfo">
-                  <template #left>
-                    <template v-if="enterInfo.status === 1">
-                      <!-- <div class="text-[rgba(221,146,0,1)] cursor-pointer" @click="edit(item)">
+          <template v-if="enterInfo.products?.length">
+            <div class="p-4 blur-bgc rounded-6">
+              <div class="text-[14px] pb-4 text-color">
+                共 {{ enterInfo.products.length }}
+              </div>
+              <template v-for="(item, index) in enterInfo.products" :key="index">
+                <div class="grid mb-3">
+                  <sale-order-nesting :title="item.name" :info="enterInfo">
+                    <template #left>
+                      <template v-if="enterInfo.status === 1">
+                        <!-- <div class="text-[rgba(221,146,0,1)] cursor-pointer" @click="edit(item)">
                         编辑
                       </div> -->
-                      <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="deleteDialog = true;deleteId = item.id" />
+                        <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="deleteDialog = true;deleteId = item.id" />
+                      </template>
+                      <div class="text-[rgba(221,146,0,1)] cursor-pointer" @click="edit(item)">
+                        <common-tags type="orange" text="编辑" :is-oval="true" />
+                      </div>
                     </template>
-                    <div class="text-[rgba(221,146,0,1)] cursor-pointer" @click="edit(item)">
-                      <common-tags type="orange" text="编辑" :is-oval="true" />
-                    </div>
-                  </template>
-                  <template #info>
-                    <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
-                      <template v-for="(filter, findex) in filterListToArray" :key="findex">
-                        <template v-if="filter.find">
-                          <template v-if="filter.input === 'list'">
-                            <template v-for="(certificate, i) in item[filter.name]" :key="i">
+                    <template #info>
+                      <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        <template v-for="(filter, findex) in filterListToArray" :key="findex">
+                          <template v-if="filter.find">
+                            <template v-if="filter.input === 'list'">
+                              <template v-for="(certificate, i) in item[filter.name]" :key="i">
+                                <div class="flex">
+                                  <div class="key">
+                                    证书{{ i + 1 }}
+                                  </div>
+                                  <div class="value">
+                                    {{ certificate }}
+                                  </div>
+                                </div>
+                              </template>
+                            </template>
+                            <template v-else>
                               <div class="flex">
                                 <div class="key">
-                                  证书{{ i + 1 }}
+                                  {{ filter.label }}
                                 </div>
-                                <div class="value">
-                                  {{ certificate }}
-                                </div>
+                                <template v-if="filter.input === 'select'">
+                                  <div class="value">
+                                    {{ filter.preset[item[filter.name]] }}
+                                  </div>
+                                </template>
+                                <template v-else>
+                                  <div class="value">
+                                    {{ item[filter.name] }}
+                                  </div>
+                                </template>
                               </div>
                             </template>
                           </template>
-                          <template v-else>
-                            <div class="flex">
-                              <div class="key">
-                                {{ filter.label }}
-                              </div>
-                              <template v-if="filter.input === 'select'">
-                                <div class="value">
-                                  {{ filter.preset[item[filter.name]] }}
-                                </div>
-                              </template>
-                              <template v-else>
-                                <div class="value">
-                                  {{ item[filter.name] }}
-                                </div>
-                              </template>
-                            </div>
-                          </template>
                         </template>
-                      </template>
-                    </div>
-                  </template>
-                </sale-order-nesting>
-              </div>
-            </template>
-          </div>
-        </template>
+                      </div>
+                    </template>
+                  </sale-order-nesting>
+                </div>
+              </template>
+            </div>
+          </template>
+        </div>
       </div>
-    </div>
+    </common-layout-center>
     <product-upload-choose v-model:is-model="isChooseModel" @go-add="goAdd" @batch="isImportModel = true" />
     <product-upload-warehouse v-model="isImportModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
     <!-- 状态为草稿时 功能操作 -->
@@ -358,7 +360,7 @@ async function submitEdit() {
           <template v-if="item.update">
             <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
               <div class="mb-4">
-                <div class="label">
+                <div class="text-color pb-1">
                   {{ item.label }}
                 </div>
                 <template v-if="item.input === 'text'">
@@ -378,11 +380,12 @@ async function submitEdit() {
                 <template v-else-if="item?.input === 'select'">
                   <n-select
                     v-model:value="productParams[item.name]"
-                    :default-value="0"
+                    :default-value="null"
                     menu-size="large"
                     fable
                     :placeholder="`请选择${item.label}`"
-                    :options="optonsToSelect(item.preset) "
+                    :options="optonsToSelect(item.preset)"
+                    filterable
                   />
                 </template>
                 <template v-else-if="item?.input === 'switch'">
@@ -397,7 +400,7 @@ async function submitEdit() {
                 <template v-else-if="item?.input === 'list'">
                   <template v-for="(certific, i) in productParams[item.name]" :key="i">
                     <div class="grid grid-cols-[50px_auto_80px] gap-2 items-center">
-                      <div class="w-[60px] text-[14px] text-[rgba(102,102,102,1)]">
+                      <div class="w-[60px] text-[14px] text-color-light">
                         编号{{ i + 1 }}：
                       </div>
                       <n-input
@@ -435,6 +438,12 @@ async function submitEdit() {
   text-overflow: ellipsis; /* 超出显示省略号 */
   white-space: nowrap; /* 禁止换行 */
   overflow: hidden;
+}
+.info-title {
+  --uno: 'text-color';
+}
+.info-val {
+  --uno: 'text-color-light';
 }
 .confirm-btn {
   --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#fff] font-bold ';

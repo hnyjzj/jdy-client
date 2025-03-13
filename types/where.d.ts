@@ -21,8 +21,11 @@ interface FilterWhere<T, N = keyof T> {
   input: 'select' | 'text' | 'search' | 'switch' | 'number' | 'textarea' | 'date' | 'multiple' | 'list'
   sort: number
   find: boolean
+  /** 该字段是否可以添加上传 */
   create: boolean
+  /** 是否可以更新 */
   update: boolean
+  /** 字段名 */
   name: unknown & string & N
 }
 /**

@@ -136,16 +136,20 @@ async function customRequest({ file }: UploadCustomRequestOptions) {
           <div class="flex items-center">
             <div class="flex gap-4 flex-wrap">
               <template v-for="(img, index) in productInfo.images" :key="index">
-                <img :src="ImageUrl(img)" width="100" height="100">
+                <div>
+                  <img :src="ImageUrl(img)" width="100" height="100">
+                </div>
               </template>
-              <n-upload
-                action="#"
-                :style="{ width: '100px', height: '100px' }"
-                list-type="image-card"
-                :default-file-list="previewFileList"
-                :custom-request="customRequest"
-                @before-upload="beforeUpload"
-              />
+              <div>
+                <n-upload
+                  action="#"
+                  :style="{ width: '100px', height: '100px' }"
+                  list-type="image-card"
+                  :default-file-list="previewFileList"
+                  :custom-request="customRequest"
+                  @before-upload="beforeUpload"
+                />
+              </div>
             </div>
           </div>
           <div class="flex-1 grid gap-y-2 text-[#FFF] text-[12px] my-4">
@@ -187,11 +191,10 @@ async function customRequest({ file }: UploadCustomRequestOptions) {
                   <template v-else-if="item?.input === 'select'">
                     <n-select
                       v-model:value="productParams[item.name]"
-                      :default-value="0"
                       menu-size="large"
-                      fable
-                      :placeholder="`请选择${item.label}`"
-                      :options="presetToSelect(item) "
+                      :placeholder="`选择${item.label}`"
+                      :options="optonsToSelect(item.preset, false)"
+                      clearable
                     />
                   </template>
                   <template v-else-if="item?.input === 'switch'">
@@ -202,6 +205,29 @@ async function customRequest({ file }: UploadCustomRequestOptions) {
                       v-model:value="productParams[item.name]"
                       :placeholder="String(productParams[item.name])"
                     />
+                  </template>
+                  <template v-else-if="item?.input === 'list'">
+                    <template v-for="(certific, i) in productParams[item.name]" :key="i">
+                      <div class="grid grid-cols-[50px_auto_80px] gap-2 items-center">
+                        <div class="w-[60px] text-[14px] text-[rgba(102,102,102,1)]">
+                          编号{{ i + 1 }}：
+                        </div>
+                        <n-input
+                          v-model:value="productParams[item.name][i]"
+                          :placeholder="certific"
+                        />
+                        <div class="flex gap-1 pb-2">
+                          <div class="w-[32px] h-[32px] rounded-full bg-[#FFF] flex justify-center items-center" @click="productParams[item.name].splice(i, 1)">
+                            <icon name="i-svg:subtract" size="16" />
+                          </div>
+                          <template v-if="i === productParams[item.name].length - 1">
+                            <div class="w-[32px] h-[32px] rounded-full bg-[#FFF] flex justify-center items-center" @click="productParams[item.name].push('')">
+                              <icon name="i-svg:add" size="16" />
+                            </div>
+                          </template>
+                        </div>
+                      </div>
+                    </template>
                   </template>
                 </div>
               </div>
