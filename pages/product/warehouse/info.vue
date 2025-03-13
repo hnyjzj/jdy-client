@@ -157,6 +157,15 @@ async function submitEdit() {
     return $toast.success('编辑成功')
   }
 }
+
+/** 值为0时 找不到匹配项 显示未选择不 */
+function filteredOptions(preset: any, val: number) {
+  if (val === 0) {
+    const obj = { label: '未选择', value: 0 }
+    preset.unshift(obj)
+  }
+  return preset
+}
 </script>
 
 <template>
@@ -366,7 +375,7 @@ async function submitEdit() {
                 <template v-if="item.input === 'text'">
                   <n-input
                     v-model:value="productParams[item.name]"
-                    :placeholder="String(productParams[item.name])"
+                    :placeholder="`输入${item.label}`"
                   />
                 </template>
                 <template v-else-if="item.input === 'number'">
@@ -384,7 +393,7 @@ async function submitEdit() {
                     menu-size="large"
                     fable
                     :placeholder="`请选择${item.label}`"
-                    :options="optonsToSelect(item.preset)"
+                    :options="filteredOptions(optonsToSelect(item.preset), productParams[item.name])"
                     filterable
                   />
                 </template>

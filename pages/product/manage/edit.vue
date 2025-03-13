@@ -69,30 +69,7 @@ async function updata() {
 function cancelUpdata() {
   productParams.value = JSON.parse(JSON.stringify(productInfo.value))
 }
-const presetToSelect = (filter: FilterWhere<Product>): { label: string, value: any }[] => {
-  if (!filter.preset) {
-    return []
-  }
-  return Object.keys(filter.preset).map((key) => {
-    switch (filter.type) {
-      case 'number':
-        return {
-          label: filter.preset[key],
-          value: Number(key),
-        }
-      case 'float':
-        return {
-          label: filter.preset[key],
-          value: Number.parseFloat(key),
-        }
-      default:
-        return {
-          label: filter.preset[key],
-          value: key,
-        }
-    }
-  })
-}
+
 // 校验上传文件
 const beforeUpload = (data: any) => {
   if (data.file.file?.type !== 'image/png' && data.file.file?.type !== 'image/jpeg') {
@@ -125,6 +102,14 @@ async function customRequest({ file }: UploadCustomRequestOptions) {
   if (res.code === HttpCode.SUCCESS) {
     productParams.value.images.push(res.data.url)
   }
+}
+/** 值为0时 找不到匹配项 显示未选择不 */
+function filteredOptions(preset: any, val: number) {
+  if (val === 0) {
+    const obj = { label: '未选择', value: 0 }
+    preset.unshift(obj)
+  }
+  return preset
 }
 </script>
 
@@ -193,7 +178,7 @@ async function customRequest({ file }: UploadCustomRequestOptions) {
                       v-model:value="productParams[item.name]"
                       menu-size="large"
                       :placeholder="`选择${item.label}`"
-                      :options="optonsToSelect(item.preset, false)"
+                      :options="filteredOptions(optonsToSelect(item.preset), productParams[item.name])"
                       clearable
                     />
                   </template>
