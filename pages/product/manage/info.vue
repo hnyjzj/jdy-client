@@ -82,20 +82,21 @@ function submitConvert() {
             <div uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
               <div class="px-2 py-2 flex gap-2">
                 <!-- 旧料转成品 -->
-                <template v-if="productInfo.type === 2">
+                <template v-if="productInfo.type === GoodsStatus.ProductStatusDamage">
                   <div class="flex-1">
                     <common-button-rounded content="转成品" color="#000" bgc="#FFF" @button-click="convert(1)" />
                   </div>
                 </template>
                 <!-- 报损转换成品/旧料 -->
-                <template v-if="productInfo.status === 2">
+                <template v-if="productInfo.status === GoodsStatus.ProductStatusDamage">
                   <div class="flex-1">
                     <common-button-rounded content="转成品/旧料" color="#000" bgc="#FFF" @button-click="convertModel = true" />
                   </div>
                 </template>
                 <template v-else>
                   <div class="flex-1">
-                    <common-button-rounded content="报损" color="#000" bgc="#FFF" @button-click="goLoss" />
+                    <!-- <common-button-rounded content="报损" color="#000" bgc="#FFF" @button-click="goLoss" /> -->
+                    <common-button-rounded content="转成品" color="#000" bgc="#FFF" @button-click="convert(1)" />
                   </div>
                   <div class="flex-1">
                     <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: productInfo.code })" />

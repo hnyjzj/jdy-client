@@ -5,14 +5,33 @@ const { createAllocate, getAllocateWhere } = useAllocate()
 const { allocateFilterList } = storeToRefs(useAllocate())
 const { $toast } = useNuxtApp()
 const { storesList } = storeToRefs(useStores())
+const { myStoreList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
+const { getEnterInfo } = useEnter()
+const { enterInfo } = storeToRefs(useEnter())
+
 const params = ref({} as AllocateReq)
 const route = useRoute()
-const router = useRouter()
 const type = ref()
+const enterId = ref()
 if (route.query?.type) {
   type.value = route.query.type
   params.value.type = Number(type.value)
+}
+if (route.query?.enter_id) {
+  enterId.value = route.query.enter_id
+  params.value.product_enter_id = route.query.enter_id as string
+  await getEnterInfo(enterId.value)
+  params.value.method = 1
+  params.value.type = 1
+  params.value.remark = `入库整单调拨[${enterId.value}]`
+}
+
+if (route.query?.enter_id) {
+  params.value.from_store_id = enterInfo.value?.store_id
+}
+else {
+  params.value.from_store_id = myStoreList.value[0].id
 }
 useSeoMeta({
   title: '新增调拨单',
@@ -36,7 +55,7 @@ async function submit() {
   if (res.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     params.value = {} as AllocateReq
-    router.back()
+    jump('/product/allocate')
   }
   else {
     $toast.error(res.message ?? '创建失败')
@@ -46,7 +65,9 @@ async function submit() {
 const presetToSelect = (key: keyof AllocateReq): { label: string, value: any }[] => {
   if (!key)
     return []
-
+  if (key === 'product_enter_id') {
+    return []
+  }
   const filter = allocateFilterList.value[key]
   if (!filter)
     return []
@@ -90,6 +111,10 @@ const rules = ref<FormRules>({
 },
 )
 function handleValidateButtonClick() {
+  if (!myStoreList.value.length) {
+    return $toast.error('暂未分配门店')
+  }
+
   formRef.value?.validate((error) => {
     if (!error) {
       submit()
@@ -131,15 +156,6 @@ function handleValidateButtonClick() {
                         :options="presetToSelect('type')"
                         clearable
                         :disabled="type"
-                      />
-                    </n-form-item-gi>
-                    <n-form-item-gi :span="12" path="from_store_id" label="调出门店" required>
-                      <n-select
-                        v-model:value="params.from_store_id"
-                        menu-size="large"
-                        placeholder="选择调出门店"
-                        :options="storeCol"
-                        clearable
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" path="to_store_id" label="调入门店" required>

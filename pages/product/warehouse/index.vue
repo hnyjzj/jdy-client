@@ -228,7 +228,7 @@ function goAdd() {
     <common-model v-model="isCreateModel" title="添加入库单" :show-ok="true" @confirm="createEnter">
       <div class="mb-8 min-h-[60px]">
         <div class="flex items-center mb-4">
-          <div class="w-[100px]">
+          <div class="w-[100px] text-color">
             入库门店：
           </div>
           <n-select
@@ -236,7 +236,7 @@ function goAdd() {
             clearable />
         </div>
         <div class="flex mb-4">
-          <div class="w-[100px] pt-2">
+          <div class="w-[100px] pt-2 text-color">
             添加备注：
           </div>
           <n-input v-model:value="enterParams.remark" type="textarea" />

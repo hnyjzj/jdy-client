@@ -16,6 +16,7 @@ export const useProductManage = defineStore('ProductManage', {
     HistoryFilterListToArray: FilterWhere<ProductHistories>[]
     /** 操作记录列表总数 */
     historyListTotal: number
+    historyInfo: ProductHistories
   } => ({
     filterList: {} as Where<Product>,
     productList: [],
@@ -26,6 +27,7 @@ export const useProductManage = defineStore('ProductManage', {
     historyFilterList: {} as Where<ProductHistories>,
     HistoryFilterListToArray: {} as FilterWhere<ProductHistories>[],
     historyListTotal: 0,
+    historyInfo: {} as ProductHistories,
   }),
   actions: {
     // 货品列表
@@ -122,6 +124,18 @@ export const useProductManage = defineStore('ProductManage', {
       }
       catch (error) {
         throw new Error(`获取货品记录失败: ${error || '未知错误'}`)
+      }
+    },
+    // 货品记录详情
+    async getProductHistoryInfo(id: ProductHistories['id']) {
+      try {
+        const { data } = await https.post<ProductHistories, { id: ProductHistories['id'] }>('/product/history/info', { id })
+        if (data.value.code === HttpCode.SUCCESS) {
+          this.historyInfo = data.value.data
+        }
+      }
+      catch (error) {
+        throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
       }
     },
     // 获取记录筛选列表

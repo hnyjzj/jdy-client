@@ -127,6 +127,15 @@ const downloadLocalFile = () => {
   link.click()
   document.body.removeChild(link)
 }
+
+function clearData() {
+  fileName.value = ''
+  sheetData.value = []
+}
+
+defineExpose({
+  clearData,
+})
 </script>
 
 <template>

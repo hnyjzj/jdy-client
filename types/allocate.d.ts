@@ -110,4 +110,8 @@ interface AllocateReq {
    * 门店id
    */
   store_id: string
+  /**
+   * 入库单id
+   */
+  product_enter_id?: Enter['id']
 }

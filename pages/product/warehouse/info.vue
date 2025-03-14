@@ -9,7 +9,7 @@ useSeoMeta({
   title: '入库单详情',
 })
 const route = useRoute()
-
+const router = useRouter()
 // 入库状态
 const enterStatus = {
   1: '草稿',
@@ -55,6 +55,8 @@ async function del(params: DelEnterProduct) {
 async function delProduct() {
   if (!deleteId.value)
     return
+  if (!enterInfo.value.id)
+    return
   const params = {
     product_enter_id: enterInfo.value.id,
     product_ids: [deleteId.value],
@@ -77,6 +79,7 @@ function goAdd() {
   isChooseModel.value = false
   jump('/product/warehouse/add', { type: 1, id: enterInfo.value.id })
 }
+const uploadRef = ref()
 
 // 提交入库
 async function submitGoods(req: Product[]) {
@@ -86,6 +89,7 @@ async function submitGoods(req: Product[]) {
       isChooseModel.value = false
       isImportModel.value = false
       await getInfo()
+      uploadRef.value.clearData()
       return $toast.success('批量导入成功')
     }
     else if (code === HttpCode.ERROR) {
@@ -104,13 +108,16 @@ async function cancel() {
   const res = await cancelEnter(enterInfo.value.id)
   if (res.code === HttpCode.SUCCESS) {
     await getInfo()
+    setTimeout(() => {
+      router.go(-1)
+    }, 1000)
     return $toast.success('撤销成功')
   }
   $toast.error(res.message ?? '撤销失败')
 }
 
 function clearFun() {
-  if (!enterInfo.value.products?.length) {
+  if (!enterInfo.value?.products || enterInfo.value.products.length === 0) {
     return $toast.warning('货品为空')
   }
   clearDialog.value = true
@@ -132,12 +139,18 @@ async function finish() {
   }
   $toast.error(res.message ?? '完成入库失败')
 }
+
 const productEdittIng = ref({} as Product)
+
 function edit(product: Product) {
   productEdittIng.value = product
   filterListToArray.value.forEach((item) => {
     if (item.update) {
       productParams.value[item.name] = product[item.name]
+      // float类型需要从字符串转换为数组类型 number类型输入康
+      if (item.type === 'float') {
+        productParams.value[item.name] = Number.parseFloat(product[item.name])
+      }
     }
   })
   isEditModel.value = true
@@ -211,6 +224,14 @@ function filteredOptions(preset: any, val: number) {
                       </div>
                       <div class="info-val">
                         {{ enterInfo.remark }}
+                      </div>
+                    </div>
+                    <div class="flex-start gap-3 text-sm font-normal">
+                      <div class="info-title">
+                        门店
+                      </div>
+                      <div class="info-val">
+                        {{ enterInfo.store.name }}
                       </div>
                     </div>
                     <div class="other-information flex flex-col gap-1">
@@ -294,7 +315,7 @@ function filteredOptions(preset: any, val: number) {
                     <template #info>
                       <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
                         <template v-for="(filter, findex) in filterListToArray" :key="findex">
-                          <template v-if="filter.find">
+                          <template v-if="filter.update">
                             <template v-if="filter.input === 'list'">
                               <template v-for="(certificate, i) in item[filter.name]" :key="i">
                                 <div class="flex">
@@ -317,9 +338,14 @@ function filteredOptions(preset: any, val: number) {
                                     {{ filter.preset[item[filter.name]] }}
                                   </div>
                                 </template>
+                                <template v-else-if="filter.input === 'switch'">
+                                  <div class="value">
+                                    {{ item[filter.name] ? '是' : '否' }}
+                                  </div>
+                                </template>
                                 <template v-else>
                                   <div class="value">
-                                    {{ item[filter.name] }}
+                                    {{ item[filter.name] ? item[filter.name] : '' }}
                                   </div>
                                 </template>
                               </div>
@@ -337,7 +363,7 @@ function filteredOptions(preset: any, val: number) {
       </div>
     </common-layout-center>
     <product-upload-choose v-model:is-model="isChooseModel" @go-add="goAdd" @batch="isImportModel = true" />
-    <product-upload-warehouse v-model="isImportModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
+    <product-upload-warehouse ref="uploadRef" v-model="isImportModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
     <!-- 状态为草稿时 功能操作 -->
     <template v-if="enterInfo.status === 1">
       <common-create @create="isChooseModel = true" />
@@ -358,6 +384,9 @@ function filteredOptions(preset: any, val: number) {
           </div>
         </template>
       </common-button-bottom>
+    </template>
+    <template v-if="enterInfo.status === 2">
+      <common-button-one text="整单调拨" @confirm="jump('/product/allocate/add', { enter_id: enterInfo.id })" />
     </template>
     <common-confirm v-model:show="deleteDialog" icon="error" title="删除产品" text="确认要删除此产品吗?" @submit="delProduct" />
     <common-confirm v-model:show="clearDialog" icon="error" title="清空列表" text="确认要清空所有入库的产品吗?" @submit="clearProduct" />
@@ -391,7 +420,6 @@ function filteredOptions(preset: any, val: number) {
                     v-model:value="productParams[item.name]"
                     :default-value="null"
                     menu-size="large"
-                    fable
                     :placeholder="`请选择${item.label}`"
                     :options="filteredOptions(optonsToSelect(item.preset), productParams[item.name])"
                     filterable
