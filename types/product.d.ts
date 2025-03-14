@@ -199,7 +199,7 @@ interface ProductHistories {
   /**
    * 创建时间
    */
-  created_at?: Date
+  created_at: Date
   /**
    * ID
    */
@@ -215,7 +215,7 @@ interface ProductHistories {
   /**
    * 旧值
    */
-  old_value: any[] | boolean | number | number | { [key: string]: any } | null | string
+  old_value: Product
   /**
    * 操作人ID
    */
@@ -226,9 +226,13 @@ interface ProductHistories {
 
   operator: Staff
   /**
-   * 产品信息
+   * 货品信息
    */
-  product: Product
+  new_value: Product
+  /**
+   * 更新后货品信息
+   */
+  old_value: Product
   /**
    * 产品ID
    */
@@ -244,7 +248,7 @@ interface ProductHistories {
   /**
    * 更新时间
    */
-  updated_at: Date | null
+  updated_at: Date
   /**
    * 值
    */

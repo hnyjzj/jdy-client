@@ -94,22 +94,6 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
               <div class="flex-between">
                 <div>
-                  关联单号
-                </div>
-                <div class="text-align-end">
-                  {{ info.source_id }}
-                </div>
-              </div>
-              <div class="flex-between">
-                <div>
-                  编号
-                </div>
-                <div class="text-align-end">
-                  {{ info.product.code }}
-                </div>
-              </div>
-              <div class="flex-between">
-                <div>
                   操作
                 </div>
                 <div class="text-align-end">
@@ -118,10 +102,42 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
               </div>
               <div class="flex-between">
                 <div>
+                  操作时间
+                </div>
+                <div class="text-align-end">
+                  {{ formatTimestampToDateTime(info.updated_at) }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  关联单号
+                </div>
+                <div class="text-align-end">
+                  {{ info.source_id }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
                   所属大类
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.class?.preset[info.product.class] }}
+                  {{ filterList.class?.preset[info?.new_value?.class] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  所属门店
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.class?.preset[info?.new_value?.store.name] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  条码
+                </div>
+                <div class="text-align-end">
+                  {{ info?.new_value?.code }}
                 </div>
               </div>
               <div class="flex-between">
@@ -129,15 +145,39 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
                   货品名称
                 </div>
                 <div class="text-align-end">
-                  {{ info.product.name }}
+                  {{ info?.new_value?.name }}
                 </div>
               </div>
               <div class="flex-between">
                 <div>
-                  货品品牌
+                  入网费
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.brand?.preset[info.product.brand] }}
+                  {{ info?.new_value?.access_fee }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  零售方式
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.retail_type?.preset[info?.new_value?.retail_type] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  标签价
+                </div>
+                <div class="text-align-end">
+                  {{ info?.new_value?.label_price }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  零售工费
+                </div>
+                <div class="text-align-end">
+                  {{ info?.new_value?.labor_fee }}
                 </div>
               </div>
               <div class="flex-between">
@@ -145,14 +185,14 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
                   供应商
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.supplier?.preset[info.product.supplier] }}
+                  {{ filterList.supplier?.preset[info?.new_value?.supplier] }}
                 </div>
               </div>
             </div>
           </template>
           <template #bottom="{ info }">
             <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="详情" @click="jump('/product/manage/info', { code: info.product.code })" />
+              <common-button-irregular text="详情" @click="jump('/product/history/info', { id: info?.id })" />
             </div>
           </template>
         </product-manage-card>
