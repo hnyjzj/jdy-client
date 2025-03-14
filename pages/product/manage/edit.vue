@@ -5,7 +5,6 @@ useSeoMeta({
   title: '查看/编辑货品',
 })
 const { $toast } = useNuxtApp()
-
 const { getProductInfo, getProductWhere, updateProductInfo, uploadProductImg } = useProductManage()
 const { productInfo, filterList, filterListToArray } = storeToRefs(useProductManage())
 
@@ -20,7 +19,11 @@ const previewFileList = ref<any[]>([])
 async function getInfo() {
   if (route.query.code) {
     await getProductInfo(route.query.code as string)
-    productParams.value = JSON.parse(JSON.stringify(productInfo.value))
+    productParams.value = productInfo.value
+    // 证书手动添加一个数组项
+    if (!productInfo.value.certificate) {
+      productInfo.value.certificate = ['']
+    }
   }
 }
 
@@ -78,16 +81,6 @@ const beforeUpload = (data: any) => {
   }
 }
 
-/** 产品状态 */
-const goodsStatus = {
-  0: '全部',
-  1: '正常',
-  2: '报损',
-  3: '调拨',
-  4: '已售',
-  5: '退货',
-  6: '盘点中',
-}
 // 上传
 async function customRequest({ file }: UploadCustomRequestOptions) {
   if (!file?.file)
@@ -98,12 +91,23 @@ async function customRequest({ file }: UploadCustomRequestOptions) {
     product_id: productInfo.value.code,
   }
 
-  const res = await uploadProductImg(params)
-  if (res.code === HttpCode.SUCCESS) {
-    productParams.value.images.push(res.data.url)
+  try {
+    const res = await uploadProductImg(params)
+    if (res.code === HttpCode.SUCCESS) {
+      productParams.value.images.push(res.data.url)
+      $toast.success('图片上传成功')
+      // 保存修改到服务器
+      await updateProductInfo(productParams.value)
+    }
+    else {
+      $toast.error(res.message || '图片上传失败')
+    }
+  }
+  catch (error) {
+    throw new Error(`图片上传失败: ${error || '未知错误'}`)
   }
 }
-/** 值为0时 找不到匹配项 显示未选择不 */
+/** 值为0时 找不到匹配项 显示未选择 */
 function filteredOptions(preset: any, val: number) {
   if (val === 0) {
     const obj = { label: '未选择', value: 0 }
@@ -119,28 +123,25 @@ function filteredOptions(preset: any, val: number) {
       <div class="px-4 pt-5">
         <div>
           <div class="flex items-center">
-            <div class="flex gap-4 flex-wrap">
+            <div class="flex flex-wrap">
               <template v-for="(img, index) in productInfo.images" :key="index">
                 <div>
                   <img :src="ImageUrl(img)" width="100" height="100">
                 </div>
               </template>
-              <div>
-                <n-upload
-                  action="#"
-                  :style="{ width: '100px', height: '100px' }"
-                  list-type="image-card"
-                  :default-file-list="previewFileList"
-                  :custom-request="customRequest"
-                  @before-upload="beforeUpload"
-                />
-              </div>
             </div>
+            <n-upload
+              action="#"
+              list-type="image-card"
+              :default-file-list="previewFileList"
+              :custom-request="customRequest"
+              @before-upload="beforeUpload"
+            />
           </div>
           <div class="flex-1 grid gap-y-2 text-[#FFF] text-[12px] my-4">
             <div class="flex justify-between">
               <div>状态</div>
-              <common-tags type="orange" :text="goodsStatus[productInfo.status] ?? ''" />
+              <common-tags type="orange" :text="filterList.status?.preset[productInfo.status] ?? ''" />
             </div>
             <div class="flex justify-between">
               <div>所在门店</div>
@@ -152,10 +153,10 @@ function filteredOptions(preset: any, val: number) {
             </div>
           </div>
         </div>
-        <div class="pb-20">
-          <template v-for="(item, index) in filterListToArray" :key="index">
-            <template v-if="item.update">
-              <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
+        <div class="pb-20 w-[100%]">
+          <div uno-sm="grid grid-cols-[1fr_1fr] gap-4">
+            <template v-for="(item, index) in filterListToArray" :key="index">
+              <template v-if="item.update">
                 <div class="mb-4">
                   <div class="label">
                     {{ item.label }}
@@ -163,7 +164,8 @@ function filteredOptions(preset: any, val: number) {
                   <template v-if="item.input === 'text'">
                     <n-input
                       v-model:value="productParams[item.name]"
-                      :placeholder="String(productParams[item.name])"
+                      clearable
+                      :placeholder="`${item.label}`"
                     />
                   </template>
                   <template v-else-if="item.input === 'number'">
@@ -171,6 +173,8 @@ function filteredOptions(preset: any, val: number) {
                       v-model:value="productParams[item.name]"
                       :placeholder="String(productParams[item.name])"
                       :default-value="0"
+                      min="0"
+                      :format="(value) => String(Math.floor(Number(value) || 1))"
                     />
                   </template>
                   <template v-else-if="item?.input === 'select'">
@@ -188,7 +192,7 @@ function filteredOptions(preset: any, val: number) {
                   <template v-else-if="item?.input === 'textarea'">
                     <n-input
                       v-model:value="productParams[item.name]"
-                      :placeholder="String(productParams[item.name])"
+                      :placeholder="`${item.label}`"
                     />
                   </template>
                   <template v-else-if="item?.input === 'list'">
@@ -215,9 +219,9 @@ function filteredOptions(preset: any, val: number) {
                     </template>
                   </template>
                 </div>
-              </div>
+              </template>
             </template>
-          </template>
+          </div>
         </div>
       </div>
     </common-layout-center>

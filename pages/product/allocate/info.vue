@@ -2,7 +2,6 @@
 const { getAllocateInfo, confirmAllcate, cancelAllcate, finishAllcate, remove, add } = useAllocate()
 const { allocateInfo, allocateFilterList } = storeToRefs(useAllocate())
 const { useWxWork } = useWxworkStore()
-
 const { getProductWhere } = useProductManage()
 const { filterListToArray } = storeToRefs(useProductManage())
 useSeoMeta({
@@ -125,101 +124,101 @@ async function scanit() {
             <template #body>
               <div class="flex flex-col gap-4">
                 <div class="operation-information flex flex-col gap-1">
-                  <div class="flex-start gap-3 text-sm font-normal">
-                    <div class="color-[#666666]">
+                  <div class="info-row">
+                    <div class="info-title">
                       操作人
                     </div>
-                    <div class="color-[#333333]">
+                    <div class="info-val">
                       {{ allocateInfo.operator?.nickname }}
                     </div>
                   </div>
-                  <div class="flex-start gap-3 text-sm font-normal">
-                    <div class="color-[#666666]">
+                  <div class="info-row">
+                    <div class="info-title">
                       调拨单号
                     </div>
-                    <div class="color-[#333333]">
+                    <div class="info-val">
                       {{ allocateInfo.id }}
                     </div>
                   </div>
-                  <div class="flex-start gap-3 text-sm font-normal">
-                    <div class="color-[#666666]">
+                  <div class="info-row">
+                    <div class="info-title">
                       状态
                     </div>
-                    <div class="color-[#333333]">
+                    <div class="info-val">
                       {{ allocateFilterList.status?.preset[allocateInfo.status] }}
                     </div>
                   </div>
                   <div class="h-0.5 bg-[#E6E6E8]" />
                   <div class="other-information flex flex-col gap-1">
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="color-[#666666]">
+                    <div class="info-row">
+                      <div class="info-title">
                         调出门店
                       </div>
-                      <div class="color-[#333333]">
-                        {{ allocateInfo.from_store.name }}
+                      <div class="info-val">
+                        {{ allocateInfo?.from_store?.name }}
                       </div>
                     </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="color-[#666666]">
+                    <div class="info-row">
+                      <div class="info-title">
                         调入门店
                       </div>
-                      <div class="color-[#333333]">
-                        {{ allocateInfo.to_store.name }}
+                      <div class="info-val">
+                        {{ allocateInfo?.to_store.name }}
                       </div>
                     </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="color-[#666666]">
+                    <div class="info-row">
+                      <div class="info-title">
                         调拨方式
                       </div>
-                      <div class="color-[#333333]">
+                      <div class="info-val">
                         {{ allocateFilterList.method?.preset[allocateInfo.method] }}
                       </div>
                     </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="color-[#666666]">
+                    <div class="info-row">
+                      <div class="info-title">
                         调拨原因
                       </div>
-                      <div class="color-[#333333]">
+                      <div class="info-val">
                         {{ allocateFilterList.reason?.preset[allocateInfo.reason] }}
                       </div>
                     </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="color-[#666666]">
+                    <div class="info-row">
+                      <div class="info-title">
                         调拨状态
                       </div>
-                      <div class="color-[#333333]">
+                      <div class="info-val">
                         {{ allocateFilterList.status?.preset[allocateInfo.status] }}
                       </div>
                     </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="color-[#666666]">
+                    <div class="info-row">
+                      <div class="info-title">
                         仓库类型
                       </div>
-                      <div class="color-[#333333]">
+                      <div class="info-val">
                         {{ allocateFilterList.type?.preset[allocateInfo.type] }}
                       </div>
                     </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="color-[#666666]">
+                    <div class="info-row">
+                      <div class="info-title">
                         备注
                       </div>
-                      <div class="color-[#333333]">
+                      <div class="info-val">
                         {{ allocateInfo.remark }}
                       </div>
                     </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="color-[#666666]">
+                    <div class="info-row">
+                      <div class="info-title">
                         创建时间
                       </div>
-                      <div class="color-[#333333]">
+                      <div class="info-val">
                         {{ formatTimestampToDateTime(allocateInfo.created_at) }}
                       </div>
                     </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="color-[#666666]">
+                    <div class="info-row">
+                      <div class="info-title">
                         完成时间
                       </div>
-                      <div class="color-[#333333]">
+                      <div class="info-val">
                         {{ formatTimestampToDateTime(allocateInfo.updated_at) }}
                       </div>
                     </div>
@@ -227,35 +226,35 @@ async function scanit() {
                 </div>
                 <div class="h-0.5 bg-[#E6E6E8]" />
                 <div class="product-information flex flex-col gap-1">
-                  <div class="flex-start gap-3 text-sm font-normal">
-                    <div class="color-[#666666]">
+                  <div class="info-row">
+                    <div class="info-title">
                       总件数
                     </div>
-                    <div class="color-[#333333]">
+                    <div class="info-val">
                       {{ allocateInfo.product?.length }}
                     </div>
                   </div>
-                  <div class="flex-start gap-3 text-sm font-normal">
-                    <div class="color-[#666666]">
+                  <div class="info-row">
+                    <div class="info-title">
                       总金重
                     </div>
-                    <div class="color-[#333333]">
+                    <div class="info-val">
                       {{ sum('weight_metal') }}
                     </div>
                   </div>
-                  <div class="flex-start gap-3 text-sm font-normal">
-                    <div class="color-[#666666]">
+                  <div class="info-row">
+                    <div class="info-title">
                       总标价
                     </div>
-                    <div class="color-[#333333]">
+                    <div class="info-val">
                       {{ sum('label_price') }}
                     </div>
                   </div>
-                  <div class="flex-start gap-3 text-sm font-normal">
-                    <div class="color-[#666666]">
+                  <div class="info-row">
+                    <div class="info-title">
                       总入网费
                     </div>
-                    <div class="color-[#333333]">
+                    <div class="info-val">
                       {{ sum('access_fee') }}
                     </div>
                   </div>
@@ -267,7 +266,7 @@ async function scanit() {
 
         <template v-if="allocateInfo.product?.length">
           <div class="p-4 blur-bgc rounded-6">
-            <div class="text-[14px] pb-4">
+            <div class="text-[14px] pb-4 text-color">
               共 {{ allocateInfo.product.length }} 条数据
             </div>
             <template v-for="(item, index) in allocateInfo.product" :key="index">
@@ -346,5 +345,14 @@ async function scanit() {
   text-overflow: ellipsis; /* 超出显示省略号 */
   white-space: nowrap; /* 禁止换行 */
   overflow: hidden;
+}
+.info-row {
+  --uno: 'flex justify-between mb-2';
+  .info-title {
+    --uno: 'text-color';
+  }
+  .info-val {
+    --uno: 'text-color-light w-70% text-right';
+  }
 }
 </style>

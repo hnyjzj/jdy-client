@@ -81,13 +81,18 @@ async function submitWhere(f: Partial<Allocate>, isSearch: boolean = false) {
     <div class="px-[16px] pb-20">
       <template v-if="allocateList?.length">
         <product-manage-card :list="allocateList">
+          <template #top="{ info }">
+            <div class="status-title" :class="info.status === 1 ? 'orange' : info.status === 2 ? 'bule' : 'grey'">
+              {{ allocateFilterList.status?.preset[info.status] }}
+            </div>
+          </template>
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
               <div class="flex py-[4px] justify-between">
                 <div>
                   调拨方式
                 </div>
-                <div class="text-align-end">
+                <div class="val">
                   {{ allocateFilterList.method?.preset[info.method] }}
                 </div>
               </div>
@@ -95,7 +100,7 @@ async function submitWhere(f: Partial<Allocate>, isSearch: boolean = false) {
                 <div>
                   仓库类型
                 </div>
-                <div class="text-align-end">
+                <div class="val">
                   {{ allocateFilterList.type?.preset[info.type] }}
                 </div>
               </div>
@@ -103,7 +108,7 @@ async function submitWhere(f: Partial<Allocate>, isSearch: boolean = false) {
                 <div>
                   调拨原因
                 </div>
-                <div class="text-align-end">
+                <div class="val">
                   {{ allocateFilterList.reason?.preset[info.reason] }}
                 </div>
               </div>
@@ -111,15 +116,23 @@ async function submitWhere(f: Partial<Allocate>, isSearch: boolean = false) {
                 <div>
                   调拨状态
                 </div>
-                <div class="text-align-end">
+                <div class="val">
                   {{ allocateFilterList.status?.preset[info.status] }}
+                </div>
+              </div>
+              <div class="flex py-[4px] justify-between">
+                <div>
+                  备注
+                </div>
+                <div class="val">
+                  {{ info.remark }}
                 </div>
               </div>
               <div class="flex py-[4px] justify-between">
                 <div>
                   开始时间
                 </div>
-                <div class="text-align-end">
+                <div class="val">
                   {{ formatTimestampToDateTime(info.created_at) }}
                 </div>
               </div>
@@ -175,5 +188,23 @@ async function submitWhere(f: Partial<Allocate>, isSearch: boolean = false) {
     background: linear-gradient(to bottom, #1b6ceb, #6da6ff);
     box-shadow: #1111113d 0px 2px 2px 1px;
   }
+}
+.val {
+  --uno: 'text-right w-200px';
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.status-title {
+  --uno: 'px-2 rounded-[8px] text-#FFF';
+}
+.orange {
+  --uno: 'bg-[rgba(221,146,0,1)]';
+}
+.bule {
+  --uno: 'bg-#1b6ceb';
+}
+.grey {
+  --uno: 'bg-[#999]';
 }
 </style>
