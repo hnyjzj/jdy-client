@@ -27,7 +27,19 @@ interface FilterWhere<T, N = keyof T> {
   update: boolean
   /** 字段名 */
   name: unknown & string & N
+  /** */
+  condition?: Condition<N>[]
 }
+
+/**
+ *
+ */
+interface Condition<N> {
+  key: N
+  value: any
+  operator: string
+}
+
 /**
  * 筛选对象
  *

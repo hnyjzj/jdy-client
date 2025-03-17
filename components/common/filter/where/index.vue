@@ -89,14 +89,25 @@ const presetToSelect = (filter: FilterWhere<T>): { label: string, value: any }[]
     }
   })
 }
+const canShowFilter = (item: FilterWhere<Check>) => {
+  if (!item.find) {
+    return false
+  }
+
+  if (item.condition) {
+    return !item.condition?.some(i => i.value !== datas.value.range)
+  }
+
+  return true
+}
 </script>
 
 <template>
   <div>
     <common-popup v-model="showFilter" title="高级筛选">
       <div :id="Key" :key="Key" uno-lg="grid grid-cols-[1fr_1fr] gap-4">
-        <template v-for="({ name, label, find, input }, i) in props.filter" :key="i">
-          <template v-if="find">
+        <template v-for="({ name, label, find, input, condition }, i) in props.filter" :key="i">
+          <template v-if="canShowFilter({ find, condition } as FilterWhere<Check>)">
             <div class="mb-2">
               <div class="text-color">
                 {{ label }}
@@ -121,7 +132,6 @@ const presetToSelect = (filter: FilterWhere<T>): { label: string, value: any }[]
                       v-model:value="datas[name as string]"
                       :default-value="0 || '' || undefined || null"
                       menu-size="large"
-                      fable
                       :placeholder="`请选择${label}`"
                       :options="presetToSelect(props.filter[i]) "
                       :disabled="disabled?.includes(name)"
@@ -132,6 +142,16 @@ const presetToSelect = (filter: FilterWhere<T>): { label: string, value: any }[]
                   </template>
                   <template v-if="input === 'date'">
                     <n-date-picker v-model:value="datas[name as string]" value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" size="large" :placeholder="`选择${label}`" round clearable :disabled="disabled?.includes(name)" />
+                  </template>
+                  <template v-if="input === 'multiple'">
+                    <n-select
+                      v-model:value="datas[name as string]"
+                      :default-value="0 || '' || undefined || null"
+                      menu-size="large"
+                      multiple
+                      :placeholder="`请选择${label}`"
+                      :options="presetToSelect(props.filter[i]) "
+                    />
                   </template>
                 </slot>
               </div>
