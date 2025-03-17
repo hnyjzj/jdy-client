@@ -97,7 +97,15 @@ const canShowFilter = (item: FilterWhere<Check>) => {
   }
 
   if (item.condition) {
-    return !item.condition?.some(i => i.value !== params.value.range)
+    return !item.condition?.some((i) => {
+      switch (i.operator) {
+        case '=':
+          return params.value[i.key as keyof Check] !== i.value
+
+        default:
+          return false
+      }
+    })
   }
 
   return true
