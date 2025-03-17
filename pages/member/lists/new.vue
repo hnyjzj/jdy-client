@@ -18,18 +18,9 @@ useSeoMeta({
 const { createMember, getMemberInfo, updateMemberInfo } = useMemberManage()
 const { memberInfo } = storeToRefs(useMemberManage())
 
-const { getStoreList } = useStores()
-const searchPage = ref<number>(1)
-const storeParams = { page: searchPage.value, limit: 100 } as ReqList<Stores>
-await getStoreList(storeParams)
+const { myStore, StoreStaffList } = storeToRefs(useStores())
 
-const { storesList } = storeToRefs(useStores())
-
-const { getStaffList } = useStaff()
-const staffParams = { page: searchPage.value, limit: 12 } as ReqList<Staff>
-await getStaffList(staffParams)
-
-const { staffList } = storeToRefs(useStaff())
+const { getStoreStaffList } = useStores()
 
 const memberParams = ref<Member>({} as Member)
 
@@ -98,23 +89,6 @@ const showGender = () => {
 }
 
 const showToUser = ref(showGender())
-
-const turnOptions = (list: Stores[] | Staff[]) => {
-  return list.map((item) => {
-    if ('name' in item) {
-      return {
-        label: item.name,
-        value: item.id,
-      }
-    }
-    else {
-      return {
-        label: item.nickname,
-        value: item.id,
-      }
-    }
-  })
-}
 
 const backtrack = () => {
   const { back } = useRouter()
@@ -229,8 +203,8 @@ const execute = async () => {
                       <div class="secondary-bottom">
                         <n-select
                           v-model:value="memberParams.store_id"
-                          placeholder="请选择入会门店"
-                          :options="turnOptions(storesList)"
+                          :placeholder="myStore.name"
+                          disabled
                           menu-size="large"
                         />
                       </div>
@@ -243,8 +217,14 @@ const execute = async () => {
                         <n-select
                           v-model:value="memberParams.consultant_id"
                           placeholder="请选择专属顾问"
-                          :options="turnOptions(staffList)"
+                          :options="StoreStaffList.map(v => ({
+                            label: v.nickname,
+                            value: v.id,
+                          }))"
                           menu-size="large"
+                          clearable
+                          remote
+                          @focus="() => { getStoreStaffList({ id: myStore.id }) }"
                         />
                       </div>
                     </div>

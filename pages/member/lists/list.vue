@@ -7,6 +7,9 @@ const { $toast } = useNuxtApp()
 const { getMemberList, getMemberInfo, getMemberWhere, updateIntegral } = useMemberManage()
 const { memberList, memberInfo, filterListToArray, memberListTotal, searchPage } = storeToRefs(useMemberManage())
 
+// 获取当前员工的store信息
+const { myStore } = storeToRefs(useStores())
+
 const actions = [
   { id: 1, text: '增加' },
   { id: 2, text: '减少' },
@@ -26,7 +29,7 @@ const filterData = ref({} as Partial<Member>)
 const limit = 12
 
 async function getList(where = {} as Partial<Member>) {
-  const params = { page: searchPage.value, limit } as ReqList<Member>
+  const params = { page: searchPage.value, limit, where: { store_id: myStore.value.id } } as ReqList<Member>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
