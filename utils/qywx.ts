@@ -9,6 +9,8 @@ class WxWork {
   public jsApiList = [
     'selectEnterpriseContact',
     'scanQRCode',
+    'getContext',
+    'getCurExternalContact',
   ]
 
   private corpId = import.meta.env.VITE_CORPID || ''
@@ -34,9 +36,9 @@ class WxWork {
     if (this.jsapi_ticket) {
       options.getConfigSignature = this.getConfigSignature
     }
-    // if (this.agent_ticket) {
-    //   options.getAgentConfigSignature = this.getAgentConfigSignature
-    // }
+    if (this.agent_ticket) {
+      options.getAgentConfigSignature = this.getAgentConfigSignature
+    }
 
     options.onConfigSuccess = () => {
 
@@ -88,6 +90,27 @@ class WxWork {
 
     })
     return result
+  }
+
+  /**
+   * 判断用户是从哪个入口打开页面
+   */
+  getContext = async () => {
+    const res = await wx.getContext()
+    return res.entry
+  }
+
+  /**
+   * 获取用户ID
+   */
+  getUserId = async () => {
+    const res = await wx.getCurExternalContact()
+    if (res.errMsg === 'getCurExternalContact:ok') {
+      return res.userId
+    }
+    else {
+      console.error('getUserId error', res.errMsg)
+    }
   }
 
   /**
