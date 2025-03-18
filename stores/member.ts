@@ -70,9 +70,9 @@ export const useMemberManage = defineStore('Member', {
       }
     },
     // 会员详情
-    async getMemberInfo(id: string) {
+    async getMemberInfo<T extends { id?: string, external_user_id?: string }>(params: T) {
       try {
-        const { data } = await https.post<Member, { id: string }>('/member/info', { id })
+        const { data } = await https.post<Member, T>('/member/info', params)
         if (data.value.code === HttpCode.SUCCESS) {
           this.memberInfo = data.value.data
         }
@@ -81,6 +81,7 @@ export const useMemberManage = defineStore('Member', {
         throw new Error(`获取会员详情失败: ${error || '未知错误'}`)
       }
     },
+
     // 获取会员积分详情
     async getIntegralRecord(params: ReqList<IntegralRecord>) {
       if (params.page === 1) {
