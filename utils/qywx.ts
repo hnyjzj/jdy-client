@@ -67,6 +67,7 @@ class WxWork {
     const { checkResult } = await wx.checkJsApi({
       jsApiList: this.jsApiList,
     })
+
     return checkResult
   }
 

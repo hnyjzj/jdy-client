@@ -18,9 +18,11 @@ useSeoMeta({
 const { createMember, getMemberInfo, updateMemberInfo } = useMemberManage()
 const { memberInfo } = storeToRefs(useMemberManage())
 
-const { myStore, StoreStaffList } = storeToRefs(useStores())
+const { myStore, myStoreList, StoreStaffList } = storeToRefs(useStores())
 
-const { getStoreStaffList } = useStores()
+const { getMyStore, getStoreStaffList } = useStores()
+
+const getList = async () => await getMyStore({ page: 1, limit: 20 })
 
 const memberParams = ref<Member>({
   // 初始化store_id为当前门店id
@@ -67,6 +69,7 @@ async function getInfo() {
 }
 
 await getInfo()
+await getStoreStaffList({ id: myStore.value.id })
 
 const conductEditDate = () => {
   if (route.query.id) {
@@ -103,7 +106,8 @@ const backtrack = () => {
 }
 
 const execute = async () => {
-  if (route.query.id) {
+  if (route.query.id || route.query.external_user_id) {
+    console.log('memberParams.value', memberParams.value)
     const res = await updateMemberInfo(memberParams.value)
 
     if (res.code === HttpCode.SUCCESS) {
@@ -211,9 +215,15 @@ const execute = async () => {
                       <div class="secondary-bottom">
                         <n-select
                           v-model:value="memberParams.store_id"
-                          :options="[{ label: myStore.name, value: memberParams.store_id }]"
-                          disabled
+                          placeholder="请选择入会门店"
+                          :options="myStoreList.map(v => ({
+                            label: v.name,
+                            value: v.id,
+                          }))"
                           menu-size="large"
+                          clearable
+                          remote
+                          @focus="() => { getList }"
                         />
                       </div>
                     </div>

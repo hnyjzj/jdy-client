@@ -11,17 +11,13 @@ const { memberInfo } = storeToRefs(useMemberManage())
 
 const memberParams = ref<Member>({} as Member)
 
-async function getInfo() {
-  const id = route.query.id ?? route.query.external_user_id
-  if (id) {
-    // 来源若有用户id，则从接口获取会员信息并展示
-    await getMemberInfo({ id: id as string })
+// 上下文环境
+const getContext = ref<any>()
+// 外部用户id
+const externalUserId = ref()
 
-    memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
-  }
-}
-
-await getInfo()
+// id路由参数
+const params = ref<any>()
 
 const judgeContext = async () => {
   try {
@@ -32,30 +28,56 @@ const judgeContext = async () => {
     }
 
     // 检查相关API是否可用
-    const checkResult = await wx.checkJsApi()
-    console.log('API检查结果', checkResult)
+    await wx.checkJsApi()
 
+    // 获取上下文
     const res = await wx.getContext()
-    console.log('entry调用', res)
-    return res
+    getContext.value = res
+
+    if (res === 'single_chat_tools') {
+      const userId = await wx?.getUserId()
+      externalUserId.value = userId
+      return userId
+    }
   }
   catch (error) {
     console.error('调用wx.getContext失败', error)
   }
 }
 
-onMounted(async () => {
-  await judgeContext()
-})
+async function getInfo() {
+  if (route.query.id) {
+    // 如果来源有id，则直接从接口获取会员信息并展示
+    const id = route.query.id ?? route.query.external_user_id
+    await getMemberInfo({ id: id as string })
+    memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
+  }
+  else if (getContext.value === 'single_chat_tools') {
+    // 如果来源没有id、且上下文环境为single_chat_tools
+    params.value = externalUserId.value
+    await getMemberInfo({ id: params.value })
+    memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
+  }
+}
 
-const goEdit = (id: string) => {
-  jump('/member/lists/new', { id })
+await judgeContext()
+await getInfo()
+
+const relyOnId = () => {
+  if (route.query.id) {
+    // 普通调用时，跳转参数为id
+    jump('/member/lists/new', { id: route.query.id })
+  }
+  else if (getContext.value === 'single_chat_tools') {
+    // 单聊工具调用时，跳转参数为external_user_id
+    jump('/member/lists/new', { external_user_id: externalUserId.value })
+  }
 }
 </script>
 
 <template>
   <div>
-    <member-lists-info :data="memberInfo" @go-edit="goEdit(memberParams.id)" />
+    <member-lists-info :data="memberInfo" @go-edit="relyOnId" />
   </div>
 </template>
 
