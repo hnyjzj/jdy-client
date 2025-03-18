@@ -4,7 +4,7 @@ const { $toast } = useNuxtApp()
 const route = useRoute()
 
 const guideTxt = () => {
-  if (route.query.id) {
+  if (route.query.id || route.query.external_user_id) {
     return '编辑'
   }
   else {
@@ -22,16 +22,19 @@ const { myStore, StoreStaffList } = storeToRefs(useStores())
 
 const { getStoreStaffList } = useStores()
 
-const memberParams = ref<Member>({} as Member)
+const memberParams = ref<Member>({
+  // 初始化store_id为当前门店id
+  store_id: myStore.value.id,
+} as Member)
 
 const selectOptions = [
   {
     label: '男',
-    value: '1',
+    value: 1,
   },
   {
     label: '女',
-    value: '2',
+    value: 2,
   },
 ]
 
@@ -54,8 +57,12 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
 // 编辑会员信息
 async function getInfo() {
   if (route.query.id) {
-    await getMemberInfo(route.query.id as string)
+    await getMemberInfo({ id: route.query.id as string })
     memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
+  }
+  else {
+    // 新增会员时设置默认门店ID
+    memberParams.value.store_id = myStore.value.id
   }
 }
 
@@ -98,6 +105,7 @@ const backtrack = () => {
 const execute = async () => {
   if (route.query.id) {
     const res = await updateMemberInfo(memberParams.value)
+
     if (res.code === HttpCode.SUCCESS) {
       $toast.success('编辑成功')
       backtrack()
@@ -121,7 +129,7 @@ const execute = async () => {
 
 <template>
   <div>
-    <div class="grid-12">
+    <div class="grid-12 pb-[80px]">
       <div class="col-12 px-[16px] py-[16px]" uno-lg="col-8 offset-2">
         <div class="flex flex-col gap-[16px]">
           <div class="primary">
@@ -203,7 +211,7 @@ const execute = async () => {
                       <div class="secondary-bottom">
                         <n-select
                           v-model:value="memberParams.store_id"
-                          :placeholder="myStore.name"
+                          :options="[{ label: myStore.name, value: memberParams.store_id }]"
                           disabled
                           menu-size="large"
                         />

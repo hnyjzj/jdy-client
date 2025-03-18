@@ -51,7 +51,7 @@ const integralParams = ref<IntegralReq>({} as IntegralReq)
 // 获取当前用户积分信息，并显示弹窗
 const adjustment = async (id: string) => {
   show.value = true
-  await getMemberInfo(id as string)
+  await getMemberInfo({ id: id as string })
   memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
 
   integralParams.value.id = memberParams.value.id
@@ -121,7 +121,7 @@ const userCancel = () => {
 </script>
 
 <template>
-  <div>
+  <div class="pb-[80px]">
     <common-model
       v-model:model-value="show"
       :show-ok="true"
