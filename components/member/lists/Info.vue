@@ -56,7 +56,7 @@ const backtrack = () => {
                     姓名
                   </div>
                   <div class="item-right">
-                    {{ memberParams.name }}
+                    {{ memberParams.name || PERCH }}
                   </div>
                 </div>
                 <div class="item">
@@ -72,7 +72,7 @@ const backtrack = () => {
                     手机号
                   </div>
                   <div class="item-right">
-                    {{ memberParams.phone }}
+                    {{ memberParams.phone || PERCH }}
                   </div>
                 </div>
                 <div class="item">
@@ -104,7 +104,7 @@ const backtrack = () => {
                     性别
                   </div>
                   <div class="item-right">
-                    {{ getTarget('gender', 'gender') }}
+                    {{ getTarget('gender', 'gender') || PERCH }}
                   </div>
                 </div>
                 <div class="item">
@@ -167,7 +167,7 @@ const backtrack = () => {
                   姓名
                 </div>
                 <div class="secondary-bottom">
-                  <common-frame :disabled-style="true" :tip="memberParams.name" />
+                  <common-frame :disabled-style="true" :tip="memberParams.name || PERCH" />
                 </div>
               </div>
               <div class="secondary">
@@ -175,7 +175,7 @@ const backtrack = () => {
                   联系方式
                 </div>
                 <div class="secondary-bottom">
-                  <common-frame :disabled-style="true" :tip="memberParams.phone" />
+                  <common-frame :disabled-style="true" :tip="memberParams.phone || PERCH" />
                 </div>
               </div>
               <div class="secondary">
@@ -208,7 +208,7 @@ const backtrack = () => {
                 </div>
                 <div class="item-right">
                   <span>
-                    {{ processDuring() }}
+                    {{ processDuring() || PERCH }}
                   </span>
                   <span class="font-size-[12px] color-[#333] dark:color-[#fff]">
                     /天
@@ -220,7 +220,7 @@ const backtrack = () => {
                   邀请人
                 </div>
                 <div class="item-right">
-                  -- --
+                  {{ PERCH }}
                 </div>
               </div>
               <div class="item">
@@ -236,7 +236,7 @@ const backtrack = () => {
                   当前积分
                 </div>
                 <div class="item-right">
-                  {{ memberParams.integral }}
+                  {{ memberParams.integral || PERCH }}
                 </div>
               </div>
             </div>
@@ -247,7 +247,7 @@ const backtrack = () => {
                   累计积分
                 </div>
                 <div class="item-right">
-                  111111111111
+                  {{ PERCH }}
                 </div>
               </div>
               <div class="item">
