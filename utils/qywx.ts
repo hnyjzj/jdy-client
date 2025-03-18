@@ -3,6 +3,8 @@ import * as wx from '@wecom/jssdk'
 interface Options {
   agent_ticket?: string
   jsapi_ticket?: string
+  agent_id?: string
+  corp_id: string
 }
 
 class WxWork {
@@ -13,13 +15,16 @@ class WxWork {
     'getCurExternalContact',
   ]
 
-  private corpId = import.meta.env.VITE_CORPID || ''
-  private agent_ticket?: string
-  private jsapi_ticket?: string
+  public corp_id: string
+  public agent_id?: string
+  public agent_ticket?: string
+  public jsapi_ticket?: string
 
   constructor(options: Options) {
-    this.agent_ticket = options?.agent_ticket
-    this.jsapi_ticket = options?.jsapi_ticket
+    this.corp_id = options.corp_id
+    this.agent_ticket = options.agent_ticket
+    this.jsapi_ticket = options.jsapi_ticket
+    this.agent_id = options.agent_id
 
     this.register()
   }
@@ -29,12 +34,16 @@ class WxWork {
    */
   register = () => {
     const options = {
-      corpId: this.corpId,
+      corpId: this.corp_id,
       jsApiList: this.jsApiList,
+      agentId: this.agent_id,
     } as wx.RegisterOptions
 
     if (this.jsapi_ticket) {
       options.getConfigSignature = this.getConfigSignature
+    }
+    if (this.agent_ticket) {
+      options.getAgentConfigSignature = this.getAgentConfigSignature
     }
     if (this.agent_ticket) {
       options.getAgentConfigSignature = this.getAgentConfigSignature
@@ -58,7 +67,6 @@ class WxWork {
     const { checkResult } = await wx.checkJsApi({
       jsApiList: this.jsApiList,
     })
-
     return checkResult
   }
 

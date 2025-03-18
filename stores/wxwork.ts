@@ -9,16 +9,8 @@ export const useWxworkStore = defineStore('Wxwork', {
       if (!isWxWorkClient() && !isWeChatClient()) {
         return
       }
-      if (!this.tickets.jsapi) {
-        await this.getTickets({ platform: 'wxwork', type: 'jsapi' })
-      }
-      if (!this.tickets.agent) {
-        await this.getTickets({ platform: 'wxwork', type: 'agent' })
-      }
-      const wx = wxWork({
-        agent_ticket: this.tickets.agent,
-        jsapi_ticket: this.tickets.ticket,
-      })
+      await this.getTickets({ platform: 'wxwork', type: 'agent' })
+      const wx = wxWork(this.tickets)
       await wx.checkJsApi()
 
       return wx
@@ -27,13 +19,7 @@ export const useWxworkStore = defineStore('Wxwork', {
       const { data } = await https.post<ticketRes, ticketReq>('/platform/jssdk', req)
 
       if (data.value.code === HttpCode.SUCCESS) {
-        const ticket = data.value.data.ticket
-        if (req.type === 'jsapi') {
-          this.tickets.jsapi = ticket
-        }
-        else {
-          this.tickets.agent = ticket
-        }
+        this.tickets = data.value.data
       }
     },
   },
