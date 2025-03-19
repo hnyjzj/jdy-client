@@ -9,6 +9,9 @@ const { memberList, memberInfo, filterListToArray, memberListTotal, searchPage }
 
 // 获取当前员工的store信息
 const { myStore } = storeToRefs(useStores())
+const { getMyStore } = useStores()
+
+await getMyStore({ page: 1, limit: 20 })
 
 const actions = [
   { id: 1, text: '增加' },

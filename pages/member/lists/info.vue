@@ -4,6 +4,8 @@ useSeoMeta({
 })
 
 const route = useRoute()
+const routeQuery = ref(route.query)
+
 const { useWxWork } = useWxworkStore()
 
 const { getMemberInfo } = useMemberManage()
@@ -12,12 +14,12 @@ const { memberInfo } = storeToRefs(useMemberManage())
 const memberParams = ref<Member>({} as Member)
 
 // 上下文环境
-const getContext = ref<any>()
+const getContext = ref('')
 // 外部用户id
-const externalUserId = ref()
+const externalUserId = ref('')
 
 // id路由参数
-const params = ref<any>()
+const params = ref('')
 
 const judgeContext = async () => {
   try {
@@ -36,8 +38,10 @@ const judgeContext = async () => {
 
     if (res === 'single_chat_tools') {
       const userId = await wx?.getUserId()
-      externalUserId.value = userId
-      return userId
+      if (userId) {
+        externalUserId.value = userId
+        return userId
+      }
     }
   }
   catch (error) {
@@ -46,9 +50,9 @@ const judgeContext = async () => {
 }
 
 async function getInfo() {
-  if (route.query.id) {
+  if (routeQuery.value.id) {
     // 如果来源有id，则直接从接口获取会员信息并展示
-    const id = route.query.id ?? route.query.external_user_id
+    const id = routeQuery.value.id ?? routeQuery.value.external_user_id
     await getMemberInfo({ id: id as string })
     memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
   }
@@ -64,18 +68,18 @@ await judgeContext()
 await getInfo()
 
 const relyOnId = () => {
-  if (route.query.id) {
+  if (routeQuery.value.id) {
     // 普通调用时，跳转参数为id
-    jump('/member/lists/new', { id: route.query.id })
+    jump('/member/lists/edit', { id: routeQuery.value.id })
   }
   else if (getContext.value === 'single_chat_tools') {
     // 单聊工具调用时，跳转参数为external_user_id
-    jump('/member/lists/new', { external_user_id: externalUserId.value })
+    jump('/member/lists/edit', { external_user_id: externalUserId.value })
   }
 }
 
 // 判断是否为企业微信环境
-const isQyEnv = getContext.value === 'single_chat_tools'
+const isQyEnv = !!externalUserId.value
 </script>
 
 <template>
