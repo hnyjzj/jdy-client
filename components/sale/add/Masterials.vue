@@ -1,290 +1,246 @@
 <script setup lang="ts">
-import { calc } from 'a-calc'
+import type { FormRules } from 'naive-ui'
 
-const Props = defineProps<{
-  price: GoldPrices[]
-  productList: Product[]
-  type: number
-}>()
 const emits = defineEmits<{
   search: [val: string, type: string, select: number]
   openProductList: []
 }>()
-const cardTitle = () => {
-  switch (Props.type) {
-    case 1:
-      return '成品信息'
-    case 2:
-      return '旧料信息'
-    case 3:
-      return '配件信息'
-  }
-}
-
-// const { $toast } = useNuxtApp()
-const dialog = useDialog()
-const showProductList = defineModel<OrderProducts[]>({ default: [] })
+const { oldFilterListToArray } = storeToRefs(useOrder())
 const showModal = ref(false)
-const searchProduct = ref('')
-const hasCheck = ref(false)
-// 搜索商品 名称 和 条码   code
-const searchType = ref('name')
-// 添加商品
-// const addProduct = (product: Product) => {
-//   if (!product) {
-//     $toast.error('请选择商品')
-//     return
-//   }
+const { useWxWork } = useWxworkStore()
 
-//   const index = showProductList.value.findIndex(item => item.product?.id === product.id)
-//   if (index !== -1 && showProductList.value[index].quantity) {
-//     // 判断是否已经添加过该商品,如果已经添加过,则数量加一
-//     // showProductList.value[index].quantity++
-//     $toast.error('该商品已经添加过')
-//     return
-//   }
-//   else if (
-//   // 如果没添加 并且数量为空,则数量为1
-//     index !== -1 && !showProductList.value[index].quantity
-//   ) {
-//     showProductList.value[index].quantity = 1
-//     return
-//   }
-//   const data = { quantity: 1, discount: undefined, amount: 0, product_id: product.id, product }
-//   showProductList.value.push(data)
-//   showModal.value = false
-// }
-const readyAddproduct = ref()
-// const setAddProduct = (product: Product) => {
-//   readyAddproduct.value = product
-// }
-// 计件方式
-const count = (p: OrderProducts) => {
-  if (!p.quantity)
-    return
-  // 如果是计件方式 标签价格x 数量 x 折扣
-  if (p.product?.retail_type === 1) {
-    const total = calc('(price * quantity * discount) | <=2,!n', {
-      price: p.product?.price,
-      quantity: p.quantity,
-      discount: ((p.discount || 10) * 0.1),
-    })
-    p.amount = total
-    return total
-  }
-  // 计重工费按克 [（金价 + 工费）X克重] X件数 X折扣
-  if (p.product?.retail_type === 2) {
-    const total = calc('(price + labor_fee) * weight_metal * quantity * discount | <=2,!n', {
-      price: Props.price,
-      labor_fee: p.product?.labor_fee,
-      weight_metal: p.product?.weight_metal,
-      quantity: p.quantity,
-      discount: ((p.discount || 10) * 0.1),
-    })
-    p.amount = total
-    return total
-  }
-  //   计重工费按件   （(金价X克重)) + 工费）X件数 X折扣
-  if (p.product?.retail_type === 3) {
-    const total = calc('((price * weight_metal) + labor_fee) * quantity * discount | <=2,!n', {
-      price: Props.price,
-      labor_fee: p.product?.labor_fee,
-      weight_metal: p.product?.weight_metal,
-      quantity: p.quantity,
-      discount: ((p.discount || 10) * 0.1),
-    })
-    p.amount = total
-    return total
-  }
-}
-
-// 删除商品
-const deleteProduct = (index: number) => {
-  dialog.error({
-    title: '确定删除此商品吗?',
-    negativeText: '取消',
-    positiveText: '确定',
-    onPositiveClick: () => {
-      showProductList.value.splice(index, 1)
-    },
+const MformRef = ref()
+const params = ref({} as Product)
+const rules = ref<FormRules>({})
+const oldRules = ref<FormRules>({
+  weight_metal: {
+    required: true,
+    trigger: ['blur', 'change'],
+    message: '请输入金重',
+  },
+  quality_actual: {
+    required: true,
+    trigger: ['blur', 'change'],
+    message: '请输入实际成色',
+  },
+  recycle_method: {
+    type: 'number',
+    required: true,
+    trigger: ['blur', 'change'],
+    message: '请选择回收方式',
+  },
+  recycle_price_labor_method: {
+    type: 'number',
+    required: true,
+    trigger: ['blur', 'change'],
+    message: '请选择回收工费方式',
+  },
+  recycle_type: {
+    type: 'number',
+    required: true,
+    trigger: ['blur', 'change'],
+    message: '请选择回收方式',
+  },
+})
+const forRules = () => {
+  oldFilterListToArray.value.forEach((item) => {
+    if (item.required) {
+      if (item.input === 'text') {
+        rules.value[item.name] = {
+          required: true,
+          trigger: ['blur', 'input', 'change'],
+          message: `请输入${item.label}`,
+        }
+      }
+      if (item.input === 'number') {
+        rules.value[item.name] = {
+          type: 'number',
+          required: true,
+          trigger: ['blur', 'input', 'change'],
+          message: `请输入${item.label}`,
+        }
+      }
+      if (item.input === 'select') {
+        rules.value[item.name] = {
+          required: true,
+          trigger: ['blur', 'input', 'change'],
+          message: `请选择${item.label}`,
+          type: 'number',
+        }
+      }
+    }
   })
 }
-const changeType = (type: 'name' | 'code') => {
-  searchType.value = type
-  searchProduct.value = ''
-  emits('openProductList')
+// 循环校验规则
+forRules()
+
+// 转换下拉参数
+const presetToSelect = (filter: FilterWhere<Product>): { label: string, value: any }[] => {
+  if (!filter.preset) {
+    return []
+  }
+  return Object.keys(filter.preset).map((key) => {
+    switch (filter.type) {
+      case 'number':
+        return {
+          label: filter.preset[key],
+          value: Number(key),
+        }
+      default:
+        return {
+          label: filter.preset[key],
+          value: key,
+        }
+    }
+  })
 }
-const { useWxWork } = useWxworkStore()
+// 当前旧料的form
+const nowOldMaster = defineModel('nowOldMaster', { default: {} as Product })
+const hasCheck = ref(false)
+// 禁用选择表单的是否自产
+const Manual = ref(false)
+// 搜索code
+const searchProduct = ref('')
+
+// 显示搜索的弹窗
+const searchShow = ref(false)
+const nowEditState = ref<number | undefined>(undefined)
 // 扫码
 const scanCode = async () => {
   const wx = await useWxWork()
   const code = await wx?.scanQRCode()
   if (code) {
-    showModal.value = true
-    changeType('code')
+    searchShow.value = true
     searchProduct.value = code
+    nowOldMaster.value = {} as Product
+    emits('search', searchProduct.value, 'code', 2)
   }
 }
-const MformRef = ref()
-const MformValue = ref({
-  user: '',
-  age: '',
-})
-const rules = {
-  material: {
-    required: true,
-    trigger: ['blur', 'change'],
-    message: '请选择材质',
-  },
-  fineness: {
-    required: true,
-    trigger: ['blur', 'change'],
-    message: '请选择成色',
-  },
-  main: {
-    required: true,
-    trigger: ['blur', 'change'],
-    message: '请选择主石',
-  },
-  recovery: {
-    required: true,
-    trigger: ['blur', 'change'],
-    message: '请输入回收金额',
-  },
+// 打开搜索
+const searchQl = () => {
+  nowEditState.value = undefined
+  searchShow.value = true
+  searchProduct.value = ''
+  nowOldMaster.value = {} as Product
 }
+// 手动添加
+const handleAdd = () => {
+  showModal.value = true
+  Manual.value = true
+  params.value = {} as Product
+  nowEditState.value = undefined
+}
+// 添加商品
+const showMasterialsList = defineModel<Product[]>('list', { default: [] })
 const submitMasterialsForm = () => {
   MformRef.value?.validate((errors: any) => {
     if (!errors) {
-    //   console.log(errors)
-    }
-    else {
-    //   console.log(errors)
-    //   message.error('验证失败')
+      if (nowEditState.value !== undefined) {
+        showMasterialsList.value.splice(nowEditState.value, 1, params.value)
+      }
+      else {
+        showMasterialsList.value.push(params.value)
+      }
+      showModal.value = false
     }
   })
+}
+// 旧料表单 Ref
+
+const { $toast } = useNuxtApp()
+const oldMasterRef = ref()
+const searchConfirm = async () => {
+  oldMasterRef.value?.validate((errors: any) => {
+    if (!errors) {
+      const isDuplicate = showMasterialsList.value.find(item => item.code === nowOldMaster.value.code)
+      if (isDuplicate && nowEditState.value === undefined) {
+        $toast.error('不能添加相同商品')
+        return
+      }
+      else {
+        if (nowEditState.value !== undefined) {
+          showMasterialsList.value.splice(nowEditState.value, 1, nowOldMaster.value)
+        }
+        else {
+          showMasterialsList.value.push(nowOldMaster.value)
+        }
+      }
+      searchShow.value = false
+    }
+  })
+}
+
+const editOld = (item: Product, index: number) => {
+  nowEditState.value = index
+  if (item.code) {
+    nowOldMaster.value = item
+    searchShow.value = true
+  }
+  else {
+    params.value = item
+    showModal.value = true
+  }
+}
+
+const deleteOld = (index: number) => {
+  showMasterialsList.value.splice(index, 1)
 }
 </script>
 
 <template>
-  <common-fold :title="cardTitle()" :is-collapse="false">
+  <common-fold title="旧料" :is-collapse="false">
     <div class="p-[16px]">
       <div class="btn grid-12 gap-[20px]">
         <div
-          class="btn-left col-span-4 offset-2 cursor-pointer" @click="() => {
-            emits('openProductList')
-            showModal = true
-            searchProduct = ''
-            readyAddproduct = null
-          }">
-          <icon name="i-icon:search" color="#fff" :size="12" />
+          class="btn-left col-span-4 offset-2 cursor-pointer" @click="handleAdd">
+          <div class="ml-2">
+            手动添加
+          </div>
+        </div>
+        <div
+          class="btn-right col-span-4 cursor-pointer" @click="searchQl()"
+        >
+          <!-- <icon name="i-icon:scanit" color="#1a6beb" :size="12" /> -->
+          <icon name="i-icon:search" color="#1a6beb" :size="12" />
           <div class="ml-2">
             搜索
           </div>
         </div>
-        <div
-          class="btn-right col-span-4 cursor-pointer" @click="scanCode()"
-        >
-          <icon name="i-icon:scanit" color="#1a6beb" :size="12" />
-          <div class="ml-2">
-            扫码
-          </div>
-        </div>
       </div>
     </div>
-    <template v-if="false">
-      <div class="flex justify-center">
-        <div class="w-[30%]">
-          <common-empty :show-r-t="false" />
-        </div>
-      </div>
-    </template>
-    <template v-else>
+    <template v-if="true">
       <div class="px-[16px] py-[8px]">
-        <template v-for="(obj, ix) in showProductList" :key="ix">
+        <template v-for="(obj, ix) in showMasterialsList" :key="ix">
           <div class="pb-[12px]">
-            <sale-order-nesting v-model="hasCheck" :title="obj.product?.name || ''">
+            <sale-order-nesting v-model="hasCheck" :title="obj?.name || ''">
               <template #left>
                 <common-tags type="pink" text="成品" :is-oval="true" />
               </template>
               <template #info>
                 <div class="flex flex-col gap-[12px] px-[16px]">
-                  <div class="grid grid-flow-col w-full place-items-start gap-y-[12px] gap-x-[auto]">
-                    <div class="flex-center-row gap-[8px]">
-                      <div class="text-[14px] font-medium text-[#666666] dark:color-[#CBCDD1]">
-                        条码
-                      </div>
-                      <div class="text-[14px] font-medium text-[#666666] dark:color-[#CBCDD1]">
-                        {{ obj.product?.code }}
-                      </div>
-                    </div>
-                  </div>
-                  <div class="h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
+                  <n-grid :x-gap="12" :y-gap="8" :cols="4">
+                    <template v-for="(item, index) in oldFilterListToArray" :key="index">
+                      <template v-if="item.name === 'is_our'">
+                        <n-grid-item :span="2">
+                          {{ item.label }}: {{ obj[item.name] ? '是' : '否' }}
+                        </n-grid-item>
+                      </template>
+                      <template v-else>
+                        <n-grid-item :span="2">
+                          {{ item.label }}: {{ item.input === 'select' ? item.preset[obj[item.name]] : obj[item.name] }}
+                        </n-grid-item>
+                      </template>
+                    </template>
+                  </n-grid>
 
+                  <div class="h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
                   <div class="pb-[16px]">
-                    <n-grid :cols="24" :x-gap="8">
-                      <n-form-item-gi :span="12" label="折扣">
-                        <n-input-number
-                          v-model:value="obj.discount"
-                          :show-button="false"
-                          placeholder="请输入折扣"
-                          round
-                          min="1"
-                          max="10"
-                          :precision="2"
-                        >
-                          <template #suffix>
-                            折
-                          </template>
-                        </n-input-number>
-                      </n-form-item-gi>
-                      <n-form-item-gi :span="12" label="数量">
-                        <div class="flex items-center justify-between">
-                          <div class="w-full">
-                            <n-input-number
-                              v-model:value="obj.quantity"
-                              placeholder="请输入折扣:单位(折)"
-                              round
-                              min="1"
-                              :precision="0"
-                              :show-button="false"
-                              @blur="() => {
-                                obj.quantity ? obj.quantity : obj.quantity = 1
-                              }"
-                            />
-                          </div>
-                          <div class="flex items-center justify-between">
-                            <div
-                              class="wh-[32px] ml-[5px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3] text-[26px]"
-                              @click="() => {
-                                obj.quantity ? obj.quantity++ : obj.quantity = 1
-                              }">
-                              +
-                            </div>
-                            <div
-                              class="wh-[32px] ml-[5px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3]  text-[26px]"
-                              @click="() => {
-                                if (obj.quantity && obj.quantity > 1)
-                                  obj.quantity ? obj.quantity-- : obj.quantity = 1
-                              }">
-                              <div class="w-[10px] h-[2px] bg-[#3971F3]" />
-                            </div>
-                          </div>
-                        </div>
-                      </n-form-item-gi>
-                    </n-grid>
                     <div class="flex justify-between items-center">
-                      <div>
-                        <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteProduct(ix)">
-                          <icon name="i-svg:delete" :size="16" />
-                        </div>
+                      <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteOld(ix)">
+                        <icon name="i-svg:delete" :size="16" />
                       </div>
-                      <div class="flex">
-                        <div class="item-left">
-                          应付金额：
-                        </div>
-                        <div class="color-[#FF2F2F] font-size-[14px] font-medium dark:color-[#FF624D]">
-                          ￥{{ count(obj) }}
-                        </div>
+                      <div class="color-[#fff] bg-[#3971F3] py-[6px] px-[12px] rounded-[30px] cursor-pointer" @click="editOld(obj, ix)">
+                        编辑
                       </div>
                     </div>
                   </div>
@@ -295,92 +251,209 @@ const submitMasterialsForm = () => {
         </template>
       </div>
     </template>
+    <common-model v-model="searchShow" title="搜索" :show-ok="true" :show-cancel="true" @confirm="searchConfirm" @cancel="searchShow = false">
+      <div class="grid-12">
+        <div class="col-12">
+          <div>
+            <div class="flex  py-[12px]">
+              <div
+                class="flex-center-col">
+                <div class="text-[16px] pb-[2px] font-semibold line-height-[24px]" :style="{ color: '#333' }">
+                  条码搜索
+                </div>
+                <div class="w-[32px] h-[4px] rounded" :style="{ background: '#2080F0' }" />
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center pb-[16px]">
+            <div class="flex-1">
+              <n-input
+                v-model:value="searchProduct"
+                type="text"
+                clearable
+                placeholder="请输入商品条码" />
+            </div>
+            <div class="pl-[16px] flex">
+              <n-button type="info" round @click="emits('search', searchProduct, 'code', 2)">
+                搜索
+              </n-button>
+              <div class="pl-[8px]">
+                <n-button type="info" round @click="scanCode()">
+                  扫码
+                </n-button>
+              </div>
+            </div>
+          </div>
+          <div class="h-[300px] overflow-y-auto py-[16px]">
+            <div>
+              <template v-if=" Object.keys(nowOldMaster).length !== 0">
+                <n-form ref="oldMasterRef" :model="nowOldMaster" :rules="oldRules">
+                  <n-grid :cols="24" :x-gap="8">
+                    <n-form-item-gi
+                      :span="12" label="条码">
+                      {{ nowOldMaster.code }}
+                    </n-form-item-gi>
+                    <n-form-item-gi
+                      :span="12" label="名称">
+                      {{ nowOldMaster.name }}
+                    </n-form-item-gi>
+                    <n-form-item-gi
+                      :span="12" label="回收工费方式" path="recycle_price_labor_method">
+                      <n-select
+                        v-model:value="nowOldMaster.recycle_price_labor_method"
+                        menu-size="large"
+                        placeholder="选择回收工费方式"
+                        :options="[{
+                          value: 1,
+                          label: '按克',
+                        }, {
+                          value: 2,
+                          label: '按件',
+                        }]"
+                      />
+                    </n-form-item-gi>
+                    <n-form-item-gi :span="12" label="回收方式" path="recycle_method">
+                      <n-select
+                        v-model:value="nowOldMaster.recycle_method"
+                        menu-size="large"
+                        placeholder="选择回收方式"
+                        :options="[{
+                          value: 1,
+                          label: '按克',
+                        }, {
+                          value: 2,
+                          label: '按件',
+                        }]"
+                      />
+                    </n-form-item-gi>
+                    <n-form-item-gi :span="12" label="回收工费">
+                      <n-input
+                        v-model:value="nowOldMaster.recycle_price_labor"
+                        :show-button="false"
+                        placeholder="请输入回收工费"
+                        round
+                        :precision="3"
+                      />
+                    </n-form-item-gi>
+                    <n-form-item-gi
+                      :span="12" label="回收类型" path="recycle_type">
+                      <n-select
+                        v-model:value="nowOldMaster.recycle_type"
+                        menu-size="large"
+                        placeholder="选择回收类型"
+                        :options="[{
+                          value: 1,
+                          label: '无',
+                        }, {
+                          value: 2,
+                          label: '回收',
+                        }, {
+                          value: 3,
+                          label: '兑换',
+                        }]"
+                      />
+                    </n-form-item-gi>
+                    <n-form-item-gi :span="12" label="金重" path="weight_metal">
+                      <n-input
+                        v-model:value="nowOldMaster.weight_metal"
+                        :show-button="false"
+                        placeholder="请输入金重"
+                        round
+                        min="0"
+                        :precision="3"
+                      />
+                    </n-form-item-gi>
 
+                    <n-form-item-gi :span="12" label="实际成色" path="quality_actual">
+                      <n-input
+                        v-model:value="nowOldMaster.quality_actual"
+                        :show-button="false"
+                        placeholder="请输入实际成色"
+                        round
+                        min="0"
+                        :precision="3"
+                      />
+                    </n-form-item-gi>
+                    <n-form-item-gi :span="12" label="回收金价">
+                      <n-input-number
+                        v-model:value="nowOldMaster.price"
+                        :show-button="false"
+                        placeholder="请输入回收金价"
+                        round
+                        min="0"
+                        :precision="3"
+                      >
+                        <template #suffix>
+                          元/克
+                        </template>
+                      </n-input-number>
+                    </n-form-item-gi>
+                    <n-form-item-gi :span="12" label="回收金额">
+                      <n-input
+                        v-model:value="nowOldMaster.recycle_price"
+                        :show-button="false"
+                        placeholder="请输入回收金额"
+                        round
+                        min="0"
+                        :precision="3"
+                      />
+                    </n-form-item-gi>
+                    <n-form-item-gi :span="12" label="备注">
+                      <n-input
+                        v-model:value="nowOldMaster.remark"
+                        :show-button="false"
+                        placeholder=" 请输入备注"
+                        round
+                        min="0"
+                        :precision="3"
+                      />
+                    </n-form-item-gi>
+                  </n-grid>
+                </n-form>
+              </template>
+            </div>
+            <template v-if="!nowOldMaster.code">
+              <common-emptys text="暂无数据" />
+            </template>
+          </div>
+        </div>
+      </div>
+    </common-model>
     <common-model v-model="showModal" title="选择旧料" :show-ok="true" :show-cancel="true" @confirm="submitMasterialsForm">
       <div class="grid-12 h-[500px] overflow-y-auto">
         <div class="col-12 px-[12px]">
-          <n-form
-            ref="MformRef"
-            :model="MformValue"
-            :rules="rules"
-            label-placement="top"
-            label-width="80"
-            label-align="left"
-          >
+          <n-form ref="MformRef" :model="params" :rules="rules">
             <n-grid :cols="24" :x-gap="8">
-              <n-form-item-gi :span="24" label="条码">
-                <n-input v-model:value="MformValue.user" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="24" label="货品名称">
-                <n-input v-model:value="MformValue.user" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="是否本店">
-                <n-input v-model:value="MformValue.age" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="回收金价">
-                <n-input v-model:value="MformValue.user" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="回收方式">
-                <n-input v-model:value="MformValue.age" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="回收工费">
-                <n-input v-model:value="MformValue.user" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="回收类型">
-                <n-input v-model:value="MformValue.age" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="备注">
-                <n-input v-model:value="MformValue.user" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="品牌">
-                <n-input v-model:value="MformValue.age" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="主石重">
-                <n-input v-model:value="MformValue.user" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="材质" path="material">
-                <n-input v-model:value="MformValue.age" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="主石颜色">
-                <n-input v-model:value="MformValue.user" />
-              </n-form-item-gi>
-              <n-form-item-gi
-                :span="12" label="成色" path="fineness">
-                <n-input v-model:value="MformValue.age" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="主石净度">
-                <n-input v-model:value="MformValue.user" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="主石" path="main">
-                <n-input v-model:value="MformValue.age" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="主石切工">
-                <n-input v-model:value="MformValue.age" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="实际成色">
-                <n-input v-model:value="MformValue.age" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="品类">
-                <n-input v-model:value="MformValue.age" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="折足重">
-                <n-input v-model:value="MformValue.age" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="工艺">
-                <n-input v-model:value="MformValue.age" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="金重">
-                <n-input v-model:value="MformValue.age" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="标签价">
-                <n-input v-model:value="MformValue.age" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="回收金额" path="recovery">
-                <n-input v-model:value="MformValue.age" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="积分">
-                <n-input v-model:value="MformValue.age" />
-              </n-form-item-gi>
+              <template v-for="(item, index) in oldFilterListToArray" :key="index">
+                <n-form-item-gi :span="12" :label="item.label" :path="item.name" :required="item.required">
+                  <template v-if="item.input === 'select'">
+                    <n-select
+                      v-model:value="params[item.name]"
+                      menu-size="large"
+                      :placeholder="`选择${item.label}`"
+                      :options="presetToSelect(item)"
+                      clearable
+                    />
+                  </template>
+                  <template v-if="item.input === 'text' && item.name === 'code'">
+                    <n-input
+                      v-model:value="params[item.name]" round :placeholder="`输入${item.label}`"
+                    />
+                  </template>
+                  <template v-if="item.input === 'text' && item.name !== 'code'">
+                    <n-input v-model:value="params[item.name]" round :placeholder="`输入${item.label}`" />
+                  </template>
+                  <template v-if="item.input === 'number'">
+                    <n-input-number v-model:value="params[item.name]" round :placeholder="`输入${item.label}`" :show-button="false" />
+                  </template>
+                  <template v-if="item.input === 'switch'">
+                    <n-switch v-model:value="params[item.name]" :disabled="Manual" />
+                  </template>
+                  <template v-if="item.input === 'textarea'">
+                    <n-input v-model:value="params[item.name]" rows="1" type="textarea" />
+                  </template>
+                </n-form-item-gi>
+              </template>
             </n-grid>
           </n-form>
         </div>

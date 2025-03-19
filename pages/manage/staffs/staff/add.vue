@@ -73,7 +73,7 @@ const wxwordAdd = async () => {
 const uploadFile = async (file: any, onfinish?: () => void) => {
   try {
     const res = await uploadAvatar({ avatar: file || undefined })
-    if (res.data.value.code !== HttpCode.SUCCESS) {
+    if (res.data.value?.code !== HttpCode.SUCCESS) {
       $toast.error(res.data.value?.message || '上传失败')
       return false
     }

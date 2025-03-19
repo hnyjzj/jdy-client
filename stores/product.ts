@@ -6,6 +6,7 @@ export const useProductManage = defineStore('ProductManage', {
     filterList: Where<Product>
     productInfo: Product
     productListTotal: number
+    nowOldMaster: Product
     /**
      * 排序后的筛选条件列表
      */
@@ -14,6 +15,7 @@ export const useProductManage = defineStore('ProductManage', {
     filterList: {} as Where<Product>,
     productList: [],
     masterialsList: [],
+    nowOldMaster: {} as Product,
     partsList: [],
     productInfo: {} as Product,
     productListTotal: 0,
@@ -24,7 +26,7 @@ export const useProductManage = defineStore('ProductManage', {
     async getProductList(pamars: ReqList<Product>) {
       try {
         const { data } = await https.post<ResList<Product>, ReqList<Product>>('/product/list', pamars)
-        if (data.value.code === HttpCode.SUCCESS) {
+        if (data.value?.code === HttpCode.SUCCESS) {
           this.productListTotal = data.value.data.total
           if (pamars.page === 1) {
             this.productList = data.value.data.list
@@ -43,13 +45,18 @@ export const useProductManage = defineStore('ProductManage', {
     async getAddOrderProductList(pamars: ReqList<Product>) {
       try {
         const { data } = await https.post<ResList<Product>, ReqList<Product>>('/product/list', pamars)
-        if (data.value.code === HttpCode.SUCCESS) {
+        if (data.value?.code === HttpCode.SUCCESS) {
           this.productListTotal = data.value.data.total
           if (pamars.where?.type === 1) {
             this.productList = data.value.data.list
           }
+
           if (pamars.where?.type === 2) {
             this.masterialsList = data.value.data.list
+
+            if (data.value.data.list.length > 0) {
+              this.nowOldMaster = { ...data.value.data.list[0] }
+            }
           }
           if (pamars.where?.type === 3) {
             this.partsList = data.value.data.list
@@ -89,7 +96,7 @@ export const useProductManage = defineStore('ProductManage', {
     async getProductInfo(code: Product['code']) {
       try {
         const { data } = await https.post<Product, { code: Product['code'] }>('/product/info', { code })
-        if (data.value.code === HttpCode.SUCCESS) {
+        if (data.value?.code === HttpCode.SUCCESS) {
           this.productInfo = data.value.data
         }
       }

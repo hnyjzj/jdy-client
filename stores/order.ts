@@ -7,17 +7,28 @@ export const useOrder = defineStore('Order', {
     OrderDetail: {} as Orders,
     filterListToArray: [] as FilterWhere<OrderWhere>[],
     searchPage: 1 as number, // 订单列表页面搜索页数
+    oldFilterList: {} as Where<Product>,
+    oldFilterListToArray: [] as FilterWhere<Product>[],
   }),
 
   actions: {
     // 获取筛选条件
     async getSaleWhere() {
       const { data } = await https.get<Where<OrderWhere>, null>('/order/where')
-      if (data.value.code === HttpCode.SUCCESS) {
+      if (data.value?.code === HttpCode.SUCCESS) {
         this.filterList = data.value.data
         this.filterListToArray = sortArr(this.filterList)
       }
     },
+    //  获取旧料的新增条件
+    async OldMaterialsWhere() {
+      const { data } = await https.get<Where<Product>, null>('/product/where_product_old')
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.oldFilterList = data.value.data
+        this.oldFilterListToArray = sortArr(this.oldFilterList)
+      }
+    },
+
     async getOrderList(req: ReqList<Orders>) {
       if (req.page === 1) {
         this.OrdersList = []

@@ -127,11 +127,11 @@ interface Product {
   /**
    * 主石重
    */
-  weight_gem: number
+  weight_gem?: number | string
   /**
    * 金重
    */
-  weight_metal: number
+  weight_metal?: string
   /**
    * 杂料重
    */
@@ -143,6 +143,46 @@ interface Product {
   type: 0 | 1 | 2 | 3
 
   store_id: string
+  /**
+   *否我公司产品
+   */
+  is_our: boolean
+  /**
+   *  回收金价
+   */
+  recycle_price_gold?: string
+  /**
+   * 回收方式
+   */
+  recycle_method?: number
+  /**
+   * 回收工费
+   */
+  recycle_price_labor?: string
+  /**
+   * 回收类型
+   */
+  recycle_type?: number
+  /**
+   * 回收金额
+   */
+  recycle_price?: string
+
+  gem_weight?: string
+  /**
+   * 回收工费方式
+   */
+  recycle_price_labor_method: number
+
+  /**
+   * 实际成色
+   */
+  quality_actual: string
+
+  /**
+   * 标签价
+   */
+  label_price?: number
 }
 interface ProductDamage {
   code: Product['code']

@@ -127,7 +127,7 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
       delete (upParams.store_id)
     }
     const res = await uploadImage(upParams)
-    if (res.data.value.code !== HttpCode.SUCCESS) {
+    if (res.data.value?.code !== HttpCode.SUCCESS) {
       $toast.error(res.data.value?.message || '上传失败')
       return false
     }

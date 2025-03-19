@@ -9,13 +9,13 @@ const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getAddOrderProductList } = useProductManage()
 const { getStoreStaffList } = useStores()
-const { getSaleWhere, submitOrder, getOrderDetail } = useOrder()
+const { getSaleWhere, submitOrder, getOrderDetail, OldMaterialsWhere } = useOrder()
 const { getGoldPrice } = useGoldPrice()
 const { goldList } = storeToRefs(useGoldPrice())
 const { filterList } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
-const { productList, partsList, masterialsList } = storeToRefs(useProductManage())
+const { productList, partsList, nowOldMaster } = storeToRefs(useProductManage())
 const formRef = ref<FormInst | null>(null)
 const formData = ref<Orders>({
   amount: 0, // 应付金额
@@ -38,10 +38,11 @@ const formData = ref<Orders>({
 // 展示商品列表
 const showProductList = ref<OrderProducts[]>([])
 const showPartsList = ref<OrderProducts[]>([])
-const showMasterialsList = ref<OrderProducts[]>([])
+const showMasterialsList = ref<Product[]>([])
 await getSaleWhere()
+await OldMaterialsWhere()
 await getGoldPrice(myStore.value.id)
-const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { store_id: myStore.value.id, phone: val } })
+const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { phone: val } })
 const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
 
 const rules = ref<FormRules>({
@@ -177,9 +178,9 @@ const openProductListFn = () => {
         </div>
         <div class="pb-[16px]">
           <sale-add-masterials
-            v-model="showMasterialsList"
+            v-model:list="showMasterialsList"
+            v-model:now-old-master="nowOldMaster"
             :type="2"
-            :product-list="masterialsList"
             :price="goldList"
             @search="searchProductList"
             @open-product-list="openProductListFn"
