@@ -1,56 +1,73 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { getProductList, getProductWhere } = useProductManage()
-const { productList, filterList, filterListToArray, productListTotal } = storeToRefs(useProductManage())
+const { getProductHistory, getHistoryWhere, getProductWhere } = useProductManage()
+const { productRocordList, filterList, historyFilterList, HistoryFilterListToArray, historyListTotal } = storeToRefs(useProductManage())
+const { storesList } = storeToRefs(useStores())
+const { getStoreList } = useStores()
+
+const searchKey = ref('')
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const pages = ref(1)
+const storeCol = ref()
+const store_id = ref()
+function changeStore() {
+  storeCol.value = []
+  storesList.value.forEach((item: Stores) => {
+    storeCol.value.push({ label: item.name, value: item.id })
+  })
+}
 useSeoMeta({
-  title: '报损列表',
+  title: '货品记录',
 })
-/** 打开高级筛选 */
+
 const openFilter = () => {
   isFilter.value = true
 }
 /** 搜索 */
 async function search(e: string) {
-  await submitWhere({ code: e }, true)
+  await submitWhere({ product_id: e }, true)
 }
 /** 关闭搜索 */
 async function clearSearch() {
   await submitWhere({ }, true)
 }
 // 获取货品列表
-async function getList(where = {} as Partial<Product>) {
-  const params = { page: pages.value, limit: 10 } as ReqList<Product>
-  where.status = 2
+async function getList(where = {} as Partial<HistoryWhere>) {
+  if (store_id.value) {
+    where.store_id = store_id.value
+  }
+  const params = { page: pages.value, limit: 10 } as ReqList<HistoryWhere>
   params.where = where
-  const res = await getProductList(params)
+  const res = await getProductHistory(params)
   return res as any
 }
-
 try {
   await getList()
+  await getHistoryWhere()
   await getProductWhere()
+  await changeStore()
+  await getStoreList({ page: 1, limit: 20 })
 }
 catch (error) {
-  throw new Error(`初始化失败: ${error || '未知错误'}`)
+  $toast.error('初始化数据失败')
+  console.error('初始化数据失败:', error)
 }
 
-const filterData = ref({ status: 2 } as Partial<Product>)
+const filterData = ref({} as Partial<ProductHistories>)
+
 function pull() {
   getList(filterData.value)
 }
 
 // 筛选列表
-async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
+async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) {
   filterData.value = { ...f }
   pages.value = 1
-  productList.value = []
+  productRocordList.value = []
   const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
-    isFilter.value = false
     if (!isSearch) {
       $toast.success('筛选成功')
     }
@@ -64,23 +81,39 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:id="complate" :product-list-total="productListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:id="complate" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜素关联产品单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company />
       </template>
     </product-filter>
-    <!-- 小卡片组件 -->
-    <div class="px-[16px] pb-20">
-      <template v-if="productList?.length">
-        <product-manage-card :list="productList">
+    <!-- 列表 -->
+    <div class="px-[16px] pb-10">
+      <template v-if="productRocordList?.length">
+        <product-manage-card :list="productRocordList">
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
               <div class="flex-between">
                 <div>
-                  条码
+                  操作
                 </div>
                 <div class="text-align-end">
-                  {{ info.code }}
+                  {{ historyFilterList.action?.preset[info.action] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  操作时间
+                </div>
+                <div class="text-align-end">
+                  {{ formatTimestampToDateTime(info.updated_at) }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  关联单号
+                </div>
+                <div class="text-align-end">
+                  {{ info.source_id }}
                 </div>
               </div>
               <div class="flex-between">
@@ -88,7 +121,23 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
                   所属大类
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.class?.preset[info.class] }}
+                  {{ filterList.class?.preset[info?.new_value?.class] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  所属门店
+                </div>
+                <div class="text-align-end">
+                  {{ info?.new_value?.store.name }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  条码
+                </div>
+                <div class="text-align-end">
+                  {{ info?.new_value?.code }}
                 </div>
               </div>
               <div class="flex-between">
@@ -96,15 +145,39 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
                   货品名称
                 </div>
                 <div class="text-align-end">
-                  {{ info.name }}
+                  {{ info?.new_value?.name }}
                 </div>
               </div>
               <div class="flex-between">
                 <div>
-                  货品品牌
+                  入网费
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.brand?.preset[info.brand] }}
+                  {{ info?.new_value?.access_fee }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  零售方式
+                </div>
+                <div class="text-align-end">
+                  {{ filterList.retail_type?.preset[info?.new_value?.retail_type] }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  标签价
+                </div>
+                <div class="text-align-end">
+                  {{ info?.new_value?.label_price }}
+                </div>
+              </div>
+              <div class="flex-between">
+                <div>
+                  零售工费
+                </div>
+                <div class="text-align-end">
+                  {{ info?.new_value?.labor_fee }}
                 </div>
               </div>
               <div class="flex-between">
@@ -112,59 +185,19 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
                   供应商
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.supplier?.preset[info.supplier] }}
-                </div>
-              </div>
-              <div class="flex-between">
-                <div>
-                  材质
-                </div>
-                <div class="text-align-end">
-                  {{ filterList.material?.preset[info.material] }}
-                </div>
-              </div>
-              <div class="flex-between">
-                <div>
-                  成色
-                </div>
-                <div class="text-align-end">
-                  {{ filterList.quality?.preset[info.quality] }}
-                </div>
-              </div>
-              <div class="flex-between">
-                <div>
-                  宝石
-                </div>
-                <div class="text-align-end">
-                  {{ filterList.gem?.preset[info.gem] }}
-                </div>
-              </div>
-              <div class="flex-between">
-                <div>
-                  品类
-                </div>
-                <div class="text-align-end">
-                  {{ info.style }}
-                </div>
-              </div>
-              <div class="flex-between">
-                <div>
-                  工艺
-                </div>
-                <div class="text-align-end">
-                  {{ info.craft }}
+                  {{ filterList.supplier?.preset[info?.new_value?.supplier] }}
                 </div>
               </div>
             </div>
           </template>
           <template #bottom="{ info }">
             <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="详情" @click="jump('/product/manage/info', { code: info.code })" />
+              <common-button-irregular text="详情" @click="jump('/product/history/info', { id: info?.id })" />
             </div>
           </template>
         </product-manage-card>
         <common-page
-          v-model:page="pages" :total="productListTotal" :limit="10" @update:page="() => {
+          v-model:page="pages" :total="historyListTotal" :limit="10" @update:page="() => {
             pull()
           }
           " />
@@ -172,19 +205,8 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
       <template v-else>
         <common-empty width="100px" />
       </template>
+
+      <common-filter-where v-model:show="isFilter" :data="filterData" :filter="HistoryFilterListToArray" @submit="submitWhere" />
     </div>
-    <product-manage-bottom />
-    <common-filter-where v-model:show="isFilter" :data="filterData" :disabled="['status']" :filter="filterListToArray" @submit="submitWhere" />
   </div>
 </template>
-
-<style lang="scss" scoped>
-.uploadInp {
-  --uno: 'text-14px px-[12px] py-[4px] rounded-[36px] flex-between text-color-light bg-#fff border-[#e6e6e8] border-1px border-solid dark:bg-[rgba(255,255,255,0.2)] dark:border-[rgba(230,230,232,0.2)]';
-  &-right {
-    --uno: 'flex items-center py-[6px] px-4 rounded-[36px] text-#FFF';
-    background: linear-gradient(to bottom, #1b6ceb, #6da6ff);
-    box-shadow: #1111113d 0px 2px 2px 1px;
-  }
-}
-</style>

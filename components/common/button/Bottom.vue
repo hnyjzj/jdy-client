@@ -22,14 +22,16 @@ const confirm = () => {
 <template>
   <div class="grid-12 btn">
     <div class="col-12" uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
-      <div class="flex flex-row gap-2">
-        <button class="btn-left cursor-pointer" @click="cancel">
-          {{ props.cancelText }}
-        </button>
-        <button class="btn-right cursor-pointer" @click="confirm">
-          {{ props.confirmText }}
-        </button>
-      </div>
+      <slot name="content">
+        <div class="flex flex-row gap-2">
+          <button class="btn-left cursor-pointer" @click="cancel">
+            {{ props.cancelText }}
+          </button>
+          <button class="btn-right cursor-pointer" @click="confirm">
+            {{ props.confirmText }}
+          </button>
+        </div>
+      </slot>
     </div>
   </div>
 </template>

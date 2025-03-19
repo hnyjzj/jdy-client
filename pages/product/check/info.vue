@@ -69,9 +69,9 @@ const inventoryOptions = computed(() => [
 
 // 步骤条描述文本定义
 const step = [
-  { title: '盘点中', subs: 1 },
-  { title: '盘点结束', subs: 2 },
-  { title: '导出盘点差异', subs: 3 },
+  { title: '待盘点', subs: 1 },
+  { title: '盘点中', subs: 2 },
+  { title: '待验证', subs: 3 },
   { title: '已完成', subs: 4 },
 ]
 
@@ -239,7 +239,7 @@ const goodsStatus = {
         <div class="info flex flex-col gap-4 rounded-6 blur-bga w-auto px-4 py-4 mb-6">
           <div class="flex flex-col gap-3">
             <common-tab-secondary :current-selected="product_status" :options="inventoryOptions" @change-status="changeStatus" />
-            <common-step :description="step" :active-index="1" />
+            <common-step :description="step" :active-index="checkInfo.status" />
           </div>
           <div class="color-[#333333] dark:color-[#FFFFFF] font-normal text-[14px]">
             共 {{ checkInfo.products?.length }} 件条数据
@@ -284,7 +284,7 @@ const goodsStatus = {
                         金重
                       </div>
                       <div class="value">
-                        {{ item.product.weight }}
+                        {{ item.product.weight_total }}
                       </div>
                     </div>
                     <div class="flex">
@@ -292,7 +292,7 @@ const goodsStatus = {
                         价格
                       </div>
                       <div class="value text-[rgba(57,113,243,1)]">
-                        {{ item.product.price }}
+                        {{ item.product.label_price }}
                       </div>
                     </div>
                     <div class="flex">

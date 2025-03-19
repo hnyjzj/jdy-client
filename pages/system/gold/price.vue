@@ -112,7 +112,7 @@ function subtract(i: number) {
                     {{ Number(item.price).toFixed(2) }}
                   </div>
                   <div>
-                    <div class="pb-1 flex gap-2">
+                    <div class="pb-1 flex gap-2 text-color">
                       <div class="font-bold">
                         {{ productType[item.product_type] ?? '' }}
                       </div>
@@ -217,7 +217,7 @@ function subtract(i: number) {
   display: none;
 }
 .updata-time {
-  --uno: 'bg-[rgba(199,218,255,1)] py-[4px] text-[rgba(75,87,109,1)] rounded-full';
+  --uno: 'bg-[rgba(199,218,255,1)] py-[4px] px-4 text-[rgba(75,87,109,1)] rounded-full';
 }
 .confirm-btn {
   --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#fff] font-bold ';

@@ -18,13 +18,28 @@ interface FilterWhere<T, N = keyof T> {
   /**
    * 筛选类型 选择或输入
    */
-  input: 'select' | 'text' | 'search' | 'switch' | 'number' | 'textarea' | 'date' | 'multiple'
+  input: 'select' | 'text' | 'search' | 'switch' | 'number' | 'textarea' | 'date' | 'multiple' | 'list'
   sort: number
   find: boolean
+  /** 该字段是否可以添加上传 */
   create: boolean
+  /** 是否可以更新 */
   update: boolean
+  /** 字段名 */
   name: unknown & string & N
+  /** */
+  condition?: Condition<N>[]
 }
+
+/**
+ *
+ */
+interface Condition<N> {
+  key: N
+  value: any
+  operator: string
+}
+
 /**
  * 筛选对象
  *

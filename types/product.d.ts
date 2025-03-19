@@ -86,7 +86,7 @@ interface Product {
   /**
    * 价格
    */
-  price: number
+  label_price: number
   /**
    * 产品入库单ID
    */
@@ -123,7 +123,7 @@ interface Product {
   /**
    * 总重量
    */
-  weight: number
+  weight_total: number
   /**
    * 主石重
    */
@@ -141,6 +141,19 @@ interface Product {
    * 0:全部 1:成品 2:旧料 3:配件
    */
   type: 0 | 1 | 2 | 3
+  /**
+   * 库存
+   */
+  stock: number
+  /**
+   * 门店id
+   */
+  store_id: string
+  /**
+   * 门店
+   */
+  store: Stores
+  images: string[]
 }
 interface ProductDamage {
   code: Product['code']
@@ -150,4 +163,120 @@ interface ProductDamage {
 interface ProductTransfer {
   code: Product['code']
   type: Product['type']
+}
+
+interface inportReq {
+  products: Product[]
+  store_id: string
+}
+
+/**
+ * 货品记录参数
+ */
+interface HistoryWhere {
+  /**
+   * 操作
+   */
+  action: number
+  /**
+   * 产品ID
+   */
+  product_id: string
+  /**
+   * 门店 ID
+   */
+  store_id: string
+}
+
+/**
+ * ProductHistories
+ */
+interface ProductHistories {
+  /**
+   * 操作
+   */
+  action: number
+  /**
+   * 创建时间
+   */
+  created_at: Date
+  /**
+   * ID
+   */
+  id: string
+  /**
+   * IP
+   */
+  ip: string
+  /**
+   * 键
+   */
+  key: string
+  /**
+   * 操作人ID
+   */
+  operator_id: string
+  /**
+   * 操作人信息
+   */
+
+  operator: Staff
+  /**
+   * 货品信息
+   */
+  new_value: Product
+  /**
+   * 更新后货品信息
+   */
+  old_value: Product
+  /**
+   * 产品ID
+   */
+  product_id: string
+  /**
+   * 来源id
+   */
+  source_id: string
+  /**
+   * 门店 ID
+   */
+  store_id: string
+  /**
+   * 更新时间
+   */
+  updated_at: Date
+  /**
+   * 值
+   */
+  value: any[] | boolean | number | number | { [key: string]: any } | null | string
+}
+
+/**
+ * 上传产品图参数
+ */
+interface UploadProductImg {
+  image: File
+  product_id: string
+}
+
+/**
+ * 创建入库单参数
+ */
+interface CreateProductEnter {
+  store_id: Stores['id']
+  remark?: string
+}
+
+/**
+ * 删除入库单产品
+ */
+interface DelEnterProduct {
+  /**
+   * 入库单ID
+   */
+  product_enter_id: string
+  /**
+   * 商品ID列表
+   */
+  product_ids: string[]
 }

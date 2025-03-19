@@ -5,7 +5,7 @@ const { getStoreStaffList } = useStores()
 const { getCheckList, getCheckWhere } = useCheck()
 const { checkList, checkFilterListToArray, checkTotal } = storeToRefs(useCheck())
 const { storesList } = storeToRefs(useStores())
-const { getStoreList } = useStores()
+const { getStoreList, getMyStore } = useStores()
 const storeCol = ref()
 async function changeStoer() {
   storeCol.value = []
@@ -13,37 +13,37 @@ async function changeStoer() {
     storeCol.value.push({ label: item.name, value: item.id })
   })
 }
-await getStoreList({ page: 1, limit: 100 })
+await getStoreList({ page: 1, limit: 20 })
+await getMyStore({ page: 1, limit: 20 })
 await changeStoer()
 await getCheckWhere()
-const searchKey = ref('')
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const pages = ref(1)
-const isCanPull = ref(true)
 useSeoMeta({
   title: '货品盘点',
 })
+/** 打开高级筛选 */
 const openFilter = () => {
   isFilter.value = true
 }
+/** 搜索 */
+async function search(e: string) {
+  await submitWhere({ id: e }, true)
+}
+/** 关闭搜索 */
+async function clearSearch() {
+  await submitWhere({ }, true)
+}
 // 获取货品列表
 async function getList(where = {} as Partial<Check>) {
-  if (!isCanPull.value)
-    return
-  const params = { page: pages.value, limit: 20 } as ReqList<Check>
+  const params = { page: pages.value, limit: 10 } as ReqList<Check>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
 
   const res = await getCheckList(params)
-  if (res.data?.list.length) {
-    pages.value++
-  }
-  else {
-    isCanPull.value = false
-  }
   return res as any
 }
 
@@ -59,18 +59,20 @@ function pull() {
 }
 const store_id = ref()
 // 筛选列表
-async function submitWhere(f: Partial<Check>) {
+async function submitWhere(f: Partial<Check>, isSearch = false) {
   if (store_id.value) {
     f.store_id = store_id.value
   }
-  filterData.value = { ...f }
+  filterData.value = { ...f, ...filterData.value }
   pages.value = 1
-  isCanPull.value = true
   checkList.value = []
   const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
     isFilter.value = false
-    return $toast.success('筛选成功')
+    if (!isSearch) {
+      $toast.success('筛选成功')
+    }
+    return
   }
   $toast.error(res.message ?? '筛选失败')
 }
@@ -107,15 +109,15 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
     <!-- 筛选 -->
     <div id="header" class="sticky top-0 bg-[#3875C5] z-1">
       <product-filter
-        v-model:id="complate" v-model:search="searchKey" :product-list-total="checkTotal" @filter="openFilter">
+        v-model:id="complate" :product-list-total="checkTotal" placeholder="搜索盘点单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
         <template #company>
           <product-manage-company />
         </template>
       </product-filter>
     </div>
     <!-- 小卡片组件 -->
-    <div class="pb-10">
-      <common-list-pull :nomore="!isCanPull" @pull="pull">
+    <div class="px-[16px] pb-20">
+      <template v-if="checkList?.length">
         <product-manage-card :list="checkList">
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
@@ -123,7 +125,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
                 <template v-if="item.input === 'text'">
                   <div class="flex py-[4px] justify-between">
                     <div>
-                      {{ item.label }}
+                      {{ item.label === 'ID' ? '盘点单号' : item.label }}
                     </div>
                     <div class="text-align-end">
                       {{ info[item.name] }}
@@ -155,21 +157,29 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
           </template>
           <template #bottom="{ info }">
             <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="详情" @click="jump('/product/finished/check/info', { id: info.id })" />
+              <common-button-irregular text="详情" @click="jump('/product/check/info', { id: info.id })" />
             </div>
           </template>
         </product-manage-card>
-      </common-list-pull>
+        <common-page
+          v-model:page="pages" :total="checkTotal" :limit="10" @update:page="() => {
+            pull()
+          }
+          " />
+      </template>
+      <template v-else>
+        <common-empty width="100px" />
+      </template>
     </div>
     <product-manage-bottom />
     <div class="cursor-pointer">
-      <common-create @click="jump('/product/finished/check/add')" />
+      <common-create @click="jump('/product/check/add')" />
     </div>
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="checkFilterListToArray" @submit="submitWhere">
       <template #inspector_id>
         <n-select
           v-model:value="filterData.inspector_id"
-          placeholder="请选择盘点人"
+          placeholder="请选择审核人"
           :options="StoreStaffList.map(v => ({
             label: v.nickname,
             value: v.id,
@@ -182,7 +192,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
       <template #inventory_person_id>
         <n-select
           v-model:value="filterData.inventory_person_id"
-          placeholder="请选择审核人"
+          placeholder="请选择盘点人"
           :options="StoreStaffList.map(v => ({
             label: v.nickname,
             value: v.id,
