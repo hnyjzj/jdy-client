@@ -46,13 +46,6 @@ catch (error) {
 
 const filterData = ref({} as Partial<Product>)
 
-const create = () => {
-  if (!myStore.value?.id) {
-    return $toast.error('请先选择门店')
-  }
-  isModel.value = true
-}
-
 function pull() {
   getList(filterData.value)
 }
@@ -125,7 +118,6 @@ function goAdd() {
     </div>
     <product-manage-bottom />
     <product-upload-warehouse v-model="isBatchImportModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
-    <common-create @click="create" />
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
     <common-filter-where v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="filterListToArray" @submit="submitWhere" />
   </div>
