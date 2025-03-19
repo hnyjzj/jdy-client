@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   data: Member
+  isQyEnv?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -289,12 +290,22 @@ const backtrack = () => {
       </div>
     </template>
   </div>
-  <common-button-bottom
-    confirm-text="编辑"
-    cancel-text="返回"
-    @confirm="() => emit('goEdit', memberParams.id)"
-    @cancel="backtrack"
-  />
+  <!-- 企业微信环境下，不展示返回按钮 -->
+  <template v-if="!props.isQyEnv">
+    <common-button-bottom
+      confirm-text="编辑"
+      cancel-text="返回"
+      @confirm="() => emit('goEdit', memberParams.id)"
+      @cancel="backtrack"
+    />
+  </template>
+  <template v-else>
+    <common-button-bottom
+      confirm-text="编辑"
+      :is-single="true"
+      @confirm="() => emit('goEdit', memberParams.id)"
+    />
+  </template>
 </template>
 
 <style scoped lang="scss">

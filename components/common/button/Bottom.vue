@@ -2,11 +2,13 @@
 interface Props {
   cancelText?: string
   confirmText?: string
+  isSingle?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   cancelText: '取消',
   confirmText: '确认',
+  isSingle: false,
 })
 const emit = defineEmits(['cancel', 'confirm'])
 
@@ -22,14 +24,23 @@ const confirm = () => {
 <template>
   <div class="grid-12 btn">
     <div class="col-12" uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
-      <div class="flex flex-row gap-2">
-        <button class="btn-left cursor-pointer" @click="cancel">
-          {{ props.cancelText }}
-        </button>
-        <button class="btn-right cursor-pointer" @click="confirm">
-          {{ props.confirmText }}
-        </button>
-      </div>
+      <template v-if="!props.isSingle">
+        <div class="flex flex-row gap-2">
+          <button class="btn-left cursor-pointer" @click="cancel">
+            {{ props.cancelText }}
+          </button>
+          <button class="btn-right cursor-pointer" @click="confirm">
+            {{ props.confirmText }}
+          </button>
+        </div>
+      </template>
+      <template v-else>
+        <div class="flex">
+          <button class="btn-right flex-1 cursor-pointer" @click="confirm">
+            {{ props.confirmText }}
+          </button>
+        </div>
+      </template>
     </div>
   </div>
 </template>

@@ -73,11 +73,14 @@ const relyOnId = () => {
     jump('/member/lists/new', { external_user_id: externalUserId.value })
   }
 }
+
+// 判断是否为企业微信环境
+const isQyEnv = getContext.value === 'single_chat_tools'
 </script>
 
 <template>
   <div>
-    <member-lists-info :data="memberInfo" @go-edit="relyOnId" />
+    <member-lists-info :data="memberInfo" :is-qy-env="isQyEnv" @go-edit="relyOnId" />
   </div>
 </template>
 
