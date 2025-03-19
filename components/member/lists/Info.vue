@@ -300,9 +300,8 @@ const backtrack = () => {
     />
   </template>
   <template v-else>
-    <common-button-bottom
-      confirm-text="编辑"
-      :is-single="true"
+    <common-button-one
+      text="编辑"
       @confirm="() => emit('goEdit', memberParams.id)"
     />
   </template>
