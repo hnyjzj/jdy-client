@@ -6,12 +6,6 @@ interface Request<T> {
   data: T
 }
 
-const toLogin = (response: any) => {
-  if (response._data?.code === HttpCode.UNAUTHORIZED) {
-    navigateTo('/login')
-  }
-}
-
 class Https {
   BASE_URL: string = import.meta.env.VITE_BASE_API || ''
   authToken: string = ''
@@ -28,6 +22,8 @@ class Https {
   //   middleware
   async fetchApi<T>(url: string, opt: any) {
     try {
+      const route = useRoute()
+      const nuxapp = useNuxtApp()
       const res = await useFetch(this.BASE_URL + url, {
         onRequest({ options }) {
           options.method = opt.method
@@ -37,10 +33,28 @@ class Https {
         },
 
         onResponse({ response }) {
-          toLogin(response)
+          if (response?.status === HttpCode.UNAUTHORIZED || response?._data?.code === HttpCode.UNAUTHORIZED) {
+            nuxapp.runWithContext(() => {
+              navigateTo({
+                path: '/login',
+                query: {
+                  redirect_url: encodeURIComponent(route.path),
+                },
+              })
+            })
+          }
         },
         onResponseError({ response }) {
-          toLogin(response)
+          if (response?.status === HttpCode.UNAUTHORIZED || response?._data?.code === HttpCode.UNAUTHORIZED) {
+            nuxapp.runWithContext(() => {
+              navigateTo({
+                path: '/login',
+                query: {
+                  redirect_url: encodeURIComponent(route.path),
+                },
+              })
+            })
+          }
         },
 
       })

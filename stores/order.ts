@@ -13,7 +13,7 @@ export const useOrder = defineStore('Order', {
     // 获取筛选条件
     async getSaleWhere() {
       const { data } = await https.get<Where<OrderWhere>, null>('/order/where')
-      if (data.value.code === HttpCode.SUCCESS) {
+      if (data.value?.code === HttpCode.SUCCESS) {
         this.filterList = data.value.data
         this.filterListToArray = sortArr(this.filterList)
       }
@@ -41,7 +41,7 @@ export const useOrder = defineStore('Order', {
     // 获取今日金价
     async getTodayPrice() {
       const { data } = await https.get<any, null>('/setting/gold_price/get')
-      if (data.value.code === HttpCode.SUCCESS) {
+      if (data.value?.code === HttpCode.SUCCESS) {
         this.todayPrice = data.value.data.price
       }
     },

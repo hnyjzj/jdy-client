@@ -77,7 +77,7 @@ const beforeRead = (file: any) => {
 const afterRead = async (file: any) => {
   // 上传文件接口
   const res = await staff.uploadAvatar({ avatar: file.file })
-  if (res.data.value.code !== HttpCode.SUCCESS) {
+  if (res.data.value?.code !== HttpCode.SUCCESS) {
     $toast.error(res.data.value?.message || '上传失败')
   }
   userinfoForm.value.avatar = res.data.value.data.url

@@ -20,7 +20,7 @@ export const useProductManage = defineStore('ProductManage', {
     async getProductList(pamars: ReqList<Product>) {
       try {
         const { data } = await https.post<ResList<Product>, ReqList<Product>>('/product/list', pamars)
-        if (data.value.code === HttpCode.SUCCESS) {
+        if (data.value?.code === HttpCode.SUCCESS) {
           this.productListTotal = data.value.data.total
           if (pamars.page === 1) {
             this.productList = data.value.data.list
@@ -62,7 +62,7 @@ export const useProductManage = defineStore('ProductManage', {
     async getProductInfo(code: Product['code']) {
       try {
         const { data } = await https.post<Product, { code: Product['code'] }>('/product/info', { code })
-        if (data.value.code === HttpCode.SUCCESS) {
+        if (data.value?.code === HttpCode.SUCCESS) {
           this.productInfo = data.value.data
         }
       }
