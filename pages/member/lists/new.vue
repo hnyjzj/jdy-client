@@ -58,17 +58,22 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
 
 // 编辑会员信息
 async function getInfo() {
-  if (route.query.id) {
+  if (!route.query.id && !route.query.external_user_id) {
+    // 新增会员时设置默认门店ID
+    memberParams.value.store_id = myStore.value.id
+  }
+  else if (route.query.id) {
     await getMemberInfo({ id: route.query.id as string })
     memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
   }
-  else {
-    // 新增会员时设置默认门店ID
-    memberParams.value.store_id = myStore.value.id
+  else if (route.query.external_user_id) {
+    await getMemberInfo({ external_user_id: route.query.external_user_id as string })
+    memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
   }
 }
 
 await getInfo()
+await getMyStore({ page: 1, limit: 20 })
 await getStoreStaffList({ id: myStore.value.id })
 
 const conductEditDate = () => {
@@ -106,27 +111,60 @@ const backtrack = () => {
 }
 
 const execute = async () => {
-  if (route.query.id || route.query.external_user_id) {
-    console.log('memberParams.value', memberParams.value)
-    const res = await updateMemberInfo(memberParams.value)
+  try {
+    // 判断操作类型
+    const isEdit = !!route.query.id || !!route.query.external_user_id
+    const hasExternalUserId = !!route.query.external_user_id
+    const hasId = !!route.query.id
 
-    if (res.code === HttpCode.SUCCESS) {
-      $toast.success('编辑成功')
-      backtrack()
+    // 根据不同情况执行不同操作
+    let res
+
+    if (isEdit) {
+      if (hasId || (hasExternalUserId && memberParams.value.id)) {
+        // 编辑会员信息
+        res = await updateMemberInfo(memberParams.value)
+        if (res.code === HttpCode.SUCCESS) {
+          $toast.success('编辑成功')
+
+          // 根据参数决定跳转行为
+          if (hasExternalUserId) {
+            jump('/member/lists/info', { external_user_id: memberParams.value.external_user_id })
+          }
+          else {
+            backtrack()
+          }
+          return
+        }
+      }
+      else if (hasExternalUserId) {
+        // 完善会员信息（有external_user_id但没有id）
+        memberParams.value.external_user_id = route.query.external_user_id as string
+        res = await createMember(memberParams.value)
+        if (res.code === HttpCode.SUCCESS) {
+          $toast.success('完善成功')
+          jump('/member/lists/info', { external_user_id: memberParams.value.external_user_id })
+          return
+        }
+      }
     }
     else {
-      $toast.warning(res.message ?? '编辑失败')
+      // 新增会员
+      res = await createMember(memberParams.value)
+      if (res.code === HttpCode.SUCCESS) {
+        $toast.success('新增成功')
+        backtrack()
+        return
+      }
     }
+
+    // 处理失败情况
+    const operationType = hasId ? '编辑' : (hasExternalUserId ? '完善' : '新增')
+    $toast.warning(res?.message ?? `${operationType}失败`)
   }
-  else {
-    const res = await createMember(memberParams.value)
-    if (res.code === HttpCode.SUCCESS) {
-      $toast.success('新增成功')
-      backtrack()
-    }
-    else {
-      $toast.warning(res.message ?? '新增失败')
-    }
+  catch (error) {
+    $toast.error('操作失败，请稍后重试')
+    console.error(error)
   }
 }
 </script>

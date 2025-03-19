@@ -55,7 +55,7 @@ async function getInfo() {
   else if (getContext.value === 'single_chat_tools') {
     // 如果来源没有id、且上下文环境为single_chat_tools
     params.value = externalUserId.value
-    await getMemberInfo({ id: params.value })
+    await getMemberInfo({ external_user_id: params.value })
     memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
   }
 }
