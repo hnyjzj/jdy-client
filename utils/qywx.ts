@@ -45,9 +45,6 @@ class WxWork {
     if (this.agent_ticket) {
       options.getAgentConfigSignature = this.getAgentConfigSignature
     }
-    if (this.agent_ticket) {
-      options.getAgentConfigSignature = this.getAgentConfigSignature
-    }
 
     options.onConfigSuccess = () => {
 
