@@ -129,7 +129,7 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
                   所属门店
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.class?.preset[info?.new_value?.store.name] }}
+                  {{ info?.new_value?.store.name }}
                 </div>
               </div>
               <div class="flex-between">

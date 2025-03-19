@@ -86,7 +86,7 @@ function handleValidateButtonClick() {
       submit()
     }
     else {
-      $toast.error('请盘点完善信息')
+      $toast.error('请完善盘点信息')
     }
   })
 }
@@ -120,7 +120,7 @@ const canShowFilter = (item: FilterWhere<Check>) => {
           <div class="w-[40%] text-[#FFF] pl-4">
             <product-manage-company />
           </div>
-          <div :id="Key" :key="Key" class="rounded-6 bg-white w-auto blur-bga top">
+          <div :id="Key" :key="Key" class="rounded-6 bg-white w-auto blur-bga">
             <common-gradient title="新增盘点单">
               <template #body>
                 <n-form ref="formRef" :model="params" :rules="rules">
@@ -131,7 +131,7 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                           <n-select
                             v-model:value="params[item.name]"
                             :default-value="0 || '' || undefined || null"
-                            menu-size="large"
+                            size="large"
                             :placeholder="`选择${item.label}`"
                             :options="presetToSelect(item.name)"
                             clearable
@@ -146,10 +146,10 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                           </div>
                         </template>
                         <template v-if="item.input === 'switch'">
-                          <n-switch v-model="params[item.name]" :style="{ 'border-radius': '20px' }" round />
+                          <n-switch v-model="params[item.name]" size="large" :style="{ 'border-radius': '20px' }" round />
                         </template>
                         <template v-if="item.input === 'textarea'">
-                          <n-input v-model="params[item.name]" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 1, maxRows: 2 }" />
+                          <n-input v-model="params[item.name]" :placeholder="`输入${item.label}`" type="textarea" size="large" maxlength="255" round :autosize="{ minRows: 1, maxRows: 2 }" />
                         </template>
                         <template v-if="item.input === 'search'">
                           <template v-if="item.name === 'inventory_person_id' || item.name === 'inspector_id'">
@@ -161,6 +161,7 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                                 value: v.id,
                               }))"
                               clearable
+                              size="large"
                               remote
                               @focus="() => { getStoreStaffList({ id: myStore.id }) }"
                             />
@@ -170,8 +171,10 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                           <n-select
                             v-model:value="params[item.name]"
                             multiple
+                            size="large"
                             :placeholder="`请选择${item.label}`"
                             :options="presetToSelect(item.name)"
+                            :consistent-menu-width="false"
                             clearable
                           />
                         </template>

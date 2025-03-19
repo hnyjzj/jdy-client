@@ -197,7 +197,7 @@ function getModelTitle() {
 <template>
   <div>
     <common-layout-center>
-      <div class="color-[#fff] px-[16px] pt-[12px] flex justify-between">
+      <div class="color-[#fff] sticky top-0 z-3 bg-[#3875C5] px-[16px] py-[12px] flex justify-between">
         <product-manage-company />
         <div class="flex-1 px-2 sm:px-4">
           <product-filter-search @submit="searchListFn" />
@@ -213,7 +213,7 @@ function getModelTitle() {
       </div>
       <div class="px-[16px] pb-10">
         <!-- 工作台入口 -->
-        <div class="mt-6 mb-14 col-12">
+        <div class="mt-2 mb-14 col-12">
           <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="delBench" @update="updateBench" @fold="fold" @change-page="changePage" />
           <template v-if="isSetup">
             <button style="all: unset;">

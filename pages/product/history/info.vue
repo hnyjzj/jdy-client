@@ -85,7 +85,7 @@ function isUpdate(key: ProductKey) {
                           </template>
                           <template v-else-if="item.input === 'list'">
                             <div class="info-val">
-                              {{ historyInfo.new_value[item.name]?.length ? historyInfo.new_value[item.name].join(',') : '' }}
+                              {{ Array.isArray(historyInfo.new_value[item.name]) && historyInfo.new_value[item.name].length ? historyInfo.new_value[item.name].join(',') : '' }}
                             </div>
                           </template>
                         </template>

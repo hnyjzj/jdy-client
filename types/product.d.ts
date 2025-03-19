@@ -213,10 +213,6 @@ interface ProductHistories {
    */
   key: string
   /**
-   * 旧值
-   */
-  old_value: Product
-  /**
    * 操作人ID
    */
   operator_id: string
