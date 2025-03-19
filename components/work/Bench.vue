@@ -92,9 +92,9 @@ function changePageBench(bench: WorkBench) {
             <div class="pt-[12px] pb-[16px] text-size-[14px]" :class="!work.is_fold ? 'block2' : 'hidden2'">
               <template v-if="isSetup">
                 <button style="all: unset;" @click="addBench(work.id, 2)">
-                  <div class="flex items-center mb-3 cursor-pointer">
-                    <icon name="i-icon:addsth" :size="26" color="#666666" />
-                    <div class="text-[12px] text-[#666666] pl-1">
+                  <div class="flex items-center mb-3 cursor-pointer text-color-light">
+                    <icon name="i-icon:addsth" :size="26" />
+                    <div class="text-[12px]  pl-1">
                       添加分类
                     </div>
                   </div>
@@ -133,9 +133,9 @@ function changePageBench(bench: WorkBench) {
                     <div class="line" />
                     <template v-if="isSetup">
                       <button style="all: unset;">
-                        <div class="flex items-center cursor-pointer" @click="addBench(child?.id, 3)">
-                          <icon name="i-icon:addsth" color="#666666" />
-                          <div class="text-[12px] text-[#666666] pl-1">
+                        <div class="flex items-center cursor-pointer text-color-light" @click="addBench(child?.id, 3)">
+                          <icon name="i-icon:addsth" />
+                          <div class="text-[12px] pl-1">
                             添加栏目
                           </div>
                         </div>

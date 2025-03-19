@@ -8,7 +8,9 @@ interface Request<T> {
 
 const toLogin = (response: any) => {
   if (response._data?.code === HttpCode.UNAUTHORIZED) {
-    navigateTo('/login')
+    useRouter().push('/login')
+
+    // navigateTo('/login')
   }
 }
 
