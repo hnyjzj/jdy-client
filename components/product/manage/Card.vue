@@ -13,8 +13,10 @@ const props = defineProps<{
           <div
             class="py-[8px] px-[16px] bg-gradient-linear-[90deg,#E9F1FE,#95D5FB] dark:bg-gradient-linear-[90deg,#23324B01,#2A3E5F01,#70B8E8] rounded-t-[24px] flex-start text-black dark:text-[#FFF]">
             <slot name="top" :info="item">
-              <common-avatar :size="24" />
-              <div class="ml-[8px] font-semibold line-height-[20px] text-size-[14px]">
+              <div v-if="item?.images?.length" class="pr-2">
+                <common-avatar :size="24" :img="item?.images[0]" />
+              </div>
+              <div class="font-semibold line-height-[20px] text-size-[14px]">
                 {{ item?.name }}
               </div>
             </slot>

@@ -53,6 +53,9 @@ function pull() {
 // 提交入库
 async function submitGoods(data: Product[]) {
   if (data?.length) {
+    if (!myStore.value?.id) {
+      $toast.warning('请先选择门店')
+    }
     const impParams = { products: data, store_id: myStore.value?.id }
     const res = await importProduct(impParams)
 
@@ -72,14 +75,14 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
   pages.value = 1
   productList.value = []
   const res = await getList(filterData.value)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     isFilter.value = false
     if (!isSearch) {
       $toast.success('筛选成功')
     }
     return
   }
-  $toast.error(res.message ?? '失败')
+  $toast.error(res?.message ?? '失败')
 }
 
 /** 编辑 */

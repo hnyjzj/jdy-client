@@ -18,21 +18,21 @@ if (route.query?.type) {
   type.value = route.query.type
   params.value.type = Number(type.value)
 }
+
 if (route.query?.enter_id) {
   enterId.value = route.query.enter_id
-  params.value.product_enter_id = route.query.enter_id as string
   await getEnterInfo(enterId.value)
+  params.value.product_enter_id = route.query.enter_id as string
+  params.value.from_store_id = enterInfo.value?.store_id
   params.value.method = 1
   params.value.type = 1
   params.value.remark = `入库整单调拨[${enterId.value}]`
 }
-
-if (route.query?.enter_id) {
-  params.value.from_store_id = enterInfo.value?.store_id
-}
 else {
-  params.value.from_store_id = myStoreList.value[0].id
+  if (myStoreList.value?.length > 0)
+    params.value.from_store_id = myStoreList.value[0].id
 }
+
 useSeoMeta({
   title: '新增调拨单',
 })

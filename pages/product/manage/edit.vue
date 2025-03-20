@@ -2,16 +2,12 @@
 import type { UploadCustomRequestOptions, UploadFileInfo, UploadOnRemove } from 'naive-ui'
 
 useSeoMeta({
-  title: '查看/编辑货品',
+  title: '编辑',
 })
 const { $toast } = useNuxtApp()
 const { getProductInfo, getProductWhere, updateProductInfo, uploadProductImg } = useProductManage()
 const { productInfo, filterList, filterListToArray } = storeToRefs(useProductManage())
 
-// 成品列表详情
-useSeoMeta({
-  title: '列表详情',
-})
 const route = useRoute()
 const productParams = ref<Product>({} as Product)
 /** 图片列表 */
@@ -83,10 +79,10 @@ function transformData() {
     }
     productParams.value = { ...productParams.value, [k]: v }
   }
-  updata()
+  updateData()
 }
 
-async function updata() {
+async function updateData() {
   const res = await updateProductInfo(productParams.value)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('更新成功')

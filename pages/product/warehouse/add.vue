@@ -84,7 +84,7 @@ async function submit() {
     return $toast.error('请先选择门店')
   }
   if (!enterId.value)
-    return
+    return $toast.error('入库单ID不存在，无法继续操作')
   // 证书添加到参数里
   const arr = certificate.value.filter(item => item)
   if (arr?.length) {
