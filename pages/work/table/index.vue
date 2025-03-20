@@ -195,7 +195,7 @@ function getModelTitle() {
 </script>
 
 <template>
-  <div>
+  <div class="px-4 sm:px-0">
     <div class="sticky top-0 z-3 bg-[#3875C5]">
       <common-layout-center>
         <div class="color-[#fff] py-[12px] flex justify-between">
