@@ -35,7 +35,7 @@ async function getList(where = {} as Partial<Allocate>) {
   params.where = where
 
   const res = await getAllocate(params)
-  if (res.data?.list.length) {
+  if (res?.data?.list.length) {
     pages.value++
   }
   else {
@@ -62,11 +62,11 @@ async function submitWhere(f: Partial<Allocate>) {
   isCanPull.value = true
   allocateList.value = []
   const res = await getList(filterData.value)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     isFilter.value = false
     return $toast.success('筛选成功')
   }
-  $toast.error(res.message ?? '筛选失败')
+  $toast.error(res?.message ?? '筛选失败')
 }
 </script>
 

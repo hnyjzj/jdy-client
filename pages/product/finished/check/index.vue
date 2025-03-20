@@ -38,7 +38,7 @@ async function getList(where = {} as Partial<Check>) {
   }
 
   const res = await getCheckList(params)
-  if (res.data?.list.length) {
+  if (res?.data?.list.length) {
     pages.value++
   }
   else {
@@ -68,11 +68,11 @@ async function submitWhere(f: Partial<Check>) {
   isCanPull.value = true
   checkList.value = []
   const res = await getList(filterData.value)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     isFilter.value = false
     return $toast.success('筛选成功')
   }
-  $toast.error(res.message ?? '筛选失败')
+  $toast.error(res?.message ?? '筛选失败')
 }
 
 /** 多选值 */

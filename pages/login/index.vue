@@ -49,7 +49,7 @@ const QWLogin = async () => {
 
   const redirect_url = route.query?.redirect_url as string
   const res = await authStore.getOauthUri(redirect_url || '')
-  if (res.code !== HttpCode.SUCCESS) {
+  if (res?.code !== HttpCode.SUCCESS) {
     $toast.error(res?.message || '登录失败')
   }
 }

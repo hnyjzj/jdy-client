@@ -38,12 +38,12 @@ const cancelAdd = () => {
 const addStaff = async () => {
   formlist.value.platform = 'account'
   const res = await createStaff(formlist.value)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     dialogShow.value = true
   }
   else {
-    $toast.error(res.message)
+    $toast.error(res?.message || '创建失败')
   }
 }
 // /jssdk/wxwork  企业微信授权添加
@@ -62,22 +62,22 @@ const wxwordAdd = async () => {
     })
   }
   const res = await createStaff(params.value)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     dialogShow.value = true
   }
   else {
-    $toast.error(res.message)
+    $toast.error(res?.message || '创建失败')
   }
 }
 const uploadFile = async (file: any, onfinish?: () => void) => {
   try {
-    const res = await uploadAvatar({ avatar: file || undefined })
-    if (res.data.value?.code !== HttpCode.SUCCESS) {
-      $toast.error(res.data.value?.message || '上传失败')
+    const { data } = await uploadAvatar({ avatar: file || undefined })
+    if (data.value?.code !== HttpCode.SUCCESS) {
+      $toast.error(data.value?.message || '上传失败')
       return false
     }
-    const url = res.data.value.data.url
+    const url = data.value.data.url
     //  如果有id 说明是 修改logo ,没有id则是新增
     formlist.value.account.avatar = url
     onfinish?.()
