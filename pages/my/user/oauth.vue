@@ -18,8 +18,8 @@ onMounted(async () => {
 
   const redirect_url = route.query?.redirect_url as string
   if (code) {
-    const { code: rcode, message } = await staff.updateStaff({ platform: 'wxwork', wxwork: { code } })
-    if (rcode === HttpCode.SUCCESS) {
+    const res = await staff.updateStaff({ platform: 'wxwork', wxwork: { code } })
+    if (res?.code === HttpCode.SUCCESS) {
       content.value = {
         title: '授权成功',
         loading: true,
@@ -31,7 +31,7 @@ onMounted(async () => {
     else {
       content.value = {
         title: '授权失败',
-        content: message,
+        content: res?.message,
         loading: false,
       }
     }

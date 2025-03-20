@@ -73,14 +73,14 @@ export const useStaff = defineStore('staffStore', {
     async getStaffWhere() {
       // /staff/where
       const { data } = await https.get<Where<Staff>, null>('/staff/where')
-      if (data.value.code === HttpCode.SUCCESS) {
+      if (data.value?.code === HttpCode.SUCCESS) {
         this.filterList = data.value.data
         this.filterListToArray = sortArr(this.filterList)
       }
     },
     async getStaffInfo(req: { id: string }) {
       const { data } = await https.post<Staff, { id: string }>('/staff/info', req)
-      if (data.value.code === HttpCode.SUCCESS) {
+      if (data.value?.code === HttpCode.SUCCESS) {
         this.staffInfo = data.value.data
       }
     },

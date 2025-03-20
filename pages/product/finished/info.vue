@@ -27,28 +27,28 @@ async function loss() {
     return
   }
   const res = await damageProduct({ code: productInfo.value.code, reason: reason.value })
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     isModel.value = false
     reason.value = ''
     getProductInfo(productInfo.value.code)
     $toast.success('报损成功')
   }
   else {
-    $toast.error(res.message ?? '报损失败')
+    $toast.error(res?.message ?? '报损失败')
   }
 }
 
 // 转换
 async function convert() {
   const res = await convertProduct({ code: productInfo.value.code, type: 2 })
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     isModel.value = false
     reason.value = ''
     getProductInfo(productInfo.value.code)
     $toast.success('转换成功')
   }
   else {
-    $toast.error(res.message ?? '转换失败')
+    $toast.error(res?.message ?? '转换失败')
   }
 }
 </script>

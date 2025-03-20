@@ -25,7 +25,7 @@ async function getList(where = {} as Partial<Product>) {
   }
 
   const res = await getProductList(params)
-  if (res.data?.list.length) {
+  if (res?.data?.list.length) {
     pages.value++
   }
   else {
@@ -50,14 +50,14 @@ function pull() {
 // 提交入库
 async function submitGoods(data: Product[]) {
   if (data?.length) {
-    const { code, message } = await importProduct(data)
-    if (code === HttpCode.SUCCESS) {
+    const res = await importProduct(data)
+    if (res?.code === HttpCode.SUCCESS) {
       isModel.value = false
       pages.value = 1
       await getList()
       return $toast.success('导入成功')
     }
-    $toast.error(message ?? '导入失败')
+    $toast.error(res?.message ?? '导入失败')
   }
 }
 
@@ -68,11 +68,11 @@ async function submitWhere(f: Partial<Product>) {
   isCanPull.value = true
   productList.value = []
   const res = await getList(filterData.value)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     isFilter.value = false
     return $toast.success('筛选成功')
   }
-  $toast.error(res.message ?? '筛选失败')
+  $toast.error(res?.message ?? '筛选失败')
 }
 
 /** 编辑 */
