@@ -2,6 +2,7 @@
 const props = defineProps<{
   data: Member
 }>()
+// 企业微信、单聊入口所需页面
 
 const emit = defineEmits<{
   goEdit: [id: string]
@@ -287,9 +288,8 @@ const backtrack = () => {
       </div>
     </template>
   </div>
-  <common-button-bottom
-    confirm-text="编辑"
-    cancel-text="返回"
+  <common-button-One
+    text="编辑"
     @confirm="() => emit('goEdit', props.data.id)"
     @cancel="backtrack"
   />

@@ -102,8 +102,7 @@ class WxWork {
    * 判断用户是从哪个入口打开页面
    */
   getContext = async () => {
-    const res = await wx.getContext()
-    return res.entry
+    return await wx.getContext()
   }
 
   /**
@@ -111,11 +110,8 @@ class WxWork {
    */
   getUserId = async () => {
     const res = await wx.getCurExternalContact()
-    if (res.errMsg === 'getCurExternalContact:ok') {
+    if (res?.userId) {
       return res.userId
-    }
-    else {
-      console.error('getUserId error', res.errMsg)
     }
   }
 

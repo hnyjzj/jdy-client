@@ -6,15 +6,17 @@ export const useWxworkStore = defineStore('Wxwork', {
   }),
   actions: {
     async useWxWork() {
-      if (!isWxWorkClient() && !isWeChatClient()) {
-        return
-      }
       if (!this.tickets.corp_id) {
-        await this.getTickets({ platform: 'wxwork', type: 'agent' })
+        const res = await this.getTickets({ platform: 'wxwork' })
+        if (!res) {
+          return
+        }
       }
+      // 使用现有tickets创建wx对象
       const wx = wxWork(this.tickets)
+      // 检查jsapi权限
       await wx.checkJsApi()
-
+      // 返回wx对象
       return wx
     },
     async getTickets(req: ticketReq) {
@@ -22,6 +24,8 @@ export const useWxworkStore = defineStore('Wxwork', {
 
       if (data.value?.code === HttpCode.SUCCESS) {
         this.tickets = data.value.data
+
+        return data.value.data
       }
     },
   },

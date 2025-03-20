@@ -65,25 +65,10 @@ const backtrack = () => {
 }
 
 const execute = async () => {
-  if (route.query.id) {
-    const res = await updateMemberInfo(memberParams.value)
-    if (res?.code === HttpCode.SUCCESS) {
-      $toast.success('编辑成功')
-      backtrack()
-    }
-    else {
-      $toast.warning(res?.message ?? '编辑失败')
-    }
-  }
-  else {
-    const res = await createMember(memberParams.value)
-    if (res?.code === HttpCode.SUCCESS) {
-      $toast.success('新增成功')
-      backtrack()
-    }
-    else {
-      $toast.warning(res?.message ?? '新增失败')
-    }
+  const res = await createMember(memberParams.value)
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('新增成功')
+    backtrack()
   }
 }
 </script>

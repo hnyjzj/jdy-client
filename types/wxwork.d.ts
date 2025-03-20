@@ -6,5 +6,4 @@ interface ticketRes {
 }
 interface ticketReq {
   platform: 'wxwork'
-  type: 'jsapi' | 'agent'
 }

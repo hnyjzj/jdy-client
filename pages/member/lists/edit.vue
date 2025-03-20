@@ -72,7 +72,7 @@ await getStoreStaffList({ id: myStore.value.id })
 
 // 渲染日期信息
 const conductEditDate = () => {
-  if (routeQuery.value.id) {
+  if (routeQuery.value.id || routeQuery.value.external_user_id) {
     const birthdayDate = new Date(memberParams.value.birthday)
     const birthdayFormattedDate = birthdayDate.getTime()
 
@@ -102,6 +102,7 @@ const showToUser = ref(showGender())
 
 const backtrack = () => {
   const { back } = useRouter()
+
   back()
 }
 
@@ -126,7 +127,7 @@ const execute = async () => {
       return
     }
 
-    if (res.code === HttpCode.SUCCESS) {
+    if (res?.code === HttpCode.SUCCESS) {
       $toast.success('编辑成功')
       backtrack()
     }
