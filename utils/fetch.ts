@@ -1,8 +1,8 @@
 import type { AsyncData } from '#app'
 
 interface Request<T> {
-  code: number
-  message: string
+  code?: number
+  message?: string
   data: T
 }
 
