@@ -96,6 +96,7 @@ async function updata() {
     $toast.warning(res?.message ?? '更新失败')
   }
 }
+
 // 取消更新 数据恢复为修改之前
 function cancelUpdata() {
   productParams.value = JSON.parse(JSON.stringify(productInfo.value))
@@ -109,11 +110,13 @@ const beforeUpload = (data: any) => {
   }
 }
 
-// 上传
-async function customRequest({ file }: UploadCustomRequestOptions) {
+/**
+ * 上传详情图
+ */
+const customRequest = useDebounceFn(async ({ file }: UploadCustomRequestOptions) => {
   if (!file?.file)
     return
-  // 上传接口
+
   const params = {
     image: file.file,
     product_id: productInfo.value.code,
@@ -121,18 +124,15 @@ async function customRequest({ file }: UploadCustomRequestOptions) {
 
   try {
     const res = await uploadProductImg(params)
+
     if (res?.code === HttpCode.SUCCESS) {
-      // 最新图片添加到照片墙
-      previewFileList.value.push(
-        {
-          id: `${previewFileList.value.length}`,
-          name: '图片',
-          status: 'finished',
-          url: ImageUrl(res?.data.url),
-        },
-      )
-      $toast.success('图片上传成功')
-      // 保存修改到服务器
+      // 将图片添加到照片墙
+      previewFileList.value.push({
+        id: `${previewFileList.value.length}`,
+        name: '图片',
+        status: 'finished',
+        url: ImageUrl(res?.data.url),
+      })
       await updateProductInfo(productParams.value)
     }
     else {
@@ -142,7 +142,8 @@ async function customRequest({ file }: UploadCustomRequestOptions) {
   catch (error) {
     throw new Error(`图片上传失败: ${error || '未知错误'}`)
   }
-}
+}, 300)
+
 /** 值为0时 找不到匹配项 显示未选择 */
 function filteredOptions(preset: any, val: number) {
   if (val === 0) {
@@ -152,8 +153,11 @@ function filteredOptions(preset: any, val: number) {
   return preset
 }
 
+/** 删除照片墙图片 */
 function removeImg(data: { index: number }) {
-  previewFileList.value.splice(data.index, 1)
+  const tempList = JSON.parse(JSON.stringify(previewFileList.value))
+  tempList.splice(data.index, 1)
+  previewFileList.value = tempList
 }
 </script>
 
@@ -172,7 +176,6 @@ function removeImg(data: { index: number }) {
               @remove="(file) => removeImg(file)"
             />
           </div>
-          <div>{{ previewFileList }}</div>
           <div class="flex-1 grid gap-y-2 text-[#FFF] text-[12px] my-4">
             <div class="flex justify-between">
               <div>状态</div>
