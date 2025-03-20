@@ -3,7 +3,7 @@ const { $toast } = useNuxtApp()
 const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 const { getCheckList, getCheckWhere } = useCheck()
-const { checkList, checkFilterListToArray, checkTotal } = storeToRefs(useCheck())
+const { checkList, checkFilterList, checkFilterListToArray, checkTotal } = storeToRefs(useCheck())
 const { storesList } = storeToRefs(useStores())
 const { getStoreList, getMyStore } = useStores()
 const storeCol = ref()
@@ -119,6 +119,11 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
     <div class="px-[16px] pb-20">
       <template v-if="checkList?.length">
         <product-manage-card :list="checkList">
+          <template #top="{ info }">
+            <div class="status-title" :class="info.status === 1 ? 'orange' : info.status === 2 ? 'bule' : 'grey'">
+              {{ checkFilterList.status?.preset[info.status] }}
+            </div>
+          </template>
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
               <template v-for="(item, index) in checkFilterListToArray" :key="index">
@@ -214,5 +219,17 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
     background: linear-gradient(to bottom, #1b6ceb, #6da6ff);
     box-shadow: #1111113d 0px 2px 2px 1px;
   }
+}
+.status-title {
+  --uno: 'px-2 rounded-[8px] text-#FFF';
+}
+.orange {
+  --uno: 'bg-[rgba(221,146,0,1)]';
+}
+.bule {
+  --uno: 'bg-#1b6ceb';
+}
+.grey {
+  --uno: 'bg-[#999]';
 }
 </style>

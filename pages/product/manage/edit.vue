@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UploadCustomRequestOptions } from 'naive-ui'
+import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 
 useSeoMeta({
   title: '查看/编辑货品',
@@ -14,16 +14,35 @@ useSeoMeta({
 })
 const route = useRoute()
 const productParams = ref<Product>({} as Product)
-/** 文件上传列表 */
-const previewFileList = ref<any[]>([])
+/** 图片列表 */
+const previewFileList = ref<Array<UploadFileInfo>>([])
 async function getInfo() {
   if (route.query.code) {
     await getProductInfo(route.query.code as string)
+    initImgWall()
     productParams.value = productInfo.value
     // 证书手动添加一个数组项
     if (!productInfo.value.certificate) {
       productInfo.value.certificate = ['']
     }
+  }
+}
+
+/** 照片墙照片初始化 */
+function initImgWall() {
+  if (productInfo.value?.images?.length) {
+    const arr: Array<UploadFileInfo> = []
+    productInfo.value.images.forEach((item, index) => {
+      arr.push(
+        {
+          id: `${index}`,
+          name: '图片',
+          status: 'finished',
+          url: ImageUrl(item),
+        },
+      )
+    })
+    previewFileList.value = arr
   }
 }
 
@@ -52,6 +71,15 @@ function transformData() {
         break
       default:
         break
+    }
+    if (previewFileList.value.length) {
+      const imgData: string[] = []
+      previewFileList.value.forEach((item) => {
+        if (item.url) {
+          imgData.push(item.url)
+        }
+      })
+      productParams.value.images = imgData
     }
     productParams.value = { ...productParams.value, [k]: v }
   }
@@ -94,7 +122,15 @@ async function customRequest({ file }: UploadCustomRequestOptions) {
   try {
     const res = await uploadProductImg(params)
     if (res.code === HttpCode.SUCCESS) {
-      productParams.value.images.push(res.data.url)
+      // 最新图片添加到照片墙
+      previewFileList.value.push(
+        {
+          id: `${previewFileList.value.length}`,
+          name: '图片',
+          status: 'finished',
+          url: ImageUrl(res.data.url),
+        },
+      )
       $toast.success('图片上传成功')
       // 保存修改到服务器
       await updateProductInfo(productParams.value)
@@ -123,13 +159,6 @@ function filteredOptions(preset: any, val: number) {
       <div class="px-4 pt-5">
         <div>
           <div class="flex items-center">
-            <div class="flex flex-wrap">
-              <template v-for="(img, index) in productInfo.images" :key="index">
-                <div>
-                  <img :src="ImageUrl(img)" width="100" height="100">
-                </div>
-              </template>
-            </div>
             <n-upload
               action="#"
               list-type="image-card"
@@ -138,6 +167,7 @@ function filteredOptions(preset: any, val: number) {
               @before-upload="beforeUpload"
             />
           </div>
+          <div>{{ previewFileList }}</div>
           <div class="flex-1 grid gap-y-2 text-[#FFF] text-[12px] my-4">
             <div class="flex justify-between">
               <div>状态</div>

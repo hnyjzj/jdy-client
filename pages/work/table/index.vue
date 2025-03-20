@@ -196,22 +196,26 @@ function getModelTitle() {
 
 <template>
   <div>
-    <common-layout-center>
-      <div class="color-[#fff] sticky top-0 z-3 bg-[#3875C5] px-[16px] py-[12px] flex justify-between">
-        <product-manage-company />
-        <div class="flex-1 px-2 sm:px-4">
-          <product-filter-search @submit="searchListFn" />
-        </div>
-        <div
-          class="flex items-center justify-end cursor-pointer"
-          @click="set">
-          <icon name="i-svg:setup" :size="14" color="#FFF" />
-          <div class="text-[#fff] text-[14px] pl-1">
-            {{ isSetup ? '退出' : '编辑' }}
+    <div class="sticky top-0 z-3 bg-[#3875C5]">
+      <common-layout-center>
+        <div class="color-[#fff] py-[12px] flex justify-between">
+          <product-manage-company />
+          <div class="flex-1 px-2 sm:px-4">
+            <product-filter-search @submit="searchListFn" />
+          </div>
+          <div
+            class="flex items-center justify-end cursor-pointer"
+            @click="set">
+            <icon name="i-svg:setup" :size="14" color="#FFF" />
+            <div class="text-[#fff] text-[14px] pl-1">
+              {{ isSetup ? '退出' : '编辑' }}
+            </div>
           </div>
         </div>
-      </div>
-      <div class="px-[16px] pb-10">
+      </common-layout-center>
+    </div>
+    <common-layout-center>
+      <div class="pb-10">
         <!-- 工作台入口 -->
         <div class="mt-2 mb-14 col-12">
           <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="delBench" @update="updateBench" @fold="fold" @change-page="changePage" />
