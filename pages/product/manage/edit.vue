@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
+import type { UploadCustomRequestOptions, UploadFileInfo, UploadOnRemove } from 'naive-ui'
 
 useSeoMeta({
   title: '查看/编辑货品',
@@ -151,6 +151,10 @@ function filteredOptions(preset: any, val: number) {
   }
   return preset
 }
+
+function removeImg(data: { index: number }) {
+  previewFileList.value.splice(data.index, 1)
+}
 </script>
 
 <template>
@@ -165,6 +169,7 @@ function filteredOptions(preset: any, val: number) {
               :default-file-list="previewFileList"
               :custom-request="customRequest"
               @before-upload="beforeUpload"
+              @remove="(file) => removeImg(file)"
             />
           </div>
           <div>{{ previewFileList }}</div>
