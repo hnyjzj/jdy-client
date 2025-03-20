@@ -54,12 +54,12 @@ function transformData() {
 
 async function updata() {
   const res = await updateProductInfo(productPamas.value)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     $toast.success('更新成功')
     await getInfo()
   }
   else {
-    $toast.warning(res.message ?? '更新失败')
+    $toast.warning(res?.message ?? '更新失败')
   }
 }
 // 取消更新 数据恢复为修改之前

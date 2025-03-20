@@ -32,12 +32,12 @@ await getStoreList({ page: 1, limit: 20 })
 await changeStoer()
 async function submit() {
   const res = await createAllocate(params.value as AllocateReq)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     params.value = {} as AllocateReq
   }
   else {
-    $toast.error(res.message ?? '创建失败')
+    $toast.error(res?.message ?? '创建失败')
   }
 }
 

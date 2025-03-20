@@ -19,7 +19,7 @@ export const useAllocate = defineStore('Allocate', {
     async getAllocate(pamars: ReqList<Allocate>) {
       try {
         const { data } = await https.post<ResList<Allocate>, ReqList<Allocate>>('/product/allocate/list', pamars)
-        if (data.value.code === HttpCode.SUCCESS) {
+        if (data.value?.code === HttpCode.SUCCESS) {
           this.allocateTotal = data.value.data.total
           if (pamars.page === 1) {
             this.allocateList = data.value.data.list
@@ -51,7 +51,7 @@ export const useAllocate = defineStore('Allocate', {
     async getAllocateInfo(id: Allocate['id']) {
       try {
         const { data } = await https.post<Allocate, { id: Allocate['id'] }>('/product/allocate/info', { id })
-        if (data.value.code === HttpCode.SUCCESS) {
+        if (data.value?.code === HttpCode.SUCCESS) {
           this.allocateInfo = data.value.data
         }
       }

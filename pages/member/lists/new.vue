@@ -65,21 +65,25 @@ const backtrack = () => {
 }
 
 const execute = async () => {
-  try {
-    // 新增会员
+  if (route.query.id) {
+    const res = await updateMemberInfo(memberParams.value)
+    if (res?.code === HttpCode.SUCCESS) {
+      $toast.success('编辑成功')
+      backtrack()
+    }
+    else {
+      $toast.warning(res?.message ?? '编辑失败')
+    }
+  }
+  else {
     const res = await createMember(memberParams.value)
-    if (res.code === HttpCode.SUCCESS) {
+    if (res?.code === HttpCode.SUCCESS) {
       $toast.success('新增成功')
       backtrack()
-      return
     }
-
-    // 处理失败情况
-    $toast.warning(res?.message ?? '新增失败')
-  }
-  catch (error) {
-    $toast.error('操作失败，请稍后重试')
-    console.error(error)
+    else {
+      $toast.warning(res?.message ?? '新增失败')
+    }
   }
 }
 </script>

@@ -24,7 +24,7 @@ async function getList(where = {} as Partial<Enter>) {
   }
 
   const res = await getEnterList(params)
-  if (res.data?.list.length) {
+  if (res?.data?.list.length) {
     pages.value++
   }
   else {
