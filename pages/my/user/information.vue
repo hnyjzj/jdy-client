@@ -77,11 +77,11 @@ const beforeRead = (file: any) => {
 const afterRead = async (file: any) => {
   // 上传文件接口
   const res = await staff.uploadAvatar({ avatar: file.file })
-  if (res.data.value.code !== HttpCode.SUCCESS) {
+  if (res.data.value?.code !== HttpCode.SUCCESS) {
     $toast.error(res.data.value?.message || '上传失败')
   }
-  userinfoForm.value.avatar = res.data.value.data.url
-  fileList.value = [{ url: ImageUrl(res.data.value.data.url), isImage: true }]
+  userinfoForm.value.avatar = res.data.value?.data.url as string
+  fileList.value = [{ url: ImageUrl(res.data.value?.data.url), isImage: true }]
 }
 
 /**
@@ -106,7 +106,7 @@ const submitForm = async () => {
   const res = await staff.updateStaff({ platform: 'account', account: userinfoForm.value })
 
   // 根据响应结果判断更新是否成功
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     // 更新成功时，显示成功提示信息
     $toast.success('更新成功')
     await getUserInfo()

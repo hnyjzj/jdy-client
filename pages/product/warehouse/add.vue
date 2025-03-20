@@ -95,7 +95,7 @@ async function submit() {
     product_enter_id: enterId.value,
   }
   const res = await addEnterProduct(impParams)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     params.value = {} as Product
     setTimeout(() => {
@@ -103,7 +103,7 @@ async function submit() {
     }, 1000)
   }
   else {
-    $toast.error(res.message ?? '创建失败')
+    $toast.error(res?.message ?? '创建失败')
   }
 }
 const presetToSelect = (key: keyof Product) => {

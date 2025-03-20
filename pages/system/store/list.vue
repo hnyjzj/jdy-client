@@ -53,7 +53,7 @@ const newAdd = () => {
 // 调用新增门店接口
 const newStore = async () => {
   const res = await createStore(addorUpdateForm.value)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建门店成功')
     reastAddForm()
     addOrUpdateShow.value = false
@@ -61,7 +61,7 @@ const newStore = async () => {
     await getStoreList({ page: 1, limit: 12 })
   }
   else {
-    $toast.error(res.message)
+    $toast.error(res?.message ?? '创建门店失败')
   }
 }
 
@@ -77,7 +77,7 @@ const deleteStoreFn = async (val: string) => {
 // 确认删除
 const confirmDelete = async () => {
   const res = await deleteStore(nowDeleteId.value)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     $toast.success('删除成功')
     storesList.value = []
     await getStoreList({ page: 1, limit: 12 })
@@ -101,7 +101,7 @@ const edit = (val: string) => {
 // 调用更新门店接口
 const editStore = async () => {
   const res = await updateStore(addorUpdateForm.value)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     $toast.success('更新成功')
     addOrUpdateShow.value = false
     storesList.value = []
@@ -127,7 +127,7 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
       delete (upParams.store_id)
     }
     const res = await uploadImage(upParams)
-    if (res.data.value.code !== HttpCode.SUCCESS) {
+    if (res.data.value?.code !== HttpCode.SUCCESS) {
       $toast.error(res.data.value?.message || '上传失败')
       return false
     }

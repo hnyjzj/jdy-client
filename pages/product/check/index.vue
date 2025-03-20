@@ -67,14 +67,14 @@ async function submitWhere(f: Partial<Check>, isSearch = false) {
   pages.value = 1
   checkList.value = []
   const res = await getList(filterData.value)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     isFilter.value = false
     if (!isSearch) {
       $toast.success('筛选成功')
     }
     return
   }
-  $toast.error(res.message ?? '筛选失败')
+  $toast.error(res?.message ?? '筛选失败')
 }
 
 /** 多选值 */

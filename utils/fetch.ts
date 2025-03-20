@@ -5,15 +5,15 @@ interface Request<T> {
   message: string
   data: T
 }
-
-const toLogin = (response: any) => {
-  if (response._data?.code === HttpCode.UNAUTHORIZED) {
-    useRouter().push('/login')
-
-    // navigateTo('/login')
-  }
+const toLogin = () => {
+  const route = useRoute()
+  navigateTo({
+    path: '/login',
+    query: {
+      redirect_url: encodeURIComponent(route.path),
+    },
+  })
 }
-
 class Https {
   BASE_URL: string = import.meta.env.VITE_BASE_API || ''
   authToken: string = ''
@@ -30,6 +30,7 @@ class Https {
   //   middleware
   async fetchApi<T>(url: string, opt: any) {
     try {
+      const nuxapp = useNuxtApp()
       const res = await useFetch(this.BASE_URL + url, {
         onRequest({ options }) {
           options.method = opt.method
@@ -39,15 +40,15 @@ class Https {
         },
 
         onResponse({ response }) {
-          toLogin(response)
+          if (response?.status === HttpCode.UNAUTHORIZED || response?._data?.code === HttpCode.UNAUTHORIZED) {
+            nuxapp.runWithContext(() => {
+              toLogin()
+            })
+          }
         },
-        onResponseError({ response }) {
-          toLogin(response)
-        },
-
       })
 
-      return res as AsyncData<Request<T>, Error>
+      return res as AsyncData<Request<T> | undefined, Error>
     }
     catch (error) {
       console.error('Fetch failed:', error)

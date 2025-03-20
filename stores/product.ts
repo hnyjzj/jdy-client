@@ -35,7 +35,7 @@ export const useProductManage = defineStore('ProductManage', {
       try {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
         const { data } = await https.post<ResList<Product>, ReqList<Product>>('/product/list', pamars)
-        if (data.value.code === HttpCode.SUCCESS) {
+        if (data.value?.code === HttpCode.SUCCESS) {
           this.productListTotal = data.value.data.total
           this.productList = data.value.data.list
         }
@@ -73,7 +73,7 @@ export const useProductManage = defineStore('ProductManage', {
     async getProductInfo(code: Product['code']) {
       try {
         const { data } = await https.post<Product, { code: Product['code'] }>('/product/info', { code })
-        if (data.value.code === HttpCode.SUCCESS) {
+        if (data.value?.code === HttpCode.SUCCESS) {
           this.productInfo = data.value.data
         }
       }
@@ -116,7 +116,7 @@ export const useProductManage = defineStore('ProductManage', {
       try {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
         const { data } = await https.post<ResList<ProductHistories>, ReqList<HistoryWhere>>('/product/history/list', pamars)
-        if (data.value.code === HttpCode.SUCCESS) {
+        if (data.value?.code === HttpCode.SUCCESS) {
           this.historyListTotal = data.value.data.total
           this.productRocordList = data.value.data.list
         }
@@ -130,7 +130,7 @@ export const useProductManage = defineStore('ProductManage', {
     async getProductHistoryInfo(id: ProductHistories['id']) {
       try {
         const { data } = await https.post<ProductHistories, { id: ProductHistories['id'] }>('/product/history/info', { id })
-        if (data.value.code === HttpCode.SUCCESS) {
+        if (data.value?.code === HttpCode.SUCCESS) {
           this.historyInfo = data.value.data
         }
       }

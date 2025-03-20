@@ -73,7 +73,7 @@ export const useMemberManage = defineStore('Member', {
     async getMemberInfo(id: string) {
       try {
         const { data } = await https.post<Member, { id: string }>('/member/info', { id })
-        if (data.value.code === HttpCode.SUCCESS) {
+        if (data.value?.code === HttpCode.SUCCESS) {
           this.memberInfo = data.value.data
         }
       }

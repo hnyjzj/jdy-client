@@ -35,46 +35,46 @@ const goodsStatus = {
 }
 async function cancel() {
   const res = await cancelAllcate(allocateInfo.value?.id)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     await getAllocateInfo(route.query.id as string)
     $toast.success('取消调拨成功')
   }
   else {
-    $toast.error(res.message ?? '取消调拨失败')
+    $toast.error(res?.message ?? '取消调拨失败')
   }
 }
 
 async function confirm() {
   const res = await confirmAllcate(allocateInfo.value?.id)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     await getAllocateInfo(route.query.id as string)
     $toast.success('确认调拨成功')
   }
   else {
-    $toast.error(res.message ?? '确认调拨失败')
+    $toast.error(res?.message ?? '确认调拨失败')
   }
 }
 /** 完成调拨 */
 async function finish() {
   const res = await finishAllcate(allocateInfo.value?.id)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     await getAllocateInfo(route.query.id as string)
     $toast.success('完成调拨成功')
   }
   else {
-    $toast.error(res.message ?? '完成调拨失败')
+    $toast.error(res?.message ?? '完成调拨失败')
   }
 }
 
 /** 删除产品 */
 async function delProduct(code: Product['code']) {
   const res = await remove(allocateInfo.value?.id, code)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     await getAllocateInfo(route.query.id as string)
     $toast.success('删除成功')
   }
   else {
-    $toast.error(res.message ?? '删除失败')
+    $toast.error(res?.message ?? '删除失败')
   }
 }
 
@@ -84,14 +84,14 @@ function create() {
 /** 添加产品 */
 async function addProduct() {
   const res = await add(allocateInfo.value?.id, pCode.value)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     await getAllocateInfo(route.query.id as string)
     $toast.success('添加成功')
     pCode.value = ''
     isAddModel.value = false
   }
   else {
-    $toast.error(res.message ?? '添加失败')
+    $toast.error(res?.message ?? '添加失败')
   }
 }
 async function scanit() {

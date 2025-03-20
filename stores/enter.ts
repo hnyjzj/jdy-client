@@ -21,7 +21,7 @@ export const useEnter = defineStore('EnterStore', {
       try {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
         const { data } = await https.post<ResList<Enter>, ReqList<Enter>>('/product/enter/list', pamars)
-        if (data.value.code === HttpCode.SUCCESS) {
+        if (data.value?.code === HttpCode.SUCCESS) {
           this.EnterListTotal = data.value.data.total
           this.EnterList = data.value.data.list
         }
@@ -78,7 +78,7 @@ export const useEnter = defineStore('EnterStore', {
     async getEnterInfo(id: Enter['id']) {
       try {
         const { data } = await https.post<Enter, { id: Enter['id'] }>('/product/enter/info', { id })
-        if (data.value.code === HttpCode.SUCCESS) {
+        if (data.value?.code === HttpCode.SUCCESS) {
           this.enterInfo = data.value.data
         }
       }

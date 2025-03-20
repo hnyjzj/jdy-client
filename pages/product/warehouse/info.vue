@@ -45,11 +45,11 @@ function sum(key: ProductKey) {
 }
 async function del(params: DelEnterProduct) {
   const res = await delEnterProduct(params)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
     return $toast.success('删除成功')
   }
-  $toast.error(res.message ?? '删除失败')
+  $toast.error(res?.message ?? '删除失败')
 }
 /** 删除入库单里的产品 */
 async function delProduct() {
@@ -84,36 +84,36 @@ const uploadRef = ref()
 // 提交入库
 async function submitGoods(req: Product[]) {
   if (req?.length) {
-    const { code, message, data } = await addEnterProduct({ products: req, product_enter_id: enterInfo.value.id })
-    if (code === HttpCode.SUCCESS) {
+    const res = await addEnterProduct({ products: req, product_enter_id: enterInfo.value.id })
+    if (res?.code === HttpCode.SUCCESS) {
       isChooseModel.value = false
       isImportModel.value = false
       await getInfo()
       uploadRef.value.clearData()
       return $toast.success('批量导入成功')
     }
-    else if (code === HttpCode.ERROR) {
-      let msg = message
-      Object.keys(data).forEach((key) => {
-        msg += `\n条码【${key}】：${data[key]}`
+    else if (res?.code === HttpCode.ERROR) {
+      let msg = res?.message
+      Object.keys(res?.data).forEach((key) => {
+        msg += `\n条码【${key}】：${res?.data[key]}`
       })
       return $toast.error(msg)
     }
-    $toast.error(message ?? '上传失败')
+    $toast.error(res?.message ?? '上传失败')
   }
 }
 
 /** 撤销入库 */
 async function cancel() {
   const res = await cancelEnter(enterInfo.value.id)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
     setTimeout(() => {
       router.go(-1)
     }, 1000)
     return $toast.success('撤销成功')
   }
-  $toast.error(res.message ?? '撤销失败')
+  $toast.error(res?.message ?? '撤销失败')
 }
 
 function clearFun() {
@@ -133,11 +133,11 @@ function finishFun() {
 /** 完成入库 */
 async function finish() {
   const res = await finishEnter(enterInfo.value.id)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
     return $toast.success('完成入库成功')
   }
-  $toast.error(res.message ?? '完成入库失败')
+  $toast.error(res?.message ?? '完成入库失败')
 }
 
 const productEdittIng = ref({} as Product)
@@ -164,7 +164,7 @@ async function submitEdit() {
     product: productParams.value,
   }
   const res = await editEnterProduct(params)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     isEditModel.value = false
     await getInfo()
     return $toast.success('编辑成功')

@@ -53,15 +53,15 @@ async function submitGoods(data: Product[]) {
     if (!myStore.value?.id) {
       return $toast.error('未选择门店，请先选择门店')
     }
-    const { code, message } = await importProduct({ products: data, store_id: myStore.value?.id })
-    if (code === HttpCode.SUCCESS) {
+    const res = await importProduct({ products: data, store_id: myStore.value?.id })
+    if (res?.code === HttpCode.SUCCESS) {
       isModel.value = false
       isBatchImportModel.value = false
       pages.value = 1
       await getList()
       return $toast.success('导入成功')
     }
-    $toast.error(message ?? '导入失败')
+    $toast.error(res?.message ?? '导入失败')
   }
 }
 

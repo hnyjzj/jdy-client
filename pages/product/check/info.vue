@@ -84,7 +84,7 @@ function changeStatus(val: number) {
 /** 提交盘点更改状态 */
 async function submitChange(status: CheckInfo['status']) {
   const res = await changeCheckStatus(checkInfo.value.id, status)
-  if (res.code === 200) {
+  if (res?.code === 200) {
     $toast.success('变更成功')
     getInfo()
   }

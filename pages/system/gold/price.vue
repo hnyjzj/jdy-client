@@ -55,14 +55,14 @@ const productType = {
 }
 async function submit() {
   const data = await setGoldPrice(goldParams.value)
-  if (data.code === HttpCode.SUCCESS) {
+  if (data?.code === HttpCode.SUCCESS) {
     $toast.success('提交今日最新金价成功')
     goldParams.value = []
     await getGoldPrice(myStore.value.id)
     await getGoldParams()
   }
   else {
-    $toast.error(data.message ?? '提交失败')
+    $toast.error(data?.message ?? '提交失败')
   }
   changeShow.value = false
 }

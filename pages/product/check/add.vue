@@ -57,7 +57,7 @@ const params = ref({ store_id: myStore.value?.id, range: 1 } as Check)
 async function submit() {
   const res = await createCheck(params.value as Check)
   Key.value = Date.now().toString()
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     params.value = {} as Check
     setTimeout(() => {
@@ -65,7 +65,7 @@ async function submit() {
     }, 1000)
   }
   else {
-    $toast.error(res.message ?? '创建失败')
+    $toast.error(res?.message ?? '创建失败')
   }
 }
 const presetToSelect = (key: keyof Check): { label: string, value: any }[] => {

@@ -88,12 +88,12 @@ function transformData() {
 
 async function updata() {
   const res = await updateProductInfo(productParams.value)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     $toast.success('更新成功')
     await getInfo()
   }
   else {
-    $toast.warning(res.message ?? '更新失败')
+    $toast.warning(res?.message ?? '更新失败')
   }
 }
 // 取消更新 数据恢复为修改之前
@@ -121,14 +121,14 @@ async function customRequest({ file }: UploadCustomRequestOptions) {
 
   try {
     const res = await uploadProductImg(params)
-    if (res.code === HttpCode.SUCCESS) {
+    if (res?.code === HttpCode.SUCCESS) {
       // 最新图片添加到照片墙
       previewFileList.value.push(
         {
           id: `${previewFileList.value.length}`,
           name: '图片',
           status: 'finished',
-          url: ImageUrl(res.data.url),
+          url: ImageUrl(res?.data.url),
         },
       )
       $toast.success('图片上传成功')
@@ -136,7 +136,7 @@ async function customRequest({ file }: UploadCustomRequestOptions) {
       await updateProductInfo(productParams.value)
     }
     else {
-      $toast.error(res.message || '图片上传失败')
+      $toast.error(res?.message || '图片上传失败')
     }
   }
   catch (error) {

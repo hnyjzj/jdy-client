@@ -54,15 +54,15 @@ function pull() {
 async function submitGoods(data: Product[]) {
   if (data?.length) {
     const impParams = { products: data, store_id: myStore.value?.id }
-    const { code, message } = await importProduct(impParams)
+    const res = await importProduct(impParams)
 
-    if (code === HttpCode.SUCCESS) {
+    if (res?.code === HttpCode.SUCCESS) {
       isModel.value = false
       pages.value = 1
       await getList()
       return $toast.success('导入成功')
     }
-    $toast.error(message ?? '导入失败')
+    $toast.error(res?.message ?? '导入失败')
   }
 }
 
