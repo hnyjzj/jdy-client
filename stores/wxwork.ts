@@ -20,11 +20,9 @@ export const useWxworkStore = defineStore('Wxwork', {
       return wx
     },
     async getTickets(req: ticketReq) {
-      const { data } = await https.post<ticketRes, ticketReq>('/platform/jssdk', req)
-
+      const { data } = await https.post<ticketRes, ticketReq>('/platform/jssdk', req, false)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.tickets = data.value.data
-
         return data.value.data
       }
     },

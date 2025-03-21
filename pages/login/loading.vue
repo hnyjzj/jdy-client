@@ -1,0 +1,43 @@
+<script lang="ts" setup>
+const show = ref(true)
+const { $toast } = useNuxtApp()
+const authStore = useAuth()
+const QWLogin = async () => {
+  const route = useRoute()
+  const redirect_url = route.query?.redirect_url as string
+  const res = await authStore.getOauthUri(redirect_url || '')
+  if (res) {
+    if (res?.code !== HttpCode.SUCCESS) {
+      $toast.error(res?.message || '登录失败')
+    }
+  }
+}
+
+if (import.meta.client) {
+  if (isWxWorkClient()) {
+    await QWLogin()
+  }
+  else {
+    navigateTo('/login')
+  }
+}
+</script>
+
+<template>
+  <div class="flex justify-center items-center h-screen">
+    <n-spin :show="show" stroke="#fff">
+      <div class="w-[200px] h-[200px] flex justify-center items-center" />
+      <template #description>
+        <div class="color-[#fff] text-[16px] pt-[20px]">
+          加载中...
+        </div>
+      </template>
+    </n-spin>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+ :deep(.n-base-loading__icon) {
+  font-size: 34px !important;
+}
+</style>

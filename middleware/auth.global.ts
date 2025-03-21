@@ -4,7 +4,7 @@ export default defineNuxtRouteMiddleware((to, form) => {
     const expirationTime = computed(() => expires_at.value * 1000)
     if (!token.value || Date.now() > expirationTime.value) {
       const params = {
-        path: '/login',
+        path: '/login/loading',
         query: {},
       }
       if (form.fullPath && form.fullPath !== '/login') {
