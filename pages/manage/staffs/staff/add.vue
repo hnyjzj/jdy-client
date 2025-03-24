@@ -71,18 +71,19 @@ const wxwordAdd = async () => {
   }
 }
 const uploadFile = async (file: any, onfinish?: () => void) => {
-  const { data } = await uploadAvatar({ avatar: file || undefined })
-  if (data.value?.code !== HttpCode.SUCCESS) {
-    $toast.error(data.value?.message || '上传失败')
-    const res = await uploadAvatar({ avatar: file || undefined })
-    if (res.data.value?.code !== HttpCode.SUCCESS) {
-      $toast.error(res.data.value?.message || '上传失败')
+  try {
+    const { data } = await uploadAvatar({ avatar: file || undefined })
+    if (data.value?.code !== HttpCode.SUCCESS) {
+      $toast.error(data.value?.message || '上传失败')
       return false
     }
-    const url = data.value?.data.url
+    const url = data.value.data.url
     //  如果有id 说明是 修改logo ,没有id则是新增
-    formlist.value.account.avatar = url as string
+    formlist.value.account.avatar = url
     onfinish?.()
+  }
+  catch {
+    $toast.error('上传失败，请重试')
   }
 }
 
