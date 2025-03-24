@@ -17,7 +17,7 @@ export const useCheck = defineStore('check', {
     async getCheckList(pamars: ReqList<Check>) {
       try {
         const { data } = await https.post<ResList<Check>, ReqList<Check>>('/product/inventory/list', pamars)
-        if (data.value.code === HttpCode.SUCCESS) {
+        if (data.value?.code === HttpCode.SUCCESS) {
           this.checkTotal = data.value.data.total
 
           if (pamars.page === 1) {
@@ -60,7 +60,7 @@ export const useCheck = defineStore('check', {
     async getCheckInfo(id: string, product_status: number) {
       try {
         const { data } = await https.post<CheckInfo, { id: string, product_status: number }>('/product/inventory/info', { id, product_status })
-        if (data.value.code === HttpCode.SUCCESS) {
+        if (data.value?.code === HttpCode.SUCCESS) {
           this.checkInfo = data.value.data
         }
       }

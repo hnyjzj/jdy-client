@@ -91,7 +91,7 @@ const delBench = async (id: string) => {
     })
     if (res === 'confirm') {
       const data = await delWorkbench(id)
-      if (data.code === 200) {
+      if (data?.code === 200) {
         await getWorkbenchList()
         $toast.success('删除成功')
       }
@@ -117,7 +117,7 @@ if (!workBenchList.value.length) {
 async function submit(val: AddWorkbencheReq) {
   const submitFn = submitStatus.value === 'add' ? addWorkbench : updateWorkbench
   const res = await submitFn(val)
-  if (res.code === 200) {
+  if (res?.code === 200) {
     resetForm()
     await getWorkbenchList()
     return $toast.success('操作成功')

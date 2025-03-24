@@ -17,8 +17,8 @@ export const useAuth = defineStore('authStore', {
      * 获取授权地址
      */
     async getOauthUri(redirect_url: string = '', now_url = '/login/oauth') {
-      try {
-        const location = useBrowserLocation()
+      const location = useBrowserLocation()
+      if (location.value.origin) {
         // 获取当前地址栏的参数 并抓换回去
         const uri = UrlAndParams(`${location.value?.origin || ''}${now_url}`, {
           redirect_url: redirect_url || undefined,
@@ -27,14 +27,10 @@ export const useAuth = defineStore('authStore', {
         const { data } = await https.post<OAuthRes, OAuthReq>('/platform/oauth', { uri, platform: 'wxwork' }, false)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.redirect = data.value.data.redirect_url
-          navigateTo(data.value.data.redirect_url, { external: true, replace: true, redirectCode: 200 })
+          navigateTo(this.redirect, { external: true, replace: true, redirectCode: 200 })
         }
 
         return data.value
-      }
-      catch (error) {
-        console.error('授权登录错误：', error)
-        throw error
       }
     },
 
@@ -43,18 +39,18 @@ export const useAuth = defineStore('authStore', {
      */
     async wxworkLogin(req: WXworkLoginReq) {
       try {
-        const { data } = await https.post<WXworkLoginRes, WXworkLoginReq>('/auth/oauth', req, false)
+        const res = await https.post<WXworkLoginRes, WXworkLoginReq>('/auth/oauth', req, false)
         const userStore = useUser()
-        if (data.value?.code === HttpCode.SUCCESS) {
-          this.token = data.value.data.token
-          this.expires_at = data.value.data.expires_at
+        if (res.data.value?.code === HttpCode.SUCCESS) {
+          this.token = res.data.value.data.token
+          this.expires_at = res.data.value.data.expires_at
           await userStore.getUserInfo()
         }
         else {
           // 如果登录不成功给，则删掉存储的授权地址，防止反复请求死循环
           this.redirect = undefined
         }
-        return data.value
+        return res
       }
       catch (error) {
         console.error('企业微信登录出错:', error)
@@ -122,8 +118,8 @@ export const useAuth = defineStore('authStore', {
 
   },
   persist: {
-    storage: piniaPluginPersistedstate.cookies(),
     pick: ['token', 'expires_at', 'redirect'],
+    storage: piniaPluginPersistedstate.cookies(),
   },
 
 })

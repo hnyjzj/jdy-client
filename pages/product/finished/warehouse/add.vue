@@ -61,12 +61,12 @@ forRules()
 const params = ref({} as Product)
 async function submit() {
   const res = await addEnter(params.value as Product)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     params.value = {} as Product
   }
   else {
-    $toast.error(res.message ?? '创建失败')
+    $toast.error(res?.message ?? '创建失败')
   }
 }
 const presetToSelect = (key: keyof Product) => {

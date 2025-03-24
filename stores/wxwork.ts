@@ -6,24 +6,24 @@ export const useWxworkStore = defineStore('Wxwork', {
   }),
   actions: {
     async useWxWork() {
-      if (!isWxWorkClient() && !isWeChatClient()) {
-        return
+      if (!this.tickets.corp_id) {
+        const res = await this.getTickets({ platform: 'wxwork' })
+        if (!res) {
+          return
+        }
       }
-      if (!this.tickets.agent && !this.tickets.jsapi) {
-        await this.getTickets({ platform: 'wxwork', type: 'jsapi' })
-      }
-      const wx = wxWork({
-        // agent_ticket: this.tickets.agent,
-        jsapi_ticket: this.tickets.ticket,
-      })
+      // 使用现有tickets创建wx对象
+      const wx = wxWork(this.tickets)
+      // 检查jsapi权限
       await wx.checkJsApi()
+      // 返回wx对象
       return wx
     },
     async getTickets(req: ticketReq) {
-      const { data } = await https.post<ticketRes, ticketReq>('/platform/jssdk', req)
-
-      if (data.value.code === HttpCode.SUCCESS) {
+      const { data } = await https.post<ticketRes, ticketReq>('/platform/jssdk', req, false)
+      if (data.value?.code === HttpCode.SUCCESS) {
         this.tickets = data.value.data
+        return data.value.data
       }
     },
   },

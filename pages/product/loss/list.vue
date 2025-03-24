@@ -47,11 +47,11 @@ async function submitWhere(f: Partial<Product>) {
   isCanPull.value = true
   productList.value = []
   const res = await getList(filterData.value)
-  if (res.code === HttpCode.SUCCESS) {
+  if (res?.code === HttpCode.SUCCESS) {
     isFilter.value = false
     return $toast.success('筛选成功')
   }
-  $toast.error(res.message ?? '筛选失败')
+  $toast.error(res?.message ?? '筛选失败')
 }
 </script>
 

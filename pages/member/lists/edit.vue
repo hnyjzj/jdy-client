@@ -1,11 +1,16 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
 
+const route = useRoute()
+
+const routeQuery = ref(route.query)
+
 useSeoMeta({
-  title: '新增会员',
+  title: '编辑会员',
 })
 
-const { createMember } = useMemberManage()
+const { createMember, getMemberInfo, updateMemberInfo } = useMemberManage()
+const { memberInfo } = storeToRefs(useMemberManage())
 
 const { myStore, myStoreList, StoreStaffList } = storeToRefs(useStores())
 
@@ -45,8 +50,44 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
   }
 }
 
+// 编辑会员信息
+async function getInfo() {
+  if (!routeQuery.value.id && !routeQuery.value.external_user_id) {
+    // 新增会员时设置默认门店ID
+    memberParams.value.store_id = myStore.value.id
+  }
+  else if (routeQuery.value.id) {
+    await getMemberInfo({ id: routeQuery.value.id as string })
+    memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
+  }
+  else if (routeQuery.value.external_user_id) {
+    await getMemberInfo({ external_user_id: routeQuery.value.external_user_id as string })
+    memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
+  }
+}
+
+await getInfo()
 await getMyStore({ page: 1, limit: 20 })
 await getStoreStaffList({ id: myStore.value.id })
+
+// 渲染日期信息
+const conductEditDate = () => {
+  if (routeQuery.value.id || routeQuery.value.external_user_id) {
+    const birthdayDate = new Date(memberParams.value.birthday)
+    const birthdayFormattedDate = birthdayDate.getTime()
+
+    const anniversaryDate = new Date(memberParams.value.anniversary)
+    const anniversaryFormattedDate = anniversaryDate.getTime()
+
+    birthday.value = birthdayFormattedDate
+    anniversary.value = anniversaryFormattedDate
+  }
+}
+
+// 编辑用户信息的情况下，转换已有的生日和纪念日信息格式
+onMounted(() => {
+  conductEditDate()
+})
 
 const showGender = () => {
   if (memberParams.value.gender === 1) {
@@ -61,14 +102,39 @@ const showToUser = ref(showGender())
 
 const backtrack = () => {
   const { back } = useRouter()
+
   back()
 }
 
 const execute = async () => {
-  const res = await createMember(memberParams.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('新增成功')
-    backtrack()
+  try {
+    // 判断情况
+    const hasId = !!memberParams.value.id
+    const hasExternalUserId = !!routeQuery.value.external_user_id
+
+    let res
+
+    if (hasId) {
+      // 已有会员id，执行更新
+      res = await updateMemberInfo(memberParams.value)
+    }
+    else if (hasExternalUserId) {
+      // 没有会员id但有外部用户id，执行创建
+      res = await createMember(memberParams.value)
+    }
+    else {
+      $toast.warning('编辑失败，请联系管理员/稍后再试')
+      return
+    }
+
+    if (res?.code === HttpCode.SUCCESS) {
+      $toast.success('编辑成功')
+      backtrack()
+    }
+  }
+  catch (error) {
+    $toast.error('操作失败，请稍后重试')
+    console.error(error)
   }
 }
 </script>
@@ -235,7 +301,7 @@ const execute = async () => {
         </div>
       </div>
     </div>
-    <common-button-bottom confirm-text="确认新增" cancel-text="取消" @confirm="execute" @cancel="backtrack" />
+    <common-button-bottom confirm-text="确认保存" cancel-text="取消" @confirm="execute" @cancel="backtrack" />
   </div>
 </template>
 

@@ -83,15 +83,16 @@ const searchProductList = async (val: string, type: string, select: number) => {
 
   const where = ref<ReqList<Product>['where']>({ status: 1 })
   if (type === 'name') {
-    where.value = { ...where.value, name: val, type: select } as ReqList<Product>['where']
+    const res = await getProductList({ page: 1, limit: 10, where: { name: val, status: 1 } })
+    if (res?.data.total === 0) {
+      $toast.error('商品不存在')
+    }
   }
   else {
-    where.value = { ...where.value, code: val, type: select } as ReqList<Product>['where']
-  }
-
-  const res = await getAddOrderProductList({ page: 1, limit: 10, where: { ...where.value, store_id: myStore.value.id } })
-  if (res.data.total === 0) {
-    $toast.error('商品不存在')
+    const res = await getProductList({ page: 1, limit: 10, where: { code: val, status: 1 } })
+    if (res?.data.total === 0) {
+      $toast.error('商品不存在')
+    }
   }
 }
 
@@ -124,13 +125,13 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
       }
       formData.value.store_id = myStore.value.id
       const res = await submitOrder(formData.value)
-      if (res.code === HttpCode.SUCCESS) {
+      if (res?.code === HttpCode.SUCCESS) {
         $toast.success('添加成功')
         await getOrderDetail({ id: res.data.id as string })
         await navigateTo({ path: '/sale/sales/order' })
       }
       else {
-        $toast.error(res.message)
+        $toast.error(res?.message ?? '添加失败')
       }
     }
     else {

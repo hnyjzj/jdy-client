@@ -12,31 +12,29 @@ const content = ref<{
   loading: true,
 })
 
-onMounted(async () => {
-  await nextTick()
-  const code = route.query?.code as string
-  const state = route.query?.state as string
-  const redirect_url = route.query?.redirect_url as string
-  if (code) {
-    const { code: rcode, message } = await authStore.wxworkLogin({ code, state })
-    if (rcode === HttpCode.SUCCESS) {
-      content.value = {
-        title: '授权成功',
-        loading: true,
-      }
-      timer.value = setTimeout(async () => {
-        jump(redirect_url || '/')
-      }, 2000)
+const code = route.query?.code as string
+const state = route.query?.state as string
+const redirect_url = route.query?.redirect_url as string
+if (code) {
+  const res = await authStore.wxworkLogin({ code, state })
+  if (res.data?.value?.code === HttpCode.SUCCESS) {
+    content.value = {
+      title: '授权成功',
+      loading: true,
     }
-    else {
-      content.value = {
-        title: '授权失败',
-        content: message,
-        loading: false,
-      }
+    timer.value = setTimeout(async () => {
+      jump(redirect_url || '/')
+    }, 2000)
+  }
+  else {
+    content.value = {
+      title: '授权失败',
+      content: res.data.value?.message,
+      loading: false,
     }
   }
-})
+}
+
 onUnmounted(() => {
   if (timer.value) {
     clearTimeout(timer.value)
@@ -53,7 +51,7 @@ const jumpLogin = () => {
   if (!redirect_url.startsWith('/login')) {
     params.redirect_url = redirect_url
   }
-  jump('/login', params)
+  jump('/login/loading', params)
 }
 </script>
 
@@ -70,7 +68,7 @@ const jumpLogin = () => {
             deg="45deg"
             size="160px"
             :is-shadow="false"
-            :show-r-t="!content.loading" />
+            :show-r-t="false" />
           <div class="p-[16px] color-[#333] text-[20px]">
             {{ content.title }}
           </div>
@@ -88,7 +86,7 @@ const jumpLogin = () => {
         <common-button-rounded
           :bgc="content.loading ? 'linear-gradient(180deg, #1A6BEB80 50%, #6EA6FF80)' : 'linear-gradient(0deg, #6ea6ffbf 11%, #1a6beb)'"
           padding="12px"
-          content="返回登录页" @click="jumpLogin()" />
+          content="重新登录" @click="jumpLogin()" />
       </div>
     </div>
   </div>
