@@ -5,6 +5,7 @@ const authStore = useAuth()
 const QWLogin = async () => {
   const route = useRoute()
   const redirect_url = route.query?.redirect_url as string
+
   const res = await authStore.getOauthUri(redirect_url || '')
   if (res) {
     if (res?.code !== HttpCode.SUCCESS) {
@@ -14,8 +15,8 @@ const QWLogin = async () => {
 }
 
 if (import.meta.client) {
-  if (isWxWorkClient()) {
-    await QWLogin()
+  if (isWxWorkClient() || isWeChatClient()) {
+    QWLogin()
   }
   else {
     navigateTo('/login')

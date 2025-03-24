@@ -8,7 +8,7 @@ interface Request<T> {
 const toLogin = () => {
   const route = useRoute()
   navigateTo({
-    path: '/login',
+    path: '/login/loading',
     query: {
       redirect_url: encodeURIComponent(route.path),
     },
@@ -70,7 +70,7 @@ class Https {
 
       if (Date.now() > (store.expires_at) * 1000) {
         navigateTo({
-          path: '/login',
+          path: '/login/loading',
           query: {
             redirect_url: encodeURIComponent(route.path),
           },
