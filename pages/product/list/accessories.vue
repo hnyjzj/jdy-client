@@ -30,8 +30,13 @@ async function getList(where = {} as Partial<Product>) {
   const params = { page: pages.value, limit: 10 } as ReqList<Product>
   params.where = where
   params.where.type = type.value
-  const res = await getProductList(params)
-  return res as any
+  try {
+    const res = await getProductList(params)
+    return res as any
+  }
+  catch (error) {
+    $toast.error(error as string)
+  }
 }
 
 try {

@@ -24,7 +24,7 @@ const sheetData = ref([])
  * @param event input上传文件
  */
 function FileUpload(event: any) {
-  fileName.value = event.target.files[0].name
+  fileName.value = event.target.files?.[0]?.name || ''
   uploadXlsx(event).then((data) => {
     sheetData.value = cleanExcelData(data as never[])
   })
