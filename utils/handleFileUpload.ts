@@ -9,7 +9,7 @@ export default async function (headers: any) {
     '货品名称*': 'name',
     '入网费*': 'access_fee',
     '零售方式*': 'retail_type',
-    '标签价*': 'price',
+    '标签价*': 'label_price',
     '零售工费*': 'labor_fee',
     '款号': 'style',
     '供应商*': 'supplier',
@@ -34,8 +34,11 @@ export default async function (headers: any) {
     '备注': 'remark',
     '是否特价': 'is_special_offer',
   }
-  const englishHeaders = headers.map((header: any) => {
-    return headerMap[header] || header
+  const cleanedHeaders = headers.map((header: keyof Product) =>
+    typeof header === 'string' ? header.replace(/\s/g, '') : header,
+  )
+  const englishHeaders = cleanedHeaders.map((header: any) => {
+    return headerMap[header]
   })
   return englishHeaders
 }

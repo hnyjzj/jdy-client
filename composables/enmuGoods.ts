@@ -1,5 +1,5 @@
 /**
- * 产品类型
+ * 产品状态
  */
 export enum GoodsStatus {
   /** 草稿 */
@@ -18,4 +18,16 @@ export enum GoodsStatus {
   ProductStatusCheck,
   /** 无库存 */
   ProductStatusNoStock,
+}
+
+/**
+ * 产品类型
+ */
+export enum GoodsType {
+  /** 成品 */
+  ProductFinish = 1,
+  /** 旧料 */
+  ProductOld,
+  /** 配件 */
+  ProductAccessories,
 }

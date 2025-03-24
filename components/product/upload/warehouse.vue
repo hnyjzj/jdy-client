@@ -47,52 +47,72 @@ function cleanExcelData(data: any) {
  * @param data 二维数组，第一行是表头，其余是数据行
  * @returns 对象数组
  */
+/**
+ * 将二维数组转换为对象数组
+ * @param data 二维数组，第一行是表头，其余是数据行
+ * @returns 对象数组
+ */
 async function transformData(data: any[][]) {
   if (!data || data.length < 2) {
     $toast.error('数据格式不正确，至少需要表头和一行数据')
     return []
   }
+
   // 第一行是表头 对应着字段名
   type ProductKey = keyof Product
   const originalHeaders: ProductKey[] = data[0]
+
+  // 上传后的表头
   const headers = await handleFileUpload(originalHeaders) as ProductKey[]
+
   return data.slice(1).map((row) => {
     const obj = {} as Record<ProductKey, any>
+
     headers.forEach((header: ProductKey, index) => {
-      const type = props.filterList[header]?.type
-      if (props.filterList[header]?.input === 'select') {
-        /** 预设值 查找对应的key */
-        const preset = props.filterList[headers[index]]?.preset
-        const key = Object.values(preset).indexOf(String(row[index]))
-        key && key > 0 ? row[index] = key : row[index] = ''
+      // 字段筛选条件
+      const filterItem = props.filterList[header]
+
+      // 判断字段是否存在于 filterList 中，防止访问 undefined
+      if (filterItem) {
+        const type = filterItem.type
+
+        // 处理下拉选择项
+        if (filterItem.input === 'select') {
+          const preset = filterItem.preset || {}
+          const key = Object.values(preset).indexOf(String(row[index]))
+          row[index] = key >= 0 ? key : ''
+        }
+
+        // 数据类型转换 + 默认值处理
+
+        switch (type) {
+          case 'number':
+            row[index] = Number.isNaN(Number(row[index])) ? '' : Number(row[index])
+            break
+          case 'float':
+            row[index] = Number.isNaN(Number.parseFloat(row[index])) ? '' : Number.parseFloat(row[index])
+            break
+          case 'string':
+            row[index] = row[index] ?? '' // 将 undefined 转为空字符串
+            row[index] = String(row[index])
+            break
+          case 'bool':
+            row[index] = typeof row[index] === 'boolean' ? row[index] : Boolean(row[index])
+            break
+          case 'string[]':
+            row[index] = Array.isArray(row[index]) ? row[index] : [String(row[index] ?? '')]
+            break
+          default:
+            row[index] = row[index] ?? ''
+            break
+        }
+        obj[header] = row[index]
       }
-      /** 数据转换对应类型 */
-      switch (type) {
-        case 'number':
-          row[index] = Number(row[index])
-          break
-        case 'float':
-          row[index] = Number.parseFloat(row[index])
-          break
-        case 'string':
-          row[index] = String(row[index])
-          break
-        case 'bool':
-          row[index] = Boolean(row[index])
-          break
-        case 'string[]':
-          row[index] = JSON.parse(JSON.stringify(row[index]))
-          break
-        default:
-          break
-      }
-      obj.type = props.type
-      obj[header] = row[index] ?? '' // 将表头与对应的数据行匹配
     })
-    // 证书合成数组
+
     const transformedObj = {
       ...obj,
-      certificate: [String(obj.certificate1), String(obj.certificate2)].filter(Boolean),
+      certificate: [String(obj.certificate1 ?? ''), String(obj.certificate2 ?? '')].filter(Boolean),
     }
 
     // 删除不需要的字段
@@ -151,7 +171,9 @@ defineExpose({
         </div>
         <input class="h-[40px] absolute bottom-0 w-full opacity-0" type="file" @change="FileUpload">
         <div class="uploadInp cursor-pointer">
-          <div>{{ fileName || '请添加文件' }}</div>
+          <div class="text-row-hide w-[60%]">
+            {{ fileName || '请添加文件' }}
+          </div>
           <div class="uploadInp-right">
             <icon name="i-svg:upload" :size="16" color="#666" />
             <div class="ml-2">
