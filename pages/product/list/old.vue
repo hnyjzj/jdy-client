@@ -2,7 +2,7 @@
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 
-const { getProductList, getProductWhere, importProduct } = useProductManage()
+const { getProductList, getProductWhere } = useProductManage()
 const { productList, filterList, filterListToArray, productListTotal } = storeToRefs(useProductManage())
 const complate = ref(0)
 // 筛选框显示隐藏
@@ -37,8 +37,13 @@ async function getList(where = {} as Partial<Product>) {
 }
 
 try {
-  await getList()
-  await getProductWhere()
+  if (myStore.value?.id) {
+    await getList()
+    await getProductWhere({ type: 2 })
+  }
+  else {
+    $toast.error('您尚未分配任何门店，请先添加门店')
+  }
 }
 catch (error) {
   throw new Error(`初始化失败: ${error || '未知错误'}`)
@@ -48,25 +53,6 @@ const filterData = ref({} as Partial<Product>)
 
 function pull() {
   getList(filterData.value)
-}
-
-// 提交入库
-async function submitGoods(data: Product[]) {
-  if (data?.length) {
-    if (!myStore.value?.id) {
-      $toast.warning('请先选择门店')
-    }
-    const impParams = { products: data, store_id: myStore.value?.id }
-    const res = await importProduct(impParams)
-
-    if (res?.code === HttpCode.SUCCESS) {
-      isModel.value = false
-      pages.value = 1
-      await getList()
-      return $toast.success('导入成功')
-    }
-    $toast.error(res?.message ?? '导入失败')
-  }
 }
 
 // 筛选列表
@@ -120,7 +106,6 @@ function goAdd() {
       </template>
     </div>
     <product-manage-bottom />
-    <product-upload-warehouse v-model="isBatchImportModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
     <common-filter-where v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="filterListToArray" @submit="submitWhere" />
   </div>

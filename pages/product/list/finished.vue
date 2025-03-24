@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
-const { getProductList, getProductWhere, importProduct } = useProductManage()
+const { getProductList, getProductWhere } = useProductManage()
 const { productList, filterList, filterListToArray, productListTotal } = storeToRefs(useProductManage())
 const complate = ref(0)
 // 筛选框显示隐藏
@@ -50,24 +50,6 @@ catch (error) {
 
 function pull() {
   getList(filterData.value)
-}
-
-// 提交入库
-async function submitGoods(data: Product[]) {
-  if (data?.length) {
-    if (!myStore.value?.id) {
-      return $toast.error('未选择门店，请先选择门店')
-    }
-    const res = await importProduct({ products: data, store_id: myStore.value?.id })
-    if (res?.code === HttpCode.SUCCESS) {
-      isModel.value = false
-      isBatchImportModel.value = false
-      pages.value = 1
-      await getList()
-      return $toast.success('导入成功')
-    }
-    $toast.error(res?.message ?? '导入失败')
-  }
 }
 
 // 筛选列表
@@ -122,7 +104,6 @@ function goAdd() {
     </div>
     <product-manage-bottom />
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
-    <product-upload-warehouse v-model="isBatchImportModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
     <common-filter-where v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="filterListToArray" @submit="submitWhere" />
   </div>
 </template>
