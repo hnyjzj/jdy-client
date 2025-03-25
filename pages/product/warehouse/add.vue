@@ -20,6 +20,7 @@ const certificate = ref(['', ''])
 if (route.query?.type) {
   params.value.type = Number(route.query.type) as Product['type']
   isDisables.value = ['type']
+  await getProductWhere({ type: params.value.type })
 }
 if (route.query?.id) {
   enterId.value = route.query.id
@@ -75,7 +76,6 @@ function changeStore() {
     storeCol.value.push({ label: item.name, value: item.id })
   })
 }
-await getProductWhere()
 await getStoreList({ page: 1, limit: 20 })
 await changeStore()
 forRules()
@@ -91,8 +91,10 @@ async function submit() {
     params.value.certificate = arr
   }
   const impParams = {
-    products: [params.value],
+    product_finisheds: [params.value],
     product_enter_id: enterId.value,
+    product_accessories: [],
+
   }
   const res = await addEnterProduct(impParams)
   if (res?.code === HttpCode.SUCCESS) {

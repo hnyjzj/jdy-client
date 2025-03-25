@@ -23,7 +23,7 @@ const enterStatus = {
 }
 /** 门店选择列表 */
 const storeCol = ref()
-
+const enterTypeCol = ref([{ label: '成品', value: 1 }, { label: '配件', value: 3 }])
 function changeStoer() {
   storeCol.value = []
   storesList.value.forEach((item: Stores) => {
@@ -168,25 +168,25 @@ function goAdd() {
               <div class="py-[4px] flex justify-between">
                 <div>入库数量</div>
                 <div class="text-align-end">
-                  {{ info.products?.length || 0 }}
+                  {{ info.product_finisheds?.length || 0 }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
                 <div>入网费合计</div>
                 <div class="text-align-end">
-                  {{ info.products?.reduce((pre, cur:Product) => pre + Number(cur?.access_fee), 0) || 0 }}
+                  {{ info.product_finisheds?.reduce((pre, cur:Product) => pre + Number(cur?.access_fee), 0) || 0 }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
                 <div>标签价合计</div>
                 <div class="text-align-end">
-                  {{ info.products?.reduce((pre, cur:Product) => pre + Number(cur?.label_price), 0) || 0 }}
+                  {{ info.product_finisheds?.reduce((pre, cur:Product) => pre + Number(cur?.label_price), 0) || 0 }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
                 <div>金重合计</div>
                 <div class="text-align-end">
-                  {{ info.products?.reduce((pre, cur:Product) => pre + Number(cur?.weight_metal), 0) || 0 }}
+                  {{ info.product_finisheds?.reduce((pre, cur:Product) => pre + Number(cur?.weight_metal), 0) || 0 }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
@@ -232,6 +232,14 @@ function goAdd() {
           </div>
           <n-select
             v-model:value="enterParams.store_id" :options="storeCol"
+            clearable />
+        </div>
+        <div class="flex items-center mb-4">
+          <div class="w-[100px] text-color">
+            入库类型：
+          </div>
+          <n-select
+            v-model:value="enterParams.type" :options="enterTypeCol"
             clearable />
         </div>
         <div class="flex mb-4">

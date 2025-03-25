@@ -57,9 +57,9 @@ export const useProductManage = defineStore('ProductManage', {
       }
     },
     // 获取筛选列表
-    async getProductWhere() {
+    async getProductWhere(params: { type: Product['type'] } = { type: 1 }) {
       try {
-        const { data } = await https.get<Where<Product>>('/product/where')
+        const { data } = await https.post<Where<Product>, { type: Product['type'] }>('/product/where', params)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.filterList = data.value.data
           this.filterListToArray = sortArr(this.filterList)

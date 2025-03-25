@@ -265,6 +265,7 @@ interface UploadProductImg {
 interface CreateProductEnter {
   store_id: Stores['id']
   remark?: string
+  type: number
 }
 
 /**

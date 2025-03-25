@@ -30,7 +30,14 @@ interface Enter {
    * 操作人ID
    */
   operator_id?: string
-  products?: Products[]
+  /**
+   * 成品列表
+   */
+  product_finisheds?: Products[]
+  /**
+   * 配件列表
+   */
+  product_accessories?: Products[]
   /**
    * 备注
    */
@@ -49,13 +56,17 @@ interface Enter {
    * 更新时间
    */
   updated_at: Date
+  type: Product['type']
 }
 
 /**
  * 添加入库单产品
  */
 interface EnterProductReq {
-  products: Product[]
+  /** 成品入库参数 */
+  product_finisheds: Product[]
+  /** 配件入库参数 */
+  product_accessories: Product[]
   product_enter_id: string
 }
 
