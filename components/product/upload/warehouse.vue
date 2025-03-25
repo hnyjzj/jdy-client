@@ -71,7 +71,6 @@ async function transformData(data: any[][]) {
     headers.forEach((header: ProductKey, index) => {
       // 字段筛选条件
       const filterItem = props.filterList[header]
-
       // 判断字段是否存在于 filterList 中，防止访问 undefined
       if (filterItem) {
         const type = filterItem.type
@@ -79,8 +78,11 @@ async function transformData(data: any[][]) {
         // 处理下拉选择项
         if (filterItem.input === 'select') {
           const preset = filterItem.preset || {}
-          const key = Object.values(preset).indexOf(String(row[index]))
-          row[index] = key >= 0 ? key : ''
+          const rowValue = String(row[index] ?? '')
+
+          // 使用 Object.entries() 查找键，防止 undefined 和类型不一致问题
+          const key = Object.entries(preset).find(([_, v]) => String(v) === rowValue)?.[0] ?? ''
+          row[index] = key
         }
 
         // 数据类型转换 + 默认值处理
@@ -109,7 +111,6 @@ async function transformData(data: any[][]) {
         obj[header] = row[index]
       }
     })
-
     const transformedObj = {
       ...obj,
       certificate: [String(obj.certificate1 ?? ''), String(obj.certificate2 ?? '')].filter(Boolean),
