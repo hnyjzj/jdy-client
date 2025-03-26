@@ -22,7 +22,7 @@ if (route.query?.type) {
 if (route.query?.enter_id) {
   enterId.value = route.query.enter_id
   await getEnterInfo(enterId.value)
-  params.value.product_enter_id = route.query.enter_id as string
+  params.value.enter_id = route.query.enter_id as string
   params.value.from_store_id = enterInfo.value?.store_id
   params.value.method = 1
   params.value.type = 1
@@ -65,7 +65,7 @@ async function submit() {
 const presetToSelect = (key: keyof AllocateReq): { label: string, value: any }[] => {
   if (!key)
     return []
-  if (key === 'product_enter_id') {
+  if (key === 'enter_id') {
     return []
   }
   const filter = allocateFilterList.value[key]

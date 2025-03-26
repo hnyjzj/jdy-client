@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
-const { getProductList, getProductWhere } = useProductManage()
-const { productList, filterList, filterListToArray, productListTotal } = storeToRefs(useProductManage())
+const { getAccessorieList, getAccessorieWhere } = useAccessorie()
+const { accessorieList, accessorieFilterList, accessorieFilterListToArray, accessorieListTotal } = storeToRefs(useAccessorie())
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
@@ -31,7 +31,7 @@ async function getList(where = {} as Partial<Product>) {
   params.where = where
   params.where.type = type.value
   try {
-    const res = await getProductList(params)
+    const res = await getAccessorieList(params)
     return res as any
   }
   catch (error) {
@@ -42,7 +42,7 @@ async function getList(where = {} as Partial<Product>) {
 try {
   if (myStore.value?.id) {
     await getList()
-    await getProductWhere({ type: 3 })
+    await getAccessorieWhere()
   }
   else {
     $toast.error('您尚未分配任何门店，请先添加门店')
@@ -62,7 +62,7 @@ function pull() {
 async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
   filterData.value = { ...f }
   pages.value = 1
-  productList.value = []
+  accessorieList.value = []
   const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
     isFilter.value = false
@@ -89,17 +89,17 @@ function goAdd() {
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:id="complate" :product-list-total="productListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:id="complate" :product-list-total="accessorieListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company />
       </template>
     </product-filter>
     <!-- 列表 -->
     <div class="px-[16px] pb-20">
-      <template v-if="productList?.length">
-        <product-list-main :product-list="productList" :filter-list="filterList" @edit="edit" />
+      <template v-if="accessorieList?.length">
+        <product-list-main :product-list="accessorieList" :filter-list="accessorieFilterList" @edit="edit" />
         <common-page
-          v-model:page="pages" :total="productListTotal" :limit="10" @update:page="() => {
+          v-model:page="pages" :total="accessorieListTotal" :limit="10" @update:page="() => {
             pull()
           }
           " />
@@ -110,6 +110,6 @@ function goAdd() {
     </div>
     <product-manage-bottom />
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
-    <common-filter-where v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="filterListToArray" @submit="submitWhere" />
+    <common-filter-where v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="accessorieFilterListToArray" @submit="submitWhere" />
   </div>
 </template>
