@@ -7,7 +7,7 @@ const Props = defineProps<{
   type: number
 }>()
 const emits = defineEmits<{
-  search: [val: string, type: string, select: number]
+  search: [val: string, type: string]
   openProductList: []
 }>()
 const cardTitle = () => {
@@ -294,7 +294,7 @@ const scanCode = async () => {
                 :placeholder="searchType === 'name' ? '请输入商品名称' : '请输入商品条码'" />
             </div>
             <div class="pl-[16px]">
-              <n-button type="info" round @click="emits('search', searchProduct, searchType, Props.type)">
+              <n-button type="info" round @click="emits('search', searchProduct, searchType)">
                 搜索
               </n-button>
             </div>

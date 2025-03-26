@@ -2,7 +2,7 @@
 import type { FormRules } from 'naive-ui'
 
 const emits = defineEmits<{
-  search: [val: string, type: string, select: number]
+  search: [val: string, type: string]
   openProductList: []
 }>()
 const { oldFilterListToArray } = storeToRefs(useOrder())
@@ -113,7 +113,7 @@ const scanCode = async () => {
     searchShow.value = true
     searchProduct.value = code
     nowOldMaster.value = {} as Product
-    emits('search', searchProduct.value, 'code', 2)
+    emits('search', searchProduct.value, 'code')
   }
 }
 // 打开搜索
@@ -273,7 +273,7 @@ const deleteOld = (index: number) => {
                 placeholder="请输入商品条码" />
             </div>
             <div class="pl-[16px] flex">
-              <n-button type="info" round @click="emits('search', searchProduct, 'code', 2)">
+              <n-button type="info" round @click="emits('search', searchProduct, 'code')">
                 搜索
               </n-button>
               <div class="pl-[8px]">

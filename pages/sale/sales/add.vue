@@ -71,7 +71,7 @@ const rules = ref<FormRules>({
 
 })
 // 搜索点击,查询list
-const searchProductList = async (val: string, type: string, select: number) => {
+const searchProductList = async (val: string, type: string) => {
   if (val === '' && type === 'name') {
     $toast.error('请输入商品名称')
     return
