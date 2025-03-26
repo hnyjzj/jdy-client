@@ -7,7 +7,7 @@ useSeoMeta({
 })
 const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
-const { getAddOrderProductList } = useProductManage()
+const { getAddOrderProductList, getProductList } = useProductManage()
 const { getStoreStaffList } = useStores()
 const { getSaleWhere, submitOrder, getOrderDetail, OldMaterialsWhere } = useOrder()
 const { getGoldPrice } = useGoldPrice()
@@ -81,7 +81,7 @@ const searchProductList = async (val: string, type: string, select: number) => {
     return
   }
 
-  const where = ref<ReqList<Product>['where']>({ status: 1 })
+  //   const where = ref<ReqList<Product>['where']>({ status: 1 })
   if (type === 'name') {
     const res = await getProductList({ page: 1, limit: 10, where: { name: val, status: 1 } })
     if (res?.data.total === 0) {

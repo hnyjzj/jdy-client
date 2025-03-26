@@ -208,49 +208,48 @@ const deleteOld = (index: number) => {
         </div>
       </div>
     </div>
-    <template v-if="true">
-      <div class="px-[16px] py-[8px]">
-        <template v-for="(obj, ix) in showMasterialsList" :key="ix">
-          <div class="pb-[12px]">
-            <sale-order-nesting v-model="hasCheck" :title="obj?.name || ''">
-              <template #left>
-                <common-tags type="pink" text="成品" :is-oval="true" />
-              </template>
-              <template #info>
-                <div class="flex flex-col gap-[12px] px-[16px]">
-                  <n-grid :x-gap="12" :y-gap="8" :cols="4">
-                    <template v-for="(item, index) in oldFilterListToArray" :key="index">
-                      <template v-if="item.name === 'is_our'">
-                        <n-grid-item :span="2">
-                          {{ item.label }}: {{ obj[item.name] ? '是' : '否' }}
-                        </n-grid-item>
-                      </template>
-                      <template v-else>
-                        <n-grid-item :span="2">
-                          {{ item.label }}: {{ item.input === 'select' ? item.preset[obj[item.name]] : obj[item.name] }}
-                        </n-grid-item>
-                      </template>
+    <div class="px-[16px] py-[8px]">
+      <template v-for="(obj, ix) in showMasterialsList" :key="ix">
+        <div class="pb-[12px]">
+          <sale-order-nesting v-model="hasCheck" :title="obj?.name || ''">
+            <template #left>
+              <common-tags type="pink" text="成品" :is-oval="true" />
+            </template>
+            <template #info>
+              <div class="flex flex-col gap-[12px] px-[16px]">
+                <n-grid :x-gap="12" :y-gap="8" :cols="4">
+                  <template v-for="(item, index) in oldFilterListToArray" :key="index">
+                    <template v-if="item.name === 'is_our'">
+                      <n-grid-item :span="2">
+                        {{ item.label }}: {{ obj[item.name] ? '是' : '否' }}
+                      </n-grid-item>
                     </template>
-                  </n-grid>
+                    <template v-else>
+                      <n-grid-item :span="2">
+                        {{ item.label }}: {{ item.input === 'select' ? item.preset[obj[item.name]] : obj[item.name] }}
+                      </n-grid-item>
+                    </template>
+                  </template>
+                </n-grid>
 
-                  <div class="h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
-                  <div class="pb-[16px]">
-                    <div class="flex justify-between items-center">
-                      <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteOld(ix)">
-                        <icon name="i-svg:delete" :size="16" />
-                      </div>
-                      <div class="color-[#fff] bg-[#3971F3] py-[6px] px-[12px] rounded-[30px] cursor-pointer" @click="editOld(obj, ix)">
-                        编辑
-                      </div>
+                <div class="h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
+                <div class="pb-[16px]">
+                  <div class="flex justify-between items-center">
+                    <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteOld(ix)">
+                      <icon name="i-svg:delete" :size="16" />
+                    </div>
+                    <div class="color-[#fff] bg-[#3971F3] py-[6px] px-[12px] rounded-[30px] cursor-pointer" @click="editOld(obj, ix)">
+                      编辑
                     </div>
                   </div>
                 </div>
-              </template>
-            </sale-order-nesting>
-          </div>
-        </template>
-      </div>
-    </template>
+              </div>
+            </template>
+          </sale-order-nesting>
+        </div>
+      </template>
+    </div>
+
     <common-model v-model="searchShow" title="搜索" :show-ok="true" :show-cancel="true" @confirm="searchConfirm" @cancel="searchShow = false">
       <div class="grid-12">
         <div class="col-12">
