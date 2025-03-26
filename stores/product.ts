@@ -1,9 +1,12 @@
 export const useProductManage = defineStore('ProductManage', {
   state: (): {
     productList: Product[]
+    masterialsList: Product[]
+    partsList: Product[]
     filterList: Where<Product>
     productInfo: Product
     productListTotal: number
+    nowOldMaster: Product
     /**
      * 排序后的筛选条件列表
      */
@@ -11,6 +14,9 @@ export const useProductManage = defineStore('ProductManage', {
   } => ({
     filterList: {} as Where<Product>,
     productList: [],
+    masterialsList: [],
+    nowOldMaster: {} as Product,
+    partsList: [],
     productInfo: {} as Product,
     productListTotal: 0,
     filterListToArray: {} as FilterWhere<Product>[],
@@ -35,6 +41,34 @@ export const useProductManage = defineStore('ProductManage', {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
       }
     },
+    //  获取添加订单货品列表
+    async getAddOrderProductList(pamars: ReqList<Product>) {
+      try {
+        const { data } = await https.post<ResList<Product>, ReqList<Product>>('/product/list', pamars)
+        if (data.value?.code === HttpCode.SUCCESS) {
+          this.productListTotal = data.value.data.total
+          if (pamars.where?.type === 1) {
+            this.productList = data.value.data.list
+          }
+
+          if (pamars.where?.type === 2) {
+            this.masterialsList = data.value.data.list
+
+            if (data.value.data.list.length > 0) {
+              this.nowOldMaster = { ...data.value.data.list[0] }
+            }
+          }
+          if (pamars.where?.type === 3) {
+            this.partsList = data.value.data.list
+          }
+        }
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
+      }
+    },
+
     // 货品导入
     async importProduct(products: Product[]) {
       try {

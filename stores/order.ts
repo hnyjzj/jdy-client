@@ -7,6 +7,8 @@ export const useOrder = defineStore('Order', {
     OrderDetail: {} as Orders,
     filterListToArray: [] as FilterWhere<OrderWhere>[],
     searchPage: 1 as number, // 订单列表页面搜索页数
+    oldFilterList: {} as Where<Product>,
+    oldFilterListToArray: [] as FilterWhere<Product>[],
   }),
 
   actions: {
@@ -18,6 +20,15 @@ export const useOrder = defineStore('Order', {
         this.filterListToArray = sortArr(this.filterList)
       }
     },
+    //  获取旧料的新增条件
+    async OldMaterialsWhere() {
+      const { data } = await https.get<Where<Product>, null>('/product/where_product_old')
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.oldFilterList = data.value.data
+        this.oldFilterListToArray = sortArr(this.oldFilterList)
+      }
+    },
+
     async getOrderList(req: ReqList<Orders>) {
       if (req.page === 1) {
         this.OrdersList = []
@@ -38,6 +49,7 @@ export const useOrder = defineStore('Order', {
         }
       }
     },
+
     // 获取今日金价
     async getTodayPrice() {
       const { data } = await https.get<any, null>('/setting/gold_price/get')
