@@ -42,10 +42,10 @@ async function loss() {
   if (res?.code === HttpCode.SUCCESS) {
     isModel.value = false
     reason.value = ''
-    $toast.success('报损成功', 300)
+    $toast.success('报损成功', 1000)
     setTimeout(() => {
       router.back()
-    }, 500)
+    }, 1000)
   }
   else {
     $toast.error(res?.message ?? '报损失败')
@@ -59,10 +59,10 @@ async function convert(type: Product['type']) {
     convertModel.value = false
     isModel.value = false
     reason.value = ''
-    $toast.success('转换成功')
+    $toast.success('转换成功', 1000)
     setTimeout(() => {
       router.back()
-    }, 500)
+    }, 1000)
   }
   else {
     $toast.error(res?.message ?? '转换失败')

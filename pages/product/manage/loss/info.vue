@@ -39,10 +39,10 @@ async function convert(type: Product['type']) {
   if (res?.code === HttpCode.SUCCESS) {
     convertModel.value = false
     isModel.value = false
-    $toast.success('转换成功')
+    $toast.success('转换成功', 1000)
     setTimeout(() => {
       router.back()
-    }, 500)
+    }, 1000)
   }
   else {
     $toast.error(res?.message ?? '转换失败')

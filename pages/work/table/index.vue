@@ -121,7 +121,7 @@ async function submit(val: AddWorkbencheReq) {
   if (res?.code === 200) {
     resetForm()
     await getWorkbenchList()
-    return $toast.success('操作成功')
+    return $toast.success('操作成功', 1000)
   }
   $toast.error(res?.message || '操作失败')
 }
