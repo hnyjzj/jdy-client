@@ -5,7 +5,7 @@ const { $toast } = useNuxtApp()
 const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const { getFinishedWhere } = useFinished()
-const { addEnterProduct } = useEnter()
+const { addFinishedEnter } = useEnter()
 const { finishedFilterListToArray, finishedFilterList } = storeToRefs(useFinished())
 const route = useRoute()
 const router = useRouter()
@@ -91,12 +91,10 @@ async function submit() {
     params.value.certificate = arr
   }
   const impParams = {
-    product_finisheds: [params.value],
-    product_enter_id: enterId.value,
-    product_accessories: [],
-
+    products: [params.value],
+    enter_id: enterId.value,
   }
-  const res = await addEnterProduct(impParams)
+  const res = await addFinishedEnter(impParams)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     params.value = {} as Product

@@ -7,7 +7,7 @@ const { $toast } = useNuxtApp()
 const { storesList } = storeToRefs(useStores())
 const { myStoreList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
-const { getEnterInfo } = useEnter()
+const { getFinishedEnterInfo } = useEnter()
 const { enterInfo } = storeToRefs(useEnter())
 
 const params = ref({} as AllocateReq)
@@ -21,7 +21,7 @@ if (route.query?.type) {
 
 if (route.query?.enter_id) {
   enterId.value = route.query.enter_id
-  await getEnterInfo(enterId.value)
+  await getFinishedEnterInfo(enterId.value)
   params.value.enter_id = route.query.enter_id as string
   params.value.from_store_id = enterInfo.value?.store_id
   params.value.method = 1

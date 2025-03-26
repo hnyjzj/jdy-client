@@ -113,5 +113,5 @@ interface AllocateReq {
   /**
    * 入库单id
    */
-  product_enter_id?: Enter['id']
+  enter_id?: Enter['id']
 }

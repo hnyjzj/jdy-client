@@ -90,7 +90,7 @@ interface Product {
   /**
    * 产品入库单ID
    */
-  product_enter_id: string
+  enter_id: string
   /**
    * 成色
    */
@@ -275,7 +275,7 @@ interface DelEnterProduct {
   /**
    * 入库单ID
    */
-  product_enter_id: string
+  enter_id: string
   /**
    * 商品ID列表
    */

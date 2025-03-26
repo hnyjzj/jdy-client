@@ -1,26 +1,26 @@
 export const useEnter = defineStore('EnterStore', {
   state: (): {
-    EnterList: Enter[]
-    enterFilterList: Where<Enter>
+    EnterList: FinishedEnter[]
+    enterFilterList: Where<FinishedEnter>
     EnterListTotal: number
     /**
      * 排序后的筛选条件列表
      */
-    EnterToArray: FilterWhere<Enter>[]
-    enterInfo: Enter
+    EnterToArray: FilterWhere<FinishedEnter>[]
+    enterInfo: FinishedEnter
   } => ({
-    enterFilterList: {} as Where<Enter>,
+    enterFilterList: {} as Where<FinishedEnter>,
     EnterList: [],
     EnterListTotal: 0,
-    EnterToArray: {} as FilterWhere<Enter>[],
-    enterInfo: {} as Enter,
+    EnterToArray: {} as FilterWhere<FinishedEnter>[],
+    enterInfo: {} as FinishedEnter,
   }),
   actions: {
     // 获取入库单列表
-    async getEnterList(pamars: ReqList<Enter>) {
+    async getFinishedEnterList(pamars: ReqList<FinishedEnter>) {
       try {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
-        const { data } = await https.post<ResList<Enter>, ReqList<Enter>>('/product/enter/list', pamars)
+        const { data } = await https.post<ResList<FinishedEnter>, ReqList<FinishedEnter>>('/product/finished/enter/list', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.EnterListTotal = data.value.data.total
           this.EnterList = data.value.data.list
@@ -32,9 +32,9 @@ export const useEnter = defineStore('EnterStore', {
       }
     },
     // 获取入库单筛选列表
-    async getEnterWhere() {
+    async getFinishedEnterWhere() {
       try {
-        const { data } = await https.get<Where<Enter>>('/product/enter/where')
+        const { data } = await https.get<Where<FinishedEnter>>('/product/finished/enter/where')
         if (data.value?.code === HttpCode.SUCCESS) {
           this.enterFilterList = data.value.data
           this.EnterToArray = sortArr(this.enterFilterList)
@@ -45,13 +45,9 @@ export const useEnter = defineStore('EnterStore', {
       }
     },
     /** 添加入库单 */
-    async createProductEnter(params: CreateProductEnter) {
-      console.log('createProductEnter')
-
+    async createFinishedEnter(params: CreateProductEnter) {
       try {
-        console.log('createProductEnter')
-
-        const { data } = await https.post<any, CreateProductEnter>('/product/enter/create', params)
+        const { data } = await https.post<any, CreateProductEnter>('/product/finished/enter/create', params)
         return data.value
       }
       catch (error) {
@@ -59,9 +55,9 @@ export const useEnter = defineStore('EnterStore', {
       }
     },
     /** 添加入库单产品 */
-    async addEnterProduct(params: EnterProductReq) {
+    async addFinishedEnter(params: FinishedEnterReq) {
       try {
-        const { data } = await https.post<any, EnterProductReq>('/product/enter/add_product', params)
+        const { data } = await https.post<any, FinishedEnterReq>('/product/finished/enter/add_product', params)
         return data.value
       }
       catch (error) {
@@ -69,9 +65,9 @@ export const useEnter = defineStore('EnterStore', {
       }
     },
     /** 编辑入库单产品 */
-    async editEnterProduct(params: editEnterProductReq) {
+    async editFinishedEnter(params: editFinishedEnterReq) {
       try {
-        const { data } = await https.put<any, editEnterProductReq>('/product/enter/edit_product', params)
+        const { data } = await https.put<any, editFinishedEnterReq>('/product/finished/enter/edit_product', params)
         return data.value
       }
       catch (error) {
@@ -79,9 +75,9 @@ export const useEnter = defineStore('EnterStore', {
       }
     },
     // 获取入库单详情
-    async getEnterInfo(id: Enter['id']) {
+    async getFinishedEnterInfo(id: FinishedEnter['id']) {
       try {
-        const { data } = await https.post<Enter, { id: Enter['id'] }>('/product/enter/info', { id })
+        const { data } = await https.post<FinishedEnter, { id: FinishedEnter['id'] }>('/product/finished/enter/info', { id })
         if (data.value?.code === HttpCode.SUCCESS) {
           this.enterInfo = data.value.data
         }
@@ -91,9 +87,9 @@ export const useEnter = defineStore('EnterStore', {
       }
     },
     // 删除入库单产品
-    async delEnterProduct(params: DelEnterProduct) {
+    async delFinishedEnter(params: DelEnterProduct) {
       try {
-        const { data } = await https.delete<any, DelEnterProduct>('/product/enter/del_product', params)
+        const { data } = await https.delete<any, DelEnterProduct>('/product/finished/enter/del_product', params)
         return data.value
       }
       catch (error) {
@@ -101,9 +97,9 @@ export const useEnter = defineStore('EnterStore', {
       }
     },
     // 取消入库
-    async cancelEnter(product_enter_id: Enter['id']) {
+    async cancelFinishedEnter(enter_id: FinishedEnter['id']) {
       try {
-        const { data } = await https.put<any, { product_enter_id: Enter['id'] }>('/product/enter/cancel', { product_enter_id })
+        const { data } = await https.put<any, { enter_id: FinishedEnter['id'] }>('/product/finished/enter/cancel', { enter_id })
         return data.value
       }
       catch (error) {
@@ -111,9 +107,9 @@ export const useEnter = defineStore('EnterStore', {
       }
     },
     // 完成入库
-    async finishEnter(product_enter_id: Enter['id']) {
+    async successFinishedEnter(enter_id: FinishedEnter['id']) {
       try {
-        const { data } = await https.put<any, { product_enter_id: Enter['id'] }>('/product/enter/finish', { product_enter_id })
+        const { data } = await https.put<any, { enter_id: FinishedEnter['id'] }>('/product/finished/enter/finish', { enter_id })
         return data.value
       }
       catch (error) {

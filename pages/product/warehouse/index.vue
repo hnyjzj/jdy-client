@@ -3,7 +3,7 @@ const { $toast } = useNuxtApp()
 const { myStoreList } = storeToRefs(useStores())
 const { getMyStore } = useStores()
 
-const { getEnterList, getEnterWhere, createProductEnter } = useEnter()
+const { getFinishedEnterList, getFinishedEnterWhere, createFinishedEnter } = useEnter()
 
 const { EnterList, EnterToArray, EnterListTotal } = storeToRefs(useEnter())
 const complate = ref(0)
@@ -47,20 +47,20 @@ async function clearSearch() {
   await submitWhere({ }, true)
 }
 // 获取货品列表
-async function getList(where = {} as Partial<Enter>) {
-  const params = { page: pages.value, limit: 10 } as ReqList<Enter>
+async function getList(where = {} as Partial<FinishedEnter>) {
+  const params = { page: pages.value, limit: 10 } as ReqList<FinishedEnter>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
 
-  const res = await getEnterList(params)
+  const res = await getFinishedEnterList(params)
   return res
 }
 
 await getList()
-await getEnterWhere()
+await getFinishedEnterWhere()
 
-const filterData = ref({} as Partial<Enter>)
+const filterData = ref({} as Partial<FinishedEnter>)
 
 function pull() {
   getList(filterData.value)
@@ -71,7 +71,7 @@ async function createEnter() {
   if (!enterParams.value?.store_id) {
     return $toast.error('请选择门店')
   }
-  const res = await createProductEnter(enterParams.value)
+  const res = await createFinishedEnter(enterParams.value)
   if (res?.code === HttpCode.SUCCESS) {
     isFilter.value = false
     isCreateModel.value = false
@@ -82,7 +82,7 @@ async function createEnter() {
 }
 
 // 筛选列表
-async function submitWhere(f: Partial<Enter>, isSearch: boolean = false) {
+async function submitWhere(f: Partial<FinishedEnter>, isSearch: boolean = false) {
   filterData.value = { ...f }
   pages.value = 1
   EnterList.value = []

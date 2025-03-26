@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { getEnterInfo, delEnterProduct, cancelEnter, finishEnter, addEnterProduct, editEnterProduct } = useEnter()
+const { getFinishedEnterInfo, delFinishedEnter, cancelFinishedEnter, successFinishedEnter, addFinishedEnter, editFinishedEnter } = useEnter()
 const { enterInfo } = storeToRefs(useEnter())
 const { finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
 const { getFinishedWhere } = useFinished()
@@ -36,7 +36,7 @@ if (route.query.id) {
   await getFinishedWhere()
 }
 async function getInfo() {
-  await getEnterInfo(enterId.value)
+  await getFinishedEnterInfo(enterId.value)
 }
 type ProductKey = keyof Product
 /** 汇总 */
@@ -44,7 +44,7 @@ function sum(key: ProductKey) {
   return enterInfo.value?.product_finisheds?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
 }
 async function del(params: DelEnterProduct) {
-  const res = await delEnterProduct(params)
+  const res = await delFinishedEnter(params)
   if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
     return $toast.success('删除成功')
@@ -58,7 +58,7 @@ async function delProduct() {
   if (!enterInfo.value.id)
     return
   const params = {
-    product_enter_id: enterInfo.value.id,
+    enter_id: enterInfo.value.id,
     product_ids: [deleteId.value],
   }
   await del(params)
@@ -70,7 +70,7 @@ async function clearProduct() {
     return
   }
   const params = {
-    product_enter_id: enterInfo.value.id,
+    enter_id: enterInfo.value.id,
     product_ids: idAll,
   }
   await del(params)
@@ -83,10 +83,8 @@ const uploadRef = ref()
 
 // 提交入库
 async function submitGoods(req: Product[]) {
-  console.log(req)
-
   if (req?.length) {
-    const res = await addEnterProduct({ product_finisheds: req, product_enter_id: enterInfo.value.id, product_accessories: [] })
+    const res = await addFinishedEnter({ products: req, enter_id: enterInfo.value.id })
     if (res?.code === HttpCode.SUCCESS) {
       isChooseModel.value = false
       isImportModel.value = false
@@ -107,7 +105,7 @@ async function submitGoods(req: Product[]) {
 
 /** 撤销入库 */
 async function cancel() {
-  const res = await cancelEnter(enterInfo.value.id)
+  const res = await cancelFinishedEnter(enterInfo.value.id)
   if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
     setTimeout(() => {
@@ -134,7 +132,7 @@ function finishFun() {
 
 /** 完成入库 */
 async function finish() {
-  const res = await finishEnter(enterInfo.value.id)
+  const res = await successFinishedEnter(enterInfo.value.id)
   if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
     return $toast.success('完成入库成功')
@@ -161,11 +159,11 @@ function edit(product: Product) {
 /** 编辑货品 */
 async function submitEdit() {
   const params = {
-    product_enter_id: enterInfo.value.id,
+    enter_id: enterInfo.value.id,
     product_id: productEdittIng.value.id,
     product: productParams.value,
   }
-  const res = await editEnterProduct(params)
+  const res = await editFinishedEnter(params)
   if (res?.code === HttpCode.SUCCESS) {
     isEditModel.value = false
     await getInfo()

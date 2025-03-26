@@ -1,11 +1,11 @@
-interface EnterReq {
+interface finishedEnterReq {
   page: number
   limit: number
-  where?: Partial<Enter>
+  where?: Partial<FinishedEnter>
 }
 
 // 产品类型
-interface Enter {
+interface FinishedEnter {
   /**
    * 创建时间
    */
@@ -60,27 +60,48 @@ interface Enter {
 }
 
 /**
- * 添加入库单产品
+ * 添加成品入库单产品
  */
-interface EnterProductReq {
+interface FinishedEnterReq {
   /** 成品入库参数 */
-  product_finisheds: Product[]
-  /** 配件入库参数 */
-  product_accessories: Product[]
-  product_enter_id: string
+  products: Product[]
+  enter_id: string
 }
 
 /**
  * 编辑入库单产品
  */
-interface editEnterProductReq {
+interface editFinishedEnterReq {
   product: Partial<Product>
   /**
    * 入库单 ID
    */
-  product_enter_id: string
+  enter_id: string
   /**
    * 产品 ID
    */
   product_id: string
+}
+
+/**
+ * 创建入库单参数
+ */
+interface CreateFinishedEnter {
+  store_id: Stores['id']
+  remark?: string
+  type: number
+}
+
+/**
+ * 删除入库单产品
+ */
+interface DelFinishedEnter {
+  /**
+   * 入库单ID
+   */
+  enter_id: string
+  /**
+   * 商品ID列表
+   */
+  product_ids: string[]
 }

@@ -89,10 +89,10 @@ async function transformData(data: any[][]) {
 
         switch (type) {
           case 'number':
-            row[index] = Number.isNaN(Number(row[index])) ? '' : Number(row[index])
+            row[index] = Number.isNaN(Number(row[index])) ? 0 : Number(row[index])
             break
           case 'float':
-            row[index] = Number.isNaN(Number.parseFloat(row[index])) ? '' : Number.parseFloat(row[index])
+            row[index] = Number.isNaN(Number.parseFloat(row[index])) ? 0 : Number.parseFloat(row[index])
             break
           case 'string':
             row[index] = row[index] ?? '' // 将 undefined 转为空字符串
