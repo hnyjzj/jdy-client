@@ -35,7 +35,7 @@ const jumpInfo = (info: Product) => {
               所属大类
             </div>
             <div class="text-align-end val">
-              {{ filterList.class?.preset[info.class] }}
+              {{ filterList.class?.preset[info.class] || '' }}
             </div>
           </div>
           <div class="flex-between">
@@ -51,7 +51,7 @@ const jumpInfo = (info: Product) => {
               货品品牌
             </div>
             <div class="text-align-end val">
-              {{ filterList.brand?.preset[info.brand] }}
+              {{ filterList.brand?.preset[info.brand] || '' }}
             </div>
           </div>
           <div class="flex-between">
@@ -59,7 +59,7 @@ const jumpInfo = (info: Product) => {
               供应商
             </div>
             <div class="text-align-end val">
-              {{ filterList.supplier?.preset[info.supplier] }}
+              {{ filterList.supplier?.preset[info.supplier] || '' }}
             </div>
           </div>
           <div class="flex-between">
@@ -67,7 +67,7 @@ const jumpInfo = (info: Product) => {
               材质
             </div>
             <div class="text-align-end val">
-              {{ filterList.material?.preset[info.material] }}
+              {{ filterList.material?.preset[info.material] || '' }}
             </div>
           </div>
           <div class="flex-between">
@@ -75,7 +75,7 @@ const jumpInfo = (info: Product) => {
               成色
             </div>
             <div class="text-align-end val">
-              {{ filterList.quality?.preset[info.quality] }}
+              {{ filterList.quality?.preset[info.quality] || '' }}
             </div>
           </div>
           <div class="flex-between">
@@ -83,7 +83,7 @@ const jumpInfo = (info: Product) => {
               宝石
             </div>
             <div class="text-align-end val">
-              {{ filterList.gem?.preset[info.gem] }}
+              {{ filterList.gem?.preset[info.gem] || '' }}
             </div>
           </div>
           <div class="flex-between">

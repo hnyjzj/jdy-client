@@ -17,10 +17,10 @@ const convertModel = ref(false)
 const selectConvertType = ref()
 const converOption = ref([{
   label: '成品',
-  value: 1,
+  value: GoodsType.ProductFinish,
 }, {
   label: '旧料',
-  value: 2,
+  value: GoodsType.ProductOld,
 }])
 // 报损原因
 const reason = ref('')
@@ -121,7 +121,6 @@ function submitConvert() {
         <n-select
           v-model:value="selectConvertType"
           menu-size="large"
-          fable
           placeholder="转换为成品或旧料"
           :options="converOption"
         />

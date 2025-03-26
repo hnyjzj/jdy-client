@@ -95,7 +95,6 @@ function submitConvert() {
         <n-select
           v-model:value="selectConvertType"
           menu-size="large"
-          fable
           placeholder="转换为成品或旧料"
           :options="converOption"
         />
