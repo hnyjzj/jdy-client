@@ -7,7 +7,7 @@ useSeoMeta({
 })
 const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
-const { getAddOrderProductList, getProductList } = useProductManage()
+const { getProductList } = useProductManage()
 const { getStoreStaffList } = useStores()
 const { getSaleWhere, submitOrder, getOrderDetail, OldMaterialsWhere } = useOrder()
 const { getGoldPrice } = useGoldPrice()
