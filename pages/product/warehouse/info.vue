@@ -2,8 +2,8 @@
 const { $toast } = useNuxtApp()
 const { getEnterInfo, delEnterProduct, cancelEnter, finishEnter, addEnterProduct, editEnterProduct } = useEnter()
 const { enterInfo } = storeToRefs(useEnter())
-const { filterList, filterListToArray } = storeToRefs(useProductManage())
-const { getProductWhere } = useProductManage()
+const { finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
+const { getFinishedWhere } = useFinished()
 
 useSeoMeta({
   title: '入库单详情',
@@ -33,7 +33,7 @@ const enterId = ref('')
 if (route.query.id) {
   enterId.value = route.query.id as string
   await getInfo()
-  await getProductWhere()
+  await getFinishedWhere()
 }
 async function getInfo() {
   await getEnterInfo(enterId.value)
@@ -83,6 +83,8 @@ const uploadRef = ref()
 
 // 提交入库
 async function submitGoods(req: Product[]) {
+  console.log(req)
+
   if (req?.length) {
     const res = await addEnterProduct({ product_finisheds: req, product_enter_id: enterInfo.value.id, product_accessories: [] })
     if (res?.code === HttpCode.SUCCESS) {
@@ -144,7 +146,7 @@ const productEdittIng = ref({} as Product)
 
 function edit(product: Product) {
   productEdittIng.value = product
-  filterListToArray.value.forEach((item) => {
+  finishedFilterListToArray.value.forEach((item) => {
     if (item.update) {
       productParams.value[item.name] = product[item.name]
       // float类型需要从字符串转换为数组类型 number类型输入康
@@ -314,7 +316,7 @@ function filteredOptions(preset: any, val: number) {
                     </template>
                     <template #info>
                       <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
-                        <template v-for="(filter, findex) in filterListToArray" :key="findex">
+                        <template v-for="(filter, findex) in finishedFilterListToArray" :key="findex">
                           <template v-if="filter.update">
                             <template v-if="filter.input === 'list'">
                               <template v-for="(certificate, i) in item[filter.name]" :key="i">
@@ -363,7 +365,7 @@ function filteredOptions(preset: any, val: number) {
       </div>
     </common-layout-center>
     <product-upload-choose v-model:is-model="isChooseModel" @go-add="goAdd" @batch="isImportModel = true" />
-    <product-upload-warehouse ref="uploadRef" v-model="isImportModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
+    <product-upload-warehouse ref="uploadRef" v-model="isImportModel" :filter-list="finishedFilterList" :type="1" @upload="submitGoods" />
     <!-- 状态为草稿时 功能操作 -->
     <template v-if="enterInfo.status === 1">
       <common-create @create="isChooseModel = true" />
@@ -394,7 +396,7 @@ function filteredOptions(preset: any, val: number) {
     <common-confirm v-model:show="finishDialog" icon="success" title="完成入库" text="确认要完成此入库单吗?" @submit="finish" />
     <common-model v-model="isEditModel" title="编辑" :show-ok="true" @confirm="submitEdit">
       <div class="max-h-[400px] overflow-auto">
-        <template v-for="(item, index) in filterListToArray" :key="index">
+        <template v-for="(item, index) in finishedFilterListToArray" :key="index">
           <template v-if="item.update">
             <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
               <div class="mb-4">

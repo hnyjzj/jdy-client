@@ -5,10 +5,15 @@ const props = defineProps<{
 }>()
 const emits = defineEmits<{
   edit: [code: string]
+  goInfo: [info: Product]
 }>()
 
 const edit = (code: string) => {
   emits('edit', code)
+}
+
+const jumpInfo = (info: Product) => {
+  emits('goInfo', info)
 }
 </script>
 
@@ -109,7 +114,7 @@ const edit = (code: string) => {
       </template>
       <template #bottom="{ info }">
         <div class="flex-end text-size-[14px]">
-          <common-button-irregular text="详情" @click="jump('/product/manage/info', { code: info.code })" />
+          <common-button-irregular text="详情" @click="jumpInfo(info)" />
         </div>
       </template>
     </product-manage-card>

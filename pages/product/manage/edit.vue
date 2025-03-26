@@ -5,8 +5,9 @@ useSeoMeta({
   title: '编辑',
 })
 const { $toast } = useNuxtApp()
-const { getProductInfo, getProductWhere, updateProductInfo, uploadProductImg } = useProductManage()
-const { productInfo, filterList, filterListToArray } = storeToRefs(useProductManage())
+const { getFinishedInfo, getFinishedWhere, updateFinishedInfo } = useFinished()
+const { uploadProductImg } = useProductManage()
+const { finishedInfo, finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
 
 const route = useRoute()
 const productParams = ref<Product>({} as Product)
@@ -14,21 +15,21 @@ const productParams = ref<Product>({} as Product)
 const previewFileList = ref<Array<UploadFileInfo>>([])
 async function getInfo() {
   if (route.query.code) {
-    await getProductInfo(route.query.code as string)
+    await getFinishedInfo(route.query.code as string)
     initImgWall()
-    productParams.value = productInfo.value
+    productParams.value = finishedInfo.value
     // 证书手动添加一个数组项
-    if (!productInfo.value.certificate) {
-      productInfo.value.certificate = ['']
+    if (!finishedInfo.value.certificate) {
+      finishedInfo.value.certificate = ['']
     }
   }
 }
 
 /** 照片墙照片初始化 */
 function initImgWall() {
-  if (productInfo.value?.images?.length) {
+  if (finishedInfo.value?.images?.length) {
     const arr: Array<UploadFileInfo> = []
-    productInfo.value.images.forEach((item, index) => {
+    finishedInfo.value.images.forEach((item, index) => {
       arr.push(
         {
           id: `${index}`,
@@ -43,14 +44,14 @@ function initImgWall() {
 }
 
 await getInfo()
-await getProductWhere()
+await getFinishedWhere()
 
 // 参数转换相应类型
 function transformData() {
   for (const key in productParams.value) {
     const k = key as keyof Product
     let v = productParams.value[k]
-    switch (filterList.value[k]?.type) {
+    switch (finishedFilterList.value[k]?.type) {
       case 'number':
         if (v) {
           v = Number(v)
@@ -83,7 +84,7 @@ function transformData() {
 }
 
 async function updateData() {
-  const res = await updateProductInfo(productParams.value)
+  const res = await updateFinishedInfo(productParams.value)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('更新成功')
     await getInfo()
@@ -95,7 +96,7 @@ async function updateData() {
 
 // 取消更新 数据恢复为修改之前
 function cancelUpdata() {
-  productParams.value = JSON.parse(JSON.stringify(productInfo.value))
+  productParams.value = JSON.parse(JSON.stringify(finishedInfo.value))
 }
 
 // 校验上传文件
@@ -115,7 +116,7 @@ const customRequest = useDebounceFn(async ({ file }: UploadCustomRequestOptions)
 
   const params = {
     image: file.file,
-    product_id: productInfo.value.code,
+    product_id: finishedInfo.value.code,
   }
 
   try {
@@ -129,7 +130,7 @@ const customRequest = useDebounceFn(async ({ file }: UploadCustomRequestOptions)
         status: 'finished',
         url: ImageUrl(res?.data.url),
       })
-      await updateProductInfo(productParams.value)
+      await updateFinishedInfo(productParams.value)
     }
     else {
       $toast.error(res?.message || '图片上传失败')
@@ -175,21 +176,21 @@ function removeImg(data: { index: number }) {
           <div class="flex-1 grid gap-y-2 text-[#FFF] text-[12px] my-4">
             <div class="flex justify-between">
               <div>状态</div>
-              <common-tags type="orange" :text="filterList.status?.preset[productInfo.status] ?? ''" />
+              <common-tags type="orange" :text="finishedFilterList.status?.preset[finishedInfo.status] ?? ''" />
             </div>
             <div class="flex justify-between">
               <div>所在门店</div>
-              <div>{{ productInfo.store.name }}</div>
+              <div>{{ finishedInfo?.store?.name }}</div>
             </div>
             <div class="flex justify-between">
               <div>供应商</div>
-              <div>{{ filterList.supplier?.preset[productInfo.supplier] }}</div>
+              <div>{{ finishedFilterList.supplier?.preset[finishedInfo.supplier] }}</div>
             </div>
           </div>
         </div>
         <div class="pb-20 w-[100%]">
           <div uno-sm="grid grid-cols-[1fr_1fr] gap-4">
-            <template v-for="(item, index) in filterListToArray" :key="index">
+            <template v-for="(item, index) in finishedFilterListToArray" :key="index">
               <template v-if="item.update">
                 <div class="mb-4">
                   <div class="label">

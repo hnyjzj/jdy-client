@@ -161,7 +161,7 @@ interface ProductDamage {
 }
 
 interface ProductTransfer {
-  code: Product['code']
+  id: Product['id']
   type: Product['type']
 }
 

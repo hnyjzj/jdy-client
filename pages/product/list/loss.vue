@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { getProductList, getProductWhere } = useProductManage()
-const { productList, filterList, filterListToArray, productListTotal } = storeToRefs(useProductManage())
+const { getLossList, getLossWhere } = useLoss()
+const { lossList, lossFilterList, lossFilterListToArray, lossListTotal } = storeToRefs(useLoss())
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
@@ -24,21 +24,20 @@ async function clearSearch() {
 // 获取货品列表
 async function getList(where = {} as Partial<Product>) {
   const params = { page: pages.value, limit: 10 } as ReqList<Product>
-  where.status = 2
   params.where = where
-  const res = await getProductList(params)
+  const res = await getLossList(params)
   return res as any
 }
 
 try {
   await getList()
-  await getProductWhere()
+  await getLossWhere()
 }
 catch (error) {
   throw new Error(`初始化失败: ${error || '未知错误'}`)
 }
 
-const filterData = ref({ status: 2 } as Partial<Product>)
+const filterData = ref({} as Partial<Product>)
 function pull() {
   getList(filterData.value)
 }
@@ -47,7 +46,7 @@ function pull() {
 async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
   filterData.value = { ...f }
   pages.value = 1
-  productList.value = []
+  lossList.value = []
   const res = await getList(filterData.value)
   if (res?.code === HttpCode.SUCCESS) {
     isFilter.value = false
@@ -64,15 +63,15 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:id="complate" :product-list-total="productListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:id="complate" :product-list-total="lossListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company />
       </template>
     </product-filter>
     <!-- 小卡片组件 -->
     <div class="px-[16px] pb-20">
-      <template v-if="productList?.length">
-        <product-manage-card :list="productList">
+      <template v-if="lossList?.length">
+        <product-manage-card :list="lossList">
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
               <div class="flex-between">
@@ -88,7 +87,7 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
                   所属大类
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.class?.preset[info.class] }}
+                  {{ lossFilterList.class?.preset[info.class] }}
                 </div>
               </div>
               <div class="flex-between">
@@ -104,7 +103,7 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
                   货品品牌
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.brand?.preset[info.brand] }}
+                  {{ lossFilterList.brand?.preset[info.brand] }}
                 </div>
               </div>
               <div class="flex-between">
@@ -112,7 +111,7 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
                   供应商
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.supplier?.preset[info.supplier] }}
+                  {{ lossFilterList.supplier?.preset[info.supplier] }}
                 </div>
               </div>
               <div class="flex-between">
@@ -120,7 +119,7 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
                   材质
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.material?.preset[info.material] }}
+                  {{ lossFilterList.material?.preset[info.material] }}
                 </div>
               </div>
               <div class="flex-between">
@@ -128,7 +127,7 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
                   成色
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.quality?.preset[info.quality] }}
+                  {{ lossFilterList.quality?.preset[info.quality] }}
                 </div>
               </div>
               <div class="flex-between">
@@ -136,7 +135,7 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
                   宝石
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.gem?.preset[info.gem] }}
+                  {{ lossFilterList.gem?.preset[info.gem] }}
                 </div>
               </div>
               <div class="flex-between">
@@ -159,12 +158,12 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
           </template>
           <template #bottom="{ info }">
             <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="详情" @click="jump('/product/manage/info', { code: info.code })" />
+              <common-button-irregular text="详情" @click="jump('/product/manage/loss/info', { code: info.code })" />
             </div>
           </template>
         </product-manage-card>
         <common-page
-          v-model:page="pages" :total="productListTotal" :limit="10" @update:page="() => {
+          v-model:page="pages" :total="lossListTotal" :limit="10" @update:page="() => {
             pull()
           }
           " />
@@ -174,7 +173,7 @@ async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
       </template>
     </div>
     <product-manage-bottom />
-    <common-filter-where v-model:show="isFilter" :data="filterData" :disabled="['status']" :filter="filterListToArray" @submit="submitWhere" />
+    <common-filter-where v-model:show="isFilter" :data="filterData" :disabled="['status']" :filter="lossFilterListToArray" @submit="submitWhere" />
   </div>
 </template>
 

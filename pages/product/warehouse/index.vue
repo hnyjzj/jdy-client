@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { myStore, storesList } = storeToRefs(useStores())
-const { getStoreList } = useStores()
+const { myStore, myStoreList } = storeToRefs(useStores())
+const { getMyStore } = useStores()
 
 const { getEnterList, getEnterWhere, createProductEnter } = useEnter()
 const { importProduct } = useProductManage()
@@ -26,11 +26,11 @@ const storeCol = ref()
 const enterTypeCol = ref([{ label: '成品', value: 1 }, { label: '配件', value: 3 }])
 function changeStoer() {
   storeCol.value = []
-  storesList.value.forEach((item: Stores) => {
+  myStoreList.value.forEach((item: Stores) => {
     storeCol.value.push({ label: item.name, value: item.id })
   })
 }
-await getStoreList({ page: 1, limit: 20 })
+await getMyStore({ page: 1, limit: 20 })
 await changeStoer()
 
 useSeoMeta({

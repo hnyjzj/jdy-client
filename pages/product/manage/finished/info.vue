@@ -1,16 +1,17 @@
 <script setup lang="ts">
-const { getProductInfo, getProductWhere, damageProduct, convertProduct } = useProductManage()
-const { productInfo, filterList, filterListToArray } = storeToRefs(useProductManage())
+const { getFinishedInfo, getFinishedWhere, damageFinished, convertFinished } = useFinished()
+const { finishedInfo, finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
 
 const { $toast } = useNuxtApp()
 const productName = ref('')
 // 成品列表详情
 useSeoMeta({
-  title: productInfo.value.name,
+  title: finishedInfo.value.name,
 })
-productName.value = productInfo.value.name
+productName.value = finishedInfo.value.name
 
 const route = useRoute()
+const router = useRouter()
 const isModel = ref(false)
 const convertModel = ref(false)
 const selectConvertType = ref()
@@ -24,9 +25,9 @@ const converOption = ref([{
 // 报损原因
 const reason = ref('')
 if (route.query.code) {
-  await getProductInfo(route.query.code as string)
+  await getFinishedInfo(route.query.code as string)
 }
-await getProductWhere()
+await getFinishedWhere()
 
 function goLoss() {
   isModel.value = true
@@ -37,12 +38,14 @@ async function loss() {
     $toast.error('请输入报损原因')
     return
   }
-  const res = await damageProduct({ code: productInfo.value.code, reason: reason.value })
+  const res = await damageFinished({ code: finishedInfo.value.code, reason: reason.value })
   if (res?.code === HttpCode.SUCCESS) {
     isModel.value = false
     reason.value = ''
-    getProductInfo(productInfo.value.code)
-    $toast.success('报损成功')
+    $toast.success('报损成功', 300)
+    setTimeout(() => {
+      router.back()
+    }, 500)
   }
   else {
     $toast.error(res?.message ?? '报损失败')
@@ -51,12 +54,15 @@ async function loss() {
 
 // 转换
 async function convert(type: Product['type']) {
-  const res = await convertProduct({ code: productInfo.value.code, type })
+  const res = await convertFinished({ id: finishedInfo.value.id, type })
   if (res?.code === HttpCode.SUCCESS) {
+    convertModel.value = false
     isModel.value = false
     reason.value = ''
-    getProductInfo(productInfo.value.code)
     $toast.success('转换成功')
+    setTimeout(() => {
+      router.back()
+    }, 500)
   }
   else {
     $toast.error(res?.message ?? '转换失败')
@@ -76,30 +82,32 @@ function submitConvert() {
   <div>
     <common-layout-center>
       <div class="pt-6 pb-18">
-        <product-manage-info :product-info="productInfo" :filter-list="filterList" :filter-list-to-array="filterListToArray" @go-loss="goLoss" />
+        <product-manage-info :product-info="finishedInfo" :filter-list="finishedFilterList" :filter-list-to-array="finishedFilterListToArray" @go-loss="goLoss" />
         <div class="bottom">
           <div class="sm:grid-12">
             <div uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
               <div class="px-2 py-2 flex gap-2">
-                <!-- 旧料转成品 -->
-                <template v-if="productInfo.type === GoodsStatus.ProductStatusDamage">
+                <!-- 旧料 转成品 -->
+                <template v-if="finishedInfo.type === GoodsType.ProductOld">
                   <div class="flex-1">
-                    <common-button-rounded content="转成品" color="#000" bgc="#FFF" @button-click="convert(1)" />
+                    <common-button-rounded content="转成品" color="#000" bgc="#FFF" @button-click="convert(GoodsType.ProductFinish)" />
                   </div>
                 </template>
-                <!-- 报损转换成品/旧料 -->
-                <template v-if="productInfo.status === GoodsStatus.ProductStatusDamage">
+                <!-- 成品 -->
+                <template v-if="finishedInfo.type === GoodsType.ProductFinish">
+                  <!-- 报损可以转换 成品或者旧料 -->
+                  <template v-if="finishedInfo.status === GoodsStatus.ProductStatusDamage">
+                    <div class="flex-1">
+                      <common-button-rounded content="转成品/旧料" color="#000" bgc="#FFF" @button-click="convertModel = true" />
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div class="flex-1">
+                      <common-button-rounded content="报损" color="#000" bgc="#FFF" @button-click="goLoss" />
+                    </div>
+                  </template>
                   <div class="flex-1">
-                    <common-button-rounded content="转成品/旧料" color="#000" bgc="#FFF" @button-click="convertModel = true" />
-                  </div>
-                </template>
-                <template v-else>
-                  <div class="flex-1">
-                    <!-- <common-button-rounded content="报损" color="#000" bgc="#FFF" @button-click="goLoss" /> -->
-                    <common-button-rounded content="转成品" color="#000" bgc="#FFF" @button-click="convert(1)" />
-                  </div>
-                  <div class="flex-1">
-                    <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: productInfo.code })" />
+                    <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: finishedInfo.code })" />
                   </div>
                 </template>
               </div>
@@ -125,7 +133,7 @@ function submitConvert() {
           数量
         </div>
         <div class="block w-[96px]">
-          {{ productInfo.num_gem }}
+          {{ finishedInfo.num_gem }}
         </div>
       </div>
       <div class="my-4">
@@ -134,7 +142,7 @@ function submitConvert() {
         </div>
         <div class="block flex justify-between items-center">
           <div>
-            {{ productInfo.code }}
+            {{ finishedInfo.code }}
           </div>
           <div>
             <van-icon name="arrow" color="#808089" />
