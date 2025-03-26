@@ -1,7 +1,10 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { getProductHistory, getHistoryWhere, getProductWhere } = useProductManage()
-const { productRocordList, filterList, historyFilterList, HistoryFilterListToArray, historyListTotal } = storeToRefs(useProductManage())
+const { getProductHistory, getHistoryWhere } = useProductManage()
+const { getFinishedWhere } = useFinished()
+const { historyFilterList, historyListTotal, productRocordList, HistoryFilterListToArray } = storeToRefs(useProductManage())
+const { finishedFilterList } = storeToRefs(useFinished())
+
 const { storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 
@@ -46,7 +49,7 @@ async function getList(where = {} as Partial<HistoryWhere>) {
 try {
   await getList()
   await getHistoryWhere()
-  await getProductWhere()
+  await getFinishedWhere()
   await changeStore()
   await getStoreList({ page: 1, limit: 20 })
 }
@@ -121,7 +124,7 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
                   所属大类
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.class?.preset[info?.new_value?.class] }}
+                  {{ finishedFilterList.class?.preset[info?.new_value?.class] }}
                 </div>
               </div>
               <div class="flex-between">
@@ -161,7 +164,7 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
                   零售方式
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.retail_type?.preset[info?.new_value?.retail_type] }}
+                  {{ finishedFilterList.retail_type?.preset[info?.new_value?.retail_type] }}
                 </div>
               </div>
               <div class="flex-between">
@@ -185,7 +188,7 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
                   供应商
                 </div>
                 <div class="text-align-end">
-                  {{ filterList.supplier?.preset[info?.new_value?.supplier] }}
+                  {{ finishedFilterList.supplier?.preset[info?.new_value?.supplier] }}
                 </div>
               </div>
             </div>

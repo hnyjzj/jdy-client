@@ -1,11 +1,9 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { myStore, myStoreList } = storeToRefs(useStores())
+const { myStoreList } = storeToRefs(useStores())
 const { getMyStore } = useStores()
 
 const { getEnterList, getEnterWhere, createProductEnter } = useEnter()
-const { importProduct } = useProductManage()
-const { filterList } = storeToRefs(useProductManage())
 
 const { EnterList, EnterToArray, EnterListTotal } = storeToRefs(useEnter())
 const complate = ref(0)
@@ -102,19 +100,6 @@ async function submitWhere(f: Partial<Enter>, isSearch: boolean = false) {
 /** 编辑 */
 function edit(id: string) {
   jump('/product/warehouse/info', { id })
-}
-// 提交入库
-async function submitGoods(data: Product[]) {
-  if (data?.length) {
-    const res = await importProduct({ products: data, store_id: myStore.value?.id })
-    if (res?.code === HttpCode.SUCCESS) {
-      isModel.value = false
-      isBatchImportModel.value = false
-      pages.value = 1
-      await getList()
-      return $toast.success('导入成功')
-    }
-  }
 }
 
 const create = () => {
@@ -222,7 +207,6 @@ function goAdd() {
     <product-manage-bottom />
     <common-create @click="create" />
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
-    <product-upload-warehouse v-model="isBatchImportModel" :filter-list="filterList" :type="1" @upload="submitGoods" />
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" />
     <common-model v-model="isCreateModel" title="添加入库单" :show-ok="true" @confirm="createEnter">
       <div class="mb-8 min-h-[60px]">

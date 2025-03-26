@@ -46,7 +46,11 @@ export const useEnter = defineStore('EnterStore', {
     },
     /** 添加入库单 */
     async createProductEnter(params: CreateProductEnter) {
+      console.log('createProductEnter')
+
       try {
+        console.log('createProductEnter')
+
         const { data } = await https.post<any, CreateProductEnter>('/product/enter/create', params)
         return data.value
       }

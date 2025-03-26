@@ -2,8 +2,8 @@
 const { getAllocateInfo, confirmAllcate, cancelAllcate, finishAllcate, remove, add } = useAllocate()
 const { allocateInfo, allocateFilterList } = storeToRefs(useAllocate())
 const { useWxWork } = useWxworkStore()
-const { getProductWhere } = useProductManage()
-const { filterListToArray } = storeToRefs(useProductManage())
+const { getFinishedWhere } = useFinished()
+const { finishedFilterListToArray } = storeToRefs(useFinished())
 useSeoMeta({
   title: '调拨单详情',
 })
@@ -15,7 +15,7 @@ const isAddModel = ref(false)
 const pCode = ref()
 if (route.query.id) {
   await getAllocateInfo(route.query.id as string)
-  await getProductWhere()
+  await getFinishedWhere()
 }
 
 type ProductKey = keyof Product
@@ -281,7 +281,7 @@ async function scanit() {
                   </template>
                   <template #info>
                     <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
-                      <template v-for="(filter, findex) in filterListToArray" :key="findex">
+                      <template v-for="(filter, findex) in finishedFilterListToArray" :key="findex">
                         <template v-if="filter.find">
                           <div class="flex">
                             <div class="key">

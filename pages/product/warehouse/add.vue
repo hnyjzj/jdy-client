@@ -4,9 +4,9 @@ import type { FormInst, FormRules } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList } = useStores()
-const { getProductWhere } = useProductManage()
+const { getFinishedWhere } = useFinished()
 const { addEnterProduct } = useEnter()
-const { filterListToArray, filterList } = storeToRefs(useProductManage())
+const { finishedFilterListToArray, finishedFilterList } = storeToRefs(useFinished())
 const route = useRoute()
 const router = useRouter()
 useSeoMeta({
@@ -20,7 +20,7 @@ const certificate = ref(['', ''])
 if (route.query?.type) {
   params.value.type = Number(route.query.type) as Product['type']
   isDisables.value = ['type']
-  await getProductWhere({ type: params.value.type })
+  await getFinishedWhere()
 }
 if (route.query?.id) {
   enterId.value = route.query.id
@@ -29,7 +29,7 @@ const formRef = ref<FormInst | null>(null)
 const rules = ref<FormRules>({})
 
 function forRules() {
-  filterListToArray.value.forEach((item) => {
+  finishedFilterListToArray.value.forEach((item) => {
     if (item.required) {
       if (item.input === 'text') {
         rules.value[item.name] = {
@@ -111,7 +111,7 @@ async function submit() {
 const presetToSelect = (key: keyof Product) => {
   if (!key)
     return []
-  const filter = filterList.value[key]
+  const filter = finishedFilterList.value[key]
   if (!filter)
     return []
   if (!filter.preset) {
@@ -134,7 +134,7 @@ const presetToSelect = (key: keyof Product) => {
               <template #body>
                 <n-form ref="formRef" :model="params" :rules="rules">
                   <n-grid :cols="24" :x-gap="8">
-                    <template v-for="(item, index) in filterListToArray" :key="index">
+                    <template v-for="(item, index) in finishedFilterListToArray" :key="index">
                       <template v-if="item.input !== 'list'">
                         <template v-if="item.update">
                           <n-form-item-gi :span="12" :path="item.name" :required="item.required" :label="item.label">

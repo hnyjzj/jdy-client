@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-const { getProductHistoryInfo, getHistoryWhere, getProductWhere } = useProductManage()
-const { historyInfo, filterListToArray, historyFilterList } = storeToRefs(useProductManage())
+const { getProductHistoryInfo, getHistoryWhere } = useProductManage()
+const { getFinishedWhere } = useFinished()
+const { historyInfo, historyFilterList } = storeToRefs(useProductManage())
+const { finishedFilterListToArray } = storeToRefs(useFinished())
 
 useSeoMeta({
   title: '货品记录详情',
@@ -10,7 +12,7 @@ const recordId = ref()
 async function getInfo() {
   await getProductHistoryInfo(recordId.value)
   await getHistoryWhere()
-  await getProductWhere()
+  await getFinishedWhere()
 }
 if (route.query.id) {
   recordId.value = route.query.id
@@ -55,7 +57,7 @@ function isUpdate(key: ProductKey) {
 
               <div class="h-0.5 bg-[#E6E6E8]" />
               <div class="other-information flex flex-col" uno-sm="grid grid-cols-[1fr_1fr] gap-x-10">
-                <template v-for="(item, index) in filterListToArray" :key="index">
+                <template v-for="(item, index) in finishedFilterListToArray" :key="index">
                   <template v-if="item.find">
                     <div class="info-row">
                       <div class="info-title">
