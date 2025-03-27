@@ -184,7 +184,6 @@ interface ProductFinisheds {
 interface CreateProductFinsihedEnter {
   store_id: Stores['id']
   remark?: string
-  type: number
 }
 
 /**

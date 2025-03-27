@@ -1,18 +1,18 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends Record<string, any>">
 const props = defineProps<{
-  filterList: Where<ProductFinisheds>
-  productList: ProductFinisheds[]
+  filterList: Where<T>
+  productList: T[]
 }>()
 const emits = defineEmits<{
   edit: [code: string]
-  goInfo: [info: ProductFinisheds]
+  goInfo: [info: T]
 }>()
 
 const edit = (code: string) => {
   emits('edit', code)
 }
 
-const jumpInfo = (info: ProductFinisheds) => {
+const jumpInfo = (info: T) => {
   emits('goInfo', info)
 }
 </script>

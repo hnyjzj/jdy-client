@@ -33,11 +33,7 @@ interface FinishedEnter {
   /**
    * 成品列表
    */
-  product_finisheds?: Products[]
-  /**
-   * 配件列表
-   */
-  product_accessories?: Products[]
+  products?: Products[]
   /**
    * 备注
    */

@@ -41,7 +41,7 @@ async function getInfo() {
 type ProductKey = keyof ProductFinisheds
 /** 汇总 */
 function sum(key: ProductKey) {
-  return enterInfo.value?.product_finisheds?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
+  return enterInfo.value?.products?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
 }
 async function del(params: DelProductFinishedEnter) {
   const res = await delFinishedEnter(params)
@@ -65,7 +65,7 @@ async function delProduct() {
 }
 /** 清空产品列表 */
 async function clearProduct() {
-  const idAll = enterInfo.value?.product_finisheds?.map(item => item.id)
+  const idAll = enterInfo.value?.products?.map(item => item.id)
   if (!idAll || !idAll.length) {
     return
   }
@@ -117,14 +117,14 @@ async function cancel() {
 }
 
 function clearFun() {
-  if (!enterInfo.value?.product_finisheds || enterInfo.value.product_finisheds.length === 0) {
+  if (!enterInfo.value?.products || enterInfo.value.products.length === 0) {
     return $toast.warning('货品为空')
   }
   clearDialog.value = true
 }
 
 function finishFun() {
-  if (!enterInfo.value.product_finisheds?.length) {
+  if (!enterInfo.value.products?.length) {
     return $toast.error('请添加货品入库记录')
   }
   finishDialog.value = true
@@ -259,7 +259,7 @@ function filteredOptions(preset: any, val: number) {
                         入库数量
                       </div>
                       <div class="info-val">
-                        {{ enterInfo.product_finisheds?.length }}
+                        {{ enterInfo.products?.length }}
                       </div>
                     </div>
                     <div class="flex-start gap-3 text-sm font-normal">
@@ -292,12 +292,12 @@ function filteredOptions(preset: any, val: number) {
             </common-gradient>
           </div>
 
-          <template v-if="enterInfo.product_finisheds?.length">
+          <template v-if="enterInfo.products?.length">
             <div class="p-4 blur-bgc rounded-6">
               <div class="text-[14px] pb-4 text-color">
-                共 {{ enterInfo.product_finisheds.length }}
+                共 {{ enterInfo.products.length }}
               </div>
-              <template v-for="(item, index) in enterInfo.product_finisheds" :key="index">
+              <template v-for="(item, index) in enterInfo.products" :key="index">
                 <div class="grid mb-3">
                   <sale-order-nesting :title="item.name" :info="enterInfo">
                     <template #left>

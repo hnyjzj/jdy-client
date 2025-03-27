@@ -104,6 +104,17 @@ async function transformData(data: any[][]) {
           case 'string[]':
             row[index] = Array.isArray(row[index]) ? row[index] : [String(row[index] ?? '')]
             break
+          case 'boolean':
+            if (row[index] === '是') {
+              row[index] = true
+            }
+            else if (row[index] === '否') {
+              row[index] = false
+            }
+            else if (!row[index]) {
+              row[index] = false
+            }
+            break
           default:
             row[index] = row[index] ?? ''
             break

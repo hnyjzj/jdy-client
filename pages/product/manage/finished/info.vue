@@ -82,7 +82,7 @@ function submitConvert() {
   <div>
     <common-layout-center>
       <div class="pt-6 pb-18">
-        <product-manage-info :product-info="finishedInfo" :filter-list="finishedFilterList" :filter-list-to-array="finishedFilterListToArray" @go-loss="goLoss" />
+        <product-manage-info :info="finishedInfo" :filter-list="finishedFilterList" :filter-list-to-array="finishedFilterListToArray" @go-loss="goLoss" />
         <div class="bottom">
           <div class="sm:grid-12">
             <div uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">

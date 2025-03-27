@@ -1,19 +1,19 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends Record<string, any>">
 const props = defineProps<{
-  productInfo: ProductFinisheds
-  filterList: Where<ProductFinisheds>
-  filterListToArray: FilterWhere<ProductFinisheds>[]
+  info: T
+  filterList: Where<T>
+  filterListToArray: FilterWhere<T>[]
 }>()
 </script>
 
 <template>
-  <common-gradient theme="theme" :title="props.productInfo.name ?? ''">
+  <common-gradient theme="theme" :title="props.info.name ?? ''">
     <template #right>
-      <common-tags type="orange" :text="filterList.type?.preset[props.productInfo.type] ?? ''" />
+      <common-tags type="orange" :text="filterList.type?.preset[props.info.type] ?? ''" />
     </template>
     <template #body>
       <div class="flex gap-4">
-        <template v-for="(img, index) in productInfo.images" :key="index">
+        <template v-for="(img, index) in info.images" :key="index">
           <img class="" :src="ImageUrl(img)" width="100" height="100">
         </template>
       </div>
@@ -27,33 +27,33 @@ const props = defineProps<{
               <div class="info-val">
                 <template v-if="item.input === 'select'">
                   <span>
-                    {{ filterList[item.name]?.preset[props.productInfo[item.name]] ?? '' }}
+                    {{ filterList[item.name]?.preset[props.info[item.name]] ?? '' }}
                   </span>
                 </template>
                 <template v-else-if="item.input === 'text'">
                   <template v-if="item.label === '门店'">
                     <span>
-                      {{ props.productInfo.store.name ?? '' }}
+                      {{ props.info.store.name ?? '' }}
                     </span>
                   </template>
                   <template v-else>
                     <span>
-                      {{ props.productInfo[item.name] ?? '' }}
+                      {{ props.info[item.name] ?? '' }}
                     </span>
                   </template>
                 </template>
                 <template v-else-if="item.input === 'number'">
                   <span>
-                    {{ props.productInfo[item.name] ?? '' }}
+                    {{ props.info[item.name] ?? '' }}
                   </span>
                 </template>
                 <template v-else-if="item.input === 'switch'">
                   <span>
-                    {{ props.productInfo[item.name] ? '是' : '否' }}
+                    {{ props.info[item.name] ? '是' : '否' }}
                   </span>
                 </template>
                 <template v-else-if="item.input === 'list'">
-                  {{ props.productInfo[item.name]?.length ? props.productInfo[item.name].join(',') : '' }}
+                  {{ props.info[item.name]?.length ? props.info[item.name].join(',') : '' }}
                 </template>
               </div>
             </div>

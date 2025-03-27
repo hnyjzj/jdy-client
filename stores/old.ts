@@ -1,26 +1,26 @@
 export const useOld = defineStore('Old', {
   state: (): {
-    oldList: ProductFinisheds[]
-    oldFilterList: Where<ProductFinisheds>
-    oldInfo: ProductFinisheds
+    oldList: ProductOlds[]
+    oldFilterList: Where<ProductOlds>
+    oldInfo: ProductOlds
     oldListTotal: number
     /**
      * 排序后的筛选条件列表
      */
-    oldFilterListToArray: FilterWhere<ProductFinisheds>[]
+    oldFilterListToArray: FilterWhere<ProductOlds>[]
   } => ({
-    oldFilterList: {} as Where<ProductFinisheds>,
+    oldFilterList: {} as Where<ProductOlds>,
     oldList: [],
-    oldInfo: {} as ProductFinisheds,
+    oldInfo: {} as ProductOlds,
     oldListTotal: 0,
-    oldFilterListToArray: {} as FilterWhere<ProductFinisheds>[],
+    oldFilterListToArray: {} as FilterWhere<ProductOlds>[],
   }),
   actions: {
     // 旧料列表
-    async getOldList(pamars: ReqList<ProductFinisheds>) {
+    async getOldList(pamars: ReqList<ProductOlds>) {
       try {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
-        const { data } = await https.post<ResList<ProductFinisheds>, ReqList<ProductFinisheds>>('/product/old/list', pamars)
+        const { data } = await https.post<ResList<ProductOlds>, ReqList<ProductOlds>>('/product/old/list', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.oldListTotal = data.value.data.total
           this.oldList = data.value.data.list
@@ -34,7 +34,7 @@ export const useOld = defineStore('Old', {
     // 获取旧料筛选列表
     async getOldWhere() {
       try {
-        const { data } = await https.get<Where<ProductFinisheds>>('/product/old/where')
+        const { data } = await https.get<Where<ProductOlds>>('/product/old/where')
         if (data.value?.code === HttpCode.SUCCESS) {
           this.oldFilterList = data.value.data
           this.oldFilterListToArray = sortArr(this.oldFilterList)
@@ -45,9 +45,9 @@ export const useOld = defineStore('Old', {
       }
     },
     // 旧料货品详情
-    async getOldInfo(id: ProductFinisheds['id']) {
+    async getOldInfo(id: ProductOlds['id']) {
       try {
-        const { data } = await https.post<ProductFinisheds, { id: ProductFinisheds['id'] }>('/product/old/info', { id })
+        const { data } = await https.post<ProductOlds, { id: ProductOlds['id'] }>('/product/old/info', { id })
         if (data.value?.code === HttpCode.SUCCESS) {
           this.oldInfo = data.value.data
         }
@@ -57,9 +57,9 @@ export const useOld = defineStore('Old', {
       }
     },
     // 更新旧料货品
-    async updateOldInfo(pamars: Partial<ProductFinisheds>) {
+    async updateOldInfo(pamars: Partial<ProductOlds>) {
       try {
-        const { data } = await https.put<ProductFinisheds, Partial<ProductFinisheds>>('/product/old/update', pamars)
+        const { data } = await https.put<ProductOlds, Partial<ProductOlds>>('/product/old/update', pamars)
         return data.value
       }
       catch (error) {
