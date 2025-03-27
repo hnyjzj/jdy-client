@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { getFinishedEnterInfo, delFinishedEnter, cancelFinishedEnter, successFinishedEnter, addFinishedEnter, editFinishedEnter } = useEnter()
-const { enterInfo } = storeToRefs(useEnter())
+const { getFinishedEnterInfo, delFinishedEnter, cancelFinishedEnter, successFinishedEnter, addFinishedEnter, editFinishedEnter } = useFinishedEnter()
+const { enterInfo } = storeToRefs(useFinishedEnter())
 const { finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
 const { getFinishedWhere } = useFinished()
 

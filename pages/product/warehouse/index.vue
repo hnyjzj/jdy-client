@@ -3,9 +3,9 @@ const { $toast } = useNuxtApp()
 const { myStoreList } = storeToRefs(useStores())
 const { getMyStore } = useStores()
 
-const { getFinishedEnterList, getFinishedEnterWhere, createFinishedEnter } = useEnter()
+const { getFinishedEnterList, getFinishedEnterWhere, createFinishedEnter } = useFinishedEnter()
 
-const { EnterList, EnterToArray, EnterListTotal } = storeToRefs(useEnter())
+const { EnterList, EnterToArray, EnterListTotal } = storeToRefs(useFinishedEnter())
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)

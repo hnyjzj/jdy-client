@@ -1,4 +1,4 @@
-export const useEnter = defineStore('EnterStore', {
+export const useFinishedEnter = defineStore('finishedEnter', {
   state: (): {
     EnterList: FinishedEnter[]
     enterFilterList: Where<FinishedEnter>

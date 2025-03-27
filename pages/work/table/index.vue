@@ -195,10 +195,10 @@ function getModelTitle() {
 </script>
 
 <template>
-  <div class="px-4 sm:px-0">
+  <div class="">
     <div class="sticky top-0 z-3 bg-[#3875C5]">
       <common-layout-center>
-        <div class="color-[#fff] py-[12px] flex justify-between">
+        <div class="color-[#fff] py-[12px] flex justify-between px-4">
           <product-manage-company />
           <div class="flex-1 px-2 sm:px-4">
             <product-filter-search @submit="searchListFn" />
@@ -215,7 +215,7 @@ function getModelTitle() {
       </common-layout-center>
     </div>
     <common-layout-center>
-      <div class="pb-10">
+      <div class="pb-10 px-4">
         <!-- 工作台入口 -->
         <div class="mt-2 mb-14 col-12">
           <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="delBench" @update="updateBench" @fold="fold" @change-page="changePage" />
