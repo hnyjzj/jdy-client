@@ -3,7 +3,7 @@ import { calc } from 'a-calc'
 
 const Props = defineProps<{
   price: string
-  productList: Product[]
+  productList: ProductFinisheds[]
 }>()
 const emits = defineEmits<{
   search: [val: string, type: string]
@@ -18,7 +18,7 @@ const hasCheck = ref(false)
 // 搜索商品 名称 和 条码   code
 const searchType = ref('name')
 // 添加商品
-const addProduct = (product: Product) => {
+const addProduct = (product: ProductFinisheds) => {
   const index = showProductList.value.findIndex(item => item.product?.id === product.id)
   if (index !== -1 && showProductList.value[index].quantity) {
     // 判断是否已经添加过该商品,如果已经添加过,则数量加一

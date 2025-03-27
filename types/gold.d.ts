@@ -17,23 +17,23 @@ interface GoldPrices {
   /**
    * 金价
    */
-  price: Product['price']
+  price: ProductFinisheds['price']
   /**
    * 产品品牌
    */
-  product_brand?: Product['brand'][]
+  product_brand?: ProductFinisheds['brand'][]
   /**
    * 产品材质
    */
-  product_material: Product['material']
+  product_material: ProductFinisheds['material']
   /**
    * 产品成色
    */
-  product_quality: Product['quality'][]
+  product_quality: ProductFinisheds['quality'][]
   /**
    * 产品类型
    */
-  product_type: Product['type']
+  product_type: ProductFinisheds['type']
   /**
    * 店铺ID
    */
@@ -53,23 +53,23 @@ interface UpdataGoldParams {
   /**
    * 金价
    */
-  price?: Product['price']
+  price?: ProductFinisheds['price']
   /**
    * 产品品牌
    */
-  product_brand?: Product['brand'][]
+  product_brand?: ProductFinisheds['brand'][]
   /**
    * 产品材质
    */
-  product_material?: Product['material']
+  product_material?: ProductFinisheds['material']
   /**
    * 产品成色
    */
-  product_quality: Product['quality'][]
+  product_quality: ProductFinisheds['quality'][]
   /**
    * 产品类型
    */
-  product_type?: Product['type']
+  product_type?: ProductFinisheds['type']
   /**
    * 店铺ID
    */

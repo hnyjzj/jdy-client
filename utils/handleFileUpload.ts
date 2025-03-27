@@ -34,7 +34,7 @@ export default async function (headers: any) {
     '备注': 'remark',
     '是否特价': 'is_special_offer',
   }
-  const cleanedHeaders = headers.map((header: keyof Product) =>
+  const cleanedHeaders = headers.map((header: keyof ProductFinisheds) =>
     typeof header === 'string' ? header.replace(/\s/g, '') : header,
   )
   const englishHeaders = cleanedHeaders.map((header: any) => {

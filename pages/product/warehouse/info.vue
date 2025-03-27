@@ -25,7 +25,7 @@ const clearDialog = ref(false)
 const cancelDialog = ref(false)
 const finishDialog = ref(false)
 
-const productParams = ref({} as Partial<Product>)
+const productParams = ref({} as Partial<ProductFinisheds>)
 
 /** 要删除的产品code */
 const deleteId = ref('')
@@ -38,12 +38,12 @@ if (route.query.id) {
 async function getInfo() {
   await getFinishedEnterInfo(enterId.value)
 }
-type ProductKey = keyof Product
+type ProductKey = keyof ProductFinisheds
 /** 汇总 */
 function sum(key: ProductKey) {
   return enterInfo.value?.product_finisheds?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
 }
-async function del(params: DelEnterProduct) {
+async function del(params: DelProductFinishedEnter) {
   const res = await delFinishedEnter(params)
   if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
@@ -82,7 +82,7 @@ function goAdd() {
 const uploadRef = ref()
 
 // 提交入库
-async function submitGoods(req: Product[]) {
+async function submitGoods(req: ProductFinisheds[]) {
   if (req?.length) {
     const res = await addFinishedEnter({ products: req, enter_id: enterInfo.value.id })
     if (res?.code === HttpCode.SUCCESS) {
@@ -140,14 +140,13 @@ async function finish() {
   $toast.error(res?.message ?? '完成入库失败')
 }
 
-const productEdittIng = ref({} as Product)
+const productEdittIng = ref({} as ProductFinisheds)
 
-function edit(product: Product) {
+function edit(product: ProductFinisheds) {
   productEdittIng.value = product
   finishedFilterListToArray.value.forEach((item) => {
     if (item.update) {
       productParams.value[item.name] = product[item.name]
-      // float类型需要从字符串转换为数组类型 number类型输入康
       if (item.type === 'float') {
         productParams.value[item.name] = Number.parseFloat(product[item.name])
       }

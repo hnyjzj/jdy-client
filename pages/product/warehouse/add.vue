@@ -13,12 +13,12 @@ useSeoMeta({
   title: '新增入库单',
 })
 
-const params = ref({} as Product)
+const params = ref({} as ProductFinisheds)
 const enterId = ref()
 const isDisables = ref()
 const certificate = ref(['', ''])
 if (route.query?.type) {
-  params.value.type = Number(route.query.type) as Product['type']
+  params.value.type = Number(route.query.type) as ProductFinisheds['type']
   isDisables.value = ['type']
   await getFinishedWhere()
 }
@@ -97,7 +97,7 @@ async function submit() {
   const res = await addFinishedEnter(impParams)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
-    params.value = {} as Product
+    params.value = {} as ProductFinisheds
     setTimeout(() => {
       router.back()
     }, 1000)
@@ -106,7 +106,7 @@ async function submit() {
     $toast.error(res?.message ?? '创建失败')
   }
 }
-const presetToSelect = (key: keyof Product) => {
+const presetToSelect = (key: keyof ProductFinisheds) => {
   if (!key)
     return []
   const filter = finishedFilterList.value[key]

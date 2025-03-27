@@ -10,7 +10,7 @@ const { uploadProductImg } = useProductManage()
 const { finishedInfo, finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
 
 const route = useRoute()
-const productParams = ref<Product>({} as Product)
+const productParams = ref<ProductFinisheds>({} as ProductFinisheds)
 /** 图片列表 */
 const previewFileList = ref<Array<UploadFileInfo>>([])
 async function getInfo() {
@@ -49,7 +49,7 @@ await getFinishedWhere()
 // 参数转换相应类型
 function transformData() {
   for (const key in productParams.value) {
-    const k = key as keyof Product
+    const k = key as keyof ProductFinisheds
     let v = productParams.value[k]
     switch (finishedFilterList.value[k]?.type) {
       case 'number':

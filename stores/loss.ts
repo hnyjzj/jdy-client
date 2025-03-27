@@ -1,26 +1,26 @@
 export const useLoss = defineStore('Loss', {
   state: (): {
-    lossList: Product[]
-    lossFilterList: Where<Product>
-    lossInfo: Product
+    lossList: ProductFinisheds[]
+    lossFilterList: Where<ProductFinisheds>
+    lossInfo: ProductFinisheds
     lossListTotal: number
     /**
      * 排序后的筛选条件列表
      */
-    lossFilterListToArray: FilterWhere<Product>[]
+    lossFilterListToArray: FilterWhere<ProductFinisheds>[]
   } => ({
-    lossFilterList: {} as Where<Product>,
+    lossFilterList: {} as Where<ProductFinisheds>,
     lossList: [],
-    lossInfo: {} as Product,
+    lossInfo: {} as ProductFinisheds,
     lossListTotal: 0,
-    lossFilterListToArray: {} as FilterWhere<Product>[],
+    lossFilterListToArray: {} as FilterWhere<ProductFinisheds>[],
   }),
   actions: {
     // 报损列表
-    async getLossList(pamars: ReqList<Product>) {
+    async getLossList(pamars: ReqList<ProductFinisheds>) {
       try {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
-        const { data } = await https.post<ResList<Product>, ReqList<Product>>('/product/damage/list', pamars)
+        const { data } = await https.post<ResList<ProductFinisheds>, ReqList<ProductFinisheds>>('/product/damage/list', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.lossListTotal = data.value.data.total
           this.lossList = data.value.data.list
@@ -34,7 +34,7 @@ export const useLoss = defineStore('Loss', {
     // 获取报损筛选列表
     async getLossWhere() {
       try {
-        const { data } = await https.get<Where<Product>>('/product/damage/where')
+        const { data } = await https.get<Where<ProductFinisheds>>('/product/damage/where')
         if (data.value?.code === HttpCode.SUCCESS) {
           this.lossFilterList = data.value.data
           this.lossFilterListToArray = sortArr(this.lossFilterList)
@@ -45,9 +45,9 @@ export const useLoss = defineStore('Loss', {
       }
     },
     // 报损货品详情
-    async getLossInfo(code: Product['code']) {
+    async getLossInfo(code: ProductFinisheds['code']) {
       try {
-        const { data } = await https.post<Product, { code: Product['code'] }>('/product/damage/info', { code })
+        const { data } = await https.post<ProductFinisheds, { code: ProductFinisheds['code'] }>('/product/damage/info', { code })
         if (data.value?.code === HttpCode.SUCCESS) {
           this.lossInfo = data.value.data
         }

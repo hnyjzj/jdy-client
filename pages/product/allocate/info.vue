@@ -18,7 +18,7 @@ if (route.query.id) {
   await getFinishedWhere()
 }
 
-type ProductKey = keyof Product
+type ProductKey = keyof ProductFinisheds
 /** 汇总 */
 function sum(key: ProductKey) {
   return allocateInfo.value?.product?.reduce((sum, item) => sum + item[key], 0) ?? 0
@@ -67,7 +67,7 @@ async function finish() {
 }
 
 /** 删除产品 */
-async function delProduct(code: Product['code']) {
+async function delProduct(code: ProductFinisheds['code']) {
   const res = await remove(allocateInfo.value?.id, code)
   if (res?.code === HttpCode.SUCCESS) {
     await getAllocateInfo(route.query.id as string)

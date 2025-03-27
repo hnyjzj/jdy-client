@@ -87,7 +87,7 @@ export const useAllocate = defineStore('Allocate', {
       }
     },
     /** 删除调拨产品 */
-    async remove(id: Allocate['id'], code: Product['code']) {
+    async remove(id: Allocate['id'], code: ProductFinisheds['code']) {
       try {
         const { data } = await https.put<{ id: string, code: string }, any >('/product/allocate/remove', { id, code })
         return data.value
@@ -97,7 +97,7 @@ export const useAllocate = defineStore('Allocate', {
       }
     },
     /** 添加调拨产品 */
-    async add(id: Allocate['id'], code: Product['code']) {
+    async add(id: Allocate['id'], code: ProductFinisheds['code']) {
       try {
         const { data } = await https.put<{ id: string, code: string }, any >('/product/allocate/add', { id, code })
         return data.value

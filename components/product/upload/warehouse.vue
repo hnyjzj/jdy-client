@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const props = withDefaults(defineProps<{
-  filterList: Where<Product>
+  filterList: Where<ProductFinisheds>
   type: number
 }>(), {
   type: 1,
@@ -10,7 +10,7 @@ const emits = defineEmits<{
    * 提交
    * @param params 上传入库数据
    */
-  upload: [params: Product[]]
+  upload: [params: ProductFinisheds[]]
 }>()
 
 const { $toast } = useNuxtApp()
@@ -59,7 +59,7 @@ async function transformData(data: any[][]) {
   }
 
   // 第一行是表头 对应着字段名
-  type ProductKey = keyof Product
+  type ProductKey = keyof ProductFinisheds
   const originalHeaders: ProductKey[] = data[0]
 
   // 上传后的表头
@@ -123,7 +123,7 @@ async function transformData(data: any[][]) {
   })
 }
 async function submitGoods() {
-  const data: Product[] = await transformData(sheetData.value)
+  const data: ProductFinisheds[] = await transformData(sheetData.value)
   emits('upload', data)
 }
 

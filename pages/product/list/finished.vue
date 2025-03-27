@@ -9,8 +9,8 @@ const isFilter = ref(false)
 const isModel = ref(false)
 const isBatchImportModel = ref(false)
 const pages = ref(1)
-const type = ref(1 as Product['type'])
-const filterData = ref({} as Partial<Product>)
+const type = ref(1 as ProductFinisheds['type'])
+const filterData = ref({} as Partial<ProductFinisheds>)
 useSeoMeta({
   title: '成品列表',
 })
@@ -27,8 +27,8 @@ async function clearSearch() {
   await submitWhere({ }, true)
 }
 // 获取成品列表
-async function getList(where = {} as Partial<Product>) {
-  const params = { page: pages.value, limit: 10 } as ReqList<Product>
+async function getList(where = {} as Partial<ProductFinisheds>) {
+  const params = { page: pages.value, limit: 10 } as ReqList<ProductFinisheds>
   params.where = where
   const res = await getFinishedList(params)
   return res as any
@@ -52,7 +52,7 @@ function pull() {
 }
 
 // 筛选列表
-async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
+async function submitWhere(f: Partial<ProductFinisheds>, isSearch: boolean = false) {
   filterData.value = { ...f }
   pages.value = 1
   finishedList.value = []
@@ -77,7 +77,7 @@ function goAdd() {
   jump('/product/warehouse/add', { type: type.value })
 }
 
-function goInfo(info: Product) {
+function goInfo(info: ProductFinisheds) {
   jump('/product/manage/finished/info', { code: info.code })
 }
 </script>

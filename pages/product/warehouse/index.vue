@@ -13,7 +13,7 @@ const pages = ref(1)
 const isModel = ref(false)
 const isCreateModel = ref(false)
 const isBatchImportModel = ref(false)
-const enterParams = ref({} as CreateProductEnter)
+const enterParams = ref({} as CreateProductFinsihedEnter)
 const enterStatus = {
   1: '草稿',
   2: '已完成',
@@ -159,19 +159,19 @@ function goAdd() {
               <div class="py-[4px] flex justify-between">
                 <div>入网费合计</div>
                 <div class="text-align-end">
-                  {{ info.product_finisheds?.reduce((pre, cur:Product) => pre + Number(cur?.access_fee), 0) || 0 }}
+                  {{ info.product_finisheds?.reduce((pre, cur:ProductFinisheds) => pre + Number(cur?.access_fee), 0) || 0 }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
                 <div>标签价合计</div>
                 <div class="text-align-end">
-                  {{ info.product_finisheds?.reduce((pre, cur:Product) => pre + Number(cur?.label_price), 0) || 0 }}
+                  {{ info.product_finisheds?.reduce((pre, cur:ProductFinisheds) => pre + Number(cur?.label_price), 0) || 0 }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
                 <div>金重合计</div>
                 <div class="text-align-end">
-                  {{ info.product_finisheds?.reduce((pre, cur:Product) => pre + Number(cur?.weight_metal), 0) || 0 }}
+                  {{ info.product_finisheds?.reduce((pre, cur:ProductFinisheds) => pre + Number(cur?.weight_metal), 0) || 0 }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">

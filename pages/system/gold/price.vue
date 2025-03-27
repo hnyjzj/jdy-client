@@ -43,7 +43,7 @@ async function getGoldParams() {
   }
 }
 /** 获取下拉消息信息 */
-function getOptions(name: keyof Product) {
+function getOptions(name: keyof ProductFinisheds) {
   const preset = finishedFilterList.value[name]?.preset
   return optonsToSelect(preset)
 }

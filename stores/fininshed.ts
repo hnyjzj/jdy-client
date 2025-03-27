@@ -1,26 +1,26 @@
 export const useFinished = defineStore('Finished', {
   state: (): {
-    finishedList: Product[]
-    finishedFilterList: Where<Product>
-    finishedInfo: Product
+    finishedList: ProductFinisheds[]
+    finishedFilterList: Where<ProductFinisheds>
+    finishedInfo: ProductFinisheds
     finishedListTotal: number
     /**
      * 排序后的筛选条件列表
      */
-    finishedFilterListToArray: FilterWhere<Product>[]
+    finishedFilterListToArray: FilterWhere<ProductFinisheds>[]
   } => ({
-    finishedFilterList: {} as Where<Product>,
+    finishedFilterList: {} as Where<ProductFinisheds>,
     finishedList: [],
-    finishedInfo: {} as Product,
+    finishedInfo: {} as ProductFinisheds,
     finishedListTotal: 0,
-    finishedFilterListToArray: {} as FilterWhere<Product>[],
+    finishedFilterListToArray: {} as FilterWhere<ProductFinisheds>[],
   }),
   actions: {
     // 成品列表
-    async getFinishedList(pamars: ReqList<Product>) {
+    async getFinishedList(pamars: ReqList<ProductFinisheds>) {
       try {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
-        const { data } = await https.post<ResList<Product>, ReqList<Product>>('/product/finished/list', pamars)
+        const { data } = await https.post<ResList<ProductFinisheds>, ReqList<ProductFinisheds>>('/product/finished/list', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.finishedListTotal = data.value.data.total
           this.finishedList = data.value.data.list
@@ -34,7 +34,7 @@ export const useFinished = defineStore('Finished', {
     // 获取成品筛选列表
     async getFinishedWhere() {
       try {
-        const { data } = await https.get<Where<Product>>('/product/finished/where')
+        const { data } = await https.get<Where<ProductFinisheds>>('/product/finished/where')
         if (data.value?.code === HttpCode.SUCCESS) {
           this.finishedFilterList = data.value.data
           this.finishedFilterListToArray = sortArr(this.finishedFilterList)
@@ -45,9 +45,9 @@ export const useFinished = defineStore('Finished', {
       }
     },
     // 成品详情
-    async getFinishedInfo(code: Product['code']) {
+    async getFinishedInfo(code: ProductFinisheds['code']) {
       try {
-        const { data } = await https.post<Product, { code: Product['code'] }>('/product/finished/info', { code })
+        const { data } = await https.post<ProductFinisheds, { code: ProductFinisheds['code'] }>('/product/finished/info', { code })
         if (data.value?.code === HttpCode.SUCCESS) {
           this.finishedInfo = data.value.data
         }
@@ -57,9 +57,9 @@ export const useFinished = defineStore('Finished', {
       }
     },
     // 更新成品
-    async updateFinishedInfo(pamars: Partial<Product>) {
+    async updateFinishedInfo(pamars: Partial<ProductFinisheds>) {
       try {
-        const { data } = await https.put<Product, Partial<Product>>('/product/finished/update', pamars)
+        const { data } = await https.put<ProductFinisheds, Partial<ProductFinisheds>>('/product/finished/update', pamars)
         return data.value
       }
       catch (error) {

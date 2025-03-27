@@ -22,8 +22,8 @@ async function clearSearch() {
   await submitWhere({ }, true)
 }
 // 获取货品列表
-async function getList(where = {} as Partial<Product>) {
-  const params = { page: pages.value, limit: 10 } as ReqList<Product>
+async function getList(where = {} as Partial<ProductFinisheds>) {
+  const params = { page: pages.value, limit: 10 } as ReqList<ProductFinisheds>
   params.where = where
   const res = await getLossList(params)
   return res as any
@@ -37,13 +37,13 @@ catch (error) {
   throw new Error(`初始化失败: ${error || '未知错误'}`)
 }
 
-const filterData = ref({} as Partial<Product>)
+const filterData = ref({} as Partial<ProductFinisheds>)
 function pull() {
   getList(filterData.value)
 }
 
 // 筛选列表
-async function submitWhere(f: Partial<Product>, isSearch: boolean = false) {
+async function submitWhere(f: Partial<ProductFinisheds>, isSearch: boolean = false) {
   filterData.value = { ...f }
   pages.value = 1
   lossList.value = []

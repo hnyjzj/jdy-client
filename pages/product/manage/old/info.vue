@@ -34,7 +34,7 @@ function goLoss() {
 }
 
 // 转换
-async function convert(type: Product['type']) {
+async function convert(type: ProductFinisheds['type']) {
   const res = await convertOld({ id: oldInfo.value.id, type })
   if (res?.code === HttpCode.SUCCESS) {
     convertModel.value = false

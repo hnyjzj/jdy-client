@@ -181,5 +181,5 @@ interface CheckInfo {
 }
 
 interface checkProduct {
-  product: Product
+  product: ProductFinisheds
 }

@@ -34,7 +34,7 @@ const converOption = ref([{
 }])
 
 // 转换
-async function convert(type: Product['type']) {
+async function convert(type: ProductFinisheds['type']) {
   const res = await convertLoss({ id: lossInfo.value.id, type })
   if (res?.code === HttpCode.SUCCESS) {
     convertModel.value = false

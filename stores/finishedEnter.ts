@@ -45,9 +45,9 @@ export const useEnter = defineStore('EnterStore', {
       }
     },
     /** 添加入库单 */
-    async createFinishedEnter(params: CreateProductEnter) {
+    async createFinishedEnter(params: CreateProductFinsihedEnter) {
       try {
-        const { data } = await https.post<any, CreateProductEnter>('/product/finished/enter/create', params)
+        const { data } = await https.post<any, CreateProductFinsihedEnter>('/product/finished/enter/create', params)
         return data.value
       }
       catch (error) {
@@ -87,9 +87,9 @@ export const useEnter = defineStore('EnterStore', {
       }
     },
     // 删除入库单产品
-    async delFinishedEnter(params: DelEnterProduct) {
+    async delFinishedEnter(params: DelProductFinishedEnter) {
       try {
-        const { data } = await https.delete<any, DelEnterProduct>('/product/finished/enter/del_product', params)
+        const { data } = await https.delete<any, DelProductFinishedEnter>('/product/finished/enter/del_product', params)
         return data.value
       }
       catch (error) {

@@ -19,7 +19,7 @@ if (route.query.id) {
   getInfo()
 }
 
-type ProductKey = keyof Product
+type ProductKey = keyof ProductFinisheds
 /** 字段是否更新 */
 function isUpdate(key: ProductKey) {
   try {

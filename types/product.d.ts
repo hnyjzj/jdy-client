@@ -1,16 +1,5 @@
-type WhereParams = { [key in keyof Product]?: Product[key] }
-
-interface ProductReq {
-  page: number
-  limit: number
-  where?: WhereParams
-}
-interface ProductImport {
-  products: Product[]
-}
-
 // 产品类型
-interface Product {
+interface Produt {
   id: string
   /**
    * 入网费
@@ -156,18 +145,13 @@ interface Product {
   images: string[]
 }
 interface ProductDamage {
-  code: Product['code']
+  code: ProductFinisheds['code']
   reason: string
 }
 
 interface ProductTransfer {
-  id: Product['id']
-  type: Product['type']
-}
-
-interface inportReq {
-  products: Product[]
-  store_id: string
+  id: ProductFinisheds['id']
+  type: ProductFinisheds['type']
 }
 
 /**
@@ -189,7 +173,7 @@ interface HistoryWhere {
 }
 
 /**
- * ProductHistories
+ * 货品操作记录
  */
 interface ProductHistories {
   /**
@@ -257,27 +241,4 @@ interface ProductHistories {
 interface UploadProductImg {
   image: File
   product_id: string
-}
-
-/**
- * 创建入库单参数
- */
-interface CreateProductEnter {
-  store_id: Stores['id']
-  remark?: string
-  type: number
-}
-
-/**
- * 删除入库单产品
- */
-interface DelEnterProduct {
-  /**
-   * 入库单ID
-   */
-  enter_id: string
-  /**
-   * 商品ID列表
-   */
-  product_ids: string[]
 }

@@ -1,18 +1,18 @@
 <script setup lang="ts">
 const props = defineProps<{
-  filterList: Where<Product>
-  productList: Product[]
+  filterList: Where<ProductFinisheds>
+  productList: ProductFinisheds[]
 }>()
 const emits = defineEmits<{
   edit: [code: string]
-  goInfo: [info: Product]
+  goInfo: [info: ProductFinisheds]
 }>()
 
 const edit = (code: string) => {
   emits('edit', code)
 }
 
-const jumpInfo = (info: Product) => {
+const jumpInfo = (info: ProductFinisheds) => {
   emits('goInfo', info)
 }
 </script>

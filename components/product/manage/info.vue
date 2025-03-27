@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const props = defineProps<{
-  productInfo: Product
-  filterList: Where<Product>
-  filterListToArray: FilterWhere<Product>[]
+  productInfo: ProductFinisheds
+  filterList: Where<ProductFinisheds>
+  filterListToArray: FilterWhere<ProductFinisheds>[]
 }>()
 </script>
 

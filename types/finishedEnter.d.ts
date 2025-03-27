@@ -56,7 +56,7 @@ interface FinishedEnter {
    * 更新时间
    */
   updated_at: Date
-  type: Product['type']
+  type: ProductFinisheds['type']
 }
 
 /**
@@ -64,7 +64,7 @@ interface FinishedEnter {
  */
 interface FinishedEnterReq {
   /** 成品入库参数 */
-  products: Product[]
+  products: ProductFinisheds[]
   enter_id: string
 }
 
@@ -72,7 +72,7 @@ interface FinishedEnterReq {
  * 编辑入库单产品
  */
 interface editFinishedEnterReq {
-  product: Partial<Product>
+  product: Partial<ProductFinisheds>
   /**
    * 入库单 ID
    */
