@@ -4,12 +4,12 @@ const props = defineProps<{
   productList: T[]
 }>()
 const emits = defineEmits<{
-  edit: [code: string]
+  edit: [code: T['code']]
   goInfo: [info: T]
 }>()
 
 const edit = (code: string) => {
-  emits('edit', code)
+  emits('edit', code as T['code'])
 }
 
 const jumpInfo = (info: T) => {

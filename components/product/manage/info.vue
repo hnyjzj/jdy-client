@@ -9,7 +9,7 @@ const props = defineProps<{
 <template>
   <common-gradient theme="theme" :title="props.info.name ?? ''">
     <template #right>
-      <common-tags type="orange" :text="filterList.type?.preset[props.info.type] ?? ''" />
+      <common-tags type="orange" :text="filterList.status?.preset[props.info.status] ?? ''" />
     </template>
     <template #body>
       <div class="flex gap-4">
