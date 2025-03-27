@@ -28,7 +28,7 @@ const goodsStatus = ref({
                   <common-avatar :size="24" :img="item?.images[0]" />
                 </div>
                 <template v-if="item?.status">
-                  <div class="enter-title" :class="item.status === 1 ? 'draft' : item.status === 2 ? 'wancheng' : 'chexiao'">
+                  <div class="enter-title" :class="item.status === 1 ? 'draft' : item.status === 2 ? 'finish' : 'cancel'">
                     {{ goodsStatus[item.status] }}
                   </div>
                 </template>
@@ -52,13 +52,13 @@ const goodsStatus = ref({
 .enter-title {
   --uno: 'px-2 rounded-[8px] text-#FFF';
 }
-.caogao {
+.draft {
   --uno: 'bg-[rgba(221,146,0,1)]';
 }
-.wancheng {
+.finish {
   --uno: 'bg-#1b6ceb';
 }
-.chexiao {
+.cancel {
   --uno: 'bg-[#999]';
 }
 </style>

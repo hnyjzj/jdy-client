@@ -172,7 +172,7 @@ defineExpose({
 
 <template>
   <div>
-    <common-model v-model="isModel" title="批量入库" :show-ok="true" confirm-text="导入货品" @confirm="submitGoods">
+    <common-model v-model="isModel" title="批量入库" :show-ok="true" confirm-text="导入货品" @confirm="submitGoods" @cancel="clearData">
       <div class="mb-8 relative min-h-[60px]">
         <div class="text-[14px] text-color flex pb-4">
           1、请按照模板整理数据信息
