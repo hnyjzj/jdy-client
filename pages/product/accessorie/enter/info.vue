@@ -2,7 +2,7 @@
 const { $toast } = useNuxtApp()
 const { getAccessorieEnterInfo, cancelAccessorieEnter, successAccessorieEnter } = useAccessorieEnter()
 const { enterInfo } = storeToRefs(useAccessorieEnter())
-const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
+const { accessorieFilterListToArray, accessorieFilterList } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
 
 useSeoMeta({
@@ -16,7 +16,7 @@ const enterStatus = {
   2: '已完成',
   3: '已撤销',
 }
-
+const uploadRef = ref()
 const isImportModel = ref(false)
 const isChooseModel = ref(false)
 const isEditModel = ref(false)
@@ -24,6 +24,8 @@ const deleteDialog = ref(false)
 const clearDialog = ref(false)
 const cancelDialog = ref(false)
 const finishDialog = ref(false)
+/** 单条添加 */
+const isAddSingle = ref(false)
 
 const productParams = ref({} as Partial<ProductAccessories>)
 
@@ -38,15 +40,15 @@ if (route.query.id) {
 async function getInfo() {
   await getAccessorieEnterInfo(enterId.value)
 }
-type ProductKey = keyof ProductAccessories
-/** 汇总 */
-function sum(key: ProductKey) {
-  return enterInfo.value?.products?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
-}
+// type ProductKey = keyof ProductAccessories
+// /** 汇总 */
+// function sum(key: ProductKey) {
+//   return enterInfo.value?.products?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
+// }
 
 function goAdd() {
   isChooseModel.value = false
-  jump('/product/warehouse/add', { type: enterInfo.value.type, id: enterInfo.value.id })
+  isAddSingle.value = true
 }
 
 /** 撤销入库 */
@@ -98,10 +100,6 @@ function edit(product: ProductAccessories) {
       }
     }
   })
-  if (!product.certificate || !product.certificate.length) {
-    productParams.value.certificate = ['']
-  }
-
   isEditModel.value = true
 }
 
@@ -116,6 +114,10 @@ function filteredOptions(preset: any, val: number) {
 
 function submitEdit() {
 
+}
+
+function submitGoods(e: any) {
+  console.log(e)
 }
 </script>
 
@@ -201,30 +203,6 @@ function submitEdit() {
                         {{ enterInfo.products?.length }}
                       </div>
                     </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="info-title">
-                        入网费合计
-                      </div>
-                      <div class="info-val">
-                        {{ sum('access_fee') }}
-                      </div>
-                    </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="info-title">
-                        标签价合计
-                      </div>
-                      <div class="info-val">
-                        {{ sum('label_price') }}
-                      </div>
-                    </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="info-title">
-                        金重合计
-                      </div>
-                      <div class="info-val">
-                        {{ sum('weight_metal') }}
-                      </div>
-                    </div>
                   </div>
                 </div>
               </template>
@@ -301,7 +279,7 @@ function submitEdit() {
       </div>
     </common-layout-center>
     <product-upload-choose v-model:is-model="isChooseModel" @go-add="goAdd" @batch="isImportModel = true" />
-    <!-- <product-upload-warehouse ref="uploadRef" v-model="isImportModel" :filter-list="accessorieFilterList" :type="1" @upload="submitGoods" /> -->
+    <accessorie-warehouse ref="uploadRef" v-model="isImportModel" :filter-list="accessorieFilterList" :type="1" @upload="submitGoods" />
     <!-- 状态为草稿时 功能操作 -->
     <template v-if="enterInfo.status === 1">
       <common-create @create="isChooseModel = true" />
@@ -400,6 +378,9 @@ function submitEdit() {
           </template>
         </template>
       </div>
+    </common-model>
+    <common-model v-model="isAddSingle" title="单条添加" :show-ok="true">
+      <div>2</div>
     </common-model>
   </div>
 </template>

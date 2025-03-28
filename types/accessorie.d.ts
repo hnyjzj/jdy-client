@@ -55,5 +55,4 @@ interface ProductAccessories {
    * 更新时间
    */
   updated_at?: Date | null
-  [property: string]: any
 }

@@ -3,12 +3,10 @@ const { getAccessorieInfo, getAccessorieWhere } = useAccessorie()
 const { accessorieInfo, accessorieFilterList, accessorieFilterListToArray } = storeToRefs(useAccessorie())
 
 // const { $toast } = useNuxtApp()
-const productName = ref('')
 // 成品列表详情
 useSeoMeta({
-  title: accessorieInfo.value.name,
+  title: '条目详情',
 })
-productName.value = accessorieInfo.value.name
 
 const route = useRoute()
 const isModel = ref(false)

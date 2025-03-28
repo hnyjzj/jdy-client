@@ -20,7 +20,7 @@ export const useLoss = defineStore('Loss', {
     async getLossList(pamars: ReqList<ProductFinisheds>) {
       try {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
-        const { data } = await https.post<ResList<ProductFinisheds>, ReqList<ProductFinisheds>>('/product/damage/list', pamars)
+        const { data } = await https.post<ResList<ProductFinisheds>, ReqList<ProductFinisheds>>('/product/finished/damage/list', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.lossListTotal = data.value.data.total
           this.lossList = data.value.data.list
@@ -34,7 +34,7 @@ export const useLoss = defineStore('Loss', {
     // 获取报损筛选列表
     async getLossWhere() {
       try {
-        const { data } = await https.get<Where<ProductFinisheds>>('/product/damage/where')
+        const { data } = await https.get<Where<ProductFinisheds>>('/product/finished/damage/where')
         if (data.value?.code === HttpCode.SUCCESS) {
           this.lossFilterList = data.value.data
           this.lossFilterListToArray = sortArr(this.lossFilterList)
@@ -47,7 +47,7 @@ export const useLoss = defineStore('Loss', {
     // 报损货品详情
     async getLossInfo(code: ProductFinisheds['code']) {
       try {
-        const { data } = await https.post<ProductFinisheds, { code: ProductFinisheds['code'] }>('/product/damage/info', { code })
+        const { data } = await https.post<ProductFinisheds, { code: ProductFinisheds['code'] }>('/product/finished/damage/info', { code })
         if (data.value?.code === HttpCode.SUCCESS) {
           this.lossInfo = data.value.data
         }
@@ -59,17 +59,17 @@ export const useLoss = defineStore('Loss', {
     // 成品转换
     async convertLoss(pamars: ProductTransfer) {
       try {
-        const { data } = await https.put<any, ProductTransfer>('/product/damage/conversion', pamars)
+        const { data } = await https.put<any, ProductTransfer>('/product/finished/damage/conversion', pamars)
         return data.value
       }
       catch (error) {
         throw new Error(`转换失败: ${error || '未知错误'}`)
       }
     },
-    // 产品报损
-    async damageLoss(pamars: ProductDamage) {
+    // 成品报损
+    async damageFinished(pamars: ProductDamage) {
       try {
-        const { data } = await https.put<any, ProductDamage>('/product/damage', pamars)
+        const { data } = await https.put<any, ProductDamage>('/product/finished/damage/create', pamars)
         return data.value
       }
       catch (error) {

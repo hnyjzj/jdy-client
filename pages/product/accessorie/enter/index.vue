@@ -101,10 +101,6 @@ function edit(id: string) {
   jump('/product/accessorie/enter/info', { id })
 }
 
-const create = () => {
-  isCreateModel.value = true
-}
-
 function goAdd() {
   isModel.value = false
   jump('/product/warehouse/add')
@@ -189,7 +185,8 @@ function goAdd() {
           </template>
           <template #bottom="{ info }">
             <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="详情" @click="jump('/product/accessorie/enter/info', { id: info.id })" />
+              <common-button-irregular
+                text="详情" @submit="jump('/product/accessorie/enter/info', { id: info.id })" />
             </div>
           </template>
         </product-manage-card>
@@ -203,9 +200,7 @@ function goAdd() {
         <common-empty width="100px" />
       </template>
     </div>
-    <product-manage-bottom />
-    <common-create @click="create" />
-    <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
+    <accessorie-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" />
     <common-model v-model="isCreateModel" title="添加入库单" :show-ok="true" @confirm="createEnter">
       <div class="mb-8 min-h-[60px]">
