@@ -1,26 +1,26 @@
 export const useAccessorie = defineStore('Accessorie', {
   state: (): {
-    accessorieList: ProductFinisheds[]
-    accessorieFilterList: Where<ProductFinisheds>
-    accessorieInfo: ProductFinisheds
+    accessorieList: ProductAccessories[]
+    accessorieFilterList: Where<ProductAccessories>
+    accessorieInfo: ProductAccessories
     accessorieListTotal: number
     /**
      * 排序后的筛选条件列表
      */
-    accessorieFilterListToArray: FilterWhere<ProductFinisheds>[]
+    accessorieFilterListToArray: FilterWhere<ProductAccessories>[]
   } => ({
-    accessorieFilterList: {} as Where<ProductFinisheds>,
+    accessorieFilterList: {} as Where<ProductAccessories>,
     accessorieList: [],
-    accessorieInfo: {} as ProductFinisheds,
+    accessorieInfo: {} as ProductAccessories,
     accessorieListTotal: 0,
-    accessorieFilterListToArray: {} as FilterWhere<ProductFinisheds>[],
+    accessorieFilterListToArray: {} as FilterWhere<ProductAccessories>[],
   }),
   actions: {
     // 配件列表
-    async getAccessorieList(pamars: ReqList<ProductFinisheds>) {
+    async getAccessorieList(pamars: ReqList<ProductAccessories>) {
       try {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
-        const { data } = await https.post<ResList<ProductFinisheds>, ReqList<ProductFinisheds>>('/product/accessorie/list', pamars)
+        const { data } = await https.post<ResList<ProductAccessories>, ReqList<ProductAccessories>>('/product/accessorie/list', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.accessorieListTotal = data.value.data.total
           this.accessorieList = data.value.data.list
@@ -34,7 +34,7 @@ export const useAccessorie = defineStore('Accessorie', {
     // 获取配件筛选列表
     async getAccessorieWhere() {
       try {
-        const { data } = await https.get<Where<ProductFinisheds>>('/product/accessorie/where')
+        const { data } = await https.get<Where<ProductAccessories>>('/product/accessorie/where')
         if (data.value?.code === HttpCode.SUCCESS) {
           this.accessorieFilterList = data.value.data
           this.accessorieFilterListToArray = sortArr(this.accessorieFilterList)
@@ -45,9 +45,9 @@ export const useAccessorie = defineStore('Accessorie', {
       }
     },
     // 配件货品详情
-    async getAccessorieInfo(code: ProductFinisheds['code']) {
+    async getAccessorieInfo(code: ProductAccessories['code']) {
       try {
-        const { data } = await https.post<ProductFinisheds, { code: ProductFinisheds['code'] }>('/product/damage/info', { code })
+        const { data } = await https.post<ProductAccessories, { code: ProductAccessories['code'] }>('/product/damage/info', { code })
         if (data.value?.code === HttpCode.SUCCESS) {
           this.accessorieInfo = data.value.data
         }

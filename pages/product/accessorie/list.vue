@@ -2,14 +2,14 @@
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 const { getAccessorieList, getAccessorieWhere } = useAccessorie()
-const { accessorieList, accessorieFilterList, accessorieFilterListToArray, accessorieListTotal } = storeToRefs(useAccessorie())
+const { accessorieList, accessorieFilterListToArray, accessorieListTotal } = storeToRefs(useAccessorie())
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const isModel = ref(false)
 const isBatchImportModel = ref(false)
 const pages = ref(1)
-const type = ref(2 as ProductFinisheds['type'])
+const type = ref(2 as ProductAccessories['type'])
 useSeoMeta({
   title: '配件列表',
 })
@@ -26,8 +26,8 @@ async function clearSearch() {
   await submitWhere({ }, true)
 }
 // 获取货品列表
-async function getList(where = {} as Partial<ProductFinisheds>) {
-  const params = { page: pages.value, limit: 10 } as ReqList<ProductFinisheds>
+async function getList(where = {} as Partial<ProductAccessories>) {
+  const params = { page: pages.value, limit: 10 } as ReqList<ProductAccessories>
   params.where = where
   params.where.type = type.value
   try {
@@ -52,14 +52,14 @@ catch (error) {
   throw new Error(`初始化失败: ${error || '未知错误'}`)
 }
 
-const filterData = ref({} as Partial<ProductFinisheds>)
+const filterData = ref({} as Partial<ProductAccessories>)
 
 function pull() {
   getList(filterData.value)
 }
 
 // 筛选列表
-async function submitWhere(f: Partial<ProductFinisheds>, isSearch: boolean = false) {
+async function submitWhere(f: Partial<ProductAccessories>, isSearch: boolean = false) {
   filterData.value = { ...f }
   pages.value = 1
   accessorieList.value = []
@@ -72,11 +72,6 @@ async function submitWhere(f: Partial<ProductFinisheds>, isSearch: boolean = fal
     return
   }
   $toast.error(res.message ?? '失败')
-}
-
-/** 编辑 */
-function edit(code: string) {
-  jump('/product/manage/edit', { code })
 }
 
 function goAdd() {
@@ -97,7 +92,7 @@ function goAdd() {
     <!-- 列表 -->
     <div class="px-[16px] pb-20">
       <template v-if="accessorieList?.length">
-        <product-list-main :product-list="accessorieList" :filter-list="accessorieFilterList" @edit="edit" />
+        <!-- <product-list-main :product-list="accessorieList" :filter-list="accessorieFilterList" @edit="edit" /> -->
         <common-page
           v-model:page="pages" :total="accessorieListTotal" :limit="10" @update:page="() => {
             pull()
