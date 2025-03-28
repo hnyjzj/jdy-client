@@ -140,17 +140,8 @@ async function submitGoods() {
 
 /** 下载对应入库模板 */
 const downloadLocalFile = () => {
-  let url = ''
-  let name = ''
-  if (props.type === 1) {
-    url = '/excel/finishedTemplate.xlsx'
-    name = '成品入库模板.xlsx'
-  }
-
-  if (props.type === 3) {
-    url = '/excel/assessoryTemplate.xlsx'
-    name = '配件入库模板.xlsx'
-  }
+  const url = '/excel/finishedTemplate.xlsx'
+  const name = '成品入库模板.xlsx'
 
   const link = document.createElement('a')
   link.href = url

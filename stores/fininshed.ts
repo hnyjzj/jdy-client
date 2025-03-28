@@ -76,15 +76,5 @@ export const useFinished = defineStore('Finished', {
         throw new Error(`转换失败: ${error || '未知错误'}`)
       }
     },
-    // 成品报损
-    async damageFinished(pamars: ProductDamage) {
-      try {
-        const { data } = await https.put<any, ProductDamage>('/product/finished/damage', pamars)
-        return data.value
-      }
-      catch (error) {
-        throw new Error(`报损失败: ${error || '未知错误'}`)
-      }
-    },
   },
 })

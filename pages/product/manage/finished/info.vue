@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const { getFinishedInfo, getFinishedWhere, damageFinished, convertFinished } = useFinished()
+const { getFinishedInfo, getFinishedWhere, convertFinished } = useFinished()
+const { damageFinished } = useLoss()
 const { finishedInfo, finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
 
 const { $toast } = useNuxtApp()

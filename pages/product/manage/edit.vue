@@ -10,6 +10,7 @@ const { uploadProductImg } = useProductManage()
 const { finishedInfo, finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
 
 const route = useRoute()
+const router = useRouter()
 const productParams = ref<ProductFinisheds>({} as ProductFinisheds)
 /** 图片列表 */
 const previewFileList = ref<Array<UploadFileInfo>>([])
@@ -86,8 +87,11 @@ function transformData() {
 async function updateData() {
   const res = await updateFinishedInfo(productParams.value)
   if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('更新成功')
+    $toast.success('更新成功', 1000)
     await getInfo()
+    setTimeout(() => {
+      router.back()
+    }, 1000)
   }
   else {
     $toast.warning(res?.message ?? '更新失败')
@@ -97,6 +101,7 @@ async function updateData() {
 // 取消更新 数据恢复为修改之前
 function cancelUpdata() {
   productParams.value = JSON.parse(JSON.stringify(finishedInfo.value))
+  router.back()
 }
 
 // 校验上传文件

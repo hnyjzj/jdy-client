@@ -19,7 +19,7 @@ const props = defineProps<{
       </div>
       <div class="flex flex-col gap-3 px-4 py-3" uno-sm="grid grid-cols-[1fr_1fr] gap-x-8">
         <template v-for="(item, index) in props.filterListToArray" :key="index">
-          <template v-if="item.label">
+          <template v-if="item.label && item.find">
             <div class="flex justify-between text-sm font-normal">
               <div class="text-color-light">
                 {{ item?.label }}
