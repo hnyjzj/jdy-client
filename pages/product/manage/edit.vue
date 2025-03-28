@@ -19,8 +19,8 @@ async function getInfo() {
     initImgWall()
     productParams.value = finishedInfo.value
     // 证书手动添加一个数组项
-    if (!finishedInfo.value.certificate) {
-      finishedInfo.value.certificate = ['']
+    if (!productParams.value.certificate || !productParams.value.certificate.length) {
+      productParams.value.certificate = ['']
     }
   }
 }

@@ -152,6 +152,10 @@ function edit(product: ProductFinisheds) {
       }
     }
   })
+  if (!product.certificate || !product.certificate.length) {
+    productParams.value.certificate = ['']
+  }
+
   isEditModel.value = true
 }
 
@@ -314,7 +318,7 @@ function filteredOptions(preset: any, val: number) {
                     <template #info>
                       <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
                         <template v-for="(filter, findex) in finishedFilterListToArray" :key="findex">
-                          <template v-if="filter.update">
+                          <template v-if="filter.find">
                             <template v-if="filter.input === 'list'">
                               <template v-for="(certificate, i) in item[filter.name]" :key="i">
                                 <div class="flex">
@@ -443,7 +447,7 @@ function filteredOptions(preset: any, val: number) {
                         v-model:value="productParams[item.name][i]"
                         :placeholder="certific"
                       />
-                      <div class="flex gap-1 pb-2">
+                      <div class="flex gap-1 items-center">
                         <div class="w-[32px] h-[32px] rounded-full bg-[#FFF] flex justify-center items-center" @click="productParams[item.name].splice(i, 1)">
                           <icon name="i-svg:subtract" size="16" />
                         </div>

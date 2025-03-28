@@ -21,14 +21,14 @@ const enterStatus = {
 }
 /** 门店选择列表 */
 const storeCol = ref()
-function changeStoer() {
+function changeStore() {
   storeCol.value = []
   myStoreList.value.forEach((item: Stores) => {
     storeCol.value.push({ label: item.name, value: item.id })
   })
 }
 await getMyStore({ page: 1, limit: 20 })
-await changeStoer()
+await changeStore()
 
 useSeoMeta({
   title: '入库单',
@@ -109,6 +109,11 @@ function goAdd() {
   isModel.value = false
   jump('/product/warehouse/add')
 }
+
+/** 汇总 */
+function sum(info: FinishedEnter, key: keyof ProductFinisheds) {
+  return info?.products?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
+}
 </script>
 
 <template>
@@ -146,7 +151,7 @@ function goAdd() {
               <div class="py-[4px] flex justify-between">
                 <div>所属门店</div>
                 <div class="text-align-end">
-                  {{ info.store.name }}
+                  {{ info.store?.name }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
@@ -158,19 +163,19 @@ function goAdd() {
               <div class="py-[4px] flex justify-between">
                 <div>入网费合计</div>
                 <div class="text-align-end">
-                  {{ info.products?.reduce((pre, cur:ProductFinisheds) => pre + Number(cur?.access_fee), 0) || 0 }}
+                  {{ sum(info, 'access_fee') && sum(info, 'access_fee').toFixed(2) }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
                 <div>标签价合计</div>
                 <div class="text-align-end">
-                  {{ info.products?.reduce((pre, cur:ProductFinisheds) => pre + Number(cur?.label_price), 0) || 0 }}
+                  {{ sum(info, 'label_price') && sum(info, 'label_price').toFixed(2) }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
                 <div>金重合计</div>
                 <div class="text-align-end">
-                  {{ info.products?.reduce((pre, cur:ProductFinisheds) => pre + Number(cur?.weight_metal), 0) || 0 }}
+                  {{ sum(info, 'weight_metal') && sum(info, 'weight_metal').toFixed(2) }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">

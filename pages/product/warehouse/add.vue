@@ -165,6 +165,10 @@ const presetToSelect = (key: keyof ProductFinisheds) => {
                       </template>
                     </template>
                     <template v-for="(item, index) in certificate" :key="index">
+                      <div>
+                        11
+                        {{ certificate }}
+                      </div>
                       <n-form-item-gi :span="12" :label="`证书${index + 1}`">
                         <n-input v-model:value="certificate[index]" type="text" round :placeholder="`输入证书${index + 1}`" />
                       </n-form-item-gi>
