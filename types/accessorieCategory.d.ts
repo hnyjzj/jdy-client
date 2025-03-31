@@ -2,7 +2,7 @@ interface AccessorieCategory {
   /**
    * 入网费
    */
-  access_fee: number | string
+  access_fee: number
   /**
    * 品类
    */
@@ -22,7 +22,7 @@ interface AccessorieCategory {
   /**
    * 标签价
    */
-  label_price: number | string
+  label_price: number
   /**
    * 材质
    */
@@ -62,7 +62,7 @@ interface AccessorieCategory {
   /**
    * 重量
    */
-  weight: number | string
+  weight: number
   /**
    * 门店id
    */

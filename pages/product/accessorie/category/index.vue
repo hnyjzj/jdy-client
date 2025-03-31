@@ -1,16 +1,12 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
-const { getAccessorieList, getAccessorieWhere } = useAccessorie()
-const { categoryList, categoryListTotal } = storeToRefs(useAccessorieCategory())
-const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
-const { getAccessorieCategoryList } = useAccessorieCategory()
-await getAccessorieCategoryList({ page: 1, limit: 1 })
+const { categoryListTotal, categoryList, categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
+const { getAccessorieCategoryList, getAccessorieCategoryWhere } = useAccessorieCategory()
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
-const pages = ref(1)
-const type = ref(2 as ProductAccessories['type'])
+const page = ref(1)
 useSeoMeta({
   title: '配件条目',
 })
@@ -27,12 +23,11 @@ async function clearSearch() {
   await submitWhere({ }, true)
 }
 // 获取货品列表
-async function getList(where = {} as Partial<ProductAccessories>) {
-  const params = { page: pages.value, limit: 10 } as ReqList<ProductAccessories>
+async function getList(where = {} as Partial<AccessorieCategory>) {
+  const params = { page: page.value, limit: 10 } as ReqList<AccessorieCategory>
   params.where = where
-  params.where.type = type.value
   try {
-    const res = await getAccessorieList(params)
+    const res = await getAccessorieCategoryList(params)
     return res as any
   }
   catch (error) {
@@ -43,7 +38,7 @@ async function getList(where = {} as Partial<ProductAccessories>) {
 try {
   if (myStore.value?.id) {
     await getList()
-    await getAccessorieWhere()
+    await getAccessorieCategoryWhere()
   }
   else {
     $toast.error('您尚未分配任何门店，请先添加门店')
@@ -53,17 +48,16 @@ catch (error) {
   throw new Error(`初始化失败: ${error || '未知错误'}`)
 }
 
-const filterData = ref({} as Partial<ProductAccessories>)
+const filterData = ref({} as AccessorieCategory)
 
 function pull() {
   getList(filterData.value)
 }
 
 // 筛选列表
-async function submitWhere(f: Partial<ProductAccessories>, isSearch: boolean = false) {
-  filterData.value = { ...f }
-  pages.value = 1
-  categoryList.value = []
+async function submitWhere(f: Partial<AccessorieCategory>, isSearch: boolean = false) {
+  filterData.value = { ...f } as AccessorieCategory
+  page.value = 1
   const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
     isFilter.value = false
@@ -92,9 +86,36 @@ function create() {
     <!-- 列表 -->
     <div class="px-[16px] pb-20">
       <template v-if="categoryList?.length">
-        <!-- <product-list-main :product-list="categoryList" :filter-list="categoryFilterList" @edit="edit" /> -->
+        <product-manage-card :list="categoryList">
+          <template #info="{ info }">
+            <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+              <template v-for="(item, index) in categoryFilterListToArray" :key="index">
+                <template v-if="item.create">
+                  <div class="flex-between">
+                    <div>
+                      {{ item.label }}
+                    </div>
+                    <template v-if="item.input === 'text' || item.input === 'number' || item.input === 'textarea'">
+                      <div class="text-align-end val">
+                        {{ info[item.name] }}
+                      </div>
+                    </template>
+                    <template v-else-if="item.input === 'switch'">
+                      <n-switch v-model:value="info[item.name]" :style="{ 'border-radius': '20px' }" round />
+                    </template>
+                    <template v-else-if="item.input === 'select'">
+                      <div class="text-align-end val">
+                        {{ item.preset[info[item.name]] }}
+                      </div>
+                    </template>
+                  </div>
+                </template>
+              </template>
+            </div>
+          </template>
+        </product-manage-card>
         <common-page
-          v-model:page="pages" :total="categoryListTotal" :limit="10" @update:page="() => {
+          v-model:page="page" :total="categoryListTotal" :limit="10" @update:page="() => {
             pull()
           }
           " />
@@ -105,6 +126,6 @@ function create() {
     </div>
     <common-create @click="create" />
     <product-manage-bottom />
-    <common-filter-where v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="accessorieFilterListToArray" @submit="submitWhere" />
+    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="categoryFilterListToArray" @submit="submitWhere" />
   </div>
 </template>

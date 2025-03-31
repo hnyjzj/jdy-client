@@ -14,10 +14,10 @@ export const useAccessorieCategory = defineStore('Category', {
     // 配件条目
     async getAccessorieCategoryList(params: ReqList<AccessorieCategory>) {
       try {
-        const { data } = await https.post<AccessorieCategory[], ReqList<AccessorieCategory>>('/product/accessorie/category/list', params)
+        const { data } = await https.post<ResList<AccessorieCategory>, ReqList<AccessorieCategory>>('/product/accessorie/category/list', params)
         if (data.value?.code === HttpCode.SUCCESS) {
-          this.categoryListTotal = data.value.data.length
-          this.categoryList = data.value.data
+          this.categoryListTotal = data.value.data.total
+          this.categoryList = data.value.data.list
         }
       }
       catch (error) {
@@ -39,13 +39,7 @@ export const useAccessorieCategory = defineStore('Category', {
     },
     // 新增配件条目
     async AddAccessorieCategory(params: AccessorieCategory) {
-      console.log(11)
-
-      console.log(1111111, params)
-
       try {
-        console.log(1111111, params)
-
         const { data } = await https.post<any, AccessorieCategory>('/product/accessorie/category/create', params)
         if (data.value?.code === HttpCode.SUCCESS) {
           return data.value.data

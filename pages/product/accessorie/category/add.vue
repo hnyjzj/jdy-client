@@ -8,10 +8,10 @@ const { getAccessorieCategoryWhere, AddAccessorieCategory } = useAccessorieCateg
 const { categoryFilterList, categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
 const router = useRouter()
 useSeoMeta({
-  title: '新增入库单',
+  title: '新增入库',
 })
 
-const params = ref({ store_id: myStore.value.id } as AccessorieCategory)
+const params = ref({} as AccessorieCategory)
 const isDisables = ref()
 await getAccessorieCategoryWhere()
 const formRef = ref<FormInst | null>(null)
@@ -53,7 +53,7 @@ function handleValidateButtonClick() {
       submit()
     }
     else {
-      $toast.error('请入库完善信息')
+      $toast.error('请完善信息')
     }
   })
 }
@@ -125,18 +125,18 @@ const presetToSelect = (key: keyof AccessorieCategory) => {
                               />
                             </template>
                             <template v-if="item.input === 'text'">
-                              <n-input v-model="params[item.name]" min="0" round :placeholder="`输入${item.label}`" />
+                              <n-input v-model:value="params[item.name] as string" round :placeholder="`输入${item.label}`" />
                             </template>
                             <template v-if="item.input === 'number'">
                               <div class="w-[100%]">
-                                <n-input-number v-model="params[item.name]" round :placeholder="`输入${item.label}`" />
+                                <n-input-number v-model:value="params[item.name] as number" round :placeholder="`输入${item.label}`" />
                               </div>
                             </template>
                             <template v-if="item.input === 'switch'">
                               <n-switch v-model:value="params[item.name]" :style="{ 'border-radius': '20px' }" round />
                             </template>
                             <template v-if="item.input === 'textarea'">
-                              <n-input v-model="params[item.name]" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
+                              <n-input v-model:value="params[item.name] as string" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
                             </template>
                           </n-form-item-gi>
                         </template>

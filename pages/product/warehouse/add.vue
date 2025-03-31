@@ -64,7 +64,7 @@ function handleValidateButtonClick() {
       submit()
     }
     else {
-      $toast.error('请入库完善信息')
+      $toast.error('请完善信息')
     }
   })
 }
@@ -147,7 +147,7 @@ const presetToSelect = (key: keyof ProductFinisheds) => {
                               />
                             </template>
                             <template v-if="item.input === 'text'">
-                              <n-input v-model:value="params[item.name]" min="0" round :placeholder="`输入${item.label}`" />
+                              <n-input v-model:value="params[item.name]" round :placeholder="`输入${item.label}`" />
                             </template>
                             <template v-if="item.input === 'number'">
                               <div class="w-[100%]">
@@ -166,7 +166,6 @@ const presetToSelect = (key: keyof ProductFinisheds) => {
                     </template>
                     <template v-for="(item, index) in certificate" :key="index">
                       <div>
-                        11
                         {{ certificate }}
                       </div>
                       <n-form-item-gi :span="12" :label="`证书${index + 1}`">
