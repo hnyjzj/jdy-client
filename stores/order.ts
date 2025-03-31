@@ -22,7 +22,7 @@ export const useOrder = defineStore('Order', {
     },
     //  获取旧料的新增条件
     async OldMaterialsWhere() {
-      const { data } = await https.get<Where<Product>, null>('/product/where_product_old')
+      const { data } = await https.get<Where<Product>, null>('/product/old/where')
       if (data.value?.code === HttpCode.SUCCESS) {
         this.oldFilterList = data.value.data
         this.oldFilterListToArray = sortArr(this.oldFilterList)
