@@ -31,7 +31,7 @@ const cancle = () => {
 
 <template>
   <div v-if="show" class="fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.5)] flex-center-row z-[999]">
-    <div class="w-[327px]  rounded-[24px] px-[16px] py-[24px] bg-[#F1F5FE]">
+    <div class="w-[327px]  rounded-[24px] px-[16px] py-[24px] blur-bga">
       <div class="flex-center-row">
         <template v-if="props.icon === 'none'">
           <div class="bg-[#3075FF] rounded-[50%] wh-[24px] flex-center-row mr-[8px]">

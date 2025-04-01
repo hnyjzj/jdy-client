@@ -7,13 +7,13 @@ useSeoMeta({
 })
 const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
-const { getProductList } = useProductManage()
+const { getFinishedList } = useFinished()
 const { getStoreStaffList } = useStores()
 const { getSaleWhere, getTodayPrice, submitOrder, getOrderDetail } = useOrder()
 const { todayPrice, filterList } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
-const { productList } = storeToRefs(useProductManage())
+const { finishedList } = storeToRefs(useFinished())
 const formRef = ref<FormInst | null>(null)
 const formData = ref<Orders>({
   amount: 0, // 应付金额
@@ -77,13 +77,13 @@ const searchProductList = async (val: string, type: string) => {
   }
 
   if (type === 'name') {
-    const res = await getProductList({ page: 1, limit: 10, where: { name: val, status: 1 } })
+    const res = await getFinishedList({ page: 1, limit: 10, where: { name: val, status: 1 } })
     if (res?.data.total === 0) {
       $toast.error('商品不存在')
     }
   }
   else {
-    const res = await getProductList({ page: 1, limit: 10, where: { code: val, status: 1 } })
+    const res = await getFinishedList({ page: 1, limit: 10, where: { code: val, status: 1 } })
     if (res?.data.total === 0) {
       $toast.error('商品不存在')
     }
@@ -134,7 +134,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   })
 }
 const openProductListFn = () => {
-  productList.value = []
+  finishedList.value = []
 }
 </script>
 
@@ -162,7 +162,7 @@ const openProductListFn = () => {
         <div class="py-[16px]">
           <sale-add-product
             v-model="showProductList"
-            :product-list="productList"
+            :product-list="finishedList"
             :price="todayPrice"
             @search="searchProductList"
             @open-product-list="openProductListFn"

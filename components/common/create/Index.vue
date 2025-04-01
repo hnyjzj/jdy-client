@@ -6,7 +6,7 @@ const create = () => {
 </script>
 
 <template>
-  <div class="createbox coursor-pointer" @click="create">
+  <div class="createbox cursor-pointer" @click="create">
     <div
       class="create2">
       <div class="row" />
