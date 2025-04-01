@@ -7,7 +7,7 @@ useSeoMeta({
 })
 const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
-const { getProductList } = useProductManage()
+const { getFinishedList } = useFinished()
 const { getStoreStaffList } = useStores()
 const { getSaleWhere, submitOrder, getOrderDetail, OldMaterialsWhere } = useOrder()
 const { getGoldPrice } = useGoldPrice()
@@ -15,7 +15,7 @@ const { goldList } = storeToRefs(useGoldPrice())
 const { filterList } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
-const { productList, partsList, nowOldMaster } = storeToRefs(useProductManage())
+const { finishedList } = storeToRefs(useFinished())
 const formRef = ref<FormInst | null>(null)
 const formData = ref<Orders>({
   amount: 0, // 应付金额
@@ -83,13 +83,13 @@ const searchProductList = async (val: string, type: string) => {
 
   //   const where = ref<ReqList<Product>['where']>({ status: 1 })
   if (type === 'name') {
-    const res = await getProductList({ page: 1, limit: 10, where: { name: val, status: 1 } })
+    const res = await getFinishedList({ page: 1, limit: 10, where: { name: val, status: 1 } })
     if (res?.data.total === 0) {
       $toast.error('商品不存在')
     }
   }
   else {
-    const res = await getProductList({ page: 1, limit: 10, where: { code: val, status: 1 } })
+    const res = await getFinishedList({ page: 1, limit: 10, where: { code: val, status: 1 } })
     if (res?.data.total === 0) {
       $toast.error('商品不存在')
     }
@@ -140,7 +140,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   })
 }
 const openProductListFn = () => {
-  productList.value = []
+  finishedList.value = []
 }
 </script>
 
@@ -170,29 +170,8 @@ const openProductListFn = () => {
         <div class="pb-[16px]">
           <sale-add-product
             v-model="showProductList"
-            :type="1"
-            :product-list="productList"
-            :price="goldList"
-            @search="searchProductList"
-            @open-product-list="openProductListFn"
-          />
-        </div>
-        <div class="pb-[16px]">
-          <sale-add-masterials
-            v-model:list="showMasterialsList"
-            v-model:now-old-master="nowOldMaster"
-            :type="2"
-            :price="goldList"
-            @search="searchProductList"
-            @open-product-list="openProductListFn"
-          />
-        </div>
-        <div class="pb-[16px]">
-          <sale-add-product
-            v-model="showPartsList"
-            :type="3"
-            :product-list="partsList"
-            :price="goldList"
+            :product-list="finishedList"
+            :price="todayPrice"
             @search="searchProductList"
             @open-product-list="openProductListFn"
           />

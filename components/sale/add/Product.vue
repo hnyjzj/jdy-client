@@ -2,9 +2,8 @@
 import { calc } from 'a-calc'
 
 const Props = defineProps<{
-  price: GoldPrices[]
-  productList: Product[]
-  type: number
+  price: string
+  productList: ProductFinisheds[]
 }>()
 const emits = defineEmits<{
   search: [val: string, type: string]
@@ -30,9 +29,11 @@ const hasCheck = ref(false)
 // 搜索商品 名称 和 条码   code
 const searchType = ref('name')
 // 添加商品
-const addProduct = (product: Product) => {
-  if (!product) {
-    $toast.error('请选择商品')
+const addProduct = (product: ProductFinisheds) => {
+  const index = showProductList.value.findIndex(item => item.product?.id === product.id)
+  if (index !== -1 && showProductList.value[index].quantity) {
+    // 判断是否已经添加过该商品,如果已经添加过,则数量加一
+    // showProductList.value[index].quantity++
     return
   }
 
@@ -74,8 +75,9 @@ const count = (p: OrderProducts) => {
 
   // 如果是计件方式 标签价格x 数量 x 折扣
   if (p.product?.retail_type === 1) {
-    const total = calc('(price * discount) | <=2,!n', {
-      price: p.product.price,
+    const total = calc('(price * quantity * discount) | <=2,!n', {
+      price: p.product?.label_price,
+      quantity: p.quantity,
       discount: ((p.discount || 10) * 0.1),
     })
     p.amount = total

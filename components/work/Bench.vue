@@ -5,9 +5,13 @@ const props = defineProps<{
   keyword?: string
 }>()
 const emits = defineEmits<{
-  add: [id: string]
+  /**
+   * @params id: string
+   * @params type: number 1: 添加分类 2: 添加栏目
+   */
+  add: [id: string, type: number]
   del: [id: string]
-  update: [bench: WorkBench]
+  update: [bench: WorkBench, type: number]
   fold: [index: number]
   changePage: [bench: WorkBench]
   updateList: [val: WorkBench[]]
@@ -15,12 +19,12 @@ const emits = defineEmits<{
 
 const isSetup = defineModel({ type: Boolean, default: false })
 
-function addBench(id: string) {
-  emits('add', id)
+function addBench(id: string, type: number = 0) {
+  emits('add', id, type)
 }
 
-function updateBench(bench: WorkBench) {
-  emits('update', bench)
+function updateBench(bench: WorkBench, type: number) {
+  emits('update', bench, type)
 }
 
 function delBench(id: string) {
@@ -47,7 +51,7 @@ function changePageBench(bench: WorkBench) {
             </div>
             <template v-if="isSetup">
               <div class="flex items-center">
-                <button style="all: unset;" @click="updateBench(work)">
+                <button style="all: unset;" @click="updateBench(work, 1)">
                   <div class="flex items-center cursor-pointer">
                     <icon name="i-svg:edit" :size="12" color="#3970F3" />
                     <div class="text-[12px] text-[#3970F3] pl-1">
@@ -87,10 +91,10 @@ function changePageBench(bench: WorkBench) {
           <div class="blur-bgc px-[16px]" :class="!work.is_fold ? 'block1' : 'hidden1'">
             <div class="pt-[12px] pb-[16px] text-size-[14px]" :class="!work.is_fold ? 'block2' : 'hidden2'">
               <template v-if="isSetup">
-                <button style="all: unset;" @click="addBench(work.id)">
-                  <div class="flex items-center mb-3 cursor-pointer">
-                    <icon name="i-icon:addsth" :size="26" color="#666666" />
-                    <div class="text-[12px] text-[#666666] pl-1">
+                <button style="all: unset;" @click="addBench(work.id, 2)">
+                  <div class="flex items-center mb-3 cursor-pointer text-color-light">
+                    <icon name="i-icon:addsth" :size="26" />
+                    <div class="text-[12px]  pl-1">
                       添加分类
                     </div>
                   </div>
@@ -105,7 +109,7 @@ function changePageBench(bench: WorkBench) {
                       </div>
                       <template v-if="isSetup">
                         <div class="flex items-center">
-                          <button style="all: unset;" @click="updateBench(child)">
+                          <button style="all: unset;" @click="updateBench(child, 2)">
                             <div class="flex items-center cursor-pointer">
                               <icon name="i-svg:edit" :size="12" color="#3970F3" />
                               <div class="text-[12px] text-[#3970F3] pl-1">
@@ -129,9 +133,9 @@ function changePageBench(bench: WorkBench) {
                     <div class="line" />
                     <template v-if="isSetup">
                       <button style="all: unset;">
-                        <div class="flex items-center cursor-pointer" @click="addBench(child?.id)">
-                          <icon name="i-icon:addsth" color="#666666" />
-                          <div class="text-[12px] text-[#666666] pl-1">
+                        <div class="flex items-center cursor-pointer text-color-light" @click="addBench(child?.id, 3)">
+                          <icon name="i-icon:addsth" />
+                          <div class="text-[12px] pl-1">
                             添加栏目
                           </div>
                         </div>
@@ -139,14 +143,14 @@ function changePageBench(bench: WorkBench) {
                     </template>
                     <div class="sector">
                       <template v-for="son in child.children" :key="son.id">
-                        <div class="flex flex-col items-center cursor-pointer">
+                        <div class="flex flex-col items-center cursor-pointer mx-2" @click="changePageBench(son)">
                           <div class="relative">
-                            <img :src="son?.icon ? ImageUrl(son.icon) : '/images/sale/sales-list.png'" class="w-[32px] h-[32px]" @click="changePageBench(son)">
+                            <img :src="son?.icon ? ImageUrl(son.icon) : '/images/sale/sales-list.png'" class="w-[32px] h-[32px]">
                             <template v-if="isSetup">
-                              <icon class="absolute top-[-2px] right-[-2px] cursor-pointer" name="i-svg:reduce" :size="14" @click="delBench(son.id)" />
+                              <icon class="absolute top-[-2px] right-[-2px] cursor-pointer" name="i-svg:reduce" :size="14" @click.stop="delBench(son.id)" />
                             </template>
                           </div>
-                          <div class="son-title" @click="changePageBench(son)">
+                          <div class="son-title">
                             {{ son.title }}
                           </div>
                         </div>

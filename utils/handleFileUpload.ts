@@ -9,7 +9,7 @@ export default async function (headers: any) {
     '货品名称*': 'name',
     '入网费*': 'access_fee',
     '零售方式*': 'retail_type',
-    '标签价*': 'price',
+    '标签价*': 'label_price',
     '零售工费*': 'labor_fee',
     '款号': 'style',
     '供应商*': 'supplier',
@@ -22,19 +22,23 @@ export default async function (headers: any) {
     '金重(g)*': 'weight_metal',
     '总重(g)': 'weight',
     '手寸': 'size',
-    '金颜色': 'color_metal',
+    '贵金属颜色': 'color_metal',
     '主石重': 'weight_gem',
     '主石数量': 'num_gem',
     '副石1重': 'weight_other',
     '副石1数量': 'num_other',
-    '主石色': 'color_gem',
+    '颜色': 'color_gem',
     '净度': 'clarity',
     '证书1编号': 'certificate1',
     '证书2编号': 'certificate2',
+    '系列': 'series',
     '备注': 'remark',
     '是否特价': 'is_special_offer',
   }
-  const englishHeaders = headers.map((header: any) => {
+  const cleanedHeaders = headers.map((header: keyof ProductFinisheds) =>
+    typeof header === 'string' ? header.replace(/\s/g, '') : header,
+  )
+  const englishHeaders = cleanedHeaders.map((header: any) => {
     return headerMap[header] || header
   })
   return englishHeaders

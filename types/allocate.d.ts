@@ -53,14 +53,28 @@ interface Allocate {
   /**
    * 调拨商品
    */
-  product?: Product[]
+  product?: ProductFinisheds[]
   /**
    * 调拨状态
    * 0:全部 1:盘点中 2:调拨中 3:已完成 4:已取消
    */
   status: number
+  /**
+   * 调出门店id
+   */
   from_store_id?: string
+  /**
+   * 调出门店信息
+   */
+  from_store: Stores
+  /**
+   * 调入门店id
+   */
   to_store_id?: string
+  /**
+   * 调入门店信息
+   */
+  to_store: Stores
 }
 
 interface AllocateReq {
@@ -92,4 +106,12 @@ interface AllocateReq {
    * 产品类型
    */
   type: number
+  /**
+   * 门店id
+   */
+  store_id: string
+  /**
+   * 入库单id
+   */
+  enter_id?: Enter['id']
 }

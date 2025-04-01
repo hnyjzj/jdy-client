@@ -97,7 +97,7 @@ interface Orders {
   /**
    * 商品列表
    */
-  products: OrderProduct[]
+  products: OrderProductFinisheds[]
 }
 interface OrderSalesmen {
   /**
