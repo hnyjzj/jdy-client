@@ -58,7 +58,7 @@ const getStatusType = (status: number) => {
                       专属顾问
                     </div>
                     <div class="part-right">
-                      {{ item.consultant?.nickname || PERCH }}
+                      {{ item.consultant_id }}
                     </div>
                   </div>
                   <div class="part">

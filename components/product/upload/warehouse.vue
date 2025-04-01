@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const props = withDefaults(defineProps<{
-  filterList: Where<Product>
+  filterList: Where<ProductFinisheds>
   type: number
 }>(), {
   type: 1,
@@ -10,11 +10,12 @@ const emits = defineEmits<{
    * 提交
    * @param params 上传入库数据
    */
-  upload: [params: Product[]]
+  upload: [params: ProductFinisheds[]]
 }>()
 
 const { $toast } = useNuxtApp()
 const isModel = defineModel({ type: Boolean, default: false })
+const fileName = ref()
 // 上传xlsx文件数据
 const sheetData = ref([])
 
@@ -23,6 +24,7 @@ const sheetData = ref([])
  * @param event input上传文件
  */
 function FileUpload(event: any) {
+  fileName.value = event.target.files?.[0]?.name || ''
   uploadXlsx(event).then((data) => {
     sheetData.value = cleanExcelData(data as never[])
   })
@@ -45,52 +47,84 @@ function cleanExcelData(data: any) {
  * @param data 二维数组，第一行是表头，其余是数据行
  * @returns 对象数组
  */
+/**
+ * 将二维数组转换为对象数组
+ * @param data 二维数组，第一行是表头，其余是数据行
+ * @returns 对象数组
+ */
 async function transformData(data: any[][]) {
   if (!data || data.length < 2) {
     $toast.error('数据格式不正确，至少需要表头和一行数据')
     return []
   }
+
   // 第一行是表头 对应着字段名
-  type ProductKey = keyof Product
+  type ProductKey = keyof ProductFinisheds
   const originalHeaders: ProductKey[] = data[0]
+
+  // 上传后的表头
   const headers = await handleFileUpload(originalHeaders) as ProductKey[]
+
   return data.slice(1).map((row) => {
     const obj = {} as Record<ProductKey, any>
+
     headers.forEach((header: ProductKey, index) => {
-      const type = props.filterList[header]?.type
-      if (props.filterList[header]?.input === 'select') {
-        /** 预设值 查找对应的key */
-        const preset = props.filterList[headers[index]]?.preset
-        const key = Object.values(preset).indexOf(String(row[index]))
-        key && key > 0 ? row[index] = key : row[index] = ''
+      // 字段筛选条件
+      const filterItem = props.filterList[header]
+      // 判断字段是否存在于 filterList 中，防止访问 undefined
+      if (filterItem) {
+        const type = filterItem.type
+
+        // 处理下拉选择项
+        if (filterItem.input === 'select') {
+          const preset = filterItem.preset || {}
+          const rowValue = String(row[index] ?? '')
+
+          // 使用 Object.entries() 查找键，防止 undefined 和类型不一致问题
+          const key = Object.entries(preset).find(([_, v]) => String(v) === rowValue)?.[0] ?? ''
+          row[index] = key
+        }
+
+        // 数据类型转换 + 默认值处理
+
+        switch (type) {
+          case 'number':
+            row[index] = Number.isNaN(Number(row[index])) ? 0 : Number(row[index])
+            break
+          case 'float':
+            row[index] = Number.isNaN(Number.parseFloat(row[index])) ? 0 : Number.parseFloat(row[index])
+            break
+          case 'string':
+            row[index] = row[index] ?? '' // 将 undefined 转为空字符串
+            row[index] = String(row[index])
+            break
+          case 'bool':
+            row[index] = typeof row[index] === 'boolean' ? row[index] : Boolean(row[index])
+            break
+          case 'string[]':
+            row[index] = Array.isArray(row[index]) ? row[index] : [String(row[index] ?? '')]
+            break
+          case 'boolean':
+            if (row[index] === '是') {
+              row[index] = true
+            }
+            else if (row[index] === '否') {
+              row[index] = false
+            }
+            else if (!row[index]) {
+              row[index] = false
+            }
+            break
+          default:
+            row[index] = row[index] ?? ''
+            break
+        }
+        obj[header] = row[index]
       }
-      /** 数据转换对应类型 */
-      switch (type) {
-        case 'number':
-          row[index] = Number(row[index])
-          break
-        case 'float':
-          row[index] = Number.parseFloat(row[index])
-          break
-        case 'string':
-          row[index] = String(row[index])
-          break
-        case 'bool':
-          row[index] = Boolean(row[index])
-          break
-        case 'string[]':
-          row[index] = JSON.parse(JSON.stringify(row[index]))
-          break
-        default:
-          break
-      }
-      obj.type = props.type
-      obj[header] = row[index] ?? '' // 将表头与对应的数据行匹配
     })
-    // 证书合成数组
     const transformedObj = {
       ...obj,
-      certificate: [obj.certificate1, obj.certificate2].filter(Boolean),
+      certificate: [String(obj.certificate1 ?? ''), String(obj.certificate2 ?? '')].filter(Boolean),
     }
 
     // 删除不需要的字段
@@ -100,23 +134,14 @@ async function transformData(data: any[][]) {
   })
 }
 async function submitGoods() {
-  const data: Product[] = await transformData(sheetData.value)
+  const data: ProductFinisheds[] = await transformData(sheetData.value)
   emits('upload', data)
 }
 
 /** 下载对应入库模板 */
 const downloadLocalFile = () => {
-  let url = ''
-  let name = ''
-  if (props.type === 1) {
-    url = '/excel/finishedTemplate.xlsx'
-    name = '成品入库模板.xlsx'
-  }
-
-  if (props.type === 3) {
-    url = '/excel/assessoryTemplate.xlsx'
-    name = '配件入库模板.xlsx'
-  }
+  const url = '/excel/finishedTemplate.xlsx'
+  const name = '成品入库模板.xlsx'
 
   const link = document.createElement('a')
   link.href = url
@@ -125,22 +150,33 @@ const downloadLocalFile = () => {
   link.click()
   document.body.removeChild(link)
 }
+
+function clearData() {
+  fileName.value = ''
+  sheetData.value = []
+}
+
+defineExpose({
+  clearData,
+})
 </script>
 
 <template>
   <div>
-    <common-model v-model="isModel" title="入库" :show-ok="true" confirm-text="导入货品" @confirm="submitGoods">
+    <common-model v-model="isModel" title="批量入库" :show-ok="true" confirm-text="导入货品" @confirm="submitGoods" @cancel="clearData">
       <div class="mb-8 relative min-h-[60px]">
-        <div class="text-[14px] flex pb-4">
-          请按照模板整理数据信息
-          <div class="text-[rgba(57,113,243,1)] flex" @click="downloadLocalFile">
+        <div class="text-[14px] text-color flex pb-4">
+          1、请按照模板整理数据信息
+          <div class="text-[rgba(57,113,243,1)] flex ml-4" @click="downloadLocalFile">
             <icon name="i-svg:download" :size="16" color="#666" />
             下载模板
           </div>
         </div>
-        <input class="h-[40px] absolute top-0 w-full opacity-0" type="file" @change="FileUpload">
+        <input class="h-[40px] absolute bottom-0 w-full opacity-0" type="file" @change="FileUpload">
         <div class="uploadInp cursor-pointer">
-          <div>请添加文件</div>
+          <div class="text-row-hide w-[60%]">
+            {{ fileName || '请添加文件' }}
+          </div>
           <div class="uploadInp-right">
             <icon name="i-svg:upload" :size="16" color="#666" />
             <div class="ml-2">

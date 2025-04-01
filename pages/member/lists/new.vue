@@ -1,31 +1,46 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
 
+const route = useRoute()
+
+const guideTxt = () => {
+  if (route.query.id) {
+    return '编辑'
+  }
+  else {
+    return '新增'
+  }
+}
 useSeoMeta({
-  title: '新增会员',
+  title: () => `${guideTxt()}会员`,
 })
 
-const { createMember } = useMemberManage()
+const { createMember, getMemberInfo, updateMemberInfo } = useMemberManage()
+const { memberInfo } = storeToRefs(useMemberManage())
 
-const { myStore, myStoreList, StoreStaffList } = storeToRefs(useStores())
+const { getStoreList } = useStores()
+const searchPage = ref<number>(1)
+const storeParams = { page: searchPage.value, limit: 100 } as ReqList<Stores>
+await getStoreList(storeParams)
 
-const { getMyStore, getStoreStaffList } = useStores()
+const { storesList } = storeToRefs(useStores())
 
-const getList = async () => await getMyStore({ page: 1, limit: 20 })
+const { getStaffList } = useStaff()
+const staffParams = { page: searchPage.value, limit: 12 } as ReqList<Staff>
+await getStaffList(staffParams)
 
-const memberParams = ref<Member>({
-  // 初始化store_id为当前门店id
-  store_id: myStore.value.id,
-} as Member)
+const { staffList } = storeToRefs(useStaff())
+
+const memberParams = ref<Member>({} as Member)
 
 const selectOptions = [
   {
     label: '男',
-    value: 1,
+    value: '1',
   },
   {
     label: '女',
-    value: 2,
+    value: '2',
   },
 ]
 
@@ -45,8 +60,33 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
   }
 }
 
-await getMyStore({ page: 1, limit: 20 })
-await getStoreStaffList({ id: myStore.value.id })
+// 编辑会员信息
+async function getInfo() {
+  if (route.query.id) {
+    await getMemberInfo(route.query.id as string)
+    memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
+  }
+}
+
+await getInfo()
+
+const conductEditDate = () => {
+  if (route.query.id) {
+    const birthdayDate = new Date(memberParams.value.birthday)
+    const birthdayFormattedDate = birthdayDate.getTime()
+
+    const anniversaryDate = new Date(memberParams.value.anniversary)
+    const anniversaryFormattedDate = anniversaryDate.getTime()
+
+    birthday.value = birthdayFormattedDate
+    anniversary.value = anniversaryFormattedDate
+  }
+}
+
+// 编辑用户信息的情况下，转换已有的生日和纪念日信息格式
+onMounted(() => {
+  conductEditDate()
+})
 
 const showGender = () => {
   if (memberParams.value.gender === 1) {
@@ -59,23 +99,55 @@ const showGender = () => {
 
 const showToUser = ref(showGender())
 
+const turnOptions = (list: Stores[] | Staff[]) => {
+  return list.map((item) => {
+    if ('name' in item) {
+      return {
+        label: item.name,
+        value: item.id,
+      }
+    }
+    else {
+      return {
+        label: item.nickname,
+        value: item.id,
+      }
+    }
+  })
+}
+
 const backtrack = () => {
   const { back } = useRouter()
   back()
 }
 
 const execute = async () => {
-  const res = await createMember(memberParams.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('新增成功')
-    backtrack()
+  if (route.query.id) {
+    const res = await updateMemberInfo(memberParams.value)
+    if (res?.code === HttpCode.SUCCESS) {
+      $toast.success('编辑成功')
+      backtrack()
+    }
+    else {
+      $toast.warning(res?.message ?? '编辑失败')
+    }
+  }
+  else {
+    const res = await createMember(memberParams.value)
+    if (res?.code === HttpCode.SUCCESS) {
+      $toast.success('新增成功')
+      backtrack()
+    }
+    else {
+      $toast.warning(res?.message ?? '新增失败')
+    }
   }
 }
 </script>
 
 <template>
   <div>
-    <div class="grid-12 pb-[80px]">
+    <div class="grid-12">
       <div class="col-12 px-[16px] py-[16px]" uno-lg="col-8 offset-2">
         <div class="flex flex-col gap-[16px]">
           <div class="primary">
@@ -158,14 +230,8 @@ const execute = async () => {
                         <n-select
                           v-model:value="memberParams.store_id"
                           placeholder="请选择入会门店"
-                          :options="myStoreList.map(v => ({
-                            label: v.name,
-                            value: v.id,
-                          }))"
+                          :options="turnOptions(storesList)"
                           menu-size="large"
-                          clearable
-                          remote
-                          @focus="() => { getList }"
                         />
                       </div>
                     </div>
@@ -177,14 +243,8 @@ const execute = async () => {
                         <n-select
                           v-model:value="memberParams.consultant_id"
                           placeholder="请选择专属顾问"
-                          :options="StoreStaffList.map(v => ({
-                            label: v.nickname,
-                            value: v.id,
-                          }))"
+                          :options="turnOptions(staffList)"
                           menu-size="large"
-                          clearable
-                          remote
-                          @focus="() => { getStoreStaffList({ id: myStore.id }) }"
                         />
                       </div>
                     </div>
@@ -235,7 +295,7 @@ const execute = async () => {
         </div>
       </div>
     </div>
-    <common-button-bottom confirm-text="确认新增" cancel-text="取消" @confirm="execute" @cancel="backtrack" />
+    <common-button-bottom :confirm-text="`确认${guideTxt()}`" cancel-text="取消" @confirm="execute" @cancel="backtrack" />
   </div>
 </template>
 

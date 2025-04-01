@@ -80,10 +80,6 @@ interface Member {
    * 生日
    */
   birthday: string
-  /**
-   * 外部用户id
-   */
-  external_user_id?: string
 }
 
 /**

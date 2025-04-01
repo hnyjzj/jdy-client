@@ -3,12 +3,12 @@
 </script>
 
 <template>
-  <div class="sticky bottom-0">
+  <div class="fixed bottom-0 left-0 right-0">
     <div
-      class="text-black dark:text-[#FFF] px-[16px] py-[10px]  blur-bgc dark:border-[#0000001A] b-t-solid border-color-[#E6E6E8] b-t-[1px]">
-      <van-row justify="space-between">
-        <van-col span="6">
-          <div class=" item">
+      class="text-black dark:text-[#FFF] px-[16px] py-[10px] blur-bgc dark:border-[#0000001A] b-t-solid border-color-[#E6E6E8] b-t-[1px]">
+      <common-layout-center>
+        <div class="flex">
+          <div class="item">
             <div class="title">
               总入网
             </div>
@@ -16,9 +16,7 @@
               181231
             </div>
           </div>
-        </van-col>
-        <van-col span="6">
-          <div class=" item">
+          <div class="item">
             <div class="title">
               总入网费
             </div>
@@ -26,9 +24,7 @@
               181231
             </div>
           </div>
-        </van-col>
-        <van-col span="6">
-          <div class=" item">
+          <div class="item">
             <div class="title">
               总入网费
             </div>
@@ -36,9 +32,7 @@
               181231
             </div>
           </div>
-        </van-col>
-        <van-col span="6">
-          <div class=" item">
+          <div class="item">
             <div class="title">
               总入网费
             </div>
@@ -46,20 +40,20 @@
               181231
             </div>
           </div>
-        </van-col>
-      </van-row>
+        </div>
+      </common-layout-center>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
   .item {
-  --uno: 'text-start';
+  --uno: 'w-25% text-center px-2';
   .title {
     --uno: 'text-size-[12px]';
   }
   .number {
-    --uno: 'text-size-[14px]';
+    --uno: 'text-size-[14px] text-row-hide';
   }
 }
 </style>

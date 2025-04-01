@@ -46,6 +46,7 @@ if (authStore.token) {
 // 企业微信登录
 const QWLogin = async () => {
   const route = useRoute()
+
   const redirect_url = route.query?.redirect_url as string
   const res = await authStore.getOauthUri(redirect_url || '')
   if (res?.code !== HttpCode.SUCCESS) {

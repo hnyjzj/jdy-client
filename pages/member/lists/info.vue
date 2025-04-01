@@ -3,34 +3,31 @@ useSeoMeta({
   title: '会员详情',
 })
 
+const route = useRoute()
+
 const { getMemberInfo } = useMemberManage()
 const { memberInfo } = storeToRefs(useMemberManage())
 
-type MemberParams = Pick<Member, 'id' | 'external_user_id'>
-const memberParams = ref<MemberParams>({} as MemberParams)
-
-const route = useRoute()
-if (route.query?.id) {
-  const id = route.query.id as string
-  memberParams.value.id = id
-}
+const memberParams = ref<Member>({} as Member)
 
 async function getInfo() {
-  await getMemberInfo(memberParams.value)
+  if (route.query.id) {
+    await getMemberInfo(route.query.id as string)
+
+    memberParams.value = JSON.parse(JSON.stringify(memberInfo.value))
+  }
 }
 
 await getInfo()
 
-const relyOnId = () => {
-  if (memberParams.value.id) {
-    jump('/member/lists/edit', { id: memberParams.value.id })
-  }
+const goEdit = (id: string) => {
+  jump('/member/lists/new', { id })
 }
 </script>
 
 <template>
   <div>
-    <member-lists-info :data="memberInfo" @go-edit="relyOnId" />
+    <member-lists-info :data="memberInfo" @go-edit="goEdit(memberParams.id)" />
   </div>
 </template>
 

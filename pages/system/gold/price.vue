@@ -2,8 +2,8 @@
 const { $toast } = useNuxtApp()
 const { goldList } = storeToRefs(useGoldPrice())
 const { getGoldPrice, setGoldPrice } = useGoldPrice()
-const { getProductWhere } = useProductManage()
-const { filterList } = storeToRefs(useProductManage())
+const { getFinishedWhere } = useFinished()
+const { finishedFilterList } = storeToRefs(useFinished())
 const { myStore } = storeToRefs(useStores())
 useSeoMeta({
   title: '今日金价',
@@ -11,7 +11,7 @@ useSeoMeta({
 
 const changeShow = ref(false)
 const goldParams = ref([] as UpdataGoldParams[])
-await getProductWhere()
+await getFinishedWhere()
 if (myStore.value.id) {
   await getGoldPrice(myStore.value.id)
   await getGoldParams()
@@ -43,8 +43,8 @@ async function getGoldParams() {
   }
 }
 /** 获取下拉消息信息 */
-function getOptions(name: keyof Product) {
-  const preset = filterList.value[name]?.preset
+function getOptions(name: keyof ProductFinisheds) {
+  const preset = finishedFilterList.value[name]?.preset
   return optonsToSelect(preset)
 }
 const productType = {
@@ -112,15 +112,15 @@ function subtract(i: number) {
                     {{ Number(item.price).toFixed(2) }}
                   </div>
                   <div>
-                    <div class="pb-1 flex gap-2">
+                    <div class="pb-1 flex gap-2 text-color">
                       <div class="font-bold">
                         {{ productType[item.product_type] ?? '' }}
                       </div>
-                      <div>{{ filterList.material?.preset[item.product_material] ?? '' }}</div>
+                      <div>{{ finishedFilterList.material?.preset[item.product_material] ?? '' }}</div>
                     </div>
                     <div class="gap-1 text-color">
-                      <div>{{ item.product_brand?.map(item => filterList.brand?.preset[item]).join(' ') ?? '' }}</div>
-                      <div>{{ item.product_quality.map(quality => filterList.quality?.preset[quality]).join(' ') ?? '' }}</div>
+                      <div>{{ item.product_brand?.map(item => finishedFilterList.brand?.preset[item]).join(' ') ?? '' }}</div>
+                      <div>{{ item.product_quality.map(quality => finishedFilterList.quality?.preset[quality]).join(' ') ?? '' }}</div>
                     </div>
                   </div>
                 </div>
@@ -217,7 +217,7 @@ function subtract(i: number) {
   display: none;
 }
 .updata-time {
-  --uno: 'bg-[rgba(199,218,255,1)] py-[4px] text-[rgba(75,87,109,1)] rounded-full';
+  --uno: 'bg-[rgba(199,218,255,1)] py-[4px] px-4 text-[rgba(75,87,109,1)] rounded-full';
 }
 .confirm-btn {
   --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#fff] font-bold ';

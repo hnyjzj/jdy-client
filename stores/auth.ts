@@ -17,8 +17,8 @@ export const useAuth = defineStore('authStore', {
      * 获取授权地址
      */
     async getOauthUri(redirect_url: string = '', now_url = '/login/oauth') {
-      const location = useBrowserLocation()
-      if (location.value.origin) {
+      try {
+        const location = useBrowserLocation()
         // 获取当前地址栏的参数 并抓换回去
         const uri = UrlAndParams(`${location.value?.origin || ''}${now_url}`, {
           redirect_url: redirect_url || undefined,
@@ -27,10 +27,14 @@ export const useAuth = defineStore('authStore', {
         const { data } = await https.post<OAuthRes, OAuthReq>('/platform/oauth', { uri, platform: 'wxwork' }, false)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.redirect = data.value.data.redirect_url
-          navigateTo(this.redirect, { external: true, replace: true, redirectCode: 200 })
+          navigateTo(data.value.data.redirect_url, { external: true, replace: true, redirectCode: 200 })
         }
 
         return data.value
+      }
+      catch (error) {
+        console.error('授权登录错误：', error)
+        throw error
       }
     },
 
@@ -118,8 +122,8 @@ export const useAuth = defineStore('authStore', {
 
   },
   persist: {
-    pick: ['token', 'expires_at', 'redirect'],
     storage: piniaPluginPersistedstate.cookies(),
+    pick: ['token', 'expires_at', 'redirect'],
   },
 
 })
