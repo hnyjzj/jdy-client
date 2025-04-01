@@ -8,7 +8,7 @@ const { getAccessorieCategoryWhere, addAccessorieCategory } = useAccessorieCateg
 const { categoryFilterList, categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
 const router = useRouter()
 useSeoMeta({
-  title: '新增入库',
+  title: '新增配件类别',
 })
 
 const params = ref({} as AccessorieCategory)

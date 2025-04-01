@@ -114,7 +114,9 @@ function handleValidateButtonClick() {
   if (!myStoreList.value.length) {
     return $toast.error('暂未分配门店')
   }
-
+  if (params.value.from_store_id === params.value.to_store_id) {
+    return $toast.error('调出门店与调入门店不能相同')
+  }
   formRef.value?.validate((error) => {
     if (!error) {
       submit()

@@ -43,7 +43,7 @@ function isUpdate(key: ProductKey) {
                   操作
                 </div>
                 <div class="info-val">
-                  {{ historyFilterList.action?.preset[historyInfo.action] }}
+                  {{ historyFilterList.action?.preset[historyInfo.action] || '' }}
                 </div>
               </div>
               <div class="info-row">
