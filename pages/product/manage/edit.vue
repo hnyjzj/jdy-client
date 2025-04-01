@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UploadCustomRequestOptions, UploadFileInfo, UploadOnRemove } from 'naive-ui'
+import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 
 useSeoMeta({
   title: '编辑',

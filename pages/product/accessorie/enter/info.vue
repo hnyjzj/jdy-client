@@ -128,14 +128,6 @@ function filteredOptions(preset: any, val: number) {
   return preset
 }
 
-function submitEdit() {
-
-}
-
-function submitGoods(e: any) {
-  console.log(e)
-}
-
 /** 搜索要入库的配件 */
 function searchAccessorie() {
   const obj = {} as Partial<AccessorieCategory>
@@ -194,7 +186,7 @@ function searchAccessorie() {
                         门店
                       </div>
                       <div class="info-val">
-                        {{ enterInfo.store.name }}
+                        {{ enterInfo.store?.name || '' }}
                       </div>
                     </div>
                     <div class="other-information flex flex-col gap-1">
@@ -302,7 +294,7 @@ function searchAccessorie() {
       </div>
     </common-layout-center>
     <product-upload-choose v-model:is-model="isChooseModel" @go-add="goAdd" @batch="isImportModel = true" />
-    <accessorie-warehouse ref="uploadRef" v-model="isImportModel" :filter-list="accessorieFilterList" :type="1" @upload="submitGoods" />
+    <accessorie-warehouse ref="uploadRef" v-model="isImportModel" :filter-list="accessorieFilterList" :type="1" />
     <!-- 状态为草稿时 功能操作 -->
     <template v-if="enterInfo.status === 1">
       <common-create @create="isChooseModel = true" />
@@ -331,7 +323,7 @@ function searchAccessorie() {
     <common-confirm v-model:show="clearDialog" icon="error" title="清空列表" text="确认要清空所有入库的产品吗?" @submit="clearProduct" /> -->
     <common-confirm v-model:show="cancelDialog" icon="error" title="撤销" text="确认要撤销入库单吗? 撤销后将不可进行其他操作" @submit="cancel" />
     <common-confirm v-model:show="finishDialog" icon="success" title="完成入库" text="确认要完成此入库单吗?" @submit="finish" />
-    <common-model v-model="isEditModel" title="编辑" :show-ok="true" @confirm="submitEdit">
+    <common-model v-model="isEditModel" title="编辑" :show-ok="true">
       <div class="max-h-[400px] overflow-auto">
         <template v-for="(item, index) in accessorieFilterListToArray" :key="index">
           <template v-if="item.update">

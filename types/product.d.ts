@@ -61,11 +61,11 @@ interface ProductHistories {
 
   operator: Staff
   /**
-   * 货品信息
+   * 更新后货品信息
    */
   new_value: ProductFinisheds
   /**
-   * 更新后货品信息
+   * 更新前货品信息
    */
   old_value: ProductFinisheds
   /**
@@ -87,7 +87,7 @@ interface ProductHistories {
   /**
    * 值
    */
-  value: any[] | boolean | number | number | { [key: string]: any } | null | string
+  value: any[] | boolean | number | { [key: string]: any } | null | string
 }
 
 /**
