@@ -181,7 +181,7 @@ interface ProductFinisheds {
 /**
  * 创建入库单参数
  */
-interface CreateProductFinsihedEnter {
+interface CreateProductFinishedEnter {
   store_id: Stores['id']
   remark?: string
 }

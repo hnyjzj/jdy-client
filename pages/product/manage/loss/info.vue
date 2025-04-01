@@ -33,8 +33,11 @@ const converOption = ref([{
   value: GoodsType.ProductOld,
 }])
 
-// 转换
+// 转换报损
 async function convert(type: ProductFinisheds['type']) {
+  if (!lossInfo.value?.id) {
+    return
+  }
   const res = await convertLoss({ id: lossInfo.value.id, type })
   if (res?.code === HttpCode.SUCCESS) {
     convertModel.value = false

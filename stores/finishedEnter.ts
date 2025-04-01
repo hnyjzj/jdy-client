@@ -45,9 +45,9 @@ export const useFinishedEnter = defineStore('finishedEnter', {
       }
     },
     /** 添加入库单 */
-    async createFinishedEnter(params: CreateProductFinsihedEnter) {
+    async createFinishedEnter(params: CreateProductFinishedEnter) {
       try {
-        const { data } = await https.post<any, CreateProductFinsihedEnter>('/product/finished/enter/create', params)
+        const { data } = await https.post<any, CreateProductFinishedEnter>('/product/finished/enter/create', params)
         return data.value
       }
       catch (error) {

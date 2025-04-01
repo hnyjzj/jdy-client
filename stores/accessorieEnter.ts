@@ -12,7 +12,7 @@ export const useAccessorieEnter = defineStore('accessorieEnter', {
     enterFilterList: {} as Where<AccessorieEnter>,
     EnterList: [],
     EnterListTotal: 0,
-    EnterToArray: {} as FilterWhere<AccessorieEnter>[],
+    EnterToArray: [] as FilterWhere<AccessorieEnter>[],
     enterInfo: {} as AccessorieEnter,
   }),
   actions: {
@@ -45,9 +45,9 @@ export const useAccessorieEnter = defineStore('accessorieEnter', {
       }
     },
     /** 添加配件入库单 */
-    async createAccessorieEnter(params: CreateProductFinsihedEnter) {
+    async createAccessorieEnter(params: CreateProductFinishedEnter) {
       try {
-        const { data } = await https.post<any, CreateProductFinsihedEnter>('/product/accessorie/enter/create', params)
+        const { data } = await https.post<any, CreateProductFinishedEnter>('/product/accessorie/enter/create', params)
         return data.value
       }
       catch (error) {

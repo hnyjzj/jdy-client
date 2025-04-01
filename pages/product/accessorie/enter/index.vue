@@ -13,7 +13,7 @@ const pages = ref(1)
 const isModel = ref(false)
 const isCreateModel = ref(false)
 const isBatchImportModel = ref(false)
-const enterParams = ref({} as CreateProductFinsihedEnter)
+const enterParams = ref({} as CreateProductFinishedEnter)
 const enterStatus = {
   1: '草稿',
   2: '已完成',

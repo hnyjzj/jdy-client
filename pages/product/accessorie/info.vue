@@ -5,7 +5,7 @@ const { accessorieInfo, accessorieFilterList, accessorieFilterListToArray } = st
 // const { $toast } = useNuxtApp()
 // 成品列表详情
 useSeoMeta({
-  title: '条目详情',
+  title: '详情',
 })
 
 const route = useRoute()
