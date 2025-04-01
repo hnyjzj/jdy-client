@@ -143,7 +143,7 @@ function goAdd() {
               <div class="py-[4px] flex justify-between">
                 <div>所属门店</div>
                 <div class="text-align-end">
-                  {{ info.store.name }}
+                  {{ info.store?.name || '未知门店' }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">

@@ -1,9 +1,3 @@
-interface AccessorieEnterReq {
-  page: number
-  limit: number
-  where?: Partial<AccessorieEnter>
-}
-
 // 产品类型
 interface AccessorieEnter {
   /**
@@ -56,7 +50,7 @@ interface AccessorieEnter {
 }
 
 /**
- * 添加成品入库单产品
+ * 添加入库单产品
  */
 interface AccessorieEnterReq {
   /** 成品入库参数 */

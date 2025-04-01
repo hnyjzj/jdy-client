@@ -63,11 +63,11 @@ interface ProductHistories {
   /**
    * 货品信息
    */
-  new_value: Product
+  new_value: ProductFinisheds
   /**
    * 更新后货品信息
    */
-  old_value: Product
+  old_value: ProductFinisheds
   /**
    * 产品ID
    */

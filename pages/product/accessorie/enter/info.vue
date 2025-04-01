@@ -27,7 +27,7 @@ const clearDialog = ref(false)
 const cancelDialog = ref(false)
 const finishDialog = ref(false)
 /** 单条添加 */
-const isAddSingle = ref(true)
+const isAddSingle = ref(false)
 /** 单条添加搜索配件参数 */
 const searchParams = ref({
   label: 'name',
