@@ -74,5 +74,7 @@ export default defineConfig({
     'blur-bga': 'light:bg-[rgb(255,255,255)] dark:bg-[rgba(0,0,0,0.3)] blur-5px',
     'text-color': 'text-[rgb(0,0,0)] dark:text-[rgb(255,255,255)]',
     'text-color-light': 'text-[#666666] dark:text-[#CBCDD1]',
+    /** 单行超出隐藏 */
+    'text-row-hide': 'whitespace-nowrap overflow-hidden text-ellipsis',
   },
 })

@@ -5,8 +5,9 @@ useSeoMeta({
 })
 const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
-const { getProductList } = useProductManage()
-const { productList } = storeToRefs(useProductManage())
+const { getFinishedList } = useFinished()
+const { finishedList } = storeToRefs(useFinished())
+
 const { filterListToArray, OrdersList, total, filterList, searchPage } = storeToRefs(useOrder())
 const { getSaleWhere, getOrderList } = useOrder()
 const filterData = ref({} as Partial<OrderWhere>)
@@ -51,7 +52,7 @@ onMounted(async () => {
 })
 const searchProduct = async (e: string) => {
   if (e.length > 0) {
-    await getProductList({ page: 1, limit: 5, where: { name: e } })
+    await getFinishedList({ page: 1, limit: 5, where: { name: e } })
   }
 }
 
@@ -150,7 +151,7 @@ const updatePage = async (page: number) => {
           v-model:value="filterData.product_id"
           filterable
           placeholder="输入商品名称"
-          :options="productList.map(v => ({
+          :options="finishedList.map(v => ({
             label: v.name,
             value: v.id,
           }))"

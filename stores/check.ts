@@ -16,16 +16,11 @@ export const useCheck = defineStore('check', {
     // 盘带单列表
     async getCheckList(pamars: ReqList<Check>) {
       try {
+        pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
         const { data } = await https.post<ResList<Check>, ReqList<Check>>('/product/inventory/list', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.checkTotal = data.value.data.total
-
-          if (pamars.page === 1) {
-            this.checkList = data.value.data.list
-          }
-          else {
-            this.checkList = this.checkList.concat(data.value.data.list)
-          }
+          this.checkList = data.value.data.list
         }
         return data.value
       }
@@ -49,6 +44,7 @@ export const useCheck = defineStore('check', {
     /** 创建盘点单 */
     async createCheck(params: Check) {
       try {
+        params = { ...params, store_id: useStores().myStore.id }
         const { data } = await https.post<Check, any >('/product/inventory/create', params)
         return data.value
       }

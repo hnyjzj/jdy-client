@@ -67,7 +67,7 @@ onUnmounted(() => {
         </div>
       </div>
       <div class="msg" :style="{ color: style.color }">
-        {{ props.message }}
+        <div class="ws-pre" v-html="props.message" />
       </div>
     </div>
   </div>

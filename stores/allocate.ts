@@ -18,15 +18,11 @@ export const useAllocate = defineStore('Allocate', {
     // 调拨列表
     async getAllocate(pamars: ReqList<Allocate>) {
       try {
+        pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
         const { data } = await https.post<ResList<Allocate>, ReqList<Allocate>>('/product/allocate/list', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.allocateTotal = data.value.data.total
-          if (pamars.page === 1) {
-            this.allocateList = data.value.data.list
-          }
-          else {
-            this.allocateList = this.allocateList.concat(data.value.data.list)
-          }
+          this.allocateList = data.value.data.list
         }
         return data.value
       }
@@ -91,7 +87,7 @@ export const useAllocate = defineStore('Allocate', {
       }
     },
     /** 删除调拨产品 */
-    async remove(id: Allocate['id'], code: Product['code']) {
+    async remove(id: Allocate['id'], code: ProductFinisheds['code']) {
       try {
         const { data } = await https.put<{ id: string, code: string }, any >('/product/allocate/remove', { id, code })
         return data.value
@@ -101,7 +97,7 @@ export const useAllocate = defineStore('Allocate', {
       }
     },
     /** 添加调拨产品 */
-    async add(id: Allocate['id'], code: Product['code']) {
+    async add(id: Allocate['id'], code: ProductFinisheds['code']) {
       try {
         const { data } = await https.put<{ id: string, code: string }, any >('/product/allocate/add', { id, code })
         return data.value
@@ -113,6 +109,7 @@ export const useAllocate = defineStore('Allocate', {
     /** 创建调拨单 */
     async createAllocate(params: AllocateReq) {
       try {
+        params = { ...params, store_id: useStores().myStore.id }
         const { data } = await https.post<AllocateReq, any >('/product/allocate/create', params)
         return data.value
       }
