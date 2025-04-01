@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { myStoreList } = storeToRefs(useStores())
+const { myStoreList, myStore } = storeToRefs(useStores())
 const { getMyStore } = useStores()
 
 const { getAccessorieEnterList, getAccessorieEnterWhere, createAccessorieEnter } = useAccessorieEnter()
@@ -21,6 +21,7 @@ const enterStatus = {
 }
 /** 门店选择列表 */
 const storeCol = ref()
+enterParams.value.store_id = myStore.value.id
 function changeStoer() {
   storeCol.value = []
   myStoreList.value.forEach((item: Stores) => {
@@ -202,6 +203,7 @@ function goAdd() {
     </div>
     <accessorie-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" />
+    <common-create @create="isCreateModel = true" />
     <common-model v-model="isCreateModel" title="添加入库单" :show-ok="true" @confirm="createEnter">
       <div class="mb-8 min-h-[60px]">
         <div class="flex items-center mb-4">
@@ -210,6 +212,7 @@ function goAdd() {
           </div>
           <n-select
             v-model:value="enterParams.store_id" :options="storeCol"
+            disabled
             clearable />
         </div>
         <div class="flex mb-4">

@@ -19,12 +19,13 @@ export const useAccessorieCategory = defineStore('Category', {
           this.categoryListTotal = data.value.data.total
           this.categoryList = data.value.data.list
         }
+        return data.value
       }
       catch (error) {
         throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
       }
     },
-    // 获取配件筛选列表
+    // 获取配件条目筛选列表
     async getAccessorieCategoryWhere() {
       try {
         const { data } = await https.get<Where<AccessorieCategory>>('/product/accessorie/category/where')

@@ -16,7 +16,7 @@ export const useAccessorieEnter = defineStore('accessorieEnter', {
     enterInfo: {} as AccessorieEnter,
   }),
   actions: {
-    // 获取入库单列表
+    // 获取配件入库单列表
     async getAccessorieEnterList(pamars: ReqList<AccessorieEnter>) {
       try {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
@@ -31,7 +31,7 @@ export const useAccessorieEnter = defineStore('accessorieEnter', {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
       }
     },
-    // 获取入库单筛选列表
+    // 获取配件入库单筛选列表
     async getAccessorieEnterWhere() {
       try {
         const { data } = await https.get<Where<AccessorieEnter>>('/product/accessorie/enter/where')
@@ -44,17 +44,17 @@ export const useAccessorieEnter = defineStore('accessorieEnter', {
         throw new Error(`筛选失败: ${error || '未知错误'}`)
       }
     },
-    /** 添加入库单 */
+    /** 添加配件入库单 */
     async createAccessorieEnter(params: CreateProductFinsihedEnter) {
       try {
         const { data } = await https.post<any, CreateProductFinsihedEnter>('/product/accessorie/enter/create', params)
         return data.value
       }
       catch (error) {
-        throw new Error(`添加入库单失败: ${error || '未知错误'}`)
+        throw new Error(`添加配件入库单失败: ${error || '未知错误'}`)
       }
     },
-    /** 添加入库单产品 */
+    /** 添加配件入库单产品 */
     async addAccessorieEnter(params: AccessorieEnterReq) {
       try {
         const { data } = await https.post<any, AccessorieEnterReq>('/product/accessorie/enter/add_product', params)
@@ -64,7 +64,7 @@ export const useAccessorieEnter = defineStore('accessorieEnter', {
         throw new Error(`货品导入失败: ${error || '未知错误'}`)
       }
     },
-    /** 编辑入库单产品 */
+    /** 编辑配件入库单产品 */
     async editAccessorieEnter(params: editAccessorieEnterReq) {
       try {
         const { data } = await https.put<any, editAccessorieEnterReq>('/product/accessorie/enter/edit_product', params)
@@ -74,7 +74,7 @@ export const useAccessorieEnter = defineStore('accessorieEnter', {
         throw new Error(`编辑失败: ${error || '未知错误'}`)
       }
     },
-    // 获取入库单详情
+    // 获取配件入库单详情
     async getAccessorieEnterInfo(id: AccessorieEnter['id']) {
       try {
         const { data } = await https.post<AccessorieEnter, { id: AccessorieEnter['id'] }>('/product/accessorie/enter/info', { id })
@@ -83,17 +83,17 @@ export const useAccessorieEnter = defineStore('accessorieEnter', {
         }
       }
       catch (error) {
-        throw new Error(`获取入库单详情失败: ${error || '未知错误'}`)
+        throw new Error(`获取配件入库单详情失败: ${error || '未知错误'}`)
       }
     },
-    // 删除入库单产品
+    // 删除配件入库单产品
     async delAccessorieEnter(params: DelAccessorieEnter) {
       try {
         const { data } = await https.delete<any, DelAccessorieEnter>('/product/accessorie/enter/del_product', params)
         return data.value
       }
       catch (error) {
-        throw new Error(`删除入库单产品失败: ${error || '未知错误'}`)
+        throw new Error(`删除配件入库单产品失败: ${error || '未知错误'}`)
       }
     },
     // 取消入库

@@ -4,6 +4,8 @@ const { getAccessorieEnterInfo, cancelAccessorieEnter, successAccessorieEnter } 
 const { enterInfo } = storeToRefs(useAccessorieEnter())
 const { accessorieFilterListToArray, accessorieFilterList } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
+const { categoryFilterListToArray, categoryFilterList, categoryList } = storeToRefs(useAccessorieCategory())
+const { getAccessorieCategoryWhere, getAccessorieCategoryList } = useAccessorieCategory()
 
 useSeoMeta({
   title: '入库单详情',
@@ -25,10 +27,24 @@ const clearDialog = ref(false)
 const cancelDialog = ref(false)
 const finishDialog = ref(false)
 /** 单条添加 */
-const isAddSingle = ref(false)
+const isAddSingle = ref(true)
+/** 单条添加搜索配件参数 */
+const searchParams = ref({
+  label: 'name',
+  val: '',
+} as
+{
+  label: keyof AccessorieCategory
+  val: any
+},
+)
+await getAccessorieCategoryWhere()
+
+const searchWhere = computed(() => {
+  return categoryFilterList.value[searchParams.value.label]
+})
 
 const productParams = ref({} as Partial<ProductAccessories>)
-
 /** 要删除的产品code */
 const deleteId = ref('')
 const enterId = ref('')
@@ -118,6 +134,13 @@ function submitEdit() {
 
 function submitGoods(e: any) {
   console.log(e)
+}
+
+/** 搜索要入库的配件 */
+function searchAccessorie() {
+  const obj = {} as Partial<AccessorieCategory>
+  obj[searchParams.value.label] = searchParams.value.val
+  getAccessorieCategoryList({ page: 1, limit: 20, where: { ...obj } })
 }
 </script>
 
@@ -379,8 +402,73 @@ function submitGoods(e: any) {
         </template>
       </div>
     </common-model>
-    <common-model v-model="isAddSingle" title="单条添加" :show-ok="true">
-      <div>2</div>
+    <common-model v-model="isAddSingle" title="选择配件" :show-ok="true" @confirm="searchAccessorie">
+      <div>
+        <div class="grid grid-cols-[30%_60%_10%] items-center gap-2">
+          <div class="">
+            <n-select
+              v-model:value="searchParams.label" :options="categoryFilterListToArray.map(v => ({
+                label: v.label,
+                value: v.name,
+              }))"
+              @change="searchParams.val = ''" />
+          </div>
+          <div>
+            <template v-if="searchWhere?.input === 'text' || searchWhere?.input === 'textarea'">
+              <n-input v-model:value="searchParams.val" placeholder="请搜索" />
+            </template>
+            <template v-if="searchWhere?.input === 'number'">
+              <n-input-number v-model:value="searchParams.val" placeholder="请搜索" />
+            </template>
+            <template v-else-if="searchWhere?.input === 'select'">
+              <n-select v-model:value="searchParams.val" :options="optonsToSelect(searchWhere.preset)" />
+            </template>
+          </div>
+          <div @click="searchAccessorie">
+            搜索
+          </div>
+        </div>
+        <div class="m-4 categoryList">
+          <table>
+            <thead>
+              <tr>
+                <template v-for="(item, index) in categoryFilterListToArray" :key="index">
+                  <template v-if="item.find">
+                    <th class="text-nowrap">
+                      {{ item.label }}
+                    </th>
+                  </template>
+                </template>
+              </tr>
+            </thead>
+            <template v-if="categoryList?.length">
+              <tbody>
+                <template v-for="(category, i) in categoryList" :key="i">
+                  <tr>
+                    <template v-for="(item, index) in categoryFilterListToArray" :key="index">
+                      <template v-if="item.input === 'text' || item.input === 'textarea' || item.input === 'number'">
+                        <td>
+                          {{ category[item.name] }}
+                        </td>
+                      </template>
+                      <template v-if="item.input === 'select'">
+                        <td>
+                          {{ item.preset[category[item.name]] }}
+                        </td>
+                      </template>
+                    </template>
+                  </tr>
+                </template>
+              </tbody>
+            </template>
+          </table>
+          <template v-if="!categoryList?.length">
+            <div class="flex justify-center items-center">
+              <common-empty size="100" text="暂无数据" />
+            </div>
+          </template>
+        </div>
+      </div>
     </common-model>
   </div>
 </template>
@@ -410,5 +498,11 @@ function submitGoods(e: any) {
   --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#1a6beb] font-bold';
   background: #fff;
   box-shadow: rgba(82, 130, 241, 0.24) 0px 8px 8px 0;
+}
+
+.categoryList th,
+.categoryList td {
+  text-align: center; /* 水平居中 */
+  vertical-align: middle; /* 垂直居中（可选） */
 }
 </style>
