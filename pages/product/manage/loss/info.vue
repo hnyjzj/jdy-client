@@ -5,9 +5,9 @@ const { lossInfo, lossFilterList, lossFilterListToArray } = storeToRefs(useLoss(
 const productName = ref('')
 // 成品列表详情
 useSeoMeta({
-  title: lossInfo.value.name,
+  title: lossInfo.value?.name || '详情',
 })
-productName.value = lossInfo.value.name
+productName.value = lossInfo.value?.name || ''
 const { $toast } = useNuxtApp()
 
 const route = useRoute()

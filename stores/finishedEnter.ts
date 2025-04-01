@@ -17,10 +17,10 @@ export const useFinishedEnter = defineStore('finishedEnter', {
   }),
   actions: {
     // 获取入库单列表
-    async getFinishedEnterList(pamars: ReqList<FinishedEnter>) {
+    async getFinishedEnterList(params: ReqList<FinishedEnter>) {
       try {
-        pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
-        const { data } = await https.post<ResList<FinishedEnter>, ReqList<FinishedEnter>>('/product/finished/enter/list', pamars)
+        params = { ...params, where: { ...params.where, store_id: useStores().myStore.id } }
+        const { data } = await https.post<ResList<FinishedEnter>, ReqList<FinishedEnter>>('/product/finished/enter/list', params)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.EnterListTotal = data.value.data.total
           this.EnterList = data.value.data.list

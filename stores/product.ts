@@ -18,10 +18,10 @@ export const useProductManage = defineStore('ProductManage', {
   }),
   actions: {
     /** 货品记录 */
-    async getProductHistory(pamars: ReqList<HistoryWhere>) {
+    async getProductHistory(params: ReqList<HistoryWhere>) {
       try {
-        pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
-        const { data } = await https.post<ResList<ProductHistories>, ReqList<HistoryWhere>>('/product/history/list', pamars)
+        params = { ...params, where: { ...params.where } }
+        const { data } = await https.post<ResList<ProductHistories>, ReqList<HistoryWhere>>('/product/history/list', params)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.historyListTotal = data.value.data.total
           this.productRocordList = data.value.data.list

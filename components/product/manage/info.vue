@@ -33,7 +33,7 @@ const props = defineProps<{
                 <template v-else-if="item.input === 'text'">
                   <template v-if="item.label === '门店'">
                     <span>
-                      {{ props.info.store.name ?? '' }}
+                      {{ props.info.store?.name ?? '' }}
                     </span>
                   </template>
                   <template v-else>
