@@ -207,6 +207,3 @@ const canShowFilter = (item: FilterWhere<Check>) => {
   border-radius: 20px !important;
 }
 </style>
-
-<style lang="scss" scoped>
-</style>

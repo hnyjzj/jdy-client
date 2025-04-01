@@ -39,7 +39,7 @@ export const useAccessorieCategory = defineStore('Category', {
       }
     },
     // 新增配件条目
-    async AddAccessorieCategory(params: AccessorieCategory) {
+    async addAccessorieCategory(params: AccessorieCategory) {
       try {
         const { data } = await https.post<any, AccessorieCategory>('/product/accessorie/category/create', params)
         if (data.value?.code === HttpCode.SUCCESS) {

@@ -4,7 +4,7 @@ import type { FormInst, FormRules } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList } = useStores()
-const { getAccessorieCategoryWhere, AddAccessorieCategory } = useAccessorieCategory()
+const { getAccessorieCategoryWhere, addAccessorieCategory } = useAccessorieCategory()
 const { categoryFilterList, categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
 const router = useRouter()
 useSeoMeta({
@@ -72,7 +72,7 @@ async function submit() {
   if (!myStore.value?.id) {
     return $toast.error('请先选择门店')
   }
-  const res = await AddAccessorieCategory(params.value)
+  const res = await addAccessorieCategory(params.value)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     params.value = {} as AccessorieCategory

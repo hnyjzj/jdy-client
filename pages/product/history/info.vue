@@ -66,18 +66,18 @@ function isUpdate(key: ProductKey) {
                       <div class="text-color-light" :style="isUpdate(item.name) ? 'color: #FF4D4F' : ''">
                         <template v-if="item.name === 'store_id'">
                           <div class="info-val">
-                            {{ historyInfo?.new_value.store.name }}
+                            {{ historyInfo?.new_value?.store.name || '' }}
                           </div>
                         </template>
                         <template v-else>
                           <template v-if="item.input === 'text' || item.input === 'number' || item.input === 'textarea'">
                             <div class="info-val">
-                              {{ historyInfo?.new_value[item.name] }}
+                              {{ historyInfo?.new_value[item.name] || '' }}
                             </div>
                           </template>
                           <template v-else-if="item.input === 'select'">
                             <div class="info-val">
-                              {{ item.preset[historyInfo?.new_value[item.name]] }}
+                              {{ item.preset[historyInfo?.new_value[item.name]] || '' }}
                             </div>
                           </template>
                           <template v-else-if="item.input === 'switch'">

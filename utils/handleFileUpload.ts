@@ -39,7 +39,7 @@ export default async function (headers: any) {
     typeof header === 'string' ? header.replace(/\s/g, '') : header,
   )
   const englishHeaders = cleanedHeaders.map((header: any) => {
-    return headerMap[header]
+    return headerMap[header] || header
   })
   return englishHeaders
 }
