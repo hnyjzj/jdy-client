@@ -1,24 +1,86 @@
 <script lang="ts" setup>
 import type { FormInst, FormRules } from 'naive-ui'
 
+const { createAccessorieAllocate, getAccessorieAllocateWhere } = useAccessorieAllocate()
+const { accessorieAllocateFilterList, accessorieAllocateFilterListToArray } = storeToRefs(useAccessorieAllocate())
 const { $toast } = useNuxtApp()
-const { storesList, myStore } = storeToRefs(useStores())
+const { storesList } = storeToRefs(useStores())
+const { myStoreList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
-const { getAccessorieCategoryWhere, addAccessorieCategory } = useAccessorieCategory()
-const { categoryFilterList, categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
+const { getFinishedEnterInfo } = useFinishedEnter()
+const { enterInfo } = storeToRefs(useFinishedEnter())
+
+const params = ref({} as AccessorieAllocateReq)
+const route = useRoute()
 const router = useRouter()
+const type = ref()
+const enterId = ref()
+if (route.query?.type) {
+  type.value = route.query.type
+  params.value.type = Number(type.value)
+}
+
+if (route.query?.enter_id) {
+  enterId.value = route.query.enter_id
+  await getFinishedEnterInfo(enterId.value)
+  params.value.enter_id = route.query.enter_id as string
+  params.value.from_store_id = enterInfo.value?.store_id
+  params.value.method = 1
+  params.value.type = 1
+  params.value.remark = `入库整单调拨[${enterId.value}]`
+}
+else {
+  if (myStoreList.value?.length > 0)
+    params.value.from_store_id = myStoreList.value[0].id
+}
+
 useSeoMeta({
-  title: '新增配件类别',
+  title: '新增调拨单',
 })
 
-const params = ref({} as AccessorieCategory)
-const isDisables = ref()
-await getAccessorieCategoryWhere()
-const formRef = ref<FormInst | null>(null)
+/** 门店选择列表 */
+const storeCol = ref()
+
+function changeStoer() {
+  storeCol.value = []
+  storesList.value.forEach((item: Stores) => {
+    storeCol.value.push({ label: item.name, value: item.id })
+  })
+}
+
+await getAccessorieAllocateWhere()
+await getStoreList({ page: 1, limit: 20 })
+await changeStoer()
+async function submit() {
+  const res = await createAccessorieAllocate(params.value as AccessorieAllocateReq)
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('创建成功')
+    params.value = {} as AccessorieAllocateReq
+    router.back()
+  }
+  else {
+    $toast.error(res?.message ?? '创建失败')
+  }
+}
+
+const presetToSelect = (key: keyof AccessorieAllocateReq): { label: string, value: any }[] => {
+  if (!key)
+    return []
+  if (key === 'enter_id') {
+    return []
+  }
+  const filter = accessorieAllocateFilterList.value[key]
+  if (!filter)
+    return []
+  if (!filter.preset) {
+    return []
+  }
+  return optonsToSelect(filter.preset)
+}
 const rules = ref<FormRules>({})
 
 function forRules() {
-  categoryFilterListToArray.value.forEach((item) => {
+  accessorieAllocateFilterListToArray.value.forEach((item) => {
     if (item.required) {
       if (item.input === 'text') {
         rules.value[item.name] = {
@@ -46,6 +108,8 @@ function forRules() {
     }
   })
 }
+forRules()
+const formRef = ref<FormInst | null>(null)
 
 function handleValidateButtonClick() {
   formRef.value?.validate((error) => {
@@ -57,59 +121,22 @@ function handleValidateButtonClick() {
     }
   })
 }
-/** 门店选择列表 */
-const storeCol = ref()
-function changeStore() {
-  storeCol.value = []
-  storesList.value.forEach((item: Stores) => {
-    storeCol.value.push({ label: item.name, value: item.id })
-  })
-}
-await getStoreList({ page: 1, limit: 20 })
-await changeStore()
-forRules()
-async function submit() {
-  if (!myStore.value?.id) {
-    return $toast.error('请先选择门店')
-  }
-  const res = await addAccessorieCategory({ list: [params.value] })
-  if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('创建成功', 1000)
-    setTimeout(() => {
-      router.back()
-    }, 1000)
-  }
-  else {
-    $toast.error(res?.message ?? '创建失败')
-  }
-}
-const presetToSelect = (key: keyof AccessorieCategory) => {
-  if (!key)
-    return []
-  const filter = categoryFilterList.value[key]
-  if (!filter)
-    return []
-  if (!filter.preset) {
-    return []
-  }
-  return optonsToSelect(filter.preset)
-}
 </script>
 
 <template>
   <div>
     <common-layout-center>
-      <div class="pt-4 pb-22">
+      <div class="pt-4 pb-20">
         <div class="flex flex-col gap-4">
           <div class="w-[40%] text-[#FFF] pl-4">
             <product-manage-company />
           </div>
-          <div class="rounded-6 bg-white w-auto blur-bga">
-            <common-gradient title="新增入库">
+          <div class="rounded-6 bg-white w-auto blur-bga top">
+            <common-gradient title="新增调拨单">
               <template #body>
                 <n-form ref="formRef" :model="params" :rules="rules">
                   <n-grid :cols="24" :x-gap="8">
-                    <template v-for="(item, index) in categoryFilterListToArray" :key="index">
+                    <template v-for="(item, index) in accessorieAllocateFilterListToArray" :key="index">
                       <template v-if="item.input !== 'list'">
                         <template v-if="item.create">
                           <n-form-item-gi :span="12" :path="item.name" :required="item.required" :label="item.label">
@@ -151,7 +178,7 @@ const presetToSelect = (key: keyof AccessorieCategory) => {
     </common-layout-center>
     <div class="fixed bottom-0 left-0 w-full py-4 blur-bgc px-8" uno-sm="px-0">
       <common-layout-center>
-        <common-button-rounded content="新增条目" @button-click="handleValidateButtonClick" />
+        <common-button-rounded content="添加调拨单" @button-click="handleValidateButtonClick" />
       </common-layout-center>
     </div>
   </div>
@@ -161,13 +188,16 @@ const presetToSelect = (key: keyof AccessorieCategory) => {
 .n-base-selection {
   border-radius: 20px;
 }
+
 .n-base-selection-label {
   height: 40px !important;
 }
+
 .n-input-wrapper {
   border-radius: 20px !important;
 }
 </style>
 
 <style lang="scss" scoped>
+
 </style>

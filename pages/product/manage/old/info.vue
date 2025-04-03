@@ -14,14 +14,6 @@ const route = useRoute()
 const router = useRouter()
 const isModel = ref(false)
 const convertModel = ref(false)
-const selectConvertType = ref()
-const converOption = ref([{
-  label: '成品',
-  value: GoodsType.ProductFinish,
-}, {
-  label: '旧料',
-  value: GoodsType.ProductOld,
-}])
 // 报损原因
 const reason = ref('')
 if (route.query.id) {
@@ -49,14 +41,6 @@ async function convert(type: ProductFinisheds['type']) {
     $toast.error(res?.message ?? '转换失败')
   }
 }
-
-function submitConvert() {
-  if (!selectConvertType.value) {
-    $toast.error('请选择转换类型')
-    return
-  }
-  convert(selectConvertType.value)
-}
 </script>
 
 <template>
@@ -69,44 +53,15 @@ function submitConvert() {
             <div uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
               <div class="px-2 py-2 flex gap-2">
                 <!-- 旧料 转成品 -->
-                <template v-if="oldInfo.type === GoodsType.ProductOld">
-                  <div class="flex-1">
-                    <common-button-rounded content="转成品" color="#000" bgc="#FFF" @button-click="convert(GoodsType.ProductFinish)" />
-                  </div>
-                </template>
-                <!-- 成品 -->
-                <template v-if="oldInfo.type === GoodsType.ProductFinish">
-                  <!-- 报损可以转换 成品或者旧料 -->
-                  <template v-if="oldInfo.status === GoodsStatus.ProductStatusDamage">
-                    <div class="flex-1">
-                      <common-button-rounded content="转成品/旧料" color="#000" bgc="#FFF" @button-click="convertModel = true" />
-                    </div>
-                  </template>
-                  <template v-else>
-                    <div class="flex-1">
-                      <common-button-rounded content="报损" color="#000" bgc="#FFF" @button-click="goLoss" />
-                    </div>
-                  </template>
-                  <div class="flex-1">
-                    <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: oldInfo.code })" />
-                  </div>
-                </template>
+                <div class="flex-1">
+                  <common-button-rounded content="转成品" color="#000" bgc="#FFF" @button-click="convert(GoodsType.ProductFinish)" />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </common-layout-center>
-    <common-model v-model="convertModel" title="转成品/旧料" :show-ok="true" @confirm="submitConvert">
-      <div class="min-h-[100px]">
-        <n-select
-          v-model:value="selectConvertType"
-          menu-size="large"
-          placeholder="转换为成品或旧料"
-          :options="converOption"
-        />
-      </div>
-    </common-model>
   </div>
 </template>
 

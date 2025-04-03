@@ -63,8 +63,7 @@ async function transformData(data: any[][]) {
   const originalHeaders: ProductKey[] = data[0]
 
   // 上传后的表头
-  const headers = await handleFileUpload(originalHeaders) as ProductKey[]
-
+  const headers = await handleFileUploadAccessorie(originalHeaders) as ProductKey[]
   return data.slice(1).map((row) => {
     const obj = {} as Record<ProductKey, any>
 
@@ -73,7 +72,7 @@ async function transformData(data: any[][]) {
       const filterItem = props.filterList[header]
       // 判断字段是否存在于 filterList 中，防止访问 undefined
       if (filterItem) {
-        const type = filterItem.type
+        const input = filterItem.input
 
         // 处理下拉选择项
         if (filterItem.input === 'select') {
@@ -87,24 +86,16 @@ async function transformData(data: any[][]) {
 
         // 数据类型转换 + 默认值处理
 
-        switch (type) {
+        switch (input) {
           case 'number':
-            row[index] = Number.isNaN(Number(row[index])) ? 0 : Number(row[index])
+            row[index] = row[index] ?? 0
+            row[index] = Number(row[index])
             break
-          case 'float':
-            row[index] = Number.isNaN(Number.parseFloat(row[index])) ? 0 : Number.parseFloat(row[index])
-            break
-          case 'string':
-            row[index] = row[index] ?? '' // 将 undefined 转为空字符串
+          case 'text':
+            row[index] = row[index] ?? ''
             row[index] = String(row[index])
             break
-          case 'bool':
-            row[index] = typeof row[index] === 'boolean' ? row[index] : Boolean(row[index])
-            break
-          case 'string[]':
-            row[index] = Array.isArray(row[index]) ? row[index] : [String(row[index] ?? '')]
-            break
-          case 'boolean':
+          case 'switch':
             if (row[index] === '是') {
               row[index] = true
             }
@@ -122,6 +113,7 @@ async function transformData(data: any[][]) {
         obj[header] = row[index]
       }
     })
+
     return obj
   })
 }
@@ -157,11 +149,19 @@ defineExpose({
   <div>
     <common-model v-model="isModel" title="批量入库" :show-ok="true" confirm-text="导入货品" @confirm="submitGoods" @cancel="clearData">
       <div class="mb-8 relative min-h-[60px]">
-        <div class="text-[14px] text-color flex pb-4">
-          1、请按照模板整理数据信息
-          <div class="text-[rgba(57,113,243,1)] flex ml-4" @click="downloadLocalFile">
-            <icon name="i-svg:download" :size="16" color="#666" />
-            下载模板
+        <div class="pb-4">
+          <div class="text-[14px] text-color flex">
+            1、请按照模板整理数据信息
+            <div class="text-[rgba(57,113,243,1)] flex ml-4" @click="downloadLocalFile">
+              <icon name="i-svg:download" :size="16" color="#666" />
+              下载模板
+            </div>
+          </div>
+          <div class="text-[rgb(255,0,0)]">
+            2、本功能用于配件补货，请先在配件条目管理新增配件条目；
+          </div>
+          <div class="text-[rgb(255,0,0)]">
+            3、 修改配件入网费，全公司该条目的入网费会重新计算。
           </div>
         </div>
         <input class="h-[40px] absolute bottom-0 w-full opacity-0" type="file" @change="FileUpload">

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { getAccessorieEnterInfo, cancelAccessorieEnter, successAccessorieEnter } = useAccessorieEnter()
+const { getAccessorieEnterInfo, cancelAccessorieEnter, successAccessorieEnter, addAccessorieEnter, delAccessorieEnter } = useAccessorieEnter()
 const { enterInfo } = storeToRefs(useAccessorieEnter())
-const { accessorieFilterListToArray, accessorieFilterList } = storeToRefs(useAccessorie())
+const { accessorieFilterList } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
-const { categoryFilterListToArray, categoryFilterList, categoryList } = storeToRefs(useAccessorieCategory())
-const { getAccessorieCategoryWhere, getAccessorieCategoryList } = useAccessorieCategory()
+const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
+const { getAccessorieCategoryWhere } = useAccessorieCategory()
 
 useSeoMeta({
   title: '入库单详情',
@@ -21,30 +21,13 @@ const enterStatus = {
 const uploadRef = ref()
 const isImportModel = ref(false)
 const isChooseModel = ref(false)
-const isEditModel = ref(false)
 const deleteDialog = ref(false)
 const clearDialog = ref(false)
 const cancelDialog = ref(false)
 const finishDialog = ref(false)
-/** 单条添加 */
-const isAddSingle = ref(false)
-/** 单条添加搜索配件参数 */
-const searchParams = ref({
-  label: 'name',
-  val: '',
-} as
-{
-  label: keyof AccessorieCategory
-  val: any
-},
-)
+
 await getAccessorieCategoryWhere()
 
-const searchWhere = computed(() => {
-  return categoryFilterList.value[searchParams.value.label]
-})
-
-const productParams = ref({} as Partial<ProductAccessories>)
 /** 要删除的产品code */
 const deleteId = ref('')
 const enterId = ref('')
@@ -53,18 +36,19 @@ if (route.query.id) {
   await getInfo()
   await getAccessorieWhere()
 }
+
 async function getInfo() {
   await getAccessorieEnterInfo(enterId.value)
 }
-// type ProductKey = keyof ProductAccessories
-// /** 汇总 */
-// function sum(key: ProductKey) {
-//   return enterInfo.value?.products?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
-// }
+
+/** 汇总 */
+function sum(key: string) {
+  return enterInfo.value?.products?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
+}
 
 function goAdd() {
   isChooseModel.value = false
-  isAddSingle.value = true
+  jump('/product/accessorie/enter/addproduct', { id: enterId.value })
 }
 
 /** 撤销入库 */
@@ -104,40 +88,50 @@ async function finish() {
   $toast.error(res?.message ?? '完成入库失败')
 }
 
-const productEdittIng = ref({} as ProductAccessories)
-
-function edit(product: ProductAccessories) {
-  productEdittIng.value = product
-  accessorieFilterListToArray.value.forEach((item) => {
-    if (item.update) {
-      productParams.value[item.name] = product[item.name]
-      if (item.type === 'float') {
-        productParams.value[item.name] = Number.parseFloat(product[item.name])
-      }
-    }
-  })
-  isEditModel.value = true
-}
-
-/** 值为0时 找不到匹配项 显示未选择不 */
-function filteredOptions(preset: any, val: number) {
-  if (val === 0) {
-    const obj = { label: '未选择', value: 0 }
-    preset.unshift(obj)
+/** 删除入库的条目 */
+async function delProduct() {
+  const params = {
+    enter_id: enterInfo.value.id,
+    product_ids: [deleteId.value],
+  } as DelAccessorieEnter
+  const res = await delAccessorieEnter(params)
+  if (res?.code === HttpCode.SUCCESS) {
+    await getInfo()
   }
-  return preset
 }
 
-/** 搜索要入库的配件 */
-function searchAccessorie() {
-  const obj = {} as Partial<AccessorieCategory>
-  obj[searchParams.value.label] = searchParams.value.val
-  getAccessorieCategoryList({ page: 1, limit: 20, where: { ...obj } })
+/** 清空已经入库的条目 */
+async function clearProduct() {
+  const idAll = enterInfo.value?.products?.map(item => item.id)
+  if (!idAll || !idAll.length) {
+    return
+  }
+  const params = {
+    enter_id: enterInfo.value.id,
+    product_ids: idAll,
+  } as DelAccessorieEnter
+  const res = await delAccessorieEnter(params)
+  if (res?.code === HttpCode.SUCCESS) {
+    await getInfo()
+  }
+}
+
+async function bulkupload(e: any) {
+  const params = {} as AccessorieEnterReq
+  params.enter_id = enterInfo.value.id
+  params.products = e
+  const res = await addAccessorieEnter(params)
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('添加成功')
+    await getInfo()
+  }
+  isChooseModel.value = false
+  isImportModel.value = false
 }
 </script>
 
 <template>
-  <div class="storage pb-20">
+  <div class="pb-20">
     <common-layout-center>
       <div class="pt-4">
         <div class="flex flex-col gap-4">
@@ -183,10 +177,18 @@ function searchAccessorie() {
                     </div>
                     <div class="flex-start gap-3 text-sm font-normal">
                       <div class="info-title">
-                        门店
+                        总件数
                       </div>
                       <div class="info-val">
-                        {{ enterInfo.store?.name || '' }}
+                        {{ enterInfo.products?.length || 0 }}
+                      </div>
+                    </div>
+                    <div class="flex-start gap-3 text-sm font-normal">
+                      <div class="info-title">
+                        总重量
+                      </div>
+                      <div class="info-val">
+                        {{ sum('weight') || 0 }}
                       </div>
                     </div>
                     <div class="other-information flex flex-col gap-1">
@@ -234,55 +236,51 @@ function searchAccessorie() {
                   <sale-order-nesting :title="item.name" :info="enterInfo">
                     <template #left>
                       <template v-if="enterInfo.status === 1">
-                        <!-- <div class="text-[rgba(221,146,0,1)] cursor-pointer" @click="edit(item)">
-                        编辑
-                      </div> -->
                         <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="deleteDialog = true;deleteId = item.id" />
                       </template>
-                      <div class="text-[rgba(221,146,0,1)] cursor-pointer" @click="edit(item)">
-                        <common-tags type="orange" text="编辑" :is-oval="true" />
-                      </div>
                     </template>
                     <template #info>
-                      <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
-                        <template v-for="(filter, findex) in accessorieFilterListToArray" :key="findex">
+                      <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 gap-4">
+                        <template v-for="(filter, findex) in categoryFilterListToArray" :key="findex">
                           <template v-if="filter.find">
-                            <template v-if="filter.input === 'list'">
-                              <template v-for="(certificate, i) in item[filter.name]" :key="i">
-                                <div class="flex">
-                                  <div class="key">
-                                    证书{{ i + 1 }}
-                                  </div>
-                                  <div class="value">
-                                    {{ certificate }}
-                                  </div>
+                            <div class="flex">
+                              <div class="key">
+                                {{ filter.label }}
+                              </div>
+                              <template v-if="filter.input === 'select'">
+                                <div class="value">
+                                  {{ filter.preset[item.category[filter.name]] }}
                                 </div>
                               </template>
-                            </template>
-                            <template v-else>
-                              <div class="flex">
-                                <div class="key">
-                                  {{ filter.label }}
+                              <template v-else-if="filter.input === 'switch'">
+                                <div class="value">
+                                  {{ item.category[filter.name] ? '是' : '否' }}
                                 </div>
-                                <template v-if="filter.input === 'select'">
-                                  <div class="value">
-                                    {{ filter.preset[item[filter.name]] }}
-                                  </div>
-                                </template>
-                                <template v-else-if="filter.input === 'switch'">
-                                  <div class="value">
-                                    {{ item[filter.name] ? '是' : '否' }}
-                                  </div>
-                                </template>
-                                <template v-else>
-                                  <div class="value">
-                                    {{ item[filter.name] ? item[filter.name] : '' }}
-                                  </div>
-                                </template>
-                              </div>
-                            </template>
+                              </template>
+                              <template v-else>
+                                <div class="value">
+                                  {{ item.category[filter.name] }}
+                                </div>
+                              </template>
+                            </div>
                           </template>
                         </template>
+                        <div class="flex">
+                          <div class="key">
+                            入库数量
+                          </div>
+                          <div class="value">
+                            {{ item.stock }}
+                          </div>
+                        </div>
+                        <div class="flex">
+                          <div class="key">
+                            入库入网费
+                          </div>
+                          <div class="value">
+                            {{ item.access_fee }}
+                          </div>
+                        </div>
                       </div>
                     </template>
                   </sale-order-nesting>
@@ -294,7 +292,7 @@ function searchAccessorie() {
       </div>
     </common-layout-center>
     <product-upload-choose v-model:is-model="isChooseModel" @go-add="goAdd" @batch="isImportModel = true" />
-    <accessorie-warehouse ref="uploadRef" v-model="isImportModel" :filter-list="accessorieFilterList" :type="1" />
+    <accessorie-warehouse-accessorie ref="uploadRef" v-model="isImportModel" :filter-list="accessorieFilterList" :type="1" @upload="bulkupload" />
     <!-- 状态为草稿时 功能操作 -->
     <template v-if="enterInfo.status === 1">
       <common-create @create="isChooseModel = true" />
@@ -316,152 +314,10 @@ function searchAccessorie() {
         </template>
       </common-button-bottom>
     </template>
-    <template v-if="enterInfo.status === 2">
-      <common-button-one text="整单调拨" @confirm="jump('/product/allocate/add', { enter_id: enterInfo.id })" />
-    </template>
-    <!-- <common-confirm v-model:show="deleteDialog" icon="error" title="删除产品" text="确认要删除此产品吗?" @submit="delProduct" />
-    <common-confirm v-model:show="clearDialog" icon="error" title="清空列表" text="确认要清空所有入库的产品吗?" @submit="clearProduct" /> -->
+    <common-confirm v-model:show="deleteDialog" icon="error" title="删除产品" text="确认要删除此产品吗?" @submit="delProduct" />
+    <common-confirm v-model:show="clearDialog" icon="error" title="清空列表" text="确认要清空所有入库的产品吗?" @submit="clearProduct" />
     <common-confirm v-model:show="cancelDialog" icon="error" title="撤销" text="确认要撤销入库单吗? 撤销后将不可进行其他操作" @submit="cancel" />
     <common-confirm v-model:show="finishDialog" icon="success" title="完成入库" text="确认要完成此入库单吗?" @submit="finish" />
-    <common-model v-model="isEditModel" title="编辑" :show-ok="true">
-      <div class="max-h-[400px] overflow-auto">
-        <template v-for="(item, index) in accessorieFilterListToArray" :key="index">
-          <template v-if="item.update">
-            <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-              <div class="mb-4">
-                <div class="text-color pb-1">
-                  {{ item.label }}
-                </div>
-                <template v-if="item.input === 'text'">
-                  <n-input
-                    v-model:value="productParams[item.name]"
-                    :placeholder="`输入${item.label}`"
-                  />
-                </template>
-                <template v-else-if="item.input === 'number'">
-                  <n-input-number
-                    v-model:value="productParams[item.name]"
-                    :placeholder="String(productParams[item.name])"
-                    :default-value="0"
-                    min="0"
-                  />
-                </template>
-                <template v-else-if="item?.input === 'select'">
-                  <n-select
-                    v-model:value="productParams[item.name]"
-                    :default-value="null"
-                    menu-size="large"
-                    :placeholder="`请选择${item.label}`"
-                    :options="filteredOptions(optonsToSelect(item.preset), productParams[item.name])"
-                    filterable
-                  />
-                </template>
-                <template v-else-if="item?.input === 'switch'">
-                  <n-switch v-model:value="productParams[item.name]" />
-                </template>
-                <template v-else-if="item?.input === 'textarea'">
-                  <n-input
-                    v-model:value="productParams[item.name]"
-                    :placeholder="String(productParams[item.name])"
-                  />
-                </template>
-                <template v-else-if="item?.input === 'list'">
-                  <template v-for="(certific, i) in productParams[item.name]" :key="i">
-                    <div class="grid grid-cols-[50px_auto_80px] gap-2 items-center">
-                      <div class="w-[60px] text-[14px] text-color-light">
-                        编号{{ i + 1 }}：
-                      </div>
-                      <n-input
-                        v-model:value="productParams[item.name][i]"
-                        :placeholder="certific"
-                      />
-                      <div class="flex gap-1 items-center">
-                        <div class="w-[32px] h-[32px] rounded-full bg-[#FFF] flex justify-center items-center" @click="productParams[item.name].splice(i, 1)">
-                          <icon name="i-svg:subtract" size="16" />
-                        </div>
-                        <template v-if="i === productParams[item.name].length - 1">
-                          <div class="w-[32px] h-[32px] rounded-full bg-[#FFF] flex justify-center items-center" @click="productParams[item.name].push('')">
-                            <icon name="i-svg:add" size="16" />
-                          </div>
-                        </template>
-                      </div>
-                    </div>
-                  </template>
-                </template>
-              </div>
-            </div>
-          </template>
-        </template>
-      </div>
-    </common-model>
-    <common-model v-model="isAddSingle" title="选择配件" :show-ok="true" @confirm="searchAccessorie">
-      <div>
-        <div class="grid grid-cols-[30%_60%_10%] items-center gap-2">
-          <div class="">
-            <n-select
-              v-model:value="searchParams.label" :options="categoryFilterListToArray.map(v => ({
-                label: v.label,
-                value: v.name,
-              }))"
-              @change="searchParams.val = ''" />
-          </div>
-          <div>
-            <template v-if="searchWhere?.input === 'text' || searchWhere?.input === 'textarea'">
-              <n-input v-model:value="searchParams.val" placeholder="请搜索" />
-            </template>
-            <template v-if="searchWhere?.input === 'number'">
-              <n-input-number v-model:value="searchParams.val" placeholder="请搜索" />
-            </template>
-            <template v-else-if="searchWhere?.input === 'select'">
-              <n-select v-model:value="searchParams.val" :options="optonsToSelect(searchWhere.preset)" />
-            </template>
-          </div>
-          <div @click="searchAccessorie">
-            搜索
-          </div>
-        </div>
-        <div class="m-4 categoryList">
-          <table>
-            <thead>
-              <tr>
-                <template v-for="(item, index) in categoryFilterListToArray" :key="index">
-                  <template v-if="item.find">
-                    <th class="text-nowrap">
-                      {{ item.label }}
-                    </th>
-                  </template>
-                </template>
-              </tr>
-            </thead>
-            <template v-if="categoryList?.length">
-              <tbody>
-                <template v-for="(category, i) in categoryList" :key="i">
-                  <tr>
-                    <template v-for="(item, index) in categoryFilterListToArray" :key="index">
-                      <template v-if="item.input === 'text' || item.input === 'textarea' || item.input === 'number'">
-                        <td>
-                          {{ category[item.name] }}
-                        </td>
-                      </template>
-                      <template v-if="item.input === 'select'">
-                        <td>
-                          {{ item.preset[category[item.name]] }}
-                        </td>
-                      </template>
-                    </template>
-                  </tr>
-                </template>
-              </tbody>
-            </template>
-          </table>
-          <template v-if="!categoryList?.length">
-            <div class="flex justify-center items-center">
-              <common-empty size="100" text="暂无数据" />
-            </div>
-          </template>
-        </div>
-      </div>
-    </common-model>
   </div>
 </template>
 
@@ -490,11 +346,5 @@ function searchAccessorie() {
   --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#1a6beb] font-bold';
   background: #fff;
   box-shadow: rgba(82, 130, 241, 0.24) 0px 8px 8px 0;
-}
-
-.categoryList th,
-.categoryList td {
-  text-align: center; /* 水平居中 */
-  vertical-align: middle; /* 垂直居中（可选） */
 }
 </style>

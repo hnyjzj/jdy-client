@@ -2,7 +2,7 @@ interface ProductAccessories {
   /**
    * 配件条目
    */
-  category?: null | ProductAccessorieCategories
+  category: AccessorieCategory
   /**
    * 配件条目ID
    */
@@ -55,4 +55,8 @@ interface ProductAccessories {
    * 更新时间
    */
   updated_at?: Date | null
+  /**
+   * 入库入网费
+   */
+  assess_fee: number
 }
