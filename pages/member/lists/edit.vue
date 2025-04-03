@@ -73,18 +73,18 @@ await getStoreStaffList({ id: myStore.value.id })
 // 渲染日期信息
 const conductEditDate = () => {
   if (routeQuery.value.id || routeQuery.value.external_user_id) {
-    const birthdayDate = new Date(memberParams.value.birthday)
-    const birthdayFormattedDate = birthdayDate.getTime()
+    const birthdayDate = memberParams.value.birthday ? new Date(memberParams.value.birthday) : null
+    const birthdayFormattedDate = birthdayDate?.getTime()
 
-    const anniversaryDate = new Date(memberParams.value.anniversary)
-    const anniversaryFormattedDate = anniversaryDate.getTime()
+    const anniversaryDate = memberParams.value.anniversary ? new Date(memberParams.value.anniversary) : null
+    const anniversaryFormattedDate = anniversaryDate?.getTime()
 
     birthday.value = birthdayFormattedDate
     anniversary.value = anniversaryFormattedDate
   }
 }
 
-// 编辑用户信息的情况下，转换已有的生日和纪念日信息格式
+// 转换已有的生日和纪念日信息格式
 onMounted(() => {
   conductEditDate()
 })
@@ -130,6 +130,9 @@ const execute = async () => {
     if (res?.code === HttpCode.SUCCESS) {
       $toast.success('编辑成功')
       backtrack()
+    }
+    else {
+      $toast.warning('编辑失败，请检查输入')
     }
   }
   catch (error) {
