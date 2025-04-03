@@ -299,11 +299,13 @@ const showText = () => {
       </div>
     </template>
   </div>
-  <common-button-One
-    text="编辑"
-    @confirm="() => emit('goEdit', props.data.id)"
-    @cancel="backtrack"
-  />
+  <template v-if="props.data.id || props.data.external_user_id">
+    <common-button-One
+      text="编辑"
+      @confirm="() => emit('goEdit', props.data.id)"
+      @cancel="backtrack"
+    />
+  </template>
 </template>
 
 <style scoped lang="scss">
