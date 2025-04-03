@@ -1,16 +1,21 @@
 <script lang="ts" setup>
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   label: string
   value?: string | number
-}>()
+  valColor?: string
+  labelColor?: string
+}>(), {
+  valColor: 'black',
+  labelColor: 'black',
+})
 </script>
 
 <template>
   <div class="part">
-    <div class="part-left break-words">
+    <div class="part-left break-words" :style="{ color: props.labelColor }">
       {{ props.label }}
     </div>
-    <div class="part-right break-words">
+    <div class="part-right break-words" :style="{ color: props.valColor }">
       {{ props.value }}
     </div>
   </div>

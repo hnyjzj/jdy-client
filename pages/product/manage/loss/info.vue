@@ -71,13 +71,11 @@ function submitConvert() {
             <div uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
               <div class="px-2 py-2 flex gap-2">
                 <!-- 成品 -->
-                <template v-if="lossInfo.type === GoodsType.ProductFinish">
-                  <!-- 报损可以转换 成品或者旧料 -->
-                  <template v-if="lossInfo.status === GoodsStatus.ProductStatusDamage">
-                    <div class="flex-1">
-                      <common-button-rounded content="转成品/旧料" color="#000" bgc="#FFF" @button-click="convertModel = true" />
-                    </div>
-                  </template>
+                <!-- 报损可以转换 成品或者旧料 -->
+                <template v-if="lossInfo.status === GoodsStatus.ProductStatusDamage">
+                  <div class="flex-1">
+                    <common-button-rounded content="转成品/旧料" color="#000" bgc="#FFF" @button-click="convertModel = true" />
+                  </div>
                 </template>
               </div>
             </div>

@@ -2,23 +2,13 @@
 import { calc } from 'a-calc'
 
 const Props = defineProps<{
-  price: string
+  price: GoldPrices[]
   productList: ProductFinisheds[]
 }>()
 const emits = defineEmits<{
   search: [val: string, type: string]
   openProductList: []
 }>()
-const cardTitle = () => {
-  switch (Props.type) {
-    case 1:
-      return '成品信息'
-    case 2:
-      return '旧料信息'
-    case 3:
-      return '配件信息'
-  }
-}
 
 const { $toast } = useNuxtApp()
 const dialog = useDialog()
@@ -37,50 +27,56 @@ const addProduct = (product: ProductFinisheds) => {
     return
   }
 
-  const index = showProductList.value?.findIndex(item => item?.product_id === product.id)
   if (index === -1) {
-    const data = { price: 0, quantity: 1, discount: undefined, amount: 0, product_id: product.id, labor_fee: Number(product.labor_fee), product }
-    // 判断是否为  成品
-    const filtered = Props.price.filter(item => item.product_type === 1)
-    const exists = filtered.some(item =>
-      item.product_type === 1
-      && item.product_material === product.material
-      && item.product_quality.includes(product.quality)
-      && item.product_brand?.includes(product.brand),
-    )
-    if (exists) {
-      console.log('c')
+    const data = {
+      price: 0, // 价格
+      quantity: 1, // 数量
+      discount: undefined, // 折扣
+      amount: 0, // 应付金额
+      product_id: product.id, // 商品id
+      labor_fee: Number(product.labor_fee), // 工费
+      notCount: 0, // 抹零
+      show_discount: 0, // 显示折扣
+      orign: 0, // 原始价格
+      product,
     }
-    else {
-      data.price = 0
-    }
-    // data.labor_fee = product.labor_fee
+
     showProductList.value.push(data)
   }
   else {
     $toast.error('该商品已经添加过')
     return
   }
-
   showModal.value = false
 }
 const readyAddproduct = ref()
-const setAddProduct = (product: Product) => {
+const setAddProduct = (product: ProductFinisheds) => {
   readyAddproduct.value = product
 }
 // 计件方式
 const count = (p: OrderProducts) => {
   if (!p.quantity)
     return
-
   // 如果是计件方式 标签价格x 数量 x 折扣
   if (p.product?.retail_type === 1) {
-    const total = calc('(price * quantity * discount) | <=2,!n', {
+    const total = calc('(price * quantity * discount) - notCount | <=2,!n', {
       price: p.product?.label_price,
       quantity: p.quantity,
-      discount: ((p.discount || 10) * 0.1),
+      discount: ((p.discount || 100) * 0.01),
+      notCount: p.notCount,
     })
     p.amount = total
+    const orign = calc('(price * quantity * discount) | <=2,!n', {
+      price: p.product?.label_price,
+      quantity: p.quantity,
+      discount: 1,
+    })
+    p.orign = orign
+    p.show_discount = calc('(total / orign) * 100 | <=2,!n', {
+      total,
+      orign,
+    })
+
     return total
   }
 
@@ -90,7 +86,7 @@ const count = (p: OrderProducts) => {
       price: p.price,
       labor_fee: p?.labor_fee,
       weight_metal: p.product?.weight_metal,
-      discount: ((p.discount || 10) * 0.1),
+      discount: ((p.discount || 100) * 0.01),
     })
     p.amount = total
     return total
@@ -101,7 +97,7 @@ const count = (p: OrderProducts) => {
       price: p.price,
       labor_fee: p?.labor_fee,
       weight_metal: p.product?.weight_metal,
-      discount: ((p.discount || 10) * 0.1),
+      discount: ((p.discount || 100) * 0.01),
     })
     p.amount = total
     return total
@@ -146,10 +142,66 @@ const scanCode = async () => {
     searchProduct.value = code
   }
 }
+
+// 设置整单折扣率
+const discount_rate = ref(undefined)
+// 抹零金额
+const amount_reduce = ref(undefined)
+
+// 设置折扣率
+const handleDiscountRateBlur = () => {
+  if (!discount_rate.value) {
+    showProductList.value.forEach((item) => {
+      item.discount = 100
+    })
+    return
+  }
+
+  showProductList.value.forEach((item) => {
+    item.discount = discount_rate.value
+  })
+}
+
+const allAmount = () => {
+  let total = 0
+  showProductList.value.forEach((item: OrderProducts) => {
+    total += item?.orign || 0
+  })
+  return total
+}
+
+const handleAmountReduceBlur = () => {
+  let result = 0
+  if ((amount_reduce?.value && amount_reduce?.value < 0) || !amount_reduce.value) {
+    amount_reduce.value = undefined
+    showProductList.value.forEach((item) => {
+      item.notCount = 0
+    })
+
+    return
+  }
+  showProductList.value.forEach((item, index) => {
+    item.notCount = calc('(amount / allAmount * amountReduce) | 1 ~5, !n , <=0', {
+      amount: item.orign,
+      allAmount: allAmount(),
+      amountReduce: amount_reduce.value,
+    })
+
+    if (index !== showProductList.value.length - 1) {
+      result += item.notCount
+    }
+    else {
+      item.notCount = calc('(a - b) | !n', {
+        a: amount_reduce.value,
+        b: result,
+      })
+    }
+  })
+}
 </script>
 
 <template>
-  <common-fold :title="cardTitle()" :is-collapse="false">
+  <common-fold title="成品信息" :is-collapse="false">
     <div class="p-[16px]">
       <div class="btn grid-12 gap-[20px]">
         <div
@@ -174,14 +226,49 @@ const scanCode = async () => {
         </div>
       </div>
     </div>
-    <template v-if="false">
-      <div class="flex justify-center">
-        <div class="w-[30%]">
-          <common-empty :show-r-t="false" />
+
+    <template v-if="showProductList.length > 0">
+      <div class="px-[16px]">
+        <div class="flex justify-between">
+          <n-grid :cols="24" :x-gap="8">
+            <n-form-item-gi
+              :span="12"
+              label="整单折扣" label-placement="top"
+            >
+              <n-input-number
+                v-model:value="discount_rate"
+                placeholder="请输入折扣"
+                round
+                :precision="2"
+                min="1"
+                max="100"
+                :show-button="false"
+                @update:value="handleDiscountRateBlur"
+              >
+                <template #suffix>
+                  %
+                </template>
+              </n-input-number>
+            </n-form-item-gi>
+
+            <n-form-item-gi
+              :span="12"
+              label="抹零金额" label-placement="top"
+            >
+              <n-input-number
+                v-model:value="amount_reduce"
+                placeholder="0"
+                round
+                min="0"
+                :precision="2"
+                :show-button="false"
+                @update:value="handleAmountReduceBlur"
+
+              />
+            </n-form-item-gi>
+          </n-grid>
         </div>
       </div>
-    </template>
-    <template v-else>
       <div class="px-[16px] py-[8px]">
         <template v-for="(obj, ix) in showProductList" :key="ix">
           <div class="pb-[12px]">
@@ -195,6 +282,9 @@ const scanCode = async () => {
                   <common-cell label="条码" :value="obj.product?.code" />
                   <common-cell label="金重" :value="obj.product?.weight_metal" />
                   <common-cell label="零售方式" :value="realtype(obj.product?.retail_type)" />
+                  <common-cell label="标签价" :value="obj.product?.label_price" val-color="#2472EE" />
+                  <common-cell label="折扣" :value="`${obj.show_discount}%`" val-color="#2472EE" />
+
                   <div class="h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
 
                   <div class="pb-[16px]">
@@ -218,14 +308,31 @@ const scanCode = async () => {
                           :show-button="false"
                           placeholder="请输入折扣"
                           round
-                          min="1"
-                          max="10"
+                          min="0"
+                          max="100"
+                          :default-value="100"
                           :precision="2"
                         >
                           <template #suffix>
-                            折
+                            %
                           </template>
                         </n-input-number>
+                      </n-form-item-gi>
+                      <n-form-item-gi :span="12" label="抹零">
+                        <n-input-number
+                          v-model:value="obj.notCount"
+                          :show-button="false"
+                          placeholder="抹零金额"
+                          :default-value="0"
+                          min="0"
+                          round
+                          :precision="2"
+                          @blur="() => {
+                            if (!obj.notCount || obj.notCount < 0){
+                              obj.notCount = 0
+                            }
+                          }"
+                        />
                       </n-form-item-gi>
                       <template v-if="obj.product?.retail_type !== 1">
                         <n-form-item-gi :span="12" label="工费">
@@ -264,6 +371,7 @@ const scanCode = async () => {
         </template>
       </div>
     </template>
+
     <common-model v-model="showModal" title="选择成品" :show-ok="true" :show-cancel="true" @confirm="addProduct(readyAddproduct)" @cancel="showModal = false">
       <div class="grid-12">
         <div class="col-12">

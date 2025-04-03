@@ -95,22 +95,21 @@ function submitConvert() {
                   </div>
                 </template>
                 <!-- 成品 -->
-                <template v-if="finishedInfo.type === GoodsType.ProductFinish">
-                  <!-- 报损可以转换 成品或者旧料 -->
-                  <template v-if="finishedInfo.status === GoodsStatus.ProductStatusDamage">
-                    <div class="flex-1">
-                      <common-button-rounded content="转成品/旧料" color="#000" bgc="#FFF" @button-click="convertModel = true" />
-                    </div>
-                  </template>
-                  <template v-else>
-                    <div class="flex-1">
-                      <common-button-rounded content="报损" color="#000" bgc="#FFF" @button-click="goLoss" />
-                    </div>
-                  </template>
+
+                <!-- 报损可以转换 成品或者旧料 -->
+                <template v-if="finishedInfo.status === GoodsStatus.ProductStatusDamage">
                   <div class="flex-1">
-                    <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: finishedInfo.code })" />
+                    <common-button-rounded content="转成品/旧料" color="#000" bgc="#FFF" @button-click="convertModel = true" />
                   </div>
                 </template>
+                <template v-else>
+                  <div class="flex-1">
+                    <common-button-rounded content="报损" color="#000" bgc="#FFF" @button-click="goLoss" />
+                  </div>
+                </template>
+                <div class="flex-1">
+                  <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: finishedInfo.code })" />
+                </div>
               </div>
             </div>
           </div>

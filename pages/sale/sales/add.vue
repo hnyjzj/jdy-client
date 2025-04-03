@@ -9,12 +9,16 @@ const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getFinishedList } = useFinished()
 const { getStoreStaffList } = useStores()
-const { getSaleWhere, submitOrder, getOrderDetail, OldMaterialsWhere } = useOrder()
+const { getSaleWhere, submitOrder, getOrderDetail } = useOrder()
 const { getGoldPrice } = useGoldPrice()
 const { goldList } = storeToRefs(useGoldPrice())
 const { filterList } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
+const { getOldWhere } = useOld()
+const { searchOld } = storeToRefs(useOld())
 const { memberList } = storeToRefs(useMemberManage())
+const { getAccessorieCategoryList, getAccessorieCategoryWhere } = useAccessorieCategory()
+const { categoryList, categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
 const { finishedList } = storeToRefs(useFinished())
 const formRef = ref<FormInst | null>(null)
 const formData = ref<Orders>({
@@ -37,10 +41,11 @@ const formData = ref<Orders>({
 })
 // 展示商品列表
 const showProductList = ref<OrderProducts[]>([])
-const showPartsList = ref<OrderProducts[]>([])
-const showMasterialsList = ref<Product[]>([])
+const showPartsList = ref<AccessorieCategory[]>([])
+const showMasterialsList = ref<ProductOlds[]>([])
 await getSaleWhere()
-await OldMaterialsWhere()
+await getOldWhere()
+await getAccessorieCategoryWhere()
 await getGoldPrice(myStore.value.id)
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { phone: val } })
 const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
@@ -81,18 +86,34 @@ const searchProductList = async (val: string, type: string) => {
     return
   }
 
-  //   const where = ref<ReqList<Product>['where']>({ status: 1 })
   if (type === 'name') {
-    const res = await getFinishedList({ page: 1, limit: 10, where: { name: val, status: 1 } })
+    const res = await getFinishedList({ page: 1, limit: 10, where: { name: val } })
     if (res?.data.total === 0) {
       $toast.error('商品不存在')
     }
   }
   else {
-    const res = await getFinishedList({ page: 1, limit: 10, where: { code: val, status: 1 } })
+    const res = await getFinishedList({ page: 1, limit: 10, where: { code: val } })
     if (res?.data.total === 0) {
       $toast.error('商品不存在')
     }
+  }
+}
+
+const searchOlds = async (val: string) => {
+  const res = await getFinishedList({ page: 1, limit: 10, where: { code: val, status: 5 } })
+  console.log(res)
+}
+
+const searchParts = async (val: string, type: string) => {
+  if (type === 'number') {
+    await getAccessorieCategoryList({ page: 1, limit: 10, where: { id: val, store_id: myStore.value.id } })
+  }
+  if (type === 'code') {
+    await getAccessorieCategoryList({ page: 1, limit: 10, where: { code: val, store_id: myStore.value.id } })
+  }
+  if (type === 'name') {
+    await getAccessorieCategoryList({ page: 1, limit: 10, where: { name: val, store_id: myStore.value.id } })
   }
 }
 
@@ -171,12 +192,27 @@ const openProductListFn = () => {
           <sale-add-product
             v-model="showProductList"
             :product-list="finishedList"
-            :price="todayPrice"
+            :price="goldList"
             @search="searchProductList"
             @open-product-list="openProductListFn"
           />
         </div>
+        <div class="pb-[16px]">
+          <sale-add-masterials
+            v-model:list="showMasterialsList"
+            v-model:now-old-master="searchOld"
+            @search="searchOlds"
+          />
+        </div>
+        <div class="pb-[16px]">
+          <sale-add-parts
+            v-model:list="showPartsList"
+            :where="categoryFilterListToArray"
+            :part-list="categoryList"
+            @search="searchParts"
 
+          />
+        </div>
         <sale-add-settlement v-model:form="formData" v-model:show-list="showProductList" />
         <div class="h-[80px] bg-[#fff] fixed z-1">
           <div class="btn grid-12 px-[16px]">

@@ -138,6 +138,7 @@ interface OrderSalesmen {
   updated_at?: Date
 }
 interface OrderProducts {
+
   /**
    * 工费
    */
@@ -145,7 +146,7 @@ interface OrderProducts {
   /**
    * 应付金额
    */
-  amount?: number
+  amount: number
   /**
    * 原价
    */
@@ -185,7 +186,7 @@ interface OrderProducts {
   /**
    * 产品信息
    */
-  product?: Product
+  product?: ProductFinisheds
   /**
    * 数量，默认 为1
    */
@@ -194,6 +195,18 @@ interface OrderProducts {
    * 更新时间
    */
   updated_at?: Date
+  /**
+   * 抹零金额
+   */
+  notCount: number
+  /**
+   * 显示折扣
+   */
+  show_discount?: number
+  /**
+   * 原始价格 用于计算折扣
+   */
+  orign: number
 }
 
 interface OrderWhere {

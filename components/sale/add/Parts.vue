@@ -1,174 +1,72 @@
 <script setup lang="ts">
-// import { calc } from 'a-calc'
-
 const Props = defineProps<{
-  price: GoldPrices[]
-  productList: Product[]
-  type: number
+  partList: AccessorieCategory[]
+  where: FilterWhere<AccessorieCategory>[]
 }>()
 const emits = defineEmits<{
-  search: [val: string, type: string, select: number]
+  search: [val: string, type: string]
   openProductList: []
 }>()
-const cardTitle = () => {
-  switch (Props.type) {
-    case 1:
-      return '成品信息'
-    case 2:
-      return '旧料信息'
-    case 3:
-      return '配件信息'
-  }
+// 搜索商品 名称name 和 条码code   编号number
+const searchType = ref('number')
+const showPartsList = defineModel<AccessorieCategory[]>('list', { default: [] })
+const showModal = ref(false)
+const searchParts = ref('')
+const hasCheck = ref(false)
+const changeType = (type: 'name' | 'code' | 'number') => {
+  searchType.value = type
+  searchParts.value = ''
+//   emits('openProductList')
 }
 
-const { $toast } = useNuxtApp()
-const dialog = useDialog()
-const showProductList = defineModel<OrderProducts[]>({ default: [] })
-const showModal = ref(false)
-const searchProduct = ref('')
-const hasCheck = ref(false)
-// 搜索商品 名称 和 条码   code
-const searchType = ref('name')
-// 添加商品
-const addProduct = (product: Product) => {
-  if (!product) {
-    $toast.error('请选择商品')
-    return
+const placeholderText = computed(() => {
+  switch (searchType.value) {
+    case 'number':
+      return '请输入配件编号'
+    case 'code':
+      return '请输入配件条码'
+    default:
+      return '请输入配件名称'
   }
+})
 
-  const index = showProductList.value.findIndex(item => item.product?.id === product.id)
-  if (index !== -1 && showProductList.value[index].quantity) {
-    // 判断是否已经添加过该商品,如果已经添加过,则数量加一
-    // showProductList.value[index].quantity++
-    $toast.error('该商品已经添加过')
-    return
+// 预设选中状态的配置列表
+const prePartsList = ref<AccessorieCategory[]>([])
+// 设置选中状态
+const selectPart = (part: AccessorieCategory) => {
+  // 如果已经选中，则取消选中
+  if (prePartsList.value.includes(part)) {
+    prePartsList.value = prePartsList.value.filter(item => item !== part)
   }
-  else if (
-  // 如果没添加 并且数量为空,则数量为1
-    index !== -1 && !showProductList.value[index].quantity
-  ) {
-    showProductList.value[index].quantity = 1
-    return
+  else {
+    prePartsList.value.push(part)
   }
-  const data = { quantity: 1, discount: undefined, amount: 0, product_id: product.id, product }
-  showProductList.value.push(data)
+}
+const confirmParts = () => {
+  // 判断 showPartsList 是否存在 prePartsList 中的元素 ，如果存在则不添加
+  prePartsList.value.forEach((item) => {
+    if (!showPartsList.value.includes(item)) {
+      showPartsList.value.push(item)
+    }
+  })
+  prePartsList.value = []
   showModal.value = false
 }
-const readyAddproduct = ref()
-const setAddProduct = (product: Product) => {
-  readyAddproduct.value = product
-}
-// 计件方式
-const count = (p: OrderProducts) => {
-  if (!p.quantity)
-    return
-    // 判断是否为  成品
-  console.log(p.product)
-  console.log(Props.price)
-
-  if (p.product?.type === 1) {
-    Props.price.forEach((item) => {
-      if (item.product_type === 1) {
-        const index = item.product_quality.findIndex(quality => quality === p.product?.quality)
-        if (index !== -1) {
-          if (item.product_material === p.product?.material) {
-            const brand = item.product_brand?.findIndex(brand => brand === p.product?.brand)
-            if (brand !== -1) {
-              console.log('存在')
-            }
-          }
-        }
-      }
-    })
-  }
-
-//   // 如果是计件方式 标签价格x 数量 x 折扣
-//   if (p.product?.retail_type === 1) {
-//     const total = calc('(price * quantity * discount) | <=2,!n', {
-//       price: p.product?.price,
-//       quantity: p.quantity,
-//       discount: ((p.discount || 10) * 0.1),
-//     })
-//     p.amount = total
-//     return total
-//   }
-//   // 计重工费按克 [（金价 + 工费）X克重] X件数 X折扣
-//   if (p.product?.retail_type === 2) {
-//     const total = calc('(price + labor_fee) * weight_metal * quantity * discount | <=2,!n', {
-//       price: Props.price,
-//       labor_fee: p.product?.labor_fee,
-//       weight_metal: p.product?.weight_metal,
-//       quantity: p.quantity,
-//       discount: ((p.discount || 10) * 0.1),
-//     })
-//     p.amount = total
-//     return total
-//   }
-//   //   计重工费按件   （(金价X克重)) + 工费）X件数 X折扣
-//   if (p.product?.retail_type === 3) {
-//     const total = calc('((price * weight_metal) + labor_fee) * quantity * discount | <=2,!n', {
-//       price: Props.price,
-//       labor_fee: p.product?.labor_fee,
-//       weight_metal: p.product?.weight_metal,
-//       quantity: p.quantity,
-//       discount: ((p.discount || 10) * 0.1),
-//     })
-//     p.amount = total
-//     return total
-//   }
-}
-
-// 删除商品
-const deleteProduct = (index: number) => {
-  dialog.error({
-    title: '确定删除此商品吗?',
-    negativeText: '取消',
-    positiveText: '确定',
-    onPositiveClick: () => {
-      showProductList.value.splice(index, 1)
-    },
-  })
-}
-const changeType = (type: 'name' | 'code') => {
-  searchType.value = type
-  searchProduct.value = ''
-  emits('openProductList')
-}
-const { useWxWork } = useWxworkStore()
-// 扫码
-const scanCode = async () => {
-  const wx = await useWxWork()
-  const code = await wx?.scanQRCode()
-  if (code) {
-    showModal.value = true
-    changeType('code')
-    searchProduct.value = code
-  }
+// 删除展示的配件
+const deleteParts = (id: string) => {
+  showPartsList.value.splice(showPartsList.value.findIndex(item => item.id === id), 1)
 }
 </script>
 
 <template>
-  <common-fold :title="cardTitle()" :is-collapse="false">
+  <common-fold title="配件" :is-collapse="false">
     <div class="p-[16px]">
-      <div class="btn grid-12 gap-[20px]">
+      <div class="btn grid-12">
         <div
-          class="btn-left col-span-4 offset-2 cursor-pointer" @click="() => {
-            emits('openProductList')
-            showModal = true
-            searchProduct = ''
-            readyAddproduct = null
-          }">
-          <icon name="i-icon:search" color="#fff" :size="12" />
+          class="btn-left col-span-4 offset-4 cursor-pointer py-[10px]" @click="showModal = true">
+          <icon name="i-icon:search" color="#FFF" :size="12" />
           <div class="ml-2">
             搜索
-          </div>
-        </div>
-        <div
-          class="btn-right col-span-4 cursor-pointer" @click="scanCode()"
-        >
-          <icon name="i-icon:scanit" color="#1a6beb" :size="12" />
-          <div class="ml-2">
-            扫码
           </div>
         </div>
       </div>
@@ -182,40 +80,34 @@ const scanCode = async () => {
     </template>
     <template v-else>
       <div class="px-[16px] py-[8px]">
-        <template v-for="(obj, ix) in showProductList" :key="ix">
+        <template v-for="(obj, ix) in showPartsList" :key="ix">
           <div class="pb-[12px]">
-            <sale-order-nesting v-model="hasCheck" :title="obj.product?.name || ''">
+            <sale-order-nesting v-model="hasCheck" title="">
               <template #left>
-                <common-tags type="pink" text="成品" :is-oval="true" />
+                <common-tags type="pink" :text="Props.where.filter((item) => item.name === 'type_part')[0].preset[obj.type_part]" :is-oval="true" />
               </template>
               <template #info>
                 <div class="flex flex-col gap-[12px] px-[16px]">
-                  <div class="grid grid-flow-col w-full place-items-start gap-y-[12px] gap-x-[auto]">
-                    <div class="flex-center-row gap-[8px]">
-                      <div class="text-[14px] font-medium text-[#666666] dark:color-[#CBCDD1]">
-                        条码
-                      </div>
-                      <div class="text-[14px] font-medium text-[#666666] dark:color-[#CBCDD1]">
-                        {{ obj.product?.code }}
-                      </div>
-                    </div>
-                  </div>
+                  <common-cell label="编号" :value="obj?.id" />
+                  <common-cell label="名称" :value="obj?.name" />
+                  <common-cell label="条码" :value="obj?.code" />
+                  <common-cell label="零售方式" :value="Props.where.filter((item) => item.name === 'retail_type')[0].preset[obj.retail_type]" />
+                  <common-cell label="标价" :value="obj?.label_price" />
+                  <common-cell label="重量" :value="obj?.weight" />
                   <div class="h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
-
                   <div class="pb-[16px]">
                     <n-grid :cols="24" :x-gap="8">
-                      <n-form-item-gi :span="12" label="折扣">
+                      <n-form-item-gi :span="12" label="应付金额">
                         <n-input-number
-                          v-model:value="obj.discount"
+                          v-model:value="obj.pay"
                           :show-button="false"
-                          placeholder="请输入折扣"
+                          placeholder="请输入应付金额"
+                          :default-value="Number(obj?.label_price) || 0"
                           round
-                          min="1"
-                          max="10"
                           :precision="2"
                         >
                           <template #suffix>
-                            折
+                            元
                           </template>
                         </n-input-number>
                       </n-form-item-gi>
@@ -224,7 +116,8 @@ const scanCode = async () => {
                           <div class="w-full">
                             <n-input-number
                               v-model:value="obj.quantity"
-                              placeholder="请输入折扣:单位(折)"
+                              placeholder="请输入数量"
+                              :default-value="1"
                               round
                               min="1"
                               :precision="0"
@@ -256,16 +149,8 @@ const scanCode = async () => {
                     </n-grid>
                     <div class="flex justify-between items-center">
                       <div>
-                        <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteProduct(ix)">
+                        <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteParts(obj?.id)">
                           <icon name="i-svg:delete" :size="16" />
-                        </div>
-                      </div>
-                      <div class="flex">
-                        <div class="item-left">
-                          应付金额：
-                        </div>
-                        <div class="color-[#FF2F2F] font-size-[14px] font-medium dark:color-[#FF624D]">
-                          ￥{{ count(obj) }}
                         </div>
                       </div>
                     </div>
@@ -278,11 +163,19 @@ const scanCode = async () => {
       </div>
     </template>
 
-    <common-popup v-model:show="showModal" placement="bottom" :title="cardTitle()" width="50%" @close="showModal = false">
+    <common-model v-model="showModal" title="选择配件" :show-ok="true" :show-cancel="true" @confirm="confirmParts">
       <div class="grid-12">
-        <div class="col-12" uno-md="col-4 offset-4" uno-sm="col-8 offset-2">
+        <div class="col-12">
           <div>
             <div class="flex justify-around py-[12px]">
+              <div
+                class="flex-center-col"
+                @click="changeType('number')">
+                <div class="text-[16px] pb-[2px] font-semibold line-height-[24px]" :style="{ color: searchType === 'number' ? '#333' : '#53565C' }">
+                  编号搜索
+                </div>
+                <div class="w-[32px] h-[4px] rounded " :style="{ background: searchType === 'number' ? '#2080F0' : '' }" />
+              </div>
               <div
                 class="flex-center-col"
                 @click="changeType('name')">
@@ -304,36 +197,75 @@ const scanCode = async () => {
           <div class="flex items-center pb-[16px]">
             <div class="flex-1">
               <n-input
-                v-model:value="searchProduct"
+                v-model:value="searchParts"
                 type="text"
                 clearable
-                :placeholder="searchType === 'name' ? '请输入商品名称' : '请输入商品条码'" />
+                :placeholder="placeholderText" />
             </div>
-            <div class="pl-[16px]">
-              <n-button type="info" round @click="emits('search', searchProduct, searchType, Props.type)">
+            <div class="pl-[16px] flex">
+              <n-button type="info" round @click="emits('search', searchParts, searchType)">
                 搜索
               </n-button>
             </div>
           </div>
-          <div class="h-[150px] overflow-y-auto">
-            <template v-for="(item, index) in Props.productList" :key="index">
-              <div
-                class="py-[8px] px-[8px] rounded-2xl flex justify-between items-center"
-                :style="{ color: readyAddproduct && item.id === readyAddproduct.id ? '#2080F0' : '',
-                          background: readyAddproduct && item.id === readyAddproduct.id ? '#fff' : '' }"
-                @click="setAddProduct(item)">
-                <div class="">
-                  {{ item.name }} -- {{ item.code }}
-                </div>
+          <div class="overflow-x-auto max-w-[400px]">
+            <div class=" color-[#333] font-semibold !text-[16px] flex">
+              <div class="w-[180px] pl-[8px] flex-shrink-0">
+                编号
               </div>
-            </template>
+              <div class="w-[100px] flex-shrink-0">
+                名称
+              </div>
+              <div class="w-[100px] flex-shrink-0">
+                条码
+              </div>
+              <div class="w-[40px] flex-shrink-0">
+                类型
+              </div>
+              <div class="w-[40px] flex-shrink-0">
+                标价
+              </div>
+              <div class="w-[40px] flex-shrink-0">
+                库存
+              </div>
+            </div>
+            <div class="h-[300px] py-[16px]">
+              <template v-for="(item, index) in Props.partList" :key="index">
+                <div
+                  class="py-[12px]  rounded-2xl mb-[8px] flex w-[fit-content]" :style="{
+                    'background-color': prePartsList.includes(item) ? 'white' : '',
+                    'color': prePartsList.includes(item) ? '#328AF1' : '#000',
+                  }"
+                  @click="selectPart(item)"
+                >
+                  <div class="w-[180px] pl-[8px] flex-shrink-0">
+                    {{ item.id }}
+                  </div>
+                  <div class="w-[100px] flex-shrink-0">
+                    {{ item.name }}
+                  </div>
+                  <div class="w-[100px] flex-shrink-0">
+                    {{ item.code }}
+                  </div>
+                  <div class="w-[40px] flex-shrink-0">
+                    {{ item.type_part }}
+                  </div>
+                  <div class="w-[40px] flex-shrink-0">
+                    {{ item.label_price }}
+                  </div>
+                  <div class="w-[40px] flex-shrink-0">
+                    {{ item?.product?.stock || 0 }}
+                  </div>
+                </div>
+              </template>
+              <template v-if="Props.partList.length === 0">
+                <common-emptys text="暂无数据" />
+              </template>
+            </div>
           </div>
         </div>
       </div>
-      <template #footer>
-        <common-button-bottom @confirm="addProduct(readyAddproduct)" @cancel="showModal = false" />
-      </template>
-    </common-popup>
+    </common-model>
   </common-fold>
 </template>
 

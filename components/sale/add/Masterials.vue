@@ -2,15 +2,15 @@
 import type { FormRules } from 'naive-ui'
 
 const emits = defineEmits<{
-  search: [val: string, type: string]
+  search: [val: string]
   openProductList: []
 }>()
-const { oldFilterListToArray } = storeToRefs(useOrder())
+const { oldFilterListToArray } = storeToRefs(useOld())
 const showModal = ref(false)
 const { useWxWork } = useWxworkStore()
 
 const MformRef = ref()
-const params = ref({} as Product)
+const params = ref({} as ProductOlds)
 const rules = ref<FormRules>({})
 const oldRules = ref<FormRules>({
   weight_metal: {
@@ -75,7 +75,7 @@ const forRules = () => {
 forRules()
 
 // 转换下拉参数
-const presetToSelect = (filter: FilterWhere<Product>): { label: string, value: any }[] => {
+const presetToSelect = (filter: FilterWhere<ProductOlds>): { label: string, value: any }[] => {
   if (!filter.preset) {
     return []
   }
@@ -95,12 +95,12 @@ const presetToSelect = (filter: FilterWhere<Product>): { label: string, value: a
   })
 }
 // 当前旧料的form
-const nowOldMaster = defineModel('nowOldMaster', { default: {} as Product })
+const nowOldMaster = defineModel('nowOldMaster', { default: {} as ProductOlds })
 const hasCheck = ref(false)
 // 禁用选择表单的是否自产
 const Manual = ref(false)
-// 搜索code
-const searchProduct = ref('')
+// 搜索旧料code
+const searchOld = ref('')
 
 // 显示搜索的弹窗
 const searchShow = ref(false)
@@ -111,27 +111,27 @@ const scanCode = async () => {
   const code = await wx?.scanQRCode()
   if (code) {
     searchShow.value = true
-    searchProduct.value = code
-    nowOldMaster.value = {} as Product
-    emits('search', searchProduct.value, 'code')
+    searchOld.value = code
+    nowOldMaster.value = {} as ProductOlds
+    emits('search', searchOld.value)
   }
 }
 // 打开搜索
 const searchQl = () => {
   nowEditState.value = undefined
   searchShow.value = true
-  searchProduct.value = ''
-  nowOldMaster.value = {} as Product
+  searchOld.value = ''
+  nowOldMaster.value = {} as ProductOlds
 }
 // 手动添加
 const handleAdd = () => {
   showModal.value = true
   Manual.value = true
-  params.value = {} as Product
+  params.value = {} as ProductOlds
   nowEditState.value = undefined
 }
 // 添加商品
-const showMasterialsList = defineModel<Product[]>('list', { default: [] })
+const showMasterialsList = defineModel<ProductOlds[]>('list', { default: [] })
 const submitMasterialsForm = () => {
   MformRef.value?.validate((errors: any) => {
     if (!errors) {
@@ -170,9 +170,9 @@ const searchConfirm = async () => {
   })
 }
 
-const editOld = (item: Product, index: number) => {
+const editOld = (item: ProductOlds, index: number) => {
   nowEditState.value = index
-  if (item.code) {
+  if (item.is_our) {
     nowOldMaster.value = item
     searchShow.value = true
   }
@@ -181,14 +181,19 @@ const editOld = (item: Product, index: number) => {
     showModal.value = true
   }
 }
-
+const confirmShow = ref(false)
+const delId = ref()
 const deleteOld = (index: number) => {
-  showMasterialsList.value.splice(index, 1)
+  confirmShow.value = true
+  delId.value = index
+}
+const deleteConfirm = () => {
+  showMasterialsList.value.splice(delId.value, 1)
 }
 </script>
 
 <template>
-  <common-fold title="旧料" :is-collapse="false">
+  <common-fold title="旧货" :is-collapse="false">
     <div class="p-[16px]">
       <div class="btn grid-12 gap-[20px]">
         <div
@@ -226,7 +231,7 @@ const deleteOld = (index: number) => {
                     </template>
                     <template v-else>
                       <n-grid-item :span="2">
-                        {{ item.label }}: {{ item.input === 'select' ? item.preset[obj[item.name]] : obj[item.name] }}
+                        {{ item.label }}: {{ item.input === 'select' ? item.preset[obj[item.name] as string] : obj[item.name] }}
                       </n-grid-item>
                     </template>
                   </template>
@@ -267,13 +272,13 @@ const deleteOld = (index: number) => {
           <div class="flex items-center pb-[16px]">
             <div class="flex-1">
               <n-input
-                v-model:value="searchProduct"
+                v-model:value="searchOld"
                 type="text"
                 clearable
                 placeholder="请输入商品条码" />
             </div>
             <div class="pl-[16px] flex">
-              <n-button type="info" round @click="emits('search', searchProduct, 'code')">
+              <n-button type="info" round @click="emits('search', searchOld)">
                 搜索
               </n-button>
               <div class="pl-[8px]">
@@ -285,7 +290,7 @@ const deleteOld = (index: number) => {
           </div>
           <div class="h-[300px] overflow-y-auto py-[16px]">
             <div>
-              <template v-if=" Object.keys(nowOldMaster).length !== 0">
+              <template v-if="Object.keys(nowOldMaster).length !== 0">
                 <n-form ref="oldMasterRef" :model="nowOldMaster" :rules="oldRules">
                   <n-grid :cols="24" :x-gap="8">
                     <n-form-item-gi
@@ -326,7 +331,7 @@ const deleteOld = (index: number) => {
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收工费">
-                      <n-input
+                      <n-input-number
                         v-model:value="nowOldMaster.recycle_price_labor"
                         :show-button="false"
                         placeholder="请输入回收工费"
@@ -353,7 +358,7 @@ const deleteOld = (index: number) => {
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="金重" path="weight_metal">
-                      <n-input
+                      <lazy-n-input
                         v-model:value="nowOldMaster.weight_metal"
                         :show-button="false"
                         placeholder="请输入金重"
@@ -375,7 +380,7 @@ const deleteOld = (index: number) => {
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收金价">
                       <n-input-number
-                        v-model:value="nowOldMaster.price"
+                        v-model:value="nowOldMaster.recycle_price_gold"
                         :show-button="false"
                         placeholder="请输入回收金价"
                         round
@@ -388,7 +393,7 @@ const deleteOld = (index: number) => {
                       </n-input-number>
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收金额">
-                      <n-input
+                      <n-input-number
                         v-model:value="nowOldMaster.recycle_price"
                         :show-button="false"
                         placeholder="请输入回收金额"
@@ -424,40 +429,50 @@ const deleteOld = (index: number) => {
           <n-form ref="MformRef" :model="params" :rules="rules">
             <n-grid :cols="24" :x-gap="8">
               <template v-for="(item, index) in oldFilterListToArray" :key="index">
-                <n-form-item-gi :span="12" :label="item.label" :path="item.name" :required="item.required">
-                  <template v-if="item.input === 'select'">
-                    <n-select
-                      v-model:value="params[item.name]"
-                      menu-size="large"
-                      :placeholder="`选择${item.label}`"
-                      :options="presetToSelect(item)"
-                      clearable
-                    />
-                  </template>
-                  <template v-if="item.input === 'text' && item.name === 'code'">
-                    <n-input
-                      v-model:value="params[item.name]" round :placeholder="`输入${item.label}`"
-                    />
-                  </template>
-                  <template v-if="item.input === 'text' && item.name !== 'code'">
-                    <n-input v-model:value="params[item.name]" round :placeholder="`输入${item.label}`" />
-                  </template>
-                  <template v-if="item.input === 'number'">
-                    <n-input-number v-model:value="params[item.name]" round :placeholder="`输入${item.label}`" :show-button="false" />
-                  </template>
-                  <template v-if="item.input === 'switch'">
-                    <n-switch v-model:value="params[item.name]" :disabled="Manual" />
-                  </template>
-                  <template v-if="item.input === 'textarea'">
-                    <n-input v-model:value="params[item.name]" rows="1" type="textarea" />
-                  </template>
-                </n-form-item-gi>
+                <template v-if="item.input !== 'list'">
+                  <n-form-item-gi :span="12" :label="item.label" :path="item.name" :required="item.required">
+                    <template v-if="item.input === 'select'">
+                      <n-select
+                        v-model:value="(params[item.name] as number)"
+                        menu-size="large"
+                        :placeholder="`选择${item.label}`"
+                        :options="presetToSelect(item)"
+                        clearable
+                      />
+                    </template>
+                    <template v-if="item.input === 'text'">
+                      <n-input
+                        v-model:value="(params[item.name] as string)" round :placeholder="`输入${item.label}`"
+                      />
+                    </template>
+                    <template v-if="item.input === 'number'">
+                      <n-input-number v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`" :show-button="false" />
+                    </template>
+                    <template v-if="item.input === 'switch'">
+                      <n-switch v-model:value="(params[item.name] as boolean)" :disabled="Manual" />
+                    </template>
+                    <template v-if="item.input === 'textarea'">
+                      <n-input v-model:value="(params[item.name] as string)" rows="1" type="textarea" />
+                    </template>
+                  </n-form-item-gi>
+                </template>
               </template>
             </n-grid>
           </n-form>
         </div>
       </div>
     </common-model>
+
+    <common-confirm
+      v-model:show="confirmShow"
+      title="删除提示"
+      text="是否删除当前旧料?"
+      icon="success"
+      cancel-text="否"
+      confirm-text="是"
+      @submit="deleteConfirm"
+      @cancel="confirmShow = false"
+    />
   </common-fold>
 </template>
 
