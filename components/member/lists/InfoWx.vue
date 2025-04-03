@@ -40,6 +40,17 @@ const backtrack = () => {
   const { back } = useRouter()
   back()
 }
+
+const showText = () => {
+  const content = ref('')
+  if (!props.data.id && props.data.external_user_id) {
+    content.value = '该会员信息有缺失！请前往编辑完善'
+  }
+  else if (!props.data.external_user_id) {
+    content.value = '查询会员信息失败！请稍后再试'
+  }
+  return content.value
+}
 </script>
 
 <template>
@@ -284,7 +295,7 @@ const backtrack = () => {
     </template>
     <template v-else>
       <div class="col-12 flex flex-col gap-[16px] pt-[100px] py-[16px]" uno-lg="col-8 offset-2 pt-[200px]">
-        <common-emptys text="该会员信息有缺失！请前往编辑完善" />
+        <common-emptys :text="showText" />
       </div>
     </template>
   </div>
