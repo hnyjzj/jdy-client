@@ -81,8 +81,6 @@ async function bulkupload(e: AccessorieCategory[]) {
     return $toast.error('请先选择门店')
   }
   const res = await addAccessorieCategory({ list: e })
-  console.log('11111111111111111', res)
-
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建成功', 1000)
     await getAccessorieCategoryList({ page: 1, limit: 10 })

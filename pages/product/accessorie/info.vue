@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { onGetWifiList } from '@wecom/jssdk'
-
 const { getAccessorieInfo, getAccessorieWhere } = useAccessorie()
 const { accessorieInfo } = storeToRefs(useAccessorie())
 const { getAccessorieCategoryWhere } = useAccessorieCategory()
