@@ -8,12 +8,14 @@ export const useOld = defineStore('Old', {
      * 排序后的筛选条件列表
      */
     oldFilterListToArray: FilterWhere<ProductOlds>[]
+    searchOld: ProductOlds
   } => ({
     oldFilterList: {} as Where<ProductOlds>,
     oldList: [],
     oldInfo: {} as ProductOlds,
     oldListTotal: 0,
     oldFilterListToArray: {} as FilterWhere<ProductOlds>[],
+    searchOld: {} as ProductOlds,
   }),
   actions: {
     // 旧料列表
@@ -24,6 +26,9 @@ export const useOld = defineStore('Old', {
         if (data.value?.code === HttpCode.SUCCESS) {
           this.oldListTotal = data.value.data.total
           this.oldList = data.value.data.list
+          if (data.value.data.list.length === 1) {
+            this.searchOld = data.value.data.list[0]
+          }
         }
         return data.value
       }

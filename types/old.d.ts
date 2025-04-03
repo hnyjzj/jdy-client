@@ -2,6 +2,7 @@
  * ProductOlds，旧料
  */
 interface ProductOlds {
+
   /**
    * 品牌
    */
@@ -53,7 +54,7 @@ interface ProductOlds {
   /**
    * 标签价
    */
-  label_price: number | string
+  label_price: string
   /**
    * 材质
    */
@@ -77,7 +78,7 @@ interface ProductOlds {
   /**
    * 实际成色
    */
-  quality_actual: number | string
+  quality_actual: string
   /**
    * 回收方式
    */
@@ -85,15 +86,15 @@ interface ProductOlds {
   /**
    * 回收价格
    */
-  recycle_price: number | string
+  recycle_price: number
   /**
    * 回收金价
    */
-  recycle_price_gold: number | string
+  recycle_price_gold: number
   /**
    * 回收工费
    */
-  recycle_price_labor: number | string
+  recycle_price_labor: number
   /**
    * 回收工费方式
    */
@@ -113,7 +114,7 @@ interface ProductOlds {
   /**
    * 回收门店ID
    */
-  recycle_store_id: string
+  recycle_store_id: number | string
   /**
    * 回收类型
    */
@@ -145,17 +146,17 @@ interface ProductOlds {
   /**
    * 主石重
    */
-  weight_gem: number | string
+  weight_gem: number
   /**
    * 金重
    */
-  weight_metal: number | string
+  weight_metal: string
   /**
    * 杂料重
    */
-  weight_other: number | string
+  weight_other: number
   /**
    * 总重
    */
-  weight_total: number | string
+  weight_total: number
 }

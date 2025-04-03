@@ -1,5 +1,10 @@
 interface AccessorieCategory {
   /**
+   * 配件编号
+   */
+  id: string
+
+  /**
    * 入网费
    */
   access_fee: number
@@ -64,7 +69,19 @@ interface AccessorieCategory {
    */
   weight: number
   /**
-   * 门店id
+   *  门店id
    */
-  store_id: string
+  store_id: Stores['id']
+  /**
+   * 产品信息
+   */
+  product: ProductAccessories
+  /**
+   * quantity 数量
+   */
+  quantity?: number
+  /**
+   * 应付金额
+   */
+  pay?: number
 }

@@ -23,7 +23,6 @@ const payMoney = computed(() => {
             <n-form-item-gi
               :span="12"
               label="整单折扣" label-placement="top"
-
             >
               <n-input-number
                 v-model:value="formData.discount_rate"
@@ -51,8 +50,8 @@ const payMoney = computed(() => {
             </n-form-item-gi>
           </n-grid>
         </div>
-        <div class="border-y-[#E6E6E8] border border-y-solid py-[12px]">
-          <div class="text-[16px] color-[#3971F3] line-height-[24px] pb-[10px] text-right font-semibold">
+        <div class="border-y-[#E6E6E8] border border-y-solid py-[12px] mb-[12px]">
+          <div class="text-[16px] color-[#3971F3] line-height-[24px] text-right font-semibold">
             实付金额:{{ payMoney }}
           </div>
         </div>

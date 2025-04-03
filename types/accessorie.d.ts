@@ -2,7 +2,7 @@ interface ProductAccessories {
   /**
    * 配件条目
    */
-  category?: null | ProductAccessorieCategories
+  category?: null | AccessorieCategory
   /**
    * 配件条目ID
    */
