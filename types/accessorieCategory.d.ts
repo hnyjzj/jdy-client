@@ -1,4 +1,9 @@
 interface AccessorieCategory {
+
+  /**
+   * id-条目code
+   */
+  id
   /**
    * 入网费
    */
@@ -67,4 +72,12 @@ interface AccessorieCategory {
    * 门店id
    */
   store_id: string
+  /**
+   * 入库数量
+   */
+  in_stock: number
+  /**
+   * 入库入网费
+   */
+  in_access_fee: number
 }
