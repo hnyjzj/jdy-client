@@ -72,10 +72,9 @@ async function submit() {
   if (!myStore.value?.id) {
     return $toast.error('请先选择门店')
   }
-  const res = await addAccessorieCategory(params.value)
+  const res = await addAccessorieCategory({ list: [params.value] })
   if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('创建成功')
-    params.value = {} as AccessorieCategory
+    $toast.success('创建成功', 1000)
     setTimeout(() => {
       router.back()
     }, 1000)
@@ -125,18 +124,18 @@ const presetToSelect = (key: keyof AccessorieCategory) => {
                               />
                             </template>
                             <template v-if="item.input === 'text'">
-                              <n-input v-model:value="params[item.name] as string" round :placeholder="`输入${item.label}`" />
+                              <n-input v-model:value="(params[item.name] as string)" round :placeholder="`输入${item.label}`" />
                             </template>
                             <template v-if="item.input === 'number'">
                               <div class="w-[100%]">
-                                <n-input-number v-model:value="params[item.name] as number" round :placeholder="`输入${item.label}`" />
+                                <n-input-number v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`" />
                               </div>
                             </template>
                             <template v-if="item.input === 'switch'">
                               <n-switch v-model:value="params[item.name]" :style="{ 'border-radius': '20px' }" round />
                             </template>
                             <template v-if="item.input === 'textarea'">
-                              <n-input v-model:value="params[item.name] as string" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
+                              <n-input v-model:value="(params[item.name] as string)" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
                             </template>
                           </n-form-item-gi>
                         </template>
