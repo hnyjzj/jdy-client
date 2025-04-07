@@ -31,6 +31,7 @@ const processDuring = () => {
 }
 
 const cutOut = (current: string | undefined) => {
+  // 截取日期
   if (current) {
     return current.slice(0, 10)
   }
