@@ -13,7 +13,7 @@ export default async function (headers: any) {
     '重量': 'weight',
     '入网费': 'access_fee',
     '标签价': 'label_price',
-    '材质': 'meterial',
+    '材质': 'material',
     '成色': 'quality',
     '主石': 'gem',
     '品类': 'category',
