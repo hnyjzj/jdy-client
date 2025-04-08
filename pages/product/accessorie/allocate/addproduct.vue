@@ -258,7 +258,7 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
         </div>
       </template>
     </common-create>
-    <common-button-one text="添加入库" @confirm="submitProduct" />
+    <common-button-one text="添加调拨配件" @confirm="submitProduct" />
   </div>
 </template>
 

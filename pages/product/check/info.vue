@@ -89,16 +89,6 @@ async function submitChange(status: CheckInfo['status']) {
     getInfo()
   }
 }
-/** 货品状态 */
-const goodsStatus = {
-  0: '全部',
-  1: '正常',
-  2: '报损',
-  3: '调拨',
-  4: '已售',
-  5: '退货',
-  6: '盘点中',
-}
 </script>
 
 <template>
@@ -251,7 +241,7 @@ const goodsStatus = {
             <div class="grid mb-3">
               <sale-order-nesting :title="item.product.name" :info="checkInfo">
                 <template #left>
-                  <common-tags type="pink" :text="goodsStatus[item.product.status]" :is-oval="true" />
+                  <common-tags type="pink" :text="GoodsStatusMap[item.product.status as GoodsStatus]" :is-oval="true" />
                 </template>
                 <template #info>
                   <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">

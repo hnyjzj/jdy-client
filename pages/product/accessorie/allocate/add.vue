@@ -106,6 +106,25 @@ function handleValidateButtonClick() {
     }
   })
 }
+const canShowFilter = (item: FilterWhere<AccessorieAllocate>) => {
+  if (!item.create) {
+    return false
+  }
+
+  if (item.condition) {
+    return !item.condition?.some((i) => {
+      switch (i.operator) {
+        case '=':
+          return params.value[i.key as keyof AccessorieAllocateReq] !== i.value
+
+        default:
+          return false
+      }
+    })
+  }
+
+  return true
+}
 </script>
 
 <template>
@@ -122,50 +141,48 @@ function handleValidateButtonClick() {
                 <n-form ref="formRef" :model="params" :rules="rules">
                   <n-grid :cols="24" :x-gap="8">
                     <template v-for="(item, index) in accessorieAllocateFilterListToArray" :key="index">
-                      <template v-if="item.input !== 'list'">
-                        <template v-if="item.create">
-                          <n-form-item-gi :span="12" :path="item.name" :required="item.required" :label="item.label">
-                            <template v-if="item.input === 'select'">
+                      <template v-if="item.create && canShowFilter(item)">
+                        <n-form-item-gi :span="12" :path="item.name" :required="item.required" :label="item.label">
+                          <template v-if="item.input === 'select'">
+                            <n-select
+                              v-model:value="params[item.name as keyof AccessorieAllocateReq]"
+                              menu-size="large"
+                              :placeholder="`选择${item.label}`"
+                              :options="optonsToSelect(item.preset)"
+                              clearable
+                            />
+                          </template>
+                          <template v-if="item.input === 'text'">
+                            <n-input v-model:value="params[item.name as keyof AccessorieAllocateReq]" round :placeholder="`输入${item.label}`" />
+                          </template>
+                          <template v-if="item.input === 'number'">
+                            <div class="w-[100%]">
+                              <n-input-number v-model:value="params[item.name as keyof AccessorieAllocateReq]" round :placeholder="`输入${item.label}`" />
+                            </div>
+                          </template>
+                          <template v-if="item.input === 'switch'">
+                            <n-switch v-model:value="params[item.name as keyof AccessorieAllocateReq]" :style="{ 'border-radius': '20px' }" round />
+                          </template>
+                          <template v-if="item.input === 'textarea'">
+                            <n-input v-model:value="params[item.name as keyof AccessorieAllocateReq]" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
+                          </template>
+                          <template v-if="item.input === 'search'">
+                            <template v-if="item.name === 'from_store_id' || item.name === 'to_store_id'">
                               <n-select
                                 v-model:value="params[item.name as keyof AccessorieAllocateReq]"
-                                menu-size="large"
-                                :placeholder="`选择${item.label}`"
-                                :options="optonsToSelect(item.preset)"
+                                :placeholder="`输入${item.label}`"
+                                :options="storesList.map(v => ({
+                                  label: v.name,
+                                  value: v.id,
+                                }))"
                                 clearable
+                                size="large"
+                                remote
+                                @focus="() => { getStoreList({ page: 1, limit: 20 }) }"
                               />
                             </template>
-                            <template v-if="item.input === 'text'">
-                              <n-input v-model:value="params[item.name as keyof AccessorieAllocateReq]" round :placeholder="`输入${item.label}`" />
-                            </template>
-                            <template v-if="item.input === 'number'">
-                              <div class="w-[100%]">
-                                <n-input-number v-model:value="params[item.name as keyof AccessorieAllocateReq]" round :placeholder="`输入${item.label}`" />
-                              </div>
-                            </template>
-                            <template v-if="item.input === 'switch'">
-                              <n-switch v-model:value="params[item.name as keyof AccessorieAllocateReq]" :style="{ 'border-radius': '20px' }" round />
-                            </template>
-                            <template v-if="item.input === 'textarea'">
-                              <n-input v-model:value="params[item.name as keyof AccessorieAllocateReq]" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
-                            </template>
-                            <template v-if="item.input === 'search'">
-                              <template v-if="item.name === 'from_store_id' || item.name === 'to_store_id'">
-                                <n-select
-                                  v-model:value="params[item.name as keyof AccessorieAllocateReq]"
-                                  :placeholder="`输入${item.label}`"
-                                  :options="storesList.map(v => ({
-                                    label: v.name,
-                                    value: v.id,
-                                  }))"
-                                  clearable
-                                  size="large"
-                                  remote
-                                  @focus="() => { getStoreList({ page: 1, limit: 20 }) }"
-                                />
-                              </template>
-                            </template>
-                          </n-form-item-gi>
-                        </template>
+                          </template>
+                        </n-form-item-gi>
                       </template>
                     </template>
                   </n-grid>

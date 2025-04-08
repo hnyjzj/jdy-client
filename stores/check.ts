@@ -17,7 +17,7 @@ export const useCheck = defineStore('check', {
     async getCheckList(pamars: ReqList<Check>) {
       try {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
-        const { data } = await https.post<ResList<Check>, ReqList<Check>>('/product/inventory/list', pamars)
+        const { data } = await https.post<ResList<Check>, ReqList<Check>>('/product/finished/inventory/list', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.checkTotal = data.value.data.total
           this.checkList = data.value.data.list
@@ -31,7 +31,7 @@ export const useCheck = defineStore('check', {
     // 获取盘点单筛选
     async getCheckWhere() {
       try {
-        const { data } = await https.get<Where<Check>>('/product/inventory/where')
+        const { data } = await https.get<Where<Check>>('/product/finished/inventory/where')
         if (data.value?.code === HttpCode.SUCCESS) {
           this.checkFilterList = data.value.data
           this.checkFilterListToArray = sortArr(data.value.data)
@@ -45,7 +45,7 @@ export const useCheck = defineStore('check', {
     async createCheck(params: Check) {
       try {
         params = { ...params, store_id: useStores().myStore.id }
-        const { data } = await https.post<Check, any >('/product/inventory/create', params)
+        const { data } = await https.post<Check, any >('/product/finished/inventory/create', params)
         return data.value
       }
       catch (error) {
@@ -55,7 +55,7 @@ export const useCheck = defineStore('check', {
     /** 盘点单详情 */
     async getCheckInfo(id: string, product_status: number) {
       try {
-        const { data } = await https.post<CheckInfo, { id: string, product_status: number }>('/product/inventory/info', { id, product_status })
+        const { data } = await https.post<CheckInfo, { id: string, product_status: number }>('/product/finished/inventory/info', { id, product_status })
         if (data.value?.code === HttpCode.SUCCESS) {
           this.checkInfo = data.value.data
         }
@@ -67,7 +67,7 @@ export const useCheck = defineStore('check', {
     /** 更改盘点单状态 */
     async changeCheckStatus(id: Check['id'], status: Check['status']) {
       try {
-        const { data } = await https.put<{ id: string, status: string }, any >('/product/inventory/change', { id, status })
+        const { data } = await https.put<{ id: string, status: string }, any >('/product/finished/inventory/change', { id, status })
         return data.value
       }
       catch (error) {

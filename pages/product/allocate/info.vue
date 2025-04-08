@@ -8,6 +8,7 @@ useSeoMeta({
   title: '调拨单详情',
 })
 const route = useRoute()
+const router = useRouter()
 const { $toast } = useNuxtApp()
 /** 添加货品弹窗显隐 */
 const isAddModel = ref(false)
@@ -21,23 +22,16 @@ if (route.query.id) {
 type ProductKey = keyof ProductFinisheds
 /** 汇总 */
 function sum(key: ProductKey) {
-  return allocateInfo.value?.products?.reduce((sum, item) => sum + item[key], 0) ?? 0
-}
-
-const goodsStatus = {
-  0: '全部',
-  1: '正常',
-  2: '报损',
-  3: '调拨',
-  4: '已售',
-  5: '退货',
-  6: '盘点中',
+  return allocateInfo.value?.products?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
 }
 async function cancel() {
   const res = await cancelAllcate(allocateInfo.value?.id)
   if (res?.code === HttpCode.SUCCESS) {
     await getAllocateInfo(route.query.id as string)
-    $toast.success('取消调拨成功')
+    $toast.success('取消调拨成功', 1000)
+    setTimeout(() => {
+      router.back()
+    }, 1000)
   }
   else {
     $toast.error(res?.message ?? '取消调拨失败')
@@ -277,7 +271,7 @@ async function scanit() {
                     <template v-if="allocateInfo.status === 1">
                       <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="delProduct(item.code)" />
                     </template>
-                    <common-tags type="pink" :text="goodsStatus[item.status]" :is-oval="true" />
+                    <common-tags type="pink" :text="GoodsStatusMap[item.status as GoodsStatus]" :is-oval="true" />
                   </template>
                   <template #info>
                     <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -290,6 +284,11 @@ async function scanit() {
                             <template v-if="filter.input === 'select'">
                               <div class="value">
                                 {{ filter.preset[item[filter.name]] }}
+                              </div>
+                            </template>
+                            <template v-else-if="filter.input === 'switch'">
+                              <div class="value">
+                                {{ item[filter.name] ? '是' : '否' }}
                               </div>
                             </template>
                             <template v-else>
@@ -338,7 +337,7 @@ async function scanit() {
 
 <style lang="scss" scoped>
 .key {
-  --uno: 'text-size-[14px] color-[#666] dark:color-[#CBCDD1] mr-2';
+  --uno: 'text-size-[14px] color-[#666] dark:color-[#CBCDD1] mr-2 whitespace-nowrap';
 }
 .value {
   --uno: 'text-size-[14px] color-[#333] dark:color-[#fff] w-[60%]';

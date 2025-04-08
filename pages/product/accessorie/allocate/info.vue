@@ -9,6 +9,7 @@ useSeoMeta({
   title: '调拨单详情',
 })
 const route = useRoute()
+const router = useRouter()
 const { $toast } = useNuxtApp()
 const allocateId = ref()
 if (route.query.id) {
@@ -22,7 +23,10 @@ async function cancel() {
   const res = await cancelAllcate(accessorieAllocateInfo.value?.id)
   if (res?.code === HttpCode.SUCCESS) {
     await getAccessorieAllocateInfo(route.query.id as string)
-    $toast.success('取消调拨成功')
+    $toast.success('取消调拨成功', 1000)
+    setTimeout(() => {
+      router.back()
+    }, 1000)
   }
   else {
     $toast.error(res?.message ?? '取消调拨失败')
@@ -118,7 +122,7 @@ const debouncedDelProduct = useThrottleFn((id: string) => {
                         调入门店
                       </div>
                       <div class="info-val">
-                        {{ accessorieAllocateInfo?.to_store.name }}
+                        {{ accessorieAllocateInfo?.to_store?.name }}
                       </div>
                     </div>
                     <div class="info-row">

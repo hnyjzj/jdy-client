@@ -30,6 +30,7 @@ async function clearSearch() {
 // 获取货品列表
 async function getList(where = {} as Partial<ProductAccessories>) {
   const params = { page: pages.value, limit: 10 } as ReqList<ProductAccessories>
+  where.store_id = myStore.value?.id
   params.where = where
   try {
     const res = await getAccessorieList(params)
@@ -121,6 +122,14 @@ function goAdd() {
                   </div>
                 </template>
               </template>
+              <div class="flex-between">
+                <div>
+                  库存
+                </div>
+                <div class="text-align-end val">
+                  {{ info.stock }}
+                </div>
+              </div>
             </div>
           </template>
           <template #bottom="{ info }">

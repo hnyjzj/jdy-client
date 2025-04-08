@@ -20,6 +20,17 @@ export enum GoodsStatus {
   ProductStatusNoStock,
 }
 
+export const GoodsStatusMap = {
+  1: '草稿',
+  2: '正常',
+  3: '已报损',
+  4: '已调拨',
+  5: '已出售',
+  6: '已定出',
+  7: '盘点中',
+  8: '无库存',
+}
+
 /**
  * 产品类型
  */
