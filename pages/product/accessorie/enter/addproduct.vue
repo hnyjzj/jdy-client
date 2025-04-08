@@ -68,15 +68,29 @@ async function addCategory() {
 async function submitProduct() {
   const products = [] as AccessorieEnterProductReq[]
   const params = {} as AccessorieEnterReq
-  selectProduct.value.forEach((item: AccessorieCategory) => {
+
+  // 先进行验证，如果有任何产品不符合条件，则不进行提交
+  for (const item of selectProduct.value) {
     if (!item.in_stock) {
-      return $toast.error('请填写选中入库数量')
+      $toast.error('请填写入库数量')
+      return
     }
     if (!item.in_access_fee) {
-      return $toast.error('请填写选中入库入网费')
+      $toast.error('请填写入库入网费')
+      return
     }
+  }
+
+  // 验证通过后，收集所有产品信息
+  selectProduct.value.forEach((item: AccessorieCategory) => {
     products.push({ code: item.id, stock: item.in_stock, access_fee: item.in_access_fee })
   })
+
+  if (products.length === 0) {
+    $toast.error('请添加配件礼品')
+    return
+  }
+
   params.enter_id = enterId.value
   params.products = products
   const res = await addAccessorieEnter(params)
@@ -85,6 +99,9 @@ async function submitProduct() {
     setTimeout(() => {
       router.back()
     }, 1000)
+  }
+  else {
+    $toast.error(res?.message ?? '添加失败')
   }
 }
 
