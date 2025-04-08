@@ -53,7 +53,7 @@ interface AccessorieAllocate {
   /**
    * 调拨商品
    */
-  product?: ProductFinisheds[]
+  products?: allocateProduct[]
   /**
    * 调拨状态
    * 0:全部 1:盘点中 2:调拨中 3:已完成 4:已取消
@@ -75,6 +75,13 @@ interface AccessorieAllocate {
    * 调入门店信息
    */
   to_store: Stores
+}
+
+interface allocateProduct {
+  allocate_id: string
+  product_id: string
+  quantity: number
+  product: ProductAccessories
 }
 
 interface AccessorieAllocateReq {
@@ -114,4 +121,24 @@ interface AccessorieAllocateReq {
    * 入库单id
    */
   enter_id?: Enter['id']
+}
+interface AddAccessorieAllocateProduct {
+  /**
+   * 产品id
+   */
+  product_id: string
+  /**
+   * 数量
+   */
+  quantity: number
+}
+/**
+ * 添加调拨配件
+ */
+interface AddAccessorieAllocateReq {
+  /**
+   * 调拨单id
+   */
+  id: string
+  products: AddAccessorieAllocateProduct[]
 }

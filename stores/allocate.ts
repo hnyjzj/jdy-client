@@ -19,7 +19,7 @@ export const useAllocate = defineStore('Allocate', {
     async getAllocate(pamars: ReqList<Allocate>) {
       try {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
-        const { data } = await https.post<ResList<Allocate>, ReqList<Allocate>>('/product/allocate/list', pamars)
+        const { data } = await https.post<ResList<Allocate>, ReqList<Allocate>>('/product/finished/allocate/list', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.allocateTotal = data.value.data.total
           this.allocateList = data.value.data.list
@@ -33,7 +33,7 @@ export const useAllocate = defineStore('Allocate', {
     // 获取筛选列表
     async getAllocateWhere() {
       try {
-        const { data } = await https.get<Where<Allocate>>('/product/allocate/where')
+        const { data } = await https.get<Where<Allocate>>('/product/finished/allocate/where')
         if (data.value?.code === HttpCode.SUCCESS) {
           this.allocateFilterList = data.value.data
           this.allocateFilterListToArray = sortArr(data.value.data)
@@ -46,7 +46,7 @@ export const useAllocate = defineStore('Allocate', {
     /** 调拨详情 */
     async getAllocateInfo(id: Allocate['id']) {
       try {
-        const { data } = await https.post<Allocate, { id: Allocate['id'] }>('/product/allocate/info', { id })
+        const { data } = await https.post<Allocate, { id: Allocate['id'] }>('/product/finished/allocate/info', { id })
         if (data.value?.code === HttpCode.SUCCESS) {
           this.allocateInfo = data.value.data
         }
@@ -59,7 +59,7 @@ export const useAllocate = defineStore('Allocate', {
     /** 确认调拨 */
     async confirmAllcate(id: Allocate['id']) {
       try {
-        const { data } = await https.put<{ id: string }, any >('/product/allocate/confirm', { id })
+        const { data } = await https.put<{ id: string }, any >('/product/finished/allocate/confirm', { id })
         return data.value
       }
       catch (error) {
@@ -69,7 +69,7 @@ export const useAllocate = defineStore('Allocate', {
     /** 取消调拨 */
     async cancelAllcate(id: Allocate['id']) {
       try {
-        const { data } = await https.put<{ id: string }, any >('/product/allocate/cancel', { id })
+        const { data } = await https.put<{ id: string }, any >('/product/finished/allocate/cancel', { id })
         return data.value
       }
       catch (error) {
@@ -79,7 +79,7 @@ export const useAllocate = defineStore('Allocate', {
     /** 完成调拨 */
     async finishAllcate(id: Allocate['id']) {
       try {
-        const { data } = await https.put<{ id: string }, any >('/product/allocate/complete', { id })
+        const { data } = await https.put<{ id: string }, any >('/product/finished/allocate/complete', { id })
         return data.value
       }
       catch (error) {
@@ -89,7 +89,7 @@ export const useAllocate = defineStore('Allocate', {
     /** 删除调拨产品 */
     async remove(id: Allocate['id'], code: ProductFinisheds['code']) {
       try {
-        const { data } = await https.put<{ id: string, code: string }, any >('/product/allocate/remove', { id, code })
+        const { data } = await https.put<{ id: string, code: string }, any >('/product/finished/allocate/remove', { id, code })
         return data.value
       }
       catch (error) {
@@ -99,7 +99,7 @@ export const useAllocate = defineStore('Allocate', {
     /** 添加调拨产品 */
     async add(id: Allocate['id'], code: ProductFinisheds['code']) {
       try {
-        const { data } = await https.put<{ id: string, code: string }, any >('/product/allocate/add', { id, code })
+        const { data } = await https.put<{ id: string, code: string }, any >('/product/finished/allocate/add', { id, code })
         return data.value
       }
       catch (error) {
@@ -110,7 +110,7 @@ export const useAllocate = defineStore('Allocate', {
     async createAllocate(params: AllocateReq) {
       try {
         params = { ...params, store_id: useStores().myStore.id }
-        const { data } = await https.post<AllocateReq, any >('/product/allocate/create', params)
+        const { data } = await https.post<AllocateReq, any >('/product/finished/allocate/create', params)
         return data.value
       }
       catch (error) {

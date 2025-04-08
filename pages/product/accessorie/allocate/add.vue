@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import type { FormInst, FormRules } from 'naive-ui'
 
-const { createAccessorieAllocate, getAccessorieAllocateWhere } = useAccessorieAllocate()
-const { accessorieAllocateFilterList, accessorieAllocateFilterListToArray } = storeToRefs(useAccessorieAllocate())
 const { $toast } = useNuxtApp()
-const { storesList } = storeToRefs(useStores())
-const { myStoreList } = storeToRefs(useStores())
+const { createAccessorieAllocate, getAccessorieAllocateWhere } = useAccessorieAllocate()
+const { accessorieAllocateFilterListToArray } = storeToRefs(useAccessorieAllocate())
+const { myStoreList, storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const { getFinishedEnterInfo } = useFinishedEnter()
 const { enterInfo } = storeToRefs(useFinishedEnter())
@@ -63,20 +62,6 @@ async function submit() {
   }
 }
 
-const presetToSelect = (key: keyof AccessorieAllocateReq): { label: string, value: any }[] => {
-  if (!key)
-    return []
-  if (key === 'enter_id') {
-    return []
-  }
-  const filter = accessorieAllocateFilterList.value[key]
-  if (!filter)
-    return []
-  if (!filter.preset) {
-    return []
-  }
-  return optonsToSelect(filter.preset)
-}
 const rules = ref<FormRules>({})
 
 function forRules() {
@@ -142,27 +127,42 @@ function handleValidateButtonClick() {
                           <n-form-item-gi :span="12" :path="item.name" :required="item.required" :label="item.label">
                             <template v-if="item.input === 'select'">
                               <n-select
-                                v-model:value="params[item.name]"
+                                v-model:value="params[item.name as keyof AccessorieAllocateReq]"
                                 menu-size="large"
                                 :placeholder="`选择${item.label}`"
-                                :options="presetToSelect(item.name)"
+                                :options="optonsToSelect(item.preset)"
                                 clearable
-                                :disabled="isDisables?.includes(item.name)"
                               />
                             </template>
                             <template v-if="item.input === 'text'">
-                              <n-input v-model:value="(params[item.name] as string)" round :placeholder="`输入${item.label}`" />
+                              <n-input v-model:value="params[item.name as keyof AccessorieAllocateReq]" round :placeholder="`输入${item.label}`" />
                             </template>
                             <template v-if="item.input === 'number'">
                               <div class="w-[100%]">
-                                <n-input-number v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`" />
+                                <n-input-number v-model:value="params[item.name as keyof AccessorieAllocateReq]" round :placeholder="`输入${item.label}`" />
                               </div>
                             </template>
                             <template v-if="item.input === 'switch'">
-                              <n-switch v-model:value="params[item.name]" :style="{ 'border-radius': '20px' }" round />
+                              <n-switch v-model:value="params[item.name as keyof AccessorieAllocateReq]" :style="{ 'border-radius': '20px' }" round />
                             </template>
                             <template v-if="item.input === 'textarea'">
-                              <n-input v-model:value="(params[item.name] as string)" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
+                              <n-input v-model:value="params[item.name as keyof AccessorieAllocateReq]" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
+                            </template>
+                            <template v-if="item.input === 'search'">
+                              <template v-if="item.name === 'from_store_id' || item.name === 'to_store_id'">
+                                <n-select
+                                  v-model:value="params[item.name as keyof AccessorieAllocateReq]"
+                                  :placeholder="`输入${item.label}`"
+                                  :options="storesList.map(v => ({
+                                    label: v.name,
+                                    value: v.id,
+                                  }))"
+                                  clearable
+                                  size="large"
+                                  remote
+                                  @focus="() => { getStoreList({ page: 1, limit: 20 }) }"
+                                />
+                              </template>
                             </template>
                           </n-form-item-gi>
                         </template>

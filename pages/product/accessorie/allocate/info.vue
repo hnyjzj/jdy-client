@@ -1,38 +1,23 @@
 <script setup lang="ts">
-const { getAccessorieAllocateInfo, confirmAllcate, cancelAllcate, finishAllcate, remove, add } = useAccessorieAllocate()
+const { getAccessorieAllocateInfo, confirmAllcate, cancelAllcate, finishAllcate, remove } = useAccessorieAllocate()
 const { accessorieAllocateInfo, accessorieAllocateFilterList } = storeToRefs(useAccessorieAllocate())
-const { useWxWork } = useWxworkStore()
-const { getFinishedWhere } = useFinished()
-const { finishedFilterListToArray } = storeToRefs(useFinished())
+const { getAllocateWhere } = useAllocate()
+// const { allocateFilterListToArray } = storeToRefs(useAllocate())
+const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
+const { getAccessorieCategoryWhere } = useAccessorieCategory()
 useSeoMeta({
   title: '调拨单详情',
 })
 const route = useRoute()
 const { $toast } = useNuxtApp()
-/** 添加货品弹窗显隐 */
-const isAddModel = ref(false)
-/** 添加货品条码 */
-const pCode = ref()
+const allocateId = ref()
 if (route.query.id) {
+  allocateId.value = route.query.id
   await getAccessorieAllocateInfo(route.query.id as string)
-  await getFinishedWhere()
+  await getAllocateWhere()
+  await getAccessorieCategoryWhere()
 }
 
-type ProductKey = keyof ProductFinisheds
-/** 汇总 */
-function sum(key: ProductKey) {
-  return accessorieAllocateInfo.value?.product?.reduce((sum, item) => sum + item[key], 0) ?? 0
-}
-
-const goodsStatus = {
-  0: '全部',
-  1: '正常',
-  2: '报损',
-  3: '调拨',
-  4: '已售',
-  5: '退货',
-  6: '盘点中',
-}
 async function cancel() {
   const res = await cancelAllcate(accessorieAllocateInfo.value?.id)
   if (res?.code === HttpCode.SUCCESS) {
@@ -67,8 +52,8 @@ async function finish() {
 }
 
 /** 删除产品 */
-async function delProduct(code: ProductFinisheds['code']) {
-  const res = await remove(accessorieAllocateInfo.value?.id, code)
+async function delProduct(id: string) {
+  const res = await remove(accessorieAllocateInfo.value?.id, id)
   if (res?.code === HttpCode.SUCCESS) {
     await getAccessorieAllocateInfo(route.query.id as string)
     $toast.success('删除成功')
@@ -77,39 +62,9 @@ async function delProduct(code: ProductFinisheds['code']) {
     $toast.error(res?.message ?? '删除失败')
   }
 }
-
-function create() {
-  isAddModel.value = true
-}
-/** 添加产品 */
-async function addProduct() {
-  const res = await add(accessorieAllocateInfo.value?.id, pCode.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    await getAccessorieAllocateInfo(route.query.id as string)
-    $toast.success('添加成功')
-    pCode.value = ''
-    isAddModel.value = false
-  }
-  else {
-    $toast.error(res?.message ?? '添加失败')
-  }
-}
-async function scanit() {
-  try {
-    const wx = await useWxWork()
-    pCode.value = wx?.scanQRCode()
-    const result = await wx?.scanQRCode()
-    if (result) {
-      pCode.value = result
-    }
-    else {
-      $toast.error('扫码失败，请重试')
-    }
-  }
-  catch (error) {
-    throw new Error(`扫码失败: ${error || '未知错误'}`)
-  }
-}
+const debouncedDelProduct = useThrottleFn((id: string) => {
+  delProduct(id)
+}, 200)
 </script>
 
 <template>
@@ -231,31 +186,7 @@ async function scanit() {
                       总件数
                     </div>
                     <div class="info-val">
-                      {{ accessorieAllocateInfo.product?.length }}
-                    </div>
-                  </div>
-                  <div class="info-row">
-                    <div class="info-title">
-                      总金重
-                    </div>
-                    <div class="info-val">
-                      {{ sum('weight_metal') }}
-                    </div>
-                  </div>
-                  <div class="info-row">
-                    <div class="info-title">
-                      总标价
-                    </div>
-                    <div class="info-val">
-                      {{ sum('label_price') }}
-                    </div>
-                  </div>
-                  <div class="info-row">
-                    <div class="info-title">
-                      总入网费
-                    </div>
-                    <div class="info-val">
-                      {{ sum('access_fee') }}
+                      {{ accessorieAllocateInfo.products?.length }}
                     </div>
                   </div>
                 </div>
@@ -264,50 +195,50 @@ async function scanit() {
           </common-gradient>
         </div>
 
-        <template v-if="accessorieAllocateInfo.product?.length">
+        <template v-if="accessorieAllocateInfo.products?.length">
           <div class="p-4 blur-bgc rounded-6">
             <div class="text-[14px] pb-4 text-color">
-              共 {{ accessorieAllocateInfo.product.length }} 条数据
+              共 {{ accessorieAllocateInfo.products.length }} 条数据
             </div>
-            <template v-for="(item, index) in accessorieAllocateInfo.product" :key="index">
+            <template v-for="(item, index) in accessorieAllocateInfo.products" :key="index">
               <div class="grid mb-3">
-                <sale-order-nesting :title="item.name" :info="accessorieAllocateInfo">
+                <sale-order-nesting :title="item.product.category.name" :index="index" :info="accessorieAllocateInfo">
                   <template #left>
                     <!-- 状态为盘点中时可以删除 -->
                     <template v-if="accessorieAllocateInfo.status === 1">
-                      <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="delProduct(item.code)" />
+                      <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="debouncedDelProduct(item.product?.id)" />
                     </template>
-                    <common-tags type="pink" :text="goodsStatus[item.status]" :is-oval="true" />
                   </template>
                   <template #info>
                     <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
-                      <template v-for="(filter, findex) in finishedFilterListToArray" :key="findex">
-                        <template v-if="filter.find">
+                      <div class="flex">
+                        <div class="key">
+                          调拨数量
+                        </div>
+                        <div class="value">
+                          {{ item.quantity }}
+                        </div>
+                        <div class="value" />
+                      </div>
+                      <template v-for="(filter, findex) in categoryFilterListToArray" :key="findex">
+                        <template v-if="filter.create">
                           <div class="flex">
                             <div class="key">
                               {{ filter.label }}
                             </div>
                             <template v-if="filter.input === 'select'">
                               <div class="value">
-                                {{ filter.preset[item[filter.name]] }}
+                                {{ filter.preset[item.product.category[filter.name]] || '--' }}
                               </div>
                             </template>
                             <template v-else>
                               <div class="value">
-                                {{ item[filter.name] }}
+                                {{ item.product.category[filter.name] || '--' }}
                               </div>
                             </template>
                           </div>
                         </template>
                       </template>
-                      <div>
-                        <span class="key">
-                          工艺
-                        </span>
-                        <span class="value ml-auto">
-                          {{ item.craft }}
-                        </span>
-                      </div>
                     </div>
                   </template>
                 </sale-order-nesting>
@@ -317,12 +248,6 @@ async function scanit() {
         </template>
       </div>
     </div>
-    <common-model v-model="isAddModel" title="添加" :show-ok="true" cancel-text="取消" confirm-text="确认添加" @confirm="addProduct">
-      <div class="flex justify-center items-center mb-6">
-        <n-input v-model:value="pCode" placeholder="输入产品条码" round />
-        <icon class="ml-2" name="i-icon:scanit" :size="18" @click="scanit" />
-      </div>
-    </common-model>
     <template v-if="accessorieAllocateInfo.status === 1">
       <common-button-one text="确认调拨" @confirm="confirm" />
     </template>
@@ -331,14 +256,14 @@ async function scanit() {
     </template>
     <!-- 状态为盘点中 增加产品 -->
     <template v-if="accessorieAllocateInfo.status === 1">
-      <common-create @click="create" />
+      <common-create @create="jump('/product/accessorie/allocate/addproduct', { id: accessorieAllocateInfo.id })" />
     </template>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .key {
-  --uno: 'text-size-[14px] color-[#666] dark:color-[#CBCDD1] mr-2';
+  --uno: 'text-size-[14px] whitespace-nowrap color-[#666] dark:color-[#CBCDD1] mr-2';
 }
 .value {
   --uno: 'text-size-[14px] color-[#333] dark:color-[#fff] w-[60%]';

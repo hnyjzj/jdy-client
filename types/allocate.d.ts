@@ -53,7 +53,7 @@ interface Allocate {
   /**
    * 调拨商品
    */
-  product?: ProductFinisheds[]
+  products?: ProductFinisheds[]
   /**
    * 调拨状态
    * 0:全部 1:盘点中 2:调拨中 3:已完成 4:已取消

@@ -6,7 +6,7 @@ interface ProductAccessories {
   /**
    * 配件条目ID
    */
-  code?: string
+  code: string
   /**
    * 创建时间
    */
@@ -30,7 +30,7 @@ interface ProductAccessories {
   /**
    * ID
    */
-  id?: string
+  id: string
   /**
    * 状态
    */
@@ -59,4 +59,5 @@ interface ProductAccessories {
    * 入库入网费
    */
   assess_fee: number
+  quantity: number
 }

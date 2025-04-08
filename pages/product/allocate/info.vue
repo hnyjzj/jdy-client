@@ -21,7 +21,7 @@ if (route.query.id) {
 type ProductKey = keyof ProductFinisheds
 /** 汇总 */
 function sum(key: ProductKey) {
-  return allocateInfo.value?.product?.reduce((sum, item) => sum + item[key], 0) ?? 0
+  return allocateInfo.value?.products?.reduce((sum, item) => sum + item[key], 0) ?? 0
 }
 
 const goodsStatus = {
@@ -231,7 +231,7 @@ async function scanit() {
                       总件数
                     </div>
                     <div class="info-val">
-                      {{ allocateInfo.product?.length }}
+                      {{ allocateInfo.products?.length }}
                     </div>
                   </div>
                   <div class="info-row">
@@ -264,12 +264,12 @@ async function scanit() {
           </common-gradient>
         </div>
 
-        <template v-if="allocateInfo.product?.length">
+        <template v-if="allocateInfo.products?.length">
           <div class="p-4 blur-bgc rounded-6">
             <div class="text-[14px] pb-4 text-color">
-              共 {{ allocateInfo.product.length }} 条数据
+              共 {{ allocateInfo.products.length }} 条数据
             </div>
-            <template v-for="(item, index) in allocateInfo.product" :key="index">
+            <template v-for="(item, index) in allocateInfo.products" :key="index">
               <div class="grid mb-3">
                 <sale-order-nesting :title="item.name" :info="allocateInfo">
                   <template #left>

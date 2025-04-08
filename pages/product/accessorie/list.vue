@@ -108,6 +108,11 @@ function goAdd() {
                         {{ item.preset[info.category[item.name]] }}
                       </div>
                     </template>
+                    <template v-else-if="item.name === 'code'">
+                      <div class="text-align-end val">
+                        {{ info.code }}
+                      </div>
+                    </template>
                     <template v-else>
                       <div class="text-align-end val">
                         {{ info.category[item.name] }}

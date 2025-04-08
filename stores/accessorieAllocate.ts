@@ -87,9 +87,9 @@ export const useAccessorieAllocate = defineStore('AccessorieAllocate', {
       }
     },
     /** 删除调拨产品 */
-    async remove(id: AccessorieAllocate['id'], code: ProductFinisheds['code']) {
+    async remove(id: AccessorieAllocate['id'], product_id: ProductFinisheds['code']) {
       try {
-        const { data } = await https.put<{ id: string, code: string }, any >('/product/accessorie/allocate/remove', { id, code })
+        const { data } = await https.put<{ id: string, product_id: string }, any >('/product/accessorie/allocate/remove', { id, product_id })
         return data.value
       }
       catch (error) {
@@ -97,9 +97,9 @@ export const useAccessorieAllocate = defineStore('AccessorieAllocate', {
       }
     },
     /** 添加调拨产品 */
-    async add(id: AccessorieAllocate['id'], code: ProductFinisheds['code']) {
+    async addAccessorieAllocate(params: AddAccessorieAllocateReq) {
       try {
-        const { data } = await https.put<{ id: string, code: string }, any >('/product/accessorie/allocate/add', { id, code })
+        const { data } = await https.put<AddAccessorieAllocateReq, any >('/product/accessorie/allocate/add', params)
         return data.value
       }
       catch (error) {

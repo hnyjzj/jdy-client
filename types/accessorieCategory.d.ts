@@ -80,4 +80,8 @@ interface AccessorieCategory {
    * 入库入网费
    */
   in_access_fee: number
+  /**
+   * 调拨数量
+   */
+  quantity: number
 }
