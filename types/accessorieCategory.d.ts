@@ -3,7 +3,7 @@ interface AccessorieCategory {
   /**
    * id-条目code
    */
-  id
+  id: string
   /**
    * 入网费
    */

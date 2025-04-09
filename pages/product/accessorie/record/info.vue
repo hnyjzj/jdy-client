@@ -52,7 +52,7 @@ if (route.query.id) {
               </div>
               <div class="h-0.5 bg-[#E6E6E8]" />
               <div class="other-information flex flex-col" uno-sm="grid grid-cols-[1fr_1fr] gap-x-10">
-                <accessorie-record-table :filter-list="categoryFilterListToArray" :new-accessories="historyInfo.new_value.product ? historyInfo.new_value.product : historyInfo.new_value" :old-accessories="historyInfo.new_value.product ? historyInfo.new_value.product : historyInfo.new_value" />
+                <accessorie-record-table :filter-list="categoryFilterListToArray" :new-accessories="historyInfo?.new_value?.product ? historyInfo.new_value.product : historyInfo.new_value" :old-accessories="historyInfo?.old_value?.product ? historyInfo.old_value.product : historyInfo.old_value" />
               </div>
             </div>
           </div>

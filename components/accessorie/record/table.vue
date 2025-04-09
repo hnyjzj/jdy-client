@@ -35,11 +35,11 @@ function isUpdate(key: ProductKey) {
       {{ props.oldAccessories.stock && props.newAccessories.stock ? props.newAccessories.stock - props.oldAccessories.stock : '' }}
     </div>
   </div>
-  <div class="info-row" :style="props.oldAccessories?.store_id === props.newAccessories?.store_id ? 'color: #FF4D4F' : ''">
+  <div class="info-row">
     <div class="info-title">
       所属门店
     </div>
-    <div class="info-val">
+    <div class="info-val" :style="props.oldAccessories?.store?.name !== props.newAccessories?.store?.name ? 'color: #FF4D4F' : ''">
       {{ props.newAccessories?.store?.name }}
     </div>
   </div>
