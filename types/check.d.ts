@@ -9,9 +9,13 @@ interface Check {
    */
   category?: number[]
   /**
-   * 产品大类
+   * 成品大类
    */
   class?: number[]
+  /**
+   * 旧料大类
+   */
+  class_old?: number[]
   /**
    * 产品工艺
    */
