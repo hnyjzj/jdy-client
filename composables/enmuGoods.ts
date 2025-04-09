@@ -42,3 +42,6 @@ export enum GoodsType {
   /** 配件 */
   ProductAccessories,
 }
+
+/** 产品类型 */
+export const typePreset = { 1: '成品', 2: '旧料' }

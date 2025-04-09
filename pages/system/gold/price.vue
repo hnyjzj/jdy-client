@@ -45,6 +45,8 @@ async function getGoldParams() {
 /** 获取下拉消息信息 */
 function getOptions(name: keyof ProductFinisheds) {
   const preset = finishedFilterList.value[name]?.preset
+  if (!preset)
+    return []
   return optonsToSelect(preset)
 }
 const productType = {
@@ -149,7 +151,7 @@ function subtract(i: number) {
               <n-input-number v-model:value="item.price" placeholder="价格" :min="0" />
               <div class="grid grid-cols-[1fr_1fr] gap-2 mt-2">
                 <n-select v-model:value="item.product_material" placeholder="材质" :options="getOptions('material')" />
-                <n-select v-model:value="item.product_type" placeholder="类型" :options="getOptions('type')" />
+                <n-select v-model:value="item.product_type" placeholder="类型" :options="optonsToSelect(typePreset)" />
               </div>
               <div class="mt-2">
                 <n-select v-model:value="item.product_brand" placeholder="品牌(多选),不选默认为全部品牌" multiple :options="getOptions('brand')" />
