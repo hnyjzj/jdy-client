@@ -3,27 +3,27 @@ interface Check {
   /**
    * 产品品牌
    */
-  brand?: number[]
+  brand: number[]
   /**
    * 产品品类
    */
-  category?: number[]
+  category: number[]
   /**
    * 成品大类
    */
-  class?: number[]
+  class_finished?: number[]
   /**
    * 旧料大类
    */
-  class_old?: number[]
+  class_old: number[]
   /**
    * 产品工艺
    */
-  craft?: number[]
+  craft: number[]
   /**
    * 宝石种类
    */
-  gem?: number[]
+  gem: number[]
   /**
    * 监盘人ID
    */
@@ -35,11 +35,11 @@ interface Check {
   /**
    * 产品材质
    */
-  material?: number[]
+  material: number[]
   /**
    * 产品成色
    */
-  quality?: number[]
+  quality: number[]
   /**
    * 盘点范围
    */
@@ -66,15 +66,16 @@ interface CheckInfo {
   /**
    * 产品品牌
    */
-  brand?: number[]
+  brand: number[]
   /**
    * 产品品类
    */
-  category?: number[]
+  category: number[]
   /**
    * 产品大类
    */
-  class?: number[]
+  class_finished: number[]
+  class_old: number[]
   /**
    * 总件数
    */
@@ -106,7 +107,7 @@ interface CheckInfo {
   /**
    * 产品工艺
    */
-  craft?: number[]
+  craft: number[]
   /**
    * 创建时间
    */
@@ -118,7 +119,7 @@ interface CheckInfo {
   /**
    * 宝石种类
    */
-  gem?: number[]
+  gem: number[]
   /**
    * ID
    */
@@ -142,12 +143,12 @@ interface CheckInfo {
   /**
    * 产品材质
    */
-  material?: number[]
-  products?: checkProduct[]
+  material: number[]
+  products?: CheckProduct[]
   /**
    * 产品成色
    */
-  quality?: number[]
+  quality: number[]
   /**
    * 盘点范围
    */
@@ -177,13 +178,14 @@ interface CheckInfo {
   /**
    * 产品类型
    */
-  type?: number
+  type?: GoodsType1
   /**
    * 更新时间
    */
   updated_at?: Date
 }
 
-interface checkProduct {
-  product: ProductFinisheds
+interface CheckProduct {
+  product_finished: ProductFinisheds
+  product_old: ProductOlds
 }

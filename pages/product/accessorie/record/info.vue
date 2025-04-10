@@ -9,9 +9,14 @@ useSeoMeta({
 const route = useRoute()
 const recordId = ref()
 async function getInfo() {
-  await getProductHistoryInfo(recordId.value)
-  await getHistoryWhere()
-  await getAccessorieCategoryWhere()
+  try {
+    await getProductHistoryInfo(recordId.value)
+    await getHistoryWhere()
+    await getAccessorieCategoryWhere()
+  }
+  catch (error) {
+    throw new Error(`初始化失败: ${error || '未知错误'}`)
+  }
 }
 if (route.query.id) {
   recordId.value = route.query.id
