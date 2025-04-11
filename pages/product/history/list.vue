@@ -5,8 +5,8 @@ const { getFinishedWhere } = useFinished()
 const { historyFilterList, historyListTotal, productRocordList, HistoryFilterListToArray } = storeToRefs(useProductManage())
 const { finishedFilterList } = storeToRefs(useFinished())
 
-const { storesList } = storeToRefs(useStores())
-const { getStoreList } = useStores()
+const { storesList, myStore } = storeToRefs(useStores())
+const { getStoreList, getMyStore } = useStores()
 
 const searchKey = ref('')
 const complate = ref(0)
@@ -14,7 +14,6 @@ const complate = ref(0)
 const isFilter = ref(false)
 const pages = ref(1)
 const storeCol = ref()
-const store_id = ref()
 function changeStore() {
   storeCol.value = []
   storesList.value.forEach((item: Stores) => {
@@ -38,11 +37,12 @@ async function clearSearch() {
 }
 // 获取货品列表
 async function getList(where = {} as Partial<HistoryWhere>) {
-  if (store_id.value) {
-    where.store_id = store_id.value
-  }
   const params = { page: pages.value, limit: 10 } as ReqList<HistoryWhere>
   params.where = where
+  if (myStore.value.id) {
+    where.store_id = myStore.value.id
+    where.type = [1, 2]
+  }
   const res = await getProductHistory(params)
   return res as any
 }
@@ -52,6 +52,7 @@ try {
   await getFinishedWhere()
   await changeStore()
   await getStoreList({ page: 1, limit: 20 })
+  await getMyStore({ page: 1, limit: 20 })
 }
 catch (error) {
   $toast.error('初始化数据失败')
@@ -93,16 +94,11 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
     <div class="px-[16px] pb-10">
       <template v-if="productRocordList?.length">
         <product-manage-card :list="productRocordList">
+          <template #top="{ info }">
+            <div>{{ historyFilterList.action?.preset[info.action] }}</div>
+          </template>
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-              <div class="flex-between">
-                <div>
-                  操作
-                </div>
-                <div class="text-align-end">
-                  {{ historyFilterList.action?.preset[info.action] }}
-                </div>
-              </div>
               <div class="flex-between">
                 <div>
                   操作时间
@@ -132,7 +128,7 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
                   所属门店
                 </div>
                 <div class="text-align-end">
-                  {{ info?.new_value?.store.name }}
+                  {{ info?.new_value?.store?.name }}
                 </div>
               </div>
               <div class="flex-between">

@@ -31,7 +31,6 @@ async function clearSearch() {
 async function getList(where = {} as Partial<ProductOlds>) {
   const params = { page: pages.value, limit: 10 } as ReqList<ProductOlds>
   params.where = where
-  params.where.type = type.value
   const res = await getOldList(params)
   return res as any
 }

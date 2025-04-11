@@ -196,7 +196,7 @@ function removeImg(data: { index: number }) {
         <div class="pb-20 w-[100%]">
           <div uno-sm="grid grid-cols-[1fr_1fr] gap-4">
             <template v-for="(item, index) in finishedFilterListToArray" :key="index">
-              <template v-if="item.update">
+              <template v-if="item.update && item.name !== 'images'">
                 <div class="mb-4">
                   <div class="label">
                     {{ item.label }}

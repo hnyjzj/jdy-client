@@ -2,16 +2,6 @@
 const props = defineProps<{
   list: T[]
 }>()
-const goodsStatus = ref({
-  1: '草稿',
-  2: '正常',
-  3: '已报损',
-  4: '已调拨',
-  5: '已出售',
-  6: '已定出',
-  7: '盘点中',
-  8: '无库存',
-} as Record<string, string>)
 </script>
 
 <template>
@@ -29,7 +19,7 @@ const goodsStatus = ref({
                 </div>
                 <template v-if="item?.status">
                   <div class="enter-title" :class="item.status === 1 ? 'draft' : item.status === 2 ? 'finish' : 'cancel'">
-                    {{ goodsStatus[item.status] }}
+                    {{ GoodsStatusMap[item.status as GoodsStatus] }}
                   </div>
                 </template>
                 <div class="font-semibold line-height-[20px] text-size-[14px]">

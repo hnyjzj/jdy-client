@@ -1,8 +1,7 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { myStoreList } = storeToRefs(useStores())
+const { myStoreList, myStore } = storeToRefs(useStores())
 const { getMyStore } = useStores()
-
 const { getFinishedEnterList, getFinishedEnterWhere, createFinishedEnter } = useFinishedEnter()
 
 const { EnterList, EnterToArray, EnterListTotal } = storeToRefs(useFinishedEnter())
@@ -30,6 +29,12 @@ function changeStore() {
 await getMyStore({ page: 1, limit: 20 })
 await changeStore()
 
+if (myStore.value.id) {
+  enterParams.value.store_id = myStore.value.id
+}
+else {
+  $toast.error('请先选择门店')
+}
 useSeoMeta({
   title: '入库单',
 })
@@ -220,6 +225,7 @@ function sum(info: FinishedEnter, key: keyof ProductFinisheds) {
           </div>
           <n-select
             v-model:value="enterParams.store_id" :options="storeCol"
+            disabled
             clearable />
         </div>
         <div class="flex mb-4">
