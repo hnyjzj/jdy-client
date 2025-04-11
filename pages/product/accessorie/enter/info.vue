@@ -1,5 +1,10 @@
 <script setup lang="ts">
+import { set } from '@vueuse/core'
+
 const { $toast } = useNuxtApp()
+const route = useRoute()
+const router = useRouter()
+
 const { getAccessorieEnterInfo, cancelAccessorieEnter, successAccessorieEnter, addAccessorieEnter, delAccessorieEnter } = useAccessorieEnter()
 const { enterInfo } = storeToRefs(useAccessorieEnter())
 const { accessorieFilterList } = storeToRefs(useAccessorie())
@@ -7,18 +12,16 @@ const { getAccessorieWhere } = useAccessorie()
 const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
 const { getAccessorieCategoryWhere } = useAccessorieCategory()
 
-useSeoMeta({
-  title: '入库单详情',
-})
-const route = useRoute()
-const router = useRouter()
-// 入库状态
-const enterStatus = {
-  1: '草稿',
-  2: '已完成',
-  3: '已撤销',
-}
+useSeoMeta({ title: '入库单详情' })
+
+/** 当前入库单 ID 和待删除产品 ID */
+const enterId = ref('')
+const deleteId = ref('')
+
+/** 上传组件引用 */
 const uploadRef = ref()
+
+/** 控制弹窗/对话框显示状态 */
 const isImportModel = ref(false)
 const isChooseModel = ref(false)
 const deleteDialog = ref(false)
@@ -26,105 +29,114 @@ const clearDialog = ref(false)
 const cancelDialog = ref(false)
 const finishDialog = ref(false)
 
-await getAccessorieCategoryWhere()
+/** 页面加载时，初始化数据 */
+onMounted(async () => {
+  await getAccessorieCategoryWhere()
 
-/** 要删除的产品code */
-const deleteId = ref('')
-const enterId = ref('')
-if (route.query.id) {
-  enterId.value = route.query.id as string
-  await getInfo()
-  await getAccessorieWhere()
+  if (route.query.id) {
+    enterId.value = route.query.id as string
+    await fetchEnterInfo()
+    await getAccessorieWhere()
+  }
+})
+
+/** 获取入库单详细信息 */
+async function fetchEnterInfo() {
+  if (enterId.value) {
+    await getAccessorieEnterInfo(enterId.value)
+  }
 }
 
-async function getInfo() {
-  await getAccessorieEnterInfo(enterId.value)
-}
-
-/** 汇总 */
-function sum(key: string) {
-  return enterInfo.value?.products?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
-}
-
+/** 跳转添加产品页面 */
 function goAdd() {
   isChooseModel.value = false
   jump('/product/accessorie/enter/addproduct', { id: enterId.value })
 }
 
-/** 撤销入库 */
+/** 撤销入库单操作 */
 async function cancel() {
   const res = await cancelAccessorieEnter(enterInfo.value.id)
   if (res?.code === HttpCode.SUCCESS) {
-    await getInfo()
+    await fetchEnterInfo()
     setTimeout(() => {
-      router.go(-1)
+      router.back()
     }, 1000)
-    return $toast.success('撤销成功')
+    $toast.success('撤销成功', 1000)
   }
   $toast.error(res?.message ?? '撤销失败')
 }
 
+/** 点击清空时调用，触发确认弹窗 */
 function clearFun() {
-  if (!enterInfo.value?.products || enterInfo.value.products.length === 0) {
-    return $toast.warning('货品为空')
+  if (!enterInfo.value?.products?.length) {
+    $toast.warning('货品为空')
+    return
   }
   clearDialog.value = true
 }
 
+/** 点击完成按钮时调用，触发确认弹窗 */
 function finishFun() {
-  if (!enterInfo.value.products?.length) {
-    return $toast.error('请添加货品入库记录')
+  if (!enterInfo.value?.products?.length) {
+    $toast.warning('货品为空')
+    return
   }
   finishDialog.value = true
 }
 
-/** 完成入库 */
+/** 完成入库操作 */
 async function finish() {
   const res = await successAccessorieEnter(enterInfo.value.id)
   if (res?.code === HttpCode.SUCCESS) {
-    await getInfo()
+    await fetchEnterInfo()
     return $toast.success('完成入库成功')
   }
   $toast.error(res?.message ?? '完成入库失败')
 }
 
-/** 删除入库的条目 */
+/** 删除入库单中的指定产品 */
 async function delProduct() {
-  const params = {
+  const res = await delAccessorieEnter({
     enter_id: enterInfo.value.id,
     product_ids: [deleteId.value],
-  } as DelAccessorieEnter
-  const res = await delAccessorieEnter(params)
+  })
+
   if (res?.code === HttpCode.SUCCESS) {
-    await getInfo()
+    await fetchEnterInfo()
   }
 }
 
-/** 清空已经入库的条目 */
+/** 清空入库单中所有产品 */
 async function clearProduct() {
-  const idAll = enterInfo.value?.products?.map(item => item.id)
-  if (!idAll || !idAll.length) {
+  const ids = enterInfo.value?.products?.map(item => item.id) ?? []
+  if (!ids.length)
     return
-  }
-  const params = {
+
+  const res = await delAccessorieEnter({
     enter_id: enterInfo.value.id,
-    product_ids: idAll,
-  } as DelAccessorieEnter
-  const res = await delAccessorieEnter(params)
+    product_ids: ids,
+  })
   if (res?.code === HttpCode.SUCCESS) {
-    await getInfo()
+    await fetchEnterInfo()
   }
 }
 
-async function bulkupload(e: any) {
-  const params = {} as AccessorieEnterReq
-  params.enter_id = enterInfo.value.id
-  params.products = e
-  const res = await addAccessorieEnter(params)
+/**
+ * 批量上传产品信息
+ * @param data - 产品数组（包含每个产品的基本数据）
+ */
+async function bulkupload(data: any) {
+  const res = await addAccessorieEnter({
+    enter_id: enterInfo.value.id,
+    products: data,
+  })
+
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('添加成功')
-    await getInfo()
+    await fetchEnterInfo()
   }
+
+  // 关闭弹窗
   isChooseModel.value = false
   isImportModel.value = false
 }
@@ -138,156 +150,8 @@ async function bulkupload(e: any) {
           <div class="w-[40%] text-[#fff]">
             <product-manage-company />
           </div>
-          <div class="rounded-6 bg-white w-auto blur-bga top">
-            <common-gradient title="基础信息">
-              <template #body>
-                <div class="flex flex-col gap-4">
-                  <div class="operation-information flex flex-col gap-1">
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="info-title">
-                        操作人
-                      </div>
-                      <div class="info-val">
-                        {{ enterInfo?.operator?.nickname }}
-                      </div>
-                    </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="info-title">
-                        入库单号
-                      </div>
-                      <div class="info-val">
-                        {{ enterInfo.id }}
-                      </div>
-                    </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="info-title">
-                        状态
-                      </div>
-                      <div class="info-val">
-                        {{ enterStatus[enterInfo.status] }}
-                      </div>
-                    </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="info-title">
-                        备注
-                      </div>
-                      <div class="info-val">
-                        {{ enterInfo.remark }}
-                      </div>
-                    </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="info-title">
-                        总件数
-                      </div>
-                      <div class="info-val">
-                        {{ enterInfo.products?.length || 0 }}
-                      </div>
-                    </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="info-title">
-                        总重量
-                      </div>
-                      <div class="info-val">
-                        {{ sum('weight') || 0 }}
-                      </div>
-                    </div>
-                    <div class="other-information flex flex-col gap-1">
-                      <div class="flex-start gap-3 text-sm font-normal">
-                        <div class="info-title">
-                          创建时间
-                        </div>
-                        <div class="info-val">
-                          {{ formatTimestampToDateTime(enterInfo.created_at) }}
-                        </div>
-                      </div>
-                      <div class="flex-start gap-3 text-sm font-normal">
-                        <div class="info-title">
-                          完成时间
-                        </div>
-                        <div class="info-val">
-                          {{ formatTimestampToDateTime(enterInfo.updated_at) }}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="h-0.5 bg-[#E6E6E8]" />
-                  <div class="product-information flex flex-col gap-1">
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="info-title">
-                        入库数量
-                      </div>
-                      <div class="info-val">
-                        {{ enterInfo.products?.length }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </template>
-            </common-gradient>
-          </div>
-
-          <template v-if="enterInfo.products?.length">
-            <div class="p-4 blur-bgc rounded-6">
-              <div class="text-[14px] pb-4 text-color">
-                共 {{ enterInfo.products.length }}
-              </div>
-              <template v-for="(item, index) in enterInfo.products" :key="index">
-                <div class="grid mb-3">
-                  <sale-order-nesting :title="item.name" :info="enterInfo">
-                    <template #left>
-                      <template v-if="enterInfo.status === 1">
-                        <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="deleteDialog = true;deleteId = item.id" />
-                      </template>
-                    </template>
-                    <template #info>
-                      <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 gap-4">
-                        <template v-for="(filter, findex) in categoryFilterListToArray" :key="findex">
-                          <template v-if="filter.find">
-                            <div class="flex">
-                              <div class="key">
-                                {{ filter.label }}
-                              </div>
-                              <template v-if="filter.input === 'select'">
-                                <div class="value">
-                                  {{ filter.preset[item.category[filter.name]] }}
-                                </div>
-                              </template>
-                              <template v-else-if="filter.input === 'switch'">
-                                <div class="value">
-                                  {{ item.category[filter.name] ? '是' : '否' }}
-                                </div>
-                              </template>
-                              <template v-else>
-                                <div class="value">
-                                  {{ item.category[filter.name] }}
-                                </div>
-                              </template>
-                            </div>
-                          </template>
-                        </template>
-                        <div class="flex">
-                          <div class="key">
-                            入库数量
-                          </div>
-                          <div class="value">
-                            {{ item.stock }}
-                          </div>
-                        </div>
-                        <div class="flex">
-                          <div class="key">
-                            入库入网费
-                          </div>
-                          <div class="value">
-                            {{ item.access_fee }}
-                          </div>
-                        </div>
-                      </div>
-                    </template>
-                  </sale-order-nesting>
-                </div>
-              </template>
-            </div>
-          </template>
+          <accessorie-enter-base :enter-info="enterInfo" />
+          <accessorie-enter-info :info="enterInfo" :filter-list="categoryFilterListToArray" @del="(e) => { deleteDialog = true;deleteId = e }" />
         </div>
       </div>
     </common-layout-center>
@@ -322,15 +186,6 @@ async function bulkupload(e: any) {
 </template>
 
 <style lang="scss" scoped>
-.key {
-  --uno: 'text-size-[14px] color-[#666] dark:color-[#CBCDD1] mr-2';
-}
-.value {
-  --uno: 'text-size-[14px] color-[#333] dark:color-[#fff] w-[60%]';
-  text-overflow: ellipsis; /* 超出显示省略号 */
-  white-space: nowrap; /* 禁止换行 */
-  overflow: hidden;
-}
 .info-title {
   --uno: 'text-color';
 }

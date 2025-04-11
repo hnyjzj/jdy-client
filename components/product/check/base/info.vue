@@ -15,11 +15,11 @@ const props = defineProps<{
               {{ item.label }}
             </div>
             <div class="value text-[rgba(57,113,243,1)]">
-              {{ item.preset[1] || '--' }}
+              {{ item.preset[info[item.name]] || '--' }}
             </div>
           </div>
         </template>
-        <template v-if="item.input === 'switch'">
+        <template v-else-if="item.input === 'switch'">
           <div class="flex">
             <div class="key">
               {{ item.label }}
@@ -29,7 +29,17 @@ const props = defineProps<{
             </div>
           </div>
         </template>
-        <template v-else-if="item.input === 'text' || item.input === 'number' || item.input === 'textarea'">
+        <template v-else-if="item.input === 'text' || item.input === 'textarea'">
+          <div class="flex">
+            <div class="key">
+              {{ item.label }}
+            </div>
+            <div class="value text-[rgba(57,113,243,1)]">
+              {{ props.info[item.name] || '--' }}
+            </div>
+          </div>
+        </template>
+        <template v-else-if="item.input === 'number'">
           <div class="flex">
             <div class="key">
               {{ item.label }}
