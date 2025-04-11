@@ -7,18 +7,19 @@ useSeoMeta({
 })
 const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
-const { getFinishedList } = useFinished()
+const { getFinishedList, getFinishedWhere, getFinishedsClass } = useFinished()
+const { finishedFilterList } = storeToRefs(useFinished())
 const { getStoreStaffList } = useStores()
-const { getSaleWhere, submitOrder, getOrderDetail } = useOrder()
+const { getSaleWhere, submitOrder, getOrderDetail, getOldList } = useOrder()
 const { getGoldPrice } = useGoldPrice()
 const { goldList } = storeToRefs(useGoldPrice())
-const { filterList } = storeToRefs(useOrder())
+const { filterList, OldObj } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
-const { getOldWhere } = useOld()
-const { searchOld } = storeToRefs(useOld())
+const { getOldWhere, getOldClass, getOldScoreProportion } = useOld()
+
 const { memberList } = storeToRefs(useMemberManage())
-const { getAccessorieCategoryList, getAccessorieCategoryWhere } = useAccessorieCategory()
-const { categoryList, categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
+const { getAccessorieList, getAccessorieWhere, getAccessorieScoreRate } = useAccessorie()
+const { accessorieList, accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { finishedList } = storeToRefs(useFinished())
 const formRef = ref<FormInst | null>(null)
 const formData = ref<Orders>({
@@ -38,14 +39,16 @@ const formData = ref<Orders>({
     performance_rate: 100,
     is_main: true,
   }],
+  payment_method: [{ method: undefined, money: 0 }], // 支付方式
 })
 // 展示商品列表
 const showProductList = ref<OrderProducts[]>([])
-const showPartsList = ref<AccessorieCategory[]>([])
+const showPartsList = ref<ProductAccessories[]>([])
 const showMasterialsList = ref<ProductOlds[]>([])
 await getSaleWhere()
 await getOldWhere()
-await getAccessorieCategoryWhere()
+await getFinishedWhere()
+await getAccessorieWhere()
 await getGoldPrice(myStore.value.id)
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { phone: val } })
 const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
@@ -101,21 +104,42 @@ const searchProductList = async (val: string, type: string) => {
 }
 
 const searchOlds = async (val: string) => {
-  const res = await getFinishedList({ page: 1, limit: 10, where: { code: val, status: 5 } })
-  console.log(res)
+  await getOldList({ page: 1, limit: 10, where: { code: val, status: 5 } })
 }
 
 const searchParts = async (val: string, type: string) => {
   if (type === 'number') {
-    await getAccessorieCategoryList({ page: 1, limit: 10, where: { id: val, store_id: myStore.value.id } })
+    await getAccessorieList({ page: 1, limit: 10, where: { id: val, store_id: myStore.value.id } })
   }
   if (type === 'code') {
-    await getAccessorieCategoryList({ page: 1, limit: 10, where: { code: val, store_id: myStore.value.id } })
+    await getAccessorieList({ page: 1, limit: 10, where: { code: val, store_id: myStore.value.id } })
   }
   if (type === 'name') {
-    await getAccessorieCategoryList({ page: 1, limit: 10, where: { name: val, store_id: myStore.value.id } })
+    await getAccessorieList({ page: 1, limit: 10, where: { name: val, store_id: myStore.value.id } })
   }
 }
+
+// 获取成品积分比例
+const checkProductClass = async (params: { class: number }) => {
+  const data = await getFinishedsClass(params)
+  if (data.rate) {
+    return data.rate as string
+  }
+}
+
+// 获取旧料大类，并获取旧料积分比例
+const CheckOldClass = async (params: Partial<ProductOlds>) => {
+  const res = await getOldClass(params)
+  if (res?.value) {
+    const data = await getOldScoreProportion({ class: res?.value })
+    return { rate: data, res }
+  }
+  else {
+    $toast.error('获取大类失败！')
+  }
+}
+// 获取配件积分比例
+const checkAccessoriesScore = async (params: { classes: AccessorieCategory['type_part'][] }) => await getAccessorieScoreRate(params)
 
 // 点击验证表单
 const handleValidateButtonClick = async (e: MouseEvent) => {
@@ -192,7 +216,9 @@ const openProductListFn = () => {
           <sale-add-product
             v-model="showProductList"
             :product-list="finishedList"
+            :finished-filter-list="finishedFilterList"
             :price="goldList"
+            :check-product-class="checkProductClass"
             @search="searchProductList"
             @open-product-list="openProductListFn"
           />
@@ -200,20 +226,27 @@ const openProductListFn = () => {
         <div class="pb-[16px]">
           <sale-add-masterials
             v-model:list="showMasterialsList"
-            v-model:now-old-master="searchOld"
+            v-model:now-old-master="OldObj"
+            :check-old-class="CheckOldClass"
             @search="searchOlds"
           />
         </div>
         <div class="pb-[16px]">
           <sale-add-parts
             v-model:list="showPartsList"
-            :where="categoryFilterListToArray"
-            :part-list="categoryList"
+            :where="accessorieFilterListToArray"
+            :part-list="accessorieList"
+            :check-accessories-score="checkAccessoriesScore"
             @search="searchParts"
-
+            @clear-list="() => accessorieList = [] "
           />
         </div>
-        <sale-add-settlement v-model:form="formData" v-model:show-list="showProductList" />
+        <sale-add-settlement
+          v-model:form="formData"
+          v-model:show-list="showProductList"
+          v-model:master="showMasterialsList"
+          v-model:parts="showPartsList"
+          :filter-list="filterList" />
         <div class="h-[80px] bg-[#fff] fixed z-1">
           <div class="btn grid-12 px-[16px]">
             <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">

@@ -150,7 +150,7 @@ interface ProductOlds {
   /**
    * 金重
    */
-  weight_metal: string
+  weight_metal: number
   /**
    * 杂料重
    */
@@ -159,4 +159,12 @@ interface ProductOlds {
    * 总重
    */
   weight_total: number
+  /**
+   * 积分
+   */
+  score?: number
+  /**
+   *  大类
+   */
+  class: number
 }

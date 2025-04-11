@@ -1,15 +1,112 @@
 <script lang="ts" setup>
 import { calc } from 'a-calc'
 
+const props = defineProps<{
+  filterList: Where<OrderWhere>
+}>()
 const formData = defineModel<Orders>('form', { default: {} })
+// 成品列表数据
 const showProductList = defineModel<OrderProducts[]>('showList', { default: [] })
-// 计算应付金额
-const payMoney = computed(() => {
+// 旧料列表数据
+const masterList = defineModel<ProductOlds[]>('master', { default: [] })
+// 配件列表数据
+const PartsList = defineModel<ProductAccessories[]>('parts', { default: [] })
+
+// 转换支付方式下拉菜单
+const payMethods = optonsToSelect(props.filterList.payment_method?.preset)
+const addNewMethod = () => {
+  formData.value.payment_method.push({ method: undefined, money: 0 })
+}
+
+// 删除支付方式
+const deleteMethod = (index: number) => {
+  formData.value.payment_method.splice(index, 1)
+}
+
+// 计算成品列表金额
+const productMoney = computed(() => {
   const total = ref(0)
   total.value = showProductList.value.reduce((total, item) => {
-    return calc('(t + i) | <=2,!n', { t: total, i: item.amount })
+    return calc('(t + i) | <=0,!n', { t: total, i: item.amount || 0 })
   }, 0)
-  total.value = calc('(t * r) | <=2,!n', { t: total.value, r: ((formData.value.discount_rate || 10) * 0.1) })
+  return total.value
+})
+// 旧料金额
+const masterMoney = computed(() => {
+  const total = ref(0)
+  total.value = masterList.value.reduce((total, item) => {
+    return calc('(t + i) | <=0,!n', { t: total, i: item.recycle_price || 0 })
+  }, 0)
+  return total.value
+})
+// 计算配件总金额
+const PartsListMoney = computed(() => {
+  const total = ref(0)
+  total.value = PartsList.value.reduce((total, item) => {
+    return calc('(t + i) | <=0,!n', { t: total, i: item.amount || 0 })
+  }, 0)
+  return total.value
+})
+
+// 计算成品列表加的积分
+const productListScore = computed(() => {
+  const total = ref(0)
+  total.value = showProductList.value.reduce((total, item) => {
+    return calc('(t + i) | <=0,!n', { t: total, i: item.integral || 0 })
+  }, 0)
+  return total.value
+})
+// 计算旧料列表 减的积分
+const masterListScore = computed(() => {
+  const total = ref(0)
+  total.value = masterList.value.reduce((total, item) => {
+    return calc('(t + i) | <=0,!n', { t: total, i: item.score || 0 })
+  }, 0)
+  return total.value
+})
+// 配件积分
+const PartsListScore = computed(() => {
+  const total = ref(0)
+  total.value = PartsList.value.reduce((total, item) => {
+    return calc('(t + i ) | <=0,!n', { t: total, i: item.integral || 0 })
+  }, 0)
+  return total.value
+})
+// 总积分计算
+const totalScore = computed(() => {
+  return calc('(a - b + c) | =0,!n', {
+    a: productListScore.value,
+    b: masterListScore.value,
+    c: PartsListScore.value,
+  })
+})
+
+// 实际需要支付的金额
+const payMoney = computed(() => {
+  const total = ref(0) // 成品总金额
+  total.value = calc('(a - b + c) | =0,!n', {
+    a: productMoney.value,
+    b: PartsListMoney.value,
+    c: masterMoney.value,
+  })
+  return total.value
+})
+// 支付方式之和
+const payMethodsTotal = computed(() => {
+  const total = ref(0)
+  formData.value.payment_method.forEach((item) => {
+    total.value += item.money
+  })
+  return total.value
+})
+
+// 未支付的金额
+const unPayMoney = computed(() => {
+  const total = ref(0)
+  total.value = calc('(a - b) | =0,!n', {
+    a: payMoney.value,
+    b: payMethodsTotal.value,
+  })
   return total.value
 })
 </script>
@@ -18,41 +115,61 @@ const payMoney = computed(() => {
   <common-fold title="结算信息" :is-collapse="false">
     <div class="p-[16px]">
       <div>
-        <div class="flex justify-between">
-          <n-grid :cols="24" :x-gap="8">
-            <n-form-item-gi
-              :span="12"
-              label="整单折扣" label-placement="top"
-            >
-              <n-input-number
-                v-model:value="formData.discount_rate"
-                placeholder="请输入折扣"
-                round
-                :precision="2"
-                min="1"
-                max="10"
-                :show-button="false"
-              />
-            </n-form-item-gi>
-
-            <n-form-item-gi
-              :span="12"
-              label="抹零金额" label-placement="top"
-
-            >
-              <n-input-number
-                v-model:value="formData.amount_reduce"
-                placeholder="0"
-                round
-                min="0"
-                :show-button="false"
-              />
-            </n-form-item-gi>
-          </n-grid>
+        <div class="border-y-[#E6E6E8] border border-b-solid py-[12px] mb-[12px]">
+          <common-cell label="货品金额" :value="productMoney" />
+          <common-cell label="配件礼品" :value="PartsListMoney" />
+          <common-cell label="旧料抵扣" :value="masterMoney" />
+          <common-cell label="优惠金额" value="0" />
+          <common-cell label="订金抵扣" value="0" />
+          <common-cell label="实付金额" value="0" label-color="#3971F3" val-color="#3971F3" />
+          <common-cell label="积分合计：" :value="`销售(+${productListScore}) 旧料(-${masterListScore})  配件礼品(+${PartsListScore}) `" label-color="#3971F3" val-color="#3971F3" />
+          <common-cell label="实际积分" :value="totalScore" label-color="#3971F3" val-color="#3971F3" />
+          <common-cell label="实付金额" :value="payMoney" label-color="#3971F3" val-color="#3971F3" />
+        </div>
+        <div class=" ">
+          <template v-for="(item, index) in formData.payment_method" :key="index">
+            <div>
+              <n-grid :cols="24" :x-gap="8">
+                <n-form-item-gi
+                  :span="12"
+                  label="支付方式" label-placement="top"
+                >
+                  <n-select
+                    v-model:value="item.method" :options="payMethods" />
+                </n-form-item-gi>
+                <n-form-item-gi
+                  :span="12"
+                  label="金额" label-placement="top"
+                >
+                  <div class="w-full">
+                    <n-input-number
+                      v-model:value="item.money"
+                      placeholder="支付金额"
+                      round
+                      min="0"
+                      :show-button="false"
+                    />
+                  </div>
+                  <div>
+                    <template v-if="index === 0">
+                      <div class="wh-[32px] ml-[5px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3] text-[26px]" @click="addNewMethod()">
+                        +
+                      </div>
+                    </template>
+                    <template v-if="index !== 0">
+                      <div class="wh-[32px] ml-[5px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3]  text-[26px]" @click="deleteMethod(index)">
+                        <div class="w-[10px] h-[2px] bg-[#3971F3]" />
+                      </div>
+                    </template>
+                  </div>
+                </n-form-item-gi>
+              </n-grid>
+            </div>
+          </template>
         </div>
         <div class="border-y-[#E6E6E8] border border-y-solid py-[12px] mb-[12px]">
           <div class="text-[16px] color-[#3971F3] line-height-[24px] text-right font-semibold">
-            实付金额:{{ payMoney }}
+            剩余未支付:{{ unPayMoney }}
           </div>
         </div>
         <n-form-item

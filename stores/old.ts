@@ -9,6 +9,7 @@ export const useOld = defineStore('Old', {
      */
     oldFilterListToArray: FilterWhere<ProductOlds>[]
     searchOld: ProductOlds
+    rate: string
   } => ({
     oldFilterList: {} as Where<ProductOlds>,
     oldList: [],
@@ -16,6 +17,7 @@ export const useOld = defineStore('Old', {
     oldListTotal: 0,
     oldFilterListToArray: {} as FilterWhere<ProductOlds>[],
     searchOld: {} as ProductOlds,
+    rate: '',
   }),
   actions: {
     // 旧料列表
@@ -36,6 +38,22 @@ export const useOld = defineStore('Old', {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
       }
     },
+    // 获取旧料大类
+    async getOldClass(params: Partial<ProductOlds>) {
+      const { data } = await https.post<{ label: string, value: number }, Partial<ProductOlds>>('/product/old/get_class', params)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return data.value.data
+      }
+    },
+    // 获取旧料积分比例
+    async getOldScoreProportion(params: { class: ProductOlds['class'] }) {
+      const { data } = await https.post<any, { class: ProductOlds['class'] }>('/member/integral/rule/old', params)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.rate = data.value.data.rate
+        return data.value.data.rate
+      }
+    },
+
     // 获取旧料筛选列表
     async getOldWhere() {
       try {

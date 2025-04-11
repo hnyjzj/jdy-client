@@ -85,7 +85,7 @@ interface ProductFinisheds {
   /**
    * 标签价
    */
-  label_price: number | string
+  label_price: string
   /**
    * 工费
    */
@@ -159,19 +159,19 @@ interface ProductFinisheds {
   /**
    * 主石重
    */
-  weight_gem: number | string
+  weight_gem: number
   /**
    * 金重
    */
-  weight_metal: number | string
+  weight_metal: number
   /**
    * 杂料重
    */
-  weight_other: number | string
+  weight_other: number
   /**
    * 总重
    */
-  weight_total: number | string
+  weight_total: number
   /**
    * 库存
    */

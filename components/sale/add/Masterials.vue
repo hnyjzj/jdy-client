@@ -1,19 +1,23 @@
 <script setup lang="ts">
 import type { FormRules } from 'naive-ui'
+import { calc } from 'a-calc'
 
+const props = defineProps<{
+  checkOldClass: (params: Partial<ProductOlds>) => any
+}>()
 const emits = defineEmits<{
   search: [val: string]
   openProductList: []
+  check: [params: Partial<ProductOlds>]
 }>()
 const { oldFilterListToArray } = storeToRefs(useOld())
 const showModal = ref(false)
 const { useWxWork } = useWxworkStore()
-
-const MformRef = ref()
-const params = ref({} as ProductOlds)
+const { $toast } = useNuxtApp()
 const rules = ref<FormRules>({})
 const oldRules = ref<FormRules>({
   weight_metal: {
+    type: 'number',
     required: true,
     trigger: ['blur', 'change'],
     message: '请输入金重',
@@ -123,6 +127,9 @@ const searchQl = () => {
   searchOld.value = ''
   nowOldMaster.value = {} as ProductOlds
 }
+const MformRef = ref()
+// 手动添加旧料表单
+const params = ref({} as ProductOlds)
 // 手动添加
 const handleAdd = () => {
   showModal.value = true
@@ -130,53 +137,136 @@ const handleAdd = () => {
   params.value = {} as ProductOlds
   nowEditState.value = undefined
 }
-// 添加商品
 const showMasterialsList = defineModel<ProductOlds[]>('list', { default: [] })
-const submitMasterialsForm = () => {
-  MformRef.value?.validate((errors: any) => {
+// 手动添加旧料
+const submitMasterialsForm = async () => {
+  MformRef.value?.validate(async (errors: any) => {
     if (!errors) {
       if (nowEditState.value !== undefined) {
+        // 编辑时
+        if (params.value.recycle_price < 0) {
+          $toast.error('回收金额不能小于0')
+          return
+        }
+
+        // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
+        const data = await props.checkOldClass({ material: params.value.material, quality: params.value.quality, gem: params.value.gem })
+        if (!data.res.value) {
+          // 如果没有大类则中断
+          return
+        }
+        params.value.class = data?.res.value
+        // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
+        if (params.value.recycle_price && data.rate && Number(data.rate) !== 0) {
+          params.value.score = calc('(a / b)| =0 ~5, !n', {
+            a: params.value.recycle_price,
+            b: data.rate,
+          })
+        }
         showMasterialsList.value.splice(nowEditState.value, 1, params.value)
+        showModal.value = false
       }
       else {
+        if (params.value.recycle_price < 0) {
+          $toast.error('回收金额不能小于0')
+          return
+        }
+        // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
+        const data = await props.checkOldClass({ material: params.value.material, quality: params.value.quality, gem: params.value.gem })
+        if (!data.res.value) {
+          // 如果没有大类则中断
+          return
+        }
+        params.value.class = data?.res.value
+        // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
+        if (params.value.recycle_price && data.rate && Number(data.rate) !== 0) {
+          params.value.score = calc('(a / b)| =0 ~5, !n', {
+            a: params.value.recycle_price,
+            b: data.rate,
+          })
+        }
         showMasterialsList.value.push(params.value)
+        showModal.value = false
       }
-      showModal.value = false
     }
   })
 }
 // 旧料表单 Ref
 
-const { $toast } = useNuxtApp()
 const oldMasterRef = ref()
+// 主动搜索旧料
 const searchConfirm = async () => {
-  oldMasterRef.value?.validate((errors: any) => {
+  oldMasterRef.value?.validate(async (errors: any) => {
     if (!errors) {
       const isDuplicate = showMasterialsList.value.find(item => item.code === nowOldMaster.value.code)
       if (isDuplicate && nowEditState.value === undefined) {
         $toast.error('不能添加相同商品')
-        return
       }
       else {
         if (nowEditState.value !== undefined) {
+          if (nowOldMaster.value.recycle_price < 0) {
+            $toast.error('回收金额不能小于0')
+            return
+          }
+          // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
+          const data = await props.checkOldClass({ material: nowOldMaster.value.material, quality: nowOldMaster.value.quality, gem: nowOldMaster.value.gem })
+          if (!data.res.value) {
+          // 如果没有大类则中断
+            return
+          }
+          nowOldMaster.value.class = data?.res.value
+          // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
+          if (nowOldMaster.value.recycle_price && data.rate && Number(data.rate) !== 0) {
+            nowOldMaster.value.score = calc('(a / b)| =0 ~5, !n', {
+              a: nowOldMaster.value.recycle_price,
+              b: data.rate,
+            })
+          }
+
           showMasterialsList.value.splice(nowEditState.value, 1, nowOldMaster.value)
+          searchShow.value = false
         }
         else {
+          if (nowOldMaster.value.recycle_price < 0) {
+            $toast.error('回收金额不能小于0')
+            return
+          }
+          // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
+          const data = await props.checkOldClass({ material: nowOldMaster.value.material, quality: nowOldMaster.value.quality, gem: nowOldMaster.value.gem })
+          if (!data.res.value) {
+          // 如果没有大类则中断
+            return
+          }
+          nowOldMaster.value.class = data?.res.value
+          // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
+          if (nowOldMaster.value.recycle_price && data.rate && Number(data.rate) !== 0) {
+            nowOldMaster.value.score = calc('(a / b)| =0 ~5, !n', {
+              a: nowOldMaster.value.recycle_price,
+              b: data.rate,
+            })
+          }
+
           showMasterialsList.value.push(nowOldMaster.value)
+          searchShow.value = false
         }
       }
-      searchShow.value = false
     }
   })
 }
-
+// 设置编辑时禁用选择回收方式
+const setDisabled = ref(false)
+// 编辑旧料
 const editOld = (item: ProductOlds, index: number) => {
+  // 当前编辑的是哪个旧料
   nowEditState.value = index
+  //   如果是自有商品
   if (item.is_our) {
     nowOldMaster.value = item
+    setDisabled.value = true
     searchShow.value = true
   }
   else {
+    // 如果不是自有商品
     params.value = item
     showModal.value = true
   }
@@ -189,6 +279,46 @@ const deleteOld = (index: number) => {
 }
 const deleteConfirm = () => {
   showMasterialsList.value.splice(delId.value, 1)
+}
+// 手动添加的旧料 如果不是自有旧料
+const changePrice = (name: string) => {
+  if (name === 'recycle_price') {
+    return
+  }
+  // 如果回收工费方式按克 (金重* 回收金价 ) - (金重* 回收工费)
+  if (params.value.recycle_price_labor_method === 1) {
+    params.value.recycle_price = calc('((a*b) - (a*c))| =0 ~5,!n', {
+      a: params.value.weight_metal || 0,
+      b: params.value.recycle_price_gold || 0,
+      c: params.value.recycle_price_labor || 0,
+    })
+  }
+  else if (params.value.recycle_price_labor_method === 2) {
+    // 如果回收工费方式按件 (金重* 回收金价 ) - 回收工费
+    params.value.recycle_price = calc('((a*b) - c)| =0 ~5,!n', {
+      a: params.value.weight_metal || 0,
+      b: params.value.recycle_price_gold || 0,
+      c: params.value.recycle_price_labor || 0,
+    })
+  }
+}
+const ourChangePrice = () => {
+  // 如果回收工费方式按克 (金重* 回收金价 ) - (金重* 回收工费)
+  if (nowOldMaster.value.recycle_price_labor_method === 1) {
+    nowOldMaster.value.recycle_price = calc('((a*b) - (a*c))| =0 ~5,!n', {
+      a: nowOldMaster.value.weight_metal || 0,
+      b: nowOldMaster.value.recycle_price_gold || 0,
+      c: nowOldMaster.value.recycle_price_labor || 0,
+    })
+  }
+  else if (nowOldMaster.value.recycle_price_labor_method === 2) {
+    // 如果回收工费方式按件 (金重* 回收金价 ) - 回收工费
+    nowOldMaster.value.recycle_price = calc('((a*b) - c)| =0 ~5,!n', {
+      a: nowOldMaster.value.weight_metal || 0,
+      b: nowOldMaster.value.recycle_price_gold || 0,
+      c: nowOldMaster.value.recycle_price_labor || 0,
+    })
+  }
 }
 </script>
 
@@ -218,26 +348,46 @@ const deleteConfirm = () => {
         <div class="pb-[12px]">
           <sale-order-nesting v-model="hasCheck" :title="obj?.name || ''">
             <template #left>
-              <common-tags type="pink" text="成品" :is-oval="true" />
+              <common-tags type="pink" text="旧料" :is-oval="true" />
             </template>
             <template #info>
               <div class="flex flex-col gap-[12px] px-[16px]">
-                <n-grid :x-gap="12" :y-gap="8" :cols="4">
+                <n-grid :x-gap="12" :y-gap="8" :cols="24">
                   <template v-for="(item, index) in oldFilterListToArray" :key="index">
                     <template v-if="item.name === 'is_our'">
-                      <n-grid-item :span="2">
+                      <n-grid-item :span="12">
                         {{ item.label }}: {{ obj[item.name] ? '是' : '否' }}
                       </n-grid-item>
                     </template>
-                    <template v-else>
-                      <n-grid-item :span="2">
-                        {{ item.label }}: {{ item.input === 'select' ? item.preset[obj[item.name] as string] : obj[item.name] }}
+                    <template v-else-if="item.name !== 'store' && item.name !== 'updated_at' && item.name !== 'recycle_store' && item.name !== 'store_id'">
+                      <n-grid-item :span="12">
+                        {{ item.label }}: {{ item.input === 'select' ? item.preset[obj[item.name] as string ] : obj[item.name] }}
                       </n-grid-item>
                     </template>
                   </template>
                 </n-grid>
 
                 <div class="h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
+                <n-grid :x-gap="12" :y-gap="8" :cols="12">
+                  <n-grid-item :span="6" />
+                  <n-grid-item :span="6">
+                    <div class="flex items-center">
+                      <div class="mr-[8px]">
+                        积分 ( - )
+                      </div>
+                      <div class="flex-1">
+                        <n-input-number
+                          v-model:value="obj.score"
+                          :show-button="false"
+                          placeholder="积分"
+                          min="0"
+                          round
+                        />
+                      </div>
+                    </div>
+                  </n-grid-item>
+                </n-grid>
+
                 <div class="pb-[16px]">
                   <div class="flex justify-between items-center">
                     <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteOld(ix)">
@@ -321,6 +471,7 @@ const deleteConfirm = () => {
                         v-model:value="nowOldMaster.recycle_method"
                         menu-size="large"
                         placeholder="选择回收方式"
+                        :disabled="nowEditState !== undefined"
                         :options="[{
                           value: 1,
                           label: '按克',
@@ -337,14 +488,16 @@ const deleteConfirm = () => {
                         placeholder="请输入回收工费"
                         round
                         :precision="3"
+                        @blur="ourChangePrice()"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi
-                      :span="12" label="回收类型" path="recycle_type">
+                      :span="12" label="回收类型">
                       <n-select
                         v-model:value="nowOldMaster.recycle_type"
                         menu-size="large"
                         placeholder="选择回收类型"
+                        :default-value="1"
                         :options="[{
                           value: 1,
                           label: '无',
@@ -358,13 +511,14 @@ const deleteConfirm = () => {
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="金重" path="weight_metal">
-                      <lazy-n-input
+                      <n-input-number
                         v-model:value="nowOldMaster.weight_metal"
                         :show-button="false"
                         placeholder="请输入金重"
                         round
                         min="0"
                         :precision="3"
+                        @blur="ourChangePrice()"
                       />
                     </n-form-item-gi>
 
@@ -386,6 +540,7 @@ const deleteConfirm = () => {
                         round
                         min="0"
                         :precision="3"
+                        @blur="ourChangePrice()"
                       >
                         <template #suffix>
                           元/克
@@ -415,10 +570,10 @@ const deleteConfirm = () => {
                   </n-grid>
                 </n-form>
               </template>
+              <template v-else>
+                <common-emptys text="暂无数据" />
+              </template>
             </div>
-            <template v-if="!nowOldMaster.code">
-              <common-emptys text="暂无数据" />
-            </template>
           </div>
         </div>
       </div>
@@ -429,7 +584,7 @@ const deleteConfirm = () => {
           <n-form ref="MformRef" :model="params" :rules="rules">
             <n-grid :cols="24" :x-gap="8">
               <template v-for="(item, index) in oldFilterListToArray" :key="index">
-                <template v-if="item.input !== 'list'">
+                <template v-if="item.input !== 'list' && item.name !== 'code'">
                   <n-form-item-gi :span="12" :label="item.label" :path="item.name" :required="item.required">
                     <template v-if="item.input === 'select'">
                       <n-select
@@ -437,6 +592,7 @@ const deleteConfirm = () => {
                         menu-size="large"
                         :placeholder="`选择${item.label}`"
                         :options="presetToSelect(item)"
+                        :disabled="nowEditState === index && item.name === 'recycle_method'"
                         clearable
                       />
                     </template>
@@ -446,7 +602,9 @@ const deleteConfirm = () => {
                       />
                     </template>
                     <template v-if="item.input === 'number'">
-                      <n-input-number v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`" :show-button="false" />
+                      <n-input-number
+                        v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`"
+                        :show-button="false" @blur="changePrice(item.name)" />
                     </template>
                     <template v-if="item.input === 'switch'">
                       <n-switch v-model:value="(params[item.name] as boolean)" :disabled="Manual" />
