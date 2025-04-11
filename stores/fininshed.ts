@@ -76,5 +76,17 @@ export const useFinished = defineStore('Finished', {
         throw new Error(`转换失败: ${error || '未知错误'}`)
       }
     },
+    // 获取成品积分比例
+    async getFinishedsClass(params: { class: number }) {
+      try {
+        const { data } = await https.post<any, { class: number }>('/member/integral/rule/finished', params)
+        if (data.value?.code === HttpCode.SUCCESS) {
+          return data.value?.data
+        }
+      }
+      catch (error) {
+        throw new Error(`获取积分比例失败: ${error || '未知错误'}`)
+      }
+    },
   },
 })

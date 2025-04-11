@@ -98,7 +98,23 @@ interface Orders {
    * 商品列表
    */
   products: OrderProductFinisheds[]
+  /**
+   *支付方式
+   */
+  payment_method: OrderPaymentMethod[]
+
 }
+interface OrderPaymentMethod {
+  /**
+   * 支付方式
+   */
+  method?: number
+  /**
+   * 支付金额
+   */
+  money: number
+}
+
 interface OrderSalesmen {
   /**
    * 创建时间
@@ -138,10 +154,15 @@ interface OrderSalesmen {
   updated_at?: Date
 }
 interface OrderProducts {
+
+  /**
+   * 工费
+   */
+  labor_fee?: number
   /**
    * 应付金额
    */
-  amount?: number
+  amount: number
   /**
    * 原价
    */
@@ -181,7 +202,7 @@ interface OrderProducts {
   /**
    * 产品信息
    */
-  product?: Product
+  product?: ProductFinisheds
   /**
    * 数量，默认 为1
    */
@@ -190,6 +211,36 @@ interface OrderProducts {
    * 更新时间
    */
   updated_at?: Date
+  /**
+   * 抹零金额
+   */
+  notCount: number
+  /**
+   * 显示折扣
+   */
+  show_discount?: number
+  /**
+   * 原始价格 用于计算折扣
+   */
+  orign: number
+
+  /**
+   * 折扣
+   */
+  member_discount?: number
+
+  /**
+   * 卡券抵扣
+   */
+  cardDeduction: number
+  /**
+   * 积分抵扣
+   */
+  scoreDeduction: number
+  /**
+   * 积分比例
+   */
+  rate: number
 }
 
 interface OrderWhere {
@@ -204,4 +255,5 @@ interface OrderWhere {
   store_id?: string
   product_id?: string
   type?: number
+  payment_method?: OrderPaymentMethod[]
 }
