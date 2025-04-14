@@ -209,7 +209,7 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
                 </th>
                 <template v-for="(filter, i) in categoryFilterListToArray" :key="i">
                   <template v-if="filter.create">
-                    <th class="text-nowrap px-2 py-1">
+                    <th class="whitespace-nowrap px-2 py-1">
                       {{ filter.label }}
                     </th>
                   </template>
@@ -227,12 +227,12 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
                     <template v-for="(filter, i) in categoryFilterListToArray" :key="i">
                       <template v-if="filter.create">
                         <template v-if="filter.input === 'select'">
-                          <td class="text-nowrap px-2 py-1">
+                          <td class="whitespace-nowrap px-2 py-1">
                             {{ categoryFilterList[filter.name]?.preset[category.category[filter.name]] || '--' }}
                           </td>
                         </template>
                         <template v-else>
-                          <td class="text-nowrap px-2 py-1">
+                          <td class="whitespace-nowrap px-2 py-1">
                             {{ category.category[filter.name] || '--' }}
                           </td>
                         </template>

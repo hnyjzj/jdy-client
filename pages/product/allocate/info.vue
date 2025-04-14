@@ -411,7 +411,7 @@ async function getOldids() {
   }
 }
 .tabel-text {
-  --uno: 'text-nowrap px-2 py-1 text-center text-color';
+  --uno: 'whitespace-nowrap px-2 py-1 text-center text-color';
 }
 
 .navbar {

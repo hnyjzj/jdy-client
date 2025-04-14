@@ -170,7 +170,7 @@ const absoluteValue = (value: number) => {
   --uno: 'flex flex-row items-center justify-between gap-[32px]';
 
   .left {
-    --uno: 'font-size-[14px] color-[#666] text-nowrap dark:color-[#CBCDD1]';
+    --uno: 'font-size-[14px] color-[#666] whitespace-nowrap dark:color-[#CBCDD1]';
   }
 
   .right {
