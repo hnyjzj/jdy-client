@@ -4,8 +4,7 @@ import type { FormInst, FormRules } from 'naive-ui'
 const { createAllocate, getAllocateWhere } = useAllocate()
 const { allocateFilterList } = storeToRefs(useAllocate())
 const { $toast } = useNuxtApp()
-const { storesList } = storeToRefs(useStores())
-const { myStoreList } = storeToRefs(useStores())
+const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const { getFinishedEnterInfo } = useFinishedEnter()
 const { enterInfo } = storeToRefs(useFinishedEnter())
@@ -29,8 +28,7 @@ if (route.query?.enter_id) {
   params.value.remark = `入库整单调拨[${enterId.value}]`
 }
 else {
-  if (myStoreList.value?.length > 0)
-    params.value.from_store_id = myStoreList.value[0].id
+  params.value.from_store_id = myStore.value.id
 }
 
 useSeoMeta({
@@ -50,6 +48,8 @@ function changeStoer() {
 await getAllocateWhere()
 await getStoreList({ page: 1, limit: 20 })
 await changeStoer()
+
+/** 创建调拨单 */
 async function submit() {
   const res = await createAllocate(params.value as AllocateReq)
   if (res?.code === HttpCode.SUCCESS) {
@@ -111,7 +111,7 @@ const rules = ref<FormRules>({
 },
 )
 function handleValidateButtonClick() {
-  if (!myStoreList.value.length) {
+  if (!myStore.value?.id) {
     return $toast.error('暂未分配门店')
   }
   if (params.value.from_store_id === params.value.to_store_id) {
@@ -150,12 +150,12 @@ function handleValidateButtonClick() {
                         clearable
                       />
                     </n-form-item-gi>
-                    <n-form-item-gi :span="12" path="type" required :label="allocateFilterList.type?.label">
+                    <n-form-item-gi :span="12" path="type" required label="仓库类型">
                       <n-select
                         v-model:value="params.type"
                         menu-size="large"
-                        :placeholder="`选择${allocateFilterList.type?.label}`"
-                        :options="presetToSelect('type')"
+                        placeholder="选择仓库类型"
+                        :options="optonsToSelect(typePreset)"
                         clearable
                         :disabled="type"
                       />

@@ -7,7 +7,7 @@ const columns = ref()
 
 const getList = async () => await getMyStore({ page: 1, limit: 20 })
 
-if (!myStoreList.value.length) {
+if (!myStore.value?.id) {
   await getList()
 }
 

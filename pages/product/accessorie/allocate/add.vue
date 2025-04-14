@@ -4,7 +4,7 @@ import type { FormInst, FormRules } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { createAccessorieAllocate, getAccessorieAllocateWhere } = useAccessorieAllocate()
 const { accessorieAllocateFilterListToArray } = storeToRefs(useAccessorieAllocate())
-const { myStoreList, storesList } = storeToRefs(useStores())
+const { myStore, storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const { getFinishedEnterInfo } = useFinishedEnter()
 const { enterInfo } = storeToRefs(useFinishedEnter())
@@ -29,8 +29,8 @@ if (route.query?.enter_id) {
   params.value.remark = `入库整单调拨[${enterId.value}]`
 }
 else {
-  if (myStoreList.value?.length > 0)
-    params.value.from_store_id = myStoreList.value[0].id
+  if (myStore.value?.id)
+    params.value.from_store_id = myStore.value.id
 }
 
 useSeoMeta({
