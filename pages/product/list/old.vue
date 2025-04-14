@@ -83,6 +83,11 @@ function goAdd() {
 function goInfo(info: ProductOlds) {
   jump('/product/manage/old/info', { id: info.id })
 }
+
+async function changeStore() {
+  pages.value = 1
+  await getList()
+}
 </script>
 
 <template>
@@ -91,7 +96,7 @@ function goInfo(info: ProductOlds) {
     <product-filter
       v-model:id="complate" :product-list-total="oldListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
-        <product-manage-company />
+        <product-manage-company @change="changeStore" />
       </template>
     </product-filter>
     <!-- 列表 -->

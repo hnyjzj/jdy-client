@@ -66,6 +66,11 @@ async function submitWhere(f: Partial<Allocate>, isSearch: boolean = false) {
   }
   $toast.error(res?.message ?? '筛选失败')
 }
+
+async function changeStore() {
+  pages.value = 1
+  await getList()
+}
 </script>
 
 <template>
@@ -74,7 +79,7 @@ async function submitWhere(f: Partial<Allocate>, isSearch: boolean = false) {
     <product-filter
       v-model:id="complate" :product-list-total="allocateTotal" placeholder="搜索调拨单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
-        <product-manage-company />
+        <product-manage-company @change="changeStore" />
       </template>
     </product-filter>
     <!-- 小卡片组件 -->

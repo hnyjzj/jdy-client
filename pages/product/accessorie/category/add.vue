@@ -101,9 +101,6 @@ const presetToSelect = (key: keyof AccessorieCategory) => {
     <common-layout-center>
       <div class="pt-4 pb-22">
         <div class="flex flex-col gap-4">
-          <div class="w-[40%] text-[#FFF] pl-4">
-            <product-manage-company />
-          </div>
           <div class="rounded-6 bg-white w-auto blur-bga">
             <common-gradient title="新增入库">
               <template #body>

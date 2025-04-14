@@ -79,6 +79,11 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
   }
   $toast.error(res.message ?? '筛选失败')
 }
+
+async function changeMyStore() {
+  pages.value = 1
+  await getList()
+}
 </script>
 
 <template>
@@ -87,7 +92,7 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
     <product-filter
       v-model:id="complate" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜素关联产品单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
-        <product-manage-company />
+        <product-manage-company @change="changeMyStore" />
       </template>
     </product-filter>
     <!-- 列表 -->

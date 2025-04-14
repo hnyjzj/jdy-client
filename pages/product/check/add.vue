@@ -148,9 +148,6 @@ function handleSwitchChange(e: boolean, name: keyof Check) {
     <common-layout-center>
       <div class="pt-4 pb-20">
         <div class="flex flex-col gap-4">
-          <div class="w-[40%] text-[#FFF] pl-4">
-            <product-manage-company />
-          </div>
           <div :id="Key" :key="Key" class="rounded-6 bg-white w-auto blur-bga">
             <common-gradient title="新增盘点单">
               <template #body>

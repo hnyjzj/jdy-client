@@ -147,9 +147,6 @@ async function bulkupload(data: any) {
     <common-layout-center>
       <div class="pt-4">
         <div class="flex flex-col gap-4">
-          <div class="w-[40%] text-[#fff]">
-            <product-manage-company />
-          </div>
           <accessorie-enter-base :enter-info="enterInfo" />
           <accessorie-enter-info :info="enterInfo" :filter-list="categoryFilterListToArray" @del="(e) => { deleteDialog = true;deleteId = e }" />
         </div>

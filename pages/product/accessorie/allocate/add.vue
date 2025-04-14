@@ -132,9 +132,6 @@ const canShowFilter = (item: FilterWhere<AccessorieAllocate>) => {
     <common-layout-center>
       <div class="pt-4 pb-20">
         <div class="flex flex-col gap-4">
-          <div class="w-[40%] text-[#FFF] pl-4">
-            <product-manage-company />
-          </div>
           <div class="rounded-6 bg-white w-auto blur-bga top">
             <common-gradient title="新增调拨单">
               <template #body>

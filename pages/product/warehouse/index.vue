@@ -119,6 +119,11 @@ function goAdd() {
 function sum(info: FinishedEnter, key: keyof ProductFinisheds) {
   return info?.products?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
 }
+
+async function changemyStore() {
+  pages.value = 1
+  await getList()
+}
 </script>
 
 <template>
@@ -127,7 +132,7 @@ function sum(info: FinishedEnter, key: keyof ProductFinisheds) {
     <product-filter
       v-model:id="complate" :product-list-total="EnterListTotal" placeholder="搜索入库单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
-        <product-manage-company />
+        <product-manage-company @change="changemyStore" />
       </template>
     </product-filter>
     <!-- 小卡片组件 -->

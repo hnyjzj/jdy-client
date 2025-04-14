@@ -227,10 +227,6 @@ async function getOldids() {
   <div class="storage pb-20">
     <div class="grid-12 pt-4">
       <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-        <div class="w-[40%] text-[#fff]">
-          <product-manage-company />
-        </div>
-
         <template v-if="type === GoodsTypePure.ProductFinish">
           <product-allocate-base :info="allocateInfo" :filter-list="allocateFilterList" :product-list="allocateInfo.product_finisheds" />
         </template>

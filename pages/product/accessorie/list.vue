@@ -81,6 +81,11 @@ function goAdd() {
   isModel.value = false
   jump('/product/warehouse/add', { type: type.value })
 }
+
+async function changeStore() {
+  pages.value = 1
+  await getList()
+}
 </script>
 
 <template>
@@ -89,7 +94,7 @@ function goAdd() {
     <product-filter
       v-model:id="complate" :product-list-total="accessorieListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
-        <product-manage-company />
+        <product-manage-company @change="changeStore" />
       </template>
     </product-filter>
     <!-- 列表 -->

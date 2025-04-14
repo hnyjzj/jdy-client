@@ -90,6 +90,11 @@ async function bulkupload(e: AccessorieCategory[]) {
   }
   isImportModel.value = false
 }
+
+async function changeStore() {
+  page.value = 1
+  await getList()
+}
 </script>
 
 <template>
@@ -98,7 +103,7 @@ async function bulkupload(e: AccessorieCategory[]) {
     <product-filter
       v-model:id="complate" :product-list-total="categoryListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
-        <product-manage-company />
+        <product-manage-company @change="changeStore" />
       </template>
     </product-filter>
     <!-- 列表 -->
