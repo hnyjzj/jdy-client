@@ -23,6 +23,7 @@ const searchProduct = ref('')
 const hasCheck = ref(false)
 // 搜索商品 名称 和 条码   code
 const searchType = ref('name')
+
 // 添加商品
 const addProduct = async (product: ProductFinisheds) => {
   const index = showProductList.value.findIndex(item => item.product?.id === product.id)
@@ -88,17 +89,19 @@ const count = (p: OrderProducts) => {
   if (!p.quantity)
     return
 
+  //   四舍五入 取证
+  const methA = (count: string | number) => {
+    return calc('( a ) |=0 ~5,!n', {
+      a: count,
+    }) || 0
+  }
   // 如果是计件方式 标签价格 x 数量 x 折扣
   if (p.product?.retail_type === 1) {
     const total = calc('(price * quantity * discount * member_discount) - notCount - scoreDeduction - cardDeduction | =0 ~5,!n', {
       price: p.product?.label_price, // 标签价格
       quantity: p.quantity, // 数量
-      scoreDeduction: calc('( a ) |=0 ~5,!n', {
-        a: p.scoreDeduction,
-      }) || 0, // 积分抵扣  四舍五入,得去最后的应付金额
-      cardDeduction: calc('( a ) |=0 ~5,!n', {
-        a: p.cardDeduction,
-      }) || 0, // 卡券抵扣
+      scoreDeduction: methA(p.scoreDeduction),
+      cardDeduction: methA(p.cardDeduction), // 卡券抵扣
       member_discount: (p.member_discount || 100) * 0.01, // 会员折扣
       discount: ((p.discount || 100) * 0.01),
       notCount: calc('( a ) |=0 ~5,!n', {
@@ -128,15 +131,11 @@ const count = (p: OrderProducts) => {
   // 计重工费按克 [（金价 + 工费）X克重] X折扣
   if (p.product?.retail_type === 2) {
     const total = calc('((price + labor_fee) * weight_metal * discount  * member_discount) - notCount - scoreDeduction - cardDeduction  | =0 ~5,!n', {
-      price: p?.price, // 金价
-      labor_fee: p?.labor_fee, // 工费
-      weight_metal: p.product?.weight_metal, // 金重
-      scoreDeduction: calc('( a ) |=0 ~5,!n', {
-        a: p.scoreDeduction,
-      }) || 0,
-      cardDeduction: calc('( a ) |=0 ~5,!n', {
-        a: p.cardDeduction,
-      }) || 0,
+      price: p?.price,
+      labor_fee: p?.labor_fee,
+      weight_metal: p.product?.weight_metal,
+      scoreDeduction: methA(p.scoreDeduction),
+      cardDeduction: methA(p.cardDeduction),
       member_discount: (p.member_discount || 100) * 0.01,
       discount: ((p.discount || 100) * 0.01),
       notCount: p?.notCount,
@@ -170,23 +169,17 @@ const count = (p: OrderProducts) => {
       price: p.price,
       labor_fee: p?.labor_fee,
       weight_metal: p.product?.weight_metal,
-      scoreDeduction: calc('( a ) |=0 ~5,!n', {
-        a: p.scoreDeduction,
-      }) || 0,
-      cardDeduction: calc('( a ) |=0 ~5,!n', {
-        a: p.cardDeduction,
-      }) || 0,
+      scoreDeduction: methA(p.scoreDeduction),
+      cardDeduction: methA(p.cardDeduction),
       member_discount: (p.member_discount || 100) * 0.01,
       discount: ((p.discount || 100) * 0.01),
       notCount: p?.notCount,
     })
     p.amount = total
-    const orign = calc('(((price * weight_metal) + labor_fee)  * discount  * member_discount ) | <=2,!n', {
+    const orign = calc('(((price * weight_metal) + labor_fee) ) | <=2,!n', {
       price: p.price,
       labor_fee: p?.labor_fee,
       weight_metal: p.product?.weight_metal,
-      member_discount: 1,
-      discount: 1,
     })
     p.orign = orign
     if (total === 0 && orign === 0) {
@@ -593,13 +586,12 @@ const handleCouponReduceBlur = () => {
                         <n-input-number
                           v-model:value="obj.integral"
                           :show-button="false"
-                          placeholder="抹零金额"
+                          placeholder="积分"
                           :default-value="0"
                           min="0"
-                          :max="obj.orign"
                           round
-                          :precision="2"
-
+                          :precision="0"
+                          :disabled="true"
                           @blur="() => {
                             if (!obj.integral?.toString()){
                               obj.integral = 0

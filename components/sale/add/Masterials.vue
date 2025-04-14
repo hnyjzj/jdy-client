@@ -156,6 +156,7 @@ const submitMasterialsForm = async () => {
           return
         }
         params.value.class = data?.res.value
+        params.value.class = data?.res.value
         // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
         if (params.value.recycle_price && data.rate && Number(data.rate) !== 0) {
           params.value.score = calc('(a / b)| =0 ~5, !n', {
@@ -177,6 +178,7 @@ const submitMasterialsForm = async () => {
           // 如果没有大类则中断
           return
         }
+        params.value.rate = data?.rate
         params.value.class = data?.res.value
         // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
         if (params.value.recycle_price && data.rate && Number(data.rate) !== 0) {
@@ -215,6 +217,7 @@ const searchConfirm = async () => {
             return
           }
           nowOldMaster.value.class = data?.res.value
+          params.value.class = data?.res.value
           // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
           if (nowOldMaster.value.recycle_price && data.rate && Number(data.rate) !== 0) {
             nowOldMaster.value.score = calc('(a / b)| =0 ~5, !n', {
@@ -238,6 +241,7 @@ const searchConfirm = async () => {
             return
           }
           nowOldMaster.value.class = data?.res.value
+          params.value.class = data?.res.value
           // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
           if (nowOldMaster.value.recycle_price && data.rate && Number(data.rate) !== 0) {
             nowOldMaster.value.score = calc('(a / b)| =0 ~5, !n', {

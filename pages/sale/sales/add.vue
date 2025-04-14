@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 // 新增销售单
 import type { FormInst, FormRules } from 'naive-ui'
+import { calc } from 'a-calc'
 
 useSeoMeta({
   title: '新增销售单',
@@ -52,6 +53,55 @@ await getAccessorieWhere()
 await getGoldPrice(myStore.value.id)
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { phone: val } })
 const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
+
+// 是否积分
+const isIntegral = ref(true)
+const isIntegralOpts = [
+  {
+    value: true,
+    label: '积分',
+  },
+  {
+    value: false,
+    label: '不积分',
+  },
+
+]
+const handleIsInterChange = () => {
+  if (!isIntegral.value) {
+    // 清空积分
+    showProductList.value.forEach((item) => {
+      item.integral = 0
+    })
+    showMasterialsList.value.forEach((item) => {
+      item.score = 0
+    })
+    showPartsList.value.forEach((item) => {
+      item.integral = 0
+    })
+  }
+  else {
+    showProductList.value.forEach((item) => {
+      // 计算应得的积分 +
+      item.integral = calc('(a / b) | =0 ~5 ,!n', {
+        a: item.amount,
+        b: item.rate,
+      })
+    })
+    showMasterialsList.value.forEach((item) => {
+      item.score = calc('(a / b)| =0 ~5, !n', {
+        a: item.recycle_price,
+        b: item.rate,
+      })
+    })
+    showPartsList.value.forEach((item) => {
+      item.integral = calc('(a / b) | =0 ~5 ,!n', {
+        a: item.amount,
+        b: item.rate,
+      })
+    })
+  }
+}
 
 const rules = ref<FormRules>({
   member_id: {
@@ -210,7 +260,22 @@ const openProductListFn = () => {
             :member-list="memberList"
             :get-member="getMember"
             :get-staff="getStaff"
-          />
+          >
+            <template #score>
+              <n-form-item-gi
+                :span="12"
+                label="是否积分" label-placement="top"
+              >
+                <n-radio-group v-model:value="isIntegral" name="radiogroup" @update:value="handleIsInterChange">
+                  <n-space>
+                    <n-radio v-for="(items, index) in isIntegralOpts" :key="index" :value="items.value">
+                      {{ items.label }}
+                    </n-radio>
+                  </n-space>
+                </n-radio-group>
+              </n-form-item-gi>
+            </template>
+          </sale-add-base>
         </div>
         <div class="pb-[16px]">
           <sale-add-product

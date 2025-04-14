@@ -125,19 +125,21 @@ const changeScore = (obj: ProductAccessories) => {
 }
 // 改变配件数量
 const changeQuantity = (obj: ProductAccessories) => {
-  if (!obj.quantity) {
-    obj.quantity = 1
+  if (obj.category?.label_price) {
+    // 计算应付金额
+    obj.amount = calc('(a * b)| =0 ~5, !n', {
+      a: obj.quantity || 1,
+      b: obj.category?.label_price,
+    })
   }
-  // 计算应付金额
-  obj.amount = calc('(a * b)| =0 ~5, !n', {
-    a: obj.quantity || 1,
-    b: obj.category?.label_price,
-  })
+
+  if (obj.amount && obj.rate) {
   // 计算积分
-  obj.integral = calc('(a / b)| =0 ~5, !n', {
-    a: obj.amount || 0,
-    b: obj.rate,
-  })
+    obj.integral = calc('(a / b)| =0 ~5, !n', {
+      a: obj.amount,
+      b: obj.rate,
+    })
+  }
 }
 </script>
 

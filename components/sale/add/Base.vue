@@ -152,6 +152,7 @@ const checkRatio = () => {
                 </template>
               </div>
             </n-form-item-gi>
+            <slot name="score" />
           </n-grid>
           <div />
         </div>

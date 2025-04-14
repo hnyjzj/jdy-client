@@ -167,4 +167,8 @@ interface ProductOlds {
    *  大类
    */
   class: number
+  /**
+   * 积分比例
+   */
+  rate: number | string
 }
