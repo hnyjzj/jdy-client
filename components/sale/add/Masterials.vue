@@ -3,6 +3,7 @@ import type { FormRules } from 'naive-ui'
 import { calc } from 'a-calc'
 
 const props = defineProps<{
+  isIntegral: boolean
   checkOldClass: (params: Partial<ProductOlds>) => any
 }>()
 const emits = defineEmits<{
@@ -159,10 +160,12 @@ const submitMasterialsForm = async () => {
         params.value.class = data?.res.value
         // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
         if (params.value.recycle_price && data.rate && Number(data.rate) !== 0) {
-          params.value.score = calc('(a / b)| =0 ~5, !n', {
-            a: params.value.recycle_price,
-            b: data.rate,
-          })
+          params.value.score = props.isIntegral
+            ? calc('(a / b)| =0 ~5, !n', {
+                a: params.value.recycle_price,
+                b: data.rate,
+              })
+            : 0
         }
         showMasterialsList.value.splice(nowEditState.value, 1, params.value)
         showModal.value = false
@@ -182,10 +185,12 @@ const submitMasterialsForm = async () => {
         params.value.class = data?.res.value
         // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
         if (params.value.recycle_price && data.rate && Number(data.rate) !== 0) {
-          params.value.score = calc('(a / b)| =0 ~5, !n', {
-            a: params.value.recycle_price,
-            b: data.rate,
-          })
+          params.value.score = props.isIntegral
+            ? calc('(a / b)| =0 ~5, !n', {
+                a: params.value.recycle_price,
+                b: data.rate,
+              })
+            : 0
         }
         showMasterialsList.value.push(params.value)
         showModal.value = false

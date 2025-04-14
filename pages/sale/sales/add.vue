@@ -268,7 +268,12 @@ const openProductListFn = () => {
               >
                 <n-radio-group v-model:value="isIntegral" name="radiogroup" @update:value="handleIsInterChange">
                   <n-space>
-                    <n-radio v-for="(items, index) in isIntegralOpts" :key="index" :value="items.value">
+                    <n-radio
+                      v-for="(items, index) in isIntegralOpts" :key="index" :value="items.value" :style="{
+                        '--n-box-shadow-hover': 'inset 0 0 0 1px #0068ff',
+                        '--n-box-shadow-active': 'inset 0 0 0 1px #0068ff',
+                        '--n-dot-color-active': '#0068ff',
+                        '--n-box-shadow-focus': 'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)' }">
                       {{ items.label }}
                     </n-radio>
                   </n-space>
@@ -283,6 +288,7 @@ const openProductListFn = () => {
             :product-list="finishedList"
             :finished-filter-list="finishedFilterList"
             :price="goldList"
+            :is-integral="isIntegral"
             :check-product-class="checkProductClass"
             @search="searchProductList"
             @open-product-list="openProductListFn"
@@ -293,6 +299,7 @@ const openProductListFn = () => {
             v-model:list="showMasterialsList"
             v-model:now-old-master="OldObj"
             :check-old-class="CheckOldClass"
+            :is-integral="isIntegral"
             @search="searchOlds"
           />
         </div>
@@ -302,6 +309,7 @@ const openProductListFn = () => {
             :where="accessorieFilterListToArray"
             :part-list="accessorieList"
             :check-accessories-score="checkAccessoriesScore"
+            :is-integral="isIntegral"
             @search="searchParts"
             @clear-list="() => accessorieList = [] "
           />

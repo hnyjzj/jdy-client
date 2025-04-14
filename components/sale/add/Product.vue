@@ -5,6 +5,7 @@ const Props = defineProps<{
   price: GoldPrices[]
   productList: ProductFinisheds[]
   finishedFilterList: Where<ProductFinisheds>
+  isIntegral: boolean
   checkProductClass: (val: { class: number }) => any
 }>()
 const emits = defineEmits<{
@@ -121,10 +122,16 @@ const count = (p: OrderProducts) => {
       orign,
     })
     // 计算应得的积分 +
-    p.integral = calc('(a / b) | =0 ~5 ,!n', {
-      a: p.amount,
-      b: p.rate,
-    })
+    if (Props.isIntegral) {
+      p.integral = calc('(a / b) | =0 ~5 ,!n', {
+        a: p.amount,
+        b: p.rate,
+      })
+    }
+    else {
+      p.integral = 0
+    }
+
     return total
   }
 
@@ -157,10 +164,16 @@ const count = (p: OrderProducts) => {
         a: 100,
       })
     }
-    p.integral = calc('(a / b) | =0 ~5 ,!n', {
-      a: p.amount,
-      b: p.rate,
-    })
+    if (Props.isIntegral) {
+      p.integral = calc('(a / b) | =0 ~5 ,!n', {
+        a: p.amount,
+        b: p.rate,
+      })
+    }
+    else {
+      p.integral = 0
+    }
+
     return total
   }
   //   计重工费按件   （(金价X克重)) + 工费）X件数 X折扣
@@ -192,10 +205,16 @@ const count = (p: OrderProducts) => {
         a: 100,
       })
     }
-    p.integral = calc('(a / b) | =0 ~5 ,!n', {
-      a: p.amount,
-      b: p.rate,
-    })
+    if (Props.isIntegral) {
+      p.integral = calc('(a / b) | =0 ~5 ,!n', {
+        a: p.amount,
+        b: p.rate,
+      })
+    }
+    else {
+      p.integral = 0
+    }
+
     return total
   }
 }

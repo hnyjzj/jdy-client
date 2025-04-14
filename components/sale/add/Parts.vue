@@ -5,6 +5,7 @@ const Props = defineProps<{
   partList: ProductAccessories[]
   where: FilterWhere<ProductAccessories>[]
   checkAccessoriesScore: (params: { classes: AccessorieCategory['type_part'][] }) => any
+  isIntegral: boolean
 }>()
 const emits = defineEmits<{
   search: [val: string, type: string]
@@ -100,7 +101,7 @@ const confirmParts = async () => {
       // 设置当前配件的积分比例
       item.rate = Number(classRateMap.get(item?.category?.type_part))
       // 设置当前配件的积分
-      item.integral = calculateIntegral(Number(item?.amount || 0), item.rate)
+      item.integral = Props.isIntegral ? calculateIntegral(Number(item?.amount || 0), item.rate) : 0
     }
     else {
       item.integral = 0
@@ -115,12 +116,16 @@ const deleteParts = (index: number) => {
 }
 // 应付金额失去焦点， 计算配件分数
 const changeScore = (obj: ProductAccessories) => {
-  obj.integral = calc('(a / b)| =0 ~5, !n', {
-    a: obj.amount || 0,
-    b: obj.rate,
-  })
   if (!obj.amount) {
     obj.amount = 0
+  }
+  else {
+    obj.integral = Props.isIntegral
+      ? calc('(a / b)| =0 ~5, !n', {
+          a: obj.amount,
+          b: obj.rate,
+        })
+      : 0
   }
 }
 // 改变配件数量
@@ -135,10 +140,12 @@ const changeQuantity = (obj: ProductAccessories) => {
 
   if (obj.amount && obj.rate) {
   // 计算积分
-    obj.integral = calc('(a / b)| =0 ~5, !n', {
-      a: obj.amount,
-      b: obj.rate,
-    })
+    obj.integral = Props.isIntegral
+      ? calc('(a / b)| =0 ~5, !n', {
+          a: obj.amount,
+          b: obj.rate,
+        })
+      : 0
   }
 }
 </script>
