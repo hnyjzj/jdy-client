@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { getAllocate, getAllocateWhere } = useAllocate()
+const { getAllocateList, getAllocateWhere } = useAllocate()
 const { allocateList, allocateFilterListToArray, allocateFilterList, allocateTotal } = storeToRefs(useAllocate())
 const { storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
@@ -40,7 +40,7 @@ async function getList(where = {} as Partial<Allocate>) {
     params.where = where
   }
 
-  const res = await getAllocate(params)
+  const res = await getAllocateList(params)
   return res as any
 }
 
@@ -140,7 +140,7 @@ async function submitWhere(f: Partial<Allocate>, isSearch: boolean = false) {
           </template>
           <template #bottom="{ info }">
             <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="详情" @click="jump('/product/allocate/info', { id: info.id })" />
+              <common-button-irregular text="详情" @click="jump('/product/allocate/info', { id: info.id, type: info.type })" />
             </div>
           </template>
         </product-manage-card>

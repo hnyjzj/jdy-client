@@ -254,16 +254,18 @@ async function submitChange(status: CheckInfo['status']) {
           </template>
           <template v-for="(item, index) in checkInfo.products" :key="index">
             <div class="grid mb-3">
-              <sale-order-nesting :title="item.product_finished?.name" :info="checkInfo">
+              <sale-order-nesting :title="checkInfo.type === GoodsType.ProductFinish ? item.product_finished?.name : item.product_old?.name" :info="checkInfo">
                 <template #left>
-                  <common-tags type="pink" :text="GoodsStatusMap[item.product_finished?.status as GoodsStatus]" :is-oval="true" />
+                  <template v-if="checkInfo.type === GoodsType.ProductFinish">
+                    <common-tags type="pink" :text="GoodsStatusMap[item.product_finished?.status as GoodsStatus]" :is-oval="true" />
+                  </template>
                 </template>
                 <template #info>
                   <template v-if="checkInfo.type === GoodsType.ProductFinish">
-                    <product-check-base-info :info="item.product_finished" :filter-list="finishedFilterListToArray" />
+                    <product-base-info :info="item.product_finished" :filter-list="finishedFilterListToArray" />
                   </template>
                   <template v-else-if="checkInfo.type === GoodsType.ProductOld">
-                    <product-check-base-info :info="item.product_old" :filter-list="oldFilterListToArray" />
+                    <product-base-info :info="item.product_old" :filter-list="oldFilterListToArray" />
                   </template>
                 </template>
               </sale-order-nesting>
