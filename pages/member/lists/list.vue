@@ -204,6 +204,11 @@ const userCancel = () => {
       </div>
     </common-model>
 
+    <!-- TODO: 以下为测试打印的相关代码，后续删除 -->
+    <div class="px-[30px] py-[40px] bg-gray" @click="jump('/print/list')">
+      打印列表页
+    </div>
+
     <product-filter
       v-model:id="complate" v-model:search="searchKey" :product-list-total="memberListTotal" @filter="openFilter">
       <template #company>
