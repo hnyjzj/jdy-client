@@ -85,3 +85,11 @@ interface AccessorieCategory {
    */
   quantity: number
 }
+
+interface CategoryProduct {
+  stock: number
+}
+
+interface CategoryHasProduct extends AccessorieCategory {
+  products: CategoryProduct[]
+}

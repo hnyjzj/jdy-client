@@ -1,10 +1,9 @@
 <script setup lang="ts">
 const { getAccessorieAllocateInfo, confirmAllcate, cancelAllcate, finishAllcate, remove } = useAccessorieAllocate()
 const { accessorieAllocateInfo, accessorieAllocateFilterList } = storeToRefs(useAccessorieAllocate())
-const { getAllocateWhere } = useAllocate()
-// const { allocateFilterListToArray } = storeToRefs(useAllocate())
 const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
 const { getAccessorieCategoryWhere } = useAccessorieCategory()
+const { myStore } = storeToRefs(useStores())
 useSeoMeta({
   title: '调拨单详情',
 })
@@ -15,7 +14,6 @@ const allocateId = ref()
 if (route.query.id) {
   allocateId.value = route.query.id
   await getAccessorieAllocateInfo(route.query.id as string)
-  await getAllocateWhere()
   await getAccessorieCategoryWhere()
 }
 
@@ -34,6 +32,10 @@ async function cancel() {
 }
 
 async function confirm() {
+  if (!accessorieAllocateInfo.value?.products?.length) {
+    $toast.error('请添加调拨配件')
+    return
+  }
   const res = await confirmAllcate(accessorieAllocateInfo.value?.id)
   if (res?.code === HttpCode.SUCCESS) {
     await getAccessorieAllocateInfo(route.query.id as string)
@@ -252,11 +254,13 @@ const debouncedDelProduct = useThrottleFn((id: string) => {
         </template>
       </div>
     </div>
-    <template v-if="accessorieAllocateInfo.status === 1">
+    <template v-if="accessorieAllocateInfo.status === 1 && myStore?.id === accessorieAllocateInfo.from_store_id">
       <common-button-one text="确认调拨" @confirm="confirm" />
     </template>
     <template v-if="accessorieAllocateInfo.status === 2">
-      <common-button-bottom cancel-text="取消调拨" confirm-text="完成调拨" @cancel="cancel" @confirm="finish" />
+      <template v-if="accessorieAllocateInfo.method === 2 || myStore?.id === accessorieAllocateInfo.to_store_id">
+        <common-button-bottom cancel-text="取消调拨" confirm-text="完成调拨" @cancel="cancel" @confirm="finish" />
+      </template>
     </template>
     <!-- 状态为盘点中 增加产品 -->
     <template v-if="accessorieAllocateInfo.status === 1">

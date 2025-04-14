@@ -3,6 +3,7 @@ const { categoryFilterListToArray, categoryFilterList, categoryList } = storeToR
 const { getAccessorieCategoryWhere, getAccessorieCategoryList } = useAccessorieCategory()
 const { addAccessorieEnter } = useAccessorieEnter()
 const { $toast } = useNuxtApp()
+// const { myStore } = storeToRefs(useStores())
 const route = useRoute()
 const router = useRouter()
 useSeoMeta({
@@ -21,7 +22,6 @@ const searchParams = ref({
   label: keyof AccessorieCategory
   val: any
 })
-// categoryList.value = []
 const isAddSingle = ref(false)
 const selectProduct = ref([] as AccessorieCategory[])
 await getAccessorieCategoryWhere()
@@ -41,11 +41,11 @@ function toggleSelectAll(event: any) {
 const searchWhere = computed(() => {
   return categoryFilterList.value[searchParams.value.label]
 })
-
 /** 搜索要入库的配件 */
 function searchAccessorie() {
   const obj = {} as Partial<AccessorieCategory>
   obj[searchParams.value.label] = searchParams.value.val
+  //   obj.store_id = myStore.value?.id
   getAccessorieCategoryList({ page: 1, limit: 20, where: { ...obj } })
 }
 
@@ -111,6 +111,17 @@ async function submitProduct() {
 const debouncedDelProduct = useThrottleFn((index: number) => {
   selectProduct.value.splice(index, 1)
 }, 200)
+
+function sumStock(category: CategoryHasProduct) {
+  let total = 0
+  if (category?.products?.length) {
+    category.products.forEach((item) => {
+      total += item.stock
+    })
+    return total
+  }
+  return 0
+}
 </script>
 
 <template>
@@ -133,7 +144,7 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
                       <div class="px-[16px]">
                         <div class="grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
                           <template v-for="(filter, findex) in categoryFilterListToArray" :key="findex">
-                            <template v-if="filter.find">
+                            <template v-if="filter.find && filter.name !== 'store_id'">
                               <div class="flex">
                                 <div class="key">
                                   {{ filter.label }}
@@ -215,9 +226,12 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
                 <th class="sticky-left table-color px-2">
                   <input type="checkbox" :disabled="categoryList?.length === 0" @change="toggleSelectAll">
                 </th>
+                <th class="whitespace-nowrap px-2 py-1">
+                  库存
+                </th>
                 <template v-for="(item, index) in categoryFilterListToArray" :key="index">
-                  <template v-if="item.find">
-                    <th class="text-nowrap px-2 py-1">
+                  <template v-if="item.find && item.name !== 'store_id'">
+                    <th class="whitespace-nowrap px-2 py-1">
                       {{ item.label }}
                     </th>
                   </template>
@@ -232,23 +246,19 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
                     <td class="sticky-left table-color py-1 px-2">
                       <input v-model="selectedCategories" type="checkbox" :value="category.id">
                     </td>
+                    <td>
+                      {{ sumStock(category as CategoryHasProduct) }}
+                    </td>
                     <template v-for="(item, index) in categoryFilterListToArray" :key="index">
-                      <template v-if="item.name === 'code'">
+                      <template v-if="item.input === 'text' || item.input === 'textarea' || item.input === 'number'">
                         <td>
-                          {{ category.id }}
+                          {{ category[item.name] }}
                         </td>
                       </template>
-                      <template v-else>
-                        <template v-if="item.input === 'text' || item.input === 'textarea' || item.input === 'number'">
-                          <td>
-                            {{ category[item.name] }}
-                          </td>
-                        </template>
-                        <template v-if="item.input === 'select'">
-                          <td class="border-collapse">
-                            {{ item.preset[category[item.name]] }}
-                          </td>
-                        </template>
+                      <template v-if="item.input === 'select'">
+                        <td class="border-collapse">
+                          {{ item.preset[category[item.name]] }}
+                        </td>
                       </template>
                     </template>
                   </tr>
@@ -264,7 +274,7 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
         </div>
       </div>
     </common-model>
-    <common-create @create="isAddSingle = true">
+    <common-create @create="isAddSingle = true;categoryList = []">
       <template #content>
         <div class="flex justify-center items-center">
           <icon name="i-icon:search" color="#fff" :size="18" />
@@ -301,5 +311,8 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
 }
 .table-color {
   --uno: 'dark:bg-[rgba(0,0,0,0.8)] bg-[#F1F5FE]';
+  td {
+    --uno: 'whitespace-nowrap px-2';
+  }
 }
 </style>

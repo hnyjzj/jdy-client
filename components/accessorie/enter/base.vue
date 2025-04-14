@@ -16,6 +16,10 @@ const enterStatus = {
 function sum(key: string): number {
   return props.enterInfo?.products?.reduce((total, item) => total + Number(item[key]), 0) ?? 0
 }
+
+function sumCategory(key: string): number {
+  return props.enterInfo?.products?.reduce((total, item) => total + Number(item.category[key]), 0) ?? 0
+}
 </script>
 
 <template>
@@ -57,22 +61,6 @@ function sum(key: string): number {
                   {{ props.enterInfo.remark }}
                 </div>
               </div>
-              <div class="flex-start gap-3 text-sm font-normal">
-                <div class="info-title">
-                  总件数
-                </div>
-                <div class="info-val">
-                  {{ props.enterInfo.products?.length || 0 }}
-                </div>
-              </div>
-              <div class="flex-start gap-3 text-sm font-normal">
-                <div class="info-title">
-                  总重量
-                </div>
-                <div class="info-val">
-                  {{ sum('weight') || 0 }}
-                </div>
-              </div>
               <div class="other-information flex flex-col gap-1">
                 <div class="flex-start gap-3 text-sm font-normal">
                   <div class="info-title">
@@ -96,10 +84,42 @@ function sum(key: string): number {
             <div class="product-information flex flex-col gap-1">
               <div class="flex-start gap-3 text-sm font-normal">
                 <div class="info-title">
-                  入库数量
+                  数量
                 </div>
                 <div class="info-val">
                   {{ props.enterInfo.products?.length }}
+                </div>
+              </div>
+              <div class="flex-start gap-3 text-sm font-normal">
+                <div class="info-title">
+                  总重量
+                </div>
+                <div class="info-val">
+                  {{ sumCategory('weight') || 0 }}
+                </div>
+              </div>
+              <div class="flex-start gap-3 text-sm font-normal">
+                <div class="info-title">
+                  总标签价
+                </div>
+                <div class="info-val">
+                  {{ sumCategory('label_price') || 0 }}
+                </div>
+              </div>
+              <div class="flex-start gap-3 text-sm font-normal">
+                <div class="info-title">
+                  入库总件数
+                </div>
+                <div class="info-val">
+                  {{ sum('stock') || 0 }}
+                </div>
+              </div>
+              <div class="flex-start gap-3 text-sm font-normal">
+                <div class="info-title">
+                  入库总入网费
+                </div>
+                <div class="info-val">
+                  {{ sum('access_fee') || 0 }}
                 </div>
               </div>
             </div>
