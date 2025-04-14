@@ -380,8 +380,9 @@ async function getOldids() {
     </template>
     <!-- 调入门店者操作 调拨方式未调拨入库是没有权限设置 -->
     <template v-if="allocateInfo.status === 2">
-      <template v-if="allocateInfo.method === 2 && myStore.id === allocateInfo.to_store_id" />
-      <common-button-bottom cancel-text="取消调拨" confirm-text="完成调拨" @cancel="cancel" @confirm="finish" />
+      <template v-if="allocateInfo.method === 2 || myStore.id === allocateInfo.to_store_id">
+        <common-button-bottom cancel-text="取消调拨" confirm-text="完成调拨" @cancel="cancel" @confirm="finish" />
+      </template>
     </template>
     <!-- 状态为盘点中 增加产品 -->
     <template v-if="allocateInfo.status === 1">

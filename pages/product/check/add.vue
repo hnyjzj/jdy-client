@@ -167,6 +167,20 @@ function handleSwitchChange(e: boolean, name: keyof Check) {
                               :consistent-menu-width="false"
                               clearable
                             />
+                            <div class="ml-2">
+                              <n-switch size="large" @change="(e) => handleSwitchChange(e, item.name)">
+                                <template #unchecked>
+                                  <div>
+                                    全选
+                                  </div>
+                                </template>
+                                <template #checked>
+                                  <div class="pl-2">
+                                    清空
+                                  </div>
+                                </template>
+                              </n-switch>
+                            </div>
                           </n-form-item>
                         </template>
                       </template>

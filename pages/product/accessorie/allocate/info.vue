@@ -252,7 +252,7 @@ const debouncedDelProduct = useThrottleFn((id: string) => {
       </div>
     </div>
     <template v-if="accessorieAllocateInfo.status === 1 && myStore?.id === accessorieAllocateInfo.from_store_id">
-      <common-button-one text="确认调拨" @confirm="confirm" />
+      <common-button-bottom cancel-text="取消调拨" text="确认调拨" @cancel="cancel" @confirm="confirm" />
     </template>
     <template v-if="accessorieAllocateInfo.status === 2">
       <template v-if="accessorieAllocateInfo.method === 2 || myStore?.id === accessorieAllocateInfo.to_store_id">

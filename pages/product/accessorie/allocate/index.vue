@@ -71,6 +71,12 @@ async function changeStore() {
   pages.value = 1
   await getList()
 }
+
+/** id获取门店名称 */
+function getStoreName(id: Stores['id']) {
+  const store = storesList.value.find((item: Stores) => item.id === id)
+  return store?.name ?? ''
+}
 </script>
 
 <template>
@@ -93,54 +99,38 @@ async function changeStore() {
           </template>
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-              <div class="flex py-[4px] justify-between">
-                <div>
-                  调拨方式
-                </div>
-                <div class="val">
-                  {{ accessorieAllocateFilterList.method?.preset[info.method] }}
-                </div>
-              </div>
-              <div class="flex py-[4px] justify-between">
-                <div>
-                  仓库类型
-                </div>
-                <div class="val">
-                  {{ accessorieAllocateFilterList.type?.preset[info.type] }}
-                </div>
-              </div>
-              <div class="flex py-[4px] justify-between">
-                <div>
-                  调拨原因
-                </div>
-                <div class="val">
-                  {{ accessorieAllocateFilterList.reason?.preset[info.reason] }}
-                </div>
-              </div>
-              <div class="flex py-[4px] justify-between">
-                <div>
-                  调拨状态
-                </div>
-                <div class="val">
-                  {{ accessorieAllocateFilterList.status?.preset[info.status] }}
-                </div>
-              </div>
-              <div class="flex py-[4px] justify-between">
-                <div>
-                  备注
-                </div>
-                <div class="val">
-                  {{ info.remark }}
-                </div>
-              </div>
-              <div class="flex py-[4px] justify-between">
-                <div>
-                  开始时间
-                </div>
-                <div class="val">
-                  {{ formatTimestampToDateTime(info.created_at) }}
-                </div>
-              </div>
+              <template v-for="(item, index) in accessorieAllocateFilterListToArray" :key="index">
+                <template v-if="item.find">
+                  <div class="flex py-[4px] justify-between">
+                    <div>
+                      {{ item.label }}
+                    </div>
+                    <template v-if="item.input === 'text'">
+                      <div class="val">
+                        {{ info[item.name] }}
+                      </div>
+                    </template>
+                    <template v-else-if="item.input === 'select'">
+                      <div class="val">
+                        {{ accessorieAllocateFilterList[item.name]?.preset[info[item.name] as number] }}
+                      </div>
+                    </template>
+                    <template v-else-if="item.input === 'date'">
+                      <div v-if="item.name === 'start_time'" class="val">
+                        {{ formatTimestampToDateTime(info.created_at) }}
+                      </div>
+                      <div v-if="item.name === 'end_time'" class="val">
+                        {{ formatTimestampToDateTime(info.updated_at) }}
+                      </div>
+                    </template>
+                    <template v-else-if="item.input === 'search'">
+                      <div class="val">
+                        {{ getStoreName(info[item.name] as Stores['id']) }}
+                      </div>
+                    </template>
+                  </div>
+                </template>
+              </template>
             </div>
           </template>
           <template #bottom="{ info }">
