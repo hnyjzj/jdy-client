@@ -5,6 +5,7 @@ const { accessorieList } = storeToRefs(useAccessorie())
 const { getAccessorieList, getAccessorieWhere } = useAccessorie()
 const { categoryFilterList, categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
 const { getAccessorieCategoryWhere } = useAccessorieCategory()
+const { myStore } = storeToRefs(useStores())
 const { $toast } = useNuxtApp()
 const route = useRoute()
 const router = useRouter()
@@ -53,6 +54,7 @@ async function searchAccessorie() {
 
   const obj = {} as Partial<ProductAccessories>
   obj[searchParams.value.label] = searchParams.value.val
+  obj.store_id = myStore.value.id
   await getAccessorieList({ page: 1, limit: 20, where: { ...obj } })
 }
 
