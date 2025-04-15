@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { calc } from 'a-calc'
 
-const Props = defineProps<{
+const Props = withDefaults(defineProps<{
   partList: ProductAccessories[]
   where: FilterWhere<ProductAccessories>[]
   checkAccessoriesScore: (params: { classes: AccessorieCategory['type_part'][] }) => any
   isIntegral: boolean
-}>()
+  hold?: number
+  rounding?: '5' | '-' | '+'
+}>(), {
+  hold: 0,
+  rounding: '5',
+})
 const emits = defineEmits<{
   search: [val: string, type: string]
   clearList: []
@@ -191,7 +196,7 @@ const changeQuantity = (obj: ProductAccessories) => {
                         :show-button="false"
                         placeholder="请输入应付金额"
                         round
-                        :precision="0"
+                        :precision="Props.hold"
                         min="0"
                         @update:value="changeScore(obj)">
                         <template #suffix>

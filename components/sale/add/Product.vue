@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { calc } from 'a-calc'
 
-const Props = defineProps<{
+const Props = withDefaults(defineProps<{
   price: GoldPrices[]
   productList: ProductFinisheds[]
   finishedFilterList: Where<ProductFinisheds>
   isIntegral: boolean
+  hold?: number
+  rounding?: '5' | '-' | '+'
   checkProductClass: (val: { class: number }) => any
-}>()
+}>(), {
+  hold: 0,
+  rounding: '5',
+})
 const emits = defineEmits<{
   search: [val: string, type: string]
   openProductList: []
@@ -98,16 +103,14 @@ const count = (p: OrderProducts) => {
   }
   // 如果是计件方式 标签价格 x 数量 x 折扣
   if (p.product?.retail_type === 1) {
-    const total = calc('(price * quantity * discount * member_discount) - notCount - scoreDeduction - cardDeduction | =0 ~5,!n', {
+    const total = calc(`(price * quantity * discount * member_discount) - notCount - scoreDeduction - cardDeduction | =${Props.hold} ~${Props.rounding},!n`, {
       price: p.product?.label_price, // 标签价格
       quantity: p.quantity, // 数量
       scoreDeduction: methA(p.scoreDeduction),
       cardDeduction: methA(p.cardDeduction), // 卡券抵扣
       member_discount: (p.member_discount || 100) * 0.01, // 会员折扣
       discount: ((p.discount || 100) * 0.01),
-      notCount: calc('( a ) |=0 ~5,!n', {
-        a: p?.notCount,
-      }) || 0, // 抹零
+      notCount: p?.notCount, // 抹零
     })
     p.amount = total
     // 计算不算折扣的原价
@@ -137,7 +140,7 @@ const count = (p: OrderProducts) => {
 
   // 计重工费按克 [（金价 + 工费）X克重] X折扣
   if (p.product?.retail_type === 2) {
-    const total = calc('((price + labor_fee) * weight_metal * discount  * member_discount) - notCount - scoreDeduction - cardDeduction  | =0 ~5,!n', {
+    const total = calc(`((price + labor_fee) * weight_metal * discount  * member_discount) - notCount - scoreDeduction - cardDeduction  | =${Props.hold} ~${Props.rounding},!n`, {
       price: p?.price,
       labor_fee: p?.labor_fee,
       weight_metal: p.product?.weight_metal,
@@ -178,7 +181,7 @@ const count = (p: OrderProducts) => {
   }
   //   计重工费按件   （(金价X克重)) + 工费）X件数 X折扣
   if (p.product?.retail_type === 3) {
-    const total = calc('(((price * weight_metal) + labor_fee)  * discount  * member_discount ) - notCount  - scoreDeduction - cardDeduction | =0 ~5,!n', {
+    const total = calc(`(((price * weight_metal) + labor_fee)  * discount  * member_discount ) - notCount  - scoreDeduction - cardDeduction | =${Props.hold} ~${Props.rounding},!n`, {
       price: p.price,
       labor_fee: p?.labor_fee,
       weight_metal: p.product?.weight_metal,
@@ -452,7 +455,7 @@ const handleCouponReduceBlur = () => {
                 placeholder="0"
                 round
                 min="0"
-                :precision="2"
+
                 :show-button="false"
                 @blur="handleCouponReduceBlur"
 
@@ -467,7 +470,7 @@ const handleCouponReduceBlur = () => {
                 placeholder="0"
                 round
                 min="0"
-                :precision="2"
+
                 :show-button="false"
                 @blur="handleScoreReduceBlur"
 
@@ -482,7 +485,7 @@ const handleCouponReduceBlur = () => {
                 placeholder="0"
                 round
                 min="0"
-                :precision="2"
+
                 :show-button="false"
                 @blur="handleAmountReduceBlur"
 
@@ -518,7 +521,7 @@ const handleCouponReduceBlur = () => {
                           min="0"
                           max="100"
                           :default-value="100"
-                          :precision="2"
+
                           @blur="() => {
                             if (!obj.discount?.toString()){
                               obj.discount = 100
@@ -538,7 +541,7 @@ const handleCouponReduceBlur = () => {
                           :default-value="0"
                           min="0"
                           round
-                          :precision="2"
+
                           @blur="() => {
                             if (!obj.notCount?.toString()){
                               obj.notCount = 0
@@ -554,7 +557,7 @@ const handleCouponReduceBlur = () => {
                           :default-value="0"
                           min="0"
                           round
-                          :precision="2"
+
                           @blur="() => {
                             if (!obj.cardDeduction?.toString()){
                               obj.cardDeduction = 0
@@ -570,7 +573,6 @@ const handleCouponReduceBlur = () => {
                           :default-value="0"
                           min="0"
                           round
-                          :precision="2"
 
                           @blur="() => {
                             if (!obj.scoreDeduction?.toString()){
@@ -588,7 +590,6 @@ const handleCouponReduceBlur = () => {
                           min="0"
                           :max="100"
                           round
-                          :precision="2"
 
                           @blur="() => {
                             if (!obj.member_discount?.toString()){
@@ -609,7 +610,7 @@ const handleCouponReduceBlur = () => {
                           :default-value="0"
                           min="0"
                           round
-                          :precision="0"
+
                           :disabled="true"
                           @blur="() => {
                             if (!obj.integral?.toString()){
@@ -625,7 +626,7 @@ const handleCouponReduceBlur = () => {
                             :show-button="false"
                             placeholder="请输入金价(元/g)"
                             round
-                            :precision="2"
+
                             @blur="() => {
                               if (!obj.price?.toString()){
                                 obj.price = 0
@@ -643,7 +644,7 @@ const handleCouponReduceBlur = () => {
                             placeholder="请输入工费"
                             round
                             min="0"
-                            :precision="2"
+
                             @blur="() => {
                               if (!obj.labor_fee?.toString()){
                                 obj.labor_fee = 0

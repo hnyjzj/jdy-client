@@ -103,7 +103,7 @@ const payMethodsTotal = computed(() => {
 // 未支付的金额
 const unPayMoney = computed(() => {
   const total = ref(0)
-  total.value = calc('(a - b) | =0,!n', {
+  total.value = calc('(a - b) | =2,!n', {
     a: payMoney.value,
     b: payMethodsTotal.value,
   })
