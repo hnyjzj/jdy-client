@@ -14,11 +14,17 @@ const enterStatus = {
  * 汇总字段总和
  */
 function sum(key: string): number {
-  return props.enterInfo?.products?.reduce((total, item) => total + Number(item[key]), 0) ?? 0
+  return props.enterInfo?.products?.reduce((total, item) => {
+    const num = Number(item?.[key])
+    return Number.isFinite(num) ? total + num : total
+  }, 0) ?? 0
 }
 
 function sumCategory(key: string): number {
-  return props.enterInfo?.products?.reduce((total, item) => total + Number(item.category[key]), 0) ?? 0
+  return props.enterInfo?.products?.reduce((total, item) => {
+    const num = Number(item?.category[key])
+    return Number.isFinite(num) ? total + num : total
+  }, 0) ?? 0
 }
 </script>
 
@@ -29,7 +35,7 @@ function sumCategory(key: string): number {
         <template #body>
           <div class="flex flex-col gap-4">
             <div class="operation-information flex flex-col gap-1">
-              <div class="flex-start gap-3 text-sm font-normal">
+              <div class="info-row">
                 <div class="info-title">
                   操作人
                 </div>
@@ -37,7 +43,7 @@ function sumCategory(key: string): number {
                   {{ props.enterInfo?.operator?.nickname }}
                 </div>
               </div>
-              <div class="flex-start gap-3 text-sm font-normal">
+              <div class="info-row">
                 <div class="info-title">
                   入库单号
                 </div>
@@ -45,7 +51,7 @@ function sumCategory(key: string): number {
                   {{ props.enterInfo.id }}
                 </div>
               </div>
-              <div class="flex-start gap-3 text-sm font-normal">
+              <div class="info-row">
                 <div class="info-title">
                   状态
                 </div>
@@ -53,7 +59,7 @@ function sumCategory(key: string): number {
                   {{ enterStatus[props.enterInfo.status] }}
                 </div>
               </div>
-              <div class="flex-start gap-3 text-sm font-normal">
+              <div class="info-row">
                 <div class="info-title">
                   备注
                 </div>
@@ -62,7 +68,7 @@ function sumCategory(key: string): number {
                 </div>
               </div>
               <div class="other-information flex flex-col gap-1">
-                <div class="flex-start gap-3 text-sm font-normal">
+                <div class="info-row">
                   <div class="info-title">
                     创建时间
                   </div>
@@ -70,7 +76,7 @@ function sumCategory(key: string): number {
                     {{ formatTimestampToDateTime(props.enterInfo.created_at) }}
                   </div>
                 </div>
-                <div class="flex-start gap-3 text-sm font-normal">
+                <div class="info-row">
                   <div class="info-title">
                     完成时间
                   </div>
@@ -82,7 +88,7 @@ function sumCategory(key: string): number {
             </div>
             <div class="h-0.5 bg-[#E6E6E8]" />
             <div class="product-information flex flex-col gap-1">
-              <div class="flex-start gap-3 text-sm font-normal">
+              <div class="info-row">
                 <div class="info-title">
                   数量
                 </div>
@@ -90,7 +96,7 @@ function sumCategory(key: string): number {
                   {{ props.enterInfo.products?.length }}
                 </div>
               </div>
-              <div class="flex-start gap-3 text-sm font-normal">
+              <div class="info-row">
                 <div class="info-title">
                   总重量
                 </div>
@@ -98,7 +104,7 @@ function sumCategory(key: string): number {
                   {{ sumCategory('weight') || 0 }}
                 </div>
               </div>
-              <div class="flex-start gap-3 text-sm font-normal">
+              <div class="info-row">
                 <div class="info-title">
                   总标签价
                 </div>
@@ -106,7 +112,7 @@ function sumCategory(key: string): number {
                   {{ sumCategory('label_price') || 0 }}
                 </div>
               </div>
-              <div class="flex-start gap-3 text-sm font-normal">
+              <div class="info-row">
                 <div class="info-title">
                   入库总件数
                 </div>
@@ -114,7 +120,7 @@ function sumCategory(key: string): number {
                   {{ sum('stock') || 0 }}
                 </div>
               </div>
-              <div class="flex-start gap-3 text-sm font-normal">
+              <div class="info-row">
                 <div class="info-title">
                   入库总入网费
                 </div>
@@ -131,5 +137,13 @@ function sumCategory(key: string): number {
 </template>
 
 <style lang="scss" scoped>
-
+.info-row {
+  --uno: 'flex justify-between mb-2';
+  .info-title {
+    --uno: 'text-color';
+  }
+  .info-val {
+    --uno: 'text-color-light w-70% text-right';
+  }
+}
 </style>

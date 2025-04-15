@@ -37,9 +37,9 @@ async function clearSearch() {
 async function getList(where = {} as Partial<HistoryWhere>) {
   const params = { page: pages.value, limit: 10 } as ReqList<HistoryWhere>
   params.where = where
-  if (myStore.value.id) {
-    where.store_id = myStore.value.id
-    where.type = [3]
+  if (myStore.value?.id) {
+    params.where.store_id = myStore.value.id
+    params.where.type = [3]
   }
   const res = await getProductHistory(params)
   return res as any

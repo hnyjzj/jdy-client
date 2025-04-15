@@ -274,7 +274,6 @@ async function submitChange(status: CheckInfo['status']) {
         </div>
       </div>
     </div>
-    <div>{{ funbtns }}</div>
     <template v-if="funbtns?.length">
       <div class="btn">
         <template v-for="(item, index) in funbtns" :key="index">

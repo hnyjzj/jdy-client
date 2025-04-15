@@ -7,7 +7,7 @@ const { checkList, checkFilterList, checkFilterListToArray, checkTotal } = store
 const { storesList } = storeToRefs(useStores())
 const { getStoreList, getMyStore } = useStores()
 const storeCol = ref()
-async function changeStoer() {
+async function changeStore() {
   storeCol.value = []
   storesList.value.forEach((item: Stores) => {
     storeCol.value.push({ label: item.name, value: item.id })
@@ -15,7 +15,7 @@ async function changeStoer() {
 }
 await getStoreList({ page: 1, limit: 20 })
 await getMyStore({ page: 1, limit: 20 })
-await changeStoer()
+await changeStore()
 await getCheckWhere()
 const complate = ref(0)
 // 筛选框显示隐藏
@@ -103,7 +103,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
   return ''
 }
 
-async function changeStore() {
+async function changeMyStore() {
   pages.value = 1
   await getList()
 }
@@ -116,7 +116,7 @@ async function changeStore() {
       <product-filter
         v-model:id="complate" :product-list-total="checkTotal" placeholder="搜索盘点单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
         <template #company>
-          <product-manage-company @change="changeStore" />
+          <product-manage-company @change="changeMyStore" />
         </template>
       </product-filter>
     </div>

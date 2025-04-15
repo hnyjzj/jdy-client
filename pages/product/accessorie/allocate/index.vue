@@ -53,7 +53,7 @@ function pull() {
 }
 // 筛选列表
 async function submitWhere(f: Partial<AccessorieAllocate>, isSearch: boolean = false) {
-  filterData.value = { ...f, ...filterData.value }
+  filterData.value = { ...filterData.value, ...f }
   pages.value = 1
   accessorieAllocateList.value = []
   const res = await getList(filterData.value)
