@@ -1,9 +1,9 @@
 <script setup lang="ts">
 const { getAccessorieAllocateInfo, confirmAllcate, cancelAllcate, finishAllcate, remove } = useAccessorieAllocate()
-const { accessorieAllocateInfo, accessorieAllocateFilterList } = storeToRefs(useAccessorieAllocate())
+const { accessorieAllocateInfo, accessorieAllocateFilterList, accessorieAllocateFilterListToArray } = storeToRefs(useAccessorieAllocate())
 const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
 const { getAccessorieCategoryWhere } = useAccessorieCategory()
-const { myStore } = storeToRefs(useStores())
+const { myStore, storesList } = storeToRefs(useStores())
 useSeoMeta({
   title: '调拨单详情',
 })
@@ -71,6 +71,12 @@ async function delProduct(id: string) {
 const debouncedDelProduct = useThrottleFn((id: string) => {
   delProduct(id)
 }, 200)
+
+/** id获取门店名称 */
+function getStoreName(id: Stores['id']) {
+  const store = storesList.value.find((item: Stores) => item.id === id)
+  return store?.name ?? ''
+}
 </script>
 
 <template>
@@ -108,78 +114,38 @@ const debouncedDelProduct = useThrottleFn((id: string) => {
                   </div>
                   <div class="h-0.5 bg-[#E6E6E8]" />
                   <div class="other-information flex flex-col gap-1">
-                    <div class="info-row">
-                      <div class="info-title">
-                        调出门店
-                      </div>
-                      <div class="info-val">
-                        {{ accessorieAllocateInfo?.from_store?.name }}
-                      </div>
-                    </div>
-                    <div class="info-row">
-                      <div class="info-title">
-                        调入门店
-                      </div>
-                      <div class="info-val">
-                        {{ accessorieAllocateInfo?.to_store?.name }}
-                      </div>
-                    </div>
-                    <div class="info-row">
-                      <div class="info-title">
-                        调拨方式
-                      </div>
-                      <div class="info-val">
-                        {{ accessorieAllocateFilterList.method?.preset[accessorieAllocateInfo.method] }}
-                      </div>
-                    </div>
-                    <div class="info-row">
-                      <div class="info-title">
-                        调拨原因
-                      </div>
-                      <div class="info-val">
-                        {{ accessorieAllocateFilterList.reason?.preset[accessorieAllocateInfo.reason] }}
-                      </div>
-                    </div>
-                    <div class="info-row">
-                      <div class="info-title">
-                        调拨状态
-                      </div>
-                      <div class="info-val">
-                        {{ accessorieAllocateFilterList.status?.preset[accessorieAllocateInfo.status] }}
-                      </div>
-                    </div>
-                    <div class="info-row">
-                      <div class="info-title">
-                        仓库类型
-                      </div>
-                      <div class="info-val">
-                        {{ accessorieAllocateFilterList.type?.preset[accessorieAllocateInfo.type] }}
-                      </div>
-                    </div>
-                    <div class="info-row">
-                      <div class="info-title">
-                        备注
-                      </div>
-                      <div class="info-val">
-                        {{ accessorieAllocateInfo.remark }}
-                      </div>
-                    </div>
-                    <div class="info-row">
-                      <div class="info-title">
-                        创建时间
-                      </div>
-                      <div class="info-val">
-                        {{ formatTimestampToDateTime(accessorieAllocateInfo.created_at) }}
-                      </div>
-                    </div>
-                    <div class="info-row">
-                      <div class="info-title">
-                        完成时间
-                      </div>
-                      <div class="info-val">
-                        {{ formatTimestampToDateTime(accessorieAllocateInfo.updated_at) }}
-                      </div>
-                    </div>
+                    <template v-for="(item, index) in accessorieAllocateFilterListToArray" :key="index">
+                      <template v-if="item.find">
+                        <div class="info-row">
+                          <div class="info-title">
+                            {{ item.label }}
+                          </div>
+                          <template v-if="item.input === 'text'">
+                            <div class="info-val">
+                              {{ accessorieAllocateInfo[item.name] }}
+                            </div>
+                          </template>
+                          <template v-else-if="item.input === 'select'">
+                            <div class="info-val">
+                              {{ accessorieAllocateFilterList[item.name]?.preset[accessorieAllocateInfo[item.name] as number] }}
+                            </div>
+                          </template>
+                          <template v-else-if="item.input === 'date'">
+                            <div v-if="item.name === 'start_time'" class="info-val">
+                              {{ formatTimestampToDateTime(accessorieAllocateInfo.created_at) }}
+                            </div>
+                            <div v-if="item.name === 'end_time'" class="info-val">
+                              {{ formatTimestampToDateTime(accessorieAllocateInfo.updated_at) }}
+                            </div>
+                          </template>
+                          <template v-else-if="item.input === 'search'">
+                            <div class="info-val">
+                              {{ getStoreName(accessorieAllocateInfo[item.name] as Stores['id']) }}
+                            </div>
+                          </template>
+                        </div>
+                      </template>
+                    </template>
                   </div>
                 </div>
                 <div class="h-0.5 bg-[#E6E6E8]" />
@@ -190,6 +156,14 @@ const debouncedDelProduct = useThrottleFn((id: string) => {
                     </div>
                     <div class="info-val">
                       {{ accessorieAllocateInfo.products?.length }}
+                    </div>
+                  </div>
+                  <div class="info-row">
+                    <div class="info-title">
+                      调拨总数量
+                    </div>
+                    <div class="info-val">
+                      {{ accessorieAllocateInfo.products?.reduce((total, item) => total + Number(item.quantity), 0) ?? 0 }}
                     </div>
                   </div>
                 </div>

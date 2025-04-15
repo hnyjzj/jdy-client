@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const { getAllocateInfo, confirmAllcate, cancelAllcate, finishAllcate, remove, add } = useAllocate()
-const { allocateInfo, allocateFilterList } = storeToRefs(useAllocate())
+const { getAllocateInfo, getAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove, add } = useAllocate()
+const { allocateInfo, allocateFilterList, allocateFilterListToArray } = storeToRefs(useAllocate())
 const { useWxWork } = useWxworkStore()
 const { getFinishedWhere, getFinishedList } = useFinished()
 const { finishedFilterListToArray, finishedList } = storeToRefs(useFinished())
@@ -36,6 +36,7 @@ async function getWhere() {
 if (route.query.id) {
   await getAllocateInfo(route.query.id as string)
   type.value = allocateInfo.value.type
+  await getAllocateWhere()
   await getWhere()
 }
 
@@ -228,10 +229,10 @@ async function getOldids() {
     <div class="grid-12 pt-4">
       <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <template v-if="type === GoodsTypePure.ProductFinish">
-          <product-allocate-base :info="allocateInfo" :filter-list="allocateFilterList" :product-list="allocateInfo.product_finisheds" />
+          <product-allocate-base :info="allocateInfo" :filter-list="allocateFilterList" :filter-list-to-array="allocateFilterListToArray" :product-list="allocateInfo.product_finisheds" />
         </template>
         <template v-if="type === GoodsTypePure.ProductOld">
-          <product-allocate-base :info="allocateInfo" :filter-list="allocateFilterList" :product-list="allocateInfo.product_olds" />
+          <product-allocate-base :info="allocateInfo" :filter-list="allocateFilterList" :filter-list-to-array="allocateFilterListToArray" :product-list="allocateInfo.product_olds" />
         </template>
 
         <template v-if="productList?.length">

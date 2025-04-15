@@ -79,6 +79,8 @@ interface Allocate {
    * 调入门店信息
    */
   to_store: Stores
+  start_time: Date
+  end_time: Date
 }
 
 interface AllocateReq {
