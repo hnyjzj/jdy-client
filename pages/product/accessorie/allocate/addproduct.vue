@@ -226,7 +226,7 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
                     <td class="sticky-left table-color py-1 px-2">
                       <input v-model="selectedCategories" type="checkbox" :value="category.id">
                     </td>
-                    <template v-for="(filter, i) in categoryFilterListToArray" :key="i">
+                    <template v-for="(filter, filterIndex) in categoryFilterListToArray" :key="filterIndex">
                       <template v-if="filter.create">
                         <template v-if="filter.input === 'select'">
                           <td class="whitespace-nowrap px-2 py-1">

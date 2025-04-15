@@ -41,7 +41,5 @@ export default async function (headers: any) {
   const englishHeaders = cleanedHeaders.map((header: any) => {
     return headerMap[header] || header
   })
-  console.log('englishHeaders', englishHeaders)
-
   return englishHeaders
 }
