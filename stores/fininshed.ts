@@ -13,7 +13,7 @@ export const useFinished = defineStore('Finished', {
     finishedList: [],
     finishedInfo: {} as ProductFinisheds,
     finishedListTotal: 0,
-    finishedFilterListToArray: {} as FilterWhere<ProductFinisheds>[],
+    finishedFilterListToArray: [] as FilterWhere<ProductFinisheds>[],
   }),
   actions: {
     // 成品列表

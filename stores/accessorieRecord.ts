@@ -12,7 +12,7 @@ export const useAcessorieRecord = defineStore('AcessorieRecord', {
   } => ({
     productRocordList: [],
     historyFilterList: {} as Where<AccessorieRecord>,
-    HistoryFilterListToArray: {} as FilterWhere<AccessorieRecord>[],
+    HistoryFilterListToArray: [] as FilterWhere<AccessorieRecord>[],
     historyListTotal: 0,
     historyInfo: {} as AccessorieRecord,
   }),

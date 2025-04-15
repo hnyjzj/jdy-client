@@ -13,7 +13,7 @@ export const useAccessorie = defineStore('Accessorie', {
     accessorieList: [],
     accessorieInfo: {} as ProductAccessories,
     accessorieListTotal: 0,
-    accessorieFilterListToArray: {} as FilterWhere<ProductAccessories>[],
+    accessorieFilterListToArray: [] as FilterWhere<ProductAccessories>[],
   }),
   actions: {
     // 配件列表

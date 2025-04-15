@@ -13,7 +13,7 @@ export const useOld = defineStore('Old', {
     oldList: [],
     oldInfo: {} as ProductOlds,
     oldListTotal: 0,
-    oldFilterListToArray: {} as FilterWhere<ProductOlds>[],
+    oldFilterListToArray: [] as FilterWhere<ProductOlds>[],
   }),
   actions: {
     // 旧料列表

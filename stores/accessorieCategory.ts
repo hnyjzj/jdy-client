@@ -8,7 +8,7 @@ export const useAccessorieCategory = defineStore('Category', {
     categoryList: [],
     categoryListTotal: 0,
     categoryFilterList: {} as Where<AccessorieCategory>,
-    categoryFilterListToArray: {} as FilterWhere<AccessorieCategory>[],
+    categoryFilterListToArray: [] as FilterWhere<AccessorieCategory>[],
   }),
   actions: {
     // 配件条目
