@@ -30,7 +30,7 @@ function del(id: string) {
             <template #info>
               <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 gap-4">
                 <template v-for="(filter, findex) in filterList" :key="findex">
-                  <template v-if="filter.find">
+                  <template v-if="filter.find && filter.name !== 'store_id'">
                     <div class="flex">
                       <div class="key">
                         {{ filter.label }}

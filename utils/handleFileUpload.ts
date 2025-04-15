@@ -20,7 +20,7 @@ export default async function (headers: any) {
     '品类*': 'category',
     '工艺': 'craft',
     '金重(g)*': 'weight_metal',
-    '总重(g)': 'weight',
+    '总重(g)': 'weight_total',
     '手寸': 'size',
     '贵金属颜色': 'color_metal',
     '主石重': 'weight_gem',
@@ -41,5 +41,7 @@ export default async function (headers: any) {
   const englishHeaders = cleanedHeaders.map((header: any) => {
     return headerMap[header] || header
   })
+  console.log('englishHeaders', englishHeaders)
+
   return englishHeaders
 }

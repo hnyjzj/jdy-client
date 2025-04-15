@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { set } from '@vueuse/core'
-
 const { $toast } = useNuxtApp()
 const route = useRoute()
 const router = useRouter()
@@ -30,15 +28,13 @@ const cancelDialog = ref(false)
 const finishDialog = ref(false)
 
 /** 页面加载时，初始化数据 */
-onMounted(async () => {
-  await getAccessorieCategoryWhere()
 
-  if (route.query.id) {
-    enterId.value = route.query.id as string
-    await fetchEnterInfo()
-    await getAccessorieWhere()
-  }
-})
+await getAccessorieCategoryWhere()
+if (route.query.id) {
+  enterId.value = route.query.id as string
+  await fetchEnterInfo()
+  await getAccessorieWhere()
+}
 
 /** 获取入库单详细信息 */
 async function fetchEnterInfo() {
@@ -135,7 +131,9 @@ async function bulkupload(data: any) {
     $toast.success('添加成功')
     await fetchEnterInfo()
   }
-
+  else {
+    $toast.error(res?.message ?? '添加失败')
+  }
   // 关闭弹窗
   isChooseModel.value = false
   isImportModel.value = false

@@ -64,7 +64,6 @@ async function transformData(data: any[][]) {
 
   // 上传后的表头
   const headers = await handleFileUpload(originalHeaders) as ProductKey[]
-
   return data.slice(1).map((row) => {
     const obj = {} as Record<ProductKey, any>
 
@@ -72,12 +71,12 @@ async function transformData(data: any[][]) {
       // 字段筛选条件
       const filterItem = props.filterList[header]
       // 判断字段是否存在于 filterList 中，防止访问 undefined
-      if (filterItem) {
-        const type = filterItem.type
+      if (filterItem || header === 'certificate1' || header === 'certificate2') {
+        const type = filterItem?.type
 
         // 处理下拉选择项
-        if (filterItem.input === 'select') {
-          const preset = filterItem.preset || {}
+        if (filterItem?.input === 'select') {
+          const preset = filterItem?.preset || {}
           const rowValue = String(row[index] ?? '')
 
           // 使用 Object.entries() 查找键，防止 undefined 和类型不一致问题
@@ -86,7 +85,6 @@ async function transformData(data: any[][]) {
         }
 
         // 数据类型转换 + 默认值处理
-
         switch (type) {
           case 'number':
             row[index] = Number.isNaN(Number(row[index])) ? 0 : Number(row[index])
@@ -126,7 +124,6 @@ async function transformData(data: any[][]) {
       ...obj,
       certificate: [String(obj.certificate1 ?? ''), String(obj.certificate2 ?? '')].filter(Boolean),
     }
-
     // 删除不需要的字段
     delete transformedObj.certificate1
     delete transformedObj.certificate2
