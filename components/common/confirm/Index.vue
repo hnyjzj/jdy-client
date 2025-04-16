@@ -3,6 +3,7 @@
 const props = withDefaults(defineProps<{
   title?: string
   text?: string
+  textb?: string
   icon?: string
   cancelText?: string
   confirmText?: string
@@ -60,6 +61,11 @@ const cancle = () => {
       <div class="line-height-[20px] color-[#333] dark:color-[#fff] py-[16px] text-center">
         {{ props.text }}
       </div>
+      <template v-if="props.textb">
+        <div class="line-height-[20px] color-[#333] dark:color-[#fff] pb-[16px] text-center">
+          {{ props.textb }}
+        </div>
+      </template>
       <div class="flex justify-between">
         <div
           class="shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)] px-[44px]

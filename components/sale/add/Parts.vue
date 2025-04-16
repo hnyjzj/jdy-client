@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import { calc } from 'a-calc'
 
-const Props = withDefaults(defineProps<{
+const Props = defineProps<{
   partList: ProductAccessories[]
   where: FilterWhere<ProductAccessories>[]
   checkAccessoriesScore: (params: { classes: AccessorieCategory['type_part'][] }) => any
   isIntegral: boolean
-  hold?: number
-  rounding?: '5' | '-' | '+'
-}>(), {
-  hold: 0,
-  rounding: '5',
-})
+  billingSet: BillingSet
+}>()
 const emits = defineEmits<{
   search: [val: string, type: string]
   clearList: []
@@ -57,12 +53,15 @@ const countIntegral = (amount: number, rate: number | string) => {
     b: rate,
   })
 }
+// 小数点进位计算函数
+const hold = ref(0)
 
 // 计算积分 如果积分比例存在并且 应付金额大于0 才能计算
 const calculateIntegral = (amount: number, rate?: number) =>
   rate && amount > 0 ? countIntegral(amount, rate) : 0
 // 确认配件 ，将选中的配件添加到 展示列表中, 调用接口获取积分比例
 const confirmParts = async () => {
+  hold.value = holdFunction(Props.billingSet.decimal_point)
   // 判断 showPartsList 是否存在 prePartsList 中的元素 ，如果存在则不添加
   const existingCache = {} as { [key: string]: ProductAccessories }
   //  先缓存原始数据
@@ -196,7 +195,7 @@ const changeQuantity = (obj: ProductAccessories) => {
                         :show-button="false"
                         placeholder="请输入应付金额"
                         round
-                        :precision="Props.hold"
+                        :precision="hold"
                         min="0"
                         @update:value="changeScore(obj)">
                         <template #suffix>

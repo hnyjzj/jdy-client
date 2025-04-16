@@ -115,6 +115,7 @@ const unPayMoney = computed(() => {
   <common-fold title="结算信息" :is-collapse="false">
     <div class="p-[16px]">
       <div>
+        <slot name="score" />
         <div class="border-y-[#E6E6E8] border border-b-solid py-[12px] mb-[12px]">
           <common-cell label="货品金额" :value="productMoney" />
           <common-cell label="配件礼品" :value="PartsListMoney" />

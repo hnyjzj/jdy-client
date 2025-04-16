@@ -1,21 +1,18 @@
 <script setup lang="ts">
 import { calc } from 'a-calc'
 
-const Props = withDefaults(defineProps<{
+const Props = defineProps<{
   price: GoldPrices[]
   productList: ProductFinisheds[]
   finishedFilterList: Where<ProductFinisheds>
   isIntegral: boolean
-  hold?: number
-  rounding?: '5' | '-' | '+'
+  billingSet: BillingSet
   checkProductClass: (val: { class: number }) => any
-}>(), {
-  hold: 0,
-  rounding: '5',
-})
+}>()
 const emits = defineEmits<{
   search: [val: string, type: string]
   openProductList: []
+  updateScoreDeDeduction: [val?: number]
 }>()
 
 const { $toast } = useNuxtApp()
@@ -85,6 +82,7 @@ const addProduct = async (product: ProductFinisheds) => {
     $toast.error('该商品已经添加过')
   }
 }
+
 // 选择成品
 const readyAddproduct = ref()
 const setAddProduct = (product: ProductFinisheds) => {
@@ -94,6 +92,10 @@ const setAddProduct = (product: ProductFinisheds) => {
 const count = (p: OrderProducts) => {
   if (!p.quantity)
     return
+  // 小数点进位计算函数
+  const hold = holdFunction(Props.billingSet.decimal_point)
+  // 取整控制函数
+  const rounding = roundFunction(Props.billingSet.rounding)
 
   //   四舍五入 取证
   const methA = (count: string | number) => {
@@ -103,7 +105,7 @@ const count = (p: OrderProducts) => {
   }
   // 如果是计件方式 标签价格 x 数量 x 折扣
   if (p.product?.retail_type === 1) {
-    const total = calc(`(price * quantity * discount * member_discount) - notCount - scoreDeduction - cardDeduction | =${Props.hold} ~${Props.rounding},!n`, {
+    const total = calc(`(price * quantity * discount * member_discount) - notCount - scoreDeduction - cardDeduction | =${hold} ~${rounding},!n`, {
       price: p.product?.label_price, // 标签价格
       quantity: p.quantity, // 数量
       scoreDeduction: methA(p.scoreDeduction),
@@ -140,7 +142,7 @@ const count = (p: OrderProducts) => {
 
   // 计重工费按克 [（金价 + 工费）X克重] X折扣
   if (p.product?.retail_type === 2) {
-    const total = calc(`((price + labor_fee) * weight_metal * discount  * member_discount) - notCount - scoreDeduction - cardDeduction  | =${Props.hold} ~${Props.rounding},!n`, {
+    const total = calc(`((price + labor_fee) * weight_metal * discount  * member_discount) - notCount - scoreDeduction - cardDeduction  | =${hold} ~${rounding},!n`, {
       price: p?.price,
       labor_fee: p?.labor_fee,
       weight_metal: p.product?.weight_metal,
@@ -181,7 +183,7 @@ const count = (p: OrderProducts) => {
   }
   //   计重工费按件   （(金价X克重)) + 工费）X件数 X折扣
   if (p.product?.retail_type === 3) {
-    const total = calc(`(((price * weight_metal) + labor_fee)  * discount  * member_discount ) - notCount  - scoreDeduction - cardDeduction | =${Props.hold} ~${Props.rounding},!n`, {
+    const total = calc(`(((price * weight_metal) + labor_fee)  * discount  * member_discount ) - notCount  - scoreDeduction - cardDeduction |  =${hold} ~${rounding},!n`, {
       price: p.price,
       labor_fee: p?.labor_fee,
       weight_metal: p.product?.weight_metal,
@@ -289,6 +291,11 @@ const allAmount = () => {
 const amount_reduce = ref(undefined)
 // 设置整体抹零金额
 const handleAmountReduceBlur = () => {
+  if (!showProductList.value.length) {
+    $toast.warning('请先添加商品')
+    amount_reduce.value = undefined
+    return
+  }
   // 初始化结果变量
   let result = 0
   // 检查amount_reduce的值是否小于0或者为空
@@ -326,6 +333,7 @@ const handleAmountReduceBlur = () => {
 const scoreDeduct = ref(undefined)
 const handleScoreReduceBlur = () => {
   let result = 0
+  emits('updateScoreDeDeduction', scoreDeduct.value)
   // 如果积分抵扣金额小于0或者没有输入值，则清空积分抵扣金额，并重置所有商品积分抵扣为0
   if ((scoreDeduct?.value && scoreDeduct?.value < 0) || !scoreDeduct.value) {
     scoreDeduct.value = undefined
@@ -334,6 +342,7 @@ const handleScoreReduceBlur = () => {
     })
     return
   }
+
   // 遍历商品列表，计算每个商品的积分抵扣金额
   showProductList.value.forEach((item, index) => {
     // 计算当前商品的积分抵扣金额
@@ -423,7 +432,7 @@ const handleCouponReduceBlur = () => {
       </div>
     </div>
 
-    <template v-if="showProductList.length > 0">
+    <template v-if="true">
       <div class="px-[16px]">
         <div class="flex justify-between">
           <n-grid :cols="24" :x-gap="8">
@@ -455,7 +464,7 @@ const handleCouponReduceBlur = () => {
                 placeholder="0"
                 round
                 min="0"
-
+                :precision="2"
                 :show-button="false"
                 @blur="handleCouponReduceBlur"
 
@@ -470,7 +479,7 @@ const handleCouponReduceBlur = () => {
                 placeholder="0"
                 round
                 min="0"
-
+                :precision="2"
                 :show-button="false"
                 @blur="handleScoreReduceBlur"
 
@@ -485,7 +494,7 @@ const handleCouponReduceBlur = () => {
                 placeholder="0"
                 round
                 min="0"
-
+                :precision="2"
                 :show-button="false"
                 @blur="handleAmountReduceBlur"
 
@@ -502,7 +511,7 @@ const handleCouponReduceBlur = () => {
                 <common-tags type="pink" text="成品" :is-oval="true" />
               </template>
               <template #info>
-                <div class="flex flex-col gap-[12px] px-[16px]">
+                <div class="flex flex-col gap-[4px] px-[16px]">
                   <common-cell label="名称" :value="obj.product?.name" />
                   <common-cell label="条码" :value="obj.product?.code" />
                   <common-cell label="金重" :value="obj.product?.weight_metal" />
@@ -557,7 +566,7 @@ const handleCouponReduceBlur = () => {
                           :default-value="0"
                           min="0"
                           round
-
+                          :precision="2"
                           @blur="() => {
                             if (!obj.cardDeduction?.toString()){
                               obj.cardDeduction = 0
@@ -573,11 +582,12 @@ const handleCouponReduceBlur = () => {
                           :default-value="0"
                           min="0"
                           round
-
+                          :precision="2"
                           @blur="() => {
                             if (!obj.scoreDeduction?.toString()){
                               obj.scoreDeduction = 0
                             }
+                            emits('updateScoreDeDeduction')
                           }"
                         />
                       </n-form-item-gi>
@@ -610,7 +620,7 @@ const handleCouponReduceBlur = () => {
                           :default-value="0"
                           min="0"
                           round
-
+                          :precision="2"
                           :disabled="true"
                           @blur="() => {
                             if (!obj.integral?.toString()){

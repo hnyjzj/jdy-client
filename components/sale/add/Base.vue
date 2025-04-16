@@ -3,13 +3,13 @@ const props = withDefaults(defineProps<{
   title?: string
   filterList: Where<OrderWhere>
   storeStaff: StoresStaff[]
-  memberList: Member[]
-  getMember: (val: string) => void
   getStaff: () => void
 }>(), {
   title: '基础信息',
 })
-const formData = defineModel<Orders>({ default: {} })
+const formData = defineModel<Orders>({ default: {
+
+} })
 
 // 订单类型参数
 const typeOptions = optonsToSelect(props.filterList.type?.preset)
@@ -41,10 +41,7 @@ const addNewSale = () => {
     is_main: false,
   })
 }
-// 搜索会员 防抖
-const searchMember = useDebounceFn((val) => {
-  props.getMember(val)
-}, 500)
+
 const { $toast } = useNuxtApp()
 
 // 检查比例
@@ -84,20 +81,7 @@ const checkRatio = () => {
             @focus="() => { props.getStaff() }"
           />
         </n-form-item-gi>
-        <n-form-item-gi :span="12" label="会员" path="member_id" class="">
-          <n-select
-            v-model:value="formData.member_id"
-            filterable
-            placeholder="输入手机号搜索"
-            :options="props.memberList.map(v => ({
-              label: `${v.phone} (${v.nickname ? v.nickname : v.name})`,
-              value: v.id,
-            }))"
-            clearable
-            remote
-            @search="searchMember"
-          />
-        </n-form-item-gi>
+
         <n-form-item-gi :span="12" label="来源" path="source" class="">
           <n-select
             v-model:value="formData.source"
@@ -105,6 +89,7 @@ const checkRatio = () => {
             :options="sourceOptions"
           />
         </n-form-item-gi>
+        <slot name="score" />
       </n-grid>
 
       <template v-for="(item, index) in formData.salesmans" :key="index">
@@ -152,8 +137,8 @@ const checkRatio = () => {
                 </template>
               </div>
             </n-form-item-gi>
-            <slot name="score" />
           </n-grid>
+
           <div />
         </div>
       </template>

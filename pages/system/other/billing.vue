@@ -61,11 +61,17 @@ const handleValidateButtonClick = async () => {
     if (!errors) {
       if (myStore.value.id) {
         model.value.store_id = myStore.value.id
+        const res = await updateSet(model.value)
+        if (res) {
+          $toast.success('保存成功')
+        }
+        else {
+          $toast.error('保存失败')
+        }
       }
       else {
         $toast.warning('请先选择门店')
       }
-      await updateSet(model.value)
     }
   })
 }

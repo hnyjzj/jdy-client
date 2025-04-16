@@ -102,7 +102,10 @@ interface Orders {
    *支付方式
    */
   payment_method: OrderPaymentMethod[]
-
+  /**
+   * 积分抵扣
+   */
+  deduction_points?: number
 }
 interface OrderPaymentMethod {
   /**
@@ -241,6 +244,7 @@ interface OrderProducts {
    * 积分比例
    */
   rate: number
+
 }
 
 interface OrderWhere {

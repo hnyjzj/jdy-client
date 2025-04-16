@@ -113,11 +113,12 @@ export const useStores = defineStore('Store', {
         if (data.value?.code === HttpCode.SUCCESS) {
           this.myStoreList = data.value.data
           //   如果选择当前门店，则默认选中第一个
-          if (Object.keys(this.myStore).length === 0) {
+          if (!this.myStore.id) {
             this.myStore = this.myStoreList[0] || {}
           }
           //   如果列表中没有当前的门店，则默认选中第一个 (应对分配门店被移除时的情况)
-          if (!this.myStoreList.includes(this.myStore)) {
+          const isStore = this.myStoreList.find(store => store.id === this.myStore.id)
+          if (!isStore) {
             this.myStore = this.myStoreList[0] || {}
           }
         }

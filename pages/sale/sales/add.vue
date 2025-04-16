@@ -17,7 +17,7 @@ const { goldList } = storeToRefs(useGoldPrice())
 const { filterList, OldObj } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
 const { getOldWhere, getOldClass, getOldScoreProportion } = useOld()
-
+const { getSetInfo } = useBillingSetStore()
 const { memberList } = storeToRefs(useMemberManage())
 const { getAccessorieList, getAccessorieWhere, getAccessorieScoreRate } = useAccessorie()
 const { accessorieList, accessorieFilterListToArray } = storeToRefs(useAccessorie())
@@ -34,6 +34,8 @@ const formData = ref<Orders>({
   member_id: undefined, // 会员ID
   store_id: '', // 门店ID
   cashier_id: undefined, // 收银员ID
+  //   积分抵扣
+  deduction_points: undefined,
   products: [], // 商品列表
   salesmans: [{
     salesman_id: undefined,
@@ -42,6 +44,18 @@ const formData = ref<Orders>({
   }],
   payment_method: [{ method: undefined, money: 0 }], // 支付方式
 })
+const billingSet = ref({
+  // 金额进位控制"
+  rounding: 0,
+  // 金额小数点控制"
+  decimal_point: 0,
+  // 积分抵扣比例
+  discount_rate: '',
+  // "是否弹窗二次确认"
+  use_confirm: false,
+} as BillingSet)
+// 是否禁止修改积分抵扣  true:禁止 false:允许
+const disScore = ref(false)
 // 展示商品列表
 const showProductList = ref<OrderProducts[]>([])
 const showPartsList = ref<ProductAccessories[]>([])
@@ -51,7 +65,22 @@ await getOldWhere()
 await getFinishedWhere()
 await getAccessorieWhere()
 await getGoldPrice(myStore.value.id)
+// 获取开单设置 金额进位等等
+const getbillingSet = async () => {
+  const setInfo = await getSetInfo({ store_id: myStore.value.id })
+  if (setInfo) {
+    billingSet.value.decimal_point = setInfo.decimal_point
+    billingSet.value.rounding = setInfo.rounding
+    billingSet.value.discount_rate = setInfo.discount_rate
+    billingSet.value.use_confirm = setInfo.use_confirm
+    if (setInfo.discount_rate && setInfo.discount_rate !== '0') {
+      disScore.value = true
+    }
+  }
+}
+getbillingSet()
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { phone: val } })
+const getMemberInfo = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: val } })
 const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
 
 // 是否积分
@@ -237,6 +266,63 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
 const openProductListFn = () => {
   finishedList.value = []
 }
+const initFormData = {
+  amount: 0, // 应付金额
+  type: undefined, // 订单类型
+  source: undefined, // 订单来源
+  remark: '', // 备注
+  discount_rate: undefined, // 整单折扣
+  amount_reduce: 0, // 抹零金额
+  integral_use: 0, //  使用积分
+  member_id: undefined, // 会员ID
+  store_id: '', // 门店ID
+  cashier_id: undefined, // 收银员ID
+  deduction_points: undefined,
+  products: [], // 商品列表
+  salesmans: [{
+    salesman_id: undefined,
+    performance_rate: 100,
+    is_main: true,
+  }],
+  payment_method: [{ method: undefined, money: 0 }], // 支付方式
+}
+const Key = ref()
+// 切换门店的操作
+const changeStore = () => {
+  getbillingSet()
+  showProductList.value = []
+  showPartsList.value = []
+  showMasterialsList.value = []
+  formData.value = { ...initFormData }
+  Key.value = Date.now().toString()
+}
+
+// 更新抵扣值
+const updateDedution = (val?: number) => {
+  if (val) {
+    // 如果存在
+    formData.value.deduction_points = calc('(a * b) |!n', {
+      a: val,
+      b: billingSet.value.discount_rate,
+    })
+  }
+  else {
+    const total = ref(0)
+    showProductList.value.forEach((item) => {
+      total.value += item.scoreDeduction
+    })
+
+    if (total.value !== 0) {
+      formData.value.deduction_points = calc('(a * b) |!n', {
+        a: total.value,
+        b: Number(billingSet.value.discount_rate),
+      })
+    }
+    else {
+      formData.value.deduction_points = 0
+    }
+  }
+}
 </script>
 
 <template>
@@ -250,15 +336,13 @@ const openProductListFn = () => {
         size="large"
       >
         <div class="w-[120px] color-[#fff] pb-[12px]">
-          <product-manage-company />
+          <product-manage-company :confirm="true" @change="changeStore" />
         </div>
-        <div class="pb-[16px]">
+        <div :key="Key" class="pb-[16px]">
           <sale-add-base
             v-model="formData"
             :filter-list="filterList"
             :store-staff="StoreStaffList"
-            :member-list="memberList"
-            :get-member="getMember"
             :get-staff="getStaff"
           >
             <template #score>
@@ -283,6 +367,13 @@ const openProductListFn = () => {
           </sale-add-base>
         </div>
         <div class="pb-[16px]">
+          <sale-add-member
+            v-model="formData"
+            :get-member="getMember"
+            :get-member-info="getMemberInfo"
+            :member-list="memberList" />
+        </div>
+        <div class="pb-[16px]">
           <sale-add-product
             v-model="showProductList"
             :product-list="finishedList"
@@ -290,10 +381,13 @@ const openProductListFn = () => {
             :price="goldList"
             :is-integral="isIntegral"
             :check-product-class="checkProductClass"
+            :billing-set="billingSet"
             @search="searchProductList"
             @open-product-list="openProductListFn"
+            @update-score-de-deduction="updateDedution"
           />
         </div>
+
         <div class="pb-[16px]">
           <sale-add-masterials
             v-model:list="showMasterialsList"
@@ -310,6 +404,7 @@ const openProductListFn = () => {
             :part-list="accessorieList"
             :check-accessories-score="checkAccessoriesScore"
             :is-integral="isIntegral"
+            :billing-set="billingSet"
             @search="searchParts"
             @clear-list="() => accessorieList = [] "
           />
@@ -319,7 +414,33 @@ const openProductListFn = () => {
           v-model:show-list="showProductList"
           v-model:master="showMasterialsList"
           v-model:parts="showPartsList"
-          :filter-list="filterList" />
+          :filter-list="filterList">
+          <template #score>
+            <div>
+              <n-grid :cols="24">
+                <n-form-item-gi
+                  :span="16"
+                  label="积分抵扣" label-placement="left"
+                >
+                  <n-input-number
+                    v-model:value="formData.deduction_points"
+                    min="0"
+
+                    :disabled="disScore"
+                    placeholder="抵扣积分值"
+                  />
+                </n-form-item-gi>
+              </n-grid>
+
+              <div class="text-[12px] color-[#666]">
+                1.注意这里只会扣减填写的积分，不会添加积分抵扣金额，请手动添加或使用整单优惠
+              </div>
+              <div class="text-[12px] color-[#666]">
+                2.设置了开单积分抵扣比例的，这里不能填写积分，会根据积分抵扣金额自动算积分
+              </div>
+            </div>
+          </template>
+        </sale-add-settlement>
         <div class="h-[80px] bg-[#fff] fixed z-1">
           <div class="btn grid-12 px-[16px]">
             <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">

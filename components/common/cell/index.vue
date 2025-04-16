@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<{
 </script>
 
 <template>
-  <div class="part">
+  <div class="part pb-[8px]">
     <div class="part-left break-words" :style="{ color: props.labelColor }">
       {{ props.label }}
     </div>

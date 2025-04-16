@@ -21,16 +21,18 @@ export const useBillingSetStore = defineStore('BillingSet', {
     async getBillingSetWhere() {
       const { data } = await https.get<Where<BillingSet>, null>('/setting/open_order/where')
       if (data.value?.code === HttpCode.SUCCESS) {
-        console.log(data.value.data)
-
         this.billingSetFilterList = data.value.data
         this.billingSetFilterListToArray = sortArr(this.billingSetFilterList)
       }
     },
     async updateSet(params: BillingSet) {
-      //
       const { data } = await https.put<undefined, BillingSet>('/setting/open_order/update', params)
-      console.log(data)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return true
+      }
+      else {
+        return data.value?.message
+      }
     },
     async getSetInfo(params: { store_id: string }) {
       // /setting/open_order/info
