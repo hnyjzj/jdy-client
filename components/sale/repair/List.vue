@@ -71,7 +71,7 @@ const handleClick = () => {
   }
 }
 .info {
-  --uno: 'flex flex-col justify-items-center gap-[12px] px-[16px] text-nowrap color-[#3971F3] text-size-[14px] dark:color-[#fff]';
+  --uno: 'flex flex-col justify-items-center gap-[12px] px-[16px] whitespace-nowrap color-[#3971F3] text-size-[14px] dark:color-[#fff]';
 
   .part {
     --uno: 'flex-center-between';

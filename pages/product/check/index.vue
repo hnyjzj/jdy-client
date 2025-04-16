@@ -7,7 +7,7 @@ const { checkList, checkFilterList, checkFilterListToArray, checkTotal } = store
 const { storesList } = storeToRefs(useStores())
 const { getStoreList, getMyStore } = useStores()
 const storeCol = ref()
-async function changeStoer() {
+async function changeStore() {
   storeCol.value = []
   storesList.value.forEach((item: Stores) => {
     storeCol.value.push({ label: item.name, value: item.id })
@@ -15,7 +15,7 @@ async function changeStoer() {
 }
 await getStoreList({ page: 1, limit: 20 })
 await getMyStore({ page: 1, limit: 20 })
-await changeStoer()
+await changeStore()
 await getCheckWhere()
 const complate = ref(0)
 // 筛选框显示隐藏
@@ -102,6 +102,11 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
 
   return ''
 }
+
+async function changeMyStore() {
+  pages.value = 1
+  await getList()
+}
 </script>
 
 <template>
@@ -111,7 +116,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
       <product-filter
         v-model:id="complate" :product-list-total="checkTotal" placeholder="搜索盘点单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
         <template #company>
-          <product-manage-company />
+          <product-manage-company @change="changeMyStore" />
         </template>
       </product-filter>
     </div>
@@ -127,35 +132,61 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
           <template #info="{ info }">
             <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
               <template v-for="(item, index) in checkFilterListToArray" :key="index">
-                <template v-if="item.input === 'text'">
-                  <div class="flex py-[4px] justify-between">
-                    <div>
-                      {{ item.label === 'ID' ? '盘点单号' : item.label }}
-                    </div>
-                    <div class="text-align-end">
-                      {{ info[item.name] }}
-                    </div>
-                  </div>
-                </template>
-                <template v-if="item.input === 'select'">
-                  <div class="flex py-[4px] justify-between">
-                    <div>
-                      {{ item.label }}
-                    </div>
-                    <div class="text-align-end">
-                      {{ getRadioVal(item.preset, info[item.name]) }}
-                    </div>
-                  </div>
-                </template>
-                <template v-if="item.input === 'multiple'">
-                  <div class="flex py-[4px] justify-between">
-                    <div>
-                      {{ item.label }}
-                    </div>
-                    <div class="text-align-end">
-                      {{ getMultipleVal(item?.preset, info[item.name]) }}
-                    </div>
-                  </div>
+                <template v-if="item.find">
+                  <template v-if="item.name === 'class_finished' || item.name === 'class_old'">
+                    <template v-if="info.type === GoodsType.ProductFinish && item.name === 'class_finished'">
+                      <div class="flex py-[4px] justify-between">
+                        <div class="label">
+                          {{ item.label }}
+                        </div>
+                        <div class="text-align-end">
+                          {{ getMultipleVal(item?.preset, info[item.name]) }}
+                        </div>
+                      </div>
+                    </template>
+                    <template v-if="info.type === GoodsType.ProductOld && item.name === 'class_old'">
+                      <div class="flex py-[4px] justify-between">
+                        <div class="label">
+                          {{ item.label }}
+                        </div>
+                        <div class="text-align-end">
+                          {{ getMultipleVal(item?.preset, info[item.name]) }}
+                        </div>
+                      </div>
+                    </template>
+                  </template>
+                  <template v-else>
+                    <template v-if="item.input === 'text'">
+                      <div class="flex py-[4px] justify-between">
+                        <div class="label">
+                          {{ item.label === 'ID' ? '盘点单号' : item.label }}
+                        </div>
+                        <div class="text-align-end">
+                          {{ info[item.name] }}
+                        </div>
+                      </div>
+                    </template>
+                    <template v-if="item.input === 'select'">
+                      <div class="flex py-[4px] justify-between">
+                        <div class="label">
+                          {{ item.label }}
+                        </div>
+                        <div class="text-align-end">
+                          {{ getRadioVal(item.preset, info[item.name]) }}
+                        </div>
+                      </div>
+                    </template>
+                    <template v-if="item.input === 'multiple'">
+                      <div class="flex py-[4px] justify-between">
+                        <div class="label">
+                          {{ item.label }}
+                        </div>
+                        <div class="text-align-end">
+                          {{ getMultipleVal(item?.preset, info[item.name]) }}
+                        </div>
+                      </div>
+                    </template>
+                  </template>
                 </template>
               </template>
             </div>
@@ -176,7 +207,6 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
         <common-empty width="100px" />
       </template>
     </div>
-    <product-manage-bottom />
     <div class="cursor-pointer">
       <common-create @click="jump('/product/check/add')" />
     </div>
@@ -219,6 +249,9 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
     background: linear-gradient(to bottom, #1b6ceb, #6da6ff);
     box-shadow: #1111113d 0px 2px 2px 1px;
   }
+}
+.label {
+  --uno: 'w-80px shrink-0';
 }
 .status-title {
   --uno: 'px-2 rounded-[8px] text-#FFF';

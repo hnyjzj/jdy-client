@@ -7,12 +7,14 @@ const create = () => {
 
 <template>
   <div class="createbox cursor-pointer" @click="create">
-    <div
-      class="create2">
-      <div class="row" />
+    <slot name="content">
       <div
-        class="cols" />
-    </div>
+        class="create2">
+        <div class="row" />
+        <div
+          class="cols" />
+      </div>
+    </slot>
   </div>
 </template>
 

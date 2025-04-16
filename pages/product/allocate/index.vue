@@ -1,18 +1,18 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { getAllocate, getAllocateWhere } = useAllocate()
+const { getAllocateList, getAllocateWhere } = useAllocate()
 const { allocateList, allocateFilterListToArray, allocateFilterList, allocateTotal } = storeToRefs(useAllocate())
 const { storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const storeCol = ref()
-function changeStoer() {
+function changeStore() {
   storeCol.value = []
   storesList.value.forEach((item: Stores) => {
     storeCol.value.push({ label: item.name, value: item.id })
   })
 }
 await getStoreList({ page: 1, limit: 20 })
-await changeStoer()
+await changeStore()
 await getAllocateWhere()
 const complate = ref(0)
 // 筛选框显示隐藏
@@ -40,7 +40,7 @@ async function getList(where = {} as Partial<Allocate>) {
     params.where = where
   }
 
-  const res = await getAllocate(params)
+  const res = await getAllocateList(params)
   return res as any
 }
 
@@ -66,6 +66,11 @@ async function submitWhere(f: Partial<Allocate>, isSearch: boolean = false) {
   }
   $toast.error(res?.message ?? '筛选失败')
 }
+
+async function changeMyStore() {
+  pages.value = 1
+  await getList()
+}
 </script>
 
 <template>
@@ -74,7 +79,7 @@ async function submitWhere(f: Partial<Allocate>, isSearch: boolean = false) {
     <product-filter
       v-model:id="complate" :product-list-total="allocateTotal" placeholder="搜索调拨单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
-        <product-manage-company />
+        <product-manage-company @change="changeMyStore" />
       </template>
     </product-filter>
     <!-- 小卡片组件 -->
@@ -140,7 +145,7 @@ async function submitWhere(f: Partial<Allocate>, isSearch: boolean = false) {
           </template>
           <template #bottom="{ info }">
             <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="详情" @click="jump('/product/allocate/info', { id: info.id })" />
+              <common-button-irregular text="详情" @click="jump('/product/allocate/info', { id: info.id, type: info.type })" />
             </div>
           </template>
         </product-manage-card>

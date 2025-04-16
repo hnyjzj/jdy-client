@@ -3,6 +3,8 @@ const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 const { getAccessorieList, getAccessorieWhere } = useAccessorie()
 const { accessorieList, accessorieFilterListToArray, accessorieListTotal } = storeToRefs(useAccessorie())
+const { getAccessorieCategoryWhere } = useAccessorieCategory()
+const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
@@ -28,8 +30,8 @@ async function clearSearch() {
 // 获取货品列表
 async function getList(where = {} as Partial<ProductAccessories>) {
   const params = { page: pages.value, limit: 10 } as ReqList<ProductAccessories>
+  where.store_id = myStore.value?.id
   params.where = where
-  params.where.type = type.value
   try {
     const res = await getAccessorieList(params)
     return res as any
@@ -41,6 +43,7 @@ async function getList(where = {} as Partial<ProductAccessories>) {
 
 try {
   if (myStore.value?.id) {
+    getAccessorieCategoryWhere()
     await getList()
     await getAccessorieWhere()
   }
@@ -78,6 +81,11 @@ function goAdd() {
   isModel.value = false
   jump('/product/warehouse/add', { type: type.value })
 }
+
+async function changeStore() {
+  pages.value = 1
+  await getList()
+}
 </script>
 
 <template>
@@ -86,13 +94,55 @@ function goAdd() {
     <product-filter
       v-model:id="complate" :product-list-total="accessorieListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
-        <product-manage-company />
+        <product-manage-company @change="changeStore" />
       </template>
     </product-filter>
     <!-- 列表 -->
     <div class="px-[16px] pb-20">
       <template v-if="accessorieList?.length">
-        <!-- <product-list-main :product-list="accessorieList" :filter-list="accessorieFilterList" @edit="edit" /> -->
+        <product-manage-card :list="accessorieList">
+          <template #info="{ info }">
+            <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+              <template v-for="(item, index) in categoryFilterListToArray" :key="index">
+                <template v-if="item.create">
+                  <div class="flex-between">
+                    <div>
+                      {{ item.label }}
+                    </div>
+                    <template v-if="item.input === 'select'">
+                      <div class="text-align-end val">
+                        {{ item.preset[info.category[item.name]] }}
+                      </div>
+                    </template>
+                    <template v-else-if="item.name === 'code'">
+                      <div class="text-align-end val">
+                        {{ info.code }}
+                      </div>
+                    </template>
+                    <template v-else>
+                      <div class="text-align-end val">
+                        {{ info.category[item.name] }}
+                      </div>
+                    </template>
+                  </div>
+                </template>
+              </template>
+              <div class="flex-between">
+                <div>
+                  库存
+                </div>
+                <div class="text-align-end val">
+                  {{ info.stock }}
+                </div>
+              </div>
+            </div>
+          </template>
+          <template #bottom="{ info }">
+            <div class="flex-end text-size-[14px]">
+              <common-button-irregular text="详情" @click="jump(`/product/accessorie/info`, { id: info.id })" />
+            </div>
+          </template>
+        </product-manage-card>
         <common-page
           v-model:page="pages" :total="accessorieListTotal" :limit="10" @update:page="() => {
             pull()
@@ -103,7 +153,6 @@ function goAdd() {
         <common-empty width="100px" />
       </template>
     </div>
-    <product-manage-bottom />
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
     <common-filter-where v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="accessorieFilterListToArray" @submit="submitWhere" />
   </div>

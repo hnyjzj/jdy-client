@@ -1,12 +1,14 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
-const { categoryListTotal, categoryList, categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
-const { getAccessorieCategoryList, getAccessorieCategoryWhere } = useAccessorieCategory()
+const { categoryListTotal, categoryList, categoryFilterListToArray, categoryFilterList } = storeToRefs(useAccessorieCategory())
+const { getAccessorieCategoryList, getAccessorieCategoryWhere, addAccessorieCategory } = useAccessorieCategory()
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const page = ref(1)
+const isChooseModel = ref(false)
+const isImportModel = ref(false)
 useSeoMeta({
   title: '配件条目',
 })
@@ -14,6 +16,7 @@ useSeoMeta({
 const openFilter = () => {
   isFilter.value = true
 }
+
 /** 搜索 */
 async function search(e: string) {
   await submitWhere({ code: e }, true)
@@ -69,8 +72,28 @@ async function submitWhere(f: Partial<AccessorieCategory>, isSearch: boolean = f
   $toast.error(res.message ?? '失败')
 }
 
-function create() {
+function goAdd() {
   jump('/product/accessorie/category/add')
+}
+
+async function bulkupload(e: AccessorieCategory[]) {
+  if (!myStore.value?.id) {
+    return $toast.error('请先选择门店')
+  }
+  const res = await addAccessorieCategory({ list: e })
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('创建成功', 1000)
+    await getAccessorieCategoryList({ page: 1, limit: 10 })
+  }
+  else {
+    $toast.error(res?.message ?? '创建失败')
+  }
+  isImportModel.value = false
+}
+
+async function changeStore() {
+  page.value = 1
+  await getList()
 }
 </script>
 
@@ -80,7 +103,7 @@ function create() {
     <product-filter
       v-model:id="complate" :product-list-total="categoryListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
-        <product-manage-company />
+        <product-manage-company @change="changeStore" />
       </template>
     </product-filter>
     <!-- 列表 -->
@@ -124,8 +147,9 @@ function create() {
         <common-empty width="100px" />
       </template>
     </div>
-    <common-create @click="create" />
-    <product-manage-bottom />
+    <common-create @click="isChooseModel = true" />
+    <product-upload-choose v-model:is-model="isChooseModel" @go-add="goAdd" @batch="isImportModel = true" />
+    <accessorie-warehouse-category v-model="isImportModel" :filter-list="categoryFilterList" :type="1" @upload="bulkupload" />
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="categoryFilterListToArray" @submit="submitWhere" />
   </div>
 </template>

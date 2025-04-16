@@ -164,7 +164,7 @@ const userCancel = () => {
                     <template #reference>
                       <div class="refer">
                         <div
-                          class="row-left dark:color-[#fff] font-size-[14px] text-nowrap"
+                          class="row-left dark:color-[#fff] font-size-[14px] whitespace-nowrap"
                           :style="{ color: item.selected ? '#191919' : '#808089' }"
                         >
                           {{ item.selected || '调整方式' }}

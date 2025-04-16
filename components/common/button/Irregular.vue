@@ -27,7 +27,7 @@ function submit() {
 .editbox {
   --uno: 'relative z-0';
   .text {
-    --uno: 'relative px-[40px] py-[9px] z-2 color-[#fff] text-sm text-nowrap';
+    --uno: 'relative px-[40px] py-[9px] z-2 color-[#fff] text-sm whitespace-nowrap';
   }
   &::before {
     content: '';

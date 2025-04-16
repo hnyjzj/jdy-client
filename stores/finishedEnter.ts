@@ -12,7 +12,7 @@ export const useFinishedEnter = defineStore('finishedEnter', {
     enterFilterList: {} as Where<FinishedEnter>,
     EnterList: [],
     EnterListTotal: 0,
-    EnterToArray: {} as FilterWhere<FinishedEnter>[],
+    EnterToArray: [] as FilterWhere<FinishedEnter>[],
     enterInfo: {} as FinishedEnter,
   }),
   actions: {

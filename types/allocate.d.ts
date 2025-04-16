@@ -51,9 +51,13 @@ interface Allocate {
    */
   updated_at: Date
   /**
-   * 调拨商品
+   * 调拨单成品列表
    */
-  product?: ProductFinisheds[]
+  product_finisheds: ProductFinisheds[]
+  /**
+   * 调拨单成品列表
+   */
+  product_olds: ProductOlds[]
   /**
    * 调拨状态
    * 0:全部 1:盘点中 2:调拨中 3:已完成 4:已取消
@@ -75,6 +79,8 @@ interface Allocate {
    * 调入门店信息
    */
   to_store: Stores
+  start_time: Date
+  end_time: Date
 }
 
 interface AllocateReq {
