@@ -189,7 +189,7 @@ async function submitChange(status: CheckInfo['status']) {
                       大类
                     </div>
                     <div class="right">
-                      {{ getMultipleVal('class_finished', checkInfo.class_finished) }}
+                      {{ checkInfo.type === GoodsTypePure.ProductFinish ? getMultipleVal('class_finished', checkInfo.class_finished) : getMultipleVal('class_old', checkInfo.class_old) }}
                     </div>
                   </div>
                   <div class="part">

@@ -47,11 +47,6 @@ function cleanExcelData(data: any) {
  * @param data 二维数组，第一行是表头，其余是数据行
  * @returns 对象数组
  */
-/**
- * 将二维数组转换为对象数组
- * @param data 二维数组，第一行是表头，其余是数据行
- * @returns 对象数组
- */
 async function transformData(data: any[][]) {
   if (!data || data.length < 2) {
     $toast.error('数据格式不正确，至少需要表头和一行数据')
