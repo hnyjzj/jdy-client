@@ -212,15 +212,16 @@ function toggleSelectAll(event: any) {
 }
 /** 多选 */
 async function getOldids() {
-  const product: ProductOlds['id'][] = []
-  selectedCategories.value.forEach((id: ProductAccessories['id']) => {
-    oldList.value?.forEach((cat) => {
-      if (cat.id === id) {
-        product.push(JSON.parse(JSON.stringify(cat)).id)
-      }
-    })
-  })
-  return product
+  if (!oldList.value?.length || !selectedCategories.value.length) {
+    return []
+  }
+
+  // 创建 id 到对象的映射，避免嵌套循环
+  const oldMap = new Map(oldList.value.map(item => [item.id, item]))
+
+  return selectedCategories.value
+    .filter(id => oldMap.has(id))
+    .map(id => id) // 直接返回 id 值，不需要深拷贝
 }
 </script>
 

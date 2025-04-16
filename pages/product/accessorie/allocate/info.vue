@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { getAccessorieAllocateInfo, confirmAllcate, cancelAllcate, finishAllcate, remove } = useAccessorieAllocate()
+const { getAccessorieAllocateInfo, getAccessorieAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove } = useAccessorieAllocate()
 const { accessorieAllocateInfo, accessorieAllocateFilterList, accessorieAllocateFilterListToArray } = storeToRefs(useAccessorieAllocate())
 const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
 const { getAccessorieCategoryWhere } = useAccessorieCategory()
@@ -15,6 +15,7 @@ if (route.query.id) {
   allocateId.value = route.query.id
   await getAccessorieAllocateInfo(route.query.id as string)
   await getAccessorieCategoryWhere()
+  await getAccessorieAllocateWhere()
 }
 
 async function cancel() {
@@ -171,7 +172,6 @@ function getStoreName(id: Stores['id']) {
             </template>
           </common-gradient>
         </div>
-
         <template v-if="accessorieAllocateInfo.products?.length">
           <div class="p-4 blur-bgc rounded-6">
             <div class="text-[14px] pb-4 text-color">

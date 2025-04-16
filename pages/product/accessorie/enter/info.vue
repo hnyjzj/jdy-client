@@ -28,7 +28,6 @@ const cancelDialog = ref(false)
 const finishDialog = ref(false)
 
 /** 页面加载时，初始化数据 */
-
 await getAccessorieCategoryWhere()
 if (route.query.id) {
   enterId.value = route.query.id as string
@@ -99,6 +98,10 @@ async function delProduct() {
 
   if (res?.code === HttpCode.SUCCESS) {
     await fetchEnterInfo()
+    $toast.success('删除成功')
+  }
+  else {
+    $toast.error(res?.message ?? '删除失败')
   }
 }
 
@@ -106,7 +109,7 @@ async function delProduct() {
 async function clearProduct() {
   const ids = enterInfo.value?.products?.map(item => item.id) ?? []
   if (!ids.length)
-    return
+    return $toast.warning('货品为空')
 
   const res = await delAccessorieEnter({
     enter_id: enterInfo.value.id,

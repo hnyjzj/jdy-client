@@ -87,6 +87,9 @@ function subtract(i: number) {
   <div>
     <common-layout-center>
       <div class="pt-4 pb-20">
+        <div class="mx-4 mb-4 text-[#fff] max-w-[200px]">
+          <product-manage-company @change="getGoldPrice(myStore.id)" />
+        </div>
         <div class="blur-bgc rounded-[16px] cursor-pointer mx-4">
           <div class="grid-12 ">
             <div

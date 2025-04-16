@@ -148,7 +148,7 @@ async function changeStore() {
                   品类
                 </div>
                 <div class="text-align-end">
-                  {{ info.style }}
+                  {{ lossFilterList.category?.preset[info.category] }}
                 </div>
               </div>
               <div class="flex-between">
