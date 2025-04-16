@@ -91,7 +91,7 @@ const jumpInfo = (info: T) => {
               品类
             </div>
             <div class="text-align-end val">
-              {{ info.style }}
+              {{ filterList.category?.preset[info.category] || '' }}
             </div>
           </div>
           <div class="flex-between">
@@ -100,14 +100,6 @@ const jumpInfo = (info: T) => {
             </div>
             <div class="text-align-end val">
               {{ info.craft }}
-            </div>
-          </div>
-          <div class="flex-between">
-            <div>
-              库存
-            </div>
-            <div class="text-align-end val">
-              {{ info.stock }}
             </div>
           </div>
         </div>

@@ -54,8 +54,14 @@ interface AccessorieEnter {
  */
 interface AccessorieEnterReq {
   /** 成品入库参数 */
-  products: ProductAccessories[]
+  products: AccessorieEnterProductReq[]
   enter_id: string
+}
+
+interface AccessorieEnterProductReq {
+  code: string
+  stock: number
+  access_fee: number
 }
 
 /**

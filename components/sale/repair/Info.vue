@@ -81,7 +81,7 @@ const checked = ref(1)
   --uno: 'flex-center-between gap-[32px]';
 
   &-left {
-    --uno: 'color-[#666] font-size-[14px] text-nowrap flex-none dark:color-[#CBCDD1]';
+    --uno: 'color-[#666] font-size-[14px] whitespace-nowrap flex-none dark:color-[#CBCDD1]';
   }
   &-right {
     --uno: 'color-[#333] font-size-[14px] w-auto text-wrap self-start break-all dark:color-[#fff]';

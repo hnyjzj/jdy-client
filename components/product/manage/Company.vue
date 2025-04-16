@@ -1,13 +1,14 @@
 <script setup lang="ts">
+const emits = defineEmits(['change'])
+
 const { $toast } = useNuxtApp()
 
 const { getMyStore, switchStore } = useStores()
 const { myStoreList, myStore } = storeToRefs(useStores())
 const columns = ref()
-
 const getList = async () => await getMyStore({ page: 1, limit: 20 })
 
-if (!myStoreList.value.length) {
+if (!myStore.value?.id) {
   await getList()
 }
 
@@ -26,6 +27,7 @@ function handleSelect(id: Stores['id']) {
   const stored = myStoreList.value.find(item => item.id === id)
   if (stored) {
     switchStore(stored)
+    emits('change')
   }
 }
 </script>

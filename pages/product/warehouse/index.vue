@@ -1,8 +1,7 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { myStoreList } = storeToRefs(useStores())
+const { myStoreList, myStore } = storeToRefs(useStores())
 const { getMyStore } = useStores()
-
 const { getFinishedEnterList, getFinishedEnterWhere, createFinishedEnter } = useFinishedEnter()
 
 const { EnterList, EnterToArray, EnterListTotal } = storeToRefs(useFinishedEnter())
@@ -30,6 +29,12 @@ function changeStore() {
 await getMyStore({ page: 1, limit: 20 })
 await changeStore()
 
+if (myStore.value.id) {
+  enterParams.value.store_id = myStore.value.id
+}
+else {
+  $toast.error('请先选择门店')
+}
 useSeoMeta({
   title: '入库单',
 })
@@ -114,6 +119,11 @@ function goAdd() {
 function sum(info: FinishedEnter, key: keyof ProductFinisheds) {
   return info?.products?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
 }
+
+async function changemyStore() {
+  pages.value = 1
+  await getList()
+}
 </script>
 
 <template>
@@ -122,7 +132,7 @@ function sum(info: FinishedEnter, key: keyof ProductFinisheds) {
     <product-filter
       v-model:id="complate" :product-list-total="EnterListTotal" placeholder="搜索入库单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
-        <product-manage-company />
+        <product-manage-company @change="changemyStore" />
       </template>
     </product-filter>
     <!-- 小卡片组件 -->
@@ -220,6 +230,7 @@ function sum(info: FinishedEnter, key: keyof ProductFinisheds) {
           </div>
           <n-select
             v-model:value="enterParams.store_id" :options="storeCol"
+            disabled
             clearable />
         </div>
         <div class="flex mb-4">

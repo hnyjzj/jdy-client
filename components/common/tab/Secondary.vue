@@ -29,7 +29,7 @@ function change(val: number) {
         :style="{ color: item.value === currentSelected ? '#3971F3' : '#666666', background: item.value === currentSelected ? '#FFFFFF' : '', fontWeight: item.value === currentSelected ? 'bold' : 'normal' }"
         @click="change(item.value)"
       >
-        <span class="text-nowrap">
+        <span class="whitespace-nowrap">
           {{ item.label }}
         </span>
         <template v-if="item.count">

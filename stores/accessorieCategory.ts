@@ -8,7 +8,7 @@ export const useAccessorieCategory = defineStore('Category', {
     categoryList: [],
     categoryListTotal: 0,
     categoryFilterList: {} as Where<AccessorieCategory>,
-    categoryFilterListToArray: {} as FilterWhere<AccessorieCategory>[],
+    categoryFilterListToArray: [] as FilterWhere<AccessorieCategory>[],
   }),
   actions: {
     // 配件条目
@@ -39,12 +39,10 @@ export const useAccessorieCategory = defineStore('Category', {
       }
     },
     // 新增配件条目
-    async addAccessorieCategory(params: AccessorieCategory) {
+    async addAccessorieCategory(params: { list: AccessorieCategory[] }) {
       try {
-        const { data } = await https.post<any, AccessorieCategory>('/product/accessorie/category/create', params)
-        if (data.value?.code === HttpCode.SUCCESS) {
-          return data.value.data
-        }
+        const { data } = await https.post<any, { list: AccessorieCategory[] }>('/product/accessorie/category/create', params)
+        return data.value
       }
       catch (error) {
         throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
