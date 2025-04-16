@@ -85,7 +85,7 @@ async function finish() {
   }
 }
 
-const delProduct = useThrottleFn(async (code: ProductFinisheds['code']) => {
+const delProduct = useThrottleFn(async (code: ProductFinisheds['code'] | ProductOlds['code']) => {
   const res = await remove(allocateInfo.value?.id, code)
   if (res?.code === HttpCode.SUCCESS) {
     await getAllocateInfo(route.query.id as string)
