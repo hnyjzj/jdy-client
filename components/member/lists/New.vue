@@ -6,6 +6,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'update:rely', value: Member): void
+  (e: 'getStaffList'): void
 }>()
 
 const newParams = computed({
@@ -129,6 +130,7 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
             menu-size="large"
             clearable
             remote
+            @focus="emit('getStaffList')"
           />
         </div>
       </div>

@@ -5,32 +5,60 @@ import { calc } from 'a-calc'
 const props = withDefaults(defineProps<{
   memberList: Member[]
   getMember: (val: string) => void
-  getMemberInfo: (val: string) => void
+  getStaffs: () => void
+  addNewMember: (val: Member) => any
   billingSet: BillingSet
+  store: Stores
+  staffs: StoresStaff[]
 }>(), {
-
 })
+
+const memberParams = ref<Member>({
+  // 初始化store_id为当前门店id
+  store_id: props.store.id,
+} as Member)
+
 // 搜索会员 防抖
-const searchMember = useDebounceFn((val) => {
-  props.getMember(val)
-}, 500)
-const formData = defineModel<Orders>({ default: {
-
-} })
-
+const searchMember = (val: string) => {
+  if (val.length === 11) {
+    props.getMember(val)
+  }
+}
+const formData = defineModel<Orders>({ default: {} })
 const canUseScore = ref()
 // 仅用于展示的会员信息
 const userInfo = ref({} as Member)
-const handleUpdateValue = async (value: string, option: SelectOption) => {
-  await props.getMember(option.label?.toString().slice(0, 11) as string)
+
+const setUserInfo = () => {
   userInfo.value = props.memberList[0]
   // 能使用的积分
-
+  formData.value.member_id = userInfo.value.id
   if (userInfo.value.integral && props.billingSet.discount_rate !== '0') {
     canUseScore.value = calc('(a / b )| =0 ~5,!n', {
       a: userInfo.value.integral,
       b: props.billingSet.discount_rate,
     })
+  }
+}
+
+const handleUpdateValue = async (option: SelectOption) => {
+  await props.getMember(option?.label as string)
+  setUserInfo()
+}
+const showModel = ref(false)
+// 新增会员
+const handleAddMember = () => {
+  showModel.value = true
+}
+// 提交新用户
+const submitNewMember = async () => {
+  const res = await props.addNewMember(memberParams.value)
+  console.log(res)
+
+  if (res.code === HttpCode.SUCCESS) {
+    showModel.value = false
+    await props.getMember(memberParams.value?.phone)
+    setUserInfo()
   }
 }
 </script>
@@ -46,9 +74,10 @@ const handleUpdateValue = async (value: string, option: SelectOption) => {
               filterable
               placeholder="输入手机号搜索"
               :options="props.memberList.map(v => ({
-                label: `${v.phone} (${v.nickname ? v.nickname : v.name})`,
+                label: v.phone,
                 value: v.id,
               }))"
+              :maxlength="11"
               clearable
               remote
               @search="searchMember"
@@ -57,7 +86,7 @@ const handleUpdateValue = async (value: string, option: SelectOption) => {
           </n-form-item-gi>
           <n-form-item-gi :span="12">
             <div class="w-full">
-              <common-button-rounded content="新增会员" />
+              <common-button-rounded content="新增会员" @button-click="handleAddMember" />
             </div>
           </n-form-item-gi>
           <template v-if="userInfo?.id">
@@ -80,6 +109,14 @@ const handleUpdateValue = async (value: string, option: SelectOption) => {
         </n-grid>
       </div>
     </common-fold>
+
+    <common-model
+      v-model="showModel" title="新增会员" :show-ok="true" :show-cancel="true" @confirm="submitNewMember"
+      @cancel="showModel = false">
+      <div>
+        <member-lists-new v-model:rely="memberParams" :staff-list="props.staffs" @get-staff-list="props.getStaffs" />
+      </div>
+    </common-model>
   </div>
 </template>
 

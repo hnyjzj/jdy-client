@@ -22,6 +22,8 @@ const { memberList } = storeToRefs(useMemberManage())
 const { getAccessorieList, getAccessorieWhere, getAccessorieScoreRate } = useAccessorie()
 const { accessorieList, accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { finishedList } = storeToRefs(useFinished())
+const { createMember } = useMemberManage()
+
 const formRef = ref<FormInst | null>(null)
 const formData = ref<Orders>({
   amount: 0, // 应付金额
@@ -79,8 +81,9 @@ const getbillingSet = async () => {
   }
 }
 getbillingSet()
+// 获取会员列表
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { phone: val } })
-const getMemberInfo = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: val } })
+// 获取门店员工列表
 const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
 
 // 是否积分
@@ -323,6 +326,9 @@ const updateDedution = (val?: number) => {
     }
   }
 }
+
+// 新增会员
+const addNewMember = async (val: Member) => await createMember(val)
 </script>
 
 <template>
@@ -369,10 +375,14 @@ const updateDedution = (val?: number) => {
         <div class="pb-[16px]">
           <sale-add-member
             v-model="formData"
+
             :get-member="getMember"
-            :get-member-info="getMemberInfo"
             :member-list="memberList"
             :billing-set="billingSet"
+            :store="myStore"
+            :staffs="StoreStaffList"
+            :get-staffs="getStaff"
+            :add-new-member="addNewMember"
           />
         </div>
         <div class="pb-[16px]">
