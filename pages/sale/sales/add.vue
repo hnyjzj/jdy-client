@@ -371,7 +371,9 @@ const updateDedution = (val?: number) => {
             v-model="formData"
             :get-member="getMember"
             :get-member-info="getMemberInfo"
-            :member-list="memberList" />
+            :member-list="memberList"
+            :billing-set="billingSet"
+          />
         </div>
         <div class="pb-[16px]">
           <sale-add-product
