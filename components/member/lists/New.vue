@@ -4,7 +4,14 @@ const props = defineProps<{
   staffList: StoresStaff[]
 }>()
 
-const newParams = ref<Member>(props.rely)
+const emit = defineEmits<{
+  (e: 'update:rely', value: Member): void
+}>()
+
+const newParams = computed({
+  get: () => props.rely,
+  set: value => emit('update:rely', value),
+})
 
 const selectOptions = [
   {

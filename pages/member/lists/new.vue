@@ -42,7 +42,7 @@ const execute = async () => {
           <div class="primary">
             <common-gradient title="会员归属" theme="gradient" :italic="true">
               <template #body>
-                <member-lists-new :rely="memberParams" :staff-list="StoreStaffList" />
+                <member-lists-new v-model:rely="memberParams" :staff-list="StoreStaffList" />
               </template>
             </common-gradient>
           </div>
