@@ -8,6 +8,7 @@ const { storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const { getCheckWhere, createCheck } = useCheck()
 const { checkFilterListToArray, checkFilterList } = storeToRefs(useCheck())
+
 const router = useRouter()
 useSeoMeta({
   title: '新增盘点单',
@@ -58,8 +59,7 @@ async function submit() {
   const res = await createCheck(params.value as Check)
   Key.value = Date.now().toString()
   if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('创建成功')
-    params.value = {} as Check
+    $toast.success('创建成功', 1000)
     setTimeout(() => {
       router.back()
     }, 1000)
@@ -110,6 +110,37 @@ const canShowFilter = (item: FilterWhere<Check>) => {
 
   return true
 }
+
+/** 成品大类或者旧料大类 */
+function isClass() {
+  return params.value?.type === GoodsType.ProductFinish ? 'class_finished' : 'class_old'
+}
+
+// 判断字段是否是 number[] 类型的字段
+function isNumberArrayField(key: keyof Check): key is keyof Pick<Check, 'brand' | 'category' | 'class_finished' | 'class_old' |
+  'craft' | 'gem' | 'material' | 'quality'> {
+  return [
+    'brand',
+    'category',
+    'class_finished',
+    'class_old',
+    'craft',
+    'gem',
+    'material',
+    'quality',
+  ].includes(key as string)
+}
+
+// 切换开关处理函数
+function handleSwitchChange(e: boolean, name: keyof Check) {
+  if (!isNumberArrayField(name))
+    return
+
+  const preset = checkFilterList.value[name]?.preset || {}
+  const selected = Object.keys(preset).map(i => Number(i))
+
+  params.value[name] = e ? selected : []
+}
 </script>
 
 <template>
@@ -117,68 +148,125 @@ const canShowFilter = (item: FilterWhere<Check>) => {
     <common-layout-center>
       <div class="pt-4 pb-20">
         <div class="flex flex-col gap-4">
-          <div class="w-[40%] text-[#FFF] pl-4">
-            <product-manage-company />
-          </div>
           <div :id="Key" :key="Key" class="rounded-6 bg-white w-auto blur-bga">
             <common-gradient title="新增盘点单">
               <template #body>
                 <n-form ref="formRef" :model="params" :rules="rules">
-                  <div uno-sm="grid grid-cols-[1fr_1fr] gap-x-8">
+                  <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-8">
                     <template v-for="(item, index) in checkFilterListToArray" :key="index">
-                      <n-form-item v-if="canShowFilter(item)" :path="item.name" :required="item.required" :label="item.label">
-                        <template v-if="item.input === 'select'">
-                          <n-select
-                            v-model:value="params[item.name]"
-                            :default-value="0 || '' || undefined || null"
-                            size="large"
-                            :placeholder="`选择${item.label}`"
-                            :options="presetToSelect(item.name)"
-                            clearable
-                          />
-                        </template>
-                        <template v-if="item.input === 'text'">
-                          <n-input v-model="params[item.name]" round :placeholder="`输入${item.label}`" />
-                        </template>
-                        <template v-if="item.input === 'number'">
-                          <div class="w-[100%]">
-                            <n-input-number v-model="params[item.name]" round :placeholder="`输入${item.label}`" />
-                          </div>
-                        </template>
-                        <template v-if="item.input === 'switch'">
-                          <n-switch v-model="params[item.name]" size="large" :style="{ 'border-radius': '20px' }" round />
-                        </template>
-                        <template v-if="item.input === 'textarea'">
-                          <n-input v-model="params[item.name]" :placeholder="`输入${item.label}`" type="textarea" size="large" maxlength="255" round :autosize="{ minRows: 1, maxRows: 2 }" />
-                        </template>
-                        <template v-if="item.input === 'search'">
-                          <template v-if="item.name === 'inventory_person_id' || item.name === 'inspector_id'">
+                      <!-- 大类 -->
+                      <template v-if="item.name === 'class_finished' || item.name === 'class_old'">
+                        <template v-if="item.name === isClass()">
+                          <n-form-item v-if="canShowFilter(item)" :path="item.name" :required="true" :label="item.label">
                             <n-select
                               v-model:value="params[item.name]"
-                              :placeholder="`请输入${item.label}`"
-                              :options="StoreStaffList.map(v => ({
-                                label: v.nickname,
-                                value: v.id,
-                              }))"
-                              clearable
+                              multiple
                               size="large"
-                              remote
-                              @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+                              :placeholder="`请选择${item.label}`"
+                              :options="presetToSelect(item.name)"
+                              :consistent-menu-width="false"
+                              clearable
                             />
+                            <div class="ml-2">
+                              <n-switch size="large" @change="(e) => handleSwitchChange(e, item.name)">
+                                <template #unchecked>
+                                  <div>
+                                    全选
+                                  </div>
+                                </template>
+                                <template #checked>
+                                  <div class="pl-2">
+                                    清空
+                                  </div>
+                                </template>
+                              </n-switch>
+                            </div>
+                          </n-form-item>
+                        </template>
+                      </template>
+                      <template v-else>
+                        <n-form-item v-if="canShowFilter(item)" :path="item.name" :required="item.required" :label="item.label">
+                          <template v-if="item.input === 'select'">
+                            <template v-if="item.name === 'type'">
+                              <n-select
+                                v-model:value="params[item.name]"
+                                :default-value="0 || '' || undefined || null"
+                                size="large"
+                                :placeholder="`选择${item.label}`"
+                                :options="optonsToSelect(typePreset)"
+                                clearable
+                              />
+                            </template>
+                            <template v-else>
+                              <n-select
+                                v-model:value="params[item.name]"
+                                :default-value="0 || '' || undefined || null"
+                                size="large"
+                                :placeholder="`选择${item.label}`"
+                                :options="presetToSelect(item.name)"
+                                clearable
+                              />
+                            </template>
                           </template>
-                        </template>
-                        <template v-if="item.input === 'multiple'">
-                          <n-select
-                            v-model:value="params[item.name]"
-                            multiple
-                            size="large"
-                            :placeholder="`请选择${item.label}`"
-                            :options="presetToSelect(item.name)"
-                            :consistent-menu-width="false"
-                            clearable
-                          />
-                        </template>
-                      </n-form-item>
+                          <template v-if="item.input === 'text'">
+                            <n-input v-model="params[item.name]" round :placeholder="`输入${item.label}`" />
+                          </template>
+                          <template v-if="item.input === 'number'">
+                            <div class="w-[100%]">
+                              <n-input-number v-model="params[item.name]" round :placeholder="`输入${item.label}`" />
+                            </div>
+                          </template>
+                          <template v-if="item.input === 'switch'">
+                            <n-switch v-model="params[item.name]" size="large" :style="{ 'border-radius': '20px' }" round />
+                          </template>
+                          <template v-if="item.input === 'textarea'">
+                            <n-input v-model="params[item.name]" round :placeholder="`输入${item.label}`" />
+                          </template>
+                          <template v-if="item.input === 'search'">
+                            <template v-if="item.name === 'inventory_person_id' || item.name === 'inspector_id'">
+                              <n-select
+                                v-model:value="params[item.name]"
+                                :placeholder="`请输入${item.label}`"
+                                :options="StoreStaffList.map(v => ({
+                                  label: v.nickname,
+                                  value: v.id,
+                                }))"
+                                clearable
+                                size="large"
+                                remote
+                                @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+                              />
+                            </template>
+                          </template>
+                          <template v-if="item.input === 'multiple'">
+                            <div class="flex items-center w-[100%]">
+                              <n-select
+                                v-model:value="params[item.name]"
+                                multiple
+                                size="large"
+                                :placeholder="`请选择${item.label}`"
+                                :options="presetToSelect(item.name)"
+                                :consistent-menu-width="false"
+                                clearable
+                              />
+                              <div class="ml-2">
+                                <n-switch size="large" @change="(e) => handleSwitchChange(e, item.name)">
+                                  <template #unchecked>
+                                    <div>
+                                      全选
+                                    </div>
+                                  </template>
+                                  <template #checked>
+                                    <div class="pl-2">
+                                      清空
+                                    </div>
+                                  </template>
+                                </n-switch>
+                              </div>
+                            </div>
+                          </template>
+                        </n-form-item>
+                      </template>
                     </template>
                   </div>
                 </n-form>

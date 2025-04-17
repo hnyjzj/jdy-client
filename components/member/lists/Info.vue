@@ -106,16 +106,6 @@ const backtrack = () => {
                       {{ getTarget('gender', 'gender') || PERCH }}
                     </div>
                   </div>
-                  <div class="item">
-                    <div class="item-left">
-                      身份证号
-                    </div>
-                    <div class="item-right">
-                      {{ props.data.id_card
-                        ? (`${props.data.id_card.slice(0, 6)}********${props.data.id_card.slice(-4)}`)
-                        : PERCH }}
-                    </div>
-                  </div>
                 </div>
               </div>
 

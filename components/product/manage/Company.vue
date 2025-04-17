@@ -58,6 +58,7 @@ function handleSelect(id: Stores['id']) {
     switchStore(stored)
     emits('change')
     saveStoreId.value = ''
+    emits('change')
   }
 }
 </script>

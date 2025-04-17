@@ -13,7 +13,7 @@ export const useAccessorie = defineStore('Accessorie', {
     accessorieList: [],
     accessorieInfo: {} as ProductAccessories,
     accessorieListTotal: 0,
-    accessorieFilterListToArray: {} as FilterWhere<ProductAccessories>[],
+    accessorieFilterListToArray: [] as FilterWhere<ProductAccessories>[],
   }),
   actions: {
     // 配件列表
@@ -45,9 +45,9 @@ export const useAccessorie = defineStore('Accessorie', {
       }
     },
     // 配件货品详情
-    async getAccessorieInfo(code: ProductAccessories['code']) {
+    async getAccessorieInfo(id: string) {
       try {
-        const { data } = await https.post<ProductAccessories, { code: ProductAccessories['code'] }>('/product/damage/info', { code })
+        const { data } = await https.post<ProductAccessories, { id: string }>('/product/accessorie/info', { id })
         if (data.value?.code === HttpCode.SUCCESS) {
           this.accessorieInfo = data.value.data
         }

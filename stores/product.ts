@@ -12,7 +12,7 @@ export const useProductManage = defineStore('ProductManage', {
   } => ({
     productRocordList: [],
     historyFilterList: {} as Where<ProductHistories>,
-    HistoryFilterListToArray: {} as FilterWhere<ProductHistories>[],
+    HistoryFilterListToArray: [] as FilterWhere<ProductHistories>[],
     historyListTotal: 0,
     historyInfo: {} as ProductHistories,
   }),

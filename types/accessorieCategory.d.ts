@@ -1,6 +1,7 @@
 interface AccessorieCategory {
+
   /**
-   * 配件编号
+   * id-条目code
    */
   id: string
 
@@ -84,4 +85,21 @@ interface AccessorieCategory {
    * 应付金额
    */
   pay?: number
+  /**
+   * 入库数量
+   */
+  in_stock: number
+  /**
+   * 入库入网费
+   */
+  in_access_fee: number
+
+}
+
+interface CategoryProduct {
+  stock: number
+}
+
+interface CategoryHasProduct extends AccessorieCategory {
+  products: CategoryProduct[]
 }

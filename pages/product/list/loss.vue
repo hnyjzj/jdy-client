@@ -57,6 +57,11 @@ async function submitWhere(f: Partial<ProductFinisheds>, isSearch: boolean = fal
   }
   $toast.error(res?.message ?? '筛选失败')
 }
+
+async function changeStore() {
+  pages.value = 1
+  await getList()
+}
 </script>
 
 <template>
@@ -65,7 +70,7 @@ async function submitWhere(f: Partial<ProductFinisheds>, isSearch: boolean = fal
     <product-filter
       v-model:id="complate" :product-list-total="lossListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
-        <product-manage-company />
+        <product-manage-company @change="changeStore" />
       </template>
     </product-filter>
     <!-- 小卡片组件 -->
@@ -143,7 +148,7 @@ async function submitWhere(f: Partial<ProductFinisheds>, isSearch: boolean = fal
                   品类
                 </div>
                 <div class="text-align-end">
-                  {{ info.style }}
+                  {{ lossFilterList.category?.preset[info.category] }}
                 </div>
               </div>
               <div class="flex-between">

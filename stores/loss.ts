@@ -13,7 +13,7 @@ export const useLoss = defineStore('Loss', {
     lossList: [],
     lossInfo: {} as ProductFinisheds,
     lossListTotal: 0,
-    lossFilterListToArray: {} as FilterWhere<ProductFinisheds>[],
+    lossFilterListToArray: [] as FilterWhere<ProductFinisheds>[],
   }),
   actions: {
     // 报损列表

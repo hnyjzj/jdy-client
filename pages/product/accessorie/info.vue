@@ -1,7 +1,8 @@
 <script setup lang="ts">
 const { getAccessorieInfo, getAccessorieWhere } = useAccessorie()
-const { accessorieInfo, accessorieFilterList, accessorieFilterListToArray } = storeToRefs(useAccessorie())
-
+const { accessorieInfo } = storeToRefs(useAccessorie())
+const { getAccessorieCategoryWhere } = useAccessorieCategory()
+const { categoryFilterListToArray, categoryFilterList } = storeToRefs(useAccessorieCategory())
 // const { $toast } = useNuxtApp()
 // 成品列表详情
 useSeoMeta({
@@ -10,9 +11,9 @@ useSeoMeta({
 
 const route = useRoute()
 const isModel = ref(false)
-// 报损原因
 if (route.query.id) {
   await getAccessorieInfo(route.query.id as string)
+  getAccessorieCategoryWhere()
 }
 await getAccessorieWhere()
 
@@ -25,7 +26,7 @@ function goLoss() {
   <div>
     <common-layout-center>
       <div class="pt-6 pb-18">
-        <product-manage-info :info="accessorieInfo" :filter-list="accessorieFilterList" :filter-list-to-array="accessorieFilterListToArray" @go-loss="goLoss" />
+        <product-manage-info :info="accessorieInfo.category" :filter-list="categoryFilterList" :filter-list-to-array="categoryFilterListToArray" @go-loss="goLoss" />
       </div>
     </common-layout-center>
   </div>

@@ -72,10 +72,9 @@ async function submit() {
   if (!myStore.value?.id) {
     return $toast.error('请先选择门店')
   }
-  const res = await addAccessorieCategory(params.value)
+  const res = await addAccessorieCategory({ list: [params.value] })
   if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('创建成功')
-    params.value = {} as AccessorieCategory
+    $toast.success('创建成功', 1000)
     setTimeout(() => {
       router.back()
     }, 1000)
@@ -102,9 +101,6 @@ const presetToSelect = (key: keyof AccessorieCategory) => {
     <common-layout-center>
       <div class="pt-4 pb-22">
         <div class="flex flex-col gap-4">
-          <div class="w-[40%] text-[#FFF] pl-4">
-            <product-manage-company />
-          </div>
           <div class="rounded-6 bg-white w-auto blur-bga">
             <common-gradient title="新增入库">
               <template #body>

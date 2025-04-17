@@ -5,31 +5,39 @@ const { userinfo } = useUser()
 const { $toast } = useNuxtApp()
 const route = useRoute()
 
+const { finishedFilterListToArray } = storeToRefs(useFinished())
+const { getFinishedWhere } = useFinished()
+const { oldFilterListToArray } = storeToRefs(useOld())
+const { getOldWhere } = useOld()
+
 // 当前选择的盘点类型
 const product_status = ref(0)
 
 // 盘点单详情
 useSeoMeta({ title: '盘点单详情' })
 
-if (route.query.id) {
-  getInfo()
+onMounted(async () => {
   await getCheckWhere()
-}
+  await getFinishedWhere()
+  await getOldWhere()
+})
 
 interface funBtn {
   status: CheckInfo['status']
   text: string
 }
 
+// **先声明并初始化 funbtns**
 const funbtns = ref<funBtn[]>([])
-const getFunBtn = async () => {
-  funbtns.value = []
-  // userinfo.id === checkInfo.value.inventory_person_id &&
-  if (checkInfo.value.status === 1) {
+
+// 获取按钮列表的函数
+function getFunBtn() {
+  funbtns.value = [] // 清空按钮数组
+  // 根据状态添加按钮
+  if (userinfo.id === checkInfo.value.inventory_person_id && checkInfo.value.status === 1) {
     funbtns.value.push({ status: 6, text: '取消盘点' })
     funbtns.value.push({ status: 2, text: '开始盘点' })
   }
-  //   userinfo.id === checkInfo.value.inspector_id &&
   if (userinfo.id === checkInfo.value.inspector_id && checkInfo.value.status === 2) {
     funbtns.value.push({ status: 6, text: '取消盘点' })
     funbtns.value.push({ status: 3, text: '盘点完成' })
@@ -39,11 +47,12 @@ const getFunBtn = async () => {
     funbtns.value.push({ status: 4, text: '盘点完成' })
   }
 }
+
 /** 获取详情 */
 async function getInfo() {
   if (route.query.id) {
     await getCheckInfo(route.query.id as string, product_status.value)
-    await getFunBtn()
+    getFunBtn() // 调用 getFunBtn，更新 funbtns
   }
 }
 
@@ -75,6 +84,11 @@ const step = [
   { title: '已完成', subs: 4 },
 ]
 
+// 如果路由中有 id，则获取详情
+if (route.query.id) {
+  await getInfo()
+}
+
 // 切换盘点状态
 function changeStatus(val: number) {
   product_status.value = val
@@ -88,16 +102,6 @@ async function submitChange(status: CheckInfo['status']) {
     $toast.success('变更成功')
     getInfo()
   }
-}
-/** 货品状态 */
-const goodsStatus = {
-  0: '全部',
-  1: '正常',
-  2: '报损',
-  3: '调拨',
-  4: '已售',
-  5: '退货',
-  6: '盘点中',
 }
 </script>
 
@@ -142,7 +146,7 @@ const goodsStatus = {
                       盘点品牌
                     </div>
                     <div class="right">
-                      {{ getMultipleVal('brand', checkInfo.brand) }}
+                      {{ getMultipleVal('brand', checkInfo.brand) || '--' }}
                     </div>
                   </div>
                   <div class="part">
@@ -150,7 +154,7 @@ const goodsStatus = {
                       盘点仓库
                     </div>
                     <div class="right">
-                      {{ checkInfo.store_id }}
+                      {{ checkInfo.type === GoodsType.ProductFinish ? '成品' : checkInfo.type === GoodsType.ProductOld ? '旧料' : '--' }}
                     </div>
                   </div>
                   <div class="part">
@@ -158,7 +162,7 @@ const goodsStatus = {
                       备注
                     </div>
                     <div class="right">
-                      {{ checkInfo.remark }}
+                      {{ checkInfo.remark || '--' }}
                     </div>
                   </div>
                   <div class="part">
@@ -185,7 +189,7 @@ const goodsStatus = {
                       大类
                     </div>
                     <div class="right">
-                      {{ getMultipleVal('class', checkInfo.class) }}
+                      {{ checkInfo.type === GoodsTypePure.ProductFinish ? getMultipleVal('class_finished', checkInfo.class_finished) : getMultipleVal('class_old', checkInfo.class_old) }}
                     </div>
                   </div>
                   <div class="part">
@@ -193,7 +197,7 @@ const goodsStatus = {
                       品类
                     </div>
                     <div class="right">
-                      {{ getMultipleVal('category', checkInfo.category) }}
+                      {{ getMultipleVal('category', checkInfo.category) || '--' }}
                     </div>
                   </div>
                   <div class="part">
@@ -201,7 +205,7 @@ const goodsStatus = {
                       工艺
                     </div>
                     <div class="right">
-                      {{ getMultipleVal('craft', checkInfo.craft) }}
+                      {{ getMultipleVal('craft', checkInfo.craft) || '--' }}
                     </div>
                   </div>
                 </div>
@@ -212,7 +216,8 @@ const goodsStatus = {
                       总件数
                     </div>
                     <div class="right">
-                      {{ checkInfo.cont_quantity }}
+                      {{ checkInfo.cont_quantity
+                      }}
                     </div>
                   </div>
                   <div class="part">
@@ -249,62 +254,19 @@ const goodsStatus = {
           </template>
           <template v-for="(item, index) in checkInfo.products" :key="index">
             <div class="grid mb-3">
-              <sale-order-nesting :title="item.product.name" :info="checkInfo">
+              <sale-order-nesting :title="checkInfo.type === GoodsType.ProductFinish ? item.product_finished?.name : item.product_old?.name" :info="checkInfo">
                 <template #left>
-                  <common-tags type="pink" :text="goodsStatus[item.product.status]" :is-oval="true" />
+                  <template v-if="checkInfo.type === GoodsType.ProductFinish">
+                    <common-tags type="pink" :text="GoodsStatusMap[item.product_finished?.status as GoodsStatus]" :is-oval="true" />
+                  </template>
                 </template>
                 <template #info>
-                  <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
-                    <div class="flex">
-                      <div class="key">
-                        条码
-                      </div>
-                      <div class="value text-[rgba(57,113,243,1)]">
-                        {{ item.product.code }}
-                      </div>
-                    </div>
-                    <div class="flex">
-                      <div class="key">
-                        工艺
-                      </div>
-                      <div class="value">
-                        {{ item.product.craft }}
-                      </div>
-                    </div>
-                    <div class="flex">
-                      <div class="key">
-                        零售方式
-                      </div>
-                      <div class="value">
-                        {{ item.product.retail_type }}
-                      </div>
-                    </div>
-                    <div class="flex">
-                      <div class="key">
-                        金重
-                      </div>
-                      <div class="value">
-                        {{ item.product.weight_total }}
-                      </div>
-                    </div>
-                    <div class="flex">
-                      <div class="key">
-                        价格
-                      </div>
-                      <div class="value text-[rgba(57,113,243,1)]">
-                        {{ item.product.label_price }}
-                      </div>
-                    </div>
-                    <div class="flex">
-                      <div class="key">
-                        特价
-                      </div>
-                      <div class="value">
-                        <span class="bg-[rgba(230,230,232,1)] px-2 py-[1.5px] rounded-[8px] text-[rgba(128,128,137,1)]">
-                          {{ item.product.is_special_offer ? '是' : '否' }}</span>
-                      </div>
-                    </div>
-                  </div>
+                  <template v-if="checkInfo.type === GoodsType.ProductFinish">
+                    <product-base-info :info="item.product_finished" :filter-list="finishedFilterListToArray" />
+                  </template>
+                  <template v-else-if="checkInfo.type === GoodsType.ProductOld">
+                    <product-base-info :info="item.product_old" :filter-list="oldFilterListToArray" />
+                  </template>
                 </template>
               </sale-order-nesting>
             </div>
@@ -312,7 +274,6 @@ const goodsStatus = {
         </div>
       </div>
     </div>
-
     <template v-if="funbtns?.length">
       <div class="btn">
         <template v-for="(item, index) in funbtns" :key="index">
@@ -327,25 +288,15 @@ const goodsStatus = {
 
 <style lang="scss" scoped>
 .part {
-  --uno: 'flex-start gap-3 text-sm font-normal';
+  --uno: 'flex gap-3 text-sm font-normal';
 
   .left {
-    --uno: 'color-[#666666] dark:color-[#CBCDD1]';
+    --uno: 'color-[#666666] dark:color-[#CBCDD1] w-60px whitespace-nowrap shrink-0';
   }
 
   .right {
     --uno: 'color-[#333333] dark:color-[#FFFFFF]';
   }
-}
-.key {
-  --uno: 'text-size-[14px] color-[#666] dark:color-[#CBCDD1] mr-2';
-  white-space: nowrap;
-}
-.value {
-  --uno: 'text-size-[14px] color-[#333] dark:color-[#fff] w-[60%]';
-  text-overflow: ellipsis; /* 超出显示省略号 */
-  white-space: nowrap; /* 禁止换行 */
-  overflow: hidden;
 }
 
 .btn {

@@ -16,8 +16,6 @@ export const useOld = defineStore('Old', {
     oldInfo: {} as ProductOlds,
     oldListTotal: 0,
     oldFilterListToArray: {} as FilterWhere<ProductOlds>[],
-    searchOld: {} as ProductOlds,
-    rate: '',
   }),
   actions: {
     // 旧料列表
