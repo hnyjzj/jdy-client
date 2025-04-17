@@ -8,14 +8,14 @@ export const useOld = defineStore('Old', {
      * 排序后的筛选条件列表
      */
     oldFilterListToArray: FilterWhere<ProductOlds>[]
-    searchOld: ProductOlds
     rate: string
   } => ({
     oldFilterList: {} as Where<ProductOlds>,
     oldList: [],
     oldInfo: {} as ProductOlds,
     oldListTotal: 0,
-    oldFilterListToArray: {} as FilterWhere<ProductOlds>[],
+    oldFilterListToArray: [] as FilterWhere<ProductOlds>[],
+    rate: '',
   }),
   actions: {
     // 旧料列表
@@ -26,9 +26,6 @@ export const useOld = defineStore('Old', {
         if (data.value?.code === HttpCode.SUCCESS) {
           this.oldListTotal = data.value.data.total
           this.oldList = data.value.data.list
-          if (data.value.data.list.length === 1) {
-            this.searchOld = data.value.data.list[0]
-          }
         }
         return data.value
       }
@@ -36,22 +33,6 @@ export const useOld = defineStore('Old', {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
       }
     },
-    // 获取旧料大类
-    async getOldClass(params: Partial<ProductOlds>) {
-      const { data } = await https.post<{ label: string, value: number }, Partial<ProductOlds>>('/product/old/get_class', params)
-      if (data.value?.code === HttpCode.SUCCESS) {
-        return data.value.data
-      }
-    },
-    // 获取旧料积分比例
-    async getOldScoreProportion(params: { class: ProductOlds['class'] }) {
-      const { data } = await https.post<any, { class: ProductOlds['class'] }>('/member/integral/rule/old', params)
-      if (data.value?.code === HttpCode.SUCCESS) {
-        this.rate = data.value.data.rate
-        return data.value.data.rate
-      }
-    },
-
     // 获取旧料筛选列表
     async getOldWhere() {
       try {
@@ -95,6 +76,21 @@ export const useOld = defineStore('Old', {
       }
       catch (error) {
         throw new Error(`转换失败: ${error || '未知错误'}`)
+      }
+    },
+    // 获取旧料大类
+    async getOldClass(params: Partial<ProductOlds>) {
+      const { data } = await https.post<{ label: string, value: number }, Partial<ProductOlds>>('/product/old/get_class', params)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return data.value.data
+      }
+    },
+    // 获取旧料积分比例
+    async getOldScoreProportion(params: { class: ProductOlds['class'] }) {
+      const { data } = await https.post<any, { class: ProductOlds['class'] }>('/member/integral/rule/old', params)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.rate = data.value.data.rate
+        return data.value.data.rate
       }
     },
   },
