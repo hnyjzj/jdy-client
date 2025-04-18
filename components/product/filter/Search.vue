@@ -26,7 +26,7 @@ const clear = () => {
       </div>
       <div class="text-size-[14px] line-height-[20px] flex-1">
         <input
-          v-model="searchKey" type="search" autocomplete="off" class="bg-transparent w-full border-0 placeholder-text-[#fff] flex-1 py-[6px] pl-[4px] line-height-[24px]"
+          v-model="searchKey" type="search" autocomplete="off" class="bg-transparent text-[#FFF] w-full border-0 placeholder-text-[#fff] flex-1 py-[6px] pl-[4px] line-height-[24px]"
           :placeholder="props.placeholder"
           @keyup.enter="subsearch()">
       </div>

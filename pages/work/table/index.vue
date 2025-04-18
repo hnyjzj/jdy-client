@@ -243,7 +243,7 @@ const beforeUpload = (data: any) => {
             <div class="pb-[16px]">
               <div class="add-row">
                 <div>标题</div>
-                <input v-model="params[label]" type="text" class="border-none bg-transparent outline-none focus:ring-0 focus:outline-none" placeholder="输入标题">
+                <input v-model="params[label]" type="text" class="border-none bg-transparent outline-none focus:ring-0 focus:outline-none text-color" placeholder="输入标题">
                 <div class="text-[#FF2F2F] text-[12px] pt-2">
                   {{ error }}
                 </div>
@@ -273,7 +273,7 @@ const beforeUpload = (data: any) => {
             <div class="pb-[16px]">
               <div class="add-row">
                 <div>跳转地址</div>
-                <input v-model="params[label]" type="text" class="border-none bg-transparent outline-none focus:ring-0 focus:outline-none" placeholder="输入跳转地址">
+                <input v-model="params[label]" type="text" class="border-none bg-transparent outline-none focus:ring-0 focus:outline-none text-color" placeholder="输入跳转地址">
                 <div class="text-[#FF2F2F] text-[12px] pt-2">
                   {{ error }}
                 </div>
