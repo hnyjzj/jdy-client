@@ -12,31 +12,25 @@ const mode = computed({
 
 <template>
   <div class="mb-[16px]">
-    <van-switch
-      v-model="mode" :style="{
-        '--van-switch-width': '4.8rem',
-        '--van-switch-background': '#8FB8EE',
-
-      }">
-      <template #node>
-        <div class="h-[26px] line-height-[26px] flex justify-center items-center">
-          <template v-if="!mode">
-            <icon name="i-svg:sun" :size="20" :color="!mode ? '#3971F3' : '#FFF'" />
-          </template>
-          <template v-else>
-            <icon name="i-icon:moon" :size="20" :color="mode ? '#3971F3' : '#FFF'" />
-          </template>
-        </div>
-      </template>
-      <template #background>
+    <n-switch
+      v-model:value="mode"
+      size="large"
+    >
+      <template #icon>
         <template v-if="!mode">
-          <span class="span select-none" style="right: 5px;">浅色</span>
+          <icon name="i-svg:sun" :size="20" :color="!mode ? '#3971F3' : '#FFF'" />
         </template>
         <template v-else>
-          <span class="span select-none" style="left: 5px;">深色</span>
+          <icon name="i-icon:moon" :size="20" :color="mode ? '#3971F3' : '#FFF'" />
         </template>
       </template>
-    </van-switch>
+      <template #checked>
+        <span class="ml-1 text-sm select-none">深色</span>
+      </template>
+      <template #unchecked>
+        <span class="ml-1 text-sm select-none">浅色</span>
+      </template>
+    </n-switch>
   </div>
 </template>
 

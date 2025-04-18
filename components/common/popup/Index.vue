@@ -55,7 +55,7 @@ function close() {
         </template>
         <div class="top">
           <div class="close" @click="close">
-            <van-icon name="cross" color="#fff" size="16" />
+            <icon name="i-icon:error" color="#fff" />
           </div>
         </div>
       </template>

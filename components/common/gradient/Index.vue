@@ -86,7 +86,12 @@ const themeProcess = () => {
 
       <template v-if="props.foldable">
         <div class="cursor-pointer" @click="toggleFold">
-          <van-icon :name="!isFold ? 'arrow' : 'arrow-down'" size="14" />
+          <template v-if="!isFold">
+            <icon name="i-icon:arrow" />
+          </template>
+          <template v-else>
+            <icon name="i-icon:arrow-down" size="8" />
+          </template>
         </div>
       </template>
 

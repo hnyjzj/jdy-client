@@ -16,7 +16,7 @@ const props = defineProps<{
                 {{ item.optName }}
               </div>
             </div>
-            <van-icon name="arrow" size="20px" class="color-[#808089]" />
+            <icon name="i-icon:arrow" size="20" class="color-[#808089]" />
           </div>
           <div class="w-full h-[1px] bg-[#E6E6E8] dark:opacity-[0.5]" :style="{ background: index !== props.optList.length - 1 ? '#E6E6E8' : 'none' }" />
         </nuxt-link>

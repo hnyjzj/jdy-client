@@ -13,15 +13,15 @@ const { getMyStore } = useStores()
 
 await getMyStore({ page: 1, limit: 20 })
 
-const actions = [
-  { id: 1, text: '增加' },
-  { id: 2, text: '减少' },
-]
+const actions = ref([
+  { key: 1, label: '增加' },
+  { key: 2, label: '减少' },
+])
 
 const items = ref([{
   id: 1,
-  isPopoverVisible: false,
-  actions,
+  isPopoverVisible: true,
+  actions: actions.value,
   selected: '',
 }])
 
@@ -153,28 +153,31 @@ const userCancel = () => {
             <div>
               <template v-for="(item, index) in items" :key="index">
                 <div class="flex flex-row justify-between items-center gap-[8px]">
-                  <van-popover
-                    v-model:show="item.isPopoverVisible"
-                    :actions="item.actions"
-                    @select="(action: any) => {
-                      item.selected = action.text
-                      adjustWay = action.id
-                    }"
-                  >
-                    <template #reference>
-                      <div class="refer">
-                        <div
-                          class="row-left dark:color-[#fff] font-size-[14px] whitespace-nowrap"
-                          :style="{ color: item.selected ? '#191919' : '#808089' }"
-                        >
-                          {{ item.selected || '调整方式' }}
-                        </div>
-                        <div class="row-right">
-                          <van-icon :name="!item.isPopoverVisible ? 'arrow' : 'arrow-down'" color="#808089" size="14px" />
-                        </div>
+                  <n-dropdown
+                    trigger="click" placement="bottom-start" :options="item.actions" @select="(action: any) => {
+                      let select = actions.find((item:any) => item.key === action)
+                      if (select){
+                        item.selected = select.label
+                        adjustWay = select.key
+                      }
+                    }">
+                    <div class="refer">
+                      <div
+                        class="row-left dark:text-white font-size-[14px] whitespace-nowrap"
+                        :style="{ color: item.selected ? '#191919' : '#808089' }"
+                      >
+                        {{ item.selected || '调整方式' }}
                       </div>
-                    </template>
-                  </van-popover>
+                      <div class="row-right">
+                        <template v-if="!item.isPopoverVisible">
+                          <icon name="i-icon:arrow" size="14" color="#808089" />
+                        </template>
+                        <template v-else>
+                          <icon name="i-icon:arrow-down" size="7" color="#808089" />
+                        </template>
+                      </div>
+                    </div>
+                  </n-dropdown>
                   <input
                     v-model="fluctuant"
                     placeholder="请输入积分数量"

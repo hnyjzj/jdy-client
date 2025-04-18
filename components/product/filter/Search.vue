@@ -22,7 +22,7 @@ const clear = () => {
   <div>
     <div class="px-[12px] bg-[#FFFFFF66] border-rd-full text-size-[20px] shadow-lg flex items-center">
       <div class=" left-[10px] top-[6px]">
-        <van-icon name="search" />
+        <icon name="i-icon:search" size="12" />
       </div>
       <div class="text-size-[14px] line-height-[20px] flex-1">
         <input

@@ -80,7 +80,6 @@ const list = [{
                   </div>
                   <div class="text-size-[10px] color-[#808089] line-height-[24px] mt-[8px]">
                     点击进入
-                    <van-icon name="play" class="text-size-[12px]" />
                   </div>
                 </div>
               </div>

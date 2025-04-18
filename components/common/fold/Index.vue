@@ -52,7 +52,12 @@ function toggleShow() {
 
       <template v-if="isCollapse">
         <div>
-          <van-icon :name="!isShow ? 'arrow' : 'arrow-down'" />
+          <template v-if="!isShow">
+            <icon name="i-icon:arrow" />
+          </template>
+          <template v-else>
+            <icon name="i-icon:arrow-down" size="10" />
+          </template>
         </div>
       </template>
     </div>

@@ -18,7 +18,8 @@ const checked = ref<boolean>(true)
           <div class="w-[100px] h-[66px] bg-[#FFFFFF66] rounded-[8px] mr-[20px] shrink-0" />
         </div>
         <div class="flex-start mb-[12px]">
-          <span class="w-[100px]">启用状态</span> <van-switch v-model="checked" size="24" />
+          <span class="w-[100px]">启用状态</span>
+          <n-switch v-model="checked" size="large" />
         </div>
         <div class="flex-start mb-[12px]">
           <span class="w-[100px]">会员卡主标题</span> <span>郑州金美福珠宝有限公司</span>
@@ -37,7 +38,7 @@ const checked = ref<boolean>(true)
         </div>
         <div class="flex-start mb-[8px]">
           <span class="w-[100px]">会员logo</span>
-          <van-switch v-model="checked" size="24" />
+          <n-switch v-model="checked" size="large" />
         </div>
         <div class="flex-start text-[12px] color-[#808089]">
           <span class="w-[100px]" />
