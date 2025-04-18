@@ -109,7 +109,7 @@ const count = (p: OrderProducts) => {
       price: p.product?.label_price, // 标签价格
       quantity: p.quantity, // 数量
       scoreDeduction: methA(p.scoreDeduction),
-      cardDeduction: methA(p.cardDeduction), // 卡券抵扣
+      cardDeduction: methA(p.cardDeduction) || 0, // 卡券抵扣
       member_discount: (p.member_discount || 100) * 0.01, // 会员折扣
       discount: ((p.discount || 100) * 0.01),
       notCount: p?.notCount, // 抹零
@@ -147,7 +147,7 @@ const count = (p: OrderProducts) => {
       labor_fee: p?.labor_fee,
       weight_metal: p.product?.weight_metal,
       scoreDeduction: methA(p.scoreDeduction),
-      cardDeduction: methA(p.cardDeduction),
+      cardDeduction: methA(p.cardDeduction) || 0,
       member_discount: (p.member_discount || 100) * 0.01,
       discount: ((p.discount || 100) * 0.01),
       notCount: p?.notCount,
@@ -188,7 +188,7 @@ const count = (p: OrderProducts) => {
       labor_fee: p?.labor_fee,
       weight_metal: p.product?.weight_metal,
       scoreDeduction: methA(p.scoreDeduction),
-      cardDeduction: methA(p.cardDeduction),
+      cardDeduction: methA(p.cardDeduction) || 0,
       member_discount: (p.member_discount || 100) * 0.01,
       discount: ((p.discount || 100) * 0.01),
       notCount: p?.notCount,
@@ -368,41 +368,41 @@ const handleScoreReduceBlur = () => {
 
 // 设置整单卡券抵扣
 // 定义一个响应式变量couponDeduct，初始值为undefined，用于存储卡券抵扣金额
-const couponDeduct = ref(undefined)
+// const couponDeduct = ref(undefined)
 // 定义一个函数handleCouponReduceBlur，用于处理卡券抵扣金额失去焦点时的逻辑
-const handleCouponReduceBlur = () => {
-  // 初始化result变量，用于累加每项商品的卡券抵扣金额
-  let result = 0
-  // 检查couponDeduct的值是否小于0或者为空，如果是，则重置couponDeduct为undefined
-  if ((couponDeduct?.value && couponDeduct?.value < 0) || !couponDeduct.value) {
-    couponDeduct.value = undefined
-    // 遍历showProductList中的每一项商品，将cardDeduction重置为0
-    showProductList.value.forEach((item) => {
-      item.cardDeduction = 0
-    })
-    return // 结束函数执行
-  }
+// const handleCouponReduceBlur = () => {
+//   // 初始化result变量，用于累加每项商品的卡券抵扣金额
+//   let result = 0
+//   // 检查couponDeduct的值是否小于0或者为空，如果是，则重置couponDeduct为undefined
+//   if ((couponDeduct?.value && couponDeduct?.value < 0) || !couponDeduct.value) {
+//     couponDeduct.value = undefined
+//     // 遍历showProductList中的每一项商品，将cardDeduction重置为0
+//     showProductList.value.forEach((item) => {
+//       item.cardDeduction = 0
+//     })
+//     return // 结束函数执行
+//   }
 
-  showProductList.value.forEach((item, index) => {
-    // 计算当前商品的卡券抵扣金额
-    item.cardDeduction = calc('(amount / allAmount * couponDeduct) | =0 ~5, !n', {
-      amount: item.orign, // 应付金额
-      allAmount: allAmount(), // 总金额
-      couponDeduct: couponDeduct.value || 0, // 整单设置卡券抵扣
-    })
+//   showProductList.value.forEach((item, index) => {
+//     // 计算当前商品的卡券抵扣金额
+//     item.cardDeduction = calc('(amount / allAmount * couponDeduct) | =0 ~5, !n', {
+//       amount: item.orign, // 应付金额
+//       allAmount: allAmount(), // 总金额
+//       couponDeduct: couponDeduct.value || 0, // 整单设置卡券抵扣
+//     })
 
-    if (index !== showProductList.value.length - 1) {
-      result += item.cardDeduction
-    }
-    else {
-      // 最后一行 抹零金额
-      item.cardDeduction = calc('(a - b) | !n', {
-        a: couponDeduct.value,
-        b: result,
-      })
-    }
-  })
-}
+//     if (index !== showProductList.value.length - 1) {
+//       result += item.cardDeduction
+//     }
+//     else {
+//       // 最后一行 抹零金额
+//       item.cardDeduction = calc('(a - b) | !n', {
+//         a: couponDeduct.value,
+//         b: result,
+//       })
+//     }
+//   })
+// }
 </script>
 
 <template>
@@ -455,7 +455,7 @@ const handleCouponReduceBlur = () => {
                 </template>
               </n-input-number>
             </n-form-item-gi>
-            <n-form-item-gi
+            <!-- <n-form-item-gi
               :span="12"
               label="卡券抵扣" label-placement="top"
             >
@@ -469,7 +469,7 @@ const handleCouponReduceBlur = () => {
                 @blur="handleCouponReduceBlur"
 
               />
-            </n-form-item-gi>
+            </n-form-item-gi> -->
             <n-form-item-gi
               :span="12"
               label="积分抵扣" label-placement="top"
@@ -558,7 +558,7 @@ const handleCouponReduceBlur = () => {
                           }"
                         />
                       </n-form-item-gi>
-                      <n-form-item-gi :span="12" label="卡券抵扣">
+                      <!-- <n-form-item-gi :span="12" label="卡券抵扣">
                         <n-input-number
                           v-model:value="obj.cardDeduction"
                           :show-button="false"
@@ -573,7 +573,7 @@ const handleCouponReduceBlur = () => {
                             }
                           }"
                         />
-                      </n-form-item-gi>
+                      </n-form-item-gi> -->
                       <n-form-item-gi :span="12" label="积分抵扣">
                         <n-input-number
                           v-model:value="obj.scoreDeduction"

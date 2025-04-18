@@ -7,10 +7,11 @@ const props = withDefaults(defineProps<{
   getMember: (val: string) => void
   getStaffs: () => void
   addNewMember: (val: Member) => any
-  billingSet: BillingSet
+  billingSet?: BillingSet
   store: Stores
   staffs: StoresStaff[]
 }>(), {
+
 })
 
 const memberParams = ref<Member>({
@@ -33,15 +34,23 @@ const setUserInfo = () => {
   userInfo.value = props.memberList[0]
   // 能使用的积分
   formData.value.member_id = userInfo.value.id
-  if (userInfo.value.integral && props.billingSet.discount_rate !== '0') {
-    canUseScore.value = calc('(a / b )| =0 ~5,!n', {
-      a: userInfo.value.integral,
-      b: props.billingSet.discount_rate,
-    })
+  if (props.billingSet) {
+    if (userInfo.value.integral && props.billingSet.discount_rate !== '0') {
+      canUseScore.value = calc('(a / b )| =0 ~5,!n', {
+        a: userInfo.value.integral,
+        b: props.billingSet.discount_rate,
+      })
+    }
   }
 }
-
-const handleUpdateValue = async (option: SelectOption) => {
+const Key = ref()
+const handleUpdateValue = async (value: string, option: SelectOption) => {
+  if (value === null) {
+    formData.value.member_id = undefined
+    Key.value = Date.now().toString()
+    userInfo.value = {} as Member
+    return
+  }
   await props.getMember(option?.label as string)
   setUserInfo()
 }
@@ -53,8 +62,6 @@ const handleAddMember = () => {
 // 提交新用户
 const submitNewMember = async () => {
   const res = await props.addNewMember(memberParams.value)
-  console.log(res)
-
   if (res.code === HttpCode.SUCCESS) {
     showModel.value = false
     await props.getMember(memberParams.value?.phone)
@@ -66,7 +73,7 @@ const submitNewMember = async () => {
 <template>
   <div>
     <common-fold title="会员信息" :is-collapse="false">
-      <div class="p-[16px] pb-0">
+      <div :key="Key" class="p-[16px] pb-0">
         <n-grid :cols="24" :x-gap="8">
           <n-form-item-gi :span="12" label="选择会员" path="member_id" class="">
             <n-select

@@ -261,3 +261,99 @@ interface OrderWhere {
   type?: number
   payment_method?: OrderPaymentMethod[]
 }
+
+// 定金单
+interface DepositOrderProducts {
+
+  /**
+   * 工费
+   */
+  labor_fee?: number
+  /**
+   * 应付金额
+   */
+  amount: number
+  /**
+   * 原价
+   */
+  amount_original?: number
+  /**
+   * 创建时间
+   */
+  created_at?: Date
+  /**
+   * 折扣
+   */
+  discount?: number
+  /**
+   * 折扣金额
+   */
+  discount_amount?: number
+  /**
+   * ID
+   */
+  id?: string
+  /**
+   * 增加积分
+   */
+  integral?: number
+  /**
+   * 订单ID
+   */
+  order_id?: string
+  /**
+   * 单价
+   */
+  price?: number
+  /**
+   * 产品ID
+   */
+  product_id: string
+  /**
+   * 产品信息
+   */
+  product?: ProductFinisheds
+  /**
+   * 数量，默认 为1
+   */
+  quantity?: number
+  /**
+   * 更新时间
+   */
+  updated_at?: Date
+  /**
+   * 抹零金额
+   */
+  notCount: number
+  /**
+   * 显示折扣
+   */
+  show_discount?: number
+  /**
+   * 原始价格 用于计算折扣
+   */
+  orign: number
+
+  /**
+   * 折扣
+   */
+  member_discount?: number
+
+  /**
+   * 卡券抵扣
+   */
+  cardDeduction: number
+  /**
+   * 积分抵扣
+   */
+  scoreDeduction: number
+  /**
+   * 积分比例
+   */
+  rate: number
+
+  /**
+   * 订金金额
+   */
+  deposit_amount?: number
+}

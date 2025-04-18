@@ -291,23 +291,45 @@ const deleteConfirm = () => {
 }
 // 手动添加的旧料 如果不是自有旧料
 const changePrice = (name: string) => {
+  if (!params.value.recycle_price_labor_method) {
+    params.value.recycle_price_labor_method = 1
+  }
+  // 如果回收金额确认了 则反推金价
   if (name === 'recycle_price') {
+    if (params.value.weight_metal && params.value.quality_actual && params.value.recycle_price) {
+      params.value.recycle_price_gold = calc('( c + ( e / (a* d))) |=0 ~5,!n', {
+        a: params.value.weight_metal,
+        e: params.value.recycle_price,
+        c: params.value.recycle_price_labor || 0,
+        d: params.value.quality_actual || 1,
+      })
+    }
+    if (params.value.weight_metal && params.value.quality_actual && params.value.recycle_price && params.value.recycle_price_labor_method === 2) {
+      params.value.recycle_price_gold = calc('((c+e)/(a*d)) |=0 ~5,!n', {
+        a: params.value.weight_metal,
+        e: params.value.recycle_price,
+        c: params.value.recycle_price_labor || 0,
+        d: params.value.quality_actual || 1,
+      })
+    }
     return
   }
-  // 如果回收工费方式按克 (金重* 回收金价 ) - (金重* 回收工费)
+  // 如果回收工费方式按克 (回收金价-回收工费)*金重*实际成色
   if (params.value.recycle_price_labor_method === 1) {
-    params.value.recycle_price = calc('((a*b) - (a*c))| =0 ~5,!n', {
+    params.value.recycle_price = calc('((b - c) * a * d)| =0 ~5,!n', {
       a: params.value.weight_metal || 0,
       b: params.value.recycle_price_gold || 0,
       c: params.value.recycle_price_labor || 0,
+      d: params.value.quality_actual || 1,
     })
   }
   else if (params.value.recycle_price_labor_method === 2) {
-    // 如果回收工费方式按件 (金重* 回收金价 ) - 回收工费
-    params.value.recycle_price = calc('((a*b) - c)| =0 ~5,!n', {
+    // 如果回收工费方式按件 (金重* 回收金价 * 实际成色) - 回收工费
+    params.value.recycle_price = calc('((a*b*d) - c)| =0 ~5,!n', {
       a: params.value.weight_metal || 0,
       b: params.value.recycle_price_gold || 0,
       c: params.value.recycle_price_labor || 0,
+      d: params.value.quality_actual || 1,
     })
   }
 }
@@ -593,7 +615,7 @@ const ourChangePrice = () => {
           <n-form ref="MformRef" :model="params" :rules="rules">
             <n-grid :cols="24" :x-gap="8">
               <template v-for="(item, index) in oldFilterListToArray" :key="index">
-                <template v-if="item.input !== 'list' && item.name !== 'code'">
+                <template v-if="item.input !== 'list' && item.name !== 'code' && item.create === true">
                   <n-form-item-gi :span="12" :label="item.label" :path="item.name" :required="item.required">
                     <template v-if="item.input === 'select'">
                       <n-select
@@ -610,10 +632,26 @@ const ourChangePrice = () => {
                         v-model:value="(params[item.name] as string)" round :placeholder="`输入${item.label}`"
                       />
                     </template>
-                    <template v-if="item.input === 'number'">
+                    <template
+                      v-if="item.input === 'number' && (item.name === 'weight_metal'
+                        || item.name === 'recycle_price_gold' || item.name === 'recycle_price_labor' || item.name === 'quality_actual')">
+                      <n-input-number
+                        v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`"
+                        :max="item.name === 'quality_actual' ? 1 : undefined"
+                        :show-button="false" @blur="changePrice(item.name)" />
+                    </template>
+                    <template
+                      v-if="item.input === 'number' && (item.name === 'recycle_price')">
                       <n-input-number
                         v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`"
                         :show-button="false" @blur="changePrice(item.name)" />
+                    </template>
+                    <template
+                      v-if="item.input === 'number' && (item.name !== 'weight_metal'
+                        && item.name !== 'recycle_price_gold' && item.name !== 'recycle_price_labor' && item.name !== 'quality_actual' && item.name !== 'recycle_price')">
+                      <n-input-number
+                        v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`"
+                        :show-button="false" />
                     </template>
                     <template v-if="item.input === 'switch'">
                       <n-switch v-model:value="(params[item.name] as boolean)" :disabled="Manual" />

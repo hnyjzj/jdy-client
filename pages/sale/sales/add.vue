@@ -85,7 +85,8 @@ getbillingSet()
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { phone: val } })
 // 获取门店员工列表
 const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
-
+// 新增会员
+const addNewMember = async (val: Member) => await createMember(val)
 // 是否积分
 const isIntegral = ref(true)
 const isIntegralOpts = [
@@ -326,9 +327,6 @@ const updateDedution = (val?: number) => {
     }
   }
 }
-
-// 新增会员
-const addNewMember = async (val: Member) => await createMember(val)
 </script>
 
 <template>
@@ -375,7 +373,6 @@ const addNewMember = async (val: Member) => await createMember(val)
         <div class="pb-[16px]">
           <sale-add-member
             v-model="formData"
-
             :get-member="getMember"
             :member-list="memberList"
             :billing-set="billingSet"
