@@ -5,6 +5,7 @@ import { calc } from 'a-calc'
 const props = defineProps<{
   searchOlds: (val: string) => Promise<ProductOlds>
   checkOldClass: (params: Partial<ProductOlds>) => any
+  isIntegral: boolean
   nowEditState?: number
 }>()
 const oldRules = ref<FormRules>({
@@ -79,10 +80,12 @@ const setNowOldMaster = (data: any) => {
   nowOldMaster.value.class = data?.res.value
   // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
   if (nowOldMaster.value.recycle_price && data.rate && Number(data.rate) !== 0) {
-    nowOldMaster.value.score = calc('(a / b)| =0 ~5, !n', {
-      a: nowOldMaster.value.recycle_price,
-      b: data.rate,
-    })
+    nowOldMaster.value.score = props.isIntegral
+      ? calc('(a / b)| =0 ~5, !n', {
+          a: nowOldMaster.value.recycle_price,
+          b: data.rate,
+        })
+      : 0
   }
 }
 const { $toast } = useNuxtApp()

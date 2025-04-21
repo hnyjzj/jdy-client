@@ -4,7 +4,6 @@ import { calc } from 'a-calc'
 
 const props = defineProps<{
   oldFilterListToArray: FilterWhere<ProductOlds>[]
-
   isIntegral: boolean
   nowEditState?: number
   checkOldClass: (params: Partial<ProductOlds>) => any

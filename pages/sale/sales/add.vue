@@ -403,7 +403,6 @@ const updateDedution = (val?: number) => {
             :check-old-class="CheckOldClass"
             :old-filter-list-to-array="oldFilterListToArray"
             :is-integral="isIntegral"
-
           />
         </div>
         <div class="pb-[16px]">

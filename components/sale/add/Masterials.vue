@@ -68,6 +68,7 @@ const editOld = (item: ProductOlds, index: number) => {
       v-model:show="searchShow"
       v-model:now-old-master="nowOldMaster"
       :search-olds="searchOlds"
+      :is-integral="props.isIntegral"
       :check-old-class="props.checkOldClass"
       :now-edit-state="nowEditState"
     />
