@@ -10,11 +10,11 @@ const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getFinishedList, getFinishedWhere, getFinishedsClass } = useFinished()
 const { getStoreStaffList } = useStores()
-const { submitOrder, getOrderDetail, getOldList } = useOrder()
+const { submitOrder, getOrderDetail, getOldList, getSaleWhere } = useOrder()
 const { getGoldPrice } = useGoldPrice()
 const { goldList } = storeToRefs(useGoldPrice())
-// filterList
-const { OldObj } = storeToRefs(useOrder())
+
+const { OldObj, filterList } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
 const { getOldWhere, getOldClass, getOldScoreProportion } = useOld()
 const { getSetInfo } = useBillingSetStore()
@@ -64,7 +64,7 @@ const disScore = ref(false)
 const showProductList = ref<OrderProducts[]>([])
 const showPartsList = ref<ProductAccessories[]>([])
 const showMasterialsList = ref<ProductOlds[]>([])
-// await getSaleWhere()
+await getSaleWhere()
 await getOldWhere()
 await getFinishedWhere()
 await getAccessorieWhere()
@@ -311,6 +311,7 @@ const changeStore = () => {
           <sale-add-base
             v-model="formData"
             v-model:integral="formData.isIntegral"
+            :filter-list="filterList"
             :store-staff="StoreStaffList"
             :get-staff="getStaff"
             :set-score="handleIsInterChange"
@@ -365,6 +366,7 @@ const changeStore = () => {
           v-model:show-list="showProductList"
           v-model:master="showMasterialsList"
           v-model:parts="showPartsList"
+          :filter-list="filterList"
           :dis-score="disScore"
         >
           <template #score />

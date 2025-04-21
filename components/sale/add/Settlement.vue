@@ -3,7 +3,7 @@ import { calc } from 'a-calc'
 
 const props = defineProps<{
   disScore: boolean
-  //   filterList: Where<OrderWhere>
+  filterList: Where<OrderWhere>
 }>()
 const formData = defineModel<Orders>('form', { default: {} })
 // 成品列表数据
@@ -14,7 +14,7 @@ const masterList = defineModel<ProductOlds[]>('master', { default: [] })
 const PartsList = defineModel<ProductAccessories[]>('parts', { default: [] })
 
 // 转换支付方式下拉菜单
-// const payMethods = optonsToSelect(props.filterList.payment_method?.preset)
+const payMethods = optonsToSelect(props.filterList.payment_method?.preset)
 const addNewMethod = () => {
   formData.value.payment_method.push({ method: undefined, money: 0 })
 }
@@ -157,8 +157,8 @@ const unPayMoney = computed(() => {
                   :span="12"
                   label="支付方式" label-placement="top"
                 >
-                  <!-- <n-select
-                    v-model:value="item.method" :options="payMethods" /> -->
+                  <n-select
+                    v-model:value="item.method" :options="payMethods" />
                 </n-form-item-gi>
                 <n-form-item-gi
                   :span="12"

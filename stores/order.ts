@@ -15,7 +15,7 @@ export const useOrder = defineStore('Order', {
   actions: {
     // 获取筛选条件
     async getSaleWhere() {
-      const { data } = await https.get<Where<OrderWhere>, null>('/order/where')
+      const { data } = await https.get<Where<OrderWhere>, null>('/order/sales/where')
       if (data.value?.code === HttpCode.SUCCESS) {
         this.filterList = data.value.data
         this.filterListToArray = sortArr(this.filterList)
@@ -71,7 +71,7 @@ export const useOrder = defineStore('Order', {
       if (req.page === 1) {
         this.OrdersList = []
       }
-      const { data } = await https.post<ResList<Orders>, ReqList<Orders>>('/order/list', req)
+      const { data } = await https.post<ResList<Orders>, ReqList<Orders>>('/order/sales/list', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.total = data.value.data.total
         if (data.value.data.list.length > 0) {
@@ -97,11 +97,11 @@ export const useOrder = defineStore('Order', {
     },
     // 提交订单
     async submitOrder(req: Orders) {
-      const { data } = await https.post<Orders, Orders>('/order/create', req)
+      const { data } = await https.post<Orders, Orders>('/order/sales/create', req)
       return data.value
     },
     async getOrderDetail(req: { id: string }) {
-      const { data } = await https.post<Orders, { id: string }>('/order/info', req)
+      const { data } = await https.post<Orders, { id: string }>('/order/sales/info', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.OrderDetail = data.value.data
         return true

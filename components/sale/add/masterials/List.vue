@@ -84,12 +84,10 @@ const deleteConfirm = () => {
     <common-confirm
       v-model:show="confirmShow"
       title="删除提示"
-      text="是否删除当前旧料?"
-      icon="success"
-      cancel-text="否"
-      confirm-text="是"
+      text="是否删除此旧料?"
+      icon="error"
       @submit="deleteConfirm"
-      @cancel="confirmShow = false"
+
     />
   </div>
 </template>

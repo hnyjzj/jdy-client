@@ -7,10 +7,7 @@ const Props = defineProps<{
 const showPartsList = defineModel<ProductAccessories[]>('list', { default: [] })
 const hold = defineModel<number>('hold', { default: 0 })
 const hasCheck = ref(false)
-// 删除展示的配件
-const deleteParts = (index: number) => {
-  showPartsList.value.splice(index, 1)
-}
+
 // 应付金额失去焦点， 计算配件分数
 const changeScore = (obj: ProductAccessories) => {
   if (!obj.amount) {
@@ -27,11 +24,11 @@ const changeScore = (obj: ProductAccessories) => {
 }
 // 改变配件数量
 const changeQuantity = (obj: ProductAccessories) => {
-  if (obj.category?.label_price) {
+  if (obj.category.label_price) {
     // 计算应付金额
     obj.amount = calc('(a * b)| =0 ~5, !n', {
       a: obj.quantity || 1,
-      b: obj.category?.label_price,
+      b: Number(obj.category.label_price) || 0,
     })
   }
 
@@ -44,6 +41,18 @@ const changeQuantity = (obj: ProductAccessories) => {
         })
       : 0
   }
+}
+// 删除展示的配件
+const confirmShow = ref(false)
+const delId = ref(0)
+const deleteParts = (index: number) => {
+  confirmShow.value = true
+  delId.value = index
+}
+
+const deleteConfirm = () => {
+  showPartsList.value.splice(delId.value, 1)
+  delId.value = 0
 }
 </script>
 
@@ -116,6 +125,13 @@ const changeQuantity = (obj: ProductAccessories) => {
         </sale-order-nesting>
       </div>
     </template>
+    <common-confirm
+      v-model:show="confirmShow"
+      title="删除提示"
+      text="是否删除此配件?"
+      icon="error"
+      @submit="deleteConfirm"
+    />
   </div>
 </template>
 

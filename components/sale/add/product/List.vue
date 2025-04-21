@@ -10,7 +10,6 @@ const emit = defineEmits<{
 }>()
 const showProductList = defineModel<OrderProducts[]>('list', { default: [] })
 const hasCheck = ref(false)
-const dialog = useDialog()
 const realtype = (val?: number) => {
   switch (val) {
     case 1:
@@ -21,16 +20,17 @@ const realtype = (val?: number) => {
       return '计重工费按件'
   }
 }
+const deleteDialog = ref(false)
+const dleId = ref(0)
+
+const delProduct = () => {
+  showProductList.value.splice(dleId.value, 1)
+  dleId.value = 0
+}
 // 删除商品
 const deleteProduct = (index: number) => {
-  dialog.error({
-    title: '确定删除此商品吗?',
-    negativeText: '取消',
-    positiveText: '确定',
-    onPositiveClick: () => {
-      showProductList.value.splice(index, 1)
-    },
-  })
+  dleId.value = index
+  deleteDialog.value = true
 }
 // 计件方式
 const count = (p: OrderProducts) => {
@@ -352,6 +352,7 @@ const count = (p: OrderProducts) => {
         </sale-order-nesting>
       </div>
     </template>
+    <common-confirm v-model:show="deleteDialog" icon="error" title="删除产品" text="确认要删除此成品吗?" @submit="delProduct" />
   </div>
 </template>
 
