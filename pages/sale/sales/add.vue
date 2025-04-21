@@ -9,12 +9,12 @@ useSeoMeta({
 const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getFinishedList, getFinishedWhere, getFinishedsClass } = useFinished()
-const { finishedFilterList } = storeToRefs(useFinished())
 const { getStoreStaffList } = useStores()
-const { getSaleWhere, submitOrder, getOrderDetail, getOldList } = useOrder()
+const { submitOrder, getOrderDetail, getOldList } = useOrder()
 const { getGoldPrice } = useGoldPrice()
 const { goldList } = storeToRefs(useGoldPrice())
-const { filterList, OldObj } = storeToRefs(useOrder())
+// filterList
+const { OldObj } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
 const { getOldWhere, getOldClass, getOldScoreProportion } = useOld()
 const { getSetInfo } = useBillingSetStore()
@@ -62,7 +62,7 @@ const disScore = ref(false)
 const showProductList = ref<OrderProducts[]>([])
 const showPartsList = ref<ProductAccessories[]>([])
 const showMasterialsList = ref<ProductOlds[]>([])
-await getSaleWhere()
+// await getSaleWhere()
 await getOldWhere()
 await getFinishedWhere()
 await getAccessorieWhere()
@@ -162,28 +162,29 @@ const rules = ref<FormRules>({
 
 })
 // 搜索点击,查询list
-const searchProductList = async (val: string, type: string) => {
-  if (val === '' && type === 'name') {
+const searchProductList = async (data: { val: string, type: string }) => {
+  if (data.val === '' && data.type === 'name') {
     $toast.error('请输入商品名称')
-    return
+    return []
   }
-  else if (val === '' && type === 'code') {
+  else if (data.val === '' && data.type === 'code') {
     $toast.error('请输入商品条码')
-    return
+    return []
   }
 
-  if (type === 'name') {
-    const res = await getFinishedList({ page: 1, limit: 10, where: { name: val } })
+  if (data.type === 'name') {
+    const res = await getFinishedList({ page: 1, limit: 10, where: { name: data.val } })
     if (res?.data.total === 0) {
       $toast.error('商品不存在')
     }
   }
   else {
-    const res = await getFinishedList({ page: 1, limit: 10, where: { code: val } })
+    const res = await getFinishedList({ page: 1, limit: 10, where: { code: data.val } })
     if (res?.data.total === 0) {
       $toast.error('商品不存在')
     }
   }
+  return finishedList.value || []
 }
 
 const searchOlds = async (val: string) => {
@@ -267,9 +268,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
     }
   })
 }
-const openProductListFn = () => {
-  finishedList.value = []
-}
+
 const initFormData = {
   amount: 0, // 应付金额
   type: undefined, // 订单类型
@@ -343,9 +342,9 @@ const updateDedution = (val?: number) => {
           <product-manage-company :confirm="true" @change="changeStore" />
         </div>
         <div :key="Key" class="pb-[16px]">
+          <!-- :filter-list="filterList" -->
           <sale-add-base
             v-model="formData"
-            :filter-list="filterList"
             :store-staff="StoreStaffList"
             :get-staff="getStaff"
           >
@@ -385,14 +384,11 @@ const updateDedution = (val?: number) => {
         <div class="pb-[16px]">
           <sale-add-product
             v-model="showProductList"
-            :product-list="finishedList"
-            :finished-filter-list="finishedFilterList"
+            :search-product-list="searchProductList"
             :price="goldList"
             :is-integral="isIntegral"
             :check-product-class="checkProductClass"
             :billing-set="billingSet"
-            @search="searchProductList"
-            @open-product-list="openProductListFn"
             @update-score-de-deduction="updateDedution"
           />
         </div>
@@ -418,12 +414,13 @@ const updateDedution = (val?: number) => {
             @clear-list="() => accessorieList = [] "
           />
         </div>
+        <!--   :filter-list="filterList" -->
         <sale-add-settlement
           v-model:form="formData"
           v-model:show-list="showProductList"
           v-model:master="showMasterialsList"
           v-model:parts="showPartsList"
-          :filter-list="filterList">
+        >
           <template #score>
             <div>
               <n-grid :cols="24">

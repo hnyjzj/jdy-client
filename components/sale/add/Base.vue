@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const props = withDefaults(defineProps<{
   title?: string
-  filterList: Where<OrderWhere>
+  //   filterList: Where<OrderWhere>
   storeStaff: StoresStaff[]
   getStaff: () => void
 }>(), {
@@ -12,9 +12,9 @@ const formData = defineModel<Orders>({ default: {
 } })
 
 // 订单类型参数
-const typeOptions = optonsToSelect(props.filterList.type?.preset)
+// const typeOptions = optonsToSelect(props.filterList.type?.preset)
 // 订单来源参数
-const sourceOptions = optonsToSelect(props.filterList.source?.preset)
+// const sourceOptions = optonsToSelect(props.filterList.source?.preset)
 
 const dialog = useDialog()
 // 删除销售
@@ -62,11 +62,11 @@ const checkRatio = () => {
     <div class="p-[16px] w-auto flex flex-col" uno-lg="grid grid-cols-1 gap-[16px] grid-cols-0">
       <n-grid :cols="24" :x-gap="8">
         <n-form-item-gi :span="12" label="订单类型" path="type" class="">
-          <n-select
+          <!-- <n-select
             v-model:value="formData.type"
             placeholder="请选择"
             :options="typeOptions"
-          />
+          /> -->
         </n-form-item-gi>
         <n-form-item-gi :span="12" label="收银员" path="cashier_id" class="">
           <n-select
@@ -83,11 +83,11 @@ const checkRatio = () => {
         </n-form-item-gi>
 
         <n-form-item-gi :span="12" label="来源" path="source" class="">
-          <n-select
+          <!-- <n-select
             v-model:value="formData.source"
             placeholder="请选择"
             :options="sourceOptions"
-          />
+          /> -->
         </n-form-item-gi>
         <slot name="score" />
       </n-grid>

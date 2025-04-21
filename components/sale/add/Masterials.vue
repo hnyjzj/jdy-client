@@ -334,20 +334,20 @@ const changePrice = (name: string) => {
   }
 }
 const ourChangePrice = () => {
-  // 如果回收工费方式按克 (金重* 回收金价 ) - (金重* 回收工费)
   if (nowOldMaster.value.recycle_price_labor_method === 1) {
-    nowOldMaster.value.recycle_price = calc('((a*b) - (a*c))| =0 ~5,!n', {
-      a: nowOldMaster.value.weight_metal || 0,
-      b: nowOldMaster.value.recycle_price_gold || 0,
-      c: nowOldMaster.value.recycle_price_labor || 0,
+    nowOldMaster.value.recycle_price = calc('((b - c) * a * d)| =0 ~5,!n', {
+      a: params.value.weight_metal || 0,
+      b: params.value.recycle_price_gold || 0,
+      c: params.value.recycle_price_labor || 0,
+      d: params.value.quality_actual || 1,
     })
   }
   else if (nowOldMaster.value.recycle_price_labor_method === 2) {
-    // 如果回收工费方式按件 (金重* 回收金价 ) - 回收工费
-    nowOldMaster.value.recycle_price = calc('((a*b) - c)| =0 ~5,!n', {
-      a: nowOldMaster.value.weight_metal || 0,
-      b: nowOldMaster.value.recycle_price_gold || 0,
-      c: nowOldMaster.value.recycle_price_labor || 0,
+    nowOldMaster.value.recycle_price = calc('((a*b*d) - c)| =0 ~5,!n', {
+      a: params.value.weight_metal || 0,
+      b: params.value.recycle_price_gold || 0,
+      c: params.value.recycle_price_labor || 0,
+      d: params.value.quality_actual || 1,
     })
   }
 }
