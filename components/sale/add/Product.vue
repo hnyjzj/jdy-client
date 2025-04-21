@@ -239,9 +239,3 @@ const clickSearchButton = () => {
       @add-product="addProduct" />
   </common-fold>
 </template>
-
-<style lang="scss" scoped>
-.n-input-number {
-  width: 100%;
-}
-</style>

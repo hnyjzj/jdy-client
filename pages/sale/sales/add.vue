@@ -20,7 +20,7 @@ const { getOldWhere, getOldClass, getOldScoreProportion } = useOld()
 const { getSetInfo } = useBillingSetStore()
 const { memberList } = storeToRefs(useMemberManage())
 const { getAccessorieList, getAccessorieWhere, getAccessorieScoreRate } = useAccessorie()
-const { accessorieList, accessorieFilterListToArray } = storeToRefs(useAccessorie())
+const { accessorieList } = storeToRefs(useAccessorie())
 const { finishedList } = storeToRefs(useFinished())
 const { createMember } = useMemberManage()
 const { oldFilterListToArray } = storeToRefs(useOld())
@@ -203,6 +203,7 @@ const searchParts = async (val: string, type: string) => {
   if (type === 'name') {
     await getAccessorieList({ page: 1, limit: 10, where: { name: val, store_id: myStore.value.id } })
   }
+  return accessorieList.value || []
 }
 
 // 获取成品积分比例
@@ -408,12 +409,10 @@ const updateDedution = (val?: number) => {
         <div class="pb-[16px]">
           <sale-add-parts
             v-model:list="showPartsList"
-            :where="accessorieFilterListToArray"
-            :part-list="accessorieList"
             :check-accessories-score="checkAccessoriesScore"
             :is-integral="isIntegral"
             :billing-set="billingSet"
-            @search="searchParts"
+            :search-parts="searchParts"
             @clear-list="() => accessorieList = [] "
           />
         </div>
