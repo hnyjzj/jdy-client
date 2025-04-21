@@ -4,12 +4,12 @@ const props = withDefaults(defineProps<{
   //   filterList: Where<OrderWhere>
   storeStaff: StoresStaff[]
   getStaff: () => void
+  setScore: (score: number) => void
 }>(), {
   title: '基础信息',
 })
-const formData = defineModel<Orders>({ default: {
-
-} })
+const formData = defineModel<Orders>({ default: {} })
+const isIntegral = defineModel<boolean>('integral', { default: {} })
 
 // 订单类型参数
 // const typeOptions = optonsToSelect(props.filterList.type?.preset)
@@ -89,7 +89,23 @@ const checkRatio = () => {
             :options="sourceOptions"
           /> -->
         </n-form-item-gi>
-        <slot name="score" />
+        <n-form-item-gi
+          :span="12"
+          label="是否积分" label-placement="top"
+        >
+          <n-radio-group v-model:value="isIntegral" name="radiogroup" @update:value="props.setScore">
+            <n-space>
+              <n-radio
+                v-for="(items, index) in [{ value: true, label: '积分' }, { value: false, label: '不积分' }]" :key="index" :value="items.value" :style="{
+                  '--n-box-shadow-hover': 'inset 0 0 0 1px #0068ff',
+                  '--n-box-shadow-active': 'inset 0 0 0 1px #0068ff',
+                  '--n-dot-color-active': '#0068ff',
+                  '--n-box-shadow-focus': 'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)' }">
+                {{ items.label }}
+              </n-radio>
+            </n-space>
+          </n-radio-group>
+        </n-form-item-gi>
       </n-grid>
 
       <template v-for="(item, index) in formData.salesmans" :key="index">

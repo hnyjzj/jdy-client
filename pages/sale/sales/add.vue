@@ -39,6 +39,7 @@ const formData = ref<Orders>({
   cashier_id: undefined, // 收银员ID
   //   积分抵扣
   deduction_points: undefined,
+  isIntegral: true,
   products: [], // 商品列表
   salesmans: [{
     salesman_id: undefined,
@@ -72,10 +73,8 @@ await getGoldPrice(myStore.value.id)
 const getbillingSet = async () => {
   const setInfo = await getSetInfo({ store_id: myStore.value.id })
   if (setInfo) {
-    billingSet.value.decimal_point = setInfo.decimal_point
-    billingSet.value.rounding = setInfo.rounding
-    billingSet.value.discount_rate = setInfo.discount_rate
-    billingSet.value.use_confirm = setInfo.use_confirm
+    const { decimal_point, rounding, discount_rate, use_confirm } = setInfo
+    billingSet.value = { decimal_point, rounding, discount_rate, use_confirm }
     if (setInfo.discount_rate && setInfo.discount_rate !== '0') {
       disScore.value = true
     }
@@ -88,21 +87,10 @@ const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5
 const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
 // 新增会员
 const addNewMember = async (val: Member) => await createMember(val)
-// 是否积分
-const isIntegral = ref(true)
-const isIntegralOpts = [
-  {
-    value: true,
-    label: '积分',
-  },
-  {
-    value: false,
-    label: '不积分',
-  },
+// 是否积分 设置
 
-]
 const handleIsInterChange = () => {
-  if (!isIntegral.value) {
+  if (!formData.value.isIntegral) {
     // 清空积分
     showProductList.value.forEach((item) => {
       item.integral = 0
@@ -162,7 +150,7 @@ const rules = ref<FormRules>({
   },
 
 })
-// 搜索点击,查询list
+// 搜索成品,查询list
 const searchProductList = async (data: { val: string, type: string }) => {
   if (data.val === '' && data.type === 'name') {
     $toast.error('请输入商品名称')
@@ -187,12 +175,12 @@ const searchProductList = async (data: { val: string, type: string }) => {
   }
   return finishedList.value || []
 }
-
+// 搜索旧料
 const searchOlds = async (val: string) => {
   await getOldList({ page: 1, limit: 10, where: { code: val, status: 5 } })
   return OldObj.value || []
 }
-
+// 搜索配件
 const searchParts = async (val: string, type: string) => {
   if (type === 'number') {
     await getAccessorieList({ page: 1, limit: 10, where: { id: val, store_id: myStore.value.id } })
@@ -228,7 +216,7 @@ const CheckOldClass = async (params: Partial<ProductOlds>) => {
 // 获取配件积分比例
 const checkAccessoriesScore = async (params: { classes: AccessorieCategory['type_part'][] }) => await getAccessorieScoreRate(params)
 
-// 点击验证表单
+// 开单
 const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
@@ -271,7 +259,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
     }
   })
 }
-
+// 初始化表单数据
 const initFormData = {
   amount: 0, // 应付金额
   type: undefined, // 订单类型
@@ -284,6 +272,7 @@ const initFormData = {
   store_id: '', // 门店ID
   cashier_id: undefined, // 收银员ID
   deduction_points: undefined,
+  isIntegral: true,
   products: [], // 商品列表
   salesmans: [{
     salesman_id: undefined,
@@ -301,33 +290,6 @@ const changeStore = () => {
   showMasterialsList.value = []
   formData.value = { ...initFormData }
   Key.value = Date.now().toString()
-}
-
-// 更新抵扣值
-const updateDedution = (val?: number) => {
-  if (val) {
-    // 如果存在
-    formData.value.deduction_points = calc('(a * b) |!n', {
-      a: val,
-      b: billingSet.value.discount_rate,
-    })
-  }
-  else {
-    const total = ref(0)
-    showProductList.value.forEach((item) => {
-      total.value += item.scoreDeduction
-    })
-
-    if (total.value !== 0) {
-      formData.value.deduction_points = calc('(a * b) |!n', {
-        a: total.value,
-        b: Number(billingSet.value.discount_rate),
-      })
-    }
-    else {
-      formData.value.deduction_points = 0
-    }
-  }
 }
 </script>
 
@@ -348,33 +310,15 @@ const updateDedution = (val?: number) => {
           <!-- :filter-list="filterList" -->
           <sale-add-base
             v-model="formData"
+            v-model:integral="formData.isIntegral"
             :store-staff="StoreStaffList"
             :get-staff="getStaff"
-          >
-            <template #score>
-              <n-form-item-gi
-                :span="12"
-                label="是否积分" label-placement="top"
-              >
-                <n-radio-group v-model:value="isIntegral" name="radiogroup" @update:value="handleIsInterChange">
-                  <n-space>
-                    <n-radio
-                      v-for="(items, index) in isIntegralOpts" :key="index" :value="items.value" :style="{
-                        '--n-box-shadow-hover': 'inset 0 0 0 1px #0068ff',
-                        '--n-box-shadow-active': 'inset 0 0 0 1px #0068ff',
-                        '--n-dot-color-active': '#0068ff',
-                        '--n-box-shadow-focus': 'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)' }">
-                      {{ items.label }}
-                    </n-radio>
-                  </n-space>
-                </n-radio-group>
-              </n-form-item-gi>
-            </template>
-          </sale-add-base>
+            :set-score="handleIsInterChange"
+          />
         </div>
         <div class="pb-[16px]">
           <sale-add-member
-            v-model="formData"
+            v-model:form-data="formData"
             :get-member="getMember"
             :member-list="memberList"
             :billing-set="billingSet"
@@ -389,10 +333,9 @@ const updateDedution = (val?: number) => {
             v-model="showProductList"
             :search-product-list="searchProductList"
             :price="goldList"
-            :is-integral="isIntegral"
+            :is-integral="formData.isIntegral"
             :check-product-class="checkProductClass"
             :billing-set="billingSet"
-            @update-score-de-deduction="updateDedution"
           />
         </div>
 
@@ -403,14 +346,14 @@ const updateDedution = (val?: number) => {
             :search-olds="searchOlds"
             :check-old-class="CheckOldClass"
             :old-filter-list-to-array="oldFilterListToArray"
-            :is-integral="isIntegral"
+            :is-integral="formData.isIntegral"
           />
         </div>
         <div class="pb-[16px]">
           <sale-add-parts
             v-model:list="showPartsList"
             :check-accessories-score="checkAccessoriesScore"
-            :is-integral="isIntegral"
+            :is-integral="formData.isIntegral"
             :billing-set="billingSet"
             :search-parts="searchParts"
             @clear-list="() => accessorieList = [] "
@@ -422,31 +365,9 @@ const updateDedution = (val?: number) => {
           v-model:show-list="showProductList"
           v-model:master="showMasterialsList"
           v-model:parts="showPartsList"
+          :dis-score="disScore"
         >
-          <template #score>
-            <div>
-              <n-grid :cols="24">
-                <n-form-item-gi
-                  :span="16"
-                  label="积分抵扣" label-placement="left"
-                >
-                  <n-input-number
-                    v-model:value="formData.deduction_points"
-                    min="0"
-                    :disabled="disScore"
-                    placeholder="抵扣积分值"
-                  />
-                </n-form-item-gi>
-              </n-grid>
-
-              <div class="text-[12px] color-[#666]">
-                1.注意这里只会扣减填写的积分，不会添加积分抵扣金额，请手动添加或使用整单优惠
-              </div>
-              <div class="text-[12px] color-[#666]">
-                2.设置了开单积分抵扣比例的，这里不能填写积分，会根据积分抵扣金额自动算积分
-              </div>
-            </div>
-          </template>
+          <template #score />
         </sale-add-settlement>
         <div class="h-[80px] bg-[#fff] fixed z-1">
           <div class="btn grid-12 px-[16px]">

@@ -15,6 +15,7 @@ const emits = defineEmits<{
 const { $toast } = useNuxtApp()
 // 展示商品列表
 const showProductList = defineModel<OrderProducts[]>({ default: [] })
+const formData = defineModel('formData', { default: {} as Orders })
 // 显示搜索弹窗
 const showModal = ref(false)
 
@@ -136,10 +137,37 @@ const handleAmountReduceBlur = (amount_reduce: number) => {
     }
   })
 }
+
+// 更新抵扣值
+const updateDedution = (val?: number) => {
+  if (val) {
+    // 如果存在
+    formData.value.deduction_points = calc('(a * b) |!n', {
+      a: val,
+      b: Props.billingSet.discount_rate,
+    })
+  }
+  else {
+    const total = ref(0)
+    showProductList.value.forEach((item) => {
+      total.value += item.scoreDeduction
+    })
+
+    if (total.value !== 0) {
+      formData.value.deduction_points = calc('(a * b) |!n', {
+        a: total.value,
+        b: Number(Props.billingSet.discount_rate),
+      })
+    }
+    else {
+      formData.value.deduction_points = 0
+    }
+  }
+}
 // 设置积分抵扣金额
 const handleScoreReduceBlur = (scoreDeduct: number) => {
   let result = 0
-  emits('updateScoreDeDeduction', scoreDeduct)
+  updateDedution(scoreDeduct)
   // 如果积分抵扣金额小于0或者没有输入值，则清空积分抵扣金额，并重置所有商品积分抵扣为0
   if ((scoreDeduct && scoreDeduct < 0) || !scoreDeduct) {
     scoreDeduct = 0

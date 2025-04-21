@@ -14,7 +14,7 @@ interface BillingSet {
   /**
    * 门店id
    */
-  store_id: string
+  store_id?: string
   /**
    * "是否弹窗二次确认"
    */

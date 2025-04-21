@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { calc } from 'a-calc'
 
-// const props = defineProps<{
-//   filterList: Where<OrderWhere>
-// }>()
+const props = defineProps<{
+  disScore: boolean
+  //   filterList: Where<OrderWhere>
+}>()
 const formData = defineModel<Orders>('form', { default: {} })
 // 成品列表数据
 const showProductList = defineModel<OrderProducts[]>('showList', { default: [] })
@@ -115,7 +116,28 @@ const unPayMoney = computed(() => {
   <common-fold title="结算信息" :is-collapse="false">
     <div class="p-[16px]">
       <div>
-        <slot name="score" />
+        <div>
+          <n-grid :cols="24">
+            <n-form-item-gi
+              :span="16"
+              label="积分抵扣" label-placement="left"
+            >
+              <n-input-number
+                v-model:value="formData.deduction_points"
+                min="0"
+                :disabled="props.disScore"
+                placeholder="抵扣积分值"
+              />
+            </n-form-item-gi>
+          </n-grid>
+
+          <div class="text-[12px] color-[#666]">
+            1.注意这里只会扣减填写的积分，不会添加积分抵扣金额，请手动添加或使用整单优惠
+          </div>
+          <div class="text-[12px] color-[#666]">
+            2.设置了开单积分抵扣比例的，这里不能填写积分，会根据积分抵扣金额自动算积分
+          </div>
+        </div>
         <div class="border-y-[#E6E6E8] border border-b-solid py-[12px] mb-[12px]">
           <common-cell label="货品金额" :value="productMoney" />
           <common-cell label="配件礼品" :value="PartsListMoney" />

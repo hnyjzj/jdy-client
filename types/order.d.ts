@@ -106,6 +106,11 @@ interface Orders {
    * 积分抵扣
    */
   deduction_points?: number
+
+  /**
+   * 是否积分
+   */
+  isIntegral: boolean
 }
 interface OrderPaymentMethod {
   /**
