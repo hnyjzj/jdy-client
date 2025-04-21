@@ -1,267 +1,39 @@
 <script setup lang="ts">
-import type { FormRules } from 'naive-ui'
-import { calc } from 'a-calc'
-
 const props = defineProps<{
   isIntegral: boolean
+  oldFilterListToArray: FilterWhere<ProductOlds>[]
   checkOldClass: (params: Partial<ProductOlds>) => any
+  searchOlds: (val: string) => Promise<ProductOlds>
 }>()
-const emits = defineEmits<{
-  search: [val: string]
-  openProductList: []
-  check: [params: Partial<ProductOlds>]
-}>()
-const { oldFilterListToArray } = storeToRefs(useOld())
-const showModal = ref(false)
-const { useWxWork } = useWxworkStore()
-const { $toast } = useNuxtApp()
-const rules = ref<FormRules>({})
-const oldRules = ref<FormRules>({
-  weight_metal: {
-    type: 'number',
-    required: true,
-    trigger: ['blur', 'change'],
-    message: '请输入金重',
-  },
-  quality_actual: {
-    required: true,
-    trigger: ['blur', 'change'],
-    message: '请输入实际成色',
-  },
-  recycle_method: {
-    type: 'number',
-    required: true,
-    trigger: ['blur', 'change'],
-    message: '请选择回收方式',
-  },
-  recycle_price_labor_method: {
-    type: 'number',
-    required: true,
-    trigger: ['blur', 'change'],
-    message: '请选择回收工费方式',
-  },
-  recycle_type: {
-    type: 'number',
-    required: true,
-    trigger: ['blur', 'change'],
-    message: '请选择回收方式',
-  },
-})
-const forRules = () => {
-  oldFilterListToArray.value.forEach((item) => {
-    if (item.required) {
-      if (item.input === 'text') {
-        rules.value[item.name] = {
-          required: true,
-          trigger: ['blur', 'input', 'change'],
-          message: `请输入${item.label}`,
-        }
-      }
-      if (item.input === 'number') {
-        rules.value[item.name] = {
-          type: 'number',
-          required: true,
-          trigger: ['blur', 'input', 'change'],
-          message: `请输入${item.label}`,
-        }
-      }
-      if (item.input === 'select') {
-        rules.value[item.name] = {
-          required: true,
-          trigger: ['blur', 'input', 'change'],
-          message: `请选择${item.label}`,
-          type: 'number',
-        }
-      }
-    }
-  })
-}
-// 循环校验规则
-forRules()
 
-// 转换下拉参数
-const presetToSelect = (filter: FilterWhere<ProductOlds>): { label: string, value: any }[] => {
-  if (!filter.preset) {
-    return []
-  }
-  return Object.keys(filter.preset).map((key) => {
-    switch (filter.type) {
-      case 'number':
-        return {
-          label: filter.preset[key],
-          value: Number(key),
-        }
-      default:
-        return {
-          label: filter.preset[key],
-          value: key,
-        }
-    }
-  })
-}
-// 当前旧料的form
+const showModal = ref(false)
+
+// 手动添加旧料表单
+const params = ref({} as ProductOlds)
+
+// 当前搜索的旧料的form
 const nowOldMaster = defineModel('nowOldMaster', { default: {} as ProductOlds })
-const hasCheck = ref(false)
-// 禁用选择表单的是否自产
-const Manual = ref(false)
-// 搜索旧料code
-const searchOld = ref('')
 
 // 显示搜索的弹窗
 const searchShow = ref(false)
+// 当前编辑状态
 const nowEditState = ref<number | undefined>(undefined)
-// 扫码
-const scanCode = async () => {
-  const wx = await useWxWork()
-  const code = await wx?.scanQRCode()
-  if (code) {
-    searchShow.value = true
-    searchOld.value = code
-    nowOldMaster.value = {} as ProductOlds
-    emits('search', searchOld.value)
-  }
-}
+
 // 打开搜索
 const searchQl = () => {
   nowEditState.value = undefined
   searchShow.value = true
-  searchOld.value = ''
   nowOldMaster.value = {} as ProductOlds
 }
-const MformRef = ref()
-// 手动添加旧料表单
-const params = ref({} as ProductOlds)
+
 // 手动添加
 const handleAdd = () => {
   showModal.value = true
-  Manual.value = true
-  params.value = {} as ProductOlds
   nowEditState.value = undefined
 }
+// 展示列表
 const showMasterialsList = defineModel<ProductOlds[]>('list', { default: [] })
-// 手动添加旧料
-const submitMasterialsForm = async () => {
-  MformRef.value?.validate(async (errors: any) => {
-    if (!errors) {
-      if (nowEditState.value !== undefined) {
-        // 编辑时
-        if (params.value.recycle_price < 0) {
-          $toast.error('回收金额不能小于0')
-          return
-        }
 
-        // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
-        const data = await props.checkOldClass({ material: params.value.material, quality: params.value.quality, gem: params.value.gem })
-        if (!data.res.value) {
-          // 如果没有大类则中断
-          return
-        }
-        params.value.class = data?.res.value
-        params.value.class = data?.res.value
-        // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
-        if (params.value.recycle_price && data.rate && Number(data.rate) !== 0) {
-          params.value.score = props.isIntegral
-            ? calc('(a / b)| =0 ~5, !n', {
-                a: params.value.recycle_price,
-                b: data.rate,
-              })
-            : 0
-        }
-        showMasterialsList.value.splice(nowEditState.value, 1, params.value)
-        showModal.value = false
-      }
-      else {
-        if (params.value.recycle_price < 0) {
-          $toast.error('回收金额不能小于0')
-          return
-        }
-        // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
-        const data = await props.checkOldClass({ material: params.value.material, quality: params.value.quality, gem: params.value.gem })
-        if (!data.res.value) {
-          // 如果没有大类则中断
-          return
-        }
-        params.value.rate = data?.rate
-        params.value.class = data?.res.value
-        // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
-        if (params.value.recycle_price && data.rate && Number(data.rate) !== 0) {
-          params.value.score = props.isIntegral
-            ? calc('(a / b)| =0 ~5, !n', {
-                a: params.value.recycle_price,
-                b: data.rate,
-              })
-            : 0
-        }
-        showMasterialsList.value.push(params.value)
-        showModal.value = false
-      }
-    }
-  })
-}
-// 旧料表单 Ref
-
-const oldMasterRef = ref()
-// 主动搜索旧料
-const searchConfirm = async () => {
-  oldMasterRef.value?.validate(async (errors: any) => {
-    if (!errors) {
-      const isDuplicate = showMasterialsList.value.find(item => item.code === nowOldMaster.value.code)
-      if (isDuplicate && nowEditState.value === undefined) {
-        $toast.error('不能添加相同商品')
-      }
-      else {
-        if (nowEditState.value !== undefined) {
-          if (nowOldMaster.value.recycle_price < 0) {
-            $toast.error('回收金额不能小于0')
-            return
-          }
-          // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
-          const data = await props.checkOldClass({ material: nowOldMaster.value.material, quality: nowOldMaster.value.quality, gem: nowOldMaster.value.gem })
-          if (!data.res.value) {
-          // 如果没有大类则中断
-            return
-          }
-          nowOldMaster.value.class = data?.res.value
-          params.value.class = data?.res.value
-          // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
-          if (nowOldMaster.value.recycle_price && data.rate && Number(data.rate) !== 0) {
-            nowOldMaster.value.score = calc('(a / b)| =0 ~5, !n', {
-              a: nowOldMaster.value.recycle_price,
-              b: data.rate,
-            })
-          }
-
-          showMasterialsList.value.splice(nowEditState.value, 1, nowOldMaster.value)
-          searchShow.value = false
-        }
-        else {
-          if (nowOldMaster.value.recycle_price < 0) {
-            $toast.error('回收金额不能小于0')
-            return
-          }
-          // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
-          const data = await props.checkOldClass({ material: nowOldMaster.value.material, quality: nowOldMaster.value.quality, gem: nowOldMaster.value.gem })
-          if (!data.res.value) {
-          // 如果没有大类则中断
-            return
-          }
-          nowOldMaster.value.class = data?.res.value
-          params.value.class = data?.res.value
-          // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
-          if (nowOldMaster.value.recycle_price && data.rate && Number(data.rate) !== 0) {
-            nowOldMaster.value.score = calc('(a / b)| =0 ~5, !n', {
-              a: nowOldMaster.value.recycle_price,
-              b: data.rate,
-            })
-          }
-
-          showMasterialsList.value.push(nowOldMaster.value)
-          searchShow.value = false
-        }
-      }
-    }
-  })
-}
 // 设置编辑时禁用选择回收方式
 const setDisabled = ref(false)
 // 编辑旧料
@@ -280,422 +52,38 @@ const editOld = (item: ProductOlds, index: number) => {
     showModal.value = true
   }
 }
-const confirmShow = ref(false)
-const delId = ref()
-const deleteOld = (index: number) => {
-  confirmShow.value = true
-  delId.value = index
-}
-const deleteConfirm = () => {
-  showMasterialsList.value.splice(delId.value, 1)
-}
-// 手动添加的旧料 如果不是自有旧料
-const changePrice = (name: string) => {
-  if (!params.value.recycle_price_labor_method) {
-    params.value.recycle_price_labor_method = 1
-  }
-  // 如果回收金额确认了 则反推金价
-  if (name === 'recycle_price') {
-    if (params.value.weight_metal && params.value.quality_actual && params.value.recycle_price) {
-      params.value.recycle_price_gold = calc('( c + ( e / (a* d))) |=0 ~5,!n', {
-        a: params.value.weight_metal,
-        e: params.value.recycle_price,
-        c: params.value.recycle_price_labor || 0,
-        d: params.value.quality_actual || 1,
-      })
-    }
-    if (params.value.weight_metal && params.value.quality_actual && params.value.recycle_price && params.value.recycle_price_labor_method === 2) {
-      params.value.recycle_price_gold = calc('((c+e)/(a*d)) |=0 ~5,!n', {
-        a: params.value.weight_metal,
-        e: params.value.recycle_price,
-        c: params.value.recycle_price_labor || 0,
-        d: params.value.quality_actual || 1,
-      })
-    }
-    return
-  }
-  // 如果回收工费方式按克 (回收金价-回收工费)*金重*实际成色
-  if (params.value.recycle_price_labor_method === 1) {
-    params.value.recycle_price = calc('((b - c) * a * d)| =0 ~5,!n', {
-      a: params.value.weight_metal || 0,
-      b: params.value.recycle_price_gold || 0,
-      c: params.value.recycle_price_labor || 0,
-      d: params.value.quality_actual || 1,
-    })
-  }
-  else if (params.value.recycle_price_labor_method === 2) {
-    // 如果回收工费方式按件 (金重* 回收金价 * 实际成色) - 回收工费
-    params.value.recycle_price = calc('((a*b*d) - c)| =0 ~5,!n', {
-      a: params.value.weight_metal || 0,
-      b: params.value.recycle_price_gold || 0,
-      c: params.value.recycle_price_labor || 0,
-      d: params.value.quality_actual || 1,
-    })
-  }
-}
-const ourChangePrice = () => {
-  if (nowOldMaster.value.recycle_price_labor_method === 1) {
-    nowOldMaster.value.recycle_price = calc('((b - c) * a * d)| =0 ~5,!n', {
-      a: params.value.weight_metal || 0,
-      b: params.value.recycle_price_gold || 0,
-      c: params.value.recycle_price_labor || 0,
-      d: params.value.quality_actual || 1,
-    })
-  }
-  else if (nowOldMaster.value.recycle_price_labor_method === 2) {
-    nowOldMaster.value.recycle_price = calc('((a*b*d) - c)| =0 ~5,!n', {
-      a: params.value.weight_metal || 0,
-      b: params.value.recycle_price_gold || 0,
-      c: params.value.recycle_price_labor || 0,
-      d: params.value.quality_actual || 1,
-    })
-  }
-}
 </script>
 
 <template>
   <common-fold title="旧货" :is-collapse="false">
-    <div class="p-[16px]">
-      <div class="btn grid-12 gap-[20px]">
-        <div
-          class="btn-left col-span-4 offset-2 cursor-pointer" @click="handleAdd">
-          <div class="ml-2">
-            手动添加
-          </div>
-        </div>
-        <div
-          class="btn-right col-span-4 cursor-pointer" @click="searchQl()"
-        >
-          <!-- <icon name="i-icon:scanit" color="#1a6beb" :size="12" /> -->
-          <icon name="i-icon:search" color="#1a6beb" :size="12" />
-          <div class="ml-2">
-            搜索
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="px-[16px] py-[8px]">
-      <template v-for="(obj, ix) in showMasterialsList" :key="ix">
-        <div class="pb-[12px]">
-          <sale-order-nesting v-model="hasCheck" :title="obj?.name || ''">
-            <template #left>
-              <common-tags type="pink" text="旧料" :is-oval="true" />
-            </template>
-            <template #info>
-              <div class="flex flex-col gap-[12px] px-[16px]">
-                <n-grid :x-gap="12" :y-gap="8" :cols="24">
-                  <template v-for="(item, index) in oldFilterListToArray" :key="index">
-                    <template v-if="item.name === 'is_our'">
-                      <n-grid-item :span="12">
-                        {{ item.label }}: {{ obj[item.name] ? '是' : '否' }}
-                      </n-grid-item>
-                    </template>
-                    <template v-else-if="item.name !== 'store' && item.name !== 'updated_at' && item.name !== 'recycle_store' && item.name !== 'store_id'">
-                      <n-grid-item :span="12">
-                        {{ item.label }}: {{ item.input === 'select' ? item.preset[obj[item.name] as string ] : obj[item.name] }}
-                      </n-grid-item>
-                    </template>
-                  </template>
-                </n-grid>
-
-                <div class="h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
-                <n-grid :x-gap="12" :y-gap="8" :cols="12">
-                  <n-grid-item :span="6" />
-                  <n-grid-item :span="6">
-                    <div class="flex items-center">
-                      <div class="mr-[8px]">
-                        积分 ( - )
-                      </div>
-                      <div class="flex-1">
-                        <n-input-number
-                          v-model:value="obj.score"
-                          :show-button="false"
-                          placeholder="积分"
-                          min="0"
-                          round
-                        />
-                      </div>
-                    </div>
-                  </n-grid-item>
-                </n-grid>
-
-                <div class="pb-[16px]">
-                  <div class="flex justify-between items-center">
-                    <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteOld(ix)">
-                      <icon name="i-svg:delete" :size="16" />
-                    </div>
-                    <div class="color-[#fff] bg-[#3971F3] py-[6px] px-[12px] rounded-[30px] cursor-pointer" @click="editOld(obj, ix)">
-                      编辑
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </template>
-          </sale-order-nesting>
-        </div>
-      </template>
-    </div>
-
-    <common-model v-model="searchShow" title="搜索" :show-ok="true" :show-cancel="true" @confirm="searchConfirm" @cancel="searchShow = false">
-      <div class="grid-12">
-        <div class="col-12">
-          <div>
-            <div class="flex  py-[12px]">
-              <div
-                class="flex-center-col">
-                <div class="text-[16px] pb-[2px] font-semibold line-height-[24px]" :style="{ color: '#333' }">
-                  条码搜索
-                </div>
-                <div class="w-[32px] h-[4px] rounded" :style="{ background: '#2080F0' }" />
-              </div>
-            </div>
-          </div>
-          <div class="flex items-center pb-[16px]">
-            <div class="flex-1">
-              <n-input
-                v-model:value="searchOld"
-                type="text"
-                clearable
-                placeholder="请输入商品条码" />
-            </div>
-            <div class="pl-[16px] flex">
-              <n-button type="info" round @click="emits('search', searchOld)">
-                搜索
-              </n-button>
-              <div class="pl-[8px]">
-                <n-button type="info" round @click="scanCode()">
-                  扫码
-                </n-button>
-              </div>
-            </div>
-          </div>
-          <div class="h-[300px] overflow-y-auto py-[16px]">
-            <div>
-              <template v-if="Object.keys(nowOldMaster).length !== 0">
-                <n-form ref="oldMasterRef" :model="nowOldMaster" :rules="oldRules">
-                  <n-grid :cols="24" :x-gap="8">
-                    <n-form-item-gi
-                      :span="12" label="条码">
-                      {{ nowOldMaster.code }}
-                    </n-form-item-gi>
-                    <n-form-item-gi
-                      :span="12" label="名称">
-                      {{ nowOldMaster.name }}
-                    </n-form-item-gi>
-                    <n-form-item-gi
-                      :span="12" label="回收工费方式" path="recycle_price_labor_method">
-                      <n-select
-                        v-model:value="nowOldMaster.recycle_price_labor_method"
-                        menu-size="large"
-                        placeholder="选择回收工费方式"
-                        :options="[{
-                          value: 1,
-                          label: '按克',
-                        }, {
-                          value: 2,
-                          label: '按件',
-                        }]"
-                      />
-                    </n-form-item-gi>
-                    <n-form-item-gi :span="12" label="回收方式" path="recycle_method">
-                      <n-select
-                        v-model:value="nowOldMaster.recycle_method"
-                        menu-size="large"
-                        placeholder="选择回收方式"
-                        :disabled="nowEditState !== undefined"
-                        :options="[{
-                          value: 1,
-                          label: '按克',
-                        }, {
-                          value: 2,
-                          label: '按件',
-                        }]"
-                      />
-                    </n-form-item-gi>
-                    <n-form-item-gi :span="12" label="回收工费">
-                      <n-input-number
-                        v-model:value="nowOldMaster.recycle_price_labor"
-                        :show-button="false"
-                        placeholder="请输入回收工费"
-                        round
-                        :precision="3"
-                        @blur="ourChangePrice()"
-                      />
-                    </n-form-item-gi>
-                    <n-form-item-gi
-                      :span="12" label="回收类型">
-                      <n-select
-                        v-model:value="nowOldMaster.recycle_type"
-                        menu-size="large"
-                        placeholder="选择回收类型"
-                        :default-value="1"
-                        :options="[{
-                          value: 1,
-                          label: '无',
-                        }, {
-                          value: 2,
-                          label: '回收',
-                        }, {
-                          value: 3,
-                          label: '兑换',
-                        }]"
-                      />
-                    </n-form-item-gi>
-                    <n-form-item-gi :span="12" label="金重" path="weight_metal">
-                      <n-input-number
-                        v-model:value="nowOldMaster.weight_metal"
-                        :show-button="false"
-                        placeholder="请输入金重"
-                        round
-                        min="0"
-                        :precision="3"
-                        @blur="ourChangePrice()"
-                      />
-                    </n-form-item-gi>
-
-                    <n-form-item-gi :span="12" label="实际成色" path="quality_actual">
-                      <n-input
-                        v-model:value="nowOldMaster.quality_actual"
-                        :show-button="false"
-                        placeholder="请输入实际成色"
-                        round
-                        min="0"
-                        :precision="3"
-                      />
-                    </n-form-item-gi>
-                    <n-form-item-gi :span="12" label="回收金价">
-                      <n-input-number
-                        v-model:value="nowOldMaster.recycle_price_gold"
-                        :show-button="false"
-                        placeholder="请输入回收金价"
-                        round
-                        min="0"
-                        :precision="3"
-                        @blur="ourChangePrice()"
-                      >
-                        <template #suffix>
-                          元/克
-                        </template>
-                      </n-input-number>
-                    </n-form-item-gi>
-                    <n-form-item-gi :span="12" label="回收金额">
-                      <n-input-number
-                        v-model:value="nowOldMaster.recycle_price"
-                        :show-button="false"
-                        placeholder="请输入回收金额"
-                        round
-                        min="0"
-                        :precision="3"
-                      />
-                    </n-form-item-gi>
-                    <n-form-item-gi :span="12" label="备注">
-                      <n-input
-                        v-model:value="nowOldMaster.remark"
-                        :show-button="false"
-                        placeholder=" 请输入备注"
-                        round
-                        min="0"
-                        :precision="3"
-                      />
-                    </n-form-item-gi>
-                  </n-grid>
-                </n-form>
-              </template>
-              <template v-else>
-                <common-emptys text="暂无数据" />
-              </template>
-            </div>
-          </div>
-        </div>
-      </div>
-    </common-model>
-    <common-model v-model="showModal" title="选择旧料" :show-ok="true" :show-cancel="true" @confirm="submitMasterialsForm">
-      <div class="grid-12 h-[500px] overflow-y-auto">
-        <div class="col-12 px-[12px]">
-          <n-form ref="MformRef" :model="params" :rules="rules">
-            <n-grid :cols="24" :x-gap="8">
-              <template v-for="(item, index) in oldFilterListToArray" :key="index">
-                <template v-if="item.input !== 'list' && item.name !== 'code' && item.create === true">
-                  <n-form-item-gi :span="12" :label="item.label" :path="item.name" :required="item.required">
-                    <template v-if="item.input === 'select'">
-                      <n-select
-                        v-model:value="(params[item.name] as number)"
-                        menu-size="large"
-                        :placeholder="`选择${item.label}`"
-                        :options="presetToSelect(item)"
-                        :disabled="nowEditState === index && item.name === 'recycle_method'"
-                        clearable
-                      />
-                    </template>
-                    <template v-if="item.input === 'text'">
-                      <n-input
-                        v-model:value="(params[item.name] as string)" round :placeholder="`输入${item.label}`"
-                      />
-                    </template>
-                    <template
-                      v-if="item.input === 'number' && (item.name === 'weight_metal'
-                        || item.name === 'recycle_price_gold' || item.name === 'recycle_price_labor' || item.name === 'quality_actual')">
-                      <n-input-number
-                        v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`"
-                        :max="item.name === 'quality_actual' ? 1 : undefined"
-                        :show-button="false" @blur="changePrice(item.name)" />
-                    </template>
-                    <template
-                      v-if="item.input === 'number' && (item.name === 'recycle_price')">
-                      <n-input-number
-                        v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`"
-                        :show-button="false" @blur="changePrice(item.name)" />
-                    </template>
-                    <template
-                      v-if="item.input === 'number' && (item.name !== 'weight_metal'
-                        && item.name !== 'recycle_price_gold' && item.name !== 'recycle_price_labor' && item.name !== 'quality_actual' && item.name !== 'recycle_price')">
-                      <n-input-number
-                        v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`"
-                        :show-button="false" />
-                    </template>
-                    <template v-if="item.input === 'switch'">
-                      <n-switch v-model:value="(params[item.name] as boolean)" :disabled="Manual" />
-                    </template>
-                    <template v-if="item.input === 'textarea'">
-                      <n-input v-model:value="(params[item.name] as string)" rows="1" type="textarea" />
-                    </template>
-                  </n-form-item-gi>
-                </template>
-              </template>
-            </n-grid>
-          </n-form>
-        </div>
-      </div>
-    </common-model>
-
-    <common-confirm
-      v-model:show="confirmShow"
-      title="删除提示"
-      text="是否删除当前旧料?"
-      icon="success"
-      cancel-text="否"
-      confirm-text="是"
-      @submit="deleteConfirm"
-      @cancel="confirmShow = false"
+    <sale-add-masterials-button
+      @handle-add="handleAdd"
+      @search-ql="searchQl" />
+    <sale-add-masterials-list
+      v-model:list="showMasterialsList"
+      :old-filter-list-to-array="oldFilterListToArray"
+      @edit="editOld" />
+    <sale-add-masterials-search
+      v-model:list="showMasterialsList"
+      v-model:show="searchShow"
+      v-model:now-old-master="nowOldMaster"
+      :search-olds="searchOlds"
+      :check-old-class="props.checkOldClass"
+      :now-edit-state="nowEditState"
+    />
+    <sale-add-masterials-handle
+      v-model:params="params"
+      v-model:show="showModal"
+      v-model:list="showMasterialsList"
+      :old-filter-list-to-array="props.oldFilterListToArray"
+      :is-integral="props.isIntegral"
+      :check-old-class="props.checkOldClass"
+      :now-edit-state="nowEditState"
     />
   </common-fold>
 </template>
 
 <style lang="scss" scoped>
-.btn-left {
-  --uno: 'text-[16px] border-none rounded-[36px] text-[#FFFFFF] flex justify-center items-center';
-  background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-}
-.btn-right {
-  --uno: 'text-[16px] py-[9px] text-[#1a6beb] rounded-[36px] bg-[transparent] flex justify-center items-center border-[1px] border-solid border-[#1a6beb]';
-}
-
-.activeBtn {
-  --uno: 'bg-[#2080F0] color-[#fff]';
-}
-.defaultBtn {
-  --uno: 'bg-[#F3F3F3] color-[#000]';
-}
 .n-input-number {
   width: 100%;
 }

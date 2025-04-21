@@ -23,6 +23,7 @@ const { getAccessorieList, getAccessorieWhere, getAccessorieScoreRate } = useAcc
 const { accessorieList, accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { finishedList } = storeToRefs(useFinished())
 const { createMember } = useMemberManage()
+const { oldFilterListToArray } = storeToRefs(useOld())
 
 const formRef = ref<FormInst | null>(null)
 const formData = ref<Orders>({
@@ -189,6 +190,7 @@ const searchProductList = async (data: { val: string, type: string }) => {
 
 const searchOlds = async (val: string) => {
   await getOldList({ page: 1, limit: 10, where: { code: val, status: 5 } })
+  return OldObj.value || []
 }
 
 const searchParts = async (val: string, type: string) => {
@@ -397,9 +399,11 @@ const updateDedution = (val?: number) => {
           <sale-add-masterials
             v-model:list="showMasterialsList"
             v-model:now-old-master="OldObj"
+            :search-olds="searchOlds"
             :check-old-class="CheckOldClass"
+            :old-filter-list-to-array="oldFilterListToArray"
             :is-integral="isIntegral"
-            @search="searchOlds"
+
           />
         </div>
         <div class="pb-[16px]">
@@ -431,7 +435,6 @@ const updateDedution = (val?: number) => {
                   <n-input-number
                     v-model:value="formData.deduction_points"
                     min="0"
-
                     :disabled="disScore"
                     placeholder="抵扣积分值"
                   />
