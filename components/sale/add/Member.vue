@@ -3,8 +3,7 @@ import type { SelectOption } from 'naive-ui'
 import { calc } from 'a-calc'
 
 const props = withDefaults(defineProps<{
-  memberList: Member[]
-  getMember: (val: string) => void
+  getMember: (val: string) => Promise<Member[]>
   getStaffs: () => void
   addNewMember: (val: Member) => any
   billingSet?: BillingSet
@@ -13,27 +12,48 @@ const props = withDefaults(defineProps<{
 }>(), {
 
 })
-
+const searchList = ref<Member[]>([])
 const memberParams = ref<Member>({
   // 初始化store_id为当前门店id
   store_id: props.store.id,
 } as Member)
 
 // 搜索会员 防抖
-const searchMember = (val: string) => {
+const searchMember = async (val: string) => {
   if (val.length === 11) {
-    props.getMember(val)
+    searchList.value = await props.getMember(val)
   }
 }
-const formData = defineModel<Orders>({ default: {} })
+const formData = defineModel<Orders>('formData', { default: {
+  amount: 0, // 应付金额
+  type: undefined, // 订单类型
+  source: undefined, // 订单来源
+  remark: '', // 备注
+  discount_rate: undefined, // 整单折扣
+  amount_reduce: 0, // 抹零金额
+  integral_use: 0, //  使用积分
+  member_id: undefined, // 会员ID
+  store_id: '', // 门店ID
+  cashier_id: undefined, // 收银员ID
+  //   积分抵扣
+  deduction_points: undefined,
+  isIntegral: true,
+  products: [], // 商品列表
+  salesmans: [{
+    salesman_id: undefined,
+    performance_rate: 100,
+    is_main: true,
+  }],
+  payment_method: [{ method: undefined, money: 0 }], // 支付方式
+} })
 const canUseScore = ref()
 // 仅用于展示的会员信息
 const userInfo = ref({} as Member)
 
-const setUserInfo = () => {
-  userInfo.value = props.memberList[0]
+const setUserInfo = (list: Member[]) => {
+  userInfo.value = list[0]
   // 能使用的积分
-  formData.value.member_id = userInfo.value.id
+  formData.value.member_id = list[0].id
   if (props.billingSet) {
     if (userInfo.value.integral && props.billingSet.discount_rate !== '0') {
       canUseScore.value = calc('(a / b )| =0 ~5,!n', {
@@ -44,15 +64,14 @@ const setUserInfo = () => {
   }
 }
 const Key = ref()
-const handleUpdateValue = async (value: string, option: SelectOption) => {
+const handleUpdateValue = async (value: string) => {
   if (value === null) {
     formData.value.member_id = undefined
     Key.value = Date.now().toString()
     userInfo.value = {} as Member
     return
   }
-  await props.getMember(option?.label as string)
-  setUserInfo()
+  setUserInfo(searchList.value)
 }
 const showModel = ref(false)
 // 新增会员
@@ -64,8 +83,8 @@ const submitNewMember = async () => {
   const res = await props.addNewMember(memberParams.value)
   if (res.code === HttpCode.SUCCESS) {
     showModel.value = false
-    await props.getMember(memberParams.value?.phone)
-    setUserInfo()
+    searchList.value = await props.getMember(memberParams.value?.phone)
+    setUserInfo(searchList.value)
   }
 }
 </script>
@@ -80,7 +99,7 @@ const submitNewMember = async () => {
               v-model:value="formData.member_id"
               filterable
               placeholder="输入手机号搜索"
-              :options="props.memberList.map(v => ({
+              :options="searchList.map(v => ({
                 label: v.phone,
                 value: v.id,
               }))"

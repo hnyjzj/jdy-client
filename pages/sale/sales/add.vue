@@ -82,7 +82,10 @@ const getbillingSet = async () => {
 }
 getbillingSet()
 // 获取会员列表
-const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { phone: val } })
+const getMember = async (val: string) => {
+  await getMemberList({ page: 1, limit: 5, where: { phone: val } })
+  return memberList.value || []
+}
 // 获取门店员工列表
 const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
 // 新增会员
@@ -220,6 +223,8 @@ const checkAccessoriesScore = async (params: { classes: AccessorieCategory['type
 const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
+    console.log(formData.value)
+
     if (!errors) {
       // 成功的操作
       formData.value.products = [] // 清空商品列表

@@ -14,7 +14,10 @@ const { $toast } = useNuxtApp()
 const showProductList = ref<DepositOrderProducts[]>([])
 
 // 获取会员列表
-const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { phone: val } })
+const getMember = async (val: string) => {
+  await getMemberList({ page: 1, limit: 5, where: { phone: val } })
+  return memberList.value || []
+}
 // 获取门店员工列表
 const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
 // 新增会员
