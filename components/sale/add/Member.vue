@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { calc } from 'a-calc'
+import Userinfo from '~/components/my/user/Userinfo.vue'
 
 const props = withDefaults(defineProps<{
   getMember: (val: string) => Promise<Member[]>
@@ -116,6 +117,14 @@ const submitNewMember = async () => {
           </n-form-item-gi>
           <template v-if="userInfo?.id">
             <n-form-item-gi :span="12" label="会员信息">
+              <div class="mr-[16px]">
+                <template v-if="userInfo?.avatar">
+                  <n-image width="68" :src="Userinfo.avatar" />
+                </template>
+                <template v-else>
+                  <icon name="i-svg:avatar" :size="68" />
+                </template>
+              </div>
               <div class="flex-col">
                 <div>
                   昵称:{{ userInfo?.nickname || '' }}
