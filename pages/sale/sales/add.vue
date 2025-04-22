@@ -13,7 +13,6 @@ const { getStoreStaffList } = useStores()
 const { submitOrder, getOrderDetail, getOldList, getSaleWhere } = useOrder()
 const { getGoldPrice } = useGoldPrice()
 const { goldList } = storeToRefs(useGoldPrice())
-
 const { OldObj, filterList } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
 const { getOldWhere, getOldClass, getOldScoreProportion } = useOld()
@@ -92,6 +91,7 @@ const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
 const addNewMember = async (val: Member) => await createMember(val)
 // 是否积分 设置
 
+// 设置积分抵扣值
 const handleIsInterChange = () => {
   if (!formData.value.isIntegral) {
     // 清空积分
@@ -364,7 +364,6 @@ const changeStore = () => {
             @clear-list="() => accessorieList = [] "
           />
         </div>
-        <!--   :filter-list="filterList" -->
         <sale-add-settlement
           v-model:form="formData"
           v-model:show-list="showProductList"

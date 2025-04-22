@@ -85,7 +85,7 @@ const totalScore = computed(() => {
 // 实际需要支付的金额
 const payMoney = computed(() => {
   const total = ref(0) // 成品总金额
-  total.value = calc('(a - b + c) | =0,!n', {
+  total.value = calc('(a + b - c) | =0,!n', {
     a: productMoney.value,
     b: PartsListMoney.value,
     c: masterMoney.value,
@@ -144,7 +144,6 @@ const unPayMoney = computed(() => {
           <common-cell label="旧料抵扣" :value="masterMoney" />
           <common-cell label="优惠金额" value="0" />
           <common-cell label="订金抵扣" value="0" />
-          <common-cell label="实付金额" value="0" label-color="#3971F3" val-color="#3971F3" />
           <common-cell label="积分合计：" :value="`销售(+${productListScore}) 旧料(-${masterListScore})  配件礼品(+${PartsListScore}) `" label-color="#3971F3" val-color="#3971F3" />
           <common-cell label="实际积分" :value="totalScore" label-color="#3971F3" val-color="#3971F3" />
           <common-cell label="实付金额" :value="payMoney" label-color="#3971F3" val-color="#3971F3" />
