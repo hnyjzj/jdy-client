@@ -12,7 +12,7 @@ const showMasterialsList = defineModel<ProductOlds[]>('list', { default: [] })
 const params = defineModel<ProductOlds>('params', { default: {} })
 const { $toast } = useNuxtApp()
 // 禁用选择表单的是否自产
-const Manual = ref(false)
+const Manual = ref(true)
 const showModal = defineModel<boolean>('show', { default: false })
 const rules = ref<FormRules>({})
 const MformRef = ref()

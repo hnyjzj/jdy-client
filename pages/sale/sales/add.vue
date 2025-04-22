@@ -223,8 +223,6 @@ const checkAccessoriesScore = async (params: { classes: AccessorieCategory['type
 const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
-    console.log(formData.value)
-
     if (!errors) {
       // 成功的操作
       formData.value.products = [] // 清空商品列表
@@ -260,7 +258,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
       }
     }
     else {
-      $toast.error('请填写必填信息')
+      $toast.error(errors[0][0].message as string)
     }
   })
 }
@@ -337,6 +335,7 @@ const changeStore = () => {
         <div class="pb-[16px]">
           <sale-add-product
             v-model="showProductList"
+            v-model:form-data="formData"
             :search-product-list="searchProductList"
             :price="goldList"
             :is-integral="formData.isIntegral"

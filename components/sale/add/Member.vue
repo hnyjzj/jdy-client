@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import type { SelectOption } from 'naive-ui'
 import { calc } from 'a-calc'
 
 const props = withDefaults(defineProps<{

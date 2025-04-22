@@ -8,10 +8,6 @@ const Props = defineProps<{
   searchProductList: (data: { val: string, type: string }) => Promise<ProductFinisheds[]>
   checkProductClass: (val: { class: number }) => any
 }>()
-const emits = defineEmits<{
-
-  updateScoreDeDeduction: [val?: number]
-}>()
 const { $toast } = useNuxtApp()
 // 展示商品列表
 const showProductList = defineModel<OrderProducts[]>({ default: [] })
@@ -258,7 +254,7 @@ const clickSearchButton = () => {
         v-model:list="showProductList"
         :billing-set="Props.billingSet"
         :is-integral="Props.isIntegral"
-        @update-score-de-deduction="emits('updateScoreDeDeduction')" />
+        @update-score-de-deduction="updateDedution" />
     </div>
     <!-- 选择时使用的列表 -->
     <sale-add-product-popup
