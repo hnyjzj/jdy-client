@@ -8,7 +8,7 @@ const props = defineProps<{
   <div class=" px-[16px] blur-bgc rounded-[16px]">
     <template v-for="(item, index) in props.optList" :key="index">
       <div class="cursor-pointer">
-        <nuxt-link :to="item.link" class="color-[#000]">
+        <nuxt-link :to="item.link" class="color-[#000] no-underline">
           <div class="flex-between">
             <div class="flex-center-row py-[24px]">
               <icon :name="item.iconName" :size="32" />
