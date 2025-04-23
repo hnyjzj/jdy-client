@@ -7,28 +7,28 @@ const props = defineProps<{
 }>()
 const formData = defineModel<Orders>('form', { default: {} })
 // 成品列表数据
-const showProductList = defineModel<OrderProducts[]>('showList', { default: [] })
+const showProductList = defineModel<ProductFinished[]>('showList', { default: [] })
 // 旧料列表数据
-const masterList = defineModel<ProductOlds[]>('master', { default: [] })
+const masterList = defineModel<ProductOld[]>('master', { default: [] })
 // 配件列表数据
 const PartsList = defineModel<ProductAccessories[]>('parts', { default: [] })
 
 // 转换支付方式下拉菜单
 const payMethods = optonsToSelect(props.filterList.payment_method?.preset)
 const addNewMethod = () => {
-  formData.value.payment_method.push({ method: undefined, money: 0 })
+  formData.value.payments.push({ payment_method: undefined, amount: 0 })
 }
 
 // 删除支付方式
 const deleteMethod = (index: number) => {
-  formData.value.payment_method.splice(index, 1)
+  formData.value.payments.splice(index, 1)
 }
 
 // 计算成品列表金额
 const productMoney = computed(() => {
   const total = ref(0)
   total.value = showProductList.value.reduce((total, item) => {
-    return calc('(t + i) | <=0,!n', { t: total, i: item.amount || 0 })
+    return calc('(t + i) | <=0,!n', { t: total, i: item.price || 0 })
   }, 0)
   return total.value
 })
@@ -61,7 +61,7 @@ const productListScore = computed(() => {
 const masterListScore = computed(() => {
   const total = ref(0)
   total.value = masterList.value.reduce((total, item) => {
-    return calc('(t + i) | <=0,!n', { t: total, i: item.score || 0 })
+    return calc('(t + i) | <=0,!n', { t: total, i: item.integral || 0 })
   }, 0)
   return total.value
 })
@@ -95,8 +95,8 @@ const payMoney = computed(() => {
 // 支付方式之和
 const payMethodsTotal = computed(() => {
   const total = ref(0)
-  formData.value.payment_method.forEach((item) => {
-    total.value += item.money
+  formData.value.payments.forEach((item) => {
+    total.value += item.amount
   })
   return total.value
 })
@@ -123,7 +123,7 @@ const unPayMoney = computed(() => {
               label="积分抵扣" label-placement="left"
             >
               <n-input-number
-                v-model:value="formData.deduction_points"
+                v-model:value="formData.integral_deduction"
                 min="0"
                 :disabled="props.disScore"
                 placeholder="抵扣积分值"
@@ -149,7 +149,7 @@ const unPayMoney = computed(() => {
           <common-cell label="实付金额" :value="payMoney" label-color="#3971F3" val-color="#3971F3" />
         </div>
         <div class=" ">
-          <template v-for="(item, index) in formData.payment_method" :key="index">
+          <template v-for="(item, index) in formData.payments" :key="index">
             <div>
               <n-grid :cols="24" :x-gap="8">
                 <n-form-item-gi
@@ -157,7 +157,7 @@ const unPayMoney = computed(() => {
                   label="支付方式" label-placement="top"
                 >
                   <n-select
-                    v-model:value="item.method" :options="payMethods" />
+                    v-model:value="item.payment_method" :options="payMethods" />
                 </n-form-item-gi>
                 <n-form-item-gi
                   :span="12"
@@ -165,7 +165,7 @@ const unPayMoney = computed(() => {
                 >
                   <div class="w-full">
                     <n-input-number
-                      v-model:value="item.money"
+                      v-model:value="item.amount"
                       placeholder="支付金额"
                       round
                       min="0"

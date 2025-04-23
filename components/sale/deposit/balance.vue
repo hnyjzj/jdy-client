@@ -3,21 +3,33 @@ const props = defineProps<{
   filterList: Where<OrderWhere>
 }>()
 const formData = defineModel<Orders>({ default: {} })
+const showProductList = defineModel<DepositOrderProducts[]>('list', { default: {} })
 
 // 转换支付方式下拉菜单
 const payMethods = optonsToSelect(props.filterList.payment_method?.preset)
 const addNewMethod = () => {
-  formData.value.payment_method.push({ method: undefined, money: 0 })
+  formData.value.payments.push({ payment_method: undefined, amount: 0 })
 }
 // 删除支付方式
 const deleteMethod = (index: number) => {
-  formData.value.payment_method.splice(index, 1)
+  formData.value.payments.splice(index, 1)
 }
+
+// 定金金额
+const depositAmount = computed(() => {
+  const total = ref(0)
+  showProductList.value.forEach((item) => {
+    total.value += item.deposit_amount || 0
+  })
+  return total.value
+})
 // 未支付的金额
 const unPayMoney = computed(() => {
   const total = ref(0)
-
-  return total.value
+  formData.value.payments.forEach((item) => {
+    total.value += item.amount || 0
+  })
+  return depositAmount.value - total.value
 })
 </script>
 
@@ -26,10 +38,10 @@ const unPayMoney = computed(() => {
     <common-fold title="结算信息" :is-collapse="false">
       <div class="p-[16px]">
         <div class="border-b-[#E6E6E8] border border-b-solid pb-[16px]">
-          订金金额:0.00
+          订金金额:￥{{ depositAmount }}
         </div>
         <div class="pt-[16px]">
-          <template v-for="(item, index) in formData.payment_method" :key="index">
+          <template v-for="(item, index) in formData.payments" :key="index">
             <div>
               <n-grid :cols="24" :x-gap="8">
                 <n-form-item-gi
@@ -37,7 +49,7 @@ const unPayMoney = computed(() => {
                   label="支付方式" label-placement="top"
                 >
                   <n-select
-                    v-model:value="item.method" :options="payMethods" />
+                    v-model:value="item.payment_method" :options="payMethods" />
                 </n-form-item-gi>
                 <n-form-item-gi
                   :span="12"
@@ -45,7 +57,7 @@ const unPayMoney = computed(() => {
                 >
                   <div class="w-full">
                     <n-input-number
-                      v-model:value="item.money"
+                      v-model:value="item.amount"
                       placeholder="支付金额"
                       round
                       min="0"

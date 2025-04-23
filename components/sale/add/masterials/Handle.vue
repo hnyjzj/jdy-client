@@ -3,13 +3,13 @@ import type { FormRules } from 'naive-ui'
 import { calc } from 'a-calc'
 
 const props = defineProps<{
-  oldFilterListToArray: FilterWhere<ProductOlds>[]
+  oldFilterListToArray: FilterWhere<ProductOld>[]
   isIntegral: boolean
   nowEditState?: number
-  checkOldClass: (params: Partial<ProductOlds>) => any
+  checkOldClass: (params: Partial<ProductOld>) => any
 }>()
-const showMasterialsList = defineModel<ProductOlds[]>('list', { default: [] })
-const params = defineModel<ProductOlds>('params', { default: {} })
+const showMasterialsList = defineModel<ProductOld[]>('list', { default: [] })
+const params = defineModel<ProductOld>('params', { default: {} })
 const { $toast } = useNuxtApp()
 // 禁用选择表单的是否自产
 const Manual = ref(true)
@@ -68,7 +68,7 @@ const submitMasterialsForm = async () => {
         params.value.class = data?.res.value
         // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
         if (params.value.recycle_price && data.rate && Number(data.rate) !== 0) {
-          params.value.score = props.isIntegral
+          params.value.integral = props.isIntegral
             ? calc('(a / b)| =0 ~5, !n', {
                 a: params.value.recycle_price,
                 b: data.rate,
@@ -93,7 +93,7 @@ const submitMasterialsForm = async () => {
         params.value.class = data?.res.value
         // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
         if (params.value.recycle_price && data.rate && Number(data.rate) !== 0) {
-          params.value.score = props.isIntegral
+          params.value.integral = props.isIntegral
             ? calc('(a / b)| =0 ~5, !n', {
                 a: params.value.recycle_price,
                 b: data.rate,
@@ -155,7 +155,7 @@ const changePrice = (name: string) => {
   }
 }
 // 转换下拉参数
-const presetToSelect = (filter: FilterWhere<ProductOlds>): { label: string, value: any }[] => {
+const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value: any }[] => {
   if (!filter.preset) {
     return []
   }

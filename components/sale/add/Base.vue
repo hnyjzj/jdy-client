@@ -9,22 +9,22 @@ const props = withDefaults(defineProps<{
   title: '基础信息',
 })
 const formData = defineModel<Orders>({ default: {} })
-const isIntegral = defineModel<boolean>('integral', { default: {} })
+const has_integral = defineModel<boolean>('integral', { default: true })
 
 // 订单来源参数
 const sourceOptions = optonsToSelect(props.filterList.source?.preset)
 
 // 删除销售
 const deleteSale = (index: number) => {
-  formData.value.salesmans.splice(index, 1)
-  const aliveMain = formData.value.salesmans.filter(item => item.is_main === true)
-  if (!aliveMain.length) {
-    formData.value.salesmans[0].is_main = true
+  formData.value.clerks?.splice(index, 1)
+  const aliveMain = formData.value.clerks?.filter(item => item.is_main === true)
+  if (!aliveMain?.length) {
+    formData.value.clerks[0].is_main = true
   }
 }
 // 新增销售员
 const addNewSale = () => {
-  formData.value.salesmans.push({
+  formData.value.clerks.push({
     salesman_id: '',
     performance_amount: 0,
     performance_rate: 0,
@@ -37,7 +37,7 @@ const { $toast } = useNuxtApp()
 // 检查比例
 const checkRatio = () => {
   const result = ref(0)
-  formData.value.salesmans.forEach((item) => {
+  formData.value.clerks.forEach((item) => {
     result.value += item.performance_rate || 0
   })
   if (result.value > 100) {
@@ -75,13 +75,13 @@ const checkRatio = () => {
           </n-form-item-gi>
         </n-grid>
 
-        <template v-for="(item, index) in formData.salesmans" :key="index">
+        <template v-for="(item, index) in formData.clerks" :key="index">
           <div class="">
             <n-grid :cols="24" :x-gap="8">
               <n-form-item-gi
                 :span="12"
                 :label="item.is_main ? '主销' : '辅销'" label-placement="top" class=""
-                :path="`salesmans[${index}].salesman_id`"
+                :path="`clerks[${index}].salesman_id`"
                 :rule="{
                   required: true,
                   message: `请选择导购员`,
@@ -130,7 +130,7 @@ const checkRatio = () => {
             :span="12"
             label="是否积分" label-placement="top"
           >
-            <n-radio-group v-model:value="isIntegral" name="radiogroup" @update:value="props.setScore">
+            <n-radio-group v-model:value="has_integral" name="radiogroup" @update:value="props.setScore">
               <n-space>
                 <n-radio
                   v-for="(items, index) in [{ value: true, label: '积分' }, { value: false, label: '不积分' }]" :key="index" :value="items.value" :style="{

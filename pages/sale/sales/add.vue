@@ -10,42 +10,42 @@ const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getFinishedList, getFinishedWhere, getFinishedsClass } = useFinished()
 const { getStoreStaffList } = useStores()
-const { submitOrder, getOrderDetail, getOldList, getSaleWhere } = useOrder()
+// submitOrder, getOrderDetail,
+const { getOldList, getSaleWhere, submitOrder, OldMaterialsWhere } = useOrder()
 const { getGoldPrice } = useGoldPrice()
 const { goldList } = storeToRefs(useGoldPrice())
-const { OldObj, filterList } = storeToRefs(useOrder())
+const { OldObj, filterList, oldFilterListToArray } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
-const { getOldWhere, getOldClass, getOldScoreProportion } = useOld()
+const { getOldClass, getOldScoreProportion } = useOld()
 const { getSetInfo } = useBillingSetStore()
 const { memberList } = storeToRefs(useMemberManage())
 const { getAccessorieList, getAccessorieWhere, getAccessorieScoreRate } = useAccessorie()
 const { accessorieList } = storeToRefs(useAccessorie())
 const { finishedList } = storeToRefs(useFinished())
 const { createMember } = useMemberManage()
-const { oldFilterListToArray } = storeToRefs(useOld())
 
 const formRef = ref<FormInst | null>(null)
 const formData = ref<Orders>({
-  amount: 0, // 应付金额
-  type: undefined, // 订单类型
-  source: undefined, // 订单来源
+  source: 1, // 订单来源
   remark: '', // 备注
-  discount_rate: undefined, // 整单折扣
-  amount_reduce: 0, // 抹零金额
-  integral_use: 0, //  使用积分
+  discount_rate: 100, // 整单折扣
+  round_off: 0, // 抹零金额
   member_id: undefined, // 会员ID
-  store_id: '', // 门店ID
+  store_id: myStore.value.id, // 门店ID
   cashier_id: undefined, // 收银员ID
   //   积分抵扣
-  deduction_points: undefined,
-  isIntegral: true,
-  products: [], // 商品列表
-  salesmans: [{
+  integral_deduction: 0,
+  has_integral: true, // 是否使用积分
+  product_finished: [], // 商品列表
+  product_old: [], // 旧料
+  product_accessorie: [], // 配件列表
+  clerks: [{
     salesman_id: undefined,
     performance_rate: 100,
     is_main: true,
   }],
-  payment_method: [{ method: undefined, money: 0 }], // 支付方式
+  payments: [{ amount: 0, payment_method: undefined }], // 支付方式
+  order_deposit_ids: [], // 定金单id
 })
 const billingSet = ref({
   // 金额进位控制"
@@ -60,11 +60,11 @@ const billingSet = ref({
 // 是否禁止修改积分抵扣  true:禁止 false:允许
 const disScore = ref(false)
 // 展示商品列表
-const showProductList = ref<OrderProducts[]>([])
+const showProductList = ref<ProductFinished[]>([])
 const showPartsList = ref<ProductAccessories[]>([])
-const showMasterialsList = ref<ProductOlds[]>([])
+const showMasterialsList = ref<ProductOld[]>([])
 await getSaleWhere()
-await getOldWhere()
+await OldMaterialsWhere()
 await getFinishedWhere()
 await getAccessorieWhere()
 await getGoldPrice(myStore.value.id)
@@ -93,13 +93,13 @@ const addNewMember = async (val: Member) => await createMember(val)
 
 // 设置积分抵扣值
 const handleIsInterChange = () => {
-  if (!formData.value.isIntegral) {
+  if (!formData.value.has_integral) {
     // 清空积分
     showProductList.value.forEach((item) => {
       item.integral = 0
     })
     showMasterialsList.value.forEach((item) => {
-      item.score = 0
+      item.integral = 0
     })
     showPartsList.value.forEach((item) => {
       item.integral = 0
@@ -109,12 +109,12 @@ const handleIsInterChange = () => {
     showProductList.value.forEach((item) => {
       // 计算应得的积分 +
       item.integral = calc('(a / b) | =0 ~5 ,!n', {
-        a: item.amount,
+        a: item.price,
         b: item.rate,
       })
     })
     showMasterialsList.value.forEach((item) => {
-      item.score = calc('(a / b)| =0 ~5, !n', {
+      item.integral = calc('(a / b)| =0 ~5, !n', {
         a: item.recycle_price,
         b: item.rate,
       })
@@ -224,38 +224,55 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-      // 成功的操作
-      formData.value.products = [] // 清空商品列表
+    //   // 成功的操作
+      formData.value.product_finished = [] // 清空商品列表
+      formData.value.product_old = [] // 清空旧料列表
+      formData.value.product_accessorie = [] // 清空配件列表
       showProductList.value.forEach((item) => {
+        formData.value.product_finished.push(item)
+      })
+      if (formData.value.product_finished.length === 0) {
+        $toast.error('请选择成品')
+        return
+      }
+      showMasterialsList.value.forEach((item) => {
+        formData.value.product_old.push(item)
+      })
+      showPartsList.value.forEach((item) => {
         const data = {
-          product_id: item.product?.id || item.product_id,
-          quantity: item.quantity || 1,
-          discount: item.discount,
+          product_id: item.id,
+          quantity: item.quantity,
+          price: item.amount,
+          integral: item.integral,
         }
-        formData.value.products.push(data)
+        formData.value.product_accessorie.push(data)
       })
-      const result = ref(0)
-      formData.value.salesmans.forEach((item) => {
-        result.value += item.performance_rate || 0
-      })
-      if (result.value > 100) {
-        $toast.error('业绩比例总合必须等于100%')
-        return false
-      }
-      else if (result.value < 100) {
-        $toast.error('业绩比例总合必须等于100%')
-        return false
-      }
-      formData.value.store_id = myStore.value.id
+      // 业绩比例
+      //   const result = ref(0)
+      //   formData.value.salesmans.forEach((item) => {
+      //     result.value += item.performance_rate || 0
+      //
+      //   const result = ref(0)
+      //   formData.value.salesmans.forEach((item) => {
+      //     result.value += item.performance_rate || 0
+      //   })
+      //   if (result.value > 100) {
+      //     $toast.error('业绩比例总合必须等于100%')
+      //     return false
+      //   }
+      //   else if (result.value < 100) {
+      //     $toast.error('业绩比例总合必须等于100%')
+      //     return false
+      //   }
+      //   formData.value.store_id = myStore.value.id
       const res = await submitOrder(formData.value)
       if (res?.code === HttpCode.SUCCESS) {
         $toast.success('添加成功')
-        await getOrderDetail({ id: res.data.id as string })
-        await navigateTo({ path: '/sale/sales/order' })
+        // await navigateTo({ path: '/sale/sales/order' })
       }
-      else {
-        $toast.error(res?.message ?? '添加失败')
-      }
+    //   else {
+    //     $toast.error(res?.message ?? '添加失败')
+    //   }
     }
     else {
       $toast.error(errors[0][0].message as string)
@@ -264,25 +281,26 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
 }
 // 初始化表单数据
 const initFormData = {
-  amount: 0, // 应付金额
-  type: undefined, // 订单类型
-  source: undefined, // 订单来源
+  source: 1, // 订单来源
   remark: '', // 备注
-  discount_rate: undefined, // 整单折扣
-  amount_reduce: 0, // 抹零金额
-  integral_use: 0, //  使用积分
+  discount_rate: 100, // 整单折扣
+  round_off: 0, // 抹零金额
   member_id: undefined, // 会员ID
   store_id: '', // 门店ID
   cashier_id: undefined, // 收银员ID
-  deduction_points: undefined,
-  isIntegral: true,
-  products: [], // 商品列表
-  salesmans: [{
+  //   积分抵扣
+  integral_deduction: 0,
+  has_integral: true, // 是否使用积分
+  product_finished: [], // 商品列表
+  product_old: [], // 旧料列表
+  product_accessorie: [], // 配件列表
+  clerks: [{
     salesman_id: undefined,
     performance_rate: 100,
     is_main: true,
   }],
-  payment_method: [{ method: undefined, money: 0 }], // 支付方式
+  payments: [{ amount: 0, payment_method: undefined }], // 支付方式
+  order_deposit_ids: [], // 定金单id
 }
 const Key = ref()
 // 切换门店的操作
@@ -310,10 +328,9 @@ const changeStore = () => {
           <product-manage-company :confirm="true" @change="changeStore" />
         </div>
         <div :key="Key" class="pb-[16px]">
-          <!-- :filter-list="filterList" -->
           <sale-add-base
             v-model="formData"
-            v-model:integral="formData.isIntegral"
+            v-model:integral="formData.has_integral"
             :filter-list="filterList"
             :store-staff="StoreStaffList"
             :get-staff="getStaff"
@@ -338,7 +355,7 @@ const changeStore = () => {
             v-model:form-data="formData"
             :search-product-list="searchProductList"
             :price="goldList"
-            :is-integral="formData.isIntegral"
+            :is-integral="formData.has_integral"
             :check-product-class="checkProductClass"
             :billing-set="billingSet"
           />
@@ -351,14 +368,14 @@ const changeStore = () => {
             :search-olds="searchOlds"
             :check-old-class="CheckOldClass"
             :old-filter-list-to-array="oldFilterListToArray"
-            :is-integral="formData.isIntegral"
+            :is-integral="formData.has_integral"
           />
         </div>
         <div class="pb-[16px]">
           <sale-add-parts
             v-model:list="showPartsList"
             :check-accessories-score="checkAccessoriesScore"
-            :is-integral="formData.isIntegral"
+            :is-integral="formData.has_integral"
             :billing-set="billingSet"
             :search-parts="searchParts"
             @clear-list="() => accessorieList = [] "

@@ -3,8 +3,8 @@ import type { FormRules } from 'naive-ui'
 import { calc } from 'a-calc'
 
 const props = defineProps<{
-  searchOlds: (val: string) => Promise<ProductOlds>
-  checkOldClass: (params: Partial<ProductOlds>) => any
+  searchOlds: (val: string) => Promise<ProductOld>
+  checkOldClass: (params: Partial<ProductOld>) => any
   isIntegral: boolean
   nowEditState?: number
 }>()
@@ -40,10 +40,10 @@ const oldRules = ref<FormRules>({
   },
 })
 const searchShow = defineModel<boolean>('show', { default: false })
-const showMasterialsList = defineModel<ProductOlds[]>('list', { default: [] })
+const showMasterialsList = defineModel<ProductOld[]>('list', { default: [] })
 
 const searchOld = ref()
-const nowOldMaster = defineModel('nowOldMaster', { default: {} as ProductOlds })
+const nowOldMaster = defineModel('nowOldMaster', { default: {} as ProductOld })
 // 扫码
 const { useWxWork } = useWxworkStore()
 const scanCode = async () => {
@@ -52,7 +52,7 @@ const scanCode = async () => {
   if (code) {
     searchShow.value = true
     searchOld.value = code
-    nowOldMaster.value = {} as ProductOlds
+    nowOldMaster.value = {} as ProductOld
   }
 }
 const ourChangePrice = () => {
@@ -80,7 +80,7 @@ const setNowOldMaster = (data: any) => {
   nowOldMaster.value.class = data?.res.value
   // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
   if (nowOldMaster.value.recycle_price && data.rate && Number(data.rate) !== 0) {
-    nowOldMaster.value.score = props.isIntegral
+    nowOldMaster.value.integral = props.isIntegral
       ? calc('(a / b)| =0 ~5, !n', {
           a: nowOldMaster.value.recycle_price,
           b: data.rate,
@@ -288,16 +288,6 @@ const searchConfirm = async () => {
                         v-model:value="nowOldMaster.recycle_price"
                         :show-button="false"
                         placeholder="请输入回收金额"
-                        round
-                        min="0"
-                        :precision="3"
-                      />
-                    </n-form-item-gi>
-                    <n-form-item-gi :span="12" label="备注">
-                      <n-input
-                        v-model:value="nowOldMaster.remark"
-                        :show-button="false"
-                        placeholder=" 请输入备注"
                         round
                         min="0"
                         :precision="3"

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  oldFilterListToArray: FilterWhere<ProductOlds>[]
+  oldFilterListToArray: FilterWhere<ProductOld>[]
 }>()
 const emits = defineEmits<{
-  edit: [obj: ProductOlds, index: number]
+  edit: [obj: ProductOld, index: number]
   del: [index: number]
 }>()
-const showMasterialsList = defineModel<ProductOlds[]>('list', { default: [] })
+const showMasterialsList = defineModel<ProductOld[]>('list', { default: [] })
 const hasCheck = ref(false)
 const confirmShow = ref(false)
 const delId = ref()
@@ -31,15 +31,17 @@ const deleteConfirm = () => {
             <div class="flex flex-col gap-[12px] px-[16px]">
               <n-grid :x-gap="12" :y-gap="8" :cols="24">
                 <template v-for="(item, index) in props.oldFilterListToArray" :key="index">
-                  <template v-if="item.name === 'is_our'">
-                    <n-grid-item :span="12">
-                      {{ item.label }}: {{ obj[item.name] ? '是' : '否' }}
-                    </n-grid-item>
-                  </template>
-                  <template v-else-if="item.name !== 'store' && item.name !== 'updated_at' && item.name !== 'recycle_store' && item.name !== 'store_id'">
-                    <n-grid-item :span="12">
-                      {{ item.label }}: {{ item.input === 'select' ? item.preset[obj[item.name] as string ] : obj[item.name] }}
-                    </n-grid-item>
+                  <template v-if="item.create">
+                    <template v-if="item.name === 'is_our'">
+                      <n-grid-item :span="12">
+                        {{ item.label }}: {{ obj[item.name] ? '是' : '否' }}
+                      </n-grid-item>
+                    </template>
+                    <template v-else>
+                      <n-grid-item :span="12">
+                        {{ item.label }}: {{ item.input === 'select' ? item.preset[obj[item.name] as string ] : obj[item.name] }}
+                      </n-grid-item>
+                    </template>
                   </template>
                 </template>
               </n-grid>
@@ -54,7 +56,7 @@ const deleteConfirm = () => {
                     </div>
                     <div class="flex-1">
                       <n-input-number
-                        v-model:value="obj.score"
+                        v-model:value="obj.integral"
                         :show-button="false"
                         placeholder="积分"
                         min="0"

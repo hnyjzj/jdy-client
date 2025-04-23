@@ -54,8 +54,8 @@ const searchProduct = async (e: string) => {
   }
 }
 
-const searchOrder = async (e: string) => {
-  await getOrderList({ page: 1, limit: 5, where: { id: e, type: 1 } })
+const searchOrder = async () => {
+//   await getOrderList({ page: 1, limit: 5, where: { id: e, type: 1 } })
 }
 const clearFn = async () => {
   OrdersList.value = []

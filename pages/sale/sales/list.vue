@@ -5,7 +5,7 @@ useSeoMeta({
 })
 const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
-const { getFinishedList } = useFinished()
+// const { getFinishedList } = useFinished()
 const { finishedList } = storeToRefs(useFinished())
 
 const { filterListToArray, OrdersList, total, filterList, searchPage } = storeToRefs(useOrder())
@@ -52,12 +52,12 @@ onMounted(async () => {
 })
 const searchProduct = async (e: string) => {
   if (e.length > 0) {
-    await getFinishedList({ page: 1, limit: 5, where: { name: e } })
+    // await getFinishedList({ page: 1, limit: 5, where: { name: e } })
   }
 }
 
-const searchOrder = async (e: string) => {
-  await getOrderList({ page: 1, limit: 5, where: { id: e, type: 1 } })
+const searchOrder = async () => {
+//   await getOrderList({ page: 1, limit: 5, where: { id: e, type: 1 } })
 }
 const clearFn = async () => {
   OrdersList.value = []

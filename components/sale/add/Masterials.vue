@@ -1,18 +1,18 @@
 <script setup lang="ts">
 const props = defineProps<{
   isIntegral: boolean
-  oldFilterListToArray: FilterWhere<ProductOlds>[]
-  checkOldClass: (params: Partial<ProductOlds>) => any
-  searchOlds: (val: string) => Promise<ProductOlds>
+  oldFilterListToArray: FilterWhere<ProductOld>[]
+  checkOldClass: (params: Partial<ProductOld>) => any
+  searchOlds: (val: string) => Promise<ProductOld>
 }>()
 
 const showModal = ref(false)
 
 // 手动添加旧料表单
-const params = ref({} as ProductOlds)
+const params = ref({} as ProductOld)
 
 // 当前搜索的旧料的form
-const nowOldMaster = defineModel('nowOldMaster', { default: {} as ProductOlds })
+const nowOldMaster = defineModel('nowOldMaster', { default: {} as ProductOld })
 
 // 显示搜索的弹窗
 const searchShow = ref(false)
@@ -23,7 +23,7 @@ const nowEditState = ref<number | undefined>(undefined)
 const searchQl = () => {
   nowEditState.value = undefined
   searchShow.value = true
-  nowOldMaster.value = {} as ProductOlds
+  nowOldMaster.value = {} as ProductOld
 }
 
 // 手动添加
@@ -32,12 +32,12 @@ const handleAdd = () => {
   nowEditState.value = undefined
 }
 // 展示列表
-const showMasterialsList = defineModel<ProductOlds[]>('list', { default: [] })
+const showMasterialsList = defineModel<ProductOld[]>('list', { default: [] })
 
 // 设置编辑时禁用选择回收方式
 const setDisabled = ref(false)
 // 编辑旧料
-const editOld = (item: ProductOlds, index: number) => {
+const editOld = (item: ProductOld, index: number) => {
   // 当前编辑的是哪个旧料
   nowEditState.value = index
   //   如果是自有商品

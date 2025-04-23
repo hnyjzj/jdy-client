@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-const props = defineProps<{
-  orders: Orders
-  where: Where<OrderWhere>
-  memberFiler: Where<Member>
-}>()
+// const props = defineProps<{
+//   orders: Orders
+//   where: Where<OrderWhere>
+//   memberFiler: Where<Member>
+// }>()
 </script>
 
 <template>
-  <div class="grid-12 gap-[12px]">
+  <!-- <div class="grid-12 gap-[12px]">
     <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4" uno-lt="col-3">
       <sale-cards title="基本信息">
         <template #info>
@@ -110,7 +110,8 @@ const props = defineProps<{
         </sale-cards>
       </div>
     </template>
-  </div>
+  </div> -->
+  <div>123</div>
 </template>
 
 <style lang="scss" scoped>

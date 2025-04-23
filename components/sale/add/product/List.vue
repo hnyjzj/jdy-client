@@ -8,7 +8,7 @@ const Props = defineProps<{
 const emit = defineEmits<{
   updateScoreDeDeduction: []
 }>()
-const showProductList = defineModel<OrderProducts[]>('list', { default: [] })
+const showProductList = defineModel<ProductFinished[]>('list', { default: [] })
 const hasCheck = ref(false)
 const realtype = (val?: number) => {
   switch (val) {
@@ -33,47 +33,47 @@ const deleteProduct = (index: number) => {
   deleteDialog.value = true
 }
 // 计件方式
-const count = (p: OrderProducts) => {
-  if (!p.quantity)
-    return
+const count = (p: ProductFinished) => {
   // 小数点进位计算函数
   const hold = holdFunction(Props.billingSet.decimal_point)
   // 取整控制函数
   const rounding = roundFunction(Props.billingSet.rounding)
 
   //   四舍五入 取证
-  const methA = (count: string | number) => {
-    return calc('( a ) |=0 ~5,!n', {
-      a: count,
-    }) || 0
+  const methA = (count?: string | number) => {
+    return count
+      ? calc('( a ) |=0 ~5,!n', {
+        a: count,
+      }) || 0
+      : 0
   }
   // 如果是计件方式 标签价格 x 数量 x 折扣
   if (p.product?.retail_type === 1) {
     const total = calc(`(price * quantity * discount * member_discount) - notCount - scoreDeduction - cardDeduction | =${hold} ~${rounding},!n`, {
       price: p.product?.label_price, // 标签价格
-      quantity: p.quantity, // 数量
-      scoreDeduction: methA(p.scoreDeduction),
-      cardDeduction: methA(p.cardDeduction) || 0, // 卡券抵扣
-      member_discount: (p.member_discount || 100) * 0.01, // 会员折扣
-      discount: ((p.discount || 100) * 0.01),
-      notCount: p?.notCount, // 抹零
+      quantity: 1, // 数量
+      scoreDeduction: methA(p.integral_deduction),
+      cardDeduction: 0, // 卡券抵扣
+      member_discount: (p.discount_member || 100) * 0.01, // 会员折扣
+      discount: ((p.discount_fixed || 100) * 0.01),
+      notCount: p?.round_off, // 抹零
     })
-    p.amount = total
+    p.price = total
     // 计算不算折扣的原价
     const orign = calc('(price * quantity) | <=2,!n', {
       price: p.product?.label_price,
-      quantity: p.quantity,
+      quantity: 1,
     })
-    p.orign = orign
+    p.price_original = orign
     // 计算显示折扣
-    p.show_discount = calc('(total / orign) * 100 | <=2,!n', {
+    p.discount_final = calc('(total / orign) * 100 | <=2,!n', {
       total,
       orign,
     })
     // 计算应得的积分 +
     if (Props.isIntegral) {
       p.integral = calc('(a / b) | =0 ~5 ,!n', {
-        a: p.amount,
+        a: p.price,
         b: p.rate,
       })
     }
@@ -87,35 +87,35 @@ const count = (p: OrderProducts) => {
   // 计重工费按克 [（金价 + 工费）X克重] X折扣
   if (p.product?.retail_type === 2) {
     const total = calc(`((price + labor_fee) * weight_metal * discount  * member_discount) - notCount - scoreDeduction - cardDeduction  | =${hold} ~${rounding},!n`, {
-      price: p?.price,
+      price: p?.price_gold,
       labor_fee: p?.labor_fee,
       weight_metal: p.product?.weight_metal,
-      scoreDeduction: methA(p.scoreDeduction),
-      cardDeduction: methA(p.cardDeduction) || 0,
-      member_discount: (p.member_discount || 100) * 0.01,
-      discount: ((p.discount || 100) * 0.01),
-      notCount: p?.notCount,
+      scoreDeduction: methA(p.integral_deduction),
+      cardDeduction: 0,
+      member_discount: (p.discount_member || 100) * 0.01,
+      discount: ((p.discount_fixed || 100) * 0.01),
+      notCount: p?.round_off,
     })
-    p.amount = total
+    p.price = total
     const orign = calc('(price + labor_fee) * weight_metal | <=2,!n', {
-      price: p?.price,
+      price: p?.price_gold,
       labor_fee: p?.labor_fee,
       weight_metal: p.product.weight_metal,
     })
-    p.orign = orign
+    p.price_original = orign
     if (total === 0 && orign === 0) {
-      p.show_discount = 0
+      p.discount_final = 0
     }
     else {
-      p.show_discount = calc('(total / orign) * a | <=2 ,!n', {
-        total: p?.amount,
-        orign: p?.orign,
+      p.discount_final = calc('(total / orign) * a | <=2 ,!n', {
+        total: p?.price,
+        orign: p?.price_original,
         a: 100,
       })
     }
     if (Props.isIntegral) {
       p.integral = calc('(a / b) | =0 ~5 ,!n', {
-        a: p.amount,
+        a: p.price,
         b: p.rate,
       })
     }
@@ -128,35 +128,35 @@ const count = (p: OrderProducts) => {
   //   计重工费按件   （(金价X克重)) + 工费）X件数 X折扣
   if (p.product?.retail_type === 3) {
     const total = calc(`(((price * weight_metal) + labor_fee)  * discount  * member_discount ) - notCount  - scoreDeduction - cardDeduction |  =${hold} ~${rounding},!n`, {
-      price: p.price,
+      price: p.price_gold,
       labor_fee: p?.labor_fee,
       weight_metal: p.product?.weight_metal,
-      scoreDeduction: methA(p.scoreDeduction),
-      cardDeduction: methA(p.cardDeduction) || 0,
-      member_discount: (p.member_discount || 100) * 0.01,
-      discount: ((p.discount || 100) * 0.01),
-      notCount: p?.notCount,
+      scoreDeduction: methA(p.integral_deduction),
+      cardDeduction: 0,
+      member_discount: (p.discount_member || 100) * 0.01,
+      discount: ((p.discount_fixed || 100) * 0.01),
+      notCount: p?.round_off,
     })
-    p.amount = total
+    p.price = total
     const orign = calc('(((price * weight_metal) + labor_fee) ) | <=2,!n', {
-      price: p.price,
+      price: p.price_gold,
       labor_fee: p?.labor_fee,
       weight_metal: p.product?.weight_metal,
     })
-    p.orign = orign
+    p.price_original = orign
     if (total === 0 && orign === 0) {
-      p.show_discount = 0
+      p.discount_final = 0
     }
     else {
-      p.show_discount = calc('(total / orign) * a | <=2 ,!n', {
-        total: p?.amount,
-        orign: p?.orign,
+      p.discount_final = calc('(total / orign) * a | <=2 ,!n', {
+        total: p?.price,
+        orign: p?.price_original,
         a: 100,
       })
     }
     if (Props.isIntegral) {
       p.integral = calc('(a / b) | =0 ~5 ,!n', {
-        a: p.amount,
+        a: p.price,
         b: p.rate,
       })
     }
@@ -184,13 +184,13 @@ const count = (p: OrderProducts) => {
               <common-cell label="金重" :value="obj.product?.weight_metal" />
               <common-cell label="零售方式" :value="realtype(obj.product?.retail_type)" />
               <common-cell label="标签价" :value="obj.product?.label_price" val-color="#2472EE" />
-              <common-cell label="折扣" :value="`${obj.show_discount}%`" val-color="#2472EE" />
+              <common-cell label="折扣" :value="`${obj.discount_final}%`" val-color="#2472EE" />
               <div class="h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
               <div class="pb-[16px]">
                 <n-grid :cols="24" :x-gap="8">
                   <n-form-item-gi :span="12" label="固定折扣">
                     <n-input-number
-                      v-model:value="obj.discount"
+                      v-model:value="obj.discount_fixed"
                       :show-button="false"
                       placeholder="请输入折扣"
                       round
@@ -199,8 +199,8 @@ const count = (p: OrderProducts) => {
                       :default-value="100"
 
                       @blur="() => {
-                        if (!obj.discount?.toString()){
-                          obj.discount = 100
+                        if (!obj.discount_fixed?.toString()){
+                          obj.discount_fixed = 100
                         }
                       }"
                     >
@@ -211,7 +211,7 @@ const count = (p: OrderProducts) => {
                   </n-form-item-gi>
                   <n-form-item-gi :span="12" label="抹零">
                     <n-input-number
-                      v-model:value="obj.notCount"
+                      v-model:value="obj.round_off"
                       :show-button="false"
                       placeholder="抹零金额"
                       :default-value="0"
@@ -219,8 +219,8 @@ const count = (p: OrderProducts) => {
                       round
 
                       @blur="() => {
-                        if (!obj.notCount?.toString()){
-                          obj.notCount = 0
+                        if (!obj.round_off?.toString()){
+                          obj.round_off = 0
                         }
                       }"
                     />
@@ -243,7 +243,7 @@ const count = (p: OrderProducts) => {
                       </n-form-item-gi> -->
                   <n-form-item-gi :span="12" label="积分抵扣">
                     <n-input-number
-                      v-model:value="obj.scoreDeduction"
+                      v-model:value="obj.integral_deduction"
                       :show-button="false"
                       placeholder="积分抵扣"
                       :default-value="0"
@@ -251,8 +251,8 @@ const count = (p: OrderProducts) => {
                       round
                       :precision="2"
                       @blur="() => {
-                        if (!obj.scoreDeduction?.toString()){
-                          obj.scoreDeduction = 0
+                        if (!obj.integral_deduction?.toString()){
+                          obj.integral_deduction = 0
                         }
                         emit('updateScoreDeDeduction')
                       }"
@@ -260,7 +260,7 @@ const count = (p: OrderProducts) => {
                   </n-form-item-gi>
                   <n-form-item-gi :span="12" label="会员折扣">
                     <n-input-number
-                      v-model:value="obj.member_discount"
+                      v-model:value="obj.discount_member"
                       :show-button="false"
                       placeholder="会员折扣"
                       :default-value="0"
@@ -269,8 +269,8 @@ const count = (p: OrderProducts) => {
                       round
 
                       @blur="() => {
-                        if (!obj.member_discount?.toString()){
-                          obj.member_discount = 100
+                        if (!obj.discount_member?.toString()){
+                          obj.discount_member = 100
                         }
                       }"
                     >
@@ -299,14 +299,14 @@ const count = (p: OrderProducts) => {
                   <template v-if="obj.product?.retail_type !== 1">
                     <n-form-item-gi :span="12" label="金价(元/g)">
                       <n-input-number
-                        v-model:value="obj.price"
+                        v-model:value="obj.price_gold"
                         :show-button="false"
                         placeholder="请输入金价(元/g)"
                         round
 
                         @blur="() => {
-                          if (!obj.price?.toString()){
-                            obj.price = 0
+                          if (!obj.price_gold?.toString()){
+                            obj.price_gold = 0
                           }
                         }"
                       />

@@ -1,24 +1,25 @@
 <script setup lang="ts">
-// 销售单列表
-const props = defineProps<{
-  info: Orders[]
-  where: Where<OrderWhere>
-}>()
+// // 销售单列表
+// const props = defineProps<{
+//   info: Orders[]
+//   where: Where<OrderWhere>
+// }>()
 
-const emits = defineEmits<{
-  userClick: [id: string]
-}>()
-const handleClick = (id?: string) => {
-  if (!id) {
-    return
-  }
-  emits('userClick', id)
-}
+// const emits = defineEmits<{
+//   userClick: [id: string]
+// }>()
+// const handleClick = (id?: string) => {
+//   if (!id) {
+//     return
+//   }
+//   emits('userClick', id)
+// }
 </script>
 
 <template>
   <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
-    <template v-for="(item, index) in props.info" :key="index">
+    123
+    <!-- <template v-for="(item, index) in props.info" :key="index">
       <sale-cards :title="item.id" :tag-text="where.type?.preset[item.type]">
         <template #info>
           <div class="grid grid-cols-1 gap-[12px]">
@@ -46,7 +47,7 @@ const handleClick = (id?: string) => {
           </div>
         </template>
       </sale-cards>
-    </template>
+    </template> -->
   </div>
 </template>
 

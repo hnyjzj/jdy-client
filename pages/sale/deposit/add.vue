@@ -34,8 +34,8 @@ const searchProductList = async (val: string) => {
 }
 const formRef = ref()
 const formData = ref({
-  payment_method: [{ method: undefined, money: 0 }], // 支付方式
-  salesmans: [{
+  payments: [{ payment_method: undefined, amount: 0 }], // 支付方式
+  clerks: [{
     salesman_id: undefined,
     performance_rate: 100,
     is_main: true,
@@ -98,7 +98,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
                       @focus="() => { getStaff() }"
                     />
                   </n-form-item-gi>
-                  <template v-for="(item, index) in formData.salesmans" :key="index">
+                  <template v-for="(item, index) in formData.clerks" :key="index">
                     <n-form-item-gi
                       :span="12"
                       label="主销导购" label-placement="top"
@@ -123,7 +123,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
           </div>
           <div class="pb-[16px]">
             <sale-add-member
-              v-model="formData"
+              v-model:form-data="formData"
               :get-member="getMember"
               :store="myStore"
               :staffs="StoreStaffList"
@@ -139,7 +139,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
           </div>
 
           <div class="pb-[16px]">
-            <sale-deposit-balance v-model="formData" :filter-list="filterList" />
+            <sale-deposit-balance v-model="formData" v-model:list="showProductList" :filter-list="filterList" />
           </div>
 
           <div class="h-[80px] bg-[#fff] fixed z-1">
