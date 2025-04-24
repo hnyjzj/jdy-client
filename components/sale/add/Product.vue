@@ -93,9 +93,8 @@ const allAmount = () => {
 
 // 设置整体抹零金额
 const handleAmountReduceBlur = (amount_reduce: number) => {
-  if (!showProductList.value.length) {
+  if (showProductList.value.length === 0) {
     $toast.warning('请先添加商品')
-    amount_reduce = 0
     return
   }
   // 初始化结果变量
@@ -111,6 +110,7 @@ const handleAmountReduceBlur = (amount_reduce: number) => {
     // 退出函数
     return
   }
+  formData.value.round_off = amount_reduce
   showProductList.value.forEach((item, index) => {
     // 计算每个item的 抹零金额
     item.round_off = calc('(amount / allAmount * amountReduce) | 1 ~5, !n , <=0', {

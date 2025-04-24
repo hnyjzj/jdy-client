@@ -30,6 +30,7 @@ const searchQl = () => {
 const handleAdd = () => {
   showModal.value = true
   nowEditState.value = undefined
+  params.value = {} as ProductOld
 }
 // 展示列表
 const showMasterialsList = defineModel<ProductOld[]>('list', { default: [] })

@@ -115,6 +115,7 @@ const searchConfirm = async () => {
           searchShow.value = false
         }
         else {
+          nowOldMaster.value.is_our = true
           // 这里是新增时
           if (nowOldMaster.value.recycle_price < 0) {
             $toast.error('回收金额不能小于0')

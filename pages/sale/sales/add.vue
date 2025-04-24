@@ -10,7 +10,7 @@ const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getFinishedList, getFinishedWhere, getFinishedsClass } = useFinished()
 const { getStoreStaffList } = useStores()
-// submitOrder, getOrderDetail,
+//  getOrderDetail,
 const { getOldList, getSaleWhere, submitOrder, OldMaterialsWhere } = useOrder()
 const { getGoldPrice } = useGoldPrice()
 const { goldList } = storeToRefs(useGoldPrice())
@@ -36,9 +36,9 @@ const formData = ref<Orders>({
   //   积分抵扣
   integral_deduction: 0,
   has_integral: true, // 是否使用积分
-  product_finished: [], // 商品列表
-  product_old: [], // 旧料
-  product_accessorie: [], // 配件列表
+  product_finisheds: [], // 商品列表
+  product_olds: [], // 旧料
+  product_accessories: [], // 配件列表
   clerks: [{
     salesman_id: undefined,
     performance_rate: 100,
@@ -134,12 +134,6 @@ const rules = ref<FormRules>({
     trigger: ['blur', 'change'],
     message: '请选择会员',
   },
-  type: {
-    type: 'number',
-    required: true,
-    trigger: ['blur', 'change'],
-    message: '请选择订单类型',
-  },
   cashier_id: {
     required: true,
     trigger: ['blur', 'change'],
@@ -225,18 +219,18 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
     //   // 成功的操作
-      formData.value.product_finished = [] // 清空商品列表
-      formData.value.product_old = [] // 清空旧料列表
-      formData.value.product_accessorie = [] // 清空配件列表
+      formData.value.product_finisheds = [] // 清空商品列表
+      formData.value.product_olds = [] // 清空旧料列表
+      formData.value.product_accessories = [] // 清空配件列表
       showProductList.value.forEach((item) => {
-        formData.value.product_finished.push(item)
+        formData.value.product_finisheds.push(item)
       })
-      if (formData.value.product_finished.length === 0) {
-        $toast.error('请选择成品')
-        return
-      }
+      //   if (formData.value.product_finished.length === 0) {
+      //     $toast.error('请选择成品')
+      //     return
+      //   }
       showMasterialsList.value.forEach((item) => {
-        formData.value.product_old.push(item)
+        formData.value.product_olds.push(item)
       })
       showPartsList.value.forEach((item) => {
         const data = {
@@ -245,8 +239,9 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
           price: item.amount,
           integral: item.integral,
         }
-        formData.value.product_accessorie.push(data)
+        formData.value.product_accessories.push(data)
       })
+
       // 业绩比例
       //   const result = ref(0)
       //   formData.value.salesmans.forEach((item) => {
@@ -291,9 +286,9 @@ const initFormData = {
   //   积分抵扣
   integral_deduction: 0,
   has_integral: true, // 是否使用积分
-  product_finished: [], // 商品列表
-  product_old: [], // 旧料列表
-  product_accessorie: [], // 配件列表
+  product_finisheds: [], // 商品列表
+  product_olds: [], // 旧料列表
+  product_accessories: [], // 配件列表
   clerks: [{
     salesman_id: undefined,
     performance_rate: 100,

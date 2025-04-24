@@ -57,7 +57,7 @@ export const useOrder = defineStore('Order', {
             this.OldObj.weight_gem = Number(params.weight_gem)
           }
           else {
-            this.OldObj = {} as ProductOlds
+            this.OldObj = {} as ProductOld
           }
         }
         return data.value

@@ -24,28 +24,7 @@ const searchMember = async (val: string) => {
     searchList.value = await props.getMember(val)
   }
 }
-const formData = defineModel<Orders>('formData', { default: {
-  amount: 0, // 应付金额
-  type: undefined, // 订单类型
-  source: undefined, // 订单来源
-  remark: '', // 备注
-  discount_rate: undefined, // 整单折扣
-  amount_reduce: 0, // 抹零金额
-  integral_use: 0, //  使用积分
-  member_id: undefined, // 会员ID
-  store_id: '', // 门店ID
-  cashier_id: undefined, // 收银员ID
-  //   积分抵扣
-  deduction_points: undefined,
-  isIntegral: true,
-  products: [], // 商品列表
-  salesmans: [{
-    salesman_id: undefined,
-    performance_rate: 100,
-    is_main: true,
-  }],
-  payment_method: [{ method: undefined, money: 0 }], // 支付方式
-} })
+const formData = defineModel<Orders>('formData', { default: {} })
 const canUseScore = ref()
 // 仅用于展示的会员信息
 const userInfo = ref({} as Member)

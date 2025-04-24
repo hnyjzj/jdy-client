@@ -155,6 +155,13 @@ const unPayMoney = computed(() => {
                 <n-form-item-gi
                   :span="12"
                   label="支付方式" label-placement="top"
+                  :path="`payments[${index}].payment_method`"
+                  :rule="{
+                    type: 'number',
+                    required: true,
+                    message: `请选择支付方式`,
+                    trigger: ['change', 'blur'],
+                  }"
                 >
                   <n-select
                     v-model:value="item.payment_method" :options="payMethods" />

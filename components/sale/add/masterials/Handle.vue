@@ -9,10 +9,12 @@ const props = defineProps<{
   checkOldClass: (params: Partial<ProductOld>) => any
 }>()
 const showMasterialsList = defineModel<ProductOld[]>('list', { default: [] })
-const params = defineModel<ProductOld>('params', { default: {} })
+const params = defineModel<ProductOld>('params', { default: {
+
+} })
 const { $toast } = useNuxtApp()
 // 禁用选择表单的是否自产
-const Manual = ref(true)
+
 const showModal = defineModel<boolean>('show', { default: false })
 const rules = ref<FormRules>({})
 const MformRef = ref()
@@ -40,6 +42,14 @@ const forRules = () => {
           trigger: ['blur', 'input', 'change'],
           message: `请选择${item.label}`,
           type: 'number',
+        }
+      }
+      if (item.input === 'switch') {
+        rules.value[item.name] = {
+          required: true,
+          trigger: ['blur'],
+          message: `请选择${item.label}`,
+          type: 'boolean',
         }
       }
     }
@@ -79,6 +89,7 @@ const submitMasterialsForm = async () => {
         showModal.value = false
       }
       else {
+        params.value.is_our = false
         if (params.value.recycle_price < 0) {
           $toast.error('回收金额不能小于0')
           return
@@ -184,7 +195,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
           <n-form ref="MformRef" :model="params" :rules="rules">
             <n-grid :cols="24" :x-gap="8">
               <template v-for="(item, index) in props.oldFilterListToArray" :key="index">
-                <template v-if="item.input !== 'list' && item.name !== 'code' && item.create === true">
+                <template v-if="item.input !== 'list' && item.name !== 'is_our' && item.create === true">
                   <n-form-item-gi :span="12" :label="item.label" :path="item.name" :required="item.required">
                     <template v-if="item.input === 'select'">
                       <n-select
@@ -222,9 +233,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                         v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`"
                         :show-button="false" />
                     </template>
-                    <template v-if="item.input === 'switch'">
-                      <n-switch v-model:value="(params[item.name] as boolean)" :disabled="Manual" />
-                    </template>
+
                     <template v-if="item.input === 'textarea'">
                       <n-input v-model:value="(params[item.name] as string)" rows="1" type="textarea" />
                     </template>
