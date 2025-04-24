@@ -1,10 +1,10 @@
 export const useOrder = defineStore('Order', {
   state: () => ({
-    OrdersList: [] as Orders[], // 门店列表
+    OrdersList: [] as OrderInfo[],
     filterList: {} as Where<OrderWhere>,
     todayPrice: '' as string,
     total: 0 as number,
-    OrderDetail: {} as Orders,
+    OrderDetail: {} as OrderInfo,
     filterListToArray: [] as FilterWhere<OrderWhere>[],
     searchPage: 1 as number, // 订单列表页面搜索页数
     oldFilterList: {} as Where<ProductOld>,
@@ -67,11 +67,11 @@ export const useOrder = defineStore('Order', {
       }
     },
 
-    async getOrderList(req: ReqList<Orders>) {
+    async getOrderList(req: ReqList<OrderInfo>) {
       if (req.page === 1) {
         this.OrdersList = []
       }
-      const { data } = await https.post<ResList<Orders>, ReqList<Orders>>('/order/sales/list', req)
+      const { data } = await https.post<ResList<OrderInfo>, ReqList<OrderInfo>>('/order/sales/list', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.total = data.value.data.total
         if (data.value.data.list.length > 0) {
@@ -101,7 +101,7 @@ export const useOrder = defineStore('Order', {
       return data.value
     },
     async getOrderDetail(req: { id: string }) {
-      const { data } = await https.post<Orders, { id: string }>('/order/sales/info', req)
+      const { data } = await https.post<OrderInfo, { id: string }>('/order/sales/info', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.OrderDetail = data.value.data
         return true

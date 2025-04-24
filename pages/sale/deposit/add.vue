@@ -34,7 +34,7 @@ const searchProductList = async (val: string) => {
 }
 const formRef = ref()
 const formData = ref({
-  payments: [{ payment_method: undefined, amount: 0 }], // 支付方式
+  payments: [{ payment_method: 1, amount: 0 }], // 支付方式
   clerks: [{
     salesman_id: undefined,
     performance_rate: 100,

@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 const props = withDefaults(defineProps<{
-  label: string
-  value?: string | number
+  label: string | number
+  value?: string | number | boolean
   valColor?: string
   labelColor?: string
+  format?: string
+  right?: string
 }>(), {
   valColor: 'black',
   labelColor: 'black',
+
 })
 </script>
 
@@ -16,7 +19,7 @@ const props = withDefaults(defineProps<{
       {{ props.label }}
     </div>
     <div class="part-right break-words" :style="{ color: props.valColor }">
-      {{ props.value }}
+      {{ props.format ? props.format : '' }} {{ typeof props.value === 'boolean' ? props.value ? '是' : '否' : props.value }}  {{ props.right ? props.right : '' }}
     </div>
   </div>
 </template>

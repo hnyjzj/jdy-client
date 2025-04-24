@@ -1,5 +1,5 @@
 /**
- * Orders
+ * 新增销售单
  */
 interface Orders {
   /**
@@ -102,6 +102,7 @@ interface OrderSalesClerks {
    */
   updated_at?: Date
 
+  salesman?: Staff
 }
 
 interface Payment {
@@ -112,7 +113,7 @@ interface Payment {
   /**
    * 支付方式
    */
-  payment_method?: number
+  payment_method: number
 
 }
 
@@ -134,6 +135,7 @@ interface ProductAccessorie {
    */
   quantity: number
 
+  product?: ProductAccessories
 }
 
 interface ProductFinished {
@@ -314,6 +316,8 @@ interface ProductOld {
    * 产品类型
    */
   type: number
+
+  product?: ProductOlds
 }
 
 interface OrderWhere {
@@ -425,4 +429,67 @@ interface DepositOrderProducts {
    * 订金金额
    */
   deposit_amount?: number
+}
+
+interface OrderInfo extends Orders {
+  /**
+   * 门店信息
+   */
+  store: Stores
+  /**
+   * id
+   */
+  id: string
+  /**
+   * 会员信息
+   */
+  member: Member
+  /**
+   * 收银员信息
+   */
+  cashier: any
+  /**
+   * 状态
+   */
+  status: number
+  /**
+   * 应付金额
+   */
+  price: string
+  /**
+   * 金额折扣
+   */
+  price_discount: string
+  /**
+   * 原始价格
+   */
+  price_original: string
+
+  /**
+   * 积分
+   */
+  integral: string
+
+  /**
+   * 实付金额
+   */
+  price_pay: string
+  /**
+   * 创建时间
+   */
+  created_at: string
+
+  /**
+   *成品货品金额
+   */
+  product_finished_price: string
+  /**
+   *配件礼品金额
+   */
+  product_accessorie_price: string
+  /**
+   *旧料抵扣金额
+   */
+  product_old_price: string
+
 }

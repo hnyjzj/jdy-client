@@ -18,16 +18,14 @@ const { memberList } = storeToRefs(useMemberManage())
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
 
 // 获取列表
-const getList = async (where = {} as Partial<Orders>) => {
-  const params = { page: searchPage.value, limit: 12, where: { type: 1, store_id: myStore.value.id } } as ReqList<Orders>
+const getList = async (where = {} as Partial<OrderInfo>) => {
+  const params = { page: searchPage.value, limit: 12, where: { type: 1, store_id: myStore.value.id } } as ReqList<OrderInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
   await getOrderList(params)
 }
-const handleClick = async (id: string) => {
-  navigateTo(`/sale/sales/order?id=${id}`)
-}
+
 // 打开高级筛选
 const openFilter = () => {
   // 打开筛选
@@ -94,7 +92,7 @@ const updatePage = async (page: number) => {
       <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <div class="p-[16px]">
           <template v-if="OrdersList.length">
-            <sale-sales-list :info="OrdersList" :where="filterList" @user-click="handleClick" />
+            <sale-sales-list :info="OrdersList" :where="filterList" />
             <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
           </template>
           <template v-else>

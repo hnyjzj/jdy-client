@@ -16,7 +16,7 @@ const PartsList = defineModel<ProductAccessories[]>('parts', { default: [] })
 // 转换支付方式下拉菜单
 const payMethods = optonsToSelect(props.filterList.payment_method?.preset)
 const addNewMethod = () => {
-  formData.value.payments.push({ payment_method: undefined, amount: 0 })
+  formData.value.payments.push({ payment_method: 1, amount: 0 })
 }
 
 // 删除支付方式

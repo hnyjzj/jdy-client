@@ -44,7 +44,7 @@ const formData = ref<Orders>({
     performance_rate: 100,
     is_main: true,
   }],
-  payments: [{ amount: 0, payment_method: undefined }], // 支付方式
+  payments: [{ amount: 0, payment_method: 1 }], // 支付方式
   order_deposit_ids: [], // 定金单id
 })
 const billingSet = ref({
@@ -294,7 +294,7 @@ const initFormData = {
     performance_rate: 100,
     is_main: true,
   }],
-  payments: [{ amount: 0, payment_method: undefined }], // 支付方式
+  payments: [{ amount: 0, payment_method: 1 }], // 支付方式
   order_deposit_ids: [], // 定金单id
 }
 const Key = ref()

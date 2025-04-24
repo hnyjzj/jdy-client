@@ -16,8 +16,8 @@ const { memberList } = storeToRefs(useMemberManage())
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
 
 // 获取列表
-const getList = async (where = {} as Partial<Orders>) => {
-  const params = { page: searchPage.value, limit: 12, where: { type: 3, store_id: myStore.value.id } } as ReqList<Orders>
+const getList = async (where = {} as Partial<OrderInfo>) => {
+  const params = { page: searchPage.value, limit: 12, where: { type: 3, store_id: myStore.value.id } } as ReqList<OrderInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
