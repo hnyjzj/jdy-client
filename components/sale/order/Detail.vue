@@ -91,6 +91,7 @@ const totalScore = computed(() => {
                 <template v-if="index !== 0">
                   <div class="border-b-solid border-b-[#E0E0E0] border" />
                 </template>
+
                 <common-cell label="商品条码" :value="item.product?.code" />
                 <common-cell label="商品名称" :value="item.product?.name" val-color="#4C8DF6" />
                 <common-cell label="零售方式" :value="item.product?.retail_type" />

@@ -89,7 +89,7 @@ interface ProductFinisheds {
   /**
    * 工费
    */
-  labor_fee: number | string
+  labor_fee: number
   /**
    * 材质
    */
@@ -176,6 +176,8 @@ interface ProductFinisheds {
    * 库存
    */
   stock: number
+
+  rate?: number
 }
 
 /**

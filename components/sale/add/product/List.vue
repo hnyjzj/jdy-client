@@ -48,20 +48,20 @@ const count = (p: ProductFinished) => {
       : 0
   }
   // 如果是计件方式 标签价格 x 数量 x 折扣
-  if (p.product?.retail_type === 1) {
+  if (p?.retail_type === 1) {
     const total = calc(`(price * quantity * discount * member_discount) - notCount - scoreDeduction - cardDeduction | =${hold} ~${rounding},!n`, {
-      price: p.product?.label_price, // 标签价格
+      price: p?.label_price, // 标签价格
       quantity: 1, // 数量
-      scoreDeduction: methA(p.integral_deduction),
+      scoreDeduction: methA(p.integral_deduction || 0) || 0,
       cardDeduction: 0, // 卡券抵扣
       member_discount: (p.discount_member || 100) * 0.01, // 会员折扣
       discount: ((p.discount_fixed || 100) * 0.01),
-      notCount: p?.round_off, // 抹零
+      notCount: p?.round_off || 0, // 抹零
     })
     p.price = total
     // 计算不算折扣的原价
     const orign = calc('(price * quantity) | <=2,!n', {
-      price: p.product?.label_price,
+      price: p?.label_price,
       quantity: 1,
     })
     p.price_original = orign
@@ -85,11 +85,11 @@ const count = (p: ProductFinished) => {
   }
 
   // 计重工费按克 [（金价 + 工费）X克重] X折扣
-  if (p.product?.retail_type === 2) {
+  if (p.retail_type === 2) {
     const total = calc(`((price + labor_fee) * weight_metal * discount  * member_discount) - notCount - scoreDeduction - cardDeduction  | =${hold} ~${rounding},!n`, {
       price: p?.price_gold,
       labor_fee: p?.labor_fee,
-      weight_metal: p.product?.weight_metal,
+      weight_metal: p?.weight_metal,
       scoreDeduction: methA(p.integral_deduction),
       cardDeduction: 0,
       member_discount: (p.discount_member || 100) * 0.01,
@@ -100,7 +100,7 @@ const count = (p: ProductFinished) => {
     const orign = calc('(price + labor_fee) * weight_metal | <=2,!n', {
       price: p?.price_gold,
       labor_fee: p?.labor_fee,
-      weight_metal: p.product.weight_metal,
+      weight_metal: p.weight_metal,
     })
     p.price_original = orign
     if (total === 0 && orign === 0) {
@@ -126,11 +126,11 @@ const count = (p: ProductFinished) => {
     return total
   }
   //   计重工费按件   （(金价X克重)) + 工费）X件数 X折扣
-  if (p.product?.retail_type === 3) {
+  if (p.retail_type === 3) {
     const total = calc(`(((price * weight_metal) + labor_fee)  * discount  * member_discount ) - notCount  - scoreDeduction - cardDeduction |  =${hold} ~${rounding},!n`, {
       price: p.price_gold,
       labor_fee: p?.labor_fee,
-      weight_metal: p.product?.weight_metal,
+      weight_metal: p?.weight_metal,
       scoreDeduction: methA(p.integral_deduction),
       cardDeduction: 0,
       member_discount: (p.discount_member || 100) * 0.01,
@@ -141,7 +141,7 @@ const count = (p: ProductFinished) => {
     const orign = calc('(((price * weight_metal) + labor_fee) ) | <=2,!n', {
       price: p.price_gold,
       labor_fee: p?.labor_fee,
-      weight_metal: p.product?.weight_metal,
+      weight_metal: p?.weight_metal,
     })
     p.price_original = orign
     if (total === 0 && orign === 0) {
@@ -173,17 +173,17 @@ const count = (p: ProductFinished) => {
   <div>
     <template v-for="(obj, ix) in showProductList" :key="ix">
       <div class="pb-[12px]">
-        <sale-order-nesting v-model="hasCheck" :title="obj.product?.name || ''">
+        <sale-order-nesting v-model="hasCheck" :title="obj?.name || ''">
           <template #left>
             <common-tags type="pink" text="成品" :is-oval="true" />
           </template>
           <template #info>
             <div class="flex flex-col gap-[4px] px-[16px]">
-              <common-cell label="名称" :value="obj.product?.name" />
-              <common-cell label="条码" :value="obj.product?.code" />
-              <common-cell label="金重" :value="obj.product?.weight_metal" />
-              <common-cell label="零售方式" :value="realtype(obj.product?.retail_type)" />
-              <common-cell label="标签价" :value="obj.product?.label_price" val-color="#2472EE" />
+              <common-cell label="名称" :value="obj?.name" />
+              <common-cell label="条码" :value="obj?.code" />
+              <common-cell label="金重" :value="obj?.weight_metal" />
+              <common-cell label="零售方式" :value="realtype(obj?.retail_type)" />
+              <common-cell label="标签价" :value="obj?.label_price" val-color="#2472EE" />
               <common-cell label="折扣" :value="`${obj.discount_final}%`" val-color="#2472EE" />
               <div class="h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
               <div class="pb-[16px]">
@@ -296,7 +296,7 @@ const count = (p: ProductFinished) => {
                       }"
                     />
                   </n-form-item-gi>
-                  <template v-if="obj.product?.retail_type !== 1">
+                  <template v-if="obj?.retail_type !== 1">
                     <n-form-item-gi :span="12" label="金价(元/g)">
                       <n-input-number
                         v-model:value="obj.price_gold"
@@ -313,7 +313,7 @@ const count = (p: ProductFinished) => {
                     </n-form-item-gi>
                   </template>
 
-                  <template v-if="obj.product?.retail_type !== 1">
+                  <template v-if="obj?.retail_type !== 1">
                     <n-form-item-gi :span="12" label="工费">
                       <n-input-number
                         v-model:value="obj.labor_fee"

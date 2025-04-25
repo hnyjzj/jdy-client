@@ -180,7 +180,7 @@ interface ProductFinished {
   /**
    * 产品ID
    */
-  product_id: string
+  product_id?: string
   /**
    * 抹零
    */
@@ -188,11 +188,22 @@ interface ProductFinished {
   /**
    *积分比例
    */
-  rate: number
+  rate?: number
   /**
    *成品信息
    */
   product?: ProductFinisheds
+  weight_gem?: number
+  retail_type?: number
+
+  label_price?: string
+
+  weight_metal?: number
+  color_gem?: number
+  clarity?: number
+  name?: string
+
+  code?: string
 }
 
 interface ProductOld {
@@ -336,7 +347,9 @@ interface OrderWhere {
   type?: number
   payment_method?: OrderPaymentMethod[]
 }
-
+/**
+ * 销售单详情
+ */
 interface OrderInfo extends Orders {
   /**
    * 门店信息

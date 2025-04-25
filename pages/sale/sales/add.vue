@@ -23,7 +23,9 @@ const { getAccessorieList, getAccessorieWhere, getAccessorieScoreRate } = useAcc
 const { accessorieList } = storeToRefs(useAccessorie())
 const { finishedList } = storeToRefs(useFinished())
 const { createMember } = useMemberManage()
-
+const { getOrderDetail, getDepositList } = useDepositOrder()
+const { OrderDetail, OrdersList } = storeToRefs(useDepositOrder())
+const addMemberRef = ref()
 const formRef = ref<FormInst | null>(null)
 const formData = ref<Orders>({
   source: 1, // 订单来源
@@ -63,6 +65,84 @@ const disScore = ref(false)
 const showProductList = ref<ProductFinished[]>([])
 const showPartsList = ref<ProductAccessories[]>([])
 const showMasterialsList = ref<ProductOld[]>([])
+// 获取成品积分比例
+const checkProductClass = async (params: { class: number }) => {
+  const data = await getFinishedsClass(params)
+  if (data.rate) {
+    return data.rate as string
+  }
+}
+const searchDepositOrders = async (val?: string) => {
+  await getDepositList({ page: 1, limit: 5, where: { id: val, status: 9, store_id: myStore.value.id } })
+  return OrdersList.value || []
+}
+
+// 获取会员列表
+const getMember = async (val: string) => {
+  await getMemberList({ page: 1, limit: 5, where: { phone: val } })
+  return memberList.value || []
+}
+// 获取门店员工列表
+const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
+// 添加商品
+const addProduct = async (product: ProductFinisheds) => {
+  const index = showProductList.value.findIndex(item => item.product_id === product?.id)
+  //   添加成品到列表中
+  if (index === -1) {
+    const data = {
+      name: product.name,
+      retail_type: product.retail_type,
+      label_price: product.label_price,
+      weight_metal: product.weight_metal,
+      code: product.code,
+      price_gold: 0, // 金价
+      discount_fixed: 100, // 折扣
+      price: 0, // 应付金额
+      product_id: product?.id as string, // 商品id
+      labor_fee: 0, // 工费
+      round_off: 0, // 抹零
+      discount_final: 0, // 显示折扣
+      price_original: 0, // 原始价格
+      discount_member: 100, // 会员折扣
+      integral: 0, // 积分
+      integral_deduction: 0, // 积分抵扣
+      rate: 0, // 积分比例
+      class: product.class,
+    }
+    data.labor_fee = Number(product.labor_fee)
+
+    const rate = await checkProductClass({ class: data.class })
+    if (rate && rate !== '0') {
+      data.rate = Number(rate)
+    }
+    showProductList.value.push(data)
+  }
+  else {
+    $toast.error('该商品已经添加过')
+  }
+}
+
+const route = useRoute()
+if (route.query.id) {
+  // 判断是否有定金单订单详情
+  await getOrderDetail({ id: route.query.id as string })
+  OrderDetail.value.products.forEach((item) => {
+    addProduct(item.product_finished)
+  })
+  await getStaff()
+  //   await getMember(OrderDetail.value.member?.phone as string)
+  formData.value.clerks[0] = {
+    salesman_id: OrderDetail.value.clerk_id,
+    performance_rate: 100,
+    is_main: true,
+  }
+
+  setTimeout(() => {
+    addMemberRef.value?.setMbid(OrderDetail.value.member_id, OrderDetail.value.member?.phone)
+  }, 200)
+//   formData.value.member_id = OrderDetail.value.member_id
+}
+
 await getSaleWhere()
 await OldMaterialsWhere()
 await getFinishedWhere()
@@ -80,13 +160,7 @@ const getbillingSet = async () => {
   }
 }
 getbillingSet()
-// 获取会员列表
-const getMember = async (val: string) => {
-  await getMemberList({ page: 1, limit: 5, where: { phone: val } })
-  return memberList.value || []
-}
-// 获取门店员工列表
-const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
+
 // 新增会员
 const addNewMember = async (val: Member) => await createMember(val)
 // 是否积分 设置
@@ -184,14 +258,6 @@ const searchParts = async (val: string, type: string) => {
     await getAccessorieList({ page: 1, limit: 10, where: { name: val, store_id: myStore.value.id } })
   }
   return accessorieList.value || []
-}
-
-// 获取成品积分比例
-const checkProductClass = async (params: { class: number }) => {
-  const data = await getFinishedsClass(params)
-  if (data.rate) {
-    return data.rate as string
-  }
 }
 
 // 获取旧料大类，并获取旧料积分比例
@@ -329,20 +395,20 @@ const changeStore = () => {
         </div>
         <div class="pb-[16px]">
           <sale-add-member
-            v-model:form-data="formData"
+            ref="addMemberRef"
             :get-member="getMember"
-            :member-list="memberList"
-            :billing-set="billingSet"
             :store="myStore"
             :staffs="StoreStaffList"
             :get-staffs="getStaff"
             :add-new-member="addNewMember"
+            @set-member-id="formData.member_id = $event"
           />
         </div>
         <div class="pb-[16px]">
           <sale-add-product
             v-model="showProductList"
             v-model:form-data="formData"
+            title="成品"
             :search-product-list="searchProductList"
             :price="goldList"
             :is-integral="formData.has_integral"
@@ -350,11 +416,11 @@ const changeStore = () => {
             :billing-set="billingSet"
           />
         </div>
-
         <div class="pb-[16px]">
           <sale-add-masterials
             v-model:list="showMasterialsList"
             v-model:now-old-master="OldObj"
+            title="旧料"
             :search-olds="searchOlds"
             :check-old-class="CheckOldClass"
             :old-filter-list-to-array="oldFilterListToArray"
@@ -364,6 +430,7 @@ const changeStore = () => {
         <div class="pb-[16px]">
           <sale-add-parts
             v-model:list="showPartsList"
+            title="配件礼品"
             :check-accessories-score="checkAccessoriesScore"
             :is-integral="formData.has_integral"
             :billing-set="billingSet"
@@ -371,6 +438,13 @@ const changeStore = () => {
             @clear-list="() => accessorieList = [] "
           />
         </div>
+        <div class="pb-[16px]">
+          <sale-add-depositorder
+            title="订金单"
+            :search-deposit-orders="searchDepositOrders"
+            :order-detail="OrderDetail" />
+        </div>
+
         <sale-add-settlement
           v-model:form="formData"
           v-model:show-list="showProductList"

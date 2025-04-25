@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const Props = defineProps<{
+  title: string
   isIntegral: boolean
   billingSet: BillingSet
   checkAccessoriesScore: (params: { classes: AccessorieCategory['type_part'][] }) => any
@@ -17,7 +18,7 @@ const hold = ref(0)
 </script>
 
 <template>
-  <common-fold title="配件" :is-collapse="false">
+  <common-fold :title="Props.title" :is-collapse="false">
     <div class="p-[16px]">
       <div class="grid-12">
         <div

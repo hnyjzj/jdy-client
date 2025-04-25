@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
+  title: string
   isIntegral: boolean
   oldFilterListToArray: FilterWhere<ProductOld>[]
   checkOldClass: (params: Partial<ProductOld>) => any
@@ -56,7 +57,7 @@ const editOld = (item: ProductOld, index: number) => {
 </script>
 
 <template>
-  <common-fold title="旧货" :is-collapse="false">
+  <common-fold :title="props.title" :is-collapse="false">
     <sale-add-masterials-button
       @handle-add="handleAdd"
       @search-ql="searchQl" />

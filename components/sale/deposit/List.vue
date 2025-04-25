@@ -11,6 +11,13 @@ const handleClick = (id?: string) => {
   }
   navigateTo(`/sale/deposit/order?id=${id}`)
 }
+
+const openOrder = (id?: string) => {
+  if (!id) {
+    return
+  }
+  navigateTo(`/sale/sales/add?id=${id}`)
+}
 </script>
 
 <template>
@@ -19,10 +26,10 @@ const handleClick = (id?: string) => {
       <sale-cards :title="`定金单号:${item.id}`">
         <template #info>
           <div class="info">
-            <common-cell label="所属门店" :value="item.store.name || '--'" />
-            <common-cell label="会员" :value="item.member.name || '--'" />
-            <common-cell label="会员手机" :value="item.member.phone || '--'" />
-            <common-cell label="主销" :value="item.clerk.nickname || '--'" />
+            <common-cell label="所属门店" :value="item.store?.name || '--'" />
+            <common-cell label="会员" :value="item.member?.name || '--'" />
+            <common-cell label="会员手机" :value="item.member?.phone || '--'" />
+            <common-cell label="主销" :value="item.clerk?.nickname || '--'" />
             <common-cell label="定金金额" :value="item.price || '--'" />
             <div class="border-b-solid border-b-[#E0E0E0] border" />
             <common-cell label="货品" value="" />
@@ -32,7 +39,10 @@ const handleClick = (id?: string) => {
           </div>
         </template>
         <template #footer>
-          <div class="flex-end  bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
+          <div class="flex-between  bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
+            <div class="pl-[20px] color-[#4287F4] cursor-pointer" @click="openOrder(item.id)">
+              开单
+            </div>
             <common-button-irregular text="查看详情" @click="handleClick(item.id)" />
           </div>
         </template>

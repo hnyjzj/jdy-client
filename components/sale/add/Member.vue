@@ -70,6 +70,14 @@ const submitNewMember = async () => {
     setUserInfo(searchList.value)
   }
 }
+const setMbid = async (id: string, phone: string) => {
+  memberId.value = id
+  await searchMember(phone)
+  await handleUpdateValue('')
+}
+defineExpose({
+  setMbid,
+})
 </script>
 
 <template>

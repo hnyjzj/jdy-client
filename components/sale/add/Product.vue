@@ -2,6 +2,7 @@
 import { calc } from 'a-calc'
 
 const Props = defineProps<{
+  title: string
   price: GoldPrices[]
   isIntegral: boolean
   billingSet: BillingSet
@@ -18,15 +19,15 @@ const showModal = ref(false)
 // 添加商品
 const addProduct = async (product: ProductFinisheds) => {
   const index = showProductList.value.findIndex(item => item.product_id === product?.id)
-  if (index !== -1) {
-    // 判断是否已经添加过该商品,如果已经添加过,则数量加一
-    // showProductList.value[index].quantity++
-    $toast.error('该商品已经添加过')
-    return
-  }
+
   //   添加成品到列表中
   if (index === -1) {
     const data = {
+      name: product.name,
+      retail_type: product.retail_type,
+      label_price: product.label_price,
+      weight_metal: product.weight_metal,
+      code: product.code,
       price_gold: 0, // 金价
       discount_fixed: 100, // 折扣
       price: 0, // 应付金额
@@ -39,7 +40,8 @@ const addProduct = async (product: ProductFinisheds) => {
       integral: 0, // 积分
       integral_deduction: 0, // 积分抵扣
       rate: 0, // 积分比例
-      product,
+      class: product.class,
+    //   product,
     }
     data.labor_fee = Number(product.labor_fee)
     // 匹配金价
@@ -56,7 +58,7 @@ const addProduct = async (product: ProductFinisheds) => {
     else {
       data.price_gold = 0
     }
-    const rate = await Props.checkProductClass({ class: data.product.class })
+    const rate = await Props.checkProductClass({ class: data.class })
     if (rate && rate !== '0') {
       data.rate = Number(rate)
     }
@@ -238,7 +240,7 @@ const clickSearchButton = () => {
 </script>
 
 <template>
-  <common-fold title="成品信息" :is-collapse="false">
+  <common-fold :title="Props.title" :is-collapse="false">
     <sale-add-product-button @search="clickSearchButton" />
     <!-- 整单折扣设置 -->
     <sale-add-product-deduction

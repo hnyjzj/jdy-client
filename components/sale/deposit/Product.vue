@@ -32,7 +32,7 @@ const setAddProduct = (product: ProductFinisheds) => {
 
 // 添加商品
 const addProduct = async (product: ProductFinisheds) => {
-  const index = showProductList.value.findIndex(item => item.product?.id === product.id)
+  const index = showProductList.value.findIndex(item => item.product_id === product.id)
   if (index !== -1) {
     $toast.error('该商品已经添加过')
     return
@@ -40,14 +40,14 @@ const addProduct = async (product: ProductFinisheds) => {
   //   添加成品到列表中
   if (index === -1) {
     const data = {
-      is_our: false,
+      is_our: true,
       price: 0,
       price_gold: 0,
-      product_demand: product,
-      product_id: product.id,
+      product_id: '',
+      product_demand: undefined,
       product,
     }
-
+    data.product_id = product.id
     showProductList.value.push(data)
     showModal.value = false
   }
@@ -58,7 +58,6 @@ const addProduct = async (product: ProductFinisheds) => {
 const hasCheck = ref(false)
 // 删除商品
 const deleteProduct = (index: number) => {
-  console.log(index)
   showProductList.value.splice(index, 1)
 //   dialog.error({
 //     title: '确定删除此商品吗?',
