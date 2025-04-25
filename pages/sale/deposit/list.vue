@@ -6,8 +6,8 @@ const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 const { getFinishedList } = useFinished()
 const { finishedList } = storeToRefs(useFinished())
-const { filterListToArray, OrdersList, total, filterList, searchPage } = storeToRefs(useOrder())
-const { getSaleWhere, getOrderList } = useOrder()
+const { filterListToArray, OrdersList, total, filterList, searchPage } = storeToRefs(useDepositOrder())
+const { getSaleWhere, getDepositList } = useDepositOrder()
 const filterData = ref({} as Partial<OrderWhere>)
 const filterShow = ref(false)
 
@@ -17,11 +17,11 @@ const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5
 
 // 获取列表
 const getList = async (where = {} as Partial<OrderInfo>) => {
-  const params = { page: searchPage.value, limit: 12, where: { type: 2, store_id: myStore.value.id } } as ReqList<OrderInfo>
+  const params = { page: searchPage.value, limit: 12, where: { store_id: myStore.value.id } } as ReqList<OrderInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
-  await getOrderList(params)
+  await getDepositList(params)
 }
 const handleClick = async (id: string) => {
   navigateTo(`/sale/sales/order?id=${id}`)
@@ -92,7 +92,7 @@ const updatePage = async (page: number) => {
       <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <div class="p-[16px]">
           <template v-if="OrdersList.length">
-            <sale-sales-list :info="OrdersList" :where="filterList" @user-click="handleClick" />
+            <sale-deposit-list :info="OrdersList" :where="filterList" @user-click="handleClick" />
             <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
           </template>
           <template v-else>

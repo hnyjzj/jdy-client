@@ -2,8 +2,8 @@
 const props = defineProps<{
   filterList: Where<OrderWhere>
 }>()
-const formData = defineModel<Orders>({ default: {} })
-const showProductList = defineModel<DepositOrderProducts[]>('list', { default: {} })
+const formData = defineModel<DepositOrder>({ default: {} })
+const showProductList = defineModel<DepositOrderProduct[]>('list', { default: {} })
 
 // 转换支付方式下拉菜单
 const payMethods = optonsToSelect(props.filterList.payment_method?.preset)
@@ -19,7 +19,7 @@ const deleteMethod = (index: number) => {
 const depositAmount = computed(() => {
   const total = ref(0)
   showProductList.value.forEach((item) => {
-    total.value += item.deposit_amount || 0
+    total.value += Number(item.price) || 0
   })
   return total.value
 })
@@ -47,6 +47,13 @@ const unPayMoney = computed(() => {
                 <n-form-item-gi
                   :span="12"
                   label="支付方式" label-placement="top"
+                  :path="`payments[${index}].payment_method`"
+                  :rule="{
+                    type: 'number',
+                    required: true,
+                    message: `请选择支付方式`,
+                    trigger: ['change', 'blur'],
+                  }"
                 >
                   <n-select
                     v-model:value="item.payment_method" :options="payMethods" />

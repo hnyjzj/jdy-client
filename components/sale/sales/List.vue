@@ -32,6 +32,8 @@ const handleClick = (id?: string) => {
             <common-cell label="积分" :value="item.integral" />
             <common-cell label="销售时间" :value="formatISODate(item.created_at)" />
           </div>
+        </template>
+        <template #footer>
           <div class="flex-end bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
             <common-button-irregular text="查看详情" @click="handleClick(item.id)" />
           </div>

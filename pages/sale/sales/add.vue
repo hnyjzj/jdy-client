@@ -129,11 +129,6 @@ const handleIsInterChange = () => {
 }
 
 const rules = ref<FormRules>({
-  member_id: {
-    required: true,
-    trigger: ['blur', 'change'],
-    message: '请选择会员',
-  },
   cashier_id: {
     required: true,
     trigger: ['blur', 'change'],

@@ -11,7 +11,7 @@ const { getStoreStaffList } = useStores()
 const { getMemberList } = useMemberManage()
 const { $toast } = useNuxtApp()
 // 展示成品列表
-const showProductList = ref<DepositOrderProducts[]>([])
+const showProductList = ref<DepositOrderProduct[]>([])
 
 // 获取会员列表
 const getMember = async (val: string) => {

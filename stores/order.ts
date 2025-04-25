@@ -66,7 +66,7 @@ export const useOrder = defineStore('Order', {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
       }
     },
-
+    // 获取订单列表
     async getOrderList(req: ReqList<OrderInfo>) {
       if (req.page === 1) {
         this.OrdersList = []
@@ -95,11 +95,12 @@ export const useOrder = defineStore('Order', {
         this.todayPrice = data.value.data.price
       }
     },
-    // 提交订单
+    // 新增销售单
     async submitOrder(req: Orders) {
-      const { data } = await https.post<Orders, Orders>('/order/sales/create', req)
+      const { data } = await https.post<OrderInfo, Orders>('/order/sales/create', req)
       return data.value
     },
+    // 获取订单详情
     async getOrderDetail(req: { id: string }) {
       const { data } = await https.post<OrderInfo, { id: string }>('/order/sales/info', req)
       if (data.value?.code === HttpCode.SUCCESS) {
@@ -107,5 +108,32 @@ export const useOrder = defineStore('Order', {
         return true
       }
     },
+    // 新增定金单
+    async submitDepositOrder(req: Orders) {
+      const { data } = await https.post<OrderInfo, Orders>('/order/deposit/create', req)
+      return data.value
+    },
+    // 获取订金单列表
+    async getDepositList(req: ReqList<OrderInfo>) {
+      if (req.page === 1) {
+        this.OrdersList = []
+      }
+      const { data } = await https.post<ResList<OrderInfo>, ReqList<OrderInfo>>('/order/deposit/list', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.total = data.value.data.total
+        if (data.value.data.list.length > 0) {
+          this.OrdersList = data.value.data.list
+          if (this.OrdersList.length === this.total) {
+            return false
+          }
+          return true
+        }
+        else {
+          // 当前页没有数据，则不进行下一页
+          return false
+        }
+      }
+    },
+
   },
 })

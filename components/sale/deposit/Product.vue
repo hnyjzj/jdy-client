@@ -9,7 +9,7 @@ const { $toast } = useNuxtApp()
 const showModal = ref(false)
 // 条码搜索框
 const searchInput = ref('')
-const showProductList = defineModel<DepositOrderProducts[]>({ default: [] })
+const showProductList = defineModel<DepositOrderProduct[]>({ default: [] })
 const realtype = (val?: number) => {
   switch (val) {
     case 1:
@@ -33,33 +33,20 @@ const setAddProduct = (product: ProductFinisheds) => {
 // 添加商品
 const addProduct = async (product: ProductFinisheds) => {
   const index = showProductList.value.findIndex(item => item.product?.id === product.id)
-  if (index !== -1 && showProductList.value[index].quantity) {
-    // 判断是否已经添加过该商品,如果已经添加过,则数量加一
-    // showProductList.value[index].quantity++
+  if (index !== -1) {
     $toast.error('该商品已经添加过')
     return
   }
   //   添加成品到列表中
   if (index === -1) {
     const data = {
-      price: 0, // 金价
-      quantity: 1, // 数量
-      discount: undefined, // 折扣
-      amount: 0, // 应付金额
-      product_id: product.id, // 商品id
-      labor_fee: 0, // 工费
-      notCount: 0, // 抹零
-      show_discount: 0, // 显示折扣
-      orign: 0, // 原始价格
-      member_discount: 100, // 会员折扣
-      integral: 0, // 积分
-      scoreDeduction: 0, // 积分抵扣
-      cardDeduction: 0, // 卡券抵扣
-      rate: 0, // 积分比例
-      deposit_amount: 0, // 定金
+      is_our: false,
+      price: 0,
+      price_gold: 0,
+      product_demand: product,
+      product_id: product.id,
       product,
     }
-    data.labor_fee = Number(product.labor_fee)
 
     showProductList.value.push(data)
     showModal.value = false
@@ -135,14 +122,14 @@ const handleFormRules = {}
                       <n-grid :cols="24" :x-gap="8">
                         <n-form-item-gi :span="12" label="金价(元/g)">
                           <n-input-number
-                            v-model:value="obj.price"
+                            v-model:value="obj.price_gold"
                             :show-button="false"
                             placeholder="请输入金价(元/g)"
                             round
 
                             @blur="() => {
-                              if (!obj.price?.toString()){
-                                obj.price = 0
+                              if (!obj.price_gold?.toString()){
+                                obj.price_gold = 0
                               }
                             }"
                           />
@@ -150,7 +137,7 @@ const handleFormRules = {}
 
                         <n-form-item-gi :span="12" label="订金金额">
                           <n-input-number
-                            v-model:value="obj.deposit_amount"
+                            v-model:value="obj.price"
                             :show-button="false"
                             placeholder="请输入订金金额"
                             round

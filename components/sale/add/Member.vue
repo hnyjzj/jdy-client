@@ -2,16 +2,18 @@
 import { calc } from 'a-calc'
 import Userinfo from '~/components/my/user/Userinfo.vue'
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
   getMember: (val: string) => Promise<Member[]>
   getStaffs: () => void
   addNewMember: (val: Member) => any
   billingSet?: BillingSet
   store: Stores
   staffs: StoresStaff[]
-}>(), {
+}>()
 
-})
+const emit = defineEmits<{
+  setMemberId: [val: string]
+}>()
 const searchList = ref<Member[]>([])
 const memberParams = ref<Member>({
   // 初始化store_id为当前门店id
@@ -24,7 +26,8 @@ const searchMember = async (val: string) => {
     searchList.value = await props.getMember(val)
   }
 }
-const formData = defineModel<Orders>('formData', { default: {} })
+
+const memberId = ref()
 const canUseScore = ref()
 // 仅用于展示的会员信息
 const userInfo = ref({} as Member)
@@ -32,7 +35,8 @@ const userInfo = ref({} as Member)
 const setUserInfo = (list: Member[]) => {
   userInfo.value = list[0]
   // 能使用的积分
-  formData.value.member_id = list[0].id
+  memberId.value = list[0].id
+  emit('setMemberId', memberId.value)
   if (props.billingSet) {
     if (userInfo.value.integral && props.billingSet.discount_rate !== '0') {
       canUseScore.value = calc('(a / b )| =0 ~5,!n', {
@@ -45,7 +49,7 @@ const setUserInfo = (list: Member[]) => {
 const Key = ref()
 const handleUpdateValue = async (value: string) => {
   if (value === null) {
-    formData.value.member_id = undefined
+    memberId.value = undefined
     Key.value = Date.now().toString()
     userInfo.value = {} as Member
     return
@@ -73,9 +77,16 @@ const submitNewMember = async () => {
     <common-fold title="会员信息" :is-collapse="false">
       <div :key="Key" class="p-[16px] pb-0">
         <n-grid :cols="24" :x-gap="8">
-          <n-form-item-gi :span="12" label="选择会员" path="member_id" class="">
+          <n-form-item-gi
+            :span="12" label="选择会员" class=""
+            path="member_id"
+            :rule="{
+              required: true,
+              message: `请选择会员`,
+              trigger: ['change', 'blur'],
+            }">
             <n-select
-              v-model:value="formData.member_id"
+              v-model:value="memberId"
               filterable
               placeholder="输入手机号搜索"
               :options="searchList.map(v => ({

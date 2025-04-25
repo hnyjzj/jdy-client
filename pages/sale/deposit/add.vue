@@ -2,10 +2,10 @@
 useSeoMeta({
   title: '新增定金单',
 })
-const { getSaleWhere } = useOrder()
+const { submitDepositOrder, getSaleWhere } = useDepositOrder()
 
 const { myStore, StoreStaffList } = storeToRefs(useStores())
-const { filterList } = storeToRefs(useOrder())
+const { filterList } = storeToRefs(useDepositOrder())
 const { getFinishedList } = useFinished()
 const { finishedList } = storeToRefs(useFinished())
 const { memberList } = storeToRefs(useMemberManage())
@@ -14,7 +14,7 @@ const { getStoreStaffList } = useStores()
 const { getMemberList } = useMemberManage()
 const { $toast } = useNuxtApp()
 // 展示成品列表
-const showProductList = ref<DepositOrderProducts[]>([])
+const showProductList = ref<DepositOrderProduct[]>([])
 await getSaleWhere()
 // 获取会员列表
 const getMember = async (val: string) => {
@@ -33,14 +33,15 @@ const searchProductList = async (val: string) => {
   }
 }
 const formRef = ref()
-const formData = ref({
-  payments: [{ payment_method: 1, amount: 0 }], // 支付方式
-  clerks: [{
-    salesman_id: undefined,
-    performance_rate: 100,
-    is_main: true,
-  }],
-} as Orders)
+const formData = ref<DepositOrder>({
+  remark: '', // 备注
+  member_id: undefined, // 会员ID
+  store_id: myStore.value.id, // 门店ID
+  cashier_id: undefined, // 收银员ID
+  products: [], // 商品列表
+  clerk_id: undefined,
+  payments: [{ amount: 0, payment_method: 1 }], // 支付方式
+})
 const rules = {
   cashier_id: {
     required: true,
@@ -55,7 +56,13 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
       // 成功的操作
-
+      showProductList.value.forEach((item) => {
+        formData.value.products.push(item)
+      })
+      const res = await submitDepositOrder(formData.value)
+      if (res?.code === HttpCode.SUCCESS) {
+        $toast.success('下单成功')
+      }
     }
     else {
       $toast.error('请填写必填信息')
@@ -78,57 +85,15 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
           <div class="w-[120px] color-[#fff] pb-[12px]">
             <product-manage-company />
           </div>
-          <div class="pb-[16px]">
-            <common-fold title="基础信息" :is-collapse="false">
-              <div class="p-[16px]">
-                <n-grid :cols="24" :x-gap="8">
-                  <n-form-item-gi
-                    :span="12"
-                    label="收银员" label-placement="top" path="cashier_id"
-                  >
-                    <n-select
-                      v-model:value="formData.cashier_id"
-                      placeholder="请输入收银员"
-                      :options="StoreStaffList.map(v => ({
-                        label: v.nickname,
-                        value: v.id,
-                      }))"
-                      clearable
-                      remote
-                      @focus="() => { getStaff() }"
-                    />
-                  </n-form-item-gi>
-                  <template v-for="(item, index) in formData.clerks" :key="index">
-                    <n-form-item-gi
-                      :span="12"
-                      label="主销导购" label-placement="top"
-                      :path="`salesmans[${index}].salesman_id`"
-                    >
-                      <n-select
-                        v-model:value="item.salesman_id"
-                        placeholder="请选择"
-                        :options="StoreStaffList.map(v => ({
-                          label: v.nickname,
-                          value: v.id,
-                        }))"
-                        clearable
-                        remote
-                        @focus="() => { getStaff() }"
-                      />
-                    </n-form-item-gi>
-                  </template>
-                </n-grid>
-              </div>
-            </common-fold>
-          </div>
+          <sale-deposit-staff v-model:form-data="formData" :staffs="StoreStaffList" :get-staffs="getStaff" />
           <div class="pb-[16px]">
             <sale-add-member
-              v-model:form-data="formData"
               :get-member="getMember"
               :store="myStore"
               :staffs="StoreStaffList"
               :get-staffs="getStaff"
               :add-new-member="addNewMember"
+              @set-member-id="formData.member_id = $event"
             />
           </div>
           <div class="pb-[16px]">
