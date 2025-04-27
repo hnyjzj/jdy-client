@@ -61,6 +61,15 @@ const totalScore = computed(() => {
             <common-cell label="会员昵称" :value="props.orders.member?.nickname || ''" />
             <common-cell label="手机号" :value="props.orders.member?.phone" />
             <common-cell label="会员等级" :value="props.orders.member?.level" />
+            <div class="border-b-solid border-b-[#E0E0E0] border" />
+            <common-cell label="关联订金单" value="" />
+            <template v-for="(deposit, ix) in props.orders.order_deposits" :key="ix">
+              <common-cell label="订金单号" :value="deposit.id" val-color="#4C8DF6" />
+              <common-cell label="订金金额" :value="deposit.price_pay" />
+              <template v-for="(p, index) in deposit.products" :key="index">
+                <common-cell :label="`商品${index + 1}`" :value="p.product_finished.name" />
+              </template>
+            </template>
           </div>
         </template>
       </sale-cards>
@@ -184,7 +193,6 @@ const totalScore = computed(() => {
               <common-cell :label="payMethods(item.payment_method) " label-color="#4C8DF6" val-color="#4C8DF6" format="￥" :value="item.amount" />
             </template>
             <div class="border-b-solid border-b-[#E0E0E0] border" />
-
             <common-cell label="成品积分" format="+" :value="productListScore" label-color="#4C8DF6" val-color="#4C8DF6" />
             <common-cell label="旧料积分" format="-" :value="masterListScore" label-color="#4C8DF6" val-color="#4C8DF6" />
             <common-cell label="配件积分" format="+" :value="PartsListScore" label-color="#4C8DF6" val-color="#4C8DF6" />

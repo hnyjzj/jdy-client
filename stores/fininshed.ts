@@ -39,6 +39,7 @@ export const useFinished = defineStore('Finished', {
           this.finishedFilterList = data.value.data
           this.finishedFilterListToArray = sortArr(this.finishedFilterList)
         }
+        return data.value?.data || {}
       }
       catch (error) {
         throw new Error(`筛选失败: ${error || '未知错误'}`)

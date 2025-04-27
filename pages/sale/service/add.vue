@@ -3,15 +3,15 @@ useSeoMeta({
   title: '新增定金单',
 })
 const { myStore, StoreStaffList } = storeToRefs(useStores())
-const { getFinishedList } = useFinished()
-const { finishedList } = storeToRefs(useFinished())
+// const { getFinishedList } = useFinished()
+// const { finishedList } = storeToRefs(useFinished())
 const { memberList } = storeToRefs(useMemberManage())
 const { createMember } = useMemberManage()
 const { getStoreStaffList } = useStores()
 const { getMemberList } = useMemberManage()
-const { $toast } = useNuxtApp()
+// const { $toast } = useNuxtApp()
 // 展示成品列表
-const showProductList = ref<DepositOrderProduct[]>([])
+// const showProductList = ref<DepositOrderProduct[]>([])
 
 // 获取会员列表
 const getMember = async (val: string) => {
@@ -23,12 +23,12 @@ const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
 // 新增会员
 const addNewMember = async (val: Member) => await createMember(val)
 
-const searchProductList = async (val: string) => {
-  const res = await getFinishedList({ page: 1, limit: 10, where: { code: val } })
-  if (res?.data.total === 0) {
-    $toast.error('商品不存在')
-  }
-}
+// const searchProductList = async (val: string) => {
+//   const res = await getFinishedList({ page: 1, limit: 10, where: { code: val } })
+//   if (res?.data.total === 0) {
+//     $toast.error('商品不存在')
+//   }
+// }
 const formRef = ref()
 const formData = ref()
 const rules = {}
@@ -80,10 +80,10 @@ const rules = {}
             />
           </div>
           <div class="pb-[16px]">
-            <sale-deposit-product
+            <!-- <sale-deposit-product
               v-model="showProductList"
               :product-list="finishedList"
-              @search="searchProductList" />
+              @search="searchProductList" /> -->
           </div>
         </n-form>
       </div>

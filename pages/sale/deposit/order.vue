@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 // 销售单详情
 useSeoMeta({
-  title: '销售单详情',
+  title: '订金单详情',
 })
+const { getFinishedWhere } = useFinished()
+const { finishedFilterList } = storeToRefs(useFinished())
 const { getMemberWhere } = useMemberManage()
 const { filterList: memberFiler } = storeToRefs(useMemberManage())
 const { OrderDetail, filterList } = storeToRefs(useDepositOrder())
@@ -13,13 +15,14 @@ if (route.query.id) {
   await getOrderDetail({ id: route.query.id as string })
   await getMemberWhere()
   await getSaleWhere()
+  await getFinishedWhere()
 }
 </script>
 
 <template>
   <div>
     <div class="p-[16px] pb-[80px]">
-      <sale-deposit-details :member-filer="memberFiler" :where="filterList" :orders="OrderDetail" />
+      <sale-deposit-details :member-filer="memberFiler" :product-filter="finishedFilterList" :where="filterList" :orders="OrderDetail" />
     </div>
     <div class="footer">
       <div class="grid-12 gap-[12px] px-[16px]">

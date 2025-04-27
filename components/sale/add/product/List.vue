@@ -13,7 +13,7 @@ const hasCheck = ref(false)
 const realtype = (val?: number) => {
   switch (val) {
     case 1:
-      return '一口价'
+      return '计件'
     case 2:
       return '计重工费按克'
     case 3:

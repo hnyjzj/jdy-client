@@ -12,7 +12,7 @@ const showProductList = defineModel<ProductFinished[]>('showList', { default: []
 const masterList = defineModel<ProductOld[]>('master', { default: [] })
 // 配件列表数据
 const PartsList = defineModel<ProductAccessories[]>('parts', { default: [] })
-
+const deposit = defineModel<DepositOrderInfo[]>('deposit', { default: [] })
 // 转换支付方式下拉菜单
 const payMethods = optonsToSelect(props.filterList.payment_method?.preset)
 const addNewMethod = () => {
@@ -23,6 +23,15 @@ const addNewMethod = () => {
 const deleteMethod = (index: number) => {
   formData.value.payments.splice(index, 1)
 }
+
+// 计算成品列表金额
+const depositMoney = computed(() => {
+  const total = ref(0)
+  total.value = deposit.value.reduce((total, item) => {
+    return calc('(t + i) | <=0,!n', { t: total, i: item.price || 0 })
+  }, 0)
+  return total.value
+})
 
 // 计算成品列表金额
 const productMoney = computed(() => {
@@ -85,10 +94,11 @@ const totalScore = computed(() => {
 // 实际需要支付的金额
 const payMoney = computed(() => {
   const total = ref(0) // 成品总金额
-  total.value = calc('(a + b - c) | =0,!n', {
+  total.value = calc('(a + b - c) - d | =0,!n', {
     a: productMoney.value,
     b: PartsListMoney.value,
     c: masterMoney.value,
+    d: depositMoney.value,
   })
   return total.value
 })
@@ -104,7 +114,7 @@ const payMethodsTotal = computed(() => {
 // 未支付的金额
 const unPayMoney = computed(() => {
   const total = ref(0)
-  total.value = calc('(a - b) | =2,!n', {
+  total.value = calc('(a - b)  | =2,!n', {
     a: payMoney.value,
     b: payMethodsTotal.value,
   })

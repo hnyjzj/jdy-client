@@ -18,6 +18,12 @@ const openOrder = (id?: string) => {
   }
   navigateTo(`/sale/sales/add?id=${id}`)
 }
+const jumpSaleOreder = (id: string) => {
+  if (!id) {
+    return
+  }
+  navigateTo(`/sale/sales/order?id=${id}`)
+}
 </script>
 
 <template>
@@ -34,14 +40,28 @@ const openOrder = (id?: string) => {
             <div class="border-b-solid border-b-[#E0E0E0] border" />
             <common-cell label="货品" value="" />
             <template v-for="(ele, i) in item.products" :key="i">
-              <common-cell :label="ele.product_finished?.name || '--'" :value="ele.product_finished?.code || '--'" />
+              <template v-if="ele.is_our">
+                <common-cell :label="ele.product_finished?.name || '--'" :value="ele.product_finished?.code || '--'" label-color="#2B77EF" />
+              </template>
+              <template v-else>
+                <common-cell :label="ele.product_demand?.name || '--'" :value="ele.product_demand?.code || '--'" label-color="#2B77EF" />
+              </template>
             </template>
           </div>
         </template>
         <template #footer>
           <div class="flex-between  bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
-            <div class="pl-[20px] color-[#4287F4] cursor-pointer" @click="openOrder(item.id)">
-              开单
+            <div class="color-[#4287F4] cursor-pointer flex justify-center items-center">
+              <template v-if="item.status === OrderStatus.OrderStatusVerification">
+                <div class="pl-[20px] " @click="openOrder(item.id)">
+                  开单
+                </div>
+              </template>
+              <template v-if="item.order_sales.length">
+                <div class="pl-[20px] " @click="jumpSaleOreder(item.order_sales[0].id)">
+                  销售单
+                </div>
+              </template>
             </div>
             <common-button-irregular text="查看详情" @click="handleClick(item.id)" />
           </div>

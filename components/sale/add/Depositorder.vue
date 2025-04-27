@@ -4,13 +4,18 @@ const props = defineProps<{
   orderDetail: DepositOrderInfo
   searchDepositOrders: (val?: string) => Promise<DepositOrderInfo[]>
 }>()
-const searchShow = ref(false)
-const depositSelect = ref(null)
-const handleBlur = () => {
-  console.log('blur', depositSelect.value)
-}
+const emit = defineEmits<{
+  setOrderIds: [string[]]
+}>()
 // 展示定金单列表
-const showDepositList = ref<DepositOrderInfo[]>([])
+const showDepositList = defineModel<DepositOrderInfo[]>('list', { default: [] })
+const selectDepositList = defineModel<DepositOrderInfo[]>('select', { default: [] })
+const searchShow = ref(false)
+const depositSelect = ref()
+const handleBlur = () => {
+  emit('setOrderIds', depositSelect.value)
+  selectDepositList.value = showDepositList.value.filter(item => depositSelect.value.includes(item.id))
+}
 
 const cute = (index: number) => {
   showDepositList.value.splice(index, 1)
@@ -35,7 +40,7 @@ const cute = (index: number) => {
         <n-checkbox-group v-model:value="depositSelect">
           <div>
             <template v-for="(item, index) in showDepositList" :key="index">
-              <div class="flex-center-row pb-[8px]">
+              <div class="flex-between items-start pb-[8px]">
                 <div>
                   <n-checkbox
                     :value="item.id"
@@ -47,7 +52,7 @@ const cute = (index: number) => {
                     }" @blur="handleBlur" />
                 </div>
                 <div
-                  class="wh-[25px] bg-[#fff] rounded-3xl flex-center-col border-[#2080F0] border-solid border text-[20px] "
+                  class="wh-[25px] flex-shrink-0 bg-[#fff] rounded-3xl flex-center-col border-[#2080F0] border-solid border text-[20px] "
                   @click="cute(index)">
                   <div class="w-[13px] h-[2px] bg-[#2080F0]" />
                 </div>

@@ -3,6 +3,7 @@ const props = defineProps<{
   orders: DepositOrderInfo
   where: Where<OrderWhere>
   memberFiler: Where<Member>
+  productFilter: Where<ProductFinisheds>
 }>()
 const payMethods = (val: number) => {
   const arrary = optonsToSelect(props.where.payment_method?.preset)
@@ -57,16 +58,28 @@ const payMethods = (val: number) => {
                 <template v-if="index !== 0">
                   <div class="border-b-solid border-b-[#E0E0E0] border" />
                 </template>
-                <common-cell label="商品条码" :value="item.product_finished?.code" />
-                <common-cell label="商品名称" :value="item.product_finished?.name" val-color="#4C8DF6" />
-                <common-cell label="零售方式" :value="item.product_finished?.retail_type" />
-                <common-cell label="主石重(ct)" :value="item.product_finished?.weight_gem" />
-                <common-cell label="颜色" :value="item.product_finished?.color_gem" />
-                <common-cell label="净度" :value="item.product_finished?.clarity" />
-                <common-cell label="金重(g)" :value="item.product_finished?.weight_gem" />
+                <template v-if="item.is_our">
+                  <common-cell label="商品条码" :value="item.product_finished?.code" />
+                  <common-cell label="商品名称" :value="item.product_finished?.name" val-color="#4C8DF6" />
+                  <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[item.product_finished?.retail_type] || '-'" />
+                  <common-cell label="主石重(ct)" :value="item.product_finished?.weight_gem" />
+                  <common-cell label="颜色" :value="props.productFilter.color_gem?.preset[item.product_finished?.color_gem] || '-'" />
+                  <common-cell label="净度" :value="props.productFilter.clarity?.preset[item.product_finished?.clarity] || '-'" />
+                  <common-cell label="金重(g)" :value="item.product_finished?.weight_gem" />
+                  <common-cell label="工费" format="￥" :value="item.product_finished?.labor_fee" />
+                  <common-cell label="标签价" format="￥" :value="item.product_finished?.label_price" />
+                </template>
+                <template v-else>
+                  <common-cell label="商品名称" :value="item.product_demand?.name" val-color="#4C8DF6" />
+                  <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[item.product_demand?.retail_type as number] || '-'" />
+                  <common-cell label="主石重(ct)" :value="item.product_demand?.weight_gem" />
+                  <common-cell label="颜色" :value="props.productFilter.color_gem?.preset[item.product_demand?.color_gem as number] || '-'" />
+                  <common-cell label="净度" :value="props.productFilter.clarity?.preset[item.product_demand?.clarity as number] || '-'" />
+                  <common-cell label="金重(g)" :value="item.product_demand?.weight_gem" />
+                  <common-cell label="工费" format="￥" :value="item.product_demand?.labor_fee" />
+                  <common-cell label="标签价" format="￥" :value="item.product_demand?.label_price" />
+                </template>
                 <common-cell label="金价(元/g)" format="￥" :value="item.price_gold" />
-                <common-cell label="工费" format="￥" :value="item.product_finished?.labor_fee" />
-                <common-cell label="标签价" format="￥" :value="item.product_finished?.label_price" />
                 <common-cell label="定金金额" format="￥" :value="item.price" />
               </template>
             </div>

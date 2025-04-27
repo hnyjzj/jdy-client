@@ -64,15 +64,44 @@ interface DepositOrderProduct {
    */
   price_gold?: number
   /**
-   * 手动添加
-   */
-  product_demand?: ProductFinisheds
-  /**
    * 成品ID
    */
   product_id?: string
 
   product?: ProductFinisheds
+  /**
+   * 商品名称
+   */
+  name?: string
+  /**
+   * 标签价
+   */
+  label_price?: number
+  /**
+   *金重
+   */
+  weight_metal?: number
+  /**
+   *工费
+   */
+  labor_fee?: number
+  /**
+   *零售方式
+   */
+  retail_type?: number
+  /**
+   *主石重
+   */
+  weight_gem?: number
+  /**
+   *主石颜色
+   */
+  color_gem?: number
+  /**
+   *主石净度
+   */
+  clarity_gem?: number
+
 }
 
 /**
@@ -144,6 +173,8 @@ interface DepositOrderInfo {
   payments?: DepositOrderPayment[]
 
   products: DepositOrderInfoProducts[]
+
+  order_sales: ProductFinisheds[]
 }
 /**
  * 定金单详情的产品
@@ -178,6 +209,9 @@ interface DepositOrderInfoProducts {
    * 手动添加
    */
   product_demand?: ProductFinisheds
+  /**
+   * 成品
+   */
   product_finished: ProductFinisheds
   /**
    * 成品ID

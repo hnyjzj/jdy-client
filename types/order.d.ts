@@ -411,4 +411,5 @@ interface OrderInfo extends Orders {
    */
   product_old_price: string
 
+  order_deposits: DepositOrderInfo[]
 }

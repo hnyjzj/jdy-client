@@ -3,11 +3,10 @@ useSeoMeta({
   title: '新增定金单',
 })
 const { submitDepositOrder, getSaleWhere } = useDepositOrder()
-
+const { getFinishedWhere, getFinishedList } = useFinished()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { filterList } = storeToRefs(useDepositOrder())
-const { getFinishedList } = useFinished()
-const { finishedList } = storeToRefs(useFinished())
+const { finishedList, finishedFilterList } = storeToRefs(useFinished())
 const { memberList } = storeToRefs(useMemberManage())
 const { createMember } = useMemberManage()
 const { getStoreStaffList } = useStores()
@@ -16,6 +15,7 @@ const { $toast } = useNuxtApp()
 // 展示成品列表
 const showProductList = ref<DepositOrderProduct[]>([])
 await getSaleWhere()
+await getFinishedWhere()
 // 获取会员列表
 const getMember = async (val: string) => {
   await getMemberList({ page: 1, limit: 5, where: { phone: val } })
@@ -30,7 +30,9 @@ const searchProductList = async (val: string) => {
   const res = await getFinishedList({ page: 1, limit: 10, where: { code: val } })
   if (res?.data.total === 0) {
     $toast.error('商品不存在')
+    return []
   }
+  return finishedList.value || []
 }
 const formRef = ref()
 const formData = ref<DepositOrder>({
@@ -56,9 +58,8 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
       // 成功的操作
-      showProductList.value.forEach((item) => {
-        formData.value.products.push(item)
-      })
+      formData.value.products = [...showProductList.value]
+
       const res = await submitDepositOrder(formData.value)
       if (res?.code === HttpCode.SUCCESS) {
         $toast.success('下单成功')
@@ -99,8 +100,9 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
           <div class="pb-[16px]">
             <sale-deposit-product
               v-model="showProductList"
-              :product-list="finishedList"
-              @search="searchProductList" />
+              :search-product-list="searchProductList"
+              :filter-list="finishedFilterList"
+            />
           </div>
 
           <div class="pb-[16px]">

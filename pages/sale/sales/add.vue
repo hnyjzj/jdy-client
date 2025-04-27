@@ -65,6 +65,12 @@ const disScore = ref(false)
 const showProductList = ref<ProductFinished[]>([])
 const showPartsList = ref<ProductAccessories[]>([])
 const showMasterialsList = ref<ProductOld[]>([])
+
+// 定金单列表
+const showDepositList = ref<DepositOrderInfo[]>([])
+// 选择的订金单列表
+const selectDepositList = ref<DepositOrderInfo[]>([])
+
 // 获取成品积分比例
 const checkProductClass = async (params: { class: number }) => {
   const data = await getFinishedsClass(params)
@@ -73,7 +79,7 @@ const checkProductClass = async (params: { class: number }) => {
   }
 }
 const searchDepositOrders = async (val?: string) => {
-  await getDepositList({ page: 1, limit: 5, where: { id: val, status: 9, store_id: myStore.value.id } })
+  await getDepositList({ page: 1, limit: 5, where: { id: val, status: OrderStatus.OrderStatusVerification, store_id: myStore.value.id } })
   return OrdersList.value || []
 }
 
@@ -126,8 +132,11 @@ const route = useRoute()
 if (route.query.id) {
   // 判断是否有定金单订单详情
   await getOrderDetail({ id: route.query.id as string })
+  showDepositList.value.push(OrderDetail.value)
   OrderDetail.value.products.forEach((item) => {
-    addProduct(item.product_finished)
+    if (item.is_our) {
+      addProduct(item.product_finished)
+    }
   })
   await getStaff()
   //   await getMember(OrderDetail.value.member?.phone as string)
@@ -440,9 +449,13 @@ const changeStore = () => {
         </div>
         <div class="pb-[16px]">
           <sale-add-depositorder
+            v-model:list="showDepositList"
+            v-model:select="selectDepositList"
             title="订金单"
             :search-deposit-orders="searchDepositOrders"
-            :order-detail="OrderDetail" />
+            :order-detail="OrderDetail"
+            @set-order-ids="formData.order_deposit_ids = $event"
+          />
         </div>
 
         <sale-add-settlement
@@ -450,6 +463,7 @@ const changeStore = () => {
           v-model:show-list="showProductList"
           v-model:master="showMasterialsList"
           v-model:parts="showPartsList"
+          v-model:deposit="selectDepositList"
           :filter-list="filterList"
           :dis-score="disScore"
         >
