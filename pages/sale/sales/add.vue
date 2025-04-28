@@ -79,7 +79,7 @@ const checkProductClass = async (params: { class: number }) => {
   }
 }
 const searchDepositOrders = async (val?: string) => {
-  await getDepositList({ page: 1, limit: 5, where: { id: val, status: OrderStatus.OrderStatusVerification, store_id: myStore.value.id } })
+  await getDepositList({ page: 1, limit: 5, where: { id: val, status: DepositOrderStatus.Verified, store_id: myStore.value.id } })
   return OrdersList.value || []
 }
 
@@ -139,7 +139,6 @@ if (route.query.id) {
     }
   })
   await getStaff()
-  //   await getMember(OrderDetail.value.member?.phone as string)
   formData.value.clerks[0] = {
     salesman_id: OrderDetail.value.clerk_id,
     performance_rate: 100,
@@ -149,7 +148,6 @@ if (route.query.id) {
   setTimeout(() => {
     addMemberRef.value?.setMbid(OrderDetail.value.member_id, OrderDetail.value.member?.phone)
   }, 200)
-//   formData.value.member_id = OrderDetail.value.member_id
 }
 
 await getSaleWhere()
@@ -289,19 +287,12 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
     //   // 成功的操作
-      formData.value.product_finisheds = [] // 清空商品列表
-      formData.value.product_olds = [] // 清空旧料列表
-      formData.value.product_accessories = [] // 清空配件列表
-      showProductList.value.forEach((item) => {
-        formData.value.product_finisheds.push(item)
-      })
-      //   if (formData.value.product_finished.length === 0) {
-      //     $toast.error('请选择成品')
-      //     return
-      //   }
-      showMasterialsList.value.forEach((item) => {
-        formData.value.product_olds.push(item)
-      })
+      formData.value.product_finisheds = showProductList.value
+      if (formData.value.product_finisheds.length === 0) {
+        $toast.error('请选择成品')
+        return
+      }
+      formData.value.product_olds = showMasterialsList.value
       showPartsList.value.forEach((item) => {
         const data = {
           product_id: item.id,
@@ -313,31 +304,26 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
       })
 
       // 业绩比例
-      //   const result = ref(0)
-      //   formData.value.salesmans.forEach((item) => {
-      //     result.value += item.performance_rate || 0
-      //
-      //   const result = ref(0)
-      //   formData.value.salesmans.forEach((item) => {
-      //     result.value += item.performance_rate || 0
-      //   })
-      //   if (result.value > 100) {
-      //     $toast.error('业绩比例总合必须等于100%')
-      //     return false
-      //   }
-      //   else if (result.value < 100) {
-      //     $toast.error('业绩比例总合必须等于100%')
-      //     return false
-      //   }
-      //   formData.value.store_id = myStore.value.id
+      const result = ref(0)
+      formData.value.clerks.forEach((item) => {
+        result.value += item.performance_rate || 0
+      })
+
+      if (result.value > 100) {
+        $toast.error('业绩比例总合必须等于100%')
+        return
+      }
+      else if (result.value < 100) {
+        $toast.error('业绩比例总合必须等于100%')
+        return
+      }
       const res = await submitOrder(formData.value)
       if (res?.code === HttpCode.SUCCESS) {
-        $toast.success('添加成功')
-        // await navigateTo({ path: '/sale/sales/order' })
+        $toast.success('开单成功')
       }
-    //   else {
-    //     $toast.error(res?.message ?? '添加失败')
-    //   }
+      else {
+        $toast.error(res?.message ?? '开单失败')
+      }
     }
     else {
       $toast.error(errors[0][0].message as string)
@@ -447,16 +433,18 @@ const changeStore = () => {
             @clear-list="() => accessorieList = [] "
           />
         </div>
-        <div class="pb-[16px]">
-          <sale-add-depositorder
-            v-model:list="showDepositList"
-            v-model:select="selectDepositList"
-            title="订金单"
-            :search-deposit-orders="searchDepositOrders"
-            :order-detail="OrderDetail"
-            @set-order-ids="formData.order_deposit_ids = $event"
-          />
-        </div>
+        <template v-if="route.query.id">
+          <div class="pb-[16px]">
+            <sale-add-depositorder
+              v-model:list="showDepositList"
+              v-model:select="selectDepositList"
+              title="订金单"
+              :search-deposit-orders="searchDepositOrders"
+              :order-detail="OrderDetail"
+              @set-order-ids="formData.order_deposit_ids = $event"
+            />
+          </div>
+        </template>
 
         <sale-add-settlement
           v-model:form="formData"

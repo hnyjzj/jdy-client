@@ -108,32 +108,57 @@ export const useOrder = defineStore('Order', {
         return true
       }
     },
-    // 新增定金单
-    async submitDepositOrder(req: Orders) {
-      const { data } = await https.post<OrderInfo, Orders>('/order/deposit/create', req)
-      return data.value
-    },
-    // 获取订金单列表
-    async getDepositList(req: ReqList<OrderInfo>) {
-      if (req.page === 1) {
-        this.OrdersList = []
-      }
-      const { data } = await https.post<ResList<OrderInfo>, ReqList<OrderInfo>>('/order/deposit/list', req)
+    /**
+     *撤销订单
+     * @param {object} req - 撤销订单请求参数
+     * @param {string} req.id - 订单id
+     * @returns {Promise<boolean>}
+     *  - true: 支付成功
+     *  - false: 支付失败或接口异常
+     */
+    async revokedOrder(req: { id: string }) {
+      const { data } = await https.put<any, { id: string }>('/order/sales/revoked', req)
       if (data.value?.code === HttpCode.SUCCESS) {
-        this.total = data.value.data.total
-        if (data.value.data.list.length > 0) {
-          this.OrdersList = data.value.data.list
-          if (this.OrdersList.length === this.total) {
-            return false
-          }
-          return true
-        }
-        else {
-          // 当前页没有数据，则不进行下一页
-          return false
-        }
+        return true
+      }
+      return false
+    },
+    /**
+     *确认支付订单
+     * @param {object} req - 支付请求参数
+     * @param {string} req.id - 订单id
+     * @returns {Promise<boolean>}
+     *  - true: 支付成功
+     *  - false: 支付失败或接口异常
+     */
+    async payOrder(req: { id: string }) {
+      const { data } = await https.put<any, { id: string }>('/order/sales/pay', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return true
+      }
+      return false
+    },
+    /**
+     *订单成品退货接口
+     * @param {object} req - 退货请求参数
+     * @param {string} req.id - 订单id
+     * @param {number} req.method - 退货入库方式，成品类型必传
+     * @param {Payment[]} req.payments - 退款支付方式
+     * @param {string} req.price - 退款金额
+     * @param {string} req.product_id - 成品id
+     * @param {string} req.remark - 备注
+     * @param {number} req.product_type - 成品类型
+     * @returns {Promise<boolean>}
+     *  - true: 支付成功
+     *  - false: 支付失败或接口异常
+     */
+    async returnOrderGoods(req: ReturnGoods) {
+      const { data } = await https.put<any, ReturnGoods>('/order/sales/refund', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        console.log(data)
+
+        return true
       }
     },
-
   },
 })

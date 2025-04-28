@@ -204,6 +204,8 @@ interface ProductFinished {
   name?: string
 
   code?: string
+  status?: number
+  id?: string
 }
 
 interface ProductOld {
@@ -345,71 +347,35 @@ interface OrderWhere {
   store_id?: string
   product_id?: string
   type?: number
-  payment_method?: OrderPaymentMethod[]
+  payment_method?: any[]
 }
-/**
- * 销售单详情
- */
-interface OrderInfo extends Orders {
+interface ReturnGoods {
   /**
-   * 门店信息
-   */
-  store: Stores
-  /**
-   * id
+   * 订单 ID
    */
   id: string
   /**
-   * 会员信息
+   * 退货入库方式，成品类型必传
    */
-  member: Member
+  method: number
   /**
-   * 收银员信息
+   * 支付方式
    */
-  cashier: any
+  payments: Payment[]
   /**
-   * 状态
+   * 退款金额
    */
-  status: number
+  price: number
   /**
-   * 应付金额
+   * 商品ID
    */
-  price: string
+  product_id: string
   /**
-   * 金额折扣
+   * 货品类型
    */
-  price_discount: string
+  product_type: number
   /**
-   * 原始价格
+   * 备注
    */
-  price_original: string
-
-  /**
-   * 积分
-   */
-  integral: string
-
-  /**
-   * 实付金额
-   */
-  price_pay: string
-  /**
-   * 创建时间
-   */
-  created_at: string
-
-  /**
-   *成品货品金额
-   */
-  product_finished_price: string
-  /**
-   *配件礼品金额
-   */
-  product_accessorie_price: string
-  /**
-   *旧料抵扣金额
-   */
-  product_old_price: string
-
-  order_deposits: DepositOrderInfo[]
+  remark: string
 }

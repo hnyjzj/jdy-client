@@ -7,6 +7,7 @@ const Props = defineProps<{
 }>()
 const emit = defineEmits<{
   updateScoreDeDeduction: []
+
 }>()
 const showProductList = defineModel<ProductFinished[]>('list', { default: [] })
 const hasCheck = ref(false)

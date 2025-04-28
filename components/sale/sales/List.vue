@@ -4,6 +4,10 @@ const props = defineProps<{
   info: OrderInfo[]
   where: Where<OrderWhere>
 }>()
+const emit = defineEmits<{
+  cancle: [val: string]
+  pay: [val: string]
+}>()
 
 const handleClick = (id?: string) => {
   if (!id) {
@@ -11,12 +15,37 @@ const handleClick = (id?: string) => {
   }
   navigateTo(`/sale/sales/order?id=${id}`)
 }
+const revokeDialog = ref(false)
+const readyRevokId = ref<string>()
+const revoke = () => {
+  emit('cancle', readyRevokId.value!)
+}
+
+const handleCancel = (id: string) => {
+  if (!id) {
+    return
+  }
+  readyRevokId.value = id
+  revokeDialog.value = true
+}
+const paydialog = ref(false)
+const payid = ref<string>()
+const pay = () => {
+  emit('pay', payid.value!)
+}
+const hanlePay = (id: string) => {
+  if (!id) {
+    return
+  }
+  payid.value = id
+  paydialog.value = true
+}
 </script>
 
 <template>
   <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
-      <sale-cards :title="`销售单号:${item.id}`">
+      <sale-cards :title="`销售单号:${item.id}`" :tag-text="props.where.status?.preset[item.status]">
         <template #info>
           <div class="info">
             <common-cell label="所属门店" :value="item.store.name || '--'" />
@@ -34,12 +63,24 @@ const handleClick = (id?: string) => {
           </div>
         </template>
         <template #footer>
-          <div class="flex-end bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
+          <div class="flex-between bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
+            <div class="color-[#4287F4] cursor-pointer flex justify-center items-center">
+              <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === item.status">
+                <div class="pl-[20px]" @click="handleCancel(item.id)">
+                  撤销
+                </div>
+                <div class="pl-[20px]" @click="hanlePay(item.id)">
+                  支付
+                </div>
+              </template>
+            </div>
             <common-button-irregular text="查看详情" @click="handleClick(item.id)" />
           </div>
         </template>
       </sale-cards>
     </template>
+    <common-confirm v-model:show="revokeDialog" icon="error" title="撤销提醒" text="确认要撤销此订单吗?" @submit="revoke" />
+    <common-confirm v-model:show="paydialog" icon="success" title="支付确认" text="确认支付了此订单吗?" @submit="pay" />
   </div>
 </template>
 

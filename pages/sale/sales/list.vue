@@ -3,13 +3,14 @@
 useSeoMeta({
   title: '销售单列表',
 })
+const { $toast } = useNuxtApp()
 const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 // const { getFinishedList } = useFinished()
 const { finishedList } = storeToRefs(useFinished())
 
 const { filterListToArray, OrdersList, total, filterList, searchPage } = storeToRefs(useOrder())
-const { getSaleWhere, getOrderList } = useOrder()
+const { getSaleWhere, getOrderList, revokedOrder, payOrder } = useOrder()
 const filterData = ref({} as Partial<OrderWhere>)
 const filterShow = ref(false)
 
@@ -67,6 +68,29 @@ const updatePage = async (page: number) => {
   searchPage.value = page
   await getList()
 }
+
+// 撤销订单
+const cancelOrder = async (id: string) => {
+  const res = await revokedOrder({ id })
+  if (res) {
+    $toast.success('撤销成功')
+    await getList()
+  }
+  else {
+    $toast.error('撤销失败')
+  }
+}
+// 支付订单确认完成
+const payOrderConfirm = async (id: string) => {
+  const res = await payOrder({ id })
+  if (res) {
+    $toast.success('支付成功')
+    await getList()
+  }
+  else {
+    $toast.error('支付失败')
+  }
+}
 </script>
 
 <template>
@@ -92,7 +116,7 @@ const updatePage = async (page: number) => {
       <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <div class="p-[16px]">
           <template v-if="OrdersList.length">
-            <sale-sales-list :info="OrdersList" :where="filterList" />
+            <sale-sales-list :info="OrdersList" :where="filterList" @cancle="cancelOrder" @pay="payOrderConfirm" />
             <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
           </template>
           <template v-else>

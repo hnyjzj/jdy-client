@@ -5,6 +5,7 @@ const props = defineProps<{
   orders: OrderInfo
   where: Where<OrderWhere>
   memberFiler: Where<Member>
+  returnGoods: (req: ReturnGoods) => void
 }>()
 const payMethods = (val: number) => {
   const arrary = optonsToSelect(props.where.payment_method?.preset)
@@ -44,6 +45,19 @@ const totalScore = computed(() => {
     c: PartsListScore.value,
   })
 })
+
+const showModel = defineModel('dialog', { default: false })
+const showReturnGoods = ref({} as { Finished: ProductFinished, id: string, FinishedType: number })
+
+const onReturnProduct = (index: number) => {
+  const data = {
+    Finished: props.orders.product_finisheds[index],
+    id: props.orders.id,
+    FinishedType: 1,
+  }
+  showReturnGoods.value = data
+  showModel.value = true
+}
 </script>
 
 <template>
@@ -52,22 +66,24 @@ const totalScore = computed(() => {
       <sale-cards title="基本信息">
         <template #info>
           <div class="info">
-            <common-cell label="订单编号" :value="props.orders.id" />
-            <common-cell label="订单状态" :value="where.status?.preset[props.orders.status]" />
+            <common-cell label="订单编号" :value="props.orders.id" rcol="col-8" lcol="col-4" />
+            <common-cell label="订单状态" :value="where.status?.preset[props.orders.status]" val-color="#FF9900" />
             <common-cell label="订单来源" :value="where.source?.preset[props.orders.source]" />
             <common-cell label="销售时间" :value="formatISODate(props.orders.created_at)" />
-            <div class="border-b-solid border-b-[#E0E0E0] border" />
+            <div class="line" />
             <common-cell label="会员姓名" :value="props.orders.member?.name || ''" />
             <common-cell label="会员昵称" :value="props.orders.member?.nickname || ''" />
             <common-cell label="手机号" :value="props.orders.member?.phone" />
             <common-cell label="会员等级" :value="props.orders.member?.level" />
-            <div class="border-b-solid border-b-[#E0E0E0] border" />
-            <common-cell label="关联订金单" value="" />
-            <template v-for="(deposit, ix) in props.orders.order_deposits" :key="ix">
-              <common-cell label="订金单号" :value="deposit.id" val-color="#4C8DF6" />
-              <common-cell label="订金金额" :value="deposit.price_pay" />
-              <template v-for="(p, index) in deposit.products" :key="index">
-                <common-cell :label="`商品${index + 1}`" :value="p.product_finished.name" />
+            <template v-if="props.orders.order_deposits.length">
+              <div class="line" />
+              <common-cell label="关联订金单" value="" label-color="#4C8DF6" />
+              <template v-for="(deposit, ix) in props.orders.order_deposits" :key="ix">
+                <common-cell label="订金单号" :value="deposit.id" label-color="#4C8DF6" />
+                <common-cell label="订金金额" :value="deposit.price_pay" />
+                <template v-for="(p, index) in deposit.products" :key="index">
+                  <common-cell :label="`商品${index + 1}`" :value="p.product_finished.name" />
+                </template>
               </template>
             </template>
           </div>
@@ -81,7 +97,7 @@ const totalScore = computed(() => {
             <common-cell label="收银员" :value="props.orders.cashier?.nickname" />
             <common-cell label="手机号" :value="props.orders.cashier?.phone" />
             <template v-for="(item, index) in props.orders.clerks" :key="index">
-              <div class="border-b-solid border-b-[#E0E0E0] border" />
+              <div class="line" />
               <common-cell label="导购员" :value="item.salesman?.nickname || ''" />
               <common-cell label="手机号" :value="item.salesman?.phone" />
               <common-cell label="业绩比例" :value="item.performance_rate || ''" right="%" />
@@ -98,9 +114,8 @@ const totalScore = computed(() => {
             <div class="info">
               <template v-for="(item, index) in props.orders.product_finisheds" :key="index">
                 <template v-if="index !== 0">
-                  <div class="border-b-solid border-b-[#E0E0E0] border" />
+                  <div class="line" />
                 </template>
-
                 <common-cell label="商品条码" :value="item.product?.code" />
                 <common-cell label="商品名称" :value="item.product?.name" val-color="#4C8DF6" />
                 <common-cell label="零售方式" :value="item.product?.retail_type" />
@@ -115,6 +130,14 @@ const totalScore = computed(() => {
                 <common-cell label="抹零" format="￥" :value="item.round_off" />
                 <common-cell label="积分(+)" :value="item.integral" />
                 <common-cell label="应付金额" format="￥" :value="item.price" />
+                <template v-if="item.status === OrderStatusText.OrderSalesProductStatusReturn">
+                  <common-cell label="成品状态" value="已退货" val-color="#FF9900" />
+                </template>
+                <div class="flex-end">
+                  <template v-if="item.status === OrderStatusText.OrderSalesProductStatusComplete">
+                    <common-button-rounded content="退货" @button-click="onReturnProduct(index)" />
+                  </template>
+                </div>
               </template>
             </div>
           </template>
@@ -128,7 +151,7 @@ const totalScore = computed(() => {
             <div class="info">
               <template v-for="(item, index) in props.orders.product_olds" :key="index">
                 <template v-if="index !== 0">
-                  <div class="border-b-solid border-b-[#E0E0E0] border" />
+                  <div class="line" />
                 </template>
                 <common-cell label="旧料名称" :value="item.product?.name || '-'" val-color="#4C8DF6" />
                 <common-cell label="旧料编号" :value="item?.product_id" />
@@ -163,7 +186,7 @@ const totalScore = computed(() => {
               <div class="info">
                 <template v-for="(item, index) in props.orders.product_accessories" :key="index">
                   <template v-if="index !== 0">
-                    <div class="border-b-solid border-b-[#E0E0E0] border" />
+                    <div class="line" />
                   </template>
                   <common-cell label="配件名称" :value="item.product?.category.name" val-color="#4C8DF6" />
                   <common-cell label="配件id" :value="item.product_id" />
@@ -187,12 +210,12 @@ const totalScore = computed(() => {
             <common-cell label="优惠金额" format="￥" :value="props.orders.price_discount" />
             <common-cell label="实付金额" format="￥" :value="props.orders.price_pay" />
             <common-cell label="积分抵扣" :value="props.orders.integral_deduction" />
-            <div class="border-b-solid border-b-[#E0E0E0] border" />
+            <div class="line" />
             <common-cell label="支付方式" value="" label-color="#4C8DF6" />
             <template v-for="(item, index) in props.orders.payments" :key="index">
               <common-cell :label="payMethods(item.payment_method) " label-color="#4C8DF6" val-color="#4C8DF6" format="￥" :value="item.amount" />
             </template>
-            <div class="border-b-solid border-b-[#E0E0E0] border" />
+            <div class="line" />
             <common-cell label="成品积分" format="+" :value="productListScore" label-color="#4C8DF6" val-color="#4C8DF6" />
             <common-cell label="旧料积分" format="-" :value="masterListScore" label-color="#4C8DF6" val-color="#4C8DF6" />
             <common-cell label="配件积分" format="+" :value="PartsListScore" label-color="#4C8DF6" val-color="#4C8DF6" />
@@ -202,11 +225,15 @@ const totalScore = computed(() => {
         </template>
       </sale-cards>
     </div>
+    <sale-order-return-goods v-model:show="showModel" :where="props.where" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
   </div>
 </template>
 
 <style lang="scss" scoped>
  .info {
   --uno: 'flex flex-col gap-[3px] px-[16px] pb-[16px]';
+}
+.line {
+  --uno: 'h-[1px] w-full bg-[#E0E0E0] my-[8px]';
 }
 </style>

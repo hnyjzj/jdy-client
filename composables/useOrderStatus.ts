@@ -1,63 +1,49 @@
-/**
- * 订单状态枚举
- * 描述订单在生命周期中可能经历的所有业务状态
- */
-export enum OrderStatus {
-  /**
-   * 待支付状态（初始状态）
-   * @description
-   * - 订单创建后等待用户完成支付
-   * - 若超时未支付将自动转入取消状态
-   */
-  OrderStatusWaitPay = 0,
+export enum OrderStatusText {
 
   /**
-   * 已取消状态
+   * 待付款
    */
-  OrderStatusCancel,
+  OrderSalesProductStatusWaitPay = 1,
+  /**
+   * 已取消
+   */
+  OrderSalesProductStatusCancel,
+  /**
+   * 已完成
+   */
+  OrderSalesProductStatusComplete,
+  /**
+   * 有退款
+   */
+  OrderSalesProductStatusRefund,
 
   /**
-   * 已完成状态
+   * 已退货
    */
-  OrderStatusComplete,
+  OrderSalesProductStatusReturn,
 
-  /**
-   * 已退款状态
-   */
-  OrderStatusRefund,
+}
 
+// 写法 1: 数字枚举 (推荐)
+export enum DepositOrderStatus {
   /**
-   * 已收货状态
+   * 待付款
    */
-  OrderStatusReceived,
-
+  PendingPayment = 1,
   /**
-   * 派维修状态
+   * 已取消
    */
-  OrderStatusSendRepair,
-
+  Canceled,
   /**
-   * 维修中状态
+   * 预定中
    */
-  OrderStatusRepairing,
-
+  Booking,
   /**
-   * 已维修状态
+   * 已核销
    */
-  OrderStatusRepaired,
-
+  Verified,
   /**
-   * 待取货状态
+   * 有退款
    */
-  OrderStatusWaitPickup,
-
-  /**
-   * 已预定状态
-   */
-  OrderStatusReserve,
-
-  /**
-   * 已核销状态
-   */
-  OrderStatusVerification,
+  Refunded,
 }

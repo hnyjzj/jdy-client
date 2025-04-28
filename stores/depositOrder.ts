@@ -13,7 +13,7 @@ export const useDepositOrder = defineStore('depositOrder', {
   actions: {
     // 获取筛选条件
     async getSaleWhere() {
-      const { data } = await https.get<Where<OrderWhere>, null>('/order/sales/where')
+      const { data } = await https.get<Where<OrderWhere>, null>('/order/deposit/where')
       if (data.value?.code === HttpCode.SUCCESS) {
         this.filterList = data.value.data
         this.filterListToArray = sortArr(this.filterList)
