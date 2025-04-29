@@ -10,6 +10,8 @@ const { OrderDetail, filterList } = storeToRefs(useOrder())
 const { getOrderDetail, getSaleWhere, returnOrderGoods } = useOrder()
 const { getFinishedWhere } = useFinished()
 const { finishedFilterList } = storeToRefs(useFinished())
+const { getOldWhere } = useOld()
+const { oldFilterList } = storeToRefs(useOld())
 const router = useRouter()
 const route = useRoute()
 if (route.query.id) {
@@ -17,6 +19,7 @@ if (route.query.id) {
   await getMemberWhere()
   await getSaleWhere()
   await getFinishedWhere()
+  await getOldWhere()
 }
 const showModel = ref(false)
 const returnGoods = async (req: ReturnGoods) => {
@@ -32,7 +35,14 @@ const returnGoods = async (req: ReturnGoods) => {
 <template>
   <div>
     <div class="p-[16px] pb-[80px]">
-      <sale-order-detail v-model:dialog="showModel" :member-filer="memberFiler" :where="filterList" :product-filter="finishedFilterList" :orders="OrderDetail" :return-goods="returnGoods" />
+      <sale-order-detail
+        v-model:dialog="showModel"
+        :old-filter="oldFilterList"
+        :member-filer="memberFiler"
+        :order-where="filterList"
+        :product-filter="finishedFilterList"
+        :orders="OrderDetail"
+        :return-goods="returnGoods" />
     </div>
     <div class="footer">
       <div class="grid-12 gap-[12px] px-[16px]">

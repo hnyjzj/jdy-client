@@ -46,7 +46,10 @@ export const useMemberManage = defineStore('Member', {
         }
       }
     },
-    // 获取筛选列表
+    /**
+     * 获取会员筛选条件
+     * @returns filterList
+     */
     async getMemberWhere() {
       try {
         const { data } = await https.get<Where<Member>>('/member/where')

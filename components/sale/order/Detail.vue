@@ -3,14 +3,15 @@ import { calc } from 'a-calc'
 
 const props = defineProps<{
   orders: OrderInfo
-  where: Where<OrderWhere>
+  orderWhere: Where<OrderWhere>
   memberFiler: Where<Member>
   productFilter: Where<ProductFinisheds>
+  oldFilter: Where<ProductOlds>
   returnGoods: (req: ReturnGoods) => void
 
 }>()
 const payMethods = (val: number) => {
-  const arrary = optonsToSelect(props.where.payment_method?.preset)
+  const arrary = optonsToSelect(props.orderWhere.payment_method?.preset)
   const data = arrary.find(item => item.value === val)
   return data?.label || '未知'
 }
@@ -97,8 +98,8 @@ const onReturnMaster = (index: number) => {
         <template #info>
           <div class="info">
             <common-cell label="订单编号" :value="props.orders.id" rcol="col-8" lcol="col-4" />
-            <common-cell label="订单状态" :value="where.status?.preset[props.orders.status]" val-color="#FF9900" />
-            <common-cell label="订单来源" :value="where.source?.preset[props.orders.source]" />
+            <common-cell label="订单状态" :value="props.orderWhere.status?.preset[props.orders.status]" val-color="#FF9900" />
+            <common-cell label="订单来源" :value="props.orderWhere.source?.preset[props.orders.source]" />
             <common-cell label="销售时间" :value="formatISODate(props.orders.created_at)" />
             <div class="line" />
             <common-cell label="会员姓名" :value="props.orders.member?.name || ''" />
@@ -188,18 +189,18 @@ const onReturnMaster = (index: number) => {
                 <common-cell label="旧料编号" :value="item?.product_id" />
                 <common-cell label="旧料条码" :value="item?.product?.code || '-'" />
                 <common-cell label="本店货品" :value="item.product?.is_our" />
-                <common-cell label="回收方式" :value="item.product?.recycle_method" />
-                <common-cell label="回收类型" :value="item.product?.recycle_type || '-'" />
-                <common-cell label="材质" :value="item.product?.material || '-'" />
-                <common-cell label="成色" :value="item.product?.quality" />
+                <common-cell label="回收方式" :value="props.oldFilter.recycle_method?.preset[item.product?.recycle_method!] || '-'" />
+                <common-cell label="回收类型" :value="props.oldFilter.recycle_type?.preset[item.product?.recycle_type!] || '-'" />
+                <common-cell label="材质" :value="props.oldFilter.material?.preset[item.product?.material!] || '-'" />
+                <common-cell label="成色" :value="props.oldFilter.quality?.preset[item.product?.quality!] || '-'" />
                 <common-cell label="实际成色" :value="item.quality_actual" />
-                <common-cell label="主石" :value="item.product?.gem" />
+                <common-cell label="主石" :value="props.oldFilter.gem?.preset[item.product?.gem!] || '-'" />
                 <common-cell label="主石重(ct)" :value="item.product?.weight_gem" />
-                <common-cell label="品类" :value="item.product?.category" />
-                <common-cell label="品牌" :value="item.product?.brand" />
-                <common-cell label="工艺" :value="item.product?.craft" />
+                <common-cell label="品类" :value="props.oldFilter.category?.preset[item.product?.category!] || '-'" />
+                <common-cell label="品牌" :value="props.oldFilter.brand?.preset[item.product?.brand!] || '-'" />
+                <common-cell label="工艺" :value="props.oldFilter.craft?.preset[item.product?.craft!] || '-' " />
                 <common-cell label="积分(-)" :value="item.integral" />
-                <common-cell label="回收工费方式" :value="item.recycle_price_labor_method" />
+                <common-cell label="回收工费方式" :value="props.oldFilter.recycle_price_labor_method?.preset[item.recycle_price_labor_method!] " />
                 <common-cell label="回收工费" format="￥" :value="item.recycle_price_labor" />
                 <common-cell label="回收金价" format="￥" :value="item.recycle_price_gold" />
                 <common-cell label="回收金额" format="￥" :value="item.recycle_price" />
@@ -272,7 +273,7 @@ const onReturnMaster = (index: number) => {
         </template>
       </sale-cards>
     </div>
-    <sale-order-return-goods ref="returnGoodsRef" v-model:show="showModel" :where="props.where" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
+    <sale-order-return-goods ref="returnGoodsRef" v-model:show="showModel" :where="props.orderWhere" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
   </div>
 </template>
 

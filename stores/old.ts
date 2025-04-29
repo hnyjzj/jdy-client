@@ -33,7 +33,10 @@ export const useOld = defineStore('Old', {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
       }
     },
-    // 获取旧料筛选列表
+    /**
+     * 获取旧料筛选列表
+     * @returns oldFilterList
+     */
     async getOldWhere() {
       try {
         const { data } = await https.get<Where<ProductOlds>>('/product/old/where')

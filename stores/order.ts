@@ -13,7 +13,10 @@ export const useOrder = defineStore('Order', {
   }),
 
   actions: {
-    // 获取筛选条件
+    /**
+     * 获取销售单筛选条件
+     * @return filterList
+     */
     async getSaleWhere() {
       const { data } = await https.get<Where<OrderWhere>, null>('/order/sales/where')
       if (data.value?.code === HttpCode.SUCCESS) {
@@ -100,7 +103,12 @@ export const useOrder = defineStore('Order', {
       const { data } = await https.post<OrderInfo, Orders>('/order/sales/create', req)
       return data.value
     },
-    // 获取订单详情
+    /**
+     * 获取订单详情
+     * @param req
+     * @param req.id { id: string }
+     * @returns OrderDetail
+     */
     async getOrderDetail(req: { id: string }) {
       const { data } = await https.post<OrderInfo, { id: string }>('/order/sales/info', req)
       if (data.value?.code === HttpCode.SUCCESS) {

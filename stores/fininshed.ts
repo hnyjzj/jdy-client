@@ -31,7 +31,10 @@ export const useFinished = defineStore('Finished', {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
       }
     },
-    // 获取成品筛选列表
+    /**
+     * 获取成品筛选列表
+     * @returns finishedFilterList
+     */
     async getFinishedWhere() {
       try {
         const { data } = await https.get<Where<ProductFinisheds>>('/product/finished/where')
