@@ -5,7 +5,9 @@ const props = defineProps<{
   orders: OrderInfo
   where: Where<OrderWhere>
   memberFiler: Where<Member>
+  productFilter: Where<ProductFinisheds>
   returnGoods: (req: ReturnGoods) => void
+
 }>()
 const payMethods = (val: number) => {
   const arrary = optonsToSelect(props.where.payment_method?.preset)
@@ -47,13 +49,41 @@ const totalScore = computed(() => {
 })
 
 const showModel = defineModel('dialog', { default: false })
-const showReturnGoods = ref({} as { Finished: ProductFinished, id: string, FinishedType: number })
-
+const showReturnGoods = ref({} as {
+  Finished?: ProductFinished
+  Parts?: ProductAccessorie
+  Olds?: | ProductOld
+  id: string
+  FinishedType: number
+})
+// 成品退货
 const onReturnProduct = (index: number) => {
   const data = {
     Finished: props.orders.product_finisheds[index],
     id: props.orders.id,
     FinishedType: 1,
+  }
+  showReturnGoods.value = data
+  showModel.value = true
+}
+const returnGoodsRef = ref()
+// 配件退货
+const onReturnParts = async (index: number) => {
+  const data = {
+    Parts: props.orders.product_accessories[index],
+    id: props.orders.id,
+    FinishedType: 3,
+  }
+  await (showReturnGoods.value = data)
+  await returnGoodsRef.value?.setPrice()
+  showModel.value = true
+}
+
+const onReturnMaster = (index: number) => {
+  const data = {
+    Olds: props.orders.product_olds[index],
+    id: props.orders.id,
+    FinishedType: 2,
   }
   showReturnGoods.value = data
   showModel.value = true
@@ -118,7 +148,8 @@ const onReturnProduct = (index: number) => {
                 </template>
                 <common-cell label="商品条码" :value="item.product?.code" />
                 <common-cell label="商品名称" :value="item.product?.name" val-color="#4C8DF6" />
-                <common-cell label="零售方式" :value="item.product?.retail_type" />
+                <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[(item.product?.retail_type as number)]" />
+                <!-- :value="props.productFilter.retail_type?.preset[item.product_demand?.retail_type as number] || '-'" -->
                 <common-cell label="金重(g)" :value="item.product?.weight_gem" />
                 <common-cell label="金价(元/g)" format="￥" :value="item.price_gold" />
                 <common-cell label="工费" format="￥" :value="item.labor_fee" />
@@ -172,6 +203,14 @@ const onReturnProduct = (index: number) => {
                 <common-cell label="回收工费" format="￥" :value="item.recycle_price_labor" />
                 <common-cell label="回收金价" format="￥" :value="item.recycle_price_gold" />
                 <common-cell label="回收金额" format="￥" :value="item.recycle_price" />
+                <template v-if="item.status === OrderStatusText.OrderSalesProductStatusReturn">
+                  <common-cell label="状态" value="已退货" val-color="#FF9900" />
+                </template>
+                <div class="flex-end">
+                  <template v-if="item?.status === OrderStatusText.OrderSalesProductStatusComplete">
+                    <common-button-rounded content="退货" @button-click="onReturnMaster(index)" />
+                  </template>
+                </div>
               </template>
             </div>
           </template>
@@ -193,6 +232,14 @@ const onReturnProduct = (index: number) => {
                   <common-cell label="积分" :value="item.integral" />
                   <common-cell label="应付金额" format="￥" :value="item.price" />
                   <common-cell label="数量" :value="item.quantity" />
+                  <template v-if="item.status === OrderStatusText.OrderSalesProductStatusReturn">
+                    <common-cell label="状态" value="已退货" val-color="#FF9900" />
+                  </template>
+                  <div class="flex-end">
+                    <template v-if="item?.status === OrderStatusText.OrderSalesProductStatusComplete">
+                      <common-button-rounded content="退货" @button-click="onReturnParts(index)" />
+                    </template>
+                  </div>
                 </template>
               </div>
             </div>
@@ -225,7 +272,7 @@ const onReturnProduct = (index: number) => {
         </template>
       </sale-cards>
     </div>
-    <sale-order-return-goods v-model:show="showModel" :where="props.where" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
+    <sale-order-return-goods ref="returnGoodsRef" v-model:show="showModel" :where="props.where" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
   </div>
 </template>
 

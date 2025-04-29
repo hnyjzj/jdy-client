@@ -138,6 +138,8 @@ interface ProductAccessorie {
   quantity: number
 
   product?: ProductAccessories
+  status?: number
+  id?: string
 }
 
 interface ProductFinished {
@@ -331,8 +333,9 @@ interface ProductOld {
    * 产品类型
    */
   type: number
-
+  status?: number
   product?: ProductOlds
+  id?: string
 }
 
 interface OrderWhere {
@@ -357,7 +360,7 @@ interface ReturnGoods {
   /**
    * 退货入库方式，成品类型必传
    */
-  method: number
+  method?: number
   /**
    * 支付方式
    */
