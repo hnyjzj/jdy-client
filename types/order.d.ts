@@ -282,7 +282,7 @@ interface ProductOld {
   /**
    * 实际成色
    */
-  quality_actual?: string
+  quality_actual?: number
   /**
    * 回收方式
    */

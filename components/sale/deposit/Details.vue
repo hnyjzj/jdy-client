@@ -4,11 +4,23 @@ const props = defineProps<{
   where: Where<OrderWhere>
   memberFiler: Where<Member>
   productFilter: Where<ProductFinisheds>
+  returnGoods: (val: DepositReturnGoods) => Promise<boolean>
 }>()
 const payMethods = (val: number) => {
   const arrary = optonsToSelect(props.where.payment_method?.preset)
   const data = arrary.find(item => item.value === val)
   return data?.label || '未知'
+}
+const showModel = ref(false)
+const showReturnGoods = ref<{ Finished: DepositOrderInfoProducts, id: string }>()
+// 点击退货
+const returnGoods = (val: number) => {
+  const data = {
+    Finished: props.orders.products[val],
+    id: props.orders?.id as string,
+  }
+  showReturnGoods.value = data
+  showModel.value = true
 }
 </script>
 
@@ -19,7 +31,7 @@ const payMethods = (val: number) => {
         <template #info>
           <div class="info">
             <common-cell label="订单编号" :value="props.orders.id" />
-            <common-cell label="订单状态" :value="where.status?.preset[(props.orders.status as number)]" />
+            <common-cell label="订单状态" :value="where.status?.preset[(props.orders.status as number)]" val-color="#FF9900" />
             <common-cell label="销售时间" :value="formatISODate(props.orders.created_at)" />
             <common-cell label="订单备注" :value="props.orders.remark || '-'" />
             <div class="border-b-solid border-b-[#E0E0E0] border" />
@@ -81,12 +93,22 @@ const payMethods = (val: number) => {
                 </template>
                 <common-cell label="金价(元/g)" format="￥" :value="item.price_gold" />
                 <common-cell label="定金金额" format="￥" :value="item.price" />
+                <template v-if="item.status === DepositOrderStatus.Returned">
+                  <common-cell label="货品状态" value="已退货" val-color="#FF9900" />
+                </template>
+                <div class="flex-end">
+                  <template v-if="item.status === DepositOrderStatus.Booking">
+                    <common-button-rounded content="退货" @button-click="returnGoods(index)" />
+                  </template>
+                </div>
               </template>
             </div>
           </template>
         </sale-cards>
       </div>
     </template>
+
+    <sale-deposit-return-goods v-model:show="showModel" :where="props.where" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
   </div>
 </template>
 

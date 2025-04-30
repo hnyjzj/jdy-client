@@ -8,7 +8,7 @@ const { finishedFilterList } = storeToRefs(useFinished())
 const { getMemberWhere } = useMemberManage()
 const { filterList: memberFiler } = storeToRefs(useMemberManage())
 const { OrderDetail, filterList } = storeToRefs(useDepositOrder())
-const { getOrderDetail, getSaleWhere } = useDepositOrder()
+const { getOrderDetail, getSaleWhere, returnGoodsDepositOrder } = useDepositOrder()
 const router = useRouter()
 const route = useRoute()
 if (route.query.id) {
@@ -17,12 +17,14 @@ if (route.query.id) {
   await getSaleWhere()
   await getFinishedWhere()
 }
+
+const returnGoods = async (req: DepositReturnGoods) => await returnGoodsDepositOrder(req)
 </script>
 
 <template>
   <div>
     <div class="p-[16px] pb-[80px]">
-      <sale-deposit-details :member-filer="memberFiler" :product-filter="finishedFilterList" :where="filterList" :orders="OrderDetail" />
+      <sale-deposit-details :member-filer="memberFiler" :product-filter="finishedFilterList" :where="filterList" :orders="OrderDetail" :return-goods="returnGoods" />
     </div>
     <div class="footer">
       <div class="grid-12 gap-[12px] px-[16px]">

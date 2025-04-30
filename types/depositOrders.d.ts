@@ -293,3 +293,25 @@ interface OrderInfo extends Orders {
 
   order_deposits: DepositOrderInfo[]
 }
+
+interface DepositReturnGoods {
+  /**
+   * 订单 ID
+   */
+  id: string
+
+  /**
+   * 支付方式
+   */
+  payments: Payment[]
+
+  /**
+   * 商品ID
+   */
+  product_id: string
+
+  /**
+   * 备注
+   */
+  remark: string
+}

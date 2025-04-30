@@ -53,6 +53,39 @@ export const useDepositOrder = defineStore('depositOrder', {
         }
       }
     },
+    /**
+     * 支付订金单
+     * @params id 订金单id
+     */
+    async payDepositOrder(req: { id: string }) {
+      const { data } = await https.put<any, { id: string }>('/order/deposit/pay', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return true
+      }
+      return false
+    },
+    /**
+     * 撤销订金单
+     * @params id 订金单id
+     * @returns true or false
+     */
+    async rovkeDepositOrder(req: { id: string }) {
+      const { data } = await https.put<any, { id: string }>('/order/deposit/revoked', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return true
+      }
+      return false
+    },
+    /**
+     * 订金单退货
+     */
+    async returnGoodsDepositOrder(req: DepositReturnGoods) {
+      const { data } = await https.put<any, DepositReturnGoods>('/order/deposit/refund', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return true
+      }
+      return false
+    },
 
   },
 })

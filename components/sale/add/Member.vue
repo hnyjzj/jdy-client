@@ -61,10 +61,12 @@ const showModel = ref(false)
 const handleAddMember = () => {
   showModel.value = true
 }
+const { $toast } = useNuxtApp()
 // 提交新用户
 const submitNewMember = async () => {
   const res = await props.addNewMember(memberParams.value)
   if (res.code === HttpCode.SUCCESS) {
+    $toast.success(res.message)
     showModel.value = false
     searchList.value = await props.getMember(memberParams.value?.phone)
     setUserInfo(searchList.value)

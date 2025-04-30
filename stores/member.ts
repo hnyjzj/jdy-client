@@ -62,7 +62,10 @@ export const useMemberManage = defineStore('Member', {
         throw new Error(`筛选失败: ${error || '未知错误'}`)
       }
     },
-    // 新增会员
+    /**
+     * 新增会员
+     * @returns member
+     */
     async createMember(req: Partial<Member>) {
       try {
         const { data } = await https.post<undefined, Partial<Member>>('/member/create', req)

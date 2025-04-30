@@ -2,13 +2,11 @@
 // 订金单成品选择模块
 const props = defineProps<{
   searchProductList: (str: string) => Promise< ProductFinisheds[]>
-
   filterList: Where<ProductFinisheds>
 }>()
 
 const { $toast } = useNuxtApp()
 const showModal = ref(false)
-
 const showProductList = defineModel<DepositOrderProduct[]>({ default: [] })
 
 // 添加商品
@@ -45,7 +43,6 @@ const handleAddProductFn = (value: DepositOrderProduct) => {
     product_id: undefined,
     ...value,
   }
-
   showProductList.value.push(data)
   showModal.value = false
 }
@@ -57,11 +54,11 @@ const handleAddProductPopup = ref(false)
   <div>
     <common-fold title="货品" :is-collapse="false">
       <div class="p-[16px]">
-        <div class="grid-12 gap-[16px]">
-          <div class="col-4 offset-2">
+        <div class="grid-12 gap-[16px] flex-center-row">
+          <div class="col-4">
             <common-button-rounded content="选择货品" @button-click="showModal = true" />
           </div>
-          <div class="col-4 offset-6">
+          <div class="col-4">
             <common-button-rounded content="手动添加" bgc="#fff" color="#3E83F1" @button-click="handleAddProductPopup = true" />
           </div>
         </div>

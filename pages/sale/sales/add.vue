@@ -96,6 +96,7 @@ const addProduct = async (product: ProductFinisheds) => {
   //   添加成品到列表中
   if (index === -1) {
     const data = {
+      id: product.id,
       name: product.name,
       retail_type: product.retail_type,
       label_price: product.label_price,

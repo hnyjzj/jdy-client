@@ -260,7 +260,7 @@ const searchConfirm = async () => {
                     </n-form-item-gi>
 
                     <n-form-item-gi :span="12" label="实际成色" path="quality_actual">
-                      <n-input
+                      <n-input-number
                         v-model:value="nowOldMaster.quality_actual"
                         :show-button="false"
                         placeholder="请输入实际成色"

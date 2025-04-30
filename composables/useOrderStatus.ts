@@ -24,7 +24,7 @@ export enum OrderStatusText {
 
 }
 
-// 写法 1: 数字枚举 (推荐)
+// 订金单状态
 export enum DepositOrderStatus {
   /**
    * 待付款
@@ -45,5 +45,9 @@ export enum DepositOrderStatus {
   /**
    * 有退款
    */
-  Refunded,
+  HaveRefunded,
+  /**
+   * 已退货
+   */
+  Returned,
 }

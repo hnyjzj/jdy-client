@@ -52,8 +52,9 @@ const addProduct = async (product: ProductFinisheds) => {
       && item.product_quality.includes(product.quality)
       && item.product_brand?.includes(product.brand),
     )
+
     if (exists) {
-      data.price_gold = filtered[0].price
+      data.price_gold = Number(filtered[0].price)
     }
     else {
       data.price_gold = 0

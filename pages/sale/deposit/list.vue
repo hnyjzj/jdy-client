@@ -7,7 +7,7 @@ const { getStoreStaffList } = useStores()
 const { getFinishedList } = useFinished()
 const { finishedList } = storeToRefs(useFinished())
 const { filterListToArray, OrdersList, total, filterList, searchPage } = storeToRefs(useDepositOrder())
-const { getSaleWhere, getDepositList } = useDepositOrder()
+const { getSaleWhere, getDepositList, payDepositOrder, rovkeDepositOrder } = useDepositOrder()
 const filterData = ref({} as Partial<OrderWhere>)
 const filterShow = ref(false)
 
@@ -67,6 +67,29 @@ const updatePage = async (page: number) => {
   searchPage.value = page
   await getList()
 }
+const { $toast } = useNuxtApp()
+const payOrder = async (val: string) => {
+  const res = await payDepositOrder({ id: val })
+  if (res) {
+    $toast.success('支付成功')
+  }
+  else {
+    $toast.error('支付失败')
+  }
+  await getList()
+  return res
+}
+const cancelOrder = async (val: string) => {
+  const res = await rovkeDepositOrder({ id: val })
+  if (res) {
+    $toast.success('支付成功')
+  }
+  else {
+    $toast.error('支付失败')
+  }
+  await getList()
+  return res
+}
 </script>
 
 <template>
@@ -92,7 +115,7 @@ const updatePage = async (page: number) => {
       <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <div class="p-[16px]">
           <template v-if="OrdersList.length">
-            <sale-deposit-list :info="OrdersList" :where="filterList" @user-click="handleClick" />
+            <sale-deposit-list :info="OrdersList" :where="filterList" :pay-order="payOrder" :cancel-order="cancelOrder" @user-click="handleClick" />
             <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
           </template>
           <template v-else>

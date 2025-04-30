@@ -118,16 +118,6 @@ const confirmParts = async () => {
         <div class="col-12">
           <div>
             <div class="flex justify-around py-[12px]">
-              <div class="flex-center-col" @click="changeType('number')">
-                <div
-                  class="text-[16px] pb-[2px] font-semibold line-height-[24px]"
-                  :style="{ color: searchType === 'number' ? '#333' : '#53565C' }">
-                  编号搜索
-                </div>
-                <div
-                  class="w-[32px] h-[4px] rounded "
-                  :style="{ background: searchType === 'number' ? '#2080F0' : '' }" />
-              </div>
               <div class="flex-center-col" @click="changeType('name')">
                 <div class="text-[16px] pb-[2px] font-semibold line-height-[24px]" :style="{ color: searchType === 'name' ? '#333' : '#53565C' }">
                   名称搜索
@@ -145,6 +135,16 @@ const confirmParts = async () => {
                 <div
                   class="w-[32px] h-[4px] rounded"
                   :style="{ background: searchType === 'code' ? '#2080F0' : '' }" />
+              </div>
+              <div class="flex-center-col" @click="changeType('number')">
+                <div
+                  class="text-[16px] pb-[2px] font-semibold line-height-[24px]"
+                  :style="{ color: searchType === 'number' ? '#333' : '#53565C' }">
+                  编号搜索
+                </div>
+                <div
+                  class="w-[32px] h-[4px] rounded "
+                  :style="{ background: searchType === 'number' ? '#2080F0' : '' }" />
               </div>
             </div>
           </div>

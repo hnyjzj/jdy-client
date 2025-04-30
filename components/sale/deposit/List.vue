@@ -3,6 +3,8 @@
 const props = defineProps<{
   info: DepositOrderInfo[]
   where: Where<OrderWhere>
+  payOrder: (val: string) => Promise<boolean>
+  cancelOrder: (val: string) => Promise<boolean>
 }>()
 
 const handleClick = (id?: string) => {
@@ -50,16 +52,26 @@ const jumpSaleOreder = (id: string) => {
           </div>
         </template>
         <template #footer>
-          <div class="flex-between  bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
+          <div class="flex-between pl-[8px] bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
             <div class="color-[#4287F4] cursor-pointer flex justify-center items-center">
               <template v-if="item.status === DepositOrderStatus.Verified">
-                <div class="pl-[20px] " @click="openOrder(item.id)">
+                <div class="pl-[8px] " @click="openOrder(item.id)">
                   开单
                 </div>
               </template>
               <template v-if="item.order_sales.length">
-                <div class="pl-[20px] " @click="jumpSaleOreder(item.order_sales[0].id)">
+                <div class="pl-[8px] " @click="jumpSaleOreder(item.order_sales[0].id)">
                   销售单
+                </div>
+              </template>
+              <template v-if="item.status === DepositOrderStatus.PendingPayment">
+                <div class="pl-[8px]" @click="props.payOrder(item.id as string)">
+                  支付
+                </div>
+              </template>
+              <template v-if="item.status === DepositOrderStatus.PendingPayment">
+                <div class="pl-[8px]" @click="props.cancelOrder(item.id as string)">
+                  撤销
                 </div>
               </template>
             </div>
