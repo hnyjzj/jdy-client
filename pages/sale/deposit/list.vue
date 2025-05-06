@@ -68,8 +68,11 @@ const updatePage = async (page: number) => {
   await getList()
 }
 const { $toast } = useNuxtApp()
-const payOrder = async (val: string) => {
-  const res = await payDepositOrder({ id: val })
+
+const payDialog = ref(false)
+const payId = ref('')
+const submitPay = async () => {
+  const res = await payDepositOrder({ id: payId.value })
   if (res) {
     $toast.success('支付成功')
   }
@@ -79,8 +82,20 @@ const payOrder = async (val: string) => {
   await getList()
   return res
 }
+
+const payOrder = async (val: string) => {
+  payId.value = val
+  payDialog.value = true
+}
+
+const cancelDialog = ref(false)
+const cancelId = ref('')
 const cancelOrder = async (val: string) => {
-  const res = await rovkeDepositOrder({ id: val })
+  cancelId.value = val
+  cancelDialog.value = true
+}
+const submitCancel = async () => {
+  const res = await rovkeDepositOrder({ id: cancelId.value })
   if (res) {
     $toast.success('支付成功')
   }
@@ -182,6 +197,9 @@ const cancelOrder = async (val: string) => {
         />
       </template>
     </common-filter-where>
+
+    <common-confirm v-model:show="payDialog" icon="success" title="支付提示" text="确认要完成支付吗?" @submit="submitPay" />
+    <common-confirm v-model:show="cancelDialog" icon="error" title="撤销提示" text="确认撤销此订金单吗?" @submit="submitCancel" />
   </div>
 </template>
 

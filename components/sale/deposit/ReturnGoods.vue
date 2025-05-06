@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import type { FormRules } from 'naive-ui'
-
+/**
+ *  订金单退货
+ */
 const props = defineProps<{
   where: Where<OrderWhere>
   showReturnGoods?: {
@@ -47,6 +49,7 @@ const submit = async () => {
       const res = await props.returnGoods(model.value)
       if (res) {
         $toast.success('退货成功')
+        showModel.value = false
       }
       else {
         $toast.error('退货失败')

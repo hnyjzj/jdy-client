@@ -18,7 +18,14 @@ if (route.query.id) {
   await getFinishedWhere()
 }
 
-const returnGoods = async (req: DepositReturnGoods) => await returnGoodsDepositOrder(req)
+const returnGoods = async (req: DepositReturnGoods) => {
+  const res = await returnGoodsDepositOrder(req)
+  if (res) {
+    await getOrderDetail({ id: route.query.id as string })
+  }
+
+  return res
+}
 </script>
 
 <template>

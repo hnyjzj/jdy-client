@@ -3,8 +3,8 @@
 const props = defineProps<{
   info: DepositOrderInfo[]
   where: Where<OrderWhere>
-  payOrder: (val: string) => Promise<boolean>
-  cancelOrder: (val: string) => Promise<boolean>
+  payOrder: (val: string) => Promise<void>
+  cancelOrder: (val: string) => Promise<void>
 }>()
 
 const handleClick = (id?: string) => {
