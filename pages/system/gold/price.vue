@@ -4,14 +4,23 @@ const { goldList } = storeToRefs(useGoldPrice())
 const { getGoldPrice, setGoldPrice } = useGoldPrice()
 const { getFinishedWhere } = useFinished()
 const { finishedFilterList } = storeToRefs(useFinished())
-const { myStore } = storeToRefs(useStores())
+const { getMyStore } = useStores()
+const { myStore, myStoreList } = storeToRefs(useStores())
 useSeoMeta({
   title: '今日金价',
 })
-
+const route = useRoute()
 const changeShow = ref(false)
-const goldParams = ref([] as UpdataGoldParams[])
+const goldParams = ref([] as UpdataGold[])
+const deleteArr = ref([] as GoldPrices['id'][])
 await getFinishedWhere()
+
+/** 如果有传门店id 则当前门店选择该门店 */
+if (route.query?.store_id) {
+  await getMyStore({ page: 1, limit: 20 })
+  myStore.value = myStoreList.value.find(item => item.id === route.query?.store_id) ?? myStoreList.value[0]
+}
+
 if (myStore.value.id) {
   await getGoldPrice(myStore.value.id)
   await getGoldParams()
@@ -56,10 +65,16 @@ const productType = {
   3: '配件',
 }
 async function submit() {
-  const data = await setGoldPrice(goldParams.value)
+  const params: UpdataGoldParams = { options: goldParams.value }
+  /** 删除金价 */
+  if (deleteArr.value.length) {
+    params.deletes = deleteArr.value
+  }
+  const data = await setGoldPrice(params)
   if (data?.code === HttpCode.SUCCESS) {
     $toast.success('提交今日最新金价成功')
     goldParams.value = []
+    deleteArr.value = []
     await getGoldPrice(myStore.value.id)
     await getGoldParams()
   }
@@ -78,7 +93,11 @@ function addGold() {
   })
 }
 
-function subtract(i: number) {
+/** 删除单个金价设置 */
+function subtract(i: number, id: GoldPrices['id']) {
+  if (id) {
+    deleteArr.value.push(id)
+  }
   goldParams.value.splice(i, 1)
 }
 </script>
@@ -161,7 +180,7 @@ function subtract(i: number) {
               </div>
             </div>
             <div class="flex gap-1">
-              <div class="w-[32px] h-[32px] rounded-full bg-[#FFF] flex justify-center items-center" @click="subtract(index)">
+              <div class="w-[32px] h-[32px] rounded-full bg-[#FFF] flex justify-center items-center" @click="subtract(index, item.id)">
                 <icon name="i-svg:subtract" size="16" />
               </div>
               <template v-if="index === goldParams.length - 1">
