@@ -12,6 +12,7 @@ const { createMember } = useMemberManage()
 const { getStoreStaffList } = useStores()
 const { getMemberList } = useMemberManage()
 const { $toast } = useNuxtApp()
+const Key = ref()
 // 展示成品列表
 const showProductList = ref<DepositOrderProduct[]>([])
 await getSaleWhere()
@@ -35,6 +36,15 @@ const searchProductList = async (val: string) => {
   return finishedList.value || []
 }
 const formRef = ref()
+const initForm = ref<DepositOrder>({
+  remark: '', // 备注
+  member_id: undefined, // 会员ID
+  store_id: myStore.value.id, // 门店ID
+  cashier_id: undefined, // 收银员ID
+  products: [], // 商品列表
+  clerk_id: undefined,
+  payments: [{ amount: 0, payment_method: 1 }], // 支付方式
+})
 const formData = ref<DepositOrder>({
   remark: '', // 备注
   member_id: undefined, // 会员ID
@@ -63,6 +73,9 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
       const res = await submitDepositOrder(formData.value)
       if (res?.code === HttpCode.SUCCESS) {
         $toast.success('下单成功')
+        formData.value = { ...initForm.value }
+        showProductList.value = []
+        Key.value = Date.now().toString()
       }
     }
     else {
@@ -70,10 +83,16 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
     }
   })
 }
+// 切换门店的操作
+const changeStore = () => {
+  showProductList.value = []
+  formData.value = { ...initForm.value }
+  Key.value = Date.now().toString()
+}
 </script>
 
 <template>
-  <div>
+  <div :key="Key">
     <div class="grid-12">
       <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] pb-[80px] col-12" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3">
         <n-form
@@ -84,7 +103,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
           size="large"
         >
           <div class="w-[120px] color-[#fff] pb-[12px]">
-            <product-manage-company />
+            <product-manage-company :confirm="true" @change="changeStore" />
           </div>
           <sale-deposit-staff v-model:form-data="formData" :staffs="StoreStaffList" :get-staffs="getStaff" />
           <div class="pb-[16px]">

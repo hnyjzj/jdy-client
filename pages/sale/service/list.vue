@@ -54,8 +54,8 @@ await getList()
 
 await getRepairOrderWhere()
 
-const searchOrder = async () => {
-//   await getOrderList({ page: 1, limit: 5, where: { id: e, type: 1 } })
+const searchOrder = async (id: string) => {
+  await getRepairOrderList({ page: 1, limit: 5, where: { id, store_id: myStore.value.id } })
 }
 const clearFn = async () => {
   repairOrderList.value = []
@@ -67,6 +67,10 @@ const updatePage = async (page: number) => {
   searchPage.value = page
   await getList()
 }
+
+const changeStores = async () => {
+  await getList()
+}
 </script>
 
 <template>
@@ -74,7 +78,7 @@ const updatePage = async (page: number) => {
     <div class="grid-12 sticky top-0 bg-gradient-linear-[180deg,#3875C5,#467EC9]  z-1">
       <div id="header" class="px-[16px] py-[12px] w-full   col-12" uno-lg="col-8 offset-2">
         <div class="flex flex-row gap-2">
-          <product-manage-company class="color-[#fff]" />
+          <product-manage-company class="color-[#fff]" @change="changeStores()" />
           <product-filter-search
             placeholder="搜索订单号" class="color-[#fff] flex-1" @submit="searchOrder" @clear="clearFn" />
         </div>

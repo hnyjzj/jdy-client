@@ -56,7 +56,6 @@ function handleSelect(id: Stores['id']) {
   const stored = myStoreList.value.find(item => item.id === id)
   if (stored) {
     switchStore(stored)
-    emits('change')
     saveStoreId.value = ''
     emits('change')
   }

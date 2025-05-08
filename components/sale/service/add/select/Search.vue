@@ -17,7 +17,7 @@ const searchShow = defineModel<boolean>('show', { default: false })
 const showServiceGoods = defineModel<serviceGoods[]>('list', { default: [] })
 
 const searchCode = ref()
-const nowServiceGoods = ref({} as serviceGoods)
+const nowServiceGoods = defineModel<serviceGoods>('nowServiceGoods', { default: {} })
 // 扫码
 const { useWxWork } = useWxworkStore()
 const scanCode = async () => {
@@ -46,10 +46,14 @@ const searchConfirm = async () => {
         if (props.nowEditState !== undefined) {
           showServiceGoods.value.splice(props.nowEditState, 1, nowServiceGoods.value)
           searchShow.value = false
+          searchCode.value = ''
+          nowServiceGoods.value = {} as serviceGoods
         }
         else {
           showServiceGoods.value.push(nowServiceGoods.value)
           searchShow.value = false
+          searchCode.value = ''
+          nowServiceGoods.value = {} as serviceGoods
         }
       }
     }
@@ -58,7 +62,6 @@ const searchConfirm = async () => {
     }
   })
 }
-
 const search = async () => {
   if (!searchCode.value) {
     $toast.error('请输入商品条码')
@@ -79,7 +82,12 @@ const search = async () => {
 
 <template>
   <div>
-    <common-model v-model="searchShow" title="搜索" :show-ok="true" :show-cancel="true" @confirm="searchConfirm()" @cancel="searchShow = false">
+    <common-model
+      v-model="searchShow" title="搜索" :show-ok="true" :show-cancel="true" @confirm="searchConfirm()" @cancel="() => {
+        searchCode = ''
+        nowServiceGoods = {}
+        searchShow = false
+      }">
       <div class="grid-12">
         <div class="col-12">
           <div>
@@ -114,7 +122,7 @@ const search = async () => {
           </div>
           <div class="h-[300px] overflow-y-auto py-[16px]">
             <div>
-              <template v-if="nowServiceGoods.code">
+              <template v-if="Object.keys(nowServiceGoods).length !== 0">
                 <n-form ref="oldMasterRef" :model="nowServiceGoods" :rules="oldRules">
                   <n-grid :cols="24" :x-gap="8">
                     <n-form-item-gi
@@ -139,7 +147,7 @@ const search = async () => {
                         :precision="3"
                       />
                     </n-form-item-gi>
-                    <n-form-item-gi :span="12" label="备注" path="weight_metal">
+                    <n-form-item-gi :span="12" label="备注" path="remark">
                       <n-input
                         v-model:value="nowServiceGoods.remark"
                         :rows="1"

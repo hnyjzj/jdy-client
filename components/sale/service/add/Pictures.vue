@@ -3,6 +3,7 @@ import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 
 const props = defineProps<{
   uploadFile: (file: any) => Promise<string | false>
+  detail?: ServiceOrderInfo
 }>()
 
 // 展示预览图
@@ -47,10 +48,10 @@ const removeFile = (options: { file: UploadFileInfo, fileList: Array<UploadFileI
           :custom-request="customRequest"
           :default-file-list="previewFileList"
           list-type="image-card"
+          :disabled="props.detail?.status === serviceOrderStatus.Completed"
           @before-upload="beforeUpload"
           @preview="showModalRef = true"
           @remove="removeFile"
-
         />
       </div>
     </common-fold>

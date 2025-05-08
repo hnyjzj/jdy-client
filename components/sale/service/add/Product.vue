@@ -10,7 +10,7 @@ const showModal = ref(false)
 const params = ref({} as serviceGoods)
 
 // 当前搜索的货品的form
-const nowServiceGoods = defineModel('nowServiceGoods', { default: {} as serviceGoods })
+const nowServiceGoods = ref<serviceGoods>({})
 
 // 显示搜索的弹窗
 const searchShow = ref(false)
@@ -21,7 +21,6 @@ const nowEditState = ref<number | undefined>(undefined)
 const searchQl = () => {
   nowEditState.value = undefined
   searchShow.value = true
-  nowServiceGoods.value = {} as serviceGoods
 }
 
 // 手动添加

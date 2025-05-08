@@ -39,7 +39,7 @@ const region = ref({
 const showServiceGoods = ref<serviceGoods[]>([]) // 展示维修货品
 const previewFileList = ref<UploadFileInfo[]>([])
 const formRef = ref()
-const formData = ref({
+const initform = ref<serviceOrederCreate>({
   store_id: myStore.value.id,
   receptionist_id: undefined,
   member_id: undefined,
@@ -52,7 +52,21 @@ const formData = ref({
   products: [],
   payments: [{ amount: 0, payment_method: 1 }],
   images: [],
-} as serviceOrederCreate)
+})
+const formData = ref<serviceOrederCreate>({
+  store_id: myStore.value.id,
+  receptionist_id: undefined,
+  member_id: undefined,
+  desc: '',
+  name: '', // 维修项目
+  expense: undefined, // 维修费用
+  cost: undefined, // 维修成本
+  delivery_method: 1, // 1: '自提', 2: '配送'
+  address: undefined,
+  products: [],
+  payments: [{ amount: 0, payment_method: 1 }],
+  images: [],
+})
 const rules = {
   receptionist_id: { required: true, message: '请选择接待人', trigger: ['blur', 'change'] },
   name: { required: true, message: '请输入项目名称', trigger: ['blur', 'change'] },
@@ -76,6 +90,7 @@ const getMember = async (val: string) => {
   await getMemberList({ page: 1, limit: 5, where: { phone: val } })
   return memberList.value || []
 }
+const Key = ref()
 // 点击验证表单
 const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
@@ -102,6 +117,10 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
       const res = await createRepairOrder(formData.value)
       if (res) {
         $toast.success('创建维修单成功')
+        showServiceGoods.value = []
+        previewFileList.value = []
+        formData.value = { ...initform.value }
+        Key.value = Date.now().toString()
       }
       else {
         $toast.error('创建维修单失败')
@@ -131,11 +150,18 @@ const uploadFile = async (file: any) => {
   }
   return data.value.data.url
 }
+// 切换门店的操作
+const changeStore = () => {
+  showServiceGoods.value = []
+  previewFileList.value = []
+  formData.value = { ...initform.value }
+  Key.value = Date.now().toString()
+}
 </script>
 
 <template>
   <div>
-    <div class="grid-12">
+    <div :key="Key" class="grid-12">
       <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] pb-[80px] col-12" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3">
         <n-form
           ref="formRef"
@@ -145,7 +171,7 @@ const uploadFile = async (file: any) => {
           size="large"
         >
           <div class="w-[120px] color-[#fff] pb-[12px]">
-            <product-manage-company />
+            <product-manage-company :confirm="true" @change="changeStore" />
           </div>
           <div class="pb-[16px]">
             <sale-service-add-base

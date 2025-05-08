@@ -57,7 +57,9 @@ const updateButton = async () => {
   if (props.detail.status === serviceOrderStatus.Completed) {
     return $toast.error('已完成订单无法修改')
   }
-
+  if (props.detail.status === serviceOrderStatus.Cancelled) {
+    return $toast.error('已取消订单无法修改')
+  }
   if (form.value.delivery_method === 2) {
     form.value.province = region.value.province
     form.value.city = region.value.city
@@ -157,7 +159,8 @@ const confirmChange = async () => {
           <common-cell label="接待人" :value="props.detail.operator?.nickname" rcol="col-8" lcol="col-4" />
           <common-cell label="会员昵称" :value="props.detail.member?.nickname" rcol="col-8" lcol="col-4" />
           <common-cell label="会员信息" :value="props.detail.member?.phone" rcol="col-8" lcol="col-4" />
-          <common-cell :label="`${props.detail.store?.name!}`" label-color="#0B57D0" :value="props.detail.store?.address" rcol="col-8" lcol="col-4" />
+          <common-cell label="门店名称" :value="props.detail.store?.name!" rcol="col-8" lcol="col-4" />
+          <common-cell label="门店地址" :value="props.detail.store?.address" rcol="col-8" lcol="col-4" />
           <common-cell label="门店电话" :value="props.detail.store?.contact" rcol="col-8" lcol="col-4" />
           <common-cell label="维修费" :value="props.detail.expense" rcol="col-8" lcol="col-4" />
           <common-cell label="维修成本" :value="props.detail.cost" rcol="col-8" lcol="col-4" />
@@ -243,7 +246,7 @@ const confirmChange = async () => {
         </common-fold>
       </div>
       <div class="pt-[16px]">
-        <sale-service-add-pictures v-model:pictures="previewFileList" :upload-file="uploadFile" />
+        <sale-service-add-pictures v-model:pictures="previewFileList" :detail="props.detail" :upload-file="uploadFile" />
       </div>
     </div>
     <div class="footer">

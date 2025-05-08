@@ -26,7 +26,31 @@ const { createMember } = useMemberManage()
 const { getOrderDetail, getDepositList } = useDepositOrder()
 const { OrderDetail, OrdersList } = storeToRefs(useDepositOrder())
 const addMemberRef = ref()
+const Key = ref()
 const formRef = ref<FormInst | null>(null)
+// 初始化表单数据
+const initFormData = ref<Orders>({
+  source: 1, // 订单来源
+  remark: '', // 备注
+  discount_rate: 100, // 整单折扣
+  round_off: 0, // 抹零金额
+  member_id: undefined, // 会员ID
+  store_id: myStore.value.id, // 门店ID
+  cashier_id: undefined, // 收银员ID
+  //   积分抵扣
+  integral_deduction: 0,
+  has_integral: true, // 是否使用积分
+  product_finisheds: [], // 商品列表
+  product_olds: [], // 旧料
+  product_accessories: [], // 配件列表
+  clerks: [{
+    salesman_id: undefined,
+    performance_rate: 100,
+    is_main: true,
+  }],
+  payments: [{ amount: 0, payment_method: 1 }], // 支付方式
+  order_deposit_ids: [], // 定金单id
+})
 const formData = ref<Orders>({
   source: 1, // 订单来源
   remark: '', // 备注
@@ -49,6 +73,22 @@ const formData = ref<Orders>({
   payments: [{ amount: 0, payment_method: 1 }], // 支付方式
   order_deposit_ids: [], // 定金单id
 })
+
+const rules = ref<FormRules>({
+  cashier_id: {
+    required: true,
+    trigger: ['blur', 'change'],
+    message: '请选择收银员',
+  },
+  source: {
+    type: 'number',
+    required: true,
+    trigger: ['blur', 'change'],
+    message: '请选择订单来源',
+  },
+
+})
+const route = useRoute()
 const billingSet = ref({
   // 金额进位控制"
   rounding: 0,
@@ -129,7 +169,6 @@ const addProduct = async (product: ProductFinisheds) => {
   }
 }
 
-const route = useRoute()
 if (route.query.id) {
   // 判断是否有定金单订单详情
   await getOrderDetail({ id: route.query.id as string })
@@ -210,20 +249,6 @@ const handleIsInterChange = () => {
   }
 }
 
-const rules = ref<FormRules>({
-  cashier_id: {
-    required: true,
-    trigger: ['blur', 'change'],
-    message: '请选择收银员',
-  },
-  source: {
-    type: 'number',
-    required: true,
-    trigger: ['blur', 'change'],
-    message: '请选择订单来源',
-  },
-
-})
 // 搜索成品,查询list
 const searchProductList = async (data: { val: string, type: string }) => {
   if (data.val === '' && data.type === 'name') {
@@ -321,6 +346,11 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
       const res = await submitOrder(formData.value)
       if (res?.code === HttpCode.SUCCESS) {
         $toast.success('开单成功')
+        formData.value = { ...initFormData.value }
+        showProductList.value = []
+        showMasterialsList.value = []
+        showPartsList.value = []
+        Key.value = Date.now().toString()
       }
       else {
         $toast.error(res?.message ?? '开单失败')
@@ -331,43 +361,20 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
     }
   })
 }
-// 初始化表单数据
-const initFormData = {
-  source: 1, // 订单来源
-  remark: '', // 备注
-  discount_rate: 100, // 整单折扣
-  round_off: 0, // 抹零金额
-  member_id: undefined, // 会员ID
-  store_id: '', // 门店ID
-  cashier_id: undefined, // 收银员ID
-  //   积分抵扣
-  integral_deduction: 0,
-  has_integral: true, // 是否使用积分
-  product_finisheds: [], // 商品列表
-  product_olds: [], // 旧料列表
-  product_accessories: [], // 配件列表
-  clerks: [{
-    salesman_id: undefined,
-    performance_rate: 100,
-    is_main: true,
-  }],
-  payments: [{ amount: 0, payment_method: 1 }], // 支付方式
-  order_deposit_ids: [], // 定金单id
-}
-const Key = ref()
+
 // 切换门店的操作
 const changeStore = () => {
   getbillingSet()
   showProductList.value = []
   showPartsList.value = []
   showMasterialsList.value = []
-  formData.value = { ...initFormData }
+  formData.value = { ...initFormData.value }
   Key.value = Date.now().toString()
 }
 </script>
 
 <template>
-  <div class="grid-12">
+  <div :key="Key" class="grid-12">
     <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] pb-[80px] col-12" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3">
       <n-form
         ref="formRef"
@@ -379,7 +386,7 @@ const changeStore = () => {
         <div class="w-[120px] color-[#fff] pb-[12px]">
           <product-manage-company :confirm="true" @change="changeStore" />
         </div>
-        <div :key="Key" class="pb-[16px]">
+        <div class="pb-[16px]">
           <sale-add-base
             v-model="formData"
             v-model:integral="formData.has_integral"

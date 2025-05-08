@@ -54,8 +54,8 @@ const searchProduct = async (e: string) => {
   }
 }
 
-const searchOrder = async () => {
-//   await getOrderList({ page: 1, limit: 5, where: { id: e, type: 1 } })
+const searchOrder = async (id: string) => {
+  await getDepositList({ page: 1, limit: 5, where: { id, store_id: myStore.value.id } })
 }
 const clearFn = async () => {
   OrdersList.value = []
@@ -105,6 +105,9 @@ const submitCancel = async () => {
   await getList()
   return res
 }
+const changeStores = async () => {
+  await getList()
+}
 </script>
 
 <template>
@@ -112,7 +115,7 @@ const submitCancel = async () => {
     <div class="grid-12 sticky top-0 bg-gradient-linear-[180deg,#3875C5,#467EC9]  z-1">
       <div id="header" class="px-[16px] py-[12px] w-full   col-12" uno-lg="col-8 offset-2">
         <div class="flex flex-row gap-2">
-          <product-manage-company class="color-[#fff]" />
+          <product-manage-company class="color-[#fff]" @change="changeStores" />
           <product-filter-search
             placeholder="搜索订单号" class="color-[#fff] flex-1" @submit="searchOrder" @clear="clearFn" />
         </div>
