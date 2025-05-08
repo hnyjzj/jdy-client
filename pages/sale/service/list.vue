@@ -2,8 +2,8 @@
 useSeoMeta({
   title: '维修单列表',
 })
-const { myStore } = storeToRefs(useStores())
-
+const { myStore, StoreStaffList } = storeToRefs(useStores())
+const { getStoreStaffList } = useStores()
 const { getRepairOrderWhere, getRepairOrderList, cancelRepairOrder, payRepairOrder } = useRepair()
 const { repairOrderList, Total, repairFilterList, searchPage, repairFilterListToArray } = storeToRefs(useRepair())
 const filterData = ref({} as Partial<service>)
@@ -110,6 +110,19 @@ const updatePage = async (page: number) => {
     </div>
     <!-- filter -->
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="repairFilterListToArray" @submit="submitWhere" @reset="resetWhere">
+      <template #receptionist_id>
+        <n-select
+          v-model:value="filterData.receptionist_id"
+          placeholder="请选择收银员"
+          :options="StoreStaffList.map(v => ({
+            label: v.nickname,
+            value: v.id,
+          }))"
+          clearable
+          remote
+          @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+        />
+      </template>
       <template #member_id>
         <n-select
           v-model:value="filterData.member_id"

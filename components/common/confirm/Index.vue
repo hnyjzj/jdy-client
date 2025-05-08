@@ -7,6 +7,7 @@ const props = withDefaults(defineProps<{
   icon?: string
   cancelText?: string
   confirmText?: string
+
 }>(), {
   title: '提示',
   text: '确认删除此数据吗',
@@ -58,6 +59,7 @@ const cancle = () => {
           {{ props.title }}
         </div>
       </div>
+
       <div class="line-height-[20px] color-[#333] dark:color-[#fff] py-[16px] text-center">
         {{ props.text }}
       </div>
@@ -68,17 +70,12 @@ const cancle = () => {
       </template>
       <div class="flex justify-between">
         <div
-          class="shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)] px-[44px]
-           py-[6px] text-[16px] font-semibold line-height-[24px] color-[#3971F3] bg-[#fff] rounded-3xl
-           shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)]
-          "
+          class="cancle "
           @click="cancle">
           {{ props.cancelText }}
         </div>
         <div
-          class="shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)] px-[63px] py-[6px] text-[16px] font-semibold line-height-[24px] color-[#fff] bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] rounded-3xl
-          shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)]
-" @click="submit">
+          class="confirm" @click="submit">
           {{ props.confirmText }}
         </div>
       </div>
@@ -87,5 +84,10 @@ const cancle = () => {
 </template>
 
 <style lang="scss" scoped>
-
+.confirm {
+  --uno: 'shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)] cursor-pointer shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)] px-[63px] py-[6px] text-[16px] font-semibold line-height-[24px] color-[#fff] bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF]  rounded-3xl';
+}
+.cancle {
+  --uno: 'shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)] cursor-pointer px-[44px] py-[6px] text-[16px] font-semibold line-height-[24px] color-[#3971F3] bg-[#fff] rounded-3xl  shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)]';
+}
 </style>

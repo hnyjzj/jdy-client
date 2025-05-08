@@ -6,7 +6,7 @@ useSeoMeta({
 const { getMemberWhere } = useMemberManage()
 const { getFinishedWhere } = useFinished()
 const { finishedFilterList } = storeToRefs(useFinished())
-const { getRepairOrderDetail, updateRepairOrder, uploadRepairOrderImg, refundRepairOrder, getRepairOrderWhere } = useRepair()
+const { getRepairOrderDetail, updateRepairOrder, uploadRepairOrderImg, refundRepairOrder, getRepairOrderWhere, operationRepairOrder } = useRepair()
 const { repairOrderDetail, repairFilterList } = storeToRefs(useRepair())
 const { $toast } = useNuxtApp()
 const route = useRoute()
@@ -35,8 +35,13 @@ const uploadFile = async (file: any) => {
   return data.value.data.url
 }
 
+// 更新订单
 const updateOrder = async (req: updateRepairParams) => {
   return await updateRepairOrder(req)
+}
+// 操作订单
+const operation = async (val: { id: string, operation: number }) => {
+  return await operationRepairOrder(val)
 }
 </script>
 
@@ -50,6 +55,7 @@ const updateOrder = async (req: updateRepairParams) => {
         :finished-where="finishedFilterList"
         :update-order="updateOrder"
         :upload-file="uploadFile"
+        :operation="operation"
         :refund="refund"
       />
     </div>

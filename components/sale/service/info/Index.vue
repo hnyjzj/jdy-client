@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { UploadFileInfo } from 'naive-ui'
+import { idID, type UploadFileInfo } from 'naive-ui'
 
 const props = defineProps<{
   detail: ServiceOrderInfo
@@ -9,12 +9,14 @@ const props = defineProps<{
   uploadFile: (file: any) => Promise<string | false>
   refund: (req: { id: string, remark: string }) => Promise<boolean>
   getDetail: () => void
+  operation: (req: { id: string, operation: number }) => Promise<boolean>
 }>()
+const router = useRouter()
 const { $toast } = useNuxtApp()
 const previewFileList = ref<UploadFileInfo[]>([])
 const region = ref({} as { province: string, city: string, district: string })
 const areaBorder = ref(false)
-const router = useRouter()
+
 const form = ref({
   id: props.detail.id,
   name: '',
@@ -52,6 +54,10 @@ if (props.detail.images?.length) {
 }
 // 更新
 const updateButton = async () => {
+  if (props.detail.status === serviceOrderStatus.Completed) {
+    return $toast.error('已完成订单无法修改')
+  }
+
   if (form.value.delivery_method === 2) {
     form.value.province = region.value.province
     form.value.city = region.value.city
@@ -65,13 +71,80 @@ const updateButton = async () => {
   const res = await props.updateOrder(form.value)
   if (res) {
     $toast.success('更新成功')
+    await props.getDetail()
   }
   else {
     $toast.error('更新失败')
   }
 }
 const showModel = ref(false)
-// 退款
+const dialog = ref(false)
+const tipsTitle = ref('')
+const tipsText = ref('')
+const tipsTextb = ref('')
+// 操作/标记
+
+const changeParams = {
+  id: props.detail.id,
+  operation: props.detail.status,
+}
+const changeStatusBtn = async () => {
+  if (props.detail.status === serviceOrderStatus.Refund) {
+    $toast.error('已退款不支持标记操作')
+    return
+  }
+  if (props.detail.status === serviceOrderStatus.Cancelled) {
+    $toast.error('已取消不支持标记操作')
+    return
+  }
+  // 当前门店已收货 ,标记为送去维修
+  if (props.detail.status === serviceOrderStatus.StoreReceived) {
+    changeParams.operation = serviceOrderStatus.SentForRepair
+    tipsTitle.value = '标记已送出维修'
+    tipsText.value = '门店收货，已送出到总部或者工厂维修'
+    dialog.value = true
+    return
+  }
+  // 当前 已送出维修 标记为维修中
+  if (props.detail.status === serviceOrderStatus.SentForRepair) {
+    changeParams.operation = serviceOrderStatus.UnderRepair
+    tipsTitle.value = '标记维修中'
+    tipsText.value = '总部或工厂已收到货，确认无误，正在维修'
+    dialog.value = true
+    return
+  }
+  // 当前 维修中 标记为维修已送回
+  if (props.detail.status === serviceOrderStatus.UnderRepair) {
+    changeParams.operation = serviceOrderStatus.RepairedAndReturned
+    tipsTitle.value = '标记已维修送回'
+    tipsText.value = '总部或工厂已维修完成，确认无误，已送回门店'
+    dialog.value = true
+    return
+  }
+  // 当前 维修已送回 标记为 待取货
+  if (props.detail.status === serviceOrderStatus.RepairedAndReturned) {
+    changeParams.operation = serviceOrderStatus.ReadyForPickup
+    tipsTitle.value = '标记顾客待取货'
+    tipsText.value = '门店已收到维修完成的货，确认无误，通知顾客取货'
+    dialog.value = true
+  }
+
+  // 标记已取货
+  if (props.detail.status === serviceOrderStatus.ReadyForPickup) {
+    changeParams.operation = serviceOrderStatus.Completed
+    tipsTitle.value = '标记已取货'
+    tipsText.value = '请确认顾客已收到货品，再点击确认收货'
+    dialog.value = true
+  }
+}
+
+const confirmChange = async () => {
+  const res = await props.operation(changeParams)
+  if (res) {
+    $toast.success('操作成功')
+    await props.getDetail()
+  }
+}
 </script>
 
 <template>
@@ -84,7 +157,6 @@ const showModel = ref(false)
           <common-cell label="接待人" :value="props.detail.operator?.nickname" rcol="col-8" lcol="col-4" />
           <common-cell label="会员昵称" :value="props.detail.member?.nickname" rcol="col-8" lcol="col-4" />
           <common-cell label="会员信息" :value="props.detail.member?.phone" rcol="col-8" lcol="col-4" />
-          <common-cell label="状态" :value="props.detail.status" rcol="col-8" lcol="col-4" />
           <common-cell :label="`${props.detail.store?.name!}`" label-color="#0B57D0" :value="props.detail.store?.address" rcol="col-8" lcol="col-4" />
           <common-cell label="门店电话" :value="props.detail.store?.contact" rcol="col-8" lcol="col-4" />
           <common-cell label="维修费" :value="props.detail.expense" rcol="col-8" lcol="col-4" />
@@ -94,13 +166,13 @@ const showModel = ref(false)
               <div class="pb-[8px]">
                 维修项目
               </div>
-              <n-input v-model:value="form.name" type="text" placeholder="维修项目" />
+              <n-input v-model:value="form.name" type="text" placeholder="维修项目" :disabled="props.detail.status === serviceOrderStatus.Completed" />
             </n-grid-item>
             <n-grid-item>
               <div class="pb-[8px]">
                 问题描述
               </div>
-              <n-input v-model:value="form.desc" type="text" placeholder="问题描述" />
+              <n-input v-model:value="form.desc" type="text" placeholder="问题描述" :disabled="props.detail.status === serviceOrderStatus.Completed" />
             </n-grid-item>
 
             <n-grid-item>
@@ -108,7 +180,7 @@ const showModel = ref(false)
                 取货方式
               </div>
               <div>
-                <n-radio-group v-model:value="form.delivery_method" name="radiogroup">
+                <n-radio-group v-model:value="form.delivery_method" name="radiogroup" :disabled="props.detail.status === serviceOrderStatus.Completed">
                   <n-space>
                     <n-radio
                       v-for="(items, index) in [{ value: 1, label: '自提' }, { value: 2, label: '邮寄' }]" :key="index" :value="items.value" :style="{
@@ -127,14 +199,14 @@ const showModel = ref(false)
                 <div class="pb-[8px]">
                   省市区选择
                 </div>
-                <common-area-select :border="areaBorder" :is-required="false" :showtitle="false" :form="region" />
+                <common-area-select :disabled="props.detail.status === serviceOrderStatus.Completed" :border="areaBorder" :is-required="false" :showtitle="false" :form="region" />
               </n-grid-item>
 
               <n-grid-item :span="2">
                 <div class="pb-[8px]">
                   详细地址
                 </div>
-                <n-input v-model:value="form.address" type="text" placeholder="详细地址" />
+                <n-input v-model:value="form.address" type="text" placeholder="详细地址" :disabled="props.detail.status === serviceOrderStatus.Completed" />
               </n-grid-item>
             </template>
           </n-grid>
@@ -160,7 +232,8 @@ const showModel = ref(false)
               <common-cell label="标签价" :value="item.label_price" rcol="col-8" lcol="col-4" />
               <common-cell label="备注" :value="item.remark" rcol="col-8" lcol="col-4" />
               <div class="line" />
-              <template v-if="item.status === serviceOrderStatus.StoreReceived">
+              <template
+                v-if="item.status === serviceOrderStatus.StoreReceived ">
                 <div class="flex-end">
                   <common-button-rounded content="退款" @button-click="showModel = true" />
                 </div>
@@ -182,16 +255,43 @@ const showModel = ref(false)
                 content="更新" bgc="#0068FF" color="#FFF" @button-click="updateButton()" />
             </div>
             <div class="col-6">
-              <common-button-rounded
-                content="返回" bgc="#fff" color="#000" @button-click="() => {
-                  router.back()
-                }" />
+              <template
+                v-if="[
+                  serviceOrderStatus.StoreReceived,
+                  serviceOrderStatus.SentForRepair,
+                  serviceOrderStatus.UnderRepair,
+                  serviceOrderStatus.RepairedAndReturned,
+                ].includes(props.detail.status)">
+                <common-button-rounded
+                  content="标记" bgc="#fff" color="#0068FF" @button-click="changeStatusBtn()" />
+              </template>
+              <template
+                v-if="props.detail.status === serviceOrderStatus.ReadyForPickup">
+                <common-button-rounded
+                  content="取货" bgc="#fff" color="#0068FF" @button-click="changeStatusBtn()" />
+              </template>
+              <template
+                v-if="[
+                  serviceOrderStatus.Cancelled,
+                  serviceOrderStatus.Completed,
+                  serviceOrderStatus.PendingPayment,
+                ].includes(props.detail.status)">
+                <common-button-rounded
+                  content="返回" bgc="#fff" color="#0068FF" @button-click="router.back()" />
+              </template>
             </div>
           </div>
         </div>
       </div>
     </div>
     <sale-service-info-returnmoney v-model:show="showModel" :detail="props.detail" :return-money="props.refund" :get-detail="props.getDetail" />
+    <common-confirm
+      v-model:show="dialog"
+      icon="warning"
+      :title="tipsTitle"
+      :text="tipsText"
+      :textb="tipsTextb"
+      @submit="confirmChange" />
   </div>
 </template>
 

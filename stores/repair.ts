@@ -111,5 +111,18 @@ export const useRepair = defineStore('Repair', {
       }
       return false
     },
+
+    /**
+     * 标记/ 操作
+     * @method put
+     * @url /order/repair/operation
+     */
+    async operationRepairOrder(req: { id: string, operation: number }) {
+      const { data } = await https.put<undefined, { id: string, operation: number }>('/order/repair/operation', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return true
+      }
+      return false
+    },
   },
 })

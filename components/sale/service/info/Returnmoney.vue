@@ -40,7 +40,7 @@ const submit = async () => {
 <template>
   <div>
     <common-model
-      v-model="showModel" title="退款" :show-ok="true" :show-cancel="true" @confirm="submit" @cancel=" showModel = false">
+      v-model="showModel" title="退款" :show-ok="true" :show-cancel="true" @confirm="submit" @cancel="showModel = false">
       <div>
         <n-form
           ref="formRef"

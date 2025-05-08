@@ -41,11 +41,11 @@ const payid = ref<string>()
 const pay = async () => {
   const res = await props.payOrder(payid.value!)
   if (res) {
-    $toast.success('撤销订单成功')
+    $toast.success('支付订单成功')
     await props.getList()
   }
   else {
-    $toast.error('撤销订单失败')
+    $toast.error('支付订单失败')
   }
 }
 const handlePay = (id: string) => {
@@ -60,7 +60,7 @@ const handlePay = (id: string) => {
 <template>
   <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.list" :key="index">
-      <sale-cards :title="`维修单号:${item.id}`" :tag-text="props.where.status?.preset[item.status]">
+      <sale-cards :title="`单号:${item.id}`" :tag-text="props.where.status?.preset[item.status]">
         <template #info>
           <div class="info">
             <common-cell label="所属门店" :value="item.store?.name" />

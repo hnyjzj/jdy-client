@@ -3,10 +3,12 @@ const props = withDefaults(defineProps<{
   border?: boolean // 校验显示隐藏错误提示边框
   showtitle?: boolean // 是否显示标题
   isRequired?: boolean // 是否必填 ，必填则会多出一个错误提示的位置 校验的时候显示
+  disabled?: boolean // 是否禁用
 }>(), {
   border: false,
   showtitle: true,
   isRequired: true,
+  disabled: false,
 })
 const emits = defineEmits<{
   update: [val: T]
@@ -42,6 +44,9 @@ const finishedArea = (val: ProvinceTab[]) => {
 }
 // 清理省市区
 const clearnArea = () => {
+  if (props.disabled)
+    return
+
   emits('updateError', true)
   areaText.value = ''
   if (!form.value)
@@ -109,12 +114,20 @@ defineExpose({
       class="bg-[#fff] dark:color-[#fff] dark:bg-[rgba(255,255,255,0.1)] rounded-full px-[12px] flex items-center"
       :style="{ border: bordercolor }">
       <template v-if="form?.province || form?.city || form?.district">
-        <div class="text-[14px] dark:color-[#fff] color-[#333] py-[9.5px] flex-1" @click="areaShow = true">
+        <div
+          class="text-[14px] dark:color-[#fff] color-[#333] py-[9.5px] flex-1" @click="() => {
+            if (props.disabled) return
+            areaShow = true
+          }">
           {{ areaText }}
         </div>
       </template>
       <template v-else>
-        <div class="text-[14px] color-[#C9C9C9] dark:color-[#7E878E] py-[8.5px] flex-1" @click="areaShow = true">
+        <div
+          class="text-[14px] color-[#C9C9C9] dark:color-[#7E878E] py-[8.5px] flex-1" @click="() => {
+            if (props.disabled) return
+            areaShow = true
+          }">
           请选择省市区
         </div>
       </template>
