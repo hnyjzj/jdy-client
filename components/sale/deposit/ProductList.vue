@@ -32,25 +32,25 @@ const deleteProduct = (index: number) => {
           <template #info>
             <div class="flex flex-col gap-[4px] px-[16px]">
               <template v-if="obj.is_our === true">
-                <common-cell label="名称" :value="obj.product?.name || '-'" />
-                <common-cell label="条码" :value="obj.product?.code || '-'" />
-                <common-cell label="零售方式" :value="realtype(obj.product?.retail_type) || '-'" />
+                <common-cell label="名称" :value="obj.product?.name " />
+                <common-cell label="条码" :value="obj.product?.code " />
+                <common-cell label="零售方式" :value="realtype(obj.product?.retail_type) " />
                 <common-cell label="金重" :value="`${obj.product?.weight_metal || '0'}g` " />
-                <common-cell label="工费" :value="`${obj.product?.labor_fee || '-'}`" />
-                <common-cell label="主石重(ct)" :value="obj.product?.weight_gem || '-'" />
-                <common-cell label="主石颜色" :value="props.filterList.color_gem?.preset[(obj.product?.color_gem as number)] || '-'" />
-                <common-cell label="主石净度" :value="props.filterList.clarity?.preset[(obj.product?.clarity as number)] || '-'" />
-                <common-cell label="标签价" :value="obj.product?.label_price || '-'" val-color="#2472EE" />
+                <common-cell label="工费" :value="`${obj.product?.labor_fee}`" />
+                <common-cell label="主石重(ct)" :value="obj.product?.weight_gem " />
+                <common-cell label="主石颜色" :value="props.filterList.color_gem?.preset[(obj.product?.color_gem as number)] " />
+                <common-cell label="主石净度" :value="props.filterList.clarity?.preset[(obj.product?.clarity as number)] " />
+                <common-cell label="标签价" :value="obj.product?.label_price " val-color="#2472EE" />
               </template>
               <template v-if="obj.is_our === false">
-                <common-cell label="名称" :value="obj?.name || '-'" />
-                <common-cell label="标签价" :value="obj?.label_price || '-'" />
-                <common-cell label="金重" :value="obj?.weight_metal || '-'" />
-                <common-cell label="工费" :value="obj?.labor_fee || '-'" />
-                <common-cell label="零售方式" :value="realtype(obj?.retail_type) || '-'" />
-                <common-cell label="主石重(ct)" :value="obj?.weight_gem || '-'" />
-                <common-cell label="主石颜色" :value="props.filterList.clarity?.preset[(obj?.color_gem as number)] || '-'" />
-                <common-cell label="主石净度" :value="props.filterList.clarity?.preset[(obj?.clarity_gem as number)] || '-'" />
+                <common-cell label="名称" :value="obj?.name " />
+                <common-cell label="标签价" :value="obj?.label_price " />
+                <common-cell label="金重" :value="obj?.weight_metal " />
+                <common-cell label="工费" :value="obj?.labor_fee " />
+                <common-cell label="零售方式" :value="realtype(obj?.retail_type) " />
+                <common-cell label="主石重(ct)" :value="obj?.weight_gem " />
+                <common-cell label="主石颜色" :value="props.filterList.clarity?.preset[(obj?.color_gem as number)] " />
+                <common-cell label="主石净度" :value="props.filterList.clarity?.preset[(obj?.clarity_gem as number)] " />
               </template>
               <div class="py-[8px]">
                 <div class="h-[1px]  bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />

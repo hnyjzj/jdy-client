@@ -46,6 +46,7 @@ const clearnArea = () => {
   areaText.value = ''
   if (!form.value)
     return
+
   form.value.province = undefined
   form.value.city = undefined
   form.value.district = undefined
@@ -98,7 +99,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="relative">
+  <div class="relative w-full">
     <template v-if="props.showtitle">
       <div class="text-[14px] color-[#333] dark:color-[#fff] line-height-[20px] pb-[8px]">
         省市区<span class="color-[#D23B5A] dark:color-[#E88080]">*</span>

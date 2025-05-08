@@ -178,6 +178,8 @@ interface ProductFinisheds {
   stock: number
 
   rate?: number
+
+  all?: boolean
 }
 
 /**

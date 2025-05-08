@@ -33,7 +33,7 @@ const returnGoods = (val: number) => {
             <common-cell label="订单编号" :value="props.orders.id" />
             <common-cell label="订单状态" :value="where.status?.preset[(props.orders.status as number)]" val-color="#FF9900" />
             <common-cell label="销售时间" :value="formatISODate(props.orders.created_at)" />
-            <common-cell label="订单备注" :value="props.orders.remark || '-'" />
+            <common-cell label="订单备注" :value="props.orders.remark " />
             <div class="border-b-solid border-b-[#E0E0E0] border" />
             <common-cell label="会员姓名" :value="props.orders.member?.name || ''" />
             <common-cell label="会员昵称" :value="props.orders.member?.nickname || ''" />
@@ -73,20 +73,20 @@ const returnGoods = (val: number) => {
                 <template v-if="item.is_our">
                   <common-cell label="商品条码" :value="item.product_finished?.code" />
                   <common-cell label="商品名称" :value="item.product_finished?.name" val-color="#4C8DF6" />
-                  <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[item.product_finished?.retail_type] || '-'" />
+                  <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[item.product_finished?.retail_type] " />
                   <common-cell label="主石重(ct)" :value="item.product_finished?.weight_gem" />
-                  <common-cell label="颜色" :value="props.productFilter.color_gem?.preset[item.product_finished?.color_gem] || '-'" />
-                  <common-cell label="净度" :value="props.productFilter.clarity?.preset[item.product_finished?.clarity] || '-'" />
+                  <common-cell label="颜色" :value="props.productFilter.color_gem?.preset[item.product_finished?.color_gem] " />
+                  <common-cell label="净度" :value="props.productFilter.clarity?.preset[item.product_finished?.clarity] " />
                   <common-cell label="金重(g)" :value="item.product_finished?.weight_gem" />
                   <common-cell label="工费" format="￥" :value="item.product_finished?.labor_fee" />
                   <common-cell label="标签价" format="￥" :value="item.product_finished?.label_price" />
                 </template>
                 <template v-else>
                   <common-cell label="商品名称" :value="item.product_demand?.name" val-color="#4C8DF6" />
-                  <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[item.product_demand?.retail_type as number] || '-'" />
+                  <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[item.product_demand?.retail_type as number] " />
                   <common-cell label="主石重(ct)" :value="item.product_demand?.weight_gem" />
-                  <common-cell label="颜色" :value="props.productFilter.color_gem?.preset[item.product_demand?.color_gem as number] || '-'" />
-                  <common-cell label="净度" :value="props.productFilter.clarity?.preset[item.product_demand?.clarity as number] || '-'" />
+                  <common-cell label="颜色" :value="props.productFilter.color_gem?.preset[item.product_demand?.color_gem as number] " />
+                  <common-cell label="净度" :value="props.productFilter.clarity?.preset[item.product_demand?.clarity as number] " />
                   <common-cell label="金重(g)" :value="item.product_demand?.weight_gem" />
                   <common-cell label="工费" format="￥" :value="item.product_demand?.labor_fee" />
                   <common-cell label="标签价" format="￥" :value="item.product_demand?.label_price" />
@@ -94,11 +94,11 @@ const returnGoods = (val: number) => {
                 <common-cell label="金价(元/g)" format="￥" :value="item.price_gold" />
                 <common-cell label="定金金额" format="￥" :value="item.price" />
                 <template v-if="item.status === DepositOrderStatus.Returned">
-                  <common-cell label="货品状态" value="已退货" val-color="#FF9900" />
+                  <common-cell label="货品状态" value="已退款" val-color="#FF9900" />
                 </template>
                 <div class="flex-end">
                   <template v-if="item.status === DepositOrderStatus.Booking">
-                    <common-button-rounded content="退货" @button-click="returnGoods(index)" />
+                    <common-button-rounded content="退款" @button-click="returnGoods(index)" />
                   </template>
                 </div>
               </template>

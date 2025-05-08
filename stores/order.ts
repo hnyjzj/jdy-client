@@ -9,6 +9,7 @@ export const useOrder = defineStore('Order', {
     searchPage: 1 as number, // 订单列表页面搜索页数
     oldFilterList: {} as Where<ProductOld>,
     oldFilterListToArray: {} as FilterWhere<ProductOld>[],
+
     OldObj: {} as ProductOld,
   }),
 
@@ -24,7 +25,9 @@ export const useOrder = defineStore('Order', {
         this.filterListToArray = sortArr(this.filterList)
       }
     },
-    //  获取旧料的新增条件
+    /**
+     * 获取旧料的新增条件
+     */
     async OldMaterialsWhere() {
       const { data } = await https.get<Where<ProductOld>, null>('/product/old/where_create')
       if (data.value?.code === HttpCode.SUCCESS) {
@@ -163,10 +166,9 @@ export const useOrder = defineStore('Order', {
     async returnOrderGoods(req: ReturnGoods) {
       const { data } = await https.put<any, ReturnGoods>('/order/sales/refund', req)
       if (data.value?.code === HttpCode.SUCCESS) {
-        console.log(data)
-
         return true
       }
     },
+
   },
 })

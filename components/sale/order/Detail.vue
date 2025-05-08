@@ -150,7 +150,7 @@ const onReturnMaster = (index: number) => {
                 <common-cell label="商品条码" :value="item.product?.code" />
                 <common-cell label="商品名称" :value="item.product?.name" val-color="#4C8DF6" />
                 <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[(item.product?.retail_type as number)]" />
-                <!-- :value="props.productFilter.retail_type?.preset[item.product_demand?.retail_type as number] || '-'" -->
+                <!-- :value="props.productFilter.retail_type?.preset[item.product_demand?.retail_type as number] " -->
                 <common-cell label="金重(g)" :value="item.product?.weight_gem" />
                 <common-cell label="金价(元/g)" format="￥" :value="item.price_gold" />
                 <common-cell label="工费" format="￥" :value="item.labor_fee" />
@@ -185,20 +185,20 @@ const onReturnMaster = (index: number) => {
                 <template v-if="index !== 0">
                   <div class="line" />
                 </template>
-                <common-cell label="旧料名称" :value="item.product?.name || '-'" val-color="#4C8DF6" />
+                <common-cell label="旧料名称" :value="item.product?.name " val-color="#4C8DF6" />
                 <common-cell label="旧料编号" :value="item?.product_id" />
-                <common-cell label="旧料条码" :value="item?.product?.code || '-'" />
+                <common-cell label="旧料条码" :value="item?.product?.code " />
                 <common-cell label="本店货品" :value="item.product?.is_our" />
-                <common-cell label="回收方式" :value="props.oldFilter.recycle_method?.preset[item.product?.recycle_method!] || '-'" />
-                <common-cell label="回收类型" :value="props.oldFilter.recycle_type?.preset[item.product?.recycle_type!] || '-'" />
-                <common-cell label="材质" :value="props.oldFilter.material?.preset[item.product?.material!] || '-'" />
-                <common-cell label="成色" :value="props.oldFilter.quality?.preset[item.product?.quality!] || '-'" />
+                <common-cell label="回收方式" :value="props.oldFilter.recycle_method?.preset[item.product?.recycle_method!] " />
+                <common-cell label="回收类型" :value="props.oldFilter.recycle_type?.preset[item.product?.recycle_type!] " />
+                <common-cell label="材质" :value="props.oldFilter.material?.preset[item.product?.material!] " />
+                <common-cell label="成色" :value="props.oldFilter.quality?.preset[item.product?.quality!] " />
                 <common-cell label="实际成色" :value="item.quality_actual" />
-                <common-cell label="主石" :value="props.oldFilter.gem?.preset[item.product?.gem!] || '-'" />
+                <common-cell label="主石" :value="props.oldFilter.gem?.preset[item.product?.gem!] " />
                 <common-cell label="主石重(ct)" :value="item.product?.weight_gem" />
-                <common-cell label="品类" :value="props.oldFilter.category?.preset[item.product?.category!] || '-'" />
-                <common-cell label="品牌" :value="props.oldFilter.brand?.preset[item.product?.brand!] || '-'" />
-                <common-cell label="工艺" :value="props.oldFilter.craft?.preset[item.product?.craft!] || '-' " />
+                <common-cell label="品类" :value="props.oldFilter.category?.preset[item.product?.category!] " />
+                <common-cell label="品牌" :value="props.oldFilter.brand?.preset[item.product?.brand!] " />
+                <common-cell label="工艺" :value="props.oldFilter.craft?.preset[item.product?.craft!] " />
                 <common-cell label="积分(-)" :value="item.integral" />
                 <common-cell label="回收工费方式" :value="props.oldFilter.recycle_price_labor_method?.preset[item.recycle_price_labor_method!] " />
                 <common-cell label="回收工费" format="￥" :value="item.recycle_price_labor" />

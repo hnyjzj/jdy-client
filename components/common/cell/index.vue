@@ -13,6 +13,7 @@ const props = withDefaults(defineProps<{
   labelColor: 'black',
   rcol: 'col-6',
   lcol: 'col-6',
+  value: '-',
 })
 </script>
 

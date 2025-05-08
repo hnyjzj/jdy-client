@@ -51,3 +51,38 @@ export enum DepositOrderStatus {
    */
   Returned,
 }
+
+export enum serviceOrderStatus {
+  /**
+   * 待付款
+   */
+  PendingPayment = 1,
+  /**
+   *已取消
+   */
+  Cancelled = 2,
+  /**
+   *门店已收货
+   */
+  StoreReceived = 3,
+  /**
+   *已送出维修
+   */
+  SentForRepair = 4,
+  /**
+   *维修中
+   */
+  UnderRepair = 5,
+  /**
+   *已维修送回
+   */
+  RepairedAndReturned = 6,
+  /**
+   *待取货
+   */
+  ReadyForPickup = 7,
+  /**
+   * 已完成
+   */
+  Completed = 8,
+}

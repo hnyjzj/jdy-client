@@ -1,0 +1,209 @@
+<script lang="ts" setup>
+import type { UploadFileInfo } from 'naive-ui'
+
+const props = defineProps<{
+  detail: ServiceOrderInfo
+  finishedWhere: Where<ProductFinisheds>
+  orderWhere: Where<service>
+  updateOrder: (req: updateRepairParams) => Promise<boolean>
+  uploadFile: (file: any) => Promise<string | false>
+  refund: (req: { id: string, remark: string }) => Promise<boolean>
+  getDetail: () => void
+}>()
+const { $toast } = useNuxtApp()
+const previewFileList = ref<UploadFileInfo[]>([])
+const region = ref({} as { province: string, city: string, district: string })
+const areaBorder = ref(false)
+const router = useRouter()
+const form = ref({
+  id: props.detail.id,
+  name: '',
+  desc: '',
+  delivery_method: 1,
+  images: [],
+  address: undefined,
+} as updateRepairParams)
+if (props.detail.name) {
+  form.value.name = props.detail.name
+}
+if (props.detail.desc) {
+  form.value.desc = props.detail.desc
+}
+if (props.detail.delivery_method) {
+  form.value.delivery_method = props.detail.delivery_method
+  if (props.detail.delivery_method === 2) {
+    region.value = {
+      province: props.detail.province || '',
+      city: props.detail.city || '',
+      district: props.detail.area || '',
+    }
+    form.value.address = props.detail.address || ''
+  }
+}
+if (props.detail.images?.length) {
+  props.detail.images?.forEach((item) => {
+    previewFileList.value.push({
+      id: useId(),
+      name: item,
+      status: 'finished',
+      url: ImageUrl(item),
+    })
+  })
+}
+// 更新
+const updateButton = async () => {
+  if (form.value.delivery_method === 2) {
+    form.value.province = region.value.province
+    form.value.city = region.value.city
+    form.value.area = region.value.district
+  }
+  form.value.images = []
+  previewFileList.value.forEach((item) => {
+    form.value.images?.push(item.name)
+  })
+  // 更新请求
+  const res = await props.updateOrder(form.value)
+  if (res) {
+    $toast.success('更新成功')
+  }
+  else {
+    $toast.error('更新失败')
+  }
+}
+const showModel = ref(false)
+// 退款
+</script>
+
+<template>
+  <div class="grid-12 gap-[12px]">
+    <div class="col-12" uno-sm="col-10 offset-1" uno-md="col-8 offset-2" uno-lg="col-6 offset-3" uno-lt="col-3 offset-3">
+      <common-fold title="基础信息" :is-collapse="false">
+        <div class="info">
+          <common-cell label="维修单状态" :value="props.orderWhere.status?.preset[props.detail.status] " rcol="col-8" lcol="col-4" val-color="#0B57D0" />
+          <common-cell label="维修单编号" :value="props.detail.id" rcol="col-8" lcol="col-4" />
+          <common-cell label="接待人" :value="props.detail.operator?.nickname" rcol="col-8" lcol="col-4" />
+          <common-cell label="会员昵称" :value="props.detail.member?.nickname" rcol="col-8" lcol="col-4" />
+          <common-cell label="会员信息" :value="props.detail.member?.phone" rcol="col-8" lcol="col-4" />
+          <common-cell label="状态" :value="props.detail.status" rcol="col-8" lcol="col-4" />
+          <common-cell :label="`${props.detail.store?.name!}`" label-color="#0B57D0" :value="props.detail.store?.address" rcol="col-8" lcol="col-4" />
+          <common-cell label="门店电话" :value="props.detail.store?.contact" rcol="col-8" lcol="col-4" />
+          <common-cell label="维修费" :value="props.detail.expense" rcol="col-8" lcol="col-4" />
+          <common-cell label="维修成本" :value="props.detail.cost" rcol="col-8" lcol="col-4" />
+          <n-grid x-gap="12" :cols="2" :y-gap="12">
+            <n-grid-item>
+              <div class="pb-[8px]">
+                维修项目
+              </div>
+              <n-input v-model:value="form.name" type="text" placeholder="维修项目" />
+            </n-grid-item>
+            <n-grid-item>
+              <div class="pb-[8px]">
+                问题描述
+              </div>
+              <n-input v-model:value="form.desc" type="text" placeholder="问题描述" />
+            </n-grid-item>
+
+            <n-grid-item>
+              <div class="pb-[8px]">
+                取货方式
+              </div>
+              <div>
+                <n-radio-group v-model:value="form.delivery_method" name="radiogroup">
+                  <n-space>
+                    <n-radio
+                      v-for="(items, index) in [{ value: 1, label: '自提' }, { value: 2, label: '邮寄' }]" :key="index" :value="items.value" :style="{
+                        '--n-box-shadow-hover': 'inset 0 0 0 1px #0068ff',
+                        '--n-box-shadow-active': 'inset 0 0 0 1px #0068ff',
+                        '--n-dot-color-active': '#0068ff',
+                        '--n-box-shadow-focus': 'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)' }">
+                      {{ items.label }}
+                    </n-radio>
+                  </n-space>
+                </n-radio-group>
+              </div>
+            </n-grid-item>
+            <template v-if="form.delivery_method === 2">
+              <n-grid-item :span="2">
+                <div class="pb-[8px]">
+                  省市区选择
+                </div>
+                <common-area-select :border="areaBorder" :is-required="false" :showtitle="false" :form="region" />
+              </n-grid-item>
+
+              <n-grid-item :span="2">
+                <div class="pb-[8px]">
+                  详细地址
+                </div>
+                <n-input v-model:value="form.address" type="text" placeholder="详细地址" />
+              </n-grid-item>
+            </template>
+          </n-grid>
+        </div>
+      </common-fold>
+
+      <div class="pt-[16px]">
+        <common-fold title="货品信息" :is-collapse="false">
+          <div class="p-[16px]">
+            <template v-for="(item, index) in props.detail.products" :key="index">
+              <common-cell label="条码" :value="item.code" rcol="col-8" lcol="col-4" />
+              <common-cell label="货品名称" :value="item.name" rcol="col-8" lcol="col-4" />
+              <common-cell label="本店货品" :value="item.is_our" rcol="col-8" lcol="col-4" />
+              <common-cell label="材质" :value="props.finishedWhere.material?.preset[item.material!]" rcol="col-8" lcol="col-4" />
+              <common-cell label="成色" :value="props.finishedWhere.quality?.preset[item.quality!]" rcol="col-8" lcol="col-4" />
+              <common-cell label="主石" :value="props.finishedWhere.gem?.preset[item.gem!] " rcol="col-8" lcol="col-4" />
+              <common-cell label="品类" :value="props.finishedWhere.category?.preset[item.category!] " rcol="col-8" lcol="col-4" />
+              <common-cell label="金重" :value="item.weight_metal" rcol="col-8" lcol="col-4" />
+              <common-cell label="主石重" :value="item.weight_gem" rcol="col-8" lcol="col-4" />
+              <common-cell label="主石颜色" :value="props.finishedWhere.color_gem?.preset[item.color_gem!] " rcol="col-8" lcol="col-4" />
+              <common-cell label="主石净度" :value="props.finishedWhere.clarity?.preset[item.clarity!] " rcol="col-8" lcol="col-4" />
+              <common-cell label="总重" :value="item.weight_total" rcol="col-8" lcol="col-4" />
+              <common-cell label="标签价" :value="item.label_price" rcol="col-8" lcol="col-4" />
+              <common-cell label="备注" :value="item.remark" rcol="col-8" lcol="col-4" />
+              <div class="line" />
+              <template v-if="item.status === serviceOrderStatus.StoreReceived">
+                <div class="flex-end">
+                  <common-button-rounded content="退款" @button-click="showModel = true" />
+                </div>
+              </template>
+            </template>
+          </div>
+        </common-fold>
+      </div>
+      <div class="pt-[16px]">
+        <sale-service-add-pictures v-model:pictures="previewFileList" :upload-file="uploadFile" />
+      </div>
+    </div>
+    <div class="footer">
+      <div class="grid-12 gap-[12px] px-[16px]">
+        <div class="col-6 offset-3" uno-sm="col-4 offset-4">
+          <div class="grid-12 gap-[12px]">
+            <div class="col-6">
+              <common-button-rounded
+                content="更新" bgc="#0068FF" color="#FFF" @button-click="updateButton()" />
+            </div>
+            <div class="col-6">
+              <common-button-rounded
+                content="返回" bgc="#fff" color="#000" @button-click="() => {
+                  router.back()
+                }" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <sale-service-info-returnmoney v-model:show="showModel" :detail="props.detail" :return-money="props.refund" :get-detail="props.getDetail" />
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.footer {
+  border-top: 1px solid #e6e6e8;
+  --uno: 'fixed bottom-0 left-0 block w-full bg-[#F1F5FE] dark:bg-[rgba(0,0,0,0.6)] blur-8px py-3';
+}
+.info {
+  --uno: 'flex flex-col gap-[3px] p-16px';
+}
+.line {
+  --uno: 'h-[1px] w-full bg-[#E0E0E0] my-[8px]';
+}
+</style>
