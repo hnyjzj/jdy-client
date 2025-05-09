@@ -31,6 +31,7 @@ const initForm = ref<otherOrderCreate>({
   member_id: '',
   order_id: '',
   amount: '',
+  source: undefined,
   payments: [{ payment_method: 1, amount: 0 }],
 })
 const formData = ref<otherOrderCreate>({
@@ -41,6 +42,7 @@ const formData = ref<otherOrderCreate>({
   member_id: '',
   order_id: '',
   amount: '',
+  source: undefined,
   payments: [{ payment_method: 1, amount: 0 }],
 })
 const rules = ref<FormRules>({

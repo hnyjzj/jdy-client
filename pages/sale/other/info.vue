@@ -12,10 +12,12 @@ const { getOrderDetail, getSaleWhere, returnGoodsDepositOrder } = useDepositOrde
 const router = useRouter()
 const route = useRoute()
 if (route.query.id) {
-  await getOrderDetail({ id: route.query.id as string })
-  await getMemberWhere()
-  await getSaleWhere()
-  await getFinishedWhere()
+  await Promise.all([
+    await getOrderDetail({ id: route.query.id as string }),
+    await getMemberWhere(),
+    await getSaleWhere(),
+    await getFinishedWhere(),
+  ])
 }
 
 const returnGoods = async (req: DepositReturnGoods) => {

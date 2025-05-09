@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { idID, type UploadFileInfo } from 'naive-ui'
+import type { UploadFileInfo } from 'naive-ui'
 
 const props = defineProps<{
   detail: ServiceOrderInfo

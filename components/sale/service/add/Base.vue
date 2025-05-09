@@ -7,10 +7,6 @@ const props = defineProps<{
 }>()
 const formData = defineModel('form', { default: {} as serviceOrederCreate })
 const region = defineModel('region', { default: {} })
-
-const updateRegion = () => {
-  console.log(region.value)
-}
 </script>
 
 <template>
@@ -86,7 +82,7 @@ const updateRegion = () => {
               :span="24"
               label="收货地址" label-placement="top"
             >
-              <common-area-select :border="props.areaBorder" :is-required="false" :showtitle="false" :form="region" @update="updateRegion" />
+              <common-area-select :border="props.areaBorder" :is-required="false" :showtitle="false" :form="region" />
             </n-form-item-gi>
             <n-form-item-gi
               :span="24"

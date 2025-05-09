@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { c, type FormRules } from 'naive-ui'
+import type { FormRules } from 'naive-ui'
 
 const props = defineProps<{
   where: Where<OrderWhere>
