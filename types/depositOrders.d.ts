@@ -36,6 +36,18 @@ interface DepositOrder {
 
 }
 
+interface DepositOrderWhere {
+  cashier_id?: string
+  clerk_id?: string
+  end_date?: string
+  id?: string
+  member_id?: Member['id']
+  payment_method?: Payment
+  start_date?: string
+  status?: number
+  store_id?: Stores['id']
+}
+
 interface DepositOrderPayment {
   /**
    * 金额

@@ -42,7 +42,7 @@ const openFilter = () => {
 }
 
 const submitWhere = async (f: service) => {
-  filterData.value = { ...f, ...filterData.value }
+  filterData.value = { ...filterData.value, ...f }
   repairOrderList.value = []
   searchPage.value = 1
   await getList(filterData.value as any)

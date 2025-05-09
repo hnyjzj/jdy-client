@@ -4,11 +4,10 @@ useSeoMeta({
 })
 const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
-const { getFinishedList } = useFinished()
-const { finishedList } = storeToRefs(useFinished())
+
 const { filterListToArray, OrdersList, total, filterList, searchPage } = storeToRefs(useDepositOrder())
 const { getSaleWhere, getDepositList, payDepositOrder, rovkeDepositOrder } = useDepositOrder()
-const filterData = ref({} as Partial<OrderWhere>)
+const filterData = ref({} as Partial<DepositOrderWhere>)
 const filterShow = ref(false)
 
 const { getMemberList } = useMemberManage()
@@ -32,8 +31,8 @@ const openFilter = () => {
   filterShow.value = true
 }
 
-const submitWhere = async (f: OrderWhere) => {
-  filterData.value = { ...f, ...filterData.value }
+const submitWhere = async (f: DepositOrderWhere) => {
+  filterData.value = { ...filterData.value, ...f }
   OrdersList.value = []
   searchPage.value = 1
   await getList(filterData.value as any)
@@ -48,11 +47,6 @@ const height = ref<number | undefined>(0)
 onMounted(async () => {
   height.value = getHeight('header')
 })
-const searchProduct = async (e: string) => {
-  if (e.length > 0) {
-    await getFinishedList({ page: 1, limit: 5, where: { name: e } })
-  }
-}
 
 const searchOrder = async (id: string) => {
   await getDepositList({ page: 1, limit: 5, where: { id, store_id: myStore.value.id } })
@@ -157,9 +151,9 @@ const changeStores = async () => {
           @focus="() => { getStoreStaffList({ id: myStore.id }) }"
         />
       </template>
-      <template #salesman_id>
+      <template #clerk_id>
         <n-select
-          v-model:value="filterData.salesman_id"
+          v-model:value="filterData.clerk_id"
           placeholder="请选择导购员"
           :options="StoreStaffList.map(v => ({
             label: v.nickname,
@@ -182,21 +176,6 @@ const changeStores = async () => {
           clearable
           remote
           @search="getMember"
-        />
-      </template>
-
-      <template #product_id>
-        <n-select
-          v-model:value="filterData.product_id"
-          filterable
-          placeholder="输入商品名称"
-          :options="finishedList.map(v => ({
-            label: v.name,
-            value: v.id,
-          }))"
-          clearable
-          remote
-          @search="searchProduct"
         />
       </template>
     </common-filter-where>

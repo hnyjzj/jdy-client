@@ -6,7 +6,7 @@ useSeoMeta({
 const { $toast } = useNuxtApp()
 const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
-// const { getFinishedList } = useFinished()
+const { getFinishedList } = useFinished()
 const { finishedList } = storeToRefs(useFinished())
 
 const { filterListToArray, OrdersList, total, filterList, searchPage } = storeToRefs(useOrder())
@@ -20,7 +20,7 @@ const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5
 
 // 获取列表
 const getList = async (where = {} as Partial<OrderInfo>) => {
-  const params = { page: searchPage.value, limit: 12, where: { type: 1, store_id: myStore.value.id } } as ReqList<OrderInfo>
+  const params = { page: searchPage.value, limit: 12, where: { store_id: myStore.value.id } } as ReqList<OrderInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
@@ -34,7 +34,8 @@ const openFilter = () => {
 }
 
 const submitWhere = async (f: OrderWhere) => {
-  filterData.value = { ...f, ...filterData.value }
+  filterData.value = { ...filterData.value, ...f }
+
   OrdersList.value = []
   searchPage.value = 1
   await getList(filterData.value as any)
@@ -51,7 +52,7 @@ onMounted(async () => {
 })
 const searchProduct = async (e: string) => {
   if (e.length > 0) {
-    // await getFinishedList({ page: 1, limit: 5, where: { name: e } })
+    await getFinishedList({ page: 1, limit: 5, where: { name: e } })
   }
 }
 

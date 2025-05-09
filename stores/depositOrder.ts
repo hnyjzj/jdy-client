@@ -1,10 +1,10 @@
 export const useDepositOrder = defineStore('depositOrder', {
   state: () => ({
     OrdersList: [] as DepositOrderInfo[],
-    filterList: {} as Where<OrderWhere>,
+    filterList: {} as Where<DepositOrderWhere>,
     total: 0 as number,
     OrderDetail: {} as DepositOrderInfo,
-    filterListToArray: [] as FilterWhere<OrderWhere>[],
+    filterListToArray: [] as FilterWhere<DepositOrderWhere>[],
     searchPage: 1 as number, // 订单列表页面搜索页数
     oldFilterList: {} as Where<ProductOld>,
     oldFilterListToArray: {} as FilterWhere<ProductOld>[],
@@ -13,7 +13,7 @@ export const useDepositOrder = defineStore('depositOrder', {
   actions: {
     // 获取筛选条件
     async getSaleWhere() {
-      const { data } = await https.get<Where<OrderWhere>, null>('/order/deposit/where')
+      const { data } = await https.get<Where<DepositOrderWhere>, null>('/order/deposit/where')
       if (data.value?.code === HttpCode.SUCCESS) {
         this.filterList = data.value.data
         this.filterListToArray = sortArr(this.filterList)

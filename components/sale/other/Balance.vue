@@ -2,7 +2,7 @@
 import { calc } from 'a-calc'
 
 const props = defineProps<{
-  filterList: Where<OrderWhere>
+  filterList: Where<DepositOrderWhere>
 }>()
 const formData = defineModel<otherOrderCreate>('form', { default: {} })
 

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const props = defineProps<{
   orders: DepositOrderInfo
-  where: Where<OrderWhere>
+  where: Where<DepositOrderWhere>
   memberFiler: Where<Member>
   productFilter: Where<ProductFinisheds>
   returnGoods: (val: DepositReturnGoods) => Promise<boolean>

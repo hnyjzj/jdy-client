@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  filterList: Where<OrderWhere>
+  filterList: Where<DepositOrderWhere>
 }>()
 const formData = defineModel<DepositOrder>({ default: {} })
 const showProductList = defineModel<DepositOrderProduct[]>('list', { default: {} })

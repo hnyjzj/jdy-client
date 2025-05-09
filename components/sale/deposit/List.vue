@@ -2,7 +2,7 @@
 // 销售单列表
 const props = defineProps<{
   info: DepositOrderInfo[]
-  where: Where<OrderWhere>
+  where: Where<DepositOrderWhere>
   payOrder: (val: string) => Promise<void>
   cancelOrder: (val: string) => Promise<void>
 }>()
@@ -31,7 +31,7 @@ const jumpSaleOreder = (id: string) => {
 <template>
   <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
-      <sale-cards :title="`定金单号:${item.id}`">
+      <sale-cards :title="`订金单:${item.id}`" :tag-text="props.where.status?.preset[item.status!]">
         <template #info>
           <div class="info">
             <common-cell label="所属门店" :value="item.store?.name || '--'" />

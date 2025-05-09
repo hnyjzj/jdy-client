@@ -4,7 +4,7 @@ import type { FormRules } from 'naive-ui'
  *  订金单退货
  */
 const props = defineProps<{
-  where: Where<OrderWhere>
+  where: Where<DepositOrderWhere>
   showReturnGoods?: {
     Finished: DepositOrderInfoProducts
     id: string
