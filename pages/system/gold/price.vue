@@ -14,7 +14,6 @@ const changeShow = ref(false)
 const goldParams = ref([] as UpdataGold[])
 const deleteArr = ref([] as GoldPrices['id'][])
 await getFinishedWhere()
-
 /** 如果有传门店id 则当前门店选择该门店 */
 if (route.query?.store_id) {
   await getMyStore({ page: 1, limit: 20 })
@@ -173,10 +172,10 @@ function subtract(i: number, id: GoldPrices['id']) {
                 <n-select v-model:value="item.product_type" placeholder="类型" :options="optonsToSelect(typePreset)" />
               </div>
               <div class="mt-2">
-                <n-select v-model:value="item.product_brand" placeholder="品牌(多选),不选默认为全部品牌" multiple :options="getOptions('brand')" />
+                <n-select v-model:value="item.product_brand" class="no-radius" placeholder="品牌(多选),不选默认为全部品牌" multiple :options="getOptions('brand')" />
               </div>
               <div class="my-2">
-                <n-select v-model:value="item.product_quality" placeholder="成色(多选)" multiple :options="getOptions('quality')" />
+                <n-select v-model:value="item.product_quality" class="no-radius" placeholder="成色(多选)" multiple :options="getOptions('quality')" />
               </div>
             </div>
             <div class="flex gap-1">
@@ -211,6 +210,13 @@ function subtract(i: number, id: GoldPrices['id']) {
     <common-button-one text="变更金价" @confirm="getGoldParams();changeShow = true" />
   </div>
 </template>
+
+<style>
+.no-radius .n-base-selection,
+.no-radius .n-base-tag {
+  border-radius: 16px !important;
+}
+</style>
 
 <style lang="scss" scoped>
 .gold {
