@@ -19,7 +19,7 @@ async function goDetail() {
           </div>
           <div @click="goDetail">
             <span class="text-[rgba(96,98,102,1)]">详情</span>
-            <van-icon name="arrow" color="rgba(96,98,102,1)" />
+            <icon name="i-icon:arrow" size="12" color="rgba(96,98,102,1)" />
           </div>
         </div>
       </template>

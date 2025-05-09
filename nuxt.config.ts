@@ -26,7 +26,6 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     'pinia-plugin-persistedstate',
     '@unocss/nuxt',
-    '@vant/nuxt',
     '@vueuse/nuxt',
     '@nuxt/eslint',
     '@nuxtjs/color-mode',

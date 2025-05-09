@@ -26,7 +26,12 @@ const toggleFold = () => {
       </div>
       <div
         class="font-size-[10px] color-[#333]" @click="toggleFold()">
-        <van-icon :name="!folded ? 'arrow' : 'arrow-down'" size="12" />
+        <template v-if="!folded">
+          <icon name="i-icon:arrow" size="12" />
+        </template>
+        <template v-else>
+          <icon name="i-icon:arrow-down" size="7" />
+        </template>
       </div>
     </div>
     <!-- info -->

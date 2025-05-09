@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Rules } from 'common-form'
-import { showConfirmDialog } from 'vant'
+import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 
 const { $toast } = useNuxtApp()
 const { addWorkbench, getWorkbenchList, delWorkbench, updateWorkbench, uploadIcon } = useWorkbenche()
@@ -10,7 +10,10 @@ searchPage.value = 1
 useSeoMeta({
   title: '工作台',
 })
-
+// 删除确认框
+const deleteDialog = ref(false)
+// 暂存要删除的id
+const deleteId = ref('')
 const addWorkbenchform = templateRef('addWorkbenchform')
 const show = ref(false)
 const params = ref<AddWorkbencheReq>({
@@ -28,9 +31,8 @@ const foldType = ref<Record<string, boolean>>({})
 const isSetup = ref(false)
 // 提交表单时状态
 const submitStatus = ref<'add' | 'update'>('add')
-
-// 上传图片列表
-const fileList = ref<fileListArr[]>([])
+/** 图片列表 */
+const previewFileList = ref<Array<UploadFileInfo>>([])
 // 重置表单和显示状态
 const resetForm = (isshow: boolean = false) => {
   params.value = {
@@ -40,7 +42,7 @@ const resetForm = (isshow: boolean = false) => {
     icon: '',
   }
   show.value = isshow
-  fileList.value = []
+  previewFileList.value = []
 }
 
 const foldStatus = useState('allFold', () => {
@@ -77,25 +79,25 @@ const updateBench = (bench: WorkBench, type: number = 1) => {
     params.value.title = bench.title
   if (bench.icon) {
     params.value.icon = bench.icon
-    fileList.value = [{ url: ImageUrl(bench.icon), isImage: true }]
+    // fileList.value = [{ url: ImageUrl(bench.icon), isImage: true }]
+    previewFileList.value = [{
+      id: bench.id,
+      status: 'finished',
+      url: ImageUrl(bench.icon),
+      name: 'avatar',
+    }]
   }
   if (bench.path)
     params.value.path = bench.path
 }
 
 // 删除工作台
-const delBench = async (id: string) => {
+const delBench = async () => {
   try {
-    const res = await showConfirmDialog({
-      title: '删除工作台页面',
-      message: '该操作存在一定风险，您确定要删除吗？',
-    })
-    if (res === 'confirm') {
-      const data = await delWorkbench(id)
-      if (data?.code === 200) {
-        await getWorkbenchList()
-        $toast.success('删除成功')
-      }
+    const data = await delWorkbench(deleteId.value)
+    if (data?.code === 200) {
+      await getWorkbenchList()
+      $toast.success('删除成功')
     }
   }
   catch (error) {
@@ -138,35 +140,6 @@ async function changePage(bench: WorkBench) {
   navigateTo(bench.path)
 }
 
-// 删除头像
-const deleteFile = () => {
-  fileList.value = []
-}
-// 上传前
-const beforeRead = (file: any) => {
-  // 验证文件类型
-  if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
-    showToast('请上传 jpg 格式图片')
-    return false
-  }
-  return true
-}
-
-const afterRead = async (file: any) => {
-  try {
-    const res = await uploadIcon({ image: file.file })
-    if (res.data?.value?.data?.url) {
-      params.value.icon = res.data.value.data.url
-    }
-    else {
-      $toast.error('上传失败')
-    }
-  }
-  catch (error) {
-    throw new Error(`更新工作台失败: ${error || '未知错误'}`)
-  }
-}
-
 const searchListFn = async (val: string) => {
   await getWorkbenchList()
   const filteredData = filterByKeyword(workBenchList.value, val)
@@ -191,6 +164,37 @@ function getModelTitle() {
     return `添加${modelName}`
   }
   return `编辑${modelName}`
+}
+
+function removeImg(data: { index: number }) {
+  const tempList = JSON.parse(JSON.stringify(previewFileList.value))
+  tempList.splice(data.index, 1)
+  previewFileList.value = tempList
+}
+
+/**
+ * 上传详情图
+ */
+const customRequest = useDebounceFn(async ({ file }: UploadCustomRequestOptions) => {
+  if (!file?.file)
+    return
+
+  try {
+    const res = await uploadIcon({ image: file.file })
+    if (res.data?.value?.data?.url) {
+      params.value.icon = res.data.value.data.url
+    }
+  }
+  catch (error) {
+    throw new Error(`图片上传失败: ${error || '未知错误'}`)
+  }
+}, 300)
+
+const beforeUpload = (data: any) => {
+  if (data.file.file?.type !== 'image/png' && data.file.file?.type !== 'image/jpeg') {
+    $toast.error('只能上传png,jpeg格式的图片文件,请重新上传')
+    return false
+  }
 }
 </script>
 
@@ -218,7 +222,7 @@ function getModelTitle() {
       <div class="pb-10 px-4">
         <!-- 工作台入口 -->
         <div class="mt-2 mb-14 col-12">
-          <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="delBench" @update="updateBench" @fold="fold" @change-page="changePage" />
+          <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="(id) => { deleteDialog = true;deleteId = id }" @update="updateBench" @fold="fold" @change-page="changePage" />
           <template v-if="isSetup">
             <button style="all: unset;">
               <div class="flex items-center mb-4 cursor-pointer" @click="resetForm(true);show = true;modelType = 1 ">
@@ -239,7 +243,7 @@ function getModelTitle() {
             <div class="pb-[16px]">
               <div class="add-row">
                 <div>标题</div>
-                <input v-model="params[label]" type="text" class="border-none bg-transparent" placeholder="输入标题">
+                <input v-model="params[label]" type="text" class="border-none bg-transparent outline-none focus:ring-0 focus:outline-none text-color" placeholder="输入标题">
                 <div class="text-[#FF2F2F] text-[12px] pt-2">
                   {{ error }}
                 </div>
@@ -251,11 +255,15 @@ function getModelTitle() {
               <div class="add-row">
                 <div>图标</div>
                 <div>
-                  <van-uploader
-                    v-model="fileList" reupload max-count="1" :style="{
-                      '--van-uploader-border-radius': '50%',
-                      '--van-uploader-upload-background': 'white',
-                    }" :after-read="afterRead" :before-read="beforeRead" :preview-options="{ closeable: true }" @delete="deleteFile"
+                  <n-upload
+                    action="#"
+                    list-type="image-card"
+                    :default-file-list="previewFileList"
+                    :custom-request="customRequest"
+                    :max="1"
+                    class="circle-upload"
+                    @before-upload="beforeUpload"
+                    @remove="(file) => removeImg(file)"
                   />
                 </div>
               </div>
@@ -265,7 +273,7 @@ function getModelTitle() {
             <div class="pb-[16px]">
               <div class="add-row">
                 <div>跳转地址</div>
-                <input v-model="params[label]" type="text" class="border-none bg-transparent" placeholder="输入跳转地址">
+                <input v-model="params[label]" type="text" class="border-none bg-transparent outline-none focus:ring-0 focus:outline-none text-color" placeholder="输入跳转地址">
                 <div class="text-[#FF2F2F] text-[12px] pt-2">
                   {{ error }}
                 </div>
@@ -275,6 +283,8 @@ function getModelTitle() {
         </common-form>
       </div>
     </common-model>
+    <common-confirm v-model:show="deleteDialog" icon="error" title="删除工作台页面" text="该操作存在一定风险，您确定要删除吗？?" @submit="delBench" />
+
     <common-tabbar text="table" />
   </div>
 </template>

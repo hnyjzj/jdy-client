@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { Rules } from 'common-form'
+import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 
 definePageMeta({ layout: 'solid' })
 const { getUserInfo } = useUser()
@@ -63,27 +64,6 @@ onMounted(() => {
     })
   }
 })
-// 上传前
-const beforeRead = (file: any) => {
-  // 验证文件类型
-  if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
-    showToast('请上传 jpg 格式图片')
-    return false
-  }
-
-  return true
-}
-// 上传文件后
-const afterRead = async (file: any) => {
-  // 上传文件接口
-  const res = await staff.uploadAvatar({ avatar: file.file })
-  if (res.data.value?.code !== HttpCode.SUCCESS) {
-    $toast.error(res.data.value?.message || '上传失败')
-  }
-  userinfoForm.value.avatar = res.data.value?.data.url as string
-  fileList.value = [{ url: ImageUrl(res.data.value?.data.url), isImage: true }]
-}
-
 /**
  * 异步函数：提交表单
  * 本函数用于更新用户信息通过调用后端API
@@ -131,10 +111,47 @@ const otherAuth = async (data: string) => {
     await getOauthUri(route.path || '', '/my/user/oauth')
   }
 }
-// 删除头像
-const deleteAvatar = () => {
-  fileList.value = []
-  userinfoForm.value.avatar = ''
+
+/** 图片列表 */
+const previewFileList = ref<Array<UploadFileInfo>>([])
+if (userinfo.value.avatar) {
+  previewFileList.value = [{
+    id: userinfo.value.avatar,
+    status: 'finished',
+    url: ImageUrl(userinfo.value.avatar),
+    name: 'avatar',
+  }]
+}
+function removeImg(data: { index: number }) {
+  const tempList = JSON.parse(JSON.stringify(previewFileList.value))
+  tempList.splice(data.index, 1)
+  previewFileList.value = tempList
+}
+
+/**
+ * 上传详情图
+ */
+const customRequest = useDebounceFn(async ({ file }: UploadCustomRequestOptions) => {
+  if (!file?.file)
+    return
+
+  try {
+    const res = await staff.uploadAvatar({ avatar: file.file })
+    if (res.data?.value?.data?.url) {
+      userinfoForm.value.avatar = res.data.value?.data.url as string
+      fileList.value = [{ url: ImageUrl(res.data.value?.data.url), isImage: true }]
+    }
+  }
+  catch (error) {
+    throw new Error(`图片上传失败: ${error || '未知错误'}`)
+  }
+}, 300)
+
+const beforeUpload = (data: any) => {
+  if (data.file.file?.type !== 'image/png' && data.file.file?.type !== 'image/jpeg') {
+    $toast.error('只能上传png,jpeg格式的图片文件,请重新上传')
+    return false
+  }
 }
 </script>
 
@@ -142,11 +159,17 @@ const deleteAvatar = () => {
   <div class="px-[16px] py-[16px]">
     <div class="grid-12">
       <div class="pb-[8px] col-12 flex-center-col" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
-        <van-uploader
-          v-model="fileList" multiple :after-read="afterRead" :before-read="beforeRead" max-count="1" :style="{
-            '--van-uploader-border-radius': '50%',
-            '--van-uploader-upload-background': 'white',
-          }" :preview-options="{ closeable: true }" @delete="deleteAvatar" />
+        <div class="w-[96px] h-[96px]">
+          <n-upload
+            action="#"
+            list-type="image-card"
+            :default-file-list="previewFileList"
+            :custom-request="customRequest"
+            :max="1"
+            @before-upload="beforeUpload"
+            @remove="removeImg"
+          />
+        </div>
         <div class="py-[8px] color-[#666]">
           上传头像
         </div>
@@ -181,19 +204,20 @@ const deleteAvatar = () => {
               <div class="items">
                 <div>性别</div>
                 <div class="py-[9px]">
-                  <van-radio-group v-model="userinfoForm.gender" direction="horizontal">
+                  <n-radio-group v-model:value="userinfoForm.gender">
                     <template v-if="userinfo.gender === 0">
-                      <van-radio :name="0">
+                      <n-radio
+                        :value="0">
                         保密
-                      </van-radio>
+                      </n-radio>
                     </template>
-                    <van-radio :name="1">
+                    <n-radio :value="1">
                       男
-                    </van-radio>
-                    <van-radio :name="2">
+                    </n-radio>
+                    <n-radio :value="2">
                       女
-                    </van-radio>
-                  </van-radio-group>
+                    </n-radio>
+                  </n-radio-group>
                 </div>
               </div>
             </template>
@@ -244,11 +268,5 @@ const deleteAvatar = () => {
 }
 .error {
   --uno: 'color-[red] text-size-[14px] line-height-[20px] mt-10px';
-}
-:deep(.van-uploader__upload) {
-  margin: 0;
-}
-:deep(.van-uploader__preview) {
-  margin: 0;
 }
 </style>

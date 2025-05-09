@@ -84,7 +84,7 @@ async function loss() {
             {{ finishedInfo.code }}
           </div>
           <div>
-            <van-icon name="arrow" color="#808089" />
+            <icon name="i-icon:arrow" size="12" color="#808089" />
           </div>
         </div>
       </div>

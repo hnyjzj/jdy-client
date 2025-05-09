@@ -53,18 +53,23 @@ function toggleShow() {
 
         <template v-if="isCollapse">
           <div>
-            <van-icon :name="!isShow ? 'arrow' : 'arrow-down'" />
+            <template v-if="!isShow">
+              <icon name="i-icon:arrow" />
+            </template>
+            <template v-else>
+              <icon name="i-icon:arrow-down" size="10" />
+            </template>
           </div>
         </template>
       </div>
+      <Transition mode="out-in">
+        <template v-if="isShow">
+          <div class="bg-[#fff] rounded-b-[24px] dark:bg-[rgba(239,240,246,0.1)]">
+            <slot />
+          </div>
+        </template>
+      </Transition>
     </div>
-    <Transition mode="out-in">
-      <template v-if="isShow">
-        <div class="bg-[#fff] rounded-b-[24px] dark:bg-[rgba(239,240,246,0.1)]">
-          <slot />
-        </div>
-      </template>
-    </Transition>
   </div>
 </template>
 

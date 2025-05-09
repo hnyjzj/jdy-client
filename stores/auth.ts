@@ -27,6 +27,7 @@ export const useAuth = defineStore('authStore', {
         const { data } = await https.post<OAuthRes, OAuthReq>('/platform/oauth', { uri, platform: 'wxwork' }, false)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.redirect = data.value.data.redirect_url
+          await useStores().getMyStore({ page: 1, limit: 10 })
           navigateTo(this.redirect, { external: true, replace: true, redirectCode: 200 })
         }
 
@@ -93,6 +94,8 @@ export const useAuth = defineStore('authStore', {
           this.imageCaptcha.code = ''
           await userStore.getUserInfo()
           await navigateTo(decodeURIComponent(redirect_url as string), { replace: true, redirectCode: 200 })
+          //   登录成功获取我的门店
+          await useStores().getMyStore({ page: 1, limit: 10 })
         }
         return data.value
       }

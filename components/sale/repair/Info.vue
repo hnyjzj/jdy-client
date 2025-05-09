@@ -46,14 +46,15 @@ const checked = ref(1)
           </template>
           <div class="flex-center-between gap-[8px] py-[6px]">
             <span class="color-[#333] dark:color-[#FFFFFF] text-[14px] flex-none">取货方式</span>
-            <van-radio-group v-model="checked" shape="dot" direction="horizontal">
-              <van-radio :name="1" checked-color="#3971F3" icon-size="20px" class="font-size-[14px]">
+            <n-radio-group v-model:value="checked">
+              <n-radio
+                :value="1">
                 自提
-              </van-radio>
-              <van-radio :name="2" checked-color="#3971F3" icon-size="20px" class="font-size-[14px]">
+              </n-radio>
+              <n-radio :value="2" class="custom-radio">
                 邮寄
-              </van-radio>
-            </van-radio-group>
+              </n-radio>
+            </n-radio-group>
           </div>
         </div>
       </div>
@@ -71,6 +72,10 @@ const checked = ref(1)
     </div>
   </div>
 </template>
+
+<style scoped>
+
+</style>
 
 <style scoped lang="scss">
 .info {
