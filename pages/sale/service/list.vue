@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { useCascaderAreaData } from '@vant/area-data'
+
 useSeoMeta({
   title: '维修单列表',
 })
+const areaoptions = useCascaderAreaData()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 const { getRepairOrderWhere, getRepairOrderList, cancelRepairOrder, payRepairOrder } = useRepair()
@@ -71,6 +74,23 @@ const updatePage = async (page: number) => {
 const changeStores = async () => {
   await getList()
 }
+const Key = ref()
+const cityOptions = ref<any>([])
+const areaOptions = ref<any>([])
+const setNowProvince = () => {
+  filterData.value.city = undefined
+  filterData.value.area = undefined
+  cityOptions.value = [...areaoptions.filter(item => item.value === filterData.value.province)]
+  cityOptions.value = cityOptions.value[0].children
+  Key.value = new Date().getTime().toString()
+}
+
+const setNowcity = () => {
+  filterData.value.area = undefined
+  areaOptions.value = [...cityOptions.value.filter((item: any) => item.value === filterData.value.city)]
+  areaOptions.value = areaOptions.value[0].children
+  Key.value = new Date().getTime().toString()
+}
 </script>
 
 <template>
@@ -113,35 +133,82 @@ const changeStores = async () => {
       </div>
     </div>
     <!-- filter -->
-    <common-filter-where v-model:show="filterShow" :data="filterData" :filter="repairFilterListToArray" @submit="submitWhere" @reset="resetWhere">
-      <template #receptionist_id>
-        <n-select
-          v-model:value="filterData.receptionist_id"
-          placeholder="请选择收银员"
-          :options="StoreStaffList.map(v => ({
-            label: v.nickname,
-            value: v.id,
-          }))"
-          clearable
-          remote
-          @focus="() => { getStoreStaffList({ id: myStore.id }) }"
-        />
-      </template>
-      <template #member_id>
-        <n-select
-          v-model:value="filterData.member_id"
-          filterable
-          placeholder="请选择会员"
-          :options="memberList.map(v => ({
-            label: `${v.phone} (${v.nickname ? v.nickname : v.name})`,
-            value: v.id,
-          }))"
-          clearable
-          remote
-          @search="getMember"
-        />
-      </template>
-    </common-filter-where>
+    <div>
+      <common-filter-where v-model:show="filterShow" :data="filterData" :filter="repairFilterListToArray" @submit="submitWhere" @reset="resetWhere">
+        <template #receptionist_id>
+          <n-select
+            v-model:value="filterData.receptionist_id"
+            placeholder="请选择收银员"
+            :options="StoreStaffList.map(v => ({
+              label: v.nickname,
+              value: v.id,
+            }))"
+            clearable
+            remote
+            @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+          />
+        </template>
+        <template #member_id>
+          <n-select
+            v-model:value="filterData.member_id"
+            filterable
+            placeholder="请选择会员"
+            :options="memberList.map(v => ({
+              label: `${v.phone} (${v.nickname ? v.nickname : v.name})`,
+              value: v.id,
+            }))"
+            clearable
+            remote
+            @search="getMember"
+          />
+        </template>
+        <template #province>
+          <n-select
+            v-model:value="filterData.province"
+            filterable
+            placeholder="请选择省份"
+            :options="areaoptions.map(v => ({
+              label: v.text,
+              value: v.value,
+            }))"
+            clearable
+            remote
+            @update:value="setNowProvince"
+          />
+        </template>
+        <template #city>
+          <div :key="Key">
+            <n-select
+              v-model:value="filterData.city"
+              filterable
+              placeholder="请选择城市"
+              :options="cityOptions.map((v:any) => ({
+                label: v.text,
+                value: v.value,
+              }))"
+              clearable
+              remote
+              @update:value="setNowcity"
+            />
+          </div>
+        </template>
+        <template #area>
+          <div :key="Key">
+            <n-select
+              v-model:value="filterData.area"
+              filterable
+              placeholder="请选择省份"
+              :options="areaOptions.map((v:any) => ({
+                label: v.text,
+                value: v.value,
+              }))"
+              clearable
+              remote
+            />
+          </div>
+        </template>
+      </common-filter-where>
+    </div>
   </div>
 </template>
 

@@ -5,8 +5,10 @@ import { useCascaderAreaData } from '@vant/area-data'
 const emits = defineEmits<{
   onFinish: [val: ProvinceTab[]] // 完成选择
 }>()
-const show = defineModel('show')
+
 const options = useCascaderAreaData()
+
+const show = defineModel('show')
 const selectProvinceTab = ref<ProvinceTab[]>([{ name: 'province', text: '请选择', value: '', children: [] as areaitem[] }])
 
 const tabindex = ref('province')
