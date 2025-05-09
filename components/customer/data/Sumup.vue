@@ -2,11 +2,11 @@
 const props = defineProps<{
   data: any[]
 }>()
-const showPopover = ref(false)
-const actions = [
-  { text: '今日' },
-  { text: '本月' },
-]
+const currentAction = ref(1)
+const actions = ref([
+  { label: '今日', key: 1 },
+  { label: '今月', key: 2 },
+])
 </script>
 
 <template>
@@ -21,34 +21,20 @@ const actions = [
         </div>
       </div>
       <div>
-        <van-popover
-          v-model:show="showPopover"
-          :actions="actions"
-        >
-          <template #reference>
-            <div class="popover-btn">
-              <div class="mr-1">
-                今日
-              </div>
-              <icon name="jdy:down" :size="10" color="#666" />
+        <n-dropdown trigger="click" placement="bottom-start" :options="actions" @select="(e) => { currentAction = e }">
+          <div class="popover-btn">
+            <div class="mr-1">
+              {{ currentAction === 1 ? '今日' : '今月' }}
             </div>
-          </template>
-        </van-popover>
+            <icon name="jdy:down" :size="10" color="#666" />
+          </div>
+        </n-dropdown>
       </div>
     </div>
     <!-- <customer-data-tabel :data="props.data" /> -->
     <customer-data-chart :data="props.data" />
   </div>
 </template>
-
-<style>
-:root {
-  /* 气泡弹出层 */
-  --van-popover-action-width: 80px;
-  --van-popover-light-background: #c7daff;
-  --van-popover-light-text-color: #4b576d;
-}
-</style>
 
 <style lang="scss" scoped>
 .sumup {

@@ -32,9 +32,7 @@ watch(targetIsVisible, (val) => {
     </common-popup>
     <template v-if="!props.nomore">
       <div ref="loading" class="flex-center-row py-[16px]">
-        <van-loading color="#0094ff">
-          加载中...
-        </van-loading>
+        加载中...
       </div>
     </template>
     <template v-else-if="props.nomore">

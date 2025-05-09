@@ -118,7 +118,7 @@ defineExpose({
         </div>
       </template>
       <div class="wh-[30px] flex-center-row" @click="clearnArea">
-        <van-icon name="close" size="20" />
+        <icon name="i-icon:error" />
       </div>
     </div>
 

@@ -30,10 +30,6 @@ const sendMessage = () => {
 
 const checked = ref(['a'])
 
-const themeVars = reactive({
-  checkboxLabelColor: '#666',
-})
-
 const jumpRecord = () => {
   jump('/member/lists/historia')
 }
@@ -149,18 +145,29 @@ const jumpRecord = () => {
                   <div class="left">
                     推送方式
                   </div>
-
                   <div class="right">
-                    <van-config-provider :theme-vars="themeVars" class="font-size-[14px]">
-                      <van-checkbox-group v-model="checked" direction="horizontal">
-                        <van-checkbox name="a" icon-size="16px">
-                          公众号
-                        </van-checkbox>
-                        <van-checkbox name="b" icon-size="16px">
-                          短信
-                        </van-checkbox>
-                      </van-checkbox-group>
-                    </van-config-provider>
+                    <n-checkbox-group v-model:value="checked">
+                      <n-space>
+                        <n-checkbox
+                          value="a"
+                          label="公众号"
+                          :style="{
+                            '--n-color-checked': '#0068ff',
+                            '--n-border-color-active': '#0068ff',
+                            '--n-check-mark-color': 'white', // 可选：✔ 图标颜色
+                          }"
+                        />
+                        <n-checkbox
+                          value="b"
+                          label="短信"
+                          :style="{
+                            '--n-color-checked': '#0068ff',
+                            '--n-border-color-active': '#0068ff',
+                            '--n-check-mark-color': 'white',
+                          }"
+                        />
+                      </n-space>
+                    </n-checkbox-group>
                   </div>
                 </div>
 

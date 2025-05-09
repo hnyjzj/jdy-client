@@ -45,7 +45,7 @@ onBeforeUnmount (() => {
     <div class="content">
       <div class="top">
         <div class="close" @click="close">
-          <van-icon name="cross" color="#fff" size="16" />
+          <icon name="i-icon:error" color="#fff" />
         </div>
         <div class="title">
           <img class="title-img1" src="/images/model/title1.png" width="80">
