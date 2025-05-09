@@ -44,8 +44,16 @@ interface GoldPrices {
   updated_at?: Date
 }
 
-// 添加/更新金价参数
 interface UpdataGoldParams {
+  options: UpdataGold[]
+  /**
+   * 删除金价参数
+   */
+  deletes?: GoldPrices['id'][]
+}
+
+// 添加/更新金价参数
+interface UpdataGold {
   /**
    * ID
    */
