@@ -31,7 +31,10 @@ export const useFinished = defineStore('Finished', {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
       }
     },
-    // 获取成品筛选列表
+    /**
+     * 获取成品筛选列表
+     * @returns finishedFilterList
+     */
     async getFinishedWhere() {
       try {
         const { data } = await https.get<Where<ProductFinisheds>>('/product/finished/where')
@@ -39,6 +42,7 @@ export const useFinished = defineStore('Finished', {
           this.finishedFilterList = data.value.data
           this.finishedFilterListToArray = sortArr(this.finishedFilterList)
         }
+        return data.value?.data || {}
       }
       catch (error) {
         throw new Error(`筛选失败: ${error || '未知错误'}`)
@@ -74,6 +78,18 @@ export const useFinished = defineStore('Finished', {
       }
       catch (error) {
         throw new Error(`转换失败: ${error || '未知错误'}`)
+      }
+    },
+    // 获取成品积分比例
+    async getFinishedsClass(params: { class: number }) {
+      try {
+        const { data } = await https.post<any, { class: number }>('/member/integral/rule/finished', params)
+        if (data.value?.code === HttpCode.SUCCESS) {
+          return data.value?.data
+        }
+      }
+      catch (error) {
+        throw new Error(`获取积分比例失败: ${error || '未知错误'}`)
       }
     },
   },

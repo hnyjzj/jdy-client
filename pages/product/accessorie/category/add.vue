@@ -112,7 +112,7 @@ const presetToSelect = (key: keyof AccessorieCategory) => {
                           <n-form-item-gi :span="12" :path="item.name" :required="item.required" :label="item.label">
                             <template v-if="item.input === 'select'">
                               <n-select
-                                v-model:value="params[item.name]"
+                                v-model:value="(params[item.name] as number)"
                                 menu-size="large"
                                 :placeholder="`选择${item.label}`"
                                 :options="presetToSelect(item.name)"
@@ -128,9 +128,7 @@ const presetToSelect = (key: keyof AccessorieCategory) => {
                                 <n-input-number v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`" />
                               </div>
                             </template>
-                            <template v-if="item.input === 'switch'">
-                              <n-switch v-model:value="params[item.name]" :style="{ 'border-radius': '20px' }" round />
-                            </template>
+
                             <template v-if="item.input === 'textarea'">
                               <n-input v-model:value="(params[item.name] as string)" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
                             </template>

@@ -37,3 +37,23 @@ export const formatTimestampToDateTime = (timestamp: string | Date) => {
   // 拼接为 YYYY-MM-DD HH:mm:ss 格式
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 }
+/**
+ * 转化为日期格式
+ * @param isoString 2025-04-24T13:21:33+08:00
+ * @returns 日期时间
+ */
+export function formatISODate(isoString: string) {
+  // 将ISO字符串转换为Date对象
+  const date = new Date(isoString)
+
+  // 提取各时间组件（自动处理时区转换）
+  const year = date.getFullYear() // 获取年份
+  const month = String(date.getMonth() + 1).padStart(2, '0') // 获取月份，并确保两位数
+  const day = String(date.getDate()).padStart(2, '0') // 获取日期，并确保两位数
+  const hours = String(date.getHours()).padStart(2, '0') // 获取小时，并确保两位数
+  const minutes = String(date.getMinutes()).padStart(2, '0') // 获取分钟，并确保两位数
+  const seconds = String(date.getSeconds()).padStart(2, '0') // 获取秒数，并确保两位数
+
+  // 拼接目标格式
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}

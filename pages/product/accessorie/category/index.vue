@@ -123,14 +123,14 @@ async function changeStore() {
                         {{ info[item.name] }}
                       </div>
                     </template>
-                    <template v-else-if="item.input === 'switch'">
+                    <!-- <template v-else-if="item.input === 'switch'">
                       <n-switch v-model:value="info[item.name]" :style="{ 'border-radius': '20px' }" round />
-                    </template>
-                    <template v-else-if="item.input === 'select'">
+                    </template> -->
+                    <!-- <template v-else-if="item.input === 'select'">
                       <div class="text-align-end val">
                         {{ item.preset[info[item.name]] }}
                       </div>
-                    </template>
+                    </template> -->
                   </div>
                 </template>
               </template>
