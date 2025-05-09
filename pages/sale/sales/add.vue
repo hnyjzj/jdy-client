@@ -396,17 +396,15 @@ const changeStore = () => {
             :set-score="handleIsInterChange"
           />
         </div>
-        <div class="pb-[16px]">
-          <sale-add-member
-            ref="addMemberRef"
-            :get-member="getMember"
-            :store="myStore"
-            :staffs="StoreStaffList"
-            :get-staffs="getStaff"
-            :add-new-member="addNewMember"
-            @set-member-id="formData.member_id = $event"
-          />
-        </div>
+        <sale-add-member
+          ref="addMemberRef"
+          :get-member="getMember"
+          :store="myStore"
+          :staffs="StoreStaffList"
+          :get-staffs="getStaff"
+          :add-new-member="addNewMember"
+          @set-member-id="formData.member_id = $event"
+        />
         <div class="pb-[16px]">
           <sale-add-product
             v-model="showProductList"

@@ -1,142 +1,119 @@
-<script setup lang="ts">
-const handleClick = async () => {
-  // 跳转到搜索会员页
-  await navigateTo('/sale/search/member')
+<script lang="ts" setup>
+const props = defineProps<{
+  orders: DepositOrderInfo
+  where: Where<OrderWhere>
+  memberFiler: Where<Member>
+  productFilter: Where<ProductFinisheds>
+  returnGoods: (val: DepositReturnGoods) => Promise<boolean>
+}>()
+const payMethods = (val: number) => {
+  const arrary = optonsToSelect(props.where.payment_method?.preset)
+  const data = arrary.find(item => item.value === val)
+  return data?.label || '未知'
+}
+const showModel = ref(false)
+const showReturnGoods = ref<{ Finished: DepositOrderInfoProducts, id: string }>()
+// 点击退货
+const returnGoods = (val: number) => {
+  const data = {
+    Finished: props.orders.products[val],
+    id: props.orders?.id as string,
+  }
+  showReturnGoods.value = data
+  showModel.value = true
 }
 </script>
 
 <template>
-  <div>
-    <div class="flex flex-col gap-[16px] py-[16px]">
-      <common-fold title="基础信息">
-        <!-- 不可编辑 -->
-        <div class="p-[16px] w-auto flex flex-col gap-[12px]" uno-lg="grid grid-cols-1 gap-[16px] grid-cols-0">
-          <div class="base">
-            <div class="inplabel">
-              收支单号
-            </div>
-            <div class="desc">
-              QTSZD2139027321
-            </div>
+  <div class="grid-12 gap-[12px]">
+    <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4" uno-lt="col-3">
+      <sale-cards title="订单信息">
+        <template #info>
+          <div class="info">
+            <common-cell label="订单编号" :value="props.orders.id" />
+            <common-cell label="订单状态" :value="where.status?.preset[(props.orders.status as number)]" val-color="#FF9900" />
+            <common-cell label="销售时间" :value="formatISODate(props.orders.created_at)" />
+            <common-cell label="订单备注" :value="props.orders.remark " />
+            <div class="border-b-solid border-b-[#E0E0E0] border" />
+            <common-cell label="会员姓名" :value="props.orders.member?.name || ''" />
+            <common-cell label="会员昵称" :value="props.orders.member?.nickname || ''" />
+            <common-cell label="手机号" :value="props.orders.member?.phone" />
+            <common-cell label="会员等级" :value="props.orders.member?.level" />
+            <div class="border-b-solid border-b-[#E0E0E0] border" />
+            <common-cell label="实付金额" format="￥" :value="props.orders.price_pay" />
+            <common-cell label="支付方式" value="" label-color="#4C8DF6" />
+            <template v-for="(item, index) in props.orders.payments" :key="index">
+              <common-cell :label="payMethods(item.payment_method as number) " label-color="#4C8DF6" val-color="#4C8DF6" format="￥" :value="item.amount" />
+            </template>
           </div>
-          <div class="base">
-            <div class="inplabel">
-              所属门店
-            </div>
-            <div class="desc">
-              洛阳XXXXXXXX店
-            </div>
-          </div>
-          <div class="base">
-            <div class="inplabel">
-              创建人
-            </div>
-            <div class="desc">
-              邹元标
-            </div>
-          </div>
-          <div class="base">
-            <div class="inplabel">
-              创建时间
-            </div>
-            <div class="desc">
-              2024-04-08 12:10:24
-            </div>
-          </div>
-        </div>
-      </common-fold>
-
-      <common-fold title="销售信息">
-        <div class="p-[16px] w-auto flex flex-col gap-[12px]">
-          <div class="box col-start-1 col-end-3">
-            <div class="inplabel">
-              选择会员
-            </div>
-            <div class="flex flex-row items-center gap-[12px]">
-              <common-frame name="自然客流" :is-icon="true" :is-disabled="true" height="40px" class="flex-1">
-                <template #left>
-                  <common-avatar :size="20" rounded="60px" :has-shadow="false" />
-                </template>
-              </common-frame>
-              <div>
-                <sale-plusminus @button-click="handleClick" />
-              </div>
-            </div>
-          </div>
-          <div class="box">
-            <div class="inplabel">
-              选择班组
-            </div>
-            <common-frame name="关联销售单" :is-disabled="true" :is-icon="true" height="40px" />
-          </div>
-          <div class="box">
-            <div class="inplabel">
-              主销导购
-            </div>
-            <common-frame name="主销导购" :is-disabled="true" :is-icon="true" height="40px" />
-          </div>
-          <div class="box">
-            <div class="inplabel">
-              关联销售单
-            </div>
-            <common-frame name="关联销售单" :is-disabled="true" :is-icon="true" height="40px" />
-          </div>
-        </div>
-      </common-fold>
-
-      <common-fold title="收支信息">
-        <div class="p-[16px] w-auto flex flex-col gap-[12px]" uno-lg="grid grid-cols-1 gap-[16px] grid-cols-0">
-          <div class="box">
-            <div class="inplabel">
-              收支类型
-            </div>
-            <common-frame name="收支类型" :is-disabled="true" :is-icon="true" height="40px" />
-          </div>
-          <div class="box">
-            <div class="inplabel">
-              收支内容
-            </div>
-            <common-frame name="收银员" :is-disabled="true" :is-icon="true" height="40px" />
-          </div>
-          <div class="box">
-            <!-- 下拉筛选 -->
-            <div class="inplabel">
-              收支来源
-            </div>
-            <common-frame name="收银员" :is-disabled="true" :is-icon="true" height="40px" />
-          </div>
-          <div class="box">
-            <!-- 下拉筛选 -->
-            <div class="inplabel">
-              收支方式
-            </div>
-            <common-frame name="收银员" :is-disabled="true" :is-icon="true" height="40px" />
-          </div>
-          <div class="box">
-            <div class="inplabel">
-              收支金额
-            </div>
-            <common-frame :disabled-style="true" tip="2024-04-08 12:10:24" :is-icon="true" height="40px" />
-          </div>
-        </div>
-      </common-fold>
+        </template>
+      </sale-cards>
     </div>
+    <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4" uno-lt="col-3">
+      <sale-cards title="店员信息">
+        <template #info>
+          <div class="info">
+            <common-cell label="收银员" :value="props.orders.cashier?.nickname" />
+            <common-cell label="手机号" :value="props.orders.cashier?.phone" />
+            <common-cell label="主销导购" :value="props.orders.clerk?.nickname || ''" />
+            <common-cell label="手机号" :value="props.orders.clerk?.phone" />
+          </div>
+        </template>
+      </sale-cards>
+    </div>
+    <template v-if="props.orders.products?.length > 0 || false">
+      <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4" uno-lt="col-3">
+        <sale-cards title="成品信息">
+          <template #info>
+            <div class="info">
+              <template v-for="(item, index) in props.orders.products" :key="index">
+                <template v-if="index !== 0">
+                  <div class="border-b-solid border-b-[#E0E0E0] border" />
+                </template>
+                <template v-if="item.is_our">
+                  <common-cell label="商品条码" :value="item.product_finished?.code" />
+                  <common-cell label="商品名称" :value="item.product_finished?.name" val-color="#4C8DF6" />
+                  <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[item.product_finished?.retail_type] " />
+                  <common-cell label="主石重(ct)" :value="item.product_finished?.weight_gem" />
+                  <common-cell label="颜色" :value="props.productFilter.color_gem?.preset[item.product_finished?.color_gem] " />
+                  <common-cell label="净度" :value="props.productFilter.clarity?.preset[item.product_finished?.clarity] " />
+                  <common-cell label="金重(g)" :value="item.product_finished?.weight_gem" />
+                  <common-cell label="工费" format="￥" :value="item.product_finished?.labor_fee" />
+                  <common-cell label="标签价" format="￥" :value="item.product_finished?.label_price" />
+                </template>
+                <template v-else>
+                  <common-cell label="商品名称" :value="item.product_demand?.name" val-color="#4C8DF6" />
+                  <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[item.product_demand?.retail_type as number] " />
+                  <common-cell label="主石重(ct)" :value="item.product_demand?.weight_gem" />
+                  <common-cell label="颜色" :value="props.productFilter.color_gem?.preset[item.product_demand?.color_gem as number] " />
+                  <common-cell label="净度" :value="props.productFilter.clarity?.preset[item.product_demand?.clarity as number] " />
+                  <common-cell label="金重(g)" :value="item.product_demand?.weight_gem" />
+                  <common-cell label="工费" format="￥" :value="item.product_demand?.labor_fee" />
+                  <common-cell label="标签价" format="￥" :value="item.product_demand?.label_price" />
+                </template>
+                <common-cell label="金价(元/g)" format="￥" :value="item.price_gold" />
+                <common-cell label="定金金额" format="￥" :value="item.price" />
+                <template v-if="item.status === DepositOrderStatus.Returned">
+                  <common-cell label="货品状态" value="已退款" val-color="#FF9900" />
+                </template>
+                <div class="flex-end">
+                  <template v-if="item.status === DepositOrderStatus.Booking">
+                    <common-button-rounded content="退款" @button-click="returnGoods(index)" />
+                  </template>
+                </div>
+              </template>
+            </div>
+          </template>
+        </sale-cards>
+      </div>
+    </template>
+
+    <sale-deposit-return-goods v-model:show="showModel" :where="props.where" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
   </div>
 </template>
 
-<style scoped lang="scss">
-.base {
-  --uno: 'flex-center-between gap-[12px]';
-
-  .desc {
-    --uno: 'color-[#666] dark:text-[#fff] font-size-[14px]';
-  }
-}
-.box {
-  --uno: 'flex flex-col gap-[12px]';
-}
-
-.inplabel {
-  --uno: 'color-[#333] dark:text-[#CBCDD1] font-size-[14px]';
+<style lang="scss" scoped>
+ .info {
+  --uno: 'flex flex-col gap-[3px] px-[16px] pb-[16px]';
 }
 </style>

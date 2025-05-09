@@ -106,16 +106,15 @@ const changeStore = () => {
             <product-manage-company :confirm="true" @change="changeStore" />
           </div>
           <sale-deposit-staff v-model:form-data="formData" :staffs="StoreStaffList" :get-staffs="getStaff" />
-          <div class="pb-[16px]">
-            <sale-add-member
-              :get-member="getMember"
-              :store="myStore"
-              :staffs="StoreStaffList"
-              :get-staffs="getStaff"
-              :add-new-member="addNewMember"
-              @set-member-id="formData.member_id = $event"
-            />
-          </div>
+          <sale-add-member
+            :get-member="getMember"
+            :store="myStore"
+            :staffs="StoreStaffList"
+            :get-staffs="getStaff"
+            :add-new-member="addNewMember"
+            @set-member-id="formData.member_id = $event"
+          />
+
           <div class="pb-[16px]">
             <sale-deposit-product
               v-model="showProductList"

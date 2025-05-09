@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<{
       {{ props.label }}
     </div>
     <div class="part-right break-words" :class="[props.rcol ? props.rcol : 'col-6']" :style="{ color: props.valColor }">
-      {{ props.format ? props.format : '' }} {{ typeof props.value === 'boolean' ? props.value ? '是' : '否' : props.value }}  {{ props.right ? props.right : '' }}
+      {{ props.format ? props.format : '' }} {{ typeof props.value === 'boolean' ? props.value ? '是' : '否' : props.value === '' ? '-' : props.value }}  {{ props.right ? props.right : '' }}
     </div>
   </div>
 </template>

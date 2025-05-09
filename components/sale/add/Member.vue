@@ -83,7 +83,7 @@ defineExpose({
 </script>
 
 <template>
-  <div>
+  <div class="pb-[16px]">
     <common-fold title="会员信息" :is-collapse="false">
       <div :key="Key" class="p-[16px] pb-0">
         <n-grid :cols="24" :x-gap="8">
