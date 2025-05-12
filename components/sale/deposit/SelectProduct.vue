@@ -12,21 +12,36 @@ const readyAddproduct = ref()
 const setAddProduct = (product: ProductFinisheds) => {
   readyAddproduct.value = product
 }
-const addProduct = (product: ProductFinisheds) => {
-  emit('add', product)
-  showModal.value = false
-}
 // 条码搜索框
 const searchInput = ref('')
 const searchList = ref<ProductFinisheds[]>([])
 const searchProduct = async () => {
   searchList.value = await props.searchProductList(searchInput.value)
 }
+const addProduct = (product: ProductFinisheds) => {
+  emit('add', product)
+  showModal.value = false
+  searchInput.value = ''
+}
+const { useWxWork } = useWxworkStore()
+// 扫码
+const scanCode = async () => {
+  const wx = await useWxWork()
+  const code = await wx?.scanQRCode()
+  if (code) {
+    searchInput.value = code
+    searchProduct()
+  }
+}
 </script>
 
 <template>
   <div>
-    <common-model v-model="showModal" title="选择成品" :show-ok="true" :show-cancel="true" @confirm="addProduct(readyAddproduct)" @cancel="showModal = false">
+    <common-model
+      v-model="showModal" title="选择成品" :show-ok="true" :show-cancel="true" @confirm="addProduct(readyAddproduct)" @cancel="() => {
+        showModal = false
+        searchInput = ''
+      }">
       <div class="grid-12">
         <div class="col-12">
           <div>
@@ -48,10 +63,15 @@ const searchProduct = async () => {
                 clearable
                 placeholder="请输入商品条码" />
             </div>
-            <div class="pl-[16px]">
+            <div class="pl-[16px] flex">
               <n-button type="info" round @click="searchProduct">
                 搜索
               </n-button>
+              <div class="pl-[8px]">
+                <n-button strong secondary type="info" round @click="scanCode()">
+                  扫码
+                </n-button>
+              </div>
             </div>
           </div>
           <div class="grid-12 px-[12px] color-[#333] font-semibold !text-[16px]">

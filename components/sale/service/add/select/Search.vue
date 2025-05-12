@@ -18,17 +18,6 @@ const showServiceGoods = defineModel<serviceGoods[]>('list', { default: [] })
 
 const searchCode = ref()
 const nowServiceGoods = defineModel<serviceGoods>('nowServiceGoods', { default: {} })
-// 扫码
-const { useWxWork } = useWxworkStore()
-const scanCode = async () => {
-  const wx = await useWxWork()
-  const code = await wx?.scanQRCode()
-  if (code) {
-    searchShow.value = true
-    searchCode.value = code
-    nowServiceGoods.value = {} as serviceGoods
-  }
-}
 
 // 旧料表单 Ref
 const oldMasterRef = ref()
@@ -78,6 +67,18 @@ const search = async () => {
     nowServiceGoods.value.is_our = true
   }
 }
+// 扫码
+const { useWxWork } = useWxworkStore()
+const scanCode = async () => {
+  const wx = await useWxWork()
+  const code = await wx?.scanQRCode()
+  if (code) {
+    searchShow.value = true
+    searchCode.value = code
+    nowServiceGoods.value = {} as serviceGoods
+    search()
+  }
+}
 </script>
 
 <template>
@@ -114,7 +115,7 @@ const search = async () => {
                 搜索
               </n-button>
               <div class="pl-[8px]">
-                <n-button type="info" round @click="scanCode()">
+                <n-button strong secondary type="info" round @click="scanCode()">
                   扫码
                 </n-button>
               </div>
