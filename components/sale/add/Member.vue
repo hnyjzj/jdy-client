@@ -110,7 +110,7 @@ defineExpose({
               @update:value="handleUpdateValue"
             />
           </n-form-item-gi>
-          <n-form-item-gi :span="12">
+          <n-form-item-gi :span="8">
             <div class="w-full">
               <common-button-rounded content="新增会员" @button-click="handleAddMember" />
             </div>

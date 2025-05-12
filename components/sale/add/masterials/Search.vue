@@ -53,6 +53,7 @@ const scanCode = async () => {
     searchShow.value = true
     searchOld.value = code
     nowOldMaster.value = {} as ProductOld
+    props.searchOlds(searchOld.value)
   }
 }
 const ourChangePrice = () => {
@@ -169,7 +170,7 @@ const searchConfirm = async () => {
                 搜索
               </n-button>
               <div class="pl-[8px]">
-                <n-button type="info" round @click="scanCode()">
+                <n-button strong secondary type="info" round @click="scanCode()">
                   扫码
                 </n-button>
               </div>

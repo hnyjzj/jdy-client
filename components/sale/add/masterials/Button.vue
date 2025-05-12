@@ -9,17 +9,17 @@ const emits = defineEmits<{
   <div class="p-[16px]">
     <div class="grid-12 gap-[20px]">
       <div
-        class="btn-left col-span-4 offset-2 cursor-pointer" @click="emits('handleAdd')">
+        class="btn-left col-span-4 offset-2 cursor-pointer" @click="emits('searchQl')">
+        <icon name="i-icon:search" color="#fff" :size="12" />
         <div class="ml-2">
-          手动添加
+          搜索
         </div>
       </div>
       <div
-        class="btn-right col-span-4 cursor-pointer" @click="emits('searchQl')"
+        class="btn-right col-span-4 cursor-pointer" @click="emits('handleAdd')"
       >
-        <icon name="i-icon:search" color="#1a6beb" :size="12" />
         <div class="ml-2">
-          搜索
+          手动添加
         </div>
       </div>
     </div>
