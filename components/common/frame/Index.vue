@@ -43,7 +43,7 @@ const value = defineModel()
           <slot name="icon" />
         </template>
         <template v-else>
-          <van-icon name="arrow" :color="props.disabledStyle ? '#808089' : '#CBCDD1'" />
+          <icon name="i-icon:arrow" :color="props.disabledStyle ? '#808089' : '#CBCDD1'" />
         </template>
       </div>
     </template>

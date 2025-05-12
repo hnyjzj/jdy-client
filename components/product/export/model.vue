@@ -33,18 +33,16 @@ const funlist = ref([
 <template>
   <div>
     <common-model v-model="show" title="导出">
-      <van-row>
+      <div class="flex">
         <template v-for="(item, i) in funlist" :key="i">
-          <van-col span="8">
-            <div class="fun">
-              <div class="fun-icon" :style="{ background: item.color }" />
-              <div class="text-[14px]">
-                {{ item.name }}
-              </div>
+          <div class="fun">
+            <div class="fun-icon" :style="{ background: item.color }" />
+            <div class="text-[14px]">
+              {{ item.name }}
             </div>
-          </van-col>
+          </div>
         </template>
-      </van-row>
+      </div>
     </common-model>
   </div>
 </template>

@@ -24,9 +24,11 @@ const iconSize = props.size ?? 20
 
 <template>
   <div class="cursor-pointer">
-    <van-popup v-model:show="showHelp" round :style="{ padding: props.padding ?? '64px' }">
-      <slot />
-    </van-popup>
+    <n-modal v-model:show="showHelp" :style="{ margin: props.padding ?? '24px' }" :bordered="false" :segmented="false">
+      <div class="bg-white rounded-lg w-[400px] p-4">
+        <slot />
+      </div>
+    </n-modal>
     <div @click="handleShow">
       <icon
         name="i-icon:help" :size="iconSize" color="#333333" />

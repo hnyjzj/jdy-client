@@ -71,7 +71,7 @@ const toTodayPrice = () => {
           <span>
             {{ rbText }}
           </span>
-          <van-icon name="play" />
+          <icon name="i-icon:left" :size="12" />
         </div>
       </div>
     </div>

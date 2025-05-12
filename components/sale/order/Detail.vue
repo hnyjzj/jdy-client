@@ -1,9 +1,94 @@
 <script lang="ts" setup>
+import { calc } from 'a-calc'
+
 const props = defineProps<{
-  orders: Orders
-  where: Where<OrderWhere>
+  orders: OrderInfo
+  orderWhere: Where<OrderWhere>
   memberFiler: Where<Member>
+  productFilter: Where<ProductFinisheds>
+  oldFilter: Where<ProductOlds>
+  returnGoods: (req: ReturnGoods) => void
+
 }>()
+const payMethods = (val: number) => {
+  const arrary = optonsToSelect(props.orderWhere.payment_method?.preset)
+  const data = arrary.find(item => item.value === val)
+  return data?.label || '未知'
+}
+
+// 计算成品列表加的积分
+const productListScore = computed(() => {
+  const total = ref(0)
+  total.value = props.orders.product_finisheds.reduce((total, item) => {
+    return calc('(t + i) | <=0,!n', { t: total, i: item.integral || 0 })
+  }, 0)
+  return total.value
+})
+// 计算旧料列表 减的积分
+const masterListScore = computed(() => {
+  const total = ref(0)
+  total.value = props.orders.product_olds.reduce((total, item) => {
+    return calc('(t + i) | <=0,!n', { t: total, i: item.integral || 0 })
+  }, 0)
+  return total.value
+})
+// 配件积分
+const PartsListScore = computed(() => {
+  const total = ref(0)
+  total.value = props.orders.product_accessories.reduce((total, item) => {
+    return calc('(t + i ) | <=0,!n', { t: total, i: item.integral || 0 })
+  }, 0)
+  return total.value
+})
+// 总积分计算
+const totalScore = computed(() => {
+  return calc('(a - b + c) | =0,!n', {
+    a: productListScore.value,
+    b: masterListScore.value,
+    c: PartsListScore.value,
+  })
+})
+
+const showModel = defineModel('dialog', { default: false })
+const showReturnGoods = ref({} as {
+  Finished?: ProductFinished
+  Parts?: ProductAccessorie
+  Olds?: | ProductOld
+  id: string
+  FinishedType: number
+})
+// 成品退货
+const onReturnProduct = (index: number) => {
+  const data = {
+    Finished: props.orders.product_finisheds[index],
+    id: props.orders.id,
+    FinishedType: 1,
+  }
+  showReturnGoods.value = data
+  showModel.value = true
+}
+const returnGoodsRef = ref()
+// 配件退货
+const onReturnParts = async (index: number) => {
+  const data = {
+    Parts: props.orders.product_accessories[index],
+    id: props.orders.id,
+    FinishedType: 3,
+  }
+  await (showReturnGoods.value = data)
+  await returnGoodsRef.value?.setPrice()
+  showModel.value = true
+}
+
+const onReturnMaster = (index: number) => {
+  const data = {
+    Olds: props.orders.product_olds[index],
+    id: props.orders.id,
+    FinishedType: 2,
+  }
+  showReturnGoods.value = data
+  showModel.value = true
+}
 </script>
 
 <template>
@@ -11,48 +96,151 @@ const props = defineProps<{
     <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4" uno-lt="col-3">
       <sale-cards title="基本信息">
         <template #info>
-          <div class="grid grid-cols-1 gap-[12px]">
-            <div class="info">
-              <common-cell label="订单编号" :value="props.orders.id" />
-              <common-cell label="订单类型" :value="where.type?.preset[props.orders.type]" />
-              <common-cell label="订单状态" :value="where.status?.preset[props.orders.status]" />
-              <common-cell label="订单来源" :value="where.source?.preset[props.orders.source]" />
-              <common-cell label="收银员" :value="props.orders.cashier?.nickname" />
-              <common-cell label="收银员手机号" :value="props.orders.cashier?.phone" />
-            </div>
+          <div class="info">
+            <common-cell label="订单编号" :value="props.orders.id" rcol="col-8" lcol="col-4" />
+            <common-cell label="订单状态" :value="props.orderWhere.status?.preset[props.orders.status]" val-color="#FF9900" />
+            <common-cell label="订单来源" :value="props.orderWhere.source?.preset[props.orders.source]" />
+            <common-cell label="销售时间" :value="formatISODate(props.orders.created_at)" />
+            <div class="line" />
+            <common-cell label="会员姓名" :value="props.orders.member?.name || ''" />
+            <common-cell label="会员昵称" :value="props.orders.member?.nickname || ''" />
+            <common-cell label="手机号" :value="props.orders.member?.phone" />
+            <common-cell label="会员等级" :value="props.orders.member?.level" />
+            <template v-if="props.orders.order_deposits.length">
+              <div class="line" />
+              <common-cell label="关联订金单" value="" label-color="#4C8DF6" />
+              <template v-for="(deposit, ix) in props.orders.order_deposits" :key="ix">
+                <common-cell label="订金单号" :value="deposit.id" label-color="#4C8DF6" />
+                <common-cell label="订金金额" :value="deposit.price_pay" />
+                <template v-for="(p, index) in deposit.products" :key="index">
+                  <common-cell :label="`商品${index + 1}`" :value="p.product_finished.name" />
+                </template>
+              </template>
+            </template>
           </div>
         </template>
       </sale-cards>
     </div>
     <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4" uno-lt="col-3">
-      <sale-cards title="会员信息">
+      <sale-cards title="店员信息">
         <template #info>
-          <div class="grid grid-cols-1 gap-[12px]">
-            <div class="info">
-              <common-cell label="姓名" :value="props.orders.member?.name || ''" />
-              <common-cell label="昵称" :value="props.orders.member?.nickname || ''" />
-              <common-cell label="等级" :value="props.orders.member?.level" />
-              <common-cell label="积分" :value="props.orders.member?.integral" />
-              <common-cell label="来源" :value="memberFiler.source?.preset[props.orders.member?.source]" />
-              <common-cell label="手机号" :value="props.orders.member?.phone" />
-            </div>
+          <div class="info">
+            <common-cell label="收银员" :value="props.orders.cashier?.nickname" />
+            <common-cell label="手机号" :value="props.orders.cashier?.phone" />
+            <template v-for="(item, index) in props.orders.clerks" :key="index">
+              <div class="line" />
+              <common-cell label="导购员" :value="item.salesman?.nickname || ''" />
+              <common-cell label="手机号" :value="item.salesman?.phone" />
+              <common-cell label="业绩比例" :value="item.performance_rate || ''" right="%" />
+              <common-cell label="是否主销" :value="item.is_main" />
+            </template>
           </div>
         </template>
       </sale-cards>
     </div>
-    <template v-if="props.orders.products?.length > 0 || false">
+    <template v-if="props.orders.product_finisheds?.length > 0 || false">
       <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4" uno-lt="col-3">
-        <sale-cards title="商品信息">
+        <sale-cards title="成品信息">
+          <template #info>
+            <div class="info">
+              <template v-for="(item, index) in props.orders.product_finisheds" :key="index">
+                <template v-if="index !== 0">
+                  <div class="line" />
+                </template>
+                <common-cell label="商品条码" :value="item.product?.code" />
+                <common-cell label="商品名称" :value="item.product?.name" val-color="#4C8DF6" />
+                <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[(item.product?.retail_type as number)]" />
+                <!-- :value="props.productFilter.retail_type?.preset[item.product_demand?.retail_type as number] " -->
+                <common-cell label="金重(g)" :value="item.product?.weight_gem" />
+                <common-cell label="金价(元/g)" format="￥" :value="item.price_gold" />
+                <common-cell label="工费" format="￥" :value="item.labor_fee" />
+                <common-cell label="标签价" format="￥" :value="item.product?.label_price" />
+                <common-cell label="折扣" :value="item.discount_final" right="%" />
+                <common-cell label="固定折扣" :value="item.discount_fixed" right="%" />
+                <common-cell label="会员折扣" :value="item.discount_member" right="%" />
+                <common-cell label="积分抵扣" :value="item.integral_deduction" />
+                <common-cell label="抹零" format="￥" :value="item.round_off" />
+                <common-cell label="积分(+)" :value="item.integral" />
+                <common-cell label="应付金额" format="￥" :value="item.price" />
+                <template v-if="item.status === OrderStatusText.OrderSalesProductStatusReturn">
+                  <common-cell label="成品状态" value="已退货" val-color="#FF9900" />
+                </template>
+                <div class="flex-end">
+                  <template v-if="item.status === OrderStatusText.OrderSalesProductStatusComplete">
+                    <common-button-rounded content="退货" @button-click="onReturnProduct(index)" />
+                  </template>
+                </div>
+              </template>
+            </div>
+          </template>
+        </sale-cards>
+      </div>
+    </template>
+    <template v-if="props.orders.product_olds?.length > 0 || false">
+      <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4" uno-lt="col-3">
+        <sale-cards title="旧料信息">
+          <template #info>
+            <div class="info">
+              <template v-for="(item, index) in props.orders.product_olds" :key="index">
+                <template v-if="index !== 0">
+                  <div class="line" />
+                </template>
+                <common-cell label="旧料名称" :value="item.product?.name " val-color="#4C8DF6" />
+                <common-cell label="旧料编号" :value="item?.product_id" />
+                <common-cell label="旧料条码" :value="item?.product?.code " />
+                <common-cell label="本店货品" :value="item.product?.is_our" />
+                <common-cell label="回收方式" :value="props.oldFilter.recycle_method?.preset[item.product?.recycle_method!] " />
+                <common-cell label="回收类型" :value="props.oldFilter.recycle_type?.preset[item.product?.recycle_type!] " />
+                <common-cell label="材质" :value="props.oldFilter.material?.preset[item.product?.material!] " />
+                <common-cell label="成色" :value="props.oldFilter.quality?.preset[item.product?.quality!] " />
+                <common-cell label="实际成色" :value="item.quality_actual" />
+                <common-cell label="主石" :value="props.oldFilter.gem?.preset[item.product?.gem!] " />
+                <common-cell label="主石重(ct)" :value="item.product?.weight_gem" />
+                <common-cell label="品类" :value="props.oldFilter.category?.preset[item.product?.category!] " />
+                <common-cell label="品牌" :value="props.oldFilter.brand?.preset[item.product?.brand!] " />
+                <common-cell label="工艺" :value="props.oldFilter.craft?.preset[item.product?.craft!] " />
+                <common-cell label="积分(-)" :value="item.integral" />
+                <common-cell label="回收工费方式" :value="props.oldFilter.recycle_price_labor_method?.preset[item.recycle_price_labor_method!] " />
+                <common-cell label="回收工费" format="￥" :value="item.recycle_price_labor" />
+                <common-cell label="回收金价" format="￥" :value="item.recycle_price_gold" />
+                <common-cell label="回收金额" format="￥" :value="item.recycle_price" />
+                <template v-if="item.status === OrderStatusText.OrderSalesProductStatusReturn">
+                  <common-cell label="状态" value="已退货" val-color="#FF9900" />
+                </template>
+                <div class="flex-end">
+                  <template v-if="item?.status === OrderStatusText.OrderSalesProductStatusComplete">
+                    <common-button-rounded content="退货" @button-click="onReturnMaster(index)" />
+                  </template>
+                </div>
+              </template>
+            </div>
+          </template>
+        </sale-cards>
+      </div>
+    </template>
+    <template v-if="props.orders.product_accessories?.length > 0 || false">
+      <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4" uno-lt="col-3">
+        <sale-cards title="配件信息">
           <template #info>
             <div class="grid grid-cols-1 gap-[12px]">
               <div class="info">
-                <template v-for="(item, index) in props.orders.products" :key="index">
-                  <common-cell label="商品名称" :value="item.product.name" />
-                  <common-cell label="商品条码" :value="item.product.code" />
-                  <common-cell label="折扣" :value="item.discount" />
-                  <common-cell label="原价" :value="item.amount_original" />
-                  <common-cell label="应付金额" :value="item.amount" />
-                  <div class="border-b-solid border-b-[#E0E0E0] border" />
+                <template v-for="(item, index) in props.orders.product_accessories" :key="index">
+                  <template v-if="index !== 0">
+                    <div class="line" />
+                  </template>
+                  <common-cell label="配件名称" :value="item.product?.category.name" val-color="#4C8DF6" />
+                  <common-cell label="配件id" :value="item.product_id" />
+                  <common-cell label="积分" :value="item.integral" />
+                  <common-cell label="应付金额" format="￥" :value="item.price" />
+                  <common-cell label="数量" :value="item.quantity" />
+                  <template v-if="item.status === OrderStatusText.OrderSalesProductStatusReturn">
+                    <common-cell label="状态" value="已退货" val-color="#FF9900" />
+                  </template>
+                  <div class="flex-end">
+                    <template v-if="item?.status === OrderStatusText.OrderSalesProductStatusComplete">
+                      <common-button-rounded content="退货" @button-click="onReturnParts(index)" />
+                    </template>
+                  </div>
                 </template>
               </div>
             </div>
@@ -63,58 +251,37 @@ const props = defineProps<{
     <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4" uno-lt="col-3">
       <sale-cards title="结算信息">
         <template #info>
-          <div class="grid grid-cols-1 gap-[12px]">
-            <div class="info">
-              <common-cell label="原价" :value="props.orders.amount_original" />
-              <common-cell label="应付金额" :value="props.orders.amount" />
-              <common-cell label="实付金额" :value="props.orders.amount_pay" />
-              <common-cell label="整单折扣" :value="props.orders.discount_rate" />
-              <common-cell label="整单折扣金额" :value="props.orders.discount_amount" />
-              <common-cell label="抹零金额" :value="props.orders.amount_reduce" />
-              <common-cell label="使用积分" :value="props.orders.integral_use" />
-              <common-cell label="赠送积分" :value="props.orders.integral_present" />
-              <common-cell label="订单备注" :value="props.orders.remark" />
-            </div>
+          <div class="info">
+            <common-cell label="货品金额" format="￥" :value="props.orders.product_finished_price" />
+            <common-cell label="配件礼品" format="￥" :value="props.orders.product_accessorie_price" />
+            <common-cell label="旧料抵扣" format="￥" :value="props.orders.product_old_price" />
+            <common-cell label="优惠金额" format="￥" :value="props.orders.price_discount" />
+            <common-cell label="实付金额" format="￥" :value="props.orders.price_pay" />
+            <common-cell label="积分抵扣" :value="props.orders.integral_deduction" />
+            <div class="line" />
+            <common-cell label="支付方式" value="" label-color="#4C8DF6" />
+            <template v-for="(item, index) in props.orders.payments" :key="index">
+              <common-cell :label="payMethods(item.payment_method) " label-color="#4C8DF6" val-color="#4C8DF6" format="￥" :value="item.amount" />
+            </template>
+            <div class="line" />
+            <common-cell label="成品积分" format="+" :value="productListScore" label-color="#4C8DF6" val-color="#4C8DF6" />
+            <common-cell label="旧料积分" format="-" :value="masterListScore" label-color="#4C8DF6" val-color="#4C8DF6" />
+            <common-cell label="配件积分" format="+" :value="PartsListScore" label-color="#4C8DF6" val-color="#4C8DF6" />
+            <common-cell label="积分合计" :value="totalScore || props.orders.integral" label-color="#4C8DF6" val-color="#4C8DF6" />
+            <common-cell label="订单备注" :value="props.orders.remark || '~'" />
           </div>
         </template>
       </sale-cards>
     </div>
-    <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4" uno-lt="col-3">
-      <sale-cards title="门店信息">
-        <template #info>
-          <div class="grid grid-cols-1 gap-[12px]">
-            <div class="info">
-              <common-cell label="门店名称" :value="props.orders.store.name" />
-              <common-cell label="联系方式" :value="props.orders.store.contact" />
-              <common-cell label="门店地址" :value="props.orders.store.address" />
-            </div>
-          </div>
-        </template>
-      </sale-cards>
-    </div>
-    <template v-if="props.orders.salesmans.length > 0 || false">
-      <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4" uno-lt="col-3">
-        <sale-cards title="导购员信息">
-          <template #info>
-            <div class="grid grid-cols-1 gap-[12px]">
-              <div class="info">
-                <template v-for="(item, index) in props.orders.salesmans" :key="index">
-                  <common-cell label="导购员" :value="item.salesman?.nickname" />
-                  <common-cell label="业绩比例" :value="item.performance_rate" />
-                  <common-cell label="是否主导购" :value="item.is_main ? '是' : '-'" />
-                  <div class="border-b-solid border-b-[#E0E0E0] border" />
-                </template>
-              </div>
-            </div>
-          </template>
-        </sale-cards>
-      </div>
-    </template>
+    <sale-order-return-goods ref="returnGoodsRef" v-model:show="showModel" :where="props.orderWhere" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
   </div>
 </template>
 
 <style lang="scss" scoped>
  .info {
-  --uno: 'flex flex-col gap-[12px] px-[16px] pb-[16px]';
+  --uno: 'flex flex-col gap-[3px] px-[16px] pb-[16px]';
+}
+.line {
+  --uno: 'h-[1px] w-full bg-[#E0E0E0] my-[8px]';
 }
 </style>

@@ -5,8 +5,10 @@ import { useCascaderAreaData } from '@vant/area-data'
 const emits = defineEmits<{
   onFinish: [val: ProvinceTab[]] // 完成选择
 }>()
-const show = defineModel('show')
+
 const options = useCascaderAreaData()
+
+const show = defineModel('show')
 const selectProvinceTab = ref<ProvinceTab[]>([{ name: 'province', text: '请选择', value: '', children: [] as areaitem[] }])
 
 const tabindex = ref('province')
@@ -101,7 +103,7 @@ defineExpose({
 
 <style lang="scss" scoped>
 .area-box {
-  --uno: ' bg-[#fff] dark:bg-[#000] relative z-9999 rounded-16px';
+  --uno: 'bg-[#fff] dark:bg-[#000] relative z-9999 rounded-16px border-solid border-[#E0E0E0] border-1px';
   .content {
     --uno: 'h-300px ';
     overflow-y: auto;

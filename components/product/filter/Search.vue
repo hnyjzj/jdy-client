@@ -22,11 +22,11 @@ const clear = () => {
   <div>
     <div class="px-[12px] bg-[#FFFFFF66] border-rd-full text-size-[20px] shadow-lg flex items-center">
       <div class=" left-[10px] top-[6px]">
-        <van-icon name="search" />
+        <icon name="i-icon:search" size="12" />
       </div>
       <div class="text-size-[14px] line-height-[20px] flex-1">
         <input
-          v-model="searchKey" type="search" autocomplete="off" class="bg-transparent w-full border-0 placeholder-text-[#fff] flex-1 py-[6px] pl-[4px] line-height-[24px]"
+          v-model="searchKey" type="search" autocomplete="off" class="bg-transparent text-[#FFF] w-full border-0 placeholder-text-[#fff] flex-1 py-[6px] pl-[4px] line-height-[24px]"
           :placeholder="props.placeholder"
           @keyup.enter="subsearch()">
       </div>

@@ -55,9 +55,42 @@ interface ProductAccessories {
    * 更新时间
    */
   updated_at?: Date | null
+
+  /**
+   * 零售方式
+   */
+  retail_type: number
+  /**
+   * 标签价
+   */
+  label_price: number
+  /**
+   * 重量
+   */
+  weight: number
+  /**
+   * quantity 数量
+   */
+  quantity: number
+  /**
+   * 应付金额
+   */
+  amount?: number
+  /**
+   * 积分
+   */
+  integral?: number
+  /**
+   * 积分比例
+   */
+  rate?: number
+  /**
+   * 名称
+   */
+  name?: string
   /**
    * 入库入网费
    */
   assess_fee: number
-  quantity: number
+
 }

@@ -84,6 +84,10 @@ interface Member {
    * 外部用户id
    */
   external_user_id?: string
+  /**
+   * 头像
+   */
+  avatar?: string
 }
 
 /**

@@ -46,7 +46,10 @@ export const useMemberManage = defineStore('Member', {
         }
       }
     },
-    // 获取筛选列表
+    /**
+     * 获取会员筛选条件
+     * @returns filterList
+     */
     async getMemberWhere() {
       try {
         const { data } = await https.get<Where<Member>>('/member/where')
@@ -59,7 +62,10 @@ export const useMemberManage = defineStore('Member', {
         throw new Error(`筛选失败: ${error || '未知错误'}`)
       }
     },
-    // 新增会员
+    /**
+     * 新增会员
+     * @returns member
+     */
     async createMember(req: Partial<Member>) {
       try {
         const { data } = await https.post<undefined, Partial<Member>>('/member/create', req)

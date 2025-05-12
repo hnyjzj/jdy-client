@@ -1,31 +1,70 @@
 /**
- * Orders
+ * 新增销售单
  */
 interface Orders {
-  /**
-   * 应付金额
-   */
-  amount?: number
-  /**
-   * 原价
-   */
-  amount_original?: number
-  /**
-   * 实付金额
-   */
-  amount_pay?: number
-  /**
-   * 抹零金额
-   */
-  amount_reduce: number
   /**
    * 收银员ID
    */
   cashier_id?: string
+  clerks: OrderSalesClerks[]
   /**
-   * 收银员信息
+   * 整单折扣
    */
-  cashier?: Staff
+  discount_rate: number
+  /**
+   * 是否积分
+   */
+  has_integral: boolean
+  /**
+   * 积分抵扣
+   */
+  integral_deduction: number
+  /**
+   * 会员ID
+   */
+  member_id?: string
+  /**
+   * 定金单 ID
+   */
+  order_deposit_ids: string[]
+  /**
+   * 支付方式
+   */
+  payments: Payment[]
+  /**
+   * 配件
+   */
+  product_accessories: ProductAccessorie[]
+  /**
+   * 成品
+   */
+  product_finisheds: ProductFinished[]
+  /**
+   * 旧料
+   */
+  product_olds: ProductOld[]
+  /**
+   * 订单备注
+   */
+  remark?: string
+  /**
+   * 抹零
+   */
+  round_off: number | string
+  /**
+   * 订单来源
+   */
+  source: number
+  /**
+   * 门店ID
+   */
+  store_id?: string
+}
+
+/**
+ * OrderSalesClerks
+ */
+interface OrderSalesClerks {
   /**
    * 创建时间
    */
@@ -35,161 +74,268 @@ interface Orders {
    */
   deleted_at?: Date
   /**
-   * 整单折扣金额
-   */
-  discount_amount?: number
-  /**
-   * 整单折扣
-   */
-  discount_rate?: number
-  /**
-   * 订单编号
-   */
-  id?: string
-  /**
-   * 赠送积分
-   */
-  integral_present?: number
-  /**
-   * 使用积分
-   */
-  integral_use: number
-  /**
-   * 会员ID
-   */
-  member_id?: string
-  /**
-   * 会员信息
-   */
-  member?: Member
-  /**
-   * 订单备注
-   */
-  remark: string
-  /**
-   * 订单来源
-   */
-  source?: number
-  /**
-   * 订单状态
-   */
-  status?: number
-  /**
-   * 门店ID
-   */
-  store_id: string
-  /**
-   * 门店信息
-   */
-  store?: Store
-  /**
-   * 订单类型
-   */
-  type?: number
-  /**
-   * 更新时间
-   */
-  updated_at?: Date
-  /**
-   * 导购员列表
-   */
-  salesmans: OrderSalesmen[]
-  /**
-   * 商品列表
-   */
-  products: OrderProductFinisheds[]
-}
-interface OrderSalesmen {
-  /**
-   * 创建时间
-   */
-  created_at?: Date
-  /**
    * ID
    */
   id?: string
   /**
-   * 是否主导购员，默认为 false
+   * 是否主导购员
    */
-  is_main?: boolean
+  is_main: boolean
   /**
-   * 订单ID
+   * 销售单ID
    */
   order_id?: string
   /**
    * 业绩金额
    */
-  performance_amount?: number
+  performance_amount?: number | string
   /**
    * 业绩比例
    */
-  performance_rate?: number
+  performance_rate: number
   /**
    * 导购员ID
    */
   salesman_id?: string
   /**
-   * 导购员信息
-   */
-  salesman?: Staff
-  /**
    * 更新时间
    */
   updated_at?: Date
+
+  salesman?: Staff
+
+  nickname?: string
 }
-interface OrderProducts {
+
+interface Payment {
+  /**
+   * 金额
+   */
+  amount: number
+  /**
+   * 支付方式
+   */
+  payment_method: number
+
+}
+
+interface ProductAccessorie {
+  /**
+   * 积分
+   */
+  integral?: number | string
   /**
    * 应付金额
    */
-  amount?: number
-  /**
-   * 原价
-   */
-  amount_original?: number
-  /**
-   * 创建时间
-   */
-  created_at?: Date
-  /**
-   * 折扣
-   */
-  discount?: number
-  /**
-   * 折扣金额
-   */
-  discount_amount?: number
-  /**
-   * ID
-   */
-  id?: string
-  /**
-   * 增加积分
-   */
-  integral?: number
-  /**
-   * 订单ID
-   */
-  order_id?: string
-  /**
-   * 单价
-   */
-  price?: number
+  price?: number | string
   /**
    * 产品ID
    */
   product_id: string
   /**
-   * 产品信息
+   * 数量
    */
-  product?: Product
+  quantity: number
+
+  product?: ProductAccessories
+  status?: number
+  id?: string
+}
+
+interface ProductFinished {
   /**
-   * 数量，默认 为1
+   * 折扣(显示)
    */
-  quantity?: number
+  discount_final?: number
   /**
-   * 更新时间
+   * 固定折扣
    */
-  updated_at?: Date
+  discount_fixed?: number
+  /**
+   * 会员折扣
+   */
+  discount_member?: number
+  /**
+   * 积分
+   */
+  integral?: number
+  /**
+   * 积分抵扣
+   */
+  integral_deduction?: number
+  /**
+   * 工费
+   */
+  labor_fee?: number
+  /**
+   * 应付金额
+   */
+  price?: number
+  /**
+   * 金价
+   */
+  price_gold?: number
+  /**
+   * 原价
+   */
+  price_original?: number
+  /**
+   * 产品ID
+   */
+  product_id?: string
+  /**
+   * 抹零
+   */
+  round_off?: number
+  /**
+   *积分比例
+   */
+  rate?: number
+  /**
+   *成品信息
+   */
+  product?: ProductFinisheds
+  weight_gem?: number
+  retail_type?: number
+
+  label_price?: string
+
+  weight_metal?: number
+  color_gem?: number
+  clarity?: number
+  name?: string
+
+  code?: string
+  status?: number
+  id?: string
+}
+
+interface ProductOld {
+  /**
+   * 品牌
+   */
+  brand?: number
+  /**
+   * 品类
+   */
+  category?: number
+  /**
+   * 主石净度
+   */
+  clarity?: number
+  /**
+   * 条码
+   */
+  code?: string
+  /**
+   * 主石色
+   */
+  color_gem?: number
+  /**
+   * 工艺
+   */
+  craft?: number
+  /**
+   * 主石切工
+   */
+  cut?: number
+  /**
+   * 主石
+   */
+  gem?: number
+  /**
+   * 积分
+   */
+  integral?: number
+  /**
+   * 是否本司货品
+   */
+  is_our: boolean
+  /**
+   * 标签价
+   */
+  label_price?: string
+  /**
+   * 材质
+   */
+  material?: number
+  /**
+   * 名称
+   */
+  name?: string
+  /**
+   * 主石数
+   */
+  num_gem?: number
+  /**
+   * 杂料数
+   */
+  num_other?: number
+  /**
+   * 产品ID
+   */
+  product_id?: string
+  /**
+   * 成色
+   */
+  quality?: number
+  /**
+   * 实际成色
+   */
+  quality_actual?: number
+  /**
+   * 回收方式
+   */
+  recycle_method?: number
+  /**
+   * 回收金额
+   */
+  recycle_price: number
+  /**
+   * 回收金价
+   */
+  recycle_price_gold?: number
+  /**
+   * 回收工费
+   */
+  recycle_price_labor?: number
+  /**
+   * 回收工费方式
+   */
+  recycle_price_labor_method?: number
+  /**
+   * 回收类型
+   */
+  recycle_type?: number
+  /**
+   * 主石重
+   */
+  weight_gem?: number
+  /**
+   * 金重
+   */
+  weight_metal?: number
+  /**
+   * 杂料重
+   */
+  weight_other?: number
+  /**
+   * 总重
+   */
+  weight_total?: number
+  /**
+   * 积分比例
+   */
+  rate: string | number
+
+  class: number
+  /**
+   * 产品类型
+   */
+  type: number
+  status?: number
+  product?: ProductOlds
+  id?: string
 }
 
 interface OrderWhere {
@@ -204,4 +350,35 @@ interface OrderWhere {
   store_id?: string
   product_id?: string
   type?: number
+  payment_method?: any[]
+}
+interface ReturnGoods {
+  /**
+   * 订单 ID
+   */
+  id: string
+  /**
+   * 退货入库方式，成品类型必传
+   */
+  method?: number
+  /**
+   * 支付方式
+   */
+  payments: Payment[]
+  /**
+   * 退款金额
+   */
+  price: number
+  /**
+   * 商品ID
+   */
+  product_id: string
+  /**
+   * 货品类型
+   */
+  product_type: number
+  /**
+   * 备注
+   */
+  remark: string
 }

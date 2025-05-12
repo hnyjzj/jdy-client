@@ -10,8 +10,7 @@ const isFilter = ref(false)
 const isModel = ref(false)
 const isBatchImportModel = ref(false)
 const pages = ref(1)
-const type = ref(2 as ProductOlds['type'],
-)
+const type = ref(2 as ProductOlds['type'])
 useSeoMeta({
   title: '旧料列表',
 })

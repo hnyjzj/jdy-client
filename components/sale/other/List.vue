@@ -1,50 +1,41 @@
 <script setup lang="ts">
-// 其他收支单_列表_组件
+// 销售单列表
 const props = defineProps<{
-  info: any[]
+  info: otherOrderInfo[]
+  where: Where<otherOrderWhere>
+  del: (id: string) => void
 }>()
 
-const emits = defineEmits(['amend', 'delete'])
-const handleAmend = () => {
-  emits('amend')
-}
-const handleDelete = () => {
-  emits('delete')
+const handleClick = (id?: string) => {
+  if (!id) {
+    return
+  }
+  navigateTo(`/sale/other/add?id=${id}`)
 }
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
+  <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
-      <sale-cards :title="item.num" :tag-text="item.openType" :info="item">
+      <sale-cards :title="`收支单号:${item.id}`">
         <template #info>
-          <template v-for="(result, ind) in props.info" :key="ind">
-            <div class="grid grid-cols-1 gap-[12px] px-[16px]">
-              <div class="info">
-                <div class="part">
-                  <span class="part-left">所属门店</span>
-                  <span class="part-right">{{ result.store.name || '--' }}</span>
-                </div>
-                <div class="part">
-                  <span class="part-left">会员</span>
-                  <span class="part-right">{{ result.member.nickname || '--' }}</span>
-                </div>
-                <div class="part">
-                  <span class="part-left">会员手机</span>
-                  <span class="part-right">{{ result.member.phone || '--' }}</span>
-                </div>
-                <div class="part">
-                  <span class="part-left">主销</span>
-                  <span class="part-right">{{ result.mainSalesman || '--' }}</span>
-                </div>
-              </div>
+          <div class="info">
+            <common-cell label="所属门店" :value="item.store?.name " />
+            <common-cell label="收支类型" :value="props.where.type?.preset[item.type]" />
+            <common-cell label="收支金额" :value="item.amount" />
+            <common-cell label="收支来源" :value="props.where.source?.preset[item.source]" />
+            <common-cell label="收支内容" :value="item.content" />
+            <common-cell label="会员" :value="item.member?.name" />
+            <common-cell label="主销" :value="item.clerk?.nickname " />
+            <common-cell label="关联销售单" :value="item.order_id" />
+          </div>
+        </template>
+        <template #footer>
+          <div class="flex-between pl-[8px] bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
+            <div @click="props.del(item.id)">
+              <icon name="i-svg:delete" :size="16" />
             </div>
-          </template>
-          <div class="flex-end bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)] gap-[32px]" uno-lg="gap-[40px]">
-            <div class="info delete cursor-pointer" @click="handleDelete">
-              删除
-            </div>
-            <common-button-irregular text="修改" @click="handleAmend" />
+            <common-button-irregular text="查看详情" @click="handleClick(item.id)" />
           </div>
         </template>
       </sale-cards>
@@ -54,7 +45,7 @@ const handleDelete = () => {
 
 <style scoped lang="scss">
   .info {
-  --uno: 'flex flex-col gap-[12px] color-[#3971F3] text-size-[14px] dark:color-[#fff]';
+  --uno: 'flex flex-col gap-[3px] px-[16px]';
 
   .part {
     --uno: 'flex-center-between';
@@ -65,9 +56,5 @@ const handleDelete = () => {
       --uno: 'text-size-[14px] color-[#333] dark:color-[#fff]';
     }
   }
-}
-
-.delete {
-  --uno: 'font-semibold dark:border-[#4D4D4D] dark:color-[#fff]';
 }
 </style>

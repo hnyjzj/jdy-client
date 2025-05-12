@@ -32,7 +32,6 @@
     "@unocss/eslint-plugin": "^0.63.0",
     "@unocss/nuxt": "^0.63.0",
     "@vant/area-data": "^2.0.0",
-    "@vant/nuxt": "^1.0.6",
     "@vueuse/core": "^11.1.0",
     "@vueuse/nuxt": "^11.1.0",
     "@waset/unplugin-iconify": "1.4.0",
@@ -47,7 +46,6 @@
     "simple-git-hooks": "^2.11.1",
     "typescript": "^5.7.3",
     "unocss": "^0.63.0",
-    "vant": "^4.9.7",
     "vue-tsc": "^2.2.0",
     "xlsx": "^0.18.5"
   },

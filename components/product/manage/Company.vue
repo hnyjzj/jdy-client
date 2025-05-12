@@ -1,4 +1,10 @@
 <script setup lang="ts">
+const props = withDefaults(defineProps<{
+  confirm?: boolean
+}>(), {
+  confirm: false,
+})
+
 const emits = defineEmits(['change'])
 
 const { $toast } = useNuxtApp()
@@ -6,10 +12,27 @@ const { $toast } = useNuxtApp()
 const { getMyStore, switchStore } = useStores()
 const { myStoreList, myStore } = storeToRefs(useStores())
 const columns = ref()
+const confirmShow = ref(false)
 const getList = async () => await getMyStore({ page: 1, limit: 20 })
 
 if (!myStore.value?.id) {
   await getList()
+}
+
+// 使用确认弹窗的方式
+const useConfirmFunction = () => {
+  confirmShow.value = true
+}
+
+const saveStoreId = ref('')
+// 确定使用
+const ConfirmUse = async () => {
+  const stored = myStoreList.value.find(item => item.id === saveStoreId.value)
+  if (stored) {
+    switchStore(stored)
+    emits('change')
+    saveStoreId.value = ''
+  }
 }
 
 async function changeStoer() {
@@ -24,9 +47,16 @@ async function changeStoer() {
 }
 
 function handleSelect(id: Stores['id']) {
+  saveStoreId.value = id
+  if (props.confirm) {
+    columns.value = []
+    useConfirmFunction()
+    return false
+  }
   const stored = myStoreList.value.find(item => item.id === id)
   if (stored) {
     switchStore(stored)
+    saveStoreId.value = ''
     emits('change')
   }
 }
@@ -44,6 +74,17 @@ function handleSelect(id: Stores['id']) {
         <icon name="i-icon:product-toggle" :size="24" />
       </div>
     </n-dropdown>
+    <common-confirm
+      v-model:show="confirmShow"
+      title="提示"
+      text="是否切换当前门店?"
+      textb="切换当前门店则重置下列表单?"
+      icon="error"
+      cancel-text="否"
+      confirm-text="是"
+      @submit="ConfirmUse"
+      @cancel="confirmShow = false"
+    />
   </div>
 </template>
 
