@@ -4,14 +4,22 @@ const { goldList } = storeToRefs(useGoldPrice())
 const { getGoldPrice, setGoldPrice } = useGoldPrice()
 const { getFinishedWhere } = useFinished()
 const { finishedFilterList } = storeToRefs(useFinished())
-const { myStore } = storeToRefs(useStores())
+const { getMyStore } = useStores()
+const { myStore, myStoreList } = storeToRefs(useStores())
 useSeoMeta({
   title: '今日金价',
 })
-
+const route = useRoute()
 const changeShow = ref(false)
-const goldParams = ref([] as UpdataGoldParams[])
+const goldParams = ref([] as UpdataGold[])
+const deleteArr = ref([] as GoldPrices['id'][])
 await getFinishedWhere()
+/** 如果有传门店id 则当前门店选择该门店 */
+if (route.query?.store_id) {
+  await getMyStore({ page: 1, limit: 20 })
+  myStore.value = myStoreList.value.find(item => item.id === route.query?.store_id) ?? myStoreList.value[0]
+}
+
 if (myStore.value.id) {
   await getGoldPrice(myStore.value.id)
   await getGoldParams()
@@ -56,10 +64,16 @@ const productType = {
   3: '配件',
 }
 async function submit() {
-  const data = await setGoldPrice(goldParams.value)
+  const params: UpdataGoldParams = { options: goldParams.value }
+  /** 删除金价 */
+  if (deleteArr.value.length) {
+    params.deletes = deleteArr.value
+  }
+  const data = await setGoldPrice(params)
   if (data?.code === HttpCode.SUCCESS) {
     $toast.success('提交今日最新金价成功')
     goldParams.value = []
+    deleteArr.value = []
     await getGoldPrice(myStore.value.id)
     await getGoldParams()
   }
@@ -78,7 +92,11 @@ function addGold() {
   })
 }
 
-function subtract(i: number) {
+/** 删除单个金价设置 */
+function subtract(i: number, id: GoldPrices['id']) {
+  if (id) {
+    deleteArr.value.push(id)
+  }
   goldParams.value.splice(i, 1)
 }
 </script>
@@ -154,14 +172,14 @@ function subtract(i: number) {
                 <n-select v-model:value="item.product_type" placeholder="类型" :options="optonsToSelect(typePreset)" />
               </div>
               <div class="mt-2">
-                <n-select v-model:value="item.product_brand" placeholder="品牌(多选),不选默认为全部品牌" multiple :options="getOptions('brand')" />
+                <n-select v-model:value="item.product_brand" class="no-radius" placeholder="品牌(多选),不选默认为全部品牌" multiple :options="getOptions('brand')" />
               </div>
               <div class="my-2">
-                <n-select v-model:value="item.product_quality" placeholder="成色(多选)" multiple :options="getOptions('quality')" />
+                <n-select v-model:value="item.product_quality" class="no-radius" placeholder="成色(多选)" multiple :options="getOptions('quality')" />
               </div>
             </div>
             <div class="flex gap-1">
-              <div class="w-[32px] h-[32px] rounded-full bg-[#FFF] flex justify-center items-center" @click="subtract(index)">
+              <div class="w-[32px] h-[32px] rounded-full bg-[#FFF] flex justify-center items-center" @click="subtract(index, item.id)">
                 <icon name="i-svg:subtract" size="16" />
               </div>
               <template v-if="index === goldParams.length - 1">
@@ -192,6 +210,13 @@ function subtract(i: number) {
     <common-button-one text="变更金价" @confirm="getGoldParams();changeShow = true" />
   </div>
 </template>
+
+<style>
+.no-radius .n-base-selection,
+.no-radius .n-base-tag {
+  border-radius: 16px !important;
+}
+</style>
 
 <style lang="scss" scoped>
 .gold {
