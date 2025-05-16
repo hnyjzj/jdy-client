@@ -25,10 +25,19 @@ const backtrack = () => {
 }
 
 const execute = async () => {
+  // 校验手机号码参数
+  const phone = memberParams.value.phone
+  if (phone && phone.length < 11) {
+    $toast.warning('手机号码格式不正确')
+    return
+  }
   const res = await createMember(memberParams.value)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('新增成功')
     backtrack()
+  }
+  else {
+    $toast.warning(res?.message || '创建失败')
   }
 }
 </script>
@@ -36,7 +45,7 @@ const execute = async () => {
 <template>
   <div>
     <div class="grid-12 pb-[80px]">
-      <product-manage-company class="color-[#fff] col-4 px-[16px] pt-[16px]" />
+      <product-manage-company class="color-[#fff] col-4 px-[16px] pt-[16px]" uno-lg="offset-2" />
       <div class="col-12 px-[16px] py-[16px]" uno-lg="col-8 offset-2">
         <div class="flex flex-col gap-[16px]">
           <div class="primary">
