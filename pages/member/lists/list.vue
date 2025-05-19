@@ -182,6 +182,7 @@ const userCancel = () => {
                     v-model="fluctuant"
                     placeholder="请输入积分数量"
                     class="input"
+                    @focus="focus"
                   >
                 </div>
               </template>

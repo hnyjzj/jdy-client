@@ -121,16 +121,16 @@ const presetToSelect = (key: keyof AccessorieCategory) => {
                               />
                             </template>
                             <template v-if="item.input === 'text'">
-                              <n-input v-model:value="(params[item.name] as string)" round :placeholder="`输入${item.label}`" />
+                              <n-input v-model:value="(params[item.name] as string)" round :placeholder="`输入${item.label}`" @focus="focus" />
                             </template>
                             <template v-if="item.input === 'number'">
                               <div class="w-[100%]">
-                                <n-input-number v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`" />
+                                <n-input-number v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`" @focus="focus" />
                               </div>
                             </template>
 
                             <template v-if="item.input === 'textarea'">
-                              <n-input v-model:value="(params[item.name] as string)" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
+                              <n-input v-model:value="(params[item.name] as string)" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" @focus="focus" />
                             </template>
                           </n-form-item-gi>
                         </template>

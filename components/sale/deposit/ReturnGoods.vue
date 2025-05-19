@@ -96,7 +96,7 @@ const submit = async () => {
         >
           <n-grid :cols="12" :x-gap="24">
             <n-form-item-gi :span="12" label="备注" path="remark">
-              <n-input v-model:value="model.remark" type="textarea" rows="2" placeholder="请输入退款说明" />
+              <n-input v-model:value="model.remark" type="textarea" rows="2" placeholder="请输入退款说明" @focus="focus" />
             </n-form-item-gi>
             <template v-for="(item, index) in model.payments" :key="index">
               <n-form-item-gi
@@ -111,7 +111,8 @@ const submit = async () => {
                 }"
               >
                 <n-select
-                  v-model:value="item.payment_method" placeholder="请选择退款方式" :options="optonsToSelect(props.where.payment_method?.preset)" />
+                  v-model:value="item.payment_method"
+                  placeholder="请选择退款方式" :options="optonsToSelect(props.where.payment_method?.preset)" @focus="focus" />
               </n-form-item-gi>
               <n-form-item-gi
                 :span="6"
@@ -124,6 +125,7 @@ const submit = async () => {
                     round
                     min="0"
                     :show-button="false"
+                    @focus="focus"
                   />
                 </div>
                 <div>

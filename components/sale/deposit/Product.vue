@@ -54,16 +54,16 @@ const handleAddProductPopup = ref(false)
   <div>
     <common-fold title="货品" :is-collapse="false">
       <div class="p-[16px]">
-        <div class="btn grid-12 gap-[20px]">
+        <div class="btn grid-12 gap-[8px]">
           <div
-            class="btn-left col-span-4 offset-2 cursor-pointer" @click="showModal = true">
+            class="btn-left col-6 cursor-pointer" uno-sm="col-4 offset-2" @click="showModal = true">
             <icon name="i-icon:search" color="#fff" :size="12" />
             <div class="ml-2">
               搜索
             </div>
           </div>
           <div
-            class="btn-right col-span-4 offset-6 cursor-pointer" @click="handleAddProductPopup = true">
+            class="btn-right  col-6 cursor-pointer" uno-sm="col-4 offset-6" @click="handleAddProductPopup = true">
             <div class="ml-2">
               手动添加
             </div>

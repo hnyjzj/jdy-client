@@ -114,14 +114,14 @@ onUnmounted(() => {
       <div class=" flex-col justify-between">
         <div class="pb-[40px]">
           <n-form-item label="门店名称" path="name">
-            <n-input v-model:value="addorUpdateForm.name" placeholder="请输入门店名称" round clearable />
+            <n-input v-model:value="addorUpdateForm.name" placeholder="请输入门店名称" round clearable @focus="focus" />
           </n-form-item>
-          <common-area-select ref="areaRef" :border="areaError" :form="addorUpdateForm" @update-error="(val: boolean) => { areaError = val }" />
+          <common-area-select ref="areaRef" :border="areaError" :form="addorUpdateForm" @focus="focus" @update-error="(val: boolean) => { areaError = val }" />
           <n-form-item label="地址" path="address">
-            <n-input v-model:value="addorUpdateForm.address" placeholder="请输入门店地址" round clearable />
+            <n-input v-model:value="addorUpdateForm.address" placeholder="请输入门店地址" round clearable @focus="focus" />
           </n-form-item>
           <n-form-item label="联系方式" path="contact">
-            <n-input v-model:value="addorUpdateForm.contact" maxlength="11" placeholder="请输入门店联系方式" round clearable />
+            <n-input v-model:value="addorUpdateForm.contact" maxlength="11" placeholder="请输入门店联系方式" round clearable @focus="focus" />
           </n-form-item>
           <n-form-item
             label="logo">

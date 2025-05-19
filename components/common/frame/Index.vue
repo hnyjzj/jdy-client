@@ -35,7 +35,7 @@ const value = defineModel()
   >
     <div class="flex items-center flex-1">
       <slot name="left" />
-      <input v-model="value" min="0" :disabled="props.isDisabled || props.disabledStyle" :class="props.disabledStyle ? 'row-input dis' : 'row-input nodis'" :type="props.type" :placeholder="props.tip">
+      <input v-model="value" min="0" :disabled="props.isDisabled || props.disabledStyle" :class="props.disabledStyle ? 'row-input dis' : 'row-input nodis'" :type="props.type" :placeholder="props.tip" @focus="focus">
     </div>
     <template v-if="props.isIcon">
       <div class="row-right">

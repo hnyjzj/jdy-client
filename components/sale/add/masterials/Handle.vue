@@ -190,7 +190,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
 <template>
   <div>
     <common-model v-model="showModal" title="添加旧料" :show-ok="true" :show-cancel="true" @confirm="submitMasterialsForm">
-      <div class="grid-12 h-[500px] overflow-y-auto">
+      <div class="grid-12 h-[300px] overflow-y-scroll">
         <div class="col-12 px-[12px]">
           <n-form ref="MformRef" :model="params" :rules="rules">
             <n-grid :cols="24" :x-gap="8">
@@ -205,37 +205,42 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                         :options="presetToSelect(item)"
                         :disabled="props.nowEditState === index && item.name === 'recycle_method'"
                         clearable
+                        @focus="focus"
                       />
                     </template>
                     <template v-if="item.input === 'text'">
                       <n-input
                         v-model:value="(params[item.name] as string)" round :placeholder="`输入${item.label}`"
+                        @focus="focus"
                       />
                     </template>
                     <template
                       v-if="item.input === 'number' && (item.name === 'weight_metal'
                         || item.name === 'recycle_price_gold' || item.name === 'recycle_price_labor' || item.name === 'quality_actual')">
                       <n-input-number
-                        v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`"
-                        :max="item.name === 'quality_actual' ? 1 : undefined"
-                        :show-button="false" @blur="changePrice(item.name)" />
+                        v-model:value="(params[item.name] as number)"
+                        round :placeholder="`输入${item.label}`" :max="item.name === 'quality_actual' ? 1 : undefined"
+                        :show-button="false"
+                        @focus="focus" @blur="changePrice(item.name)" />
                     </template>
                     <template
                       v-if="item.input === 'number' && (item.name === 'recycle_price')">
                       <n-input-number
-                        v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`"
-                        :show-button="false" @blur="changePrice(item.name)" />
+                        v-model:value="(params[item.name] as number)"
+                        round :placeholder="`输入${item.label}`" :show-button="false"
+                        @focus="focus" @blur="changePrice(item.name)" />
                     </template>
                     <template
                       v-if="item.input === 'number' && (item.name !== 'weight_metal'
                         && item.name !== 'recycle_price_gold' && item.name !== 'recycle_price_labor' && item.name !== 'quality_actual' && item.name !== 'recycle_price')">
                       <n-input-number
-                        v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`"
-                        :show-button="false" />
+                        v-model:value="(params[item.name] as number)"
+                        round :placeholder="`输入${item.label}`" :show-button="false"
+                        @focus="focus" />
                     </template>
 
                     <template v-if="item.input === 'textarea'">
-                      <n-input v-model:value="(params[item.name] as string)" rows="1" type="textarea" />
+                      <n-input v-model:value="(params[item.name] as string)" rows="1" type="textarea" @focus="focus" />
                     </template>
                   </n-form-item-gi>
                 </template>

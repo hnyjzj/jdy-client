@@ -34,7 +34,7 @@ const TodayInventoryList = ref<DataCardList<TodayInventory>>({
       <div
         class="skew col-6" uno-md="col-4">
         <div class="skew-right" />
-        <div class="skew-text pl-[15px]">
+        <div class="skew-text pl-[15px] text-[16px]">
           本店今日库存
         </div>
       </div>
@@ -59,7 +59,7 @@ const TodayInventoryList = ref<DataCardList<TodayInventory>>({
       <div class="bg-[#c7dafF] dark:opacity-[0.5] h-[1px] w-full mt-[8px]" />
       <div class="mt-[12px] flex-between">
         <div />
-        <div class="color-[#333]  dark:color-[#fff] text-[12px] line-height-[24px] ">
+        <div class="color-[#333]  dark:color-[#fff] text-[12px] line-height-[24px] flex">
           <span>
             {{ rbText }}
           </span>

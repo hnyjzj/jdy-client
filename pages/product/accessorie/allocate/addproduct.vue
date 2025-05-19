@@ -147,7 +147,7 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
                                 </div>
                                 <template v-if="filter.input === 'select'">
                                   <div class="value">
-                                    {{ filter.preset[item.category[filter.name]] || '--' }}
+                                    {{ filter.preset[item.category[filter.name] as number] || '--' }}
                                   </div>
                                 </template>
                                 <template v-else>
@@ -172,7 +172,7 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
                           <div class="key w-[80px]">
                             调拨数量
                           </div>
-                          <n-input-number v-model:value="item.quantity" placeholder="请输入调拨数量" min-0 :max="item.stock" :show-button="false" />
+                          <n-input-number v-model:value="item.quantity" placeholder="请输入调拨数量" min-0 :max="item.stock" :show-button="false" @focus="focus" />
                         </div>
                       </div>
                     </template>
@@ -192,11 +192,13 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
         <div class="grid grid-cols-[30%_60%_10%] items-center gap-2">
           <div class="">
             <n-select
-              v-model:value="searchParams.label" :options="options"
+              v-model:value="searchParams.label"
+
+              :options="options" @focus="focus"
               @change="searchParams.val = ''" />
           </div>
           <div>
-            <n-input v-model:value="searchParams.val" placeholder="请搜索" @keydown.enter="searchAccessorie" />
+            <n-input v-model:value="searchParams.val" placeholder="请搜索" @focus="focus" @keydown.enter="searchAccessorie" />
           </div>
           <div @click="searchAccessorie">
             搜索
@@ -207,7 +209,7 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
             <thead>
               <tr class="table-color">
                 <th class="sticky-left table-color px-2">
-                  <input type="checkbox" :disabled="accessorieList?.length === 0" @change="toggleSelectAll">
+                  <input type="checkbox" :disabled="accessorieList?.length === 0" @change="toggleSelectAll" @focus="focus">
                 </th>
                 <template v-for="(filter, i) in categoryFilterListToArray" :key="i">
                   <template v-if="filter.create">
@@ -224,13 +226,13 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
                 <template v-for="(category, i) in accessorieList" :key="i">
                   <tr class="table-color">
                     <td class="sticky-left table-color py-1 px-2">
-                      <input v-model="selectedCategories" type="checkbox" :value="category.id">
+                      <input v-model="selectedCategories" type="checkbox" :value="category.id" @focus="focus">
                     </td>
                     <template v-for="(filter, filterIndex) in categoryFilterListToArray" :key="filterIndex">
                       <template v-if="filter.create">
                         <template v-if="filter.input === 'select'">
                           <td class="whitespace-nowrap px-2 py-1">
-                            {{ categoryFilterList[filter.name]?.preset[category.category[filter.name]] || '--' }}
+                            {{ categoryFilterList[filter.name]?.preset[category.category[filter.name] as number] || '--' }}
                           </td>
                         </template>
                         <template v-else>

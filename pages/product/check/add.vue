@@ -166,6 +166,7 @@ function handleSwitchChange(e: boolean, name: keyof Check) {
                               :options="presetToSelect(item.name)"
                               :consistent-menu-width="false"
                               clearable
+                              @focus="focus"
                             />
                             <div class="ml-2">
                               <n-switch size="large" @change="(e) => handleSwitchChange(e, item.name)">
@@ -195,6 +196,7 @@ function handleSwitchChange(e: boolean, name: keyof Check) {
                                 :placeholder="`选择${item.label}`"
                                 :options="optonsToSelect(typePreset)"
                                 clearable
+                                @focus="focus"
                               />
                             </template>
                             <template v-else>
@@ -205,22 +207,23 @@ function handleSwitchChange(e: boolean, name: keyof Check) {
                                 :placeholder="`选择${item.label}`"
                                 :options="presetToSelect(item.name)"
                                 clearable
+                                @focus="focus"
                               />
                             </template>
                           </template>
                           <template v-if="item.input === 'text'">
-                            <n-input v-model="params[item.name]" round :placeholder="`输入${item.label}`" />
+                            <n-input v-model="params[item.name]" round :placeholder="`输入${item.label}`" @focus="focus" />
                           </template>
                           <template v-if="item.input === 'number'">
                             <div class="w-[100%]">
-                              <n-input-number v-model="params[item.name]" round :placeholder="`输入${item.label}`" />
+                              <n-input-number v-model="params[item.name]" round :placeholder="`输入${item.label}`" @focus="focus" />
                             </div>
                           </template>
                           <template v-if="item.input === 'switch'">
                             <n-switch v-model="params[item.name]" size="large" :style="{ 'border-radius': '20px' }" round />
                           </template>
                           <template v-if="item.input === 'textarea'">
-                            <n-input v-model="params[item.name]" round :placeholder="`输入${item.label}`" />
+                            <n-input v-model="params[item.name]" round :placeholder="`输入${item.label}`" @focus="focus" />
                           </template>
                           <template v-if="item.input === 'search'">
                             <template v-if="item.name === 'inventory_person_id' || item.name === 'inspector_id'">
@@ -234,7 +237,11 @@ function handleSwitchChange(e: boolean, name: keyof Check) {
                                 clearable
                                 size="large"
                                 remote
-                                @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+
+                                @focus="(e) => {
+                                  focus(e)
+                                  getStoreStaffList({ id: myStore.id })
+                                }"
                               />
                             </template>
                           </template>
@@ -248,6 +255,7 @@ function handleSwitchChange(e: boolean, name: keyof Check) {
                                 :options="presetToSelect(item.name)"
                                 :consistent-menu-width="false"
                                 clearable
+                                @focus="focus"
                               />
                               <div class="ml-2">
                                 <n-switch size="large" @change="(e) => handleSwitchChange(e, item.name)">

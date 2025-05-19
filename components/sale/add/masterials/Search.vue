@@ -144,7 +144,7 @@ const searchConfirm = async () => {
 <template>
   <div>
     <common-model v-model="searchShow" title="搜索" :show-ok="true" :show-cancel="true" @confirm="searchConfirm()" @cancel="searchShow = false">
-      <div class="grid-12">
+      <div class="grid-12 h-[300px] overflow-y-scroll ">
         <div class="col-12">
           <div>
             <div class="flex  py-[12px]">
@@ -163,7 +163,8 @@ const searchConfirm = async () => {
                 v-model:value="searchOld"
                 type="text"
                 clearable
-                placeholder="请输入商品条码" />
+                placeholder="请输入商品条码"
+                @focus="focus" />
             </div>
             <div class="pl-[16px] flex">
               <n-button type="info" round @click="props.searchOlds(searchOld)">
@@ -176,7 +177,7 @@ const searchConfirm = async () => {
               </div>
             </div>
           </div>
-          <div class="h-[300px] overflow-y-auto py-[16px]">
+          <div class="py-[16px]">
             <div>
               <template v-if="Object.keys(nowOldMaster).length !== 0">
                 <n-form ref="oldMasterRef" :model="nowOldMaster" :rules="oldRules">
@@ -202,6 +203,7 @@ const searchConfirm = async () => {
                           value: 2,
                           label: '按件',
                         }]"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收方式" path="recycle_method">
@@ -217,6 +219,7 @@ const searchConfirm = async () => {
                           value: 2,
                           label: '按件',
                         }]"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收工费">
@@ -226,6 +229,7 @@ const searchConfirm = async () => {
                         placeholder="请输入回收工费"
                         round
                         :precision="3"
+                        @focus="focus"
                         @blur="ourChangePrice()"
                       />
                     </n-form-item-gi>
@@ -246,6 +250,7 @@ const searchConfirm = async () => {
                           value: 3,
                           label: '兑换',
                         }]"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="金重" path="weight_metal">
@@ -256,6 +261,7 @@ const searchConfirm = async () => {
                         round
                         min="0"
                         :precision="3"
+                        @focus="focus"
                         @blur="ourChangePrice()"
                       />
                     </n-form-item-gi>
@@ -268,6 +274,7 @@ const searchConfirm = async () => {
                         round
                         min="0"
                         :precision="3"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收金价">
@@ -278,6 +285,7 @@ const searchConfirm = async () => {
                         round
                         min="0"
                         :precision="3"
+                        @focus="focus"
                         @blur="ourChangePrice()"
                       >
                         <template #suffix>
@@ -293,6 +301,7 @@ const searchConfirm = async () => {
                         round
                         min="0"
                         :precision="3"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                   </n-grid>

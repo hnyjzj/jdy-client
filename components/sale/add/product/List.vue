@@ -198,6 +198,7 @@ const count = (p: ProductFinished) => {
                       min="0"
                       max="100"
                       :default-value="100"
+                      @focus="focus"
 
                       @blur="() => {
                         if (!obj.discount_fixed?.toString()){
@@ -218,6 +219,7 @@ const count = (p: ProductFinished) => {
                       :default-value="0"
                       min="0"
                       round
+                      @focus="focus"
 
                       @blur="() => {
                         if (!obj.round_off?.toString()){
@@ -251,6 +253,7 @@ const count = (p: ProductFinished) => {
                       min="0"
                       round
                       :precision="2"
+                      @focus="focus"
                       @blur="() => {
                         if (!obj.integral_deduction?.toString()){
                           obj.integral_deduction = 0
@@ -268,6 +271,7 @@ const count = (p: ProductFinished) => {
                       min="0"
                       :max="100"
                       round
+                      @focus="focus"
 
                       @blur="() => {
                         if (!obj.discount_member?.toString()){
@@ -290,6 +294,7 @@ const count = (p: ProductFinished) => {
                       round
                       :precision="2"
                       :disabled="true"
+                      @focus="focus"
                       @blur="() => {
                         if (!obj.integral?.toString()){
                           obj.integral = 0
@@ -304,6 +309,7 @@ const count = (p: ProductFinished) => {
                         :show-button="false"
                         placeholder="请输入金价(元/g)"
                         round
+                        @focus="focus"
 
                         @blur="() => {
                           if (!obj.price_gold?.toString()){
@@ -322,7 +328,7 @@ const count = (p: ProductFinished) => {
                         placeholder="请输入工费"
                         round
                         min="0"
-
+                        @focus="focus"
                         @blur="() => {
                           if (!obj.labor_fee?.toString()){
                             obj.labor_fee = 0

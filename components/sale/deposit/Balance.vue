@@ -56,7 +56,8 @@ const unPayMoney = computed(() => {
                   }"
                 >
                   <n-select
-                    v-model:value="item.payment_method" :options="payMethods" />
+                    v-model:value="item.payment_method"
+                    :options="payMethods" @focus="focus" />
                 </n-form-item-gi>
                 <n-form-item-gi
                   :span="12"
@@ -69,6 +70,7 @@ const unPayMoney = computed(() => {
                       round
                       min="0"
                       :show-button="false"
+                      @focus="focus"
                     />
                   </div>
                   <div>
@@ -101,6 +103,7 @@ const unPayMoney = computed(() => {
             :style="{ '--n-border-radius': '20px' }"
             placeholder="备注信息"
             type="textarea"
+            @focus="focus"
           />
         </n-form-item>
       </div>

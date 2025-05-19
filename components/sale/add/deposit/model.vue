@@ -55,7 +55,7 @@ const confirmFn = () => {
           </div>
           <div class="flex items-center pb-[16px]">
             <div class="flex-1">
-              <n-input v-model:value="searchVal" type="text" clearable placeholder="输入订金单号" />
+              <n-input v-model:value="searchVal" type="text" clearable placeholder="输入订金单号" @focus="focus" />
             </div>
             <div class="pl-[16px] flex">
               <n-button type="info" round @click="searchList">

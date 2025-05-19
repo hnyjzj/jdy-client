@@ -11,7 +11,7 @@ useSeoMeta({
         <div> 1、开单后 </div>
         <div class="bg-[#fff] py-[10px] px-[12px] rounded-[36px] ">
           <div class="w-[117px]">
-            <input type="text" class="w-full border-none bg-transparent" placeholder="0">
+            <input type="text" class="w-full border-none bg-transparent" placeholder="0" @focus="focus">
           </div>
         </div>
         <div>天，接受回访</div>

@@ -56,6 +56,8 @@ const onNegativeClick = () => {
           clearable
           remote
           @search="searchStaff"
+          @focus="focus"
+
         />
       </div>
       <template #action>
