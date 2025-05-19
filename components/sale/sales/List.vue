@@ -1,58 +1,92 @@
 <script setup lang="ts">
 // 销售单列表
 const props = defineProps<{
-  info: Orders[]
+  info: OrderInfo[]
   where: Where<OrderWhere>
 }>()
-
-const emits = defineEmits<{
-  userClick: [id: string]
+const emit = defineEmits<{
+  cancle: [val: string]
+  pay: [val: string]
 }>()
+
 const handleClick = (id?: string) => {
   if (!id) {
     return
   }
-  emits('userClick', id)
+  navigateTo(`/sale/sales/order?id=${id}`)
+}
+const revokeDialog = ref(false)
+const readyRevokId = ref<string>()
+const revoke = () => {
+  emit('cancle', readyRevokId.value!)
+}
+
+const handleCancel = (id: string) => {
+  if (!id) {
+    return
+  }
+  readyRevokId.value = id
+  revokeDialog.value = true
+}
+const paydialog = ref(false)
+const payid = ref<string>()
+const pay = () => {
+  emit('pay', payid.value!)
+}
+const hanlePay = (id: string) => {
+  if (!id) {
+    return
+  }
+  payid.value = id
+  paydialog.value = true
 }
 </script>
 
 <template>
   <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
-      <sale-cards :title="item.id" :tag-text="where.type?.preset[item.type]">
+      <sale-cards :title="`销售单号:${item.id}`" :tag-text="props.where.status?.preset[item.status]">
         <template #info>
-          <div class="grid grid-cols-1 gap-[12px]">
-            <div class="info">
-              <div class="part">
-                <span class="part-left">所属门店</span>
-                <span class="part-right">{{ item.store.name || '--' }}</span>
-              </div>
-              <div class="part">
-                <span class="part-left">会员</span>
-                <span class="part-right">{{ item.member?.nickname || '--' }}</span>
-              </div>
-              <div class="part">
-                <span class="part-left">会员手机</span>
-                <span class="part-right">{{ item.member?.phone || '--' }}</span>
-              </div>
-              <div class="part">
-                <span class="part-left">收银员</span>
-                <span class="part-right">{{ item.cashier?.nickname || '--' }}</span>
-              </div>
-            </div>
+          <div class="info">
+            <common-cell label="所属门店" :value="item.store.name || '--'" />
+            <common-cell label="会员" :value="item.member?.nickname || '--'" />
+            <common-cell label="会员手机" :value="item.member?.phone || '--'" />
+            <common-cell label="主销" :value="item?.clerks.find(ele => ele.is_main)?.salesman?.nickname || '--'" />
+            <common-cell label="货品信息" :value="item?.product_finisheds[0].product?.name || '--'" />
+            <common-cell label="货品数量" :value="item?.product_finisheds.length || '--'" />
+            <common-cell label="实付金额" format="￥" :value="item.price_pay" />
+            <common-cell label="货品金额" format="￥" :value="item.product_finished_price" />
+            <common-cell label="优惠金额" format="￥" :value="item.price_discount" />
+            <common-cell label="旧料抵扣" format="￥" :value="item.product_old_price" />
+            <common-cell label="积分" :value="item.integral" />
+            <common-cell label="销售时间" :value="formatISODate(item.created_at)" />
           </div>
-          <div class="flex-end bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
+        </template>
+        <template #footer>
+          <div class="flex-between bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
+            <div class="color-[#4287F4] cursor-pointer flex justify-center items-center">
+              <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === item.status">
+                <div class="pl-[20px]" @click="handleCancel(item.id)">
+                  撤销
+                </div>
+                <div class="pl-[20px]" @click="hanlePay(item.id)">
+                  支付
+                </div>
+              </template>
+            </div>
             <common-button-irregular text="查看详情" @click="handleClick(item.id)" />
           </div>
         </template>
       </sale-cards>
     </template>
+    <common-confirm v-model:show="revokeDialog" icon="error" title="撤销提醒" text="确认要撤销此订单吗?" @submit="revoke" />
+    <common-confirm v-model:show="paydialog" icon="success" title="支付确认" text="确认支付了此订单吗?" @submit="pay" />
   </div>
 </template>
 
 <style scoped lang="scss">
   .info {
-  --uno: 'flex flex-col gap-[12px] px-[16px]';
+  --uno: 'flex flex-col gap-[3px] px-[16px]';
 
   .part {
     --uno: 'flex-center-between';

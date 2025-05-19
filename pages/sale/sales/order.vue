@@ -3,23 +3,46 @@
 useSeoMeta({
   title: '销售单详情',
 })
+const { $toast } = useNuxtApp()
 const { getMemberWhere } = useMemberManage()
 const { filterList: memberFiler } = storeToRefs(useMemberManage())
 const { OrderDetail, filterList } = storeToRefs(useOrder())
-const { getOrderDetail, getSaleWhere } = useOrder()
+const { getOrderDetail, getSaleWhere, returnOrderGoods } = useOrder()
+const { getFinishedWhere } = useFinished()
+const { finishedFilterList } = storeToRefs(useFinished())
+const { getOldWhere } = useOld()
+const { oldFilterList } = storeToRefs(useOld())
 const router = useRouter()
 const route = useRoute()
 if (route.query.id) {
   await getOrderDetail({ id: route.query.id as string })
   await getMemberWhere()
   await getSaleWhere()
+  await getFinishedWhere()
+  await getOldWhere()
+}
+const showModel = ref(false)
+const returnGoods = async (req: ReturnGoods) => {
+  const res = await returnOrderGoods(req)
+  if (res) {
+    showModel.value = false
+    $toast.success('退货成功')
+    await getOrderDetail({ id: route.query.id as string })
+  }
 }
 </script>
 
 <template>
   <div>
     <div class="p-[16px] pb-[80px]">
-      <sale-order-detail :member-filer="memberFiler" :where="filterList" :orders="OrderDetail" />
+      <sale-order-detail
+        v-model:dialog="showModel"
+        :old-filter="oldFilterList"
+        :member-filer="memberFiler"
+        :order-where="filterList"
+        :product-filter="finishedFilterList"
+        :orders="OrderDetail"
+        :return-goods="returnGoods" />
     </div>
     <div class="footer">
       <div class="grid-12 gap-[12px] px-[16px]">

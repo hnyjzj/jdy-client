@@ -42,33 +42,40 @@ function toggleShow() {
 
 <template>
   <div class="collapse-item">
-    <div class="title cursor-pointer" :style="`background: linear-gradient(to ${direction}, ${fromColor}, ${toColor});font-size:${size};`" @click="toggleShow">
-      <template v-if="$slots.title">
-        <slot name="title" />
-      </template>
-      <template v-else>
-        <div>{{ props.title }}</div>
-      </template>
+    <div class=" overflow-hidden rounded-t-[24px] ">
+      <div class="title cursor-pointer" :style="`background: linear-gradient(to ${direction}, ${fromColor}, ${toColor});font-size:${size};`" @click="toggleShow">
+        <template v-if="$slots.title">
+          <slot name="title" />
+        </template>
+        <template v-else>
+          <div>{{ props.title }}</div>
+        </template>
 
-      <template v-if="isCollapse">
-        <div>
-          <van-icon :name="!isShow ? 'arrow' : 'arrow-down'" />
-        </div>
-      </template>
+        <template v-if="isCollapse">
+          <div>
+            <template v-if="!isShow">
+              <icon name="i-icon:arrow" />
+            </template>
+            <template v-else>
+              <icon name="i-icon:arrow-down" size="10" />
+            </template>
+          </div>
+        </template>
+      </div>
+      <Transition mode="out-in">
+        <template v-if="isShow">
+          <div class="bg-[#fff] rounded-b-[24px] dark:bg-[rgba(239,240,246,0.1)]">
+            <slot />
+          </div>
+        </template>
+      </Transition>
     </div>
-    <Transition mode="out-in">
-      <template v-if="isShow">
-        <div class="bg-[#FFF] dark:bg-[rgba(239,240,246,0.1)]">
-          <slot />
-        </div>
-      </template>
-    </Transition>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .collapse-item {
-  --uno: 'flex flex-col bg-[#fff] dark:bg-[rgb(245,245,245,0.1)] border-solid border-1 border-[#EFF0F6] dark:border-[rgb(239,240,246,0.1)] rounded-[24px] overflow-hidden';
+  --uno: 'flex flex-col bg-[#fff] dark:bg-[rgb(245,245,245,0.1)] border-solid border-1 border-[#EFF0F6] dark:border-[rgb(239,240,246,0.1)] rounded-[24px] ';
   box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, 0.04);
 
   border-radius: 24px;

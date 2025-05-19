@@ -40,13 +40,13 @@ const modeFun = () => {
       uno-lg="w-auto px-8px py-12px flex-center-col rounded-8px">
       <template v-for="item in menuItems" :key="item.key">
         <div>
-          <nuxt-link :to="item.route">
+          <nuxt-link :to="item.route" class="no-underline">
             <div class="flex-center-col sm:py-[10px]">
               <div class="wh-[24px] mb-[4px]">
                 <icon :name="props.text === item.key ? item.activeIcon : item.inactiveIcon" :size="24" :color="modeFun()" />
               </div>
               <div
-                class="line-height-[20px] color-[#333] dark:color-[#fff]"
+                class="line-height-[20px] color-[#333] dark:color-[#fff] no-underline"
                 :class="{ 'text-active': props.text === item.key && !mode }">
                 {{ item.name }}
               </div>

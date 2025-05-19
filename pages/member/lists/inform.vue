@@ -73,11 +73,7 @@ const warnPhrase = [
   },
 ]
 
-const themeVars = reactive({
-  checkboxLabelColor: '#666',
-})
-
-const rechargeWay = ref([])
+const rechargeWay = ref()
 
 const pushMode = ref(['official'])
 
@@ -100,9 +96,9 @@ const process = (val: number) => {
             <div class="part">
               <div class="flex-center-row gap-[16px] flex-start">
                 <div class="flex-center-row gap-[8px]">
-                  <van-radio-group v-model="rechargeWay">
-                    <van-radio :name="item.id" icon-size="18px" />
-                  </van-radio-group>
+                  <n-radio-group v-model:value="rechargeWay">
+                    <n-radio :value="item.id" icon-size="18px" />
+                  </n-radio-group>
 
                   <div class="font-size-[14px] color-[#333] dark:color-[#fff]">
                     {{ item.name }}
@@ -223,16 +219,28 @@ const process = (val: number) => {
           </div>
 
           <div>
-            <van-config-provider :theme-vars="themeVars" class="font-size-[14px]">
-              <van-checkbox-group v-model="pushMode" direction="horizontal">
-                <van-checkbox name="official" icon-size="16px">
-                  公众号
-                </van-checkbox>
-                <van-checkbox name="note" icon-size="16px">
-                  短信
-                </van-checkbox>
-              </van-checkbox-group>
-            </van-config-provider>
+            <n-checkbox-group v-model:value="pushMode">
+              <n-space>
+                <n-checkbox
+                  value="a"
+                  label="公众号"
+                  :style="{
+                    '--n-color-checked': '#0068ff',
+                    '--n-border-color-active': '#0068ff',
+                    '--n-check-mark-color': 'white',
+                  }"
+                />
+                <n-checkbox
+                  value="b"
+                  label="短信"
+                  :style="{
+                    '--n-color-checked': '#0068ff',
+                    '--n-border-color-active': '#0068ff',
+                    '--n-check-mark-color': 'white',
+                  }"
+                />
+              </n-space>
+            </n-checkbox-group>
           </div>
         </div>
       </div>

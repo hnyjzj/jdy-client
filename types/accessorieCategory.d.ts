@@ -4,6 +4,7 @@ interface AccessorieCategory {
    * id-条目code
    */
   id: string
+
   /**
    * 入网费
    */
@@ -69,9 +70,21 @@ interface AccessorieCategory {
    */
   weight: number
   /**
-   * 门店id
+   *  门店id
    */
-  store_id: string
+  store_id: Stores['id']
+  /**
+   * 产品信息
+   */
+  product: ProductAccessories
+  /**
+   * quantity 数量
+   */
+  quantity?: number
+  /**
+   * 应付金额
+   */
+  pay?: number
   /**
    * 入库数量
    */
@@ -80,10 +93,7 @@ interface AccessorieCategory {
    * 入库入网费
    */
   in_access_fee: number
-  /**
-   * 调拨数量
-   */
-  quantity: number
+
 }
 
 interface CategoryProduct {

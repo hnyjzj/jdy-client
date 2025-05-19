@@ -56,5 +56,14 @@ export const useAccessorie = defineStore('Accessorie', {
         throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
       }
     },
+    // 获取配件大类积分比
+    async getAccessorieScoreRate(params: { classes: AccessorieCategory['type_part'][] }) {
+      // 去重
+      params.classes = [...new Set(params.classes)]
+      const { data } = await https.post<any, { classes: AccessorieCategory['type_part'][] }>('/member/integral/rule/accessorie', params)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return data.value.data
+      }
+    },
   },
 })

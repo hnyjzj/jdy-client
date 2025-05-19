@@ -16,10 +16,12 @@ const props = withDefaults(defineProps<{
    * 是否点击遮罩层关闭
    */
   isMaskClose?: boolean
+  height?: string
 }>(), {
   placement: 'right',
   width: '80%',
   isMaskClose: true,
+  height: '400px',
 })
 
 const emits = defineEmits<{
@@ -41,7 +43,7 @@ function close() {
       '--n-header-border-bottom': 'none',
       '--n-body-padding': '0',
       '--n-footer-padding': '0',
-    }" :width="props.width" default-height="400px" resizable :mask-closable="isMaskClose" :placement="props.placement">
+    }" :width="props.width" :height="props.height" default-height="400px" resizable :mask-closable="isMaskClose" :placement="props.placement">
     <n-drawer-content header-class="rounded-2">
       <template #header>
         <template v-if="props.title">
@@ -55,7 +57,7 @@ function close() {
         </template>
         <div class="top">
           <div class="close" @click="close">
-            <van-icon name="cross" color="#fff" size="16" />
+            <icon name="i-icon:error" color="#fff" />
           </div>
         </div>
       </template>
