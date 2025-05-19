@@ -148,7 +148,7 @@ defineExpose({
     <common-model
       v-model="showModel" title="新增会员" :show-ok="true" :show-cancel="true" @confirm="submitNewMember"
       @cancel="showModel = false">
-      <div>
+      <div class="h-[300px] overflow-y-auto py-[16px]">
         <member-lists-new v-model:rely="memberParams" :staff-list="props.staffs" @get-staff-list="props.getStaffs" />
       </div>
     </common-model>

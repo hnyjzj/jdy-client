@@ -42,6 +42,16 @@ const scanCode = async () => {
     search()
   }
 }
+const realtype = (val?: number) => {
+  switch (val) {
+    case 1:
+      return '计件'
+    case 2:
+      return '计重工费按克'
+    case 3:
+      return '计重工费按件'
+  }
+}
 </script>
 
 <template>
@@ -52,7 +62,7 @@ const scanCode = async () => {
         searchProduct = ''
         productList = []
       }">
-      <div class="grid-12">
+      <div class="grid-12 h-[300px] overflow-y-scroll">
         <div class="col-12">
           <div>
             <div class="flex justify-start py-[12px]">
@@ -81,7 +91,11 @@ const scanCode = async () => {
                 type="text"
                 clearable
                 :placeholder="searchType === 'name' ? '请输入商品名称' : '请输入商品条码'"
-                @focus="focus" />
+                @focus="() => {
+                  focus
+                }"
+
+              />
             </div>
             <div class="pl-[16px] flex">
               <n-button type="info" round @click="search()">
@@ -94,21 +108,21 @@ const scanCode = async () => {
               </div>
             </div>
           </div>
-          <div class="grid-12 px-[12px] color-[#333] font-semibold !text-[16px]">
+          <div class="grid-12 color-[#333] font-semibold !text-[14px]">
             <div class="col-4">
               条码
             </div>
-            <div class="col-4">
+            <div class="col-3">
               名称
             </div>
             <div class="col-3">
               销售方式
             </div>
-            <div class="col-1">
+            <div class="col-2">
               金重
             </div>
           </div>
-          <div class="h-[300px] overflow-y-auto py-[16px]">
+          <div class="py-[16px]">
             <template v-for="(item, index) in productList" :key="index">
               <div
                 class="py-[12px] px-[8px] rounded-2xl grid-12 "
@@ -118,13 +132,13 @@ const scanCode = async () => {
                 <div class="col-4 whitespace-nowrap text-ellipsis overflow-hidden">
                   {{ item.code }}
                 </div>
-                <div class="col-4 whitespace-nowrap text-ellipsis overflow-hidden">
+                <div class="col-3 whitespace-nowrap text-ellipsis overflow-hidden">
                   {{ item.name }}
                 </div>
                 <div class="col-3">
-                  <!-- {{ realtype(item.retail_type) }} -->
+                  {{ realtype(item.retail_type) }}
                 </div>
-                <div class="col-1">
+                <div class="col-2">
                   {{ item.weight_metal }}
                 </div>
               </div>

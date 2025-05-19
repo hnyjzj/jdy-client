@@ -114,7 +114,7 @@ const confirmParts = async () => {
 <template>
   <div>
     <common-model v-model="showModal" title="选择配件" :show-ok="true" :show-cancel="true" @confirm="confirmParts" @cancel="partslist = []">
-      <div class="grid-12">
+      <div class="grid-12 h-[300px] overflow-y-scroll">
         <div class="col-12">
           <div>
             <div class="flex justify-around py-[12px]">
@@ -179,7 +179,7 @@ const confirmParts = async () => {
                 库存
               </div>
             </div>
-            <div class="h-[300px] py-[16px]">
+            <div class="py-[16px]">
               <template v-for="(item, index) in partslist" :key="index">
                 <div
                   class="py-[12px]  rounded-2xl mb-[8px] flex w-[fit-content]" :style="{

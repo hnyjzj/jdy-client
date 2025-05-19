@@ -144,7 +144,7 @@ const searchConfirm = async () => {
 <template>
   <div>
     <common-model v-model="searchShow" title="搜索" :show-ok="true" :show-cancel="true" @confirm="searchConfirm()" @cancel="searchShow = false">
-      <div class="grid-12">
+      <div class="grid-12 h-[300px] overflow-y-scroll ">
         <div class="col-12">
           <div>
             <div class="flex  py-[12px]">
@@ -177,7 +177,7 @@ const searchConfirm = async () => {
               </div>
             </div>
           </div>
-          <div class="h-[300px] overflow-y-auto py-[16px]">
+          <div class="py-[16px]">
             <div>
               <template v-if="Object.keys(nowOldMaster).length !== 0">
                 <n-form ref="oldMasterRef" :model="nowOldMaster" :rules="oldRules">

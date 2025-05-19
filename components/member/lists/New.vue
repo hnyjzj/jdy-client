@@ -60,8 +60,8 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
 
 <template>
   <div class="flex flex-col gap-[12px]">
-    <div class="base flex flex-1 flex-col gap-[12px]">
-      <div class="secondary">
+    <div class="base gap-[12px] grid-12">
+      <div class="secondary ">
         <div class="secondary-top">
           姓名
         </div>
@@ -152,6 +152,7 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
             v-model:value="birthday"
             clearable
             format="yyyy-MM-dd"
+            input-readonly
             type="date"
             @blur="handleDateBlur('birthday')"
           />
@@ -164,6 +165,7 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
         <div class="secondary-bottom">
           <n-date-picker
             v-model:value="anniversary"
+            input-readonly
             clearable
             format="yyyy-MM-dd"
             type="date"
@@ -177,7 +179,7 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
 
 <style scoped lang="scss">
 .secondary {
-  --uno: 'flex flex-col gap-[8px]';
+  --uno: 'flex flex-col gap-[8px] col-6';
 
   &-top {
     --uno: 'font-size-[16px] color-[#333333] dark:color-[#fff]';
