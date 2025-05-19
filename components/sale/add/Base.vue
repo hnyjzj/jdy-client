@@ -74,7 +74,6 @@ const checkRatio = () => {
               v-model:value="formData.source"
               placeholder="请选择"
               :options="sourceOptions"
-              @focus="focus"
             />
           </n-form-item-gi>
         </n-grid>

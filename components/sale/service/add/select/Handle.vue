@@ -100,7 +100,7 @@ const presetToSelect = (filter: FilterWhere<serviceGoods>): { label: string, val
 <template>
   <div>
     <common-model v-model="showModal" title="添加维修品" :show-ok="true" :show-cancel="true" @confirm="submitServiceForm">
-      <div class="grid-12 h-[500px] overflow-y-auto">
+      <div class="grid-12 h-[300px] overflow-y-scroll">
         <div class="col-12 px-[12px]">
           <n-form ref="MformRef" :model="params" :rules="rules">
             <n-grid :cols="24" :x-gap="8">

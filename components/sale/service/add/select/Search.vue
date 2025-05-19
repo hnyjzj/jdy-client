@@ -89,7 +89,7 @@ const scanCode = async () => {
         nowServiceGoods = {}
         searchShow = false
       }">
-      <div class="grid-12">
+      <div class="grid-12 h-[300px] overflow-y-scroll">
         <div class="col-12">
           <div>
             <div class="flex  py-[12px]">
@@ -121,7 +121,7 @@ const scanCode = async () => {
               </div>
             </div>
           </div>
-          <div class="h-[300px] overflow-y-auto py-[16px]">
+          <div class=" py-[16px]">
             <div>
               <template v-if="Object.keys(nowServiceGoods).length !== 0">
                 <n-form ref="oldMasterRef" :model="nowServiceGoods" :rules="oldRules">

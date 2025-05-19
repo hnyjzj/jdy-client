@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { calc } from 'a-calc'
-import Userinfo from '~/components/my/user/Userinfo.vue'
 
 const props = defineProps<{
   getMember: (val: string) => Promise<Member[]>
@@ -13,7 +12,10 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   setMemberId: [val: string]
+  setShowSubmit: [val: boolean]
 }>()
+
+const showmenu = ref(false)
 const searchList = ref<Member[]>([])
 const memberParams = ref<Member>({
   // 初始化store_id为当前门店id
@@ -24,6 +26,7 @@ const memberParams = ref<Member>({
 const searchMember = async (val: string) => {
   if (val.length === 11) {
     searchList.value = await props.getMember(val)
+    showmenu.value = true
   }
 }
 
@@ -55,6 +58,7 @@ const handleUpdateValue = async (value: string) => {
     return
   }
   setUserInfo(searchList.value)
+  showmenu.value = false
 }
 const showModel = ref(false)
 // 新增会员
@@ -106,7 +110,15 @@ defineExpose({
               :maxlength="11"
               clearable
               remote
-              @focus="focus"
+              :show="showmenu"
+              @focus="() => {
+                focus
+                emit('setShowSubmit', false)
+              }"
+              @blur="() => {
+                emit('setShowSubmit', true)
+              }
+              "
               @search="searchMember"
               @update:value="handleUpdateValue"
             />
@@ -120,7 +132,7 @@ defineExpose({
             <n-form-item-gi :span="24" label="会员信息">
               <div class="mr-[16px]">
                 <template v-if="userInfo?.avatar">
-                  <n-image width="68" :src="Userinfo.avatar" />
+                  <n-image width="68" :src="userInfo.avatar" />
                 </template>
                 <template v-else>
                   <icon name="i-svg:avatar" :size="68" />
