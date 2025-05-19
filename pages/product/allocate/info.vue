@@ -304,7 +304,8 @@ async function getOldids() {
             <div class="grid grid-cols-[30%_60%_10%] items-center gap-2 text-color">
               <div class="">
                 <n-select
-                  v-model:value="searchParams.label" :options="options"
+                  v-model:value="searchParams.label"
+                  :options="options" @focus="focus"
                   @change="searchParams.val = ''" />
               </div>
               <div>

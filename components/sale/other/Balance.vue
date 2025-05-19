@@ -46,7 +46,8 @@ const totalMoney = () => {
                   }"
                 >
                   <n-select
-                    v-model:value="item.payment_method" :options="payMethods" />
+                    v-model:value="item.payment_method"
+                    :options="payMethods" @focus="focus" />
                 </n-form-item-gi>
                 <n-form-item-gi
                   :span="12"

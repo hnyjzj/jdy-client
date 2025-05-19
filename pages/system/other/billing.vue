@@ -102,7 +102,7 @@ const handleValidateButtonClick = async () => {
                     <n-select
                       v-model:value="(model[item.name] as number)"
                       :options="optonsToSelect(item.preset)"
-                      :placeholder="item.label" />
+                      :placeholder="item.label" @focus="focus" />
                   </template>
                   <template v-if="item.input === 'text' && item.name === 'discount_rate'">
                     <n-input v-model:value="model[item.name]" :placeholder="item.label" @focus="focus">

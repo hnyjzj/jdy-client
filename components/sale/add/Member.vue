@@ -106,6 +106,7 @@ defineExpose({
               :maxlength="11"
               clearable
               remote
+              @focus="focus"
               @search="searchMember"
               @update:value="handleUpdateValue"
             />

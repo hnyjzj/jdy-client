@@ -141,7 +141,11 @@ const changeStores = async () => {
           }))"
           clearable
           remote
-          @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+
+          @focus="() => {
+            focus
+            getStoreStaffList({ id: myStore.id })
+          }"
         />
       </template>
       <template #salesman_id>
@@ -154,7 +158,10 @@ const changeStores = async () => {
           }))"
           clearable
           remote
-          @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+          @focus="() => {
+            focus
+            getStoreStaffList({ id: myStore.id })
+          }"
         />
       </template>
       <template #member_id>
@@ -169,6 +176,7 @@ const changeStores = async () => {
           clearable
           remote
           @search="getMember"
+          @focus="focus"
         />
       </template>
 
@@ -184,6 +192,7 @@ const changeStores = async () => {
           clearable
           remote
           @search="searchProduct"
+          @focus="focus"
         />
       </template>
     </common-filter-where>

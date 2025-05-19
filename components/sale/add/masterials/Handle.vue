@@ -205,6 +205,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                         :options="presetToSelect(item)"
                         :disabled="props.nowEditState === index && item.name === 'recycle_method'"
                         clearable
+                        @focus="focus"
                       />
                     </template>
                     <template v-if="item.input === 'text'">

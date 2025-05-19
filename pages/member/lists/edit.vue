@@ -204,6 +204,8 @@ const execute = async () => {
                         placeholder="请选择会员性别"
                         :options="selectOptions"
                         menu-size="large"
+                        @focus="focus"
+
                         @blur="() => {
                           memberParams.gender = showToUser as any
                         }"
@@ -238,7 +240,11 @@ const execute = async () => {
                           menu-size="large"
                           clearable
                           remote
-                          @focus="() => { getList }"
+
+                          @focus="() => {
+                            focus
+                            getList
+                          }"
                         />
                       </div>
                     </div>

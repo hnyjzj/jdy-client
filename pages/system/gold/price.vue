@@ -150,14 +150,14 @@ function subtract(i: number) {
             <div>
               <n-input-number v-model:value="item.price" placeholder="价格" :min="0" @focus="focus" />
               <div class="grid grid-cols-[1fr_1fr] gap-2 mt-2">
-                <n-select v-model:value="item.product_material" placeholder="材质" :options="getOptions('material')" />
-                <n-select v-model:value="item.product_type" placeholder="类型" :options="optonsToSelect(typePreset)" />
+                <n-select v-model:value="item.product_material" placeholder="材质" :options="getOptions('material')" @focus="focus" />
+                <n-select v-model:value="item.product_type" placeholder="类型" :options="optonsToSelect(typePreset)" @focus="focus" />
               </div>
               <div class="mt-2">
-                <n-select v-model:value="item.product_brand" placeholder="品牌(多选),不选默认为全部品牌" multiple :options="getOptions('brand')" />
+                <n-select v-model:value="item.product_brand" placeholder="品牌(多选),不选默认为全部品牌" multiple :options="getOptions('brand')" @focus="focus" />
               </div>
               <div class="my-2">
-                <n-select v-model:value="item.product_quality" placeholder="成色(多选)" multiple :options="getOptions('quality')" />
+                <n-select v-model:value="item.product_quality" placeholder="成色(多选)" multiple :options="getOptions('quality')" @focus="focus" />
               </div>
             </div>
             <div class="flex gap-1">

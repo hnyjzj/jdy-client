@@ -113,6 +113,7 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
           placeholder="请选择会员性别"
           :options="selectOptions"
           menu-size="large"
+          @focus="focus"
           @blur="() => {
             newParams.gender = showToUser as any
           }"
@@ -133,7 +134,11 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
             menu-size="large"
             clearable
             remote
-            @focus="emit('getStaffList')"
+
+            @focus="() => {
+              focus
+              emit('getStaffList')
+            }"
           />
         </div>
       </div>

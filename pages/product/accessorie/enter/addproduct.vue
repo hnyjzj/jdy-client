@@ -202,6 +202,7 @@ function sumStock(category: CategoryHasProduct) {
                 label: v.label,
                 value: v.name,
               }))"
+              @focus="focus"
               @change="searchParams.val = ''" />
           </div>
           <div>
@@ -212,7 +213,7 @@ function sumStock(category: CategoryHasProduct) {
               <n-input-number v-model:value="searchParams.val" placeholder="请搜索" @keydown.enter="searchAccessorie" @focus="focus" />
             </template>
             <template v-else-if="searchWhere?.input === 'select'">
-              <n-select v-model:value="searchParams.val" :options="optonsToSelect(searchWhere.preset)" />
+              <n-select v-model:value="searchParams.val" :options="optonsToSelect(searchWhere.preset)" @focus="focus" />
             </template>
           </div>
           <div @click="searchAccessorie">

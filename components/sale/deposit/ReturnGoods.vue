@@ -111,7 +111,8 @@ const submit = async () => {
                 }"
               >
                 <n-select
-                  v-model:value="item.payment_method" placeholder="请选择退款方式" :options="optonsToSelect(props.where.payment_method?.preset)" />
+                  v-model:value="item.payment_method"
+                  placeholder="请选择退款方式" :options="optonsToSelect(props.where.payment_method?.preset)" @focus="focus" />
               </n-form-item-gi>
               <n-form-item-gi
                 :span="6"

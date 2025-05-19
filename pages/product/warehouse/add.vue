@@ -141,6 +141,7 @@ const presetToSelect = (key: keyof ProductFinisheds) => {
                                 :options="presetToSelect(item.name)"
                                 clearable
                                 :disabled="isDisables?.includes(item.name)"
+                                @focus="focus"
                               />
                             </template>
                             <template v-if="item.input === 'text'">

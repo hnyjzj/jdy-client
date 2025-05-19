@@ -226,6 +226,7 @@ function removeImg(data: { index: number }) {
                       :placeholder="`选择${item.label}`"
                       :options="filteredOptions(optonsToSelect(item.preset), productParams[item.name])"
                       clearable
+                      @focus="focus"
                     />
                   </template>
                   <template v-else-if="item?.input === 'switch'">

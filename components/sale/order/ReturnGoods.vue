@@ -137,6 +137,7 @@ defineExpose({
                   v-model:value="model.method"
                   placeholder="请选择退货入库方式"
                   :options="[{ label: '成品仓', value: 1 }, { label: '旧料仓', value: 2 }]"
+                  @focus="focus"
                 />
               </n-form-item-gi>
             </template>
@@ -159,7 +160,7 @@ defineExpose({
                 }"
               >
                 <n-select
-                  v-model:value="item.payment_method" placeholder="请选择退款方式" :options="optonsToSelect(props.where.payment_method?.preset)" />
+                  v-model:value="item.payment_method" placeholder="请选择退款方式" :options="optonsToSelect(props.where.payment_method?.preset)" @focus="focus" />
               </n-form-item-gi>
               <n-form-item-gi
                 :span="6"

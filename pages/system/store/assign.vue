@@ -101,6 +101,7 @@ const handleValidateButtonClick = (e: MouseEvent) => {
                 clearable
                 remote
                 @search="searchStore"
+                @focus="focus"
               />
             </n-form-item>
             <n-form-item label="分配员工" path="staff_id">
@@ -114,6 +115,7 @@ const handleValidateButtonClick = (e: MouseEvent) => {
                 clearable
                 remote
                 @search="searchStaff"
+                @focus="focus"
               />
             </n-form-item>
             <div class="grid-12 px-[26px]">

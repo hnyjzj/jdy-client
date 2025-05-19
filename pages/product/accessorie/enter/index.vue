@@ -216,9 +216,10 @@ async function changeStore() {
             入库门店：
           </div>
           <n-select
-            v-model:value="enterParams.store_id" :options="storeCol"
-            disabled
-            clearable />
+            v-model:value="enterParams.store_id"
+            :options="storeCol" disabled
+            clearable
+            @focus="focus" />
         </div>
         <div class="flex mb-4">
           <div class="w-[100px] pt-2 text-color">

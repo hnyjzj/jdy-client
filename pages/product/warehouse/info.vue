@@ -425,6 +425,7 @@ function filteredOptions(preset: any, val: number) {
                     :placeholder="`请选择${item.label}`"
                     :options="filteredOptions(optonsToSelect(item.preset), productParams[item.name])"
                     filterable
+                    @focus="focus"
                   />
                 </template>
                 <template v-else-if="item?.input === 'switch'">

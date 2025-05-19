@@ -166,6 +166,7 @@ function handleSwitchChange(e: boolean, name: keyof Check) {
                               :options="presetToSelect(item.name)"
                               :consistent-menu-width="false"
                               clearable
+                              @focus="focus"
                             />
                             <div class="ml-2">
                               <n-switch size="large" @change="(e) => handleSwitchChange(e, item.name)">
@@ -195,6 +196,7 @@ function handleSwitchChange(e: boolean, name: keyof Check) {
                                 :placeholder="`选择${item.label}`"
                                 :options="optonsToSelect(typePreset)"
                                 clearable
+                                @focus="focus"
                               />
                             </template>
                             <template v-else>
@@ -205,6 +207,7 @@ function handleSwitchChange(e: boolean, name: keyof Check) {
                                 :placeholder="`选择${item.label}`"
                                 :options="presetToSelect(item.name)"
                                 clearable
+                                @focus="focus"
                               />
                             </template>
                           </template>
@@ -234,7 +237,11 @@ function handleSwitchChange(e: boolean, name: keyof Check) {
                                 clearable
                                 size="large"
                                 remote
-                                @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+
+                                @focus="() => {
+                                  focus
+                                  getStoreStaffList({ id: myStore.id })
+                                }"
                               />
                             </template>
                           </template>
@@ -248,6 +255,7 @@ function handleSwitchChange(e: boolean, name: keyof Check) {
                                 :options="presetToSelect(item.name)"
                                 :consistent-menu-width="false"
                                 clearable
+                                @focus="focus"
                               />
                               <div class="ml-2">
                                 <n-switch size="large" @change="(e) => handleSwitchChange(e, item.name)">

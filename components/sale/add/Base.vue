@@ -62,7 +62,10 @@ const checkRatio = () => {
               }))"
               clearable
               remote
-              @focus="() => { props.getStaff() }"
+              @focus="() => {
+                focus
+                props.getStaff()
+              }"
             />
           </n-form-item-gi>
 
@@ -71,6 +74,7 @@ const checkRatio = () => {
               v-model:value="formData.source"
               placeholder="请选择"
               :options="sourceOptions"
+              @focus="focus"
             />
           </n-form-item-gi>
         </n-grid>
@@ -96,7 +100,10 @@ const checkRatio = () => {
                   }))"
                   clearable
                   remote
-                  @focus="() => { props.getStaff() }"
+                  @focus="() => {
+                    focus
+                    props.getStaff()
+                  }"
                 />
               </n-form-item-gi>
               <n-form-item-gi :span="12" label="业绩比例" path="performance_rate" label-placement="top">

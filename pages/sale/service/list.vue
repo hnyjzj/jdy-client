@@ -145,7 +145,10 @@ const setNowcity = () => {
             }))"
             clearable
             remote
-            @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+            @focus="() => {
+              focus
+              getStoreStaffList({ id: myStore.id })
+            }"
           />
         </template>
         <template #member_id>
@@ -160,6 +163,7 @@ const setNowcity = () => {
             clearable
             remote
             @search="getMember"
+            @focus="focus"
           />
         </template>
         <template #province>
@@ -174,6 +178,7 @@ const setNowcity = () => {
             clearable
             remote
             @update:value="setNowProvince"
+            @focus="focus"
           />
         </template>
         <template #city>
@@ -189,6 +194,7 @@ const setNowcity = () => {
               clearable
               remote
               @update:value="setNowcity"
+              @focus="focus"
             />
           </div>
         </template>
@@ -204,6 +210,7 @@ const setNowcity = () => {
               }))"
               clearable
               remote
+              @focus="focus"
             />
           </div>
         </template>

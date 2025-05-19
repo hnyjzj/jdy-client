@@ -72,7 +72,8 @@ const submitForm = () => {
             <n-select
               v-model:value="handleFormData.retail_type"
               placeholder="零售方式"
-              :options="optonsToSelect(props.filterList.retail_type?.preset)" />
+              :options="optonsToSelect(props.filterList.retail_type?.preset)"
+              @focus="focus" />
           </n-form-item-gi>
           <n-form-item-gi :span="12" label="颜色">
             <n-select
@@ -80,6 +81,7 @@ const submitForm = () => {
               placeholder="颜色"
               clearable
               :options="optonsToSelect(props.filterList.color_gem?.preset)"
+              @focus="focus"
             />
           </n-form-item-gi>
           <n-form-item-gi :span="12" label="净度">
@@ -88,6 +90,7 @@ const submitForm = () => {
               placeholder="净度"
               clearable
               :options="optonsToSelect(props.filterList.clarity?.preset)"
+              @focus="focus"
             />
           </n-form-item-gi>
         </n-grid>

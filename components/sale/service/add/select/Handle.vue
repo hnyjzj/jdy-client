@@ -113,8 +113,9 @@ const presetToSelect = (filter: FilterWhere<serviceGoods>): { label: string, val
                         menu-size="large"
                         :placeholder="`选择${item.label}`"
                         :options="presetToSelect(item)"
-
                         clearable
+
+                        @focus="focus"
                       />
                     </template>
                     <template v-if="item.input === 'text'">

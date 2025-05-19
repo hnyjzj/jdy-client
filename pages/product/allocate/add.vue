@@ -145,6 +145,7 @@ function handleValidateButtonClick() {
                         :placeholder="`选择${allocateFilterList.method?.label}`"
                         :options="presetToSelect('method')"
                         clearable
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" path="type" required label="仓库类型">
@@ -155,6 +156,7 @@ function handleValidateButtonClick() {
                         :options="optonsToSelect(typePreset)"
                         clearable
                         :disabled="type"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" path="to_store_id" label="调入门店" required>
@@ -164,6 +166,7 @@ function handleValidateButtonClick() {
                         placeholder="选择调入门店"
                         :options="storeCol"
                         clearable
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" path="reason" required label="调拨原因">
@@ -173,6 +176,7 @@ function handleValidateButtonClick() {
                         placeholder="选择调拨原因"
                         :options="presetToSelect('reason') "
                         clearable
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" path="remark" label="备注">
@@ -185,6 +189,7 @@ function handleValidateButtonClick() {
                         placeholder="选择调拨状态 "
                         :options="presetToSelect('status') "
                         clearable
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                   </n-grid>

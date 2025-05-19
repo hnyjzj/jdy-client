@@ -28,7 +28,10 @@ const region = defineModel('region', { default: {} })
               }))"
               clearable
               remote
-              @focus="() => { props.getStaff() }"
+              @focus="() => {
+                focus
+                props.getStaff()
+              }"
             />
           </n-form-item-gi>
           <n-form-item-gi

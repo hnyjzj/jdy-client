@@ -221,7 +221,11 @@ async function changeMyStore() {
           }))"
           clearable
           remote
-          @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+
+          @focus="() => {
+            focus
+            getStoreStaffList({ id: myStore.id })
+          }"
         />
       </template>
       <template #inventory_person_id>
@@ -234,7 +238,11 @@ async function changeMyStore() {
           }))"
           clearable
           remote
-          @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+
+          @focus="() => {
+            focus
+            getStoreStaffList({ id: myStore.id })
+          }"
         />
       </template>
     </common-filter-where>

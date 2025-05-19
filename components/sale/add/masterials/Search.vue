@@ -203,6 +203,7 @@ const searchConfirm = async () => {
                           value: 2,
                           label: '按件',
                         }]"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收方式" path="recycle_method">
@@ -218,6 +219,7 @@ const searchConfirm = async () => {
                           value: 2,
                           label: '按件',
                         }]"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收工费">
@@ -248,6 +250,7 @@ const searchConfirm = async () => {
                           value: 3,
                           label: '兑换',
                         }]"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="金重" path="weight_metal">

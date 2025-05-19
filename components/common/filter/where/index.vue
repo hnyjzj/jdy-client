@@ -143,6 +143,7 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                       :placeholder="`请选择${label}`"
                       :options="presetToSelect(props.filter[i]) "
                       :disabled="disabled?.includes(name)"
+                      @focus="focus"
                     />
                   </template>
                   <template v-if="input === 'textarea'">
@@ -159,6 +160,7 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                       multiple
                       :placeholder="`请选择${label}`"
                       :options="presetToSelect(props.filter[i]) "
+                      @focus="focus"
                     />
                   </template>
                 </slot>
