@@ -238,8 +238,8 @@ function handleSwitchChange(e: boolean, name: keyof Check) {
                                 size="large"
                                 remote
 
-                                @focus="() => {
-                                  focus
+                                @focus="(e) => {
+                                  focus(e)
                                   getStoreStaffList({ id: myStore.id })
                                 }"
                               />

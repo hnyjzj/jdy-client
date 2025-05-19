@@ -62,8 +62,8 @@ const checkRatio = () => {
               }))"
               clearable
               remote
-              @focus="() => {
-                focus
+              @focus="(e) => {
+                focus(e)
                 props.getStaff()
               }"
             />
@@ -99,8 +99,8 @@ const checkRatio = () => {
                   }))"
                   clearable
                   remote
-                  @focus="() => {
-                    focus
+                  @focus="(e) => {
+                    focus(e)
                     props.getStaff()
                   }"
                 />

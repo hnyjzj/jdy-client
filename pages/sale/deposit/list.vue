@@ -149,8 +149,8 @@ const changeStores = async () => {
           clearable
           remote
 
-          @focus="() => {
-            focus
+          @focus="(e) => {
+            focus(e)
             getStoreStaffList({ id: myStore.id })
           }"
         />
@@ -166,8 +166,8 @@ const changeStores = async () => {
           clearable
           remote
 
-          @focus="() => {
-            focus
+          @focus="(e) => {
+            focus(e)
             getStoreStaffList({ id: myStore.id })
           }"
         />

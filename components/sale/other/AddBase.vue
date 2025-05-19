@@ -46,8 +46,8 @@ const formData = defineModel<otherOrderCreate>('form', { default: {} })
               }))"
               clearable
               remote
-              @focus="() => {
-                focus
+              @focus="(e) => {
+                focus(e)
                 props.getStaff()
               }"
             />

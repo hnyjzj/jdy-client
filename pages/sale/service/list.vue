@@ -145,8 +145,8 @@ const setNowcity = () => {
             }))"
             clearable
             remote
-            @focus="() => {
-              focus
+            @focus="(e) => {
+              focus(e)
               getStoreStaffList({ id: myStore.id })
             }"
           />

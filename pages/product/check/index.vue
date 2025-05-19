@@ -222,8 +222,8 @@ async function changeMyStore() {
           clearable
           remote
 
-          @focus="() => {
-            focus
+          @focus="(e) => {
+            focus(e)
             getStoreStaffList({ id: myStore.id })
           }"
         />
@@ -239,8 +239,8 @@ async function changeMyStore() {
           clearable
           remote
 
-          @focus="() => {
-            focus
+          @focus="(e) => {
+            focus(e)
             getStoreStaffList({ id: myStore.id })
           }"
         />

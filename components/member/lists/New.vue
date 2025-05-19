@@ -135,8 +135,8 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
             clearable
             remote
 
-            @focus="() => {
-              focus
+            @focus="(e) => {
+              focus(e)
               emit('getStaffList')
             }"
           />

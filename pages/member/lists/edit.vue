@@ -241,8 +241,8 @@ const execute = async () => {
                           clearable
                           remote
 
-                          @focus="() => {
-                            focus
+                          @focus="(e) => {
+                            focus(e)
                             getList
                           }"
                         />
@@ -263,7 +263,10 @@ const execute = async () => {
                           menu-size="large"
                           clearable
                           remote
-                          @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+                          @focus="(e) => {
+                            focus(e)
+                            getStoreStaffList({ id: myStore.id })
+                          }"
                         />
                       </div>
                     </div>

@@ -91,9 +91,7 @@ const realtype = (val?: number) => {
                 type="text"
                 clearable
                 :placeholder="searchType === 'name' ? '请输入商品名称' : '请输入商品条码'"
-                @focus="() => {
-                  focus
-                }"
+                @focus="focus"
 
               />
             </div>

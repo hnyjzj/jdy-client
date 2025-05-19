@@ -175,7 +175,10 @@ const canShowFilter = (item: FilterWhere<AccessorieAllocate>) => {
                                 clearable
                                 size="large"
                                 remote
-                                @focus="() => { getStoreList({ page: 1, limit: 20 }) }"
+                                @focus="(e) => {
+                                  focus(e)
+                                  getStoreList({ page: 1, limit: 20 })
+                                }"
                               />
                             </template>
                           </template>

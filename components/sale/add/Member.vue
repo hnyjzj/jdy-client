@@ -111,8 +111,8 @@ defineExpose({
               clearable
               remote
               :show="showmenu"
-              @focus="() => {
-                focus
+              @focus="(e) => {
+                focus(e)
                 emit('setShowSubmit', false)
               }"
               @blur="() => {
