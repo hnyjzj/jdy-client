@@ -151,7 +151,7 @@ function sumStock(category: CategoryHasProduct) {
                                 </div>
                                 <template v-if="filter.input === 'select'">
                                   <div class="value">
-                                    {{ filter.preset[item[filter.name]] }}
+                                    {{ filter.preset[item[filter.name] as number] }}
                                   </div>
                                 </template>
                                 <template v-else-if="filter.input === 'switch'">
@@ -258,7 +258,7 @@ function sumStock(category: CategoryHasProduct) {
                       </template>
                       <template v-if="item.input === 'select'">
                         <td class="border-collapse">
-                          {{ item.preset[category[item.name]] }}
+                          {{ item.preset[category[item.name] as number] }}
                         </td>
                       </template>
                     </template>

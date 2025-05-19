@@ -147,7 +147,7 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
                                 </div>
                                 <template v-if="filter.input === 'select'">
                                   <div class="value">
-                                    {{ filter.preset[item.category[filter.name]] || '--' }}
+                                    {{ filter.preset[item.category[filter.name] as number] || '--' }}
                                   </div>
                                 </template>
                                 <template v-else>
@@ -232,7 +232,7 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
                       <template v-if="filter.create">
                         <template v-if="filter.input === 'select'">
                           <td class="whitespace-nowrap px-2 py-1">
-                            {{ categoryFilterList[filter.name]?.preset[category.category[filter.name]] || '--' }}
+                            {{ categoryFilterList[filter.name]?.preset[category.category[filter.name] as number] || '--' }}
                           </td>
                         </template>
                         <template v-else>
