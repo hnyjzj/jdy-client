@@ -138,7 +138,7 @@ function subtract(i: number) {
       </div>
     </common-layout-center>
     <common-model v-model="changeShow" title="变更金价">
-      <div class="pb-4 min-h-[320px] max-h-[400px] overflow-auto">
+      <div class="pb-4 h-[300px] overflow-auto">
         <template v-for="(item, index) in goldParams" :key="index">
           <div class="flex justify-between items-center mb-2 mt-2">
             <div class="text-color">
