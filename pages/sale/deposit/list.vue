@@ -113,7 +113,7 @@ const changeStores = async () => {
           <product-filter-search
             placeholder="搜索订单号" class="color-[#fff] flex-1" @submit="searchOrder" @clear="clearFn" />
         </div>
-        <div class="flex-center-between gap-2 pt-[12px] pb-[16px]">
+        <div class="flex-center-between gap-2 py-[16px]">
           <div class="text-size-[14px] color-[#fff]">
             共{{ total }}条数据
           </div>

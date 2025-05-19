@@ -67,7 +67,7 @@ const toTodayPrice = () => {
             金价: ￥{{ todaySaleData.gold_price || 0 }}/g
           </div>
         </div>
-        <div class="color-[#333]  dark:color-[#fff] text-[12px] line-height-[24px] ">
+        <div class="color-[#333]  dark:color-[#fff] text-[12px] line-height-[24px] flex">
           <span>
             {{ rbText }}
           </span>
