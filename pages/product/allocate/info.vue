@@ -281,7 +281,7 @@ async function getOldids() {
       <div class="min-h-[140px]">
         <template v-if="type === GoodsTypePure.ProductFinish">
           <div class="flex justify-center items-center mb-6">
-            <n-input v-model:value="pCode" placeholder="输入成品条码" round />
+            <n-input v-model:value="pCode" placeholder="输入成品条码" round @focus="focus" />
             <icon class="ml-2" name="i-icon:scanit" :size="18" @click="scanit" />
           </div>
         </template>
@@ -296,7 +296,7 @@ async function getOldids() {
           </div>
           <template v-if="!isOldCodeSearch">
             <div class="flex justify-center items-center mb-6">
-              <n-input v-model:value="pCode" placeholder="输入产品条码" round />
+              <n-input v-model:value="pCode" placeholder="输入产品条码" round @focus="focus" />
               <icon class="ml-2" name="i-icon:scanit" :size="18" @click="scanit" />
             </div>
           </template>
@@ -308,7 +308,7 @@ async function getOldids() {
                   @change="searchParams.val = ''" />
               </div>
               <div>
-                <n-input v-model:value="searchParams.val" placeholder="请搜索" @keydown.enter="searchOldList" />
+                <n-input v-model:value="searchParams.val" placeholder="请搜索" @keydown.enter="searchOldList" @focus="focus" />
               </div>
               <div @click="searchOldList">
                 搜索
@@ -319,7 +319,7 @@ async function getOldids() {
                 <thead>
                   <tr class="table-color">
                     <th class="sticky-left table-color px-2">
-                      <input type="checkbox" :disabled="oldList?.length === 0" @change="toggleSelectAll">
+                      <input type="checkbox" :disabled="oldList?.length === 0" @change="toggleSelectAll" @focus="focus">
                     </th>
                     <th class="tabel-text">
                       旧料编号
@@ -344,7 +344,7 @@ async function getOldids() {
                     <template v-for="(old, i) in oldList" :key="i">
                       <tr class="table-color">
                         <td class="sticky-left table-color py-1 px-2">
-                          <input v-model="selectedCategories" type="checkbox" :value="old.id">
+                          <input v-model="selectedCategories" type="checkbox" :value="old.id" @focus="focus">
                         </td>
                         <td class="tabel-text">
                           {{ old.id }}

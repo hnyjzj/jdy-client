@@ -176,7 +176,7 @@ function handleValidateButtonClick() {
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" path="remark" label="备注">
-                      <n-input v-model:value="params.remark" round placeholder="输入备注" />
+                      <n-input v-model:value="params.remark" round placeholder="输入备注" @focus="focus" />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" path="status" label="状态">
                       <n-select

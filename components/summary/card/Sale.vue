@@ -38,7 +38,7 @@ const toTodayPrice = () => {
       <div
         class="skew col-6" uno-md="col-4">
         <div class="skew-right" />
-        <div class="skew-text pl-[15px]">
+        <div class="skew-text pl-[15px] text-[16px]">
           本店今日销售
         </div>
       </div>

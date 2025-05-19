@@ -169,13 +169,13 @@ const confirmChange = async () => {
               <div class="pb-[8px]">
                 维修项目
               </div>
-              <n-input v-model:value="form.name" type="text" placeholder="维修项目" :disabled="props.detail.status === serviceOrderStatus.Completed" />
+              <n-input v-model:value="form.name" type="text" placeholder="维修项目" :disabled="props.detail.status === serviceOrderStatus.Completed" @focus="focus" />
             </n-grid-item>
             <n-grid-item>
               <div class="pb-[8px]">
                 问题描述
               </div>
-              <n-input v-model:value="form.desc" type="text" placeholder="问题描述" :disabled="props.detail.status === serviceOrderStatus.Completed" />
+              <n-input v-model:value="form.desc" type="text" placeholder="问题描述" :disabled="props.detail.status === serviceOrderStatus.Completed" @focus="focus" />
             </n-grid-item>
 
             <n-grid-item>
@@ -209,7 +209,7 @@ const confirmChange = async () => {
                 <div class="pb-[8px]">
                   详细地址
                 </div>
-                <n-input v-model:value="form.address" type="text" placeholder="详细地址" :disabled="props.detail.status === serviceOrderStatus.Completed" />
+                <n-input v-model:value="form.address" type="text" placeholder="详细地址" :disabled="props.detail.status === serviceOrderStatus.Completed" @focus="focus" />
               </n-grid-item>
             </template>
           </n-grid>

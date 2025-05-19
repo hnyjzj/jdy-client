@@ -71,7 +71,7 @@ const rules = ref<Rules<AccountReq>>({
         </div>
         <div class="">
           <input
-            v-model="form.phone" class="input " type="text" placeholder="请输入手机号" :maxlength="11" @change="validate()">
+            v-model="form.phone" class="input " type="text" placeholder="请输入手机号" :maxlength="11" @change="validate()" @focus="focus">
           <div class="error">
             {{ error }}
           </div>
@@ -90,7 +90,7 @@ const rules = ref<Rules<AccountReq>>({
           <input
             v-model="form.password"
             class="input "
-            type="password" placeholder="请输入密码" @change="validate()" @blur="validate()">
+            type="password" placeholder="请输入密码" @change="validate()" @blur="validate()" @focus="focus">
           <div class="error">
             {{ error }}
           </div>

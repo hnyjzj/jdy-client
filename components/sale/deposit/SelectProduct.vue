@@ -61,7 +61,8 @@ const scanCode = async () => {
                 v-model:value="searchInput"
                 type="text"
                 clearable
-                placeholder="请输入商品条码" />
+                placeholder="请输入商品条码"
+                @focus="focus" />
             </div>
             <div class="pl-[16px] flex">
               <n-button type="info" round @click="searchProduct">

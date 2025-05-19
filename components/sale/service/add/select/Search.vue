@@ -108,7 +108,7 @@ const scanCode = async () => {
                 v-model:value="searchCode"
                 type="text"
                 clearable
-                placeholder="请输入商品条码" />
+                placeholder="请输入商品条码" @focus="focus" />
             </div>
             <div class="pl-[16px] flex">
               <n-button type="info" round @click="search()">
@@ -146,6 +146,7 @@ const scanCode = async () => {
                         round
                         min="0"
                         :precision="3"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="备注" path="remark">
@@ -158,6 +159,7 @@ const scanCode = async () => {
                         round
                         min="0"
                         :precision="3"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                   </n-grid>

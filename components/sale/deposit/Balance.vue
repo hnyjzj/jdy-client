@@ -69,6 +69,7 @@ const unPayMoney = computed(() => {
                       round
                       min="0"
                       :show-button="false"
+                      @focus="focus"
                     />
                   </div>
                   <div>
@@ -101,6 +102,7 @@ const unPayMoney = computed(() => {
             :style="{ '--n-border-radius': '20px' }"
             placeholder="备注信息"
             type="textarea"
+            @focus="focus"
           />
         </n-form-item>
       </div>

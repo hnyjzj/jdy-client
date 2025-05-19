@@ -105,7 +105,7 @@ const handleValidateButtonClick = async () => {
                       :placeholder="item.label" />
                   </template>
                   <template v-if="item.input === 'text' && item.name === 'discount_rate'">
-                    <n-input v-model:value="model[item.name]" :placeholder="item.label">
+                    <n-input v-model:value="model[item.name]" :placeholder="item.label" @focus="focus">
                       <template #suffix>
                         积分 = 1元
                       </template>

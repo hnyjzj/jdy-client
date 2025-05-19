@@ -237,7 +237,7 @@ async function changemyStore() {
           <div class="w-[100px] pt-2 text-color">
             添加备注：
           </div>
-          <n-input v-model:value="enterParams.remark" type="textarea" />
+          <n-input v-model:value="enterParams.remark" type="textarea" @focus="focus" />
         </div>
       </div>
     </common-model>

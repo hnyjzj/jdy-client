@@ -209,18 +209,18 @@ function handleSwitchChange(e: boolean, name: keyof Check) {
                             </template>
                           </template>
                           <template v-if="item.input === 'text'">
-                            <n-input v-model="params[item.name]" round :placeholder="`输入${item.label}`" />
+                            <n-input v-model="params[item.name]" round :placeholder="`输入${item.label}`" @focus="focus" />
                           </template>
                           <template v-if="item.input === 'number'">
                             <div class="w-[100%]">
-                              <n-input-number v-model="params[item.name]" round :placeholder="`输入${item.label}`" />
+                              <n-input-number v-model="params[item.name]" round :placeholder="`输入${item.label}`" @focus="focus" />
                             </div>
                           </template>
                           <template v-if="item.input === 'switch'">
                             <n-switch v-model="params[item.name]" size="large" :style="{ 'border-radius': '20px' }" round />
                           </template>
                           <template v-if="item.input === 'textarea'">
-                            <n-input v-model="params[item.name]" round :placeholder="`输入${item.label}`" />
+                            <n-input v-model="params[item.name]" round :placeholder="`输入${item.label}`" @focus="focus" />
                           </template>
                           <template v-if="item.input === 'search'">
                             <template v-if="item.name === 'inventory_person_id' || item.name === 'inspector_id'">

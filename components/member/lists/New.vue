@@ -71,6 +71,7 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
             size="large"
             round
             placeholder="请输入会员姓名"
+            @focus="focus"
           />
         </div>
       </div>
@@ -85,6 +86,7 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
             maxlength="11"
             round
             placeholder="请输入会员联系方式"
+            @focus="focus"
           />
         </div>
       </div>
@@ -98,6 +100,7 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
             size="large"
             round
             placeholder="请输入会员昵称"
+            @focus="focus"
           />
         </div>
       </div>

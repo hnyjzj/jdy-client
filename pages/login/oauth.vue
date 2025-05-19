@@ -11,7 +11,7 @@ const content = ref<{
   title: '获取授权中',
   loading: true,
 })
-
+const showAgainLogin = ref(false)
 const code = route.query?.code as string
 const state = route.query?.state as string
 const redirect_url = route.query?.redirect_url as string
@@ -32,6 +32,7 @@ if (code) {
       content: res.data.value?.message,
       loading: false,
     }
+    showAgainLogin.value = true
   }
 }
 
@@ -83,10 +84,12 @@ const jumpLogin = () => {
         class="col-12 pt-[24px]"
         uno-lg="col-4 offset-4 pt-[48px]"
         uno-sm="col-6 offset-3">
-        <common-button-rounded
-          :bgc="content.loading ? 'linear-gradient(180deg, #1A6BEB80 50%, #6EA6FF80)' : 'linear-gradient(0deg, #6ea6ffbf 11%, #1a6beb)'"
-          padding="12px"
-          content="重新登录" @click="jumpLogin()" />
+        <template v-if="showAgainLogin">
+          <common-button-rounded
+            :bgc="content.loading ? 'linear-gradient(180deg, #1A6BEB80 50%, #6EA6FF80)' : 'linear-gradient(0deg, #6ea6ffbf 11%, #1a6beb)'"
+            padding="12px"
+            content="重新登录" @click="jumpLogin()" />
+        </template>
       </div>
     </div>
   </div>

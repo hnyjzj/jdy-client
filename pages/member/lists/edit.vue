@@ -162,6 +162,7 @@ const execute = async () => {
                           size="large"
                           round
                           placeholder="请输入会员姓名"
+                          @focus="focus"
                         />
                       </div>
                     </div>
@@ -176,6 +177,7 @@ const execute = async () => {
                           maxlength="11"
                           round
                           placeholder="请输入会员联系方式"
+                          @focus="focus"
                         />
                       </div>
                     </div>
@@ -189,6 +191,7 @@ const execute = async () => {
                           size="large"
                           round
                           placeholder="请输入会员昵称"
+                          @focus="focus"
                         />
                       </div>
                     </div>
@@ -216,6 +219,7 @@ const execute = async () => {
                           size="large"
                           round
                           placeholder="请输入会员身份证号"
+                          @focus="focus"
                         />
                       </div>
                     </div>

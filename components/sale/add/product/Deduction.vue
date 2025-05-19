@@ -29,6 +29,7 @@ const discount_rate = ref<number>(100)
               min="1"
               max="100"
               :show-button="false"
+              @focus="focus"
               @update:value="emits('setDiscountRate', discount_rate)"
             >
               <template #suffix>
@@ -63,7 +64,7 @@ const discount_rate = ref<number>(100)
               :precision="2"
               :show-button="false"
               @blur="emits('setScoreDeduct', scoreDeduct)"
-
+              @focus="focus"
             />
           </n-form-item-gi>
           <n-form-item-gi
@@ -77,6 +78,7 @@ const discount_rate = ref<number>(100)
               min="0"
               :precision="2"
               :show-button="false"
+              @focus="focus"
               @blur="emits('setAmountReduce', amount_reduce)"
 
             />

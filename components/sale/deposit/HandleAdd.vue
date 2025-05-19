@@ -54,19 +54,19 @@ const submitForm = () => {
       >
         <n-grid :cols="24" :x-gap="8">
           <n-form-item-gi :span="12" label="货品名称" path="name">
-            <n-input v-model:value="handleFormData.name" placeholder="货品名称" />
+            <n-input v-model:value="handleFormData.name" placeholder="货品名称" @focus="focus" />
           </n-form-item-gi>
           <n-form-item-gi :span="12" label="标签价">
-            <n-input-number v-model:value="handleFormData.label_price" placeholder="标签价" />
+            <n-input-number v-model:value="handleFormData.label_price" placeholder="标签价" @focus="focus" />
           </n-form-item-gi>
           <n-form-item-gi :span="12" label="工费">
-            <n-input-number v-model:value="handleFormData.labor_fee" placeholder="工费" />
+            <n-input-number v-model:value="handleFormData.labor_fee" placeholder="工费" @focus="focus" />
           </n-form-item-gi>
           <n-form-item-gi :span="12" label="金重">
-            <n-input-number v-model:value="handleFormData.weight_metal" placeholder="金重" />
+            <n-input-number v-model:value="handleFormData.weight_metal" placeholder="金重" @focus="focus" />
           </n-form-item-gi>
           <n-form-item-gi :span="12" label="主石重">
-            <n-input-number v-model:value="handleFormData.weight_gem" placeholder="主石重" />
+            <n-input-number v-model:value="handleFormData.weight_gem" placeholder="主石重" @focus="focus" />
           </n-form-item-gi>
           <n-form-item-gi :span="12" label="零售方式">
             <n-select

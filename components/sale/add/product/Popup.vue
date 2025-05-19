@@ -80,7 +80,8 @@ const scanCode = async () => {
                 v-model:value="searchProduct"
                 type="text"
                 clearable
-                :placeholder="searchType === 'name' ? '请输入商品名称' : '请输入商品条码'" />
+                :placeholder="searchType === 'name' ? '请输入商品名称' : '请输入商品条码'"
+                @focus="focus" />
             </div>
             <div class="pl-[16px] flex">
               <n-button type="info" round @click="search()">

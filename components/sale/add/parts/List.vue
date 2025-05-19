@@ -82,6 +82,7 @@ const deleteConfirm = () => {
                       round
                       :precision="hold"
                       min="0"
+                      @focus="focus"
                       @update:value="changeScore(obj)">
                       <template #suffix>
                         元
@@ -95,17 +96,19 @@ const deleteConfirm = () => {
                       :disabled="true"
                       min="0"
                       placeholder="请输入积分"
-                      :default-value="Number(obj?.integral) || 0" round />
+                      :default-value="Number(obj?.integral) || 0"
+                      round @focus="focus" />
                   </n-form-item-gi>
                   <n-form-item-gi :span="12" label="数量">
                     <div class="flex items-center w-full">
                       <div class="w-full">
                         <n-input-number
-                          v-model:value="obj.quantity" placeholder="请输入数量"
-                          round
+                          v-model:value="obj.quantity"
+                          placeholder="请输入数量" round
                           min="1"
                           :precision="0"
-                          :show-button="false" @update:value="changeQuantity(obj)" />
+                          :show-button="false"
+                          @focus="focus" @update:value="changeQuantity(obj)" />
                       </div>
                     </div>
                   </n-form-item-gi>

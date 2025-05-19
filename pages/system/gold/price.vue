@@ -148,7 +148,7 @@ function subtract(i: number) {
           </div>
           <div class="grid grid-cols-[auto_72px] gap-2 items-center">
             <div>
-              <n-input-number v-model:value="item.price" placeholder="价格" :min="0" />
+              <n-input-number v-model:value="item.price" placeholder="价格" :min="0" @focus="focus" />
               <div class="grid grid-cols-[1fr_1fr] gap-2 mt-2">
                 <n-select v-model:value="item.product_material" placeholder="材质" :options="getOptions('material')" />
                 <n-select v-model:value="item.product_type" placeholder="类型" :options="optonsToSelect(typePreset)" />

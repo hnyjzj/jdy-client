@@ -163,7 +163,8 @@ const searchConfirm = async () => {
                 v-model:value="searchOld"
                 type="text"
                 clearable
-                placeholder="请输入商品条码" />
+                placeholder="请输入商品条码"
+                @focus="focus" />
             </div>
             <div class="pl-[16px] flex">
               <n-button type="info" round @click="props.searchOlds(searchOld)">
@@ -226,6 +227,7 @@ const searchConfirm = async () => {
                         placeholder="请输入回收工费"
                         round
                         :precision="3"
+                        @focus="focus"
                         @blur="ourChangePrice()"
                       />
                     </n-form-item-gi>
@@ -256,6 +258,7 @@ const searchConfirm = async () => {
                         round
                         min="0"
                         :precision="3"
+                        @focus="focus"
                         @blur="ourChangePrice()"
                       />
                     </n-form-item-gi>
@@ -268,6 +271,7 @@ const searchConfirm = async () => {
                         round
                         min="0"
                         :precision="3"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收金价">
@@ -278,6 +282,7 @@ const searchConfirm = async () => {
                         round
                         min="0"
                         :precision="3"
+                        @focus="focus"
                         @blur="ourChangePrice()"
                       >
                         <template #suffix>
@@ -293,6 +298,7 @@ const searchConfirm = async () => {
                         round
                         min="0"
                         :precision="3"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                   </n-grid>

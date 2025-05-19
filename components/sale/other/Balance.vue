@@ -59,6 +59,7 @@ const totalMoney = () => {
                       round
                       min="0"
                       :show-button="false"
+                      @focus="focus"
                     />
                   </div>
                   <div>

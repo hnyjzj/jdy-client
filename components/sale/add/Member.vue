@@ -110,13 +110,13 @@ defineExpose({
               @update:value="handleUpdateValue"
             />
           </n-form-item-gi>
-          <n-form-item-gi :span="8">
+          <n-form-item-gi :span="12">
             <div class="w-full">
               <common-button-rounded content="新增会员" @button-click="handleAddMember" />
             </div>
           </n-form-item-gi>
           <template v-if="userInfo?.id">
-            <n-form-item-gi :span="12" label="会员信息">
+            <n-form-item-gi :span="24" label="会员信息">
               <div class="mr-[16px]">
                 <template v-if="userInfo?.avatar">
                   <n-image width="68" :src="Userinfo.avatar" />

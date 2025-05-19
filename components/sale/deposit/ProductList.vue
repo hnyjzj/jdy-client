@@ -63,7 +63,7 @@ const deleteProduct = (index: number) => {
                       :show-button="false"
                       placeholder="请输入金价(元/g)"
                       round
-
+                      @focus="focus"
                       @blur="() => {
                         if (!obj.price_gold?.toString()){
                           obj.price_gold = 0
@@ -79,6 +79,7 @@ const deleteProduct = (index: number) => {
                       placeholder="请输入订金金额"
                       round
                       min="0"
+                      @focus="focus"
                     />
                   </n-form-item-gi>
                 </n-grid>

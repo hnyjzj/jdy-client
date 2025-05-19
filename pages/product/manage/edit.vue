@@ -206,6 +206,7 @@ function removeImg(data: { index: number }) {
                       v-model:value="productParams[item.name]"
                       clearable
                       :placeholder="`${item.label}`"
+                      @focus="focus"
                     />
                   </template>
                   <template v-else-if="item.input === 'number'">
@@ -215,6 +216,7 @@ function removeImg(data: { index: number }) {
                       :default-value="0"
                       min="0"
                       :format="(value) => String(Math.floor(Number(value) || 1))"
+                      @focus="focus"
                     />
                   </template>
                   <template v-else-if="item?.input === 'select'">
@@ -233,6 +235,7 @@ function removeImg(data: { index: number }) {
                     <n-input
                       v-model:value="productParams[item.name]"
                       :placeholder="`${item.label}`"
+                      @focus="focus"
                     />
                   </template>
                   <template v-else-if="item?.input === 'list'">
@@ -244,6 +247,7 @@ function removeImg(data: { index: number }) {
                         <n-input
                           v-model:value="productParams[item.name][i]"
                           :placeholder="certific"
+                          @focus="focus"
                         />
                         <div class="flex gap-1 pb-2">
                           <div class="w-[32px] h-[32px] rounded-full bg-[#FFF] flex justify-center items-center" @click="productParams[item.name].splice(i, 1)">
