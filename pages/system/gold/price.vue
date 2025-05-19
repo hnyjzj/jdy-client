@@ -10,6 +10,7 @@ useSeoMeta({
   title: '今日金价',
 })
 const route = useRoute()
+
 const changeShow = ref(false)
 const goldParams = ref([] as UpdataGold[])
 const deleteArr = ref([] as GoldPrices['id'][])
@@ -148,7 +149,7 @@ function subtract(i: number, id: GoldPrices['id']) {
             </template>
             <template v-else>
               <div>
-                <common-empty text="暂未设置金价" />
+                <common-empty text="暂未设置金价" size="100" />
               </div>
             </template>
           </div>

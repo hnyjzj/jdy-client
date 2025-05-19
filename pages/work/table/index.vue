@@ -241,7 +241,7 @@ const beforeUpload = (data: any) => {
         <common-form ref="addWorkbenchform" v-model="params" :rules="rules" @submit="(val: AddWorkbencheReq) => submit(val)">
           <template #title="{ label, error }">
             <div class="pb-[16px]">
-              <div class="add-row">
+              <div class="add-row-noline">
                 <div>标题</div>
                 <input v-model="params[label]" type="text" class="border-none bg-transparent outline-none focus:ring-0 focus:outline-none text-color" placeholder="输入标题">
                 <div class="text-[#FF2F2F] text-[12px] pt-2">
@@ -290,7 +290,10 @@ const beforeUpload = (data: any) => {
 </template>
 
 <style lang="scss" scoped>
+.add-row-noline {
+  --uno: 'grid grid-cols-[1fr_2fr] items-center';
+}
 .add-row {
-  --uno: 'grid grid-cols-[1fr_2fr] items-center border-b-[#E6E6E8] border-b-solid border-b-[1px] pb-[16px]';
+  --uno: 'grid grid-cols-[1fr_2fr] items-center border-t-[#E6E6E8] border-t-solid border-t-[1px] pt-[16px]';
 }
 </style>
