@@ -23,7 +23,11 @@ if (code) {
       loading: true,
     }
     timer.value = setTimeout(async () => {
-      jump(redirect_url || '/')
+      // 创建一个虚拟 URL 对象，使用虚拟域名以便 URL 解析
+      const url = new URL(redirect_url, 'http://localhost')
+      const path = url.pathname
+      const query = Object.fromEntries(url.searchParams.entries())
+      redirect_url ? jump(path, query) : navigateTo('/')
     }, 2000)
   }
   else {
