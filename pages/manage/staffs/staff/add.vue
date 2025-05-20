@@ -46,8 +46,23 @@ const addStaff = async () => {
     $toast.error(res?.message || '创建失败')
   }
 }
+// 是否是企业微信环境
+const iswx = ref(false)
+if (import.meta.client) {
+  if (isWxWorkClient() || isWeChatClient()) {
+    iswx.value = true
+  }
+  else {
+    iswx.value = false
+  }
+}
 // /jssdk/wxwork  企业微信授权添加
 const wxwordAdd = async () => {
+  if (!iswx.value) {
+    $toast.error('请在企业微信中使用')
+    return
+  }
+
   const wx = await useWxWork()
   const users = await wx?.selectPerson()
   const params = ref<addStaffReq>({

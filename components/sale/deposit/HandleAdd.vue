@@ -55,23 +55,24 @@ const submitForm = () => {
         >
           <n-grid :cols="24" :x-gap="8">
             <n-form-item-gi :span="12" label="货品名称" path="name">
-              <n-input v-model:value="handleFormData.name" placeholder="货品名称" @focus="focus" />
+              <n-input v-model:value="handleFormData.name" placeholder="货品名称" size="large" @focus="focus" />
             </n-form-item-gi>
             <n-form-item-gi :span="12" label="标签价">
-              <n-input-number v-model:value="handleFormData.label_price" placeholder="标签价" @focus="focus" />
+              <n-input-number v-model:value="handleFormData.label_price" placeholder="标签价" size="large" @focus="focus" />
             </n-form-item-gi>
             <n-form-item-gi :span="12" label="工费">
-              <n-input-number v-model:value="handleFormData.labor_fee" placeholder="工费" @focus="focus" />
+              <n-input-number v-model:value="handleFormData.labor_fee" placeholder="工费" size="large" @focus="focus" />
             </n-form-item-gi>
             <n-form-item-gi :span="12" label="金重">
-              <n-input-number v-model:value="handleFormData.weight_metal" placeholder="金重" @focus="focus" />
+              <n-input-number v-model:value="handleFormData.weight_metal" placeholder="金重" size="large" @focus="focus" />
             </n-form-item-gi>
             <n-form-item-gi :span="12" label="主石重">
-              <n-input-number v-model:value="handleFormData.weight_gem" placeholder="主石重" @focus="focus" />
+              <n-input-number v-model:value="handleFormData.weight_gem" placeholder="主石重" size="large" @focus="focus" />
             </n-form-item-gi>
             <n-form-item-gi :span="12" label="零售方式">
               <n-select
                 v-model:value="handleFormData.retail_type"
+                size="large"
                 placeholder="零售方式"
                 :options="optonsToSelect(props.filterList.retail_type?.preset)"
                 @focus="focus" />
@@ -81,6 +82,7 @@ const submitForm = () => {
                 v-model:value="handleFormData.color_gem"
                 placeholder="颜色"
                 clearable
+                size="large"
                 :options="optonsToSelect(props.filterList.color_gem?.preset)"
                 @focus="focus"
               />
@@ -90,6 +92,7 @@ const submitForm = () => {
                 v-model:value="handleFormData.clarity_gem"
                 placeholder="净度"
                 clearable
+                size="large"
                 :options="optonsToSelect(props.filterList.clarity?.preset)"
                 @focus="focus"
               />
