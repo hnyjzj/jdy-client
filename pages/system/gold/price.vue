@@ -112,7 +112,7 @@ function subtract(i: number, id: GoldPrices['id']) {
             <div
               class="skew col-4">
               <div class="skew-right" />
-              <div class="skew-text history" @click="getStoreDetail('1872153787930513408')">
+              <div class="skew-text history">
                 金价历史
               </div>
             </div>
