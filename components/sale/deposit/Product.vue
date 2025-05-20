@@ -57,7 +57,7 @@ const handleAddProductPopup = ref(false)
         <div class="btn grid-12 gap-[8px]">
           <div
             class="btn-left col-6 cursor-pointer" uno-sm="col-4 offset-2" @click="showModal = true">
-            <icon name="i-icon:search" color="#fff" :size="12" />
+            <icon name="i-icon:search" color="#fff" :size="16" />
             <div class="ml-2">
               搜索
             </div>

@@ -80,7 +80,7 @@ const totalMoney = () => {
             </div>
           </template>
         </div>
-        <div class="border-b-[#E6E6E8] border border-b-solid py-[12px] mb-[12px]">
+        <div class=" py-[12px] mb-[12px]">
           <div class="text-[16px] color-[#3971F3] line-height-[24px] text-right font-semibold">
             订单金额:{{ totalMoney() }}
           </div>
