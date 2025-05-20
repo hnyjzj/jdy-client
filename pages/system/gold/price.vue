@@ -4,8 +4,8 @@ const { goldList } = storeToRefs(useGoldPrice())
 const { getGoldPrice, setGoldPrice } = useGoldPrice()
 const { getFinishedWhere } = useFinished()
 const { finishedFilterList } = storeToRefs(useFinished())
-const { getMyStore } = useStores()
-const { myStore, myStoreList } = storeToRefs(useStores())
+const { getStoreDetail } = useStores()
+const { myStore } = storeToRefs(useStores())
 useSeoMeta({
   title: '今日金价',
 })
@@ -15,12 +15,10 @@ const changeShow = ref(false)
 const goldParams = ref([] as UpdataGold[])
 const deleteArr = ref([] as GoldPrices['id'][])
 await getFinishedWhere()
-/** 如果有传门店id 则当前门店选择该门店 */
-if (route.query?.store_id) {
-  await getMyStore({ page: 1, limit: 20 })
-  myStore.value = myStoreList.value.find(item => item.id === route.query?.store_id) ?? myStoreList.value[0]
-}
 
+if (route.query.store_id) {
+  await getStoreDetail(route.query.store_id as string, true)
+}
 if (myStore.value.id) {
   await getGoldPrice(myStore.value.id)
   await getGoldParams()
@@ -110,11 +108,11 @@ function subtract(i: number, id: GoldPrices['id']) {
           <product-manage-company @change="getGoldPrice(myStore.id)" />
         </div>
         <div class="blur-bgc rounded-[16px] cursor-pointer mx-4">
-          <div class="grid-12 ">
+          <div class="grid-12">
             <div
               class="skew col-4">
               <div class="skew-right" />
-              <div class="skew-text history">
+              <div class="skew-text history" @click="getStoreDetail('1872153787930513408')">
                 金价历史
               </div>
             </div>
