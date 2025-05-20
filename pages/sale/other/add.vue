@@ -119,7 +119,7 @@ const handleValidateButtonClick = (e: any) => {
 
 <template>
   <div :key="Key">
-    <div class="grid-12">
+    <div class="grid-12 pb-[16px]">
       <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] pb-[80px] col-12" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3">
         <n-form
           ref="formRef"

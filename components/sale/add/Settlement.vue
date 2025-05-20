@@ -209,7 +209,7 @@ const unPayMoney = computed(() => {
             </div>
           </template>
         </div>
-        <div class="border-y-[#E6E6E8] border border-y-solid py-[12px] mb-[12px]">
+        <div class="border-t-[#E6E6E8] border border-t-solid py-[12px] mb-[12px]">
           <div class="text-[16px] color-[#3971F3] line-height-[24px] text-right font-semibold">
             剩余未支付:{{ unPayMoney }}
           </div>
