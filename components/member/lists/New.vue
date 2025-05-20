@@ -112,7 +112,7 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
           v-model:value="showToUser"
           placeholder="请选择会员性别"
           :options="selectOptions"
-          menu-size="large"
+          size="large"
           @focus="focus"
           @blur="() => {
             newParams.gender = showToUser as any
@@ -131,7 +131,7 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
               label: v.nickname,
               value: v.id,
             }))"
-            menu-size="large"
+            size="large"
             clearable
             remote
 
@@ -150,6 +150,7 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
         <div class="secondary-bottom">
           <n-date-picker
             v-model:value="birthday"
+            size="large"
             clearable
             format="yyyy-MM-dd"
             input-readonly
@@ -165,6 +166,7 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
         <div class="secondary-bottom">
           <n-date-picker
             v-model:value="anniversary"
+            size="large"
             input-readonly
             clearable
             format="yyyy-MM-dd"

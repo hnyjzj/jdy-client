@@ -59,6 +59,7 @@ const scanCode = async () => {
             <div class="flex-1">
               <n-input
                 v-model:value="searchInput"
+                size="large"
                 type="text"
                 clearable
                 placeholder="请输入商品条码"
