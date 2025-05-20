@@ -33,7 +33,8 @@ const themeOverrides: GlobalThemeOverrides = {
     caretColor: '#0068ff',
     borderHover: '1px solid #0068ff',
     borderFocus: '1px solid #0068ff',
-    boxShadowFocus: '0 0 0 2px rgba(0, 104, 255, 0.2)',
+    boxShadowFocus: '#0068ff',
+    railHeightLarge: '36px',
   },
   Checkbox: {
     colorChecked: '#3971F3',

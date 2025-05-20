@@ -76,9 +76,12 @@ export const useStores = defineStore('Store', {
       return data.value
     },
     // 获取门店详情
-    async getStoreDetail(id: Stores['id']) {
+    async getStoreDetail(id: Stores['id'], update: boolean = false) {
       const { data } = await https.post<Stores, { id: Stores['id'] }>('/store/info', { id })
       if (data.value?.code === HttpCode.SUCCESS) {
+        if (update) {
+          this.myStore = data.value.data
+        }
         this.storeDetails = data.value.data
       }
     },

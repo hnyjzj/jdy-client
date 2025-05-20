@@ -68,9 +68,11 @@ function handleSelect(id: Stores['id']) {
       <div
         class="py-[6px] px-[12px]  bg-[#FFFFFF66] border-rd-full h-full flex-center-row shadow-lg cursor-pointer "
         @click="changeStoer">
-        <div class="store-name font-bold text-size-[14px] mr-[4px]">
-          {{ myStore.name || '选择门店' }}
-        </div>
+        <client-only>
+          <div class="store-name font-bold text-size-[14px] mr-[4px]">
+            {{ myStore.name || '选择门店' }}
+          </div>
+        </client-only>
         <icon name="i-icon:product-toggle" :size="24" />
       </div>
     </n-dropdown>

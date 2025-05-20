@@ -20,9 +20,9 @@ export const useGoldPrice = defineStore('goldPrice', {
       }
     },
     // /** 添加/更新今日金价 */
-    async setGoldPrice(params: UpdataGoldParams[]) {
+    async setGoldPrice(params: UpdataGoldParams) {
       try {
-        const { data } = await https.post<any, { options: UpdataGoldParams[] }>('/setting/gold_price/create', { options: params })
+        const { data } = await https.post<any, UpdataGoldParams>('/setting/gold_price/create', params)
         return data.value
       }
       catch (error) {
