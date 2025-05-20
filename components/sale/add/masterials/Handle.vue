@@ -200,7 +200,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                     <template v-if="item.input === 'select'">
                       <n-select
                         v-model:value="(params[item.name] as number)"
-                        menu-size="large"
+                        size="large"
                         :placeholder="`选择${item.label}`"
                         :options="presetToSelect(item)"
                         :disabled="props.nowEditState === index && item.name === 'recycle_method'"
@@ -210,7 +210,8 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                     </template>
                     <template v-if="item.input === 'text'">
                       <n-input
-                        v-model:value="(params[item.name] as string)" round :placeholder="`输入${item.label}`"
+                        v-model:value="(params[item.name] as string)"
+                        size="large" round :placeholder="`输入${item.label}`"
                         @focus="focus"
                       />
                     </template>
@@ -219,6 +220,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                         || item.name === 'recycle_price_gold' || item.name === 'recycle_price_labor' || item.name === 'quality_actual')">
                       <n-input-number
                         v-model:value="(params[item.name] as number)"
+                        size="large"
                         round :placeholder="`输入${item.label}`" :max="item.name === 'quality_actual' ? 1 : undefined"
                         :show-button="false"
                         @focus="focus" @blur="changePrice(item.name)" />
@@ -227,6 +229,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                       v-if="item.input === 'number' && (item.name === 'recycle_price')">
                       <n-input-number
                         v-model:value="(params[item.name] as number)"
+                        size="large"
                         round :placeholder="`输入${item.label}`" :show-button="false"
                         @focus="focus" @blur="changePrice(item.name)" />
                     </template>
@@ -235,12 +238,12 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                         && item.name !== 'recycle_price_gold' && item.name !== 'recycle_price_labor' && item.name !== 'quality_actual' && item.name !== 'recycle_price')">
                       <n-input-number
                         v-model:value="(params[item.name] as number)"
+                        size="large"
                         round :placeholder="`输入${item.label}`" :show-button="false"
                         @focus="focus" />
                     </template>
-
                     <template v-if="item.input === 'textarea'">
-                      <n-input v-model:value="(params[item.name] as string)" rows="1" type="textarea" @focus="focus" />
+                      <n-input v-model:value="(params[item.name] as string)" rows="1" type="textarea" size="large" @focus="focus" />
                     </template>
                   </n-form-item-gi>
                 </template>

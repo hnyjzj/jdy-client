@@ -114,13 +114,14 @@ const presetToSelect = (filter: FilterWhere<serviceGoods>): { label: string, val
                         :placeholder="`选择${item.label}`"
                         :options="presetToSelect(item)"
                         clearable
-
+                        size="large"
                         @focus="focus"
                       />
                     </template>
                     <template v-if="item.input === 'text'">
                       <n-input
                         v-model:value="(params[item.name] as string)"
+                        size="large"
                         round :placeholder="`输入${item.label}`" @focus="focus"
                       />
                     </template>
@@ -128,12 +129,13 @@ const presetToSelect = (filter: FilterWhere<serviceGoods>): { label: string, val
                       v-if="item.input === 'number'">
                       <n-input-number
                         v-model:value="(params[item.name] as number)"
+                        size="large"
                         round :placeholder="`输入${item.label}`" :show-button="false"
                         @focus="focus" />
                     </template>
 
                     <template v-if="item.input === 'textarea'">
-                      <n-input v-model:value="(params[item.name] as string)" rows="1" type="textarea" @focus="focus" />
+                      <n-input v-model:value="(params[item.name] as string)" rows="1" type="textarea" size="large" @focus="focus" />
                     </template>
                   </n-form-item-gi>
                 </template>
