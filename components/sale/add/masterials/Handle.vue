@@ -242,7 +242,6 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                         round :placeholder="`输入${item.label}`" :show-button="false"
                         @focus="focus" />
                     </template>
-
                     <template v-if="item.input === 'textarea'">
                       <n-input v-model:value="(params[item.name] as string)" rows="1" type="textarea" size="large" @focus="focus" />
                     </template>
