@@ -27,7 +27,7 @@ const hold = ref(0)
             showModal = true
           }
           ">
-          <icon name="i-icon:search" color="#FFF" :size="12" />
+          <icon name="i-icon:search" color="#FFF" :size="16" />
           <div class="ml-2">
             搜索
           </div>
