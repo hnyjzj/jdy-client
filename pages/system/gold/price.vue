@@ -171,10 +171,10 @@ function subtract(i: number, id: GoldPrices['id']) {
                 <n-select v-model:value="item.product_type" placeholder="类型" :options="optonsToSelect(typePreset)" @focus="focus" />
               </div>
               <div class="mt-2">
-                <n-select v-model:value="item.product_brand" placeholder="品牌(多选),不选默认为全部品牌" multiple :options="getOptions('brand')" @focus="focus" />
+                <n-select v-model:value="item.product_brand" class="no-radius" placeholder="品牌(多选),不选默认为全部品牌" multiple :options="getOptions('brand')" @focus="focus" />
               </div>
               <div class="my-2">
-                <n-select v-model:value="item.product_quality" placeholder="成色(多选)" multiple :options="getOptions('quality')" @focus="focus" />
+                <n-select v-model:value="item.product_quality" class="no-radius" placeholder="成色(多选)" multiple :options="getOptions('quality')" @focus="focus" />
               </div>
             </div>
             <div class="flex gap-1">
