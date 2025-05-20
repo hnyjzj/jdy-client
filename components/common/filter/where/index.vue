@@ -124,12 +124,12 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                 <slot :name="name" :filter="props.filter[i]">
                   <template v-if="input === 'text'">
                     <div>
-                      <n-input v-model:value="datas[name as string]" size="large" :placeholder="`输入${label}`" round :disabled="disabled?.includes(name)" />
+                      <n-input v-model:value="datas[name as string]" size="large" :placeholder="`输入${label}`" round :disabled="disabled?.includes(name)" @focus="focus" />
                     </div>
                   </template>
                   <template v-if="input === 'number'">
                     <div>
-                      <n-input-number v-model:value="datas[name as string]" size="large" :placeholder="`输入${label}`" round :disabled="disabled?.includes(name)" />
+                      <n-input-number v-model:value="datas[name as string]" size="large" :placeholder="`输入${label}`" round :disabled="disabled?.includes(name)" @focus="focus" />
                     </div>
                   </template>
                   <template v-if="input === 'switch'">
@@ -143,10 +143,11 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                       :placeholder="`请选择${label}`"
                       :options="presetToSelect(props.filter[i]) "
                       :disabled="disabled?.includes(name)"
+                      @focus="focus"
                     />
                   </template>
                   <template v-if="input === 'textarea'">
-                    <n-input v-model:value="datas[name as string]" :placeholder="`输入${label}`" type="textarea" maxlength="255" size="large" round :autosize="{ minRows: 1, maxRows: 2 }" :disabled="disabled?.includes(name)" />
+                    <n-input v-model:value="datas[name as string]" :placeholder="`输入${label}`" type="textarea" maxlength="255" size="large" round :autosize="{ minRows: 1, maxRows: 2 }" :disabled="disabled?.includes(name)" @focus="focus" />
                   </template>
                   <template v-if="input === 'date'">
                     <n-date-picker v-model:formatted-value="datas[name as string]" value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" size="large" :placeholder="`选择${label}`" round clearable :disabled="disabled?.includes(name)" />
@@ -159,6 +160,7 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                       multiple
                       :placeholder="`请选择${label}`"
                       :options="presetToSelect(props.filter[i]) "
+                      @focus="focus"
                     />
                   </template>
                 </slot>

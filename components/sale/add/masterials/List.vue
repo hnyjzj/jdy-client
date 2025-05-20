@@ -61,6 +61,7 @@ const deleteConfirm = () => {
                         placeholder="积分"
                         min="0"
                         round
+                        @focus="focus"
                       />
                     </div>
                   </div>

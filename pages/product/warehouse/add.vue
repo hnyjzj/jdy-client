@@ -141,21 +141,22 @@ const presetToSelect = (key: keyof ProductFinisheds) => {
                                 :options="presetToSelect(item.name)"
                                 clearable
                                 :disabled="isDisables?.includes(item.name)"
+                                @focus="focus"
                               />
                             </template>
                             <template v-if="item.input === 'text'">
-                              <n-input v-model:value="params[item.name]" round :placeholder="`输入${item.label}`" />
+                              <n-input v-model:value="params[item.name]" round :placeholder="`输入${item.label}`" @focus="focus" />
                             </template>
                             <template v-if="item.input === 'number'">
                               <div class="w-[100%]">
-                                <n-input-number v-model:value="params[item.name]" round :placeholder="`输入${item.label}`" />
+                                <n-input-number v-model:value="params[item.name]" round :placeholder="`输入${item.label}`" @focus="focus" />
                               </div>
                             </template>
                             <template v-if="item.input === 'switch'">
                               <n-switch v-model:value="params[item.name]" :style="{ 'border-radius': '20px' }" round />
                             </template>
                             <template v-if="item.input === 'textarea'">
-                              <n-input v-model:value="params[item.name]" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
+                              <n-input v-model:value="params[item.name]" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" @focus="focus" />
                             </template>
                           </n-form-item-gi>
                         </template>
@@ -166,7 +167,7 @@ const presetToSelect = (key: keyof ProductFinisheds) => {
                         {{ certificate }}
                       </div>
                       <n-form-item-gi :span="12" :label="`证书${index + 1}`">
-                        <n-input v-model:value="certificate[index]" type="text" round :placeholder="`输入证书${index + 1}`" />
+                        <n-input v-model:value="certificate[index]" type="text" round :placeholder="`输入证书${index + 1}`" @focus="focus" />
                       </n-form-item-gi>
                     </template>
                   </n-grid>

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { calc } from 'a-calc'
-import Userinfo from '~/components/my/user/Userinfo.vue'
 
 const props = defineProps<{
   getMember: (val: string) => Promise<Member[]>
@@ -13,7 +12,10 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   setMemberId: [val: string]
+  setShowSubmit: [val: boolean]
 }>()
+
+const showmenu = ref(false)
 const searchList = ref<Member[]>([])
 const memberParams = ref<Member>({
   // 初始化store_id为当前门店id
@@ -24,6 +26,7 @@ const memberParams = ref<Member>({
 const searchMember = async (val: string) => {
   if (val.length === 11) {
     searchList.value = await props.getMember(val)
+    showmenu.value = true
   }
 }
 
@@ -55,6 +58,7 @@ const handleUpdateValue = async (value: string) => {
     return
   }
   setUserInfo(searchList.value)
+  showmenu.value = false
 }
 const showModel = ref(false)
 // 新增会员
@@ -106,6 +110,15 @@ defineExpose({
               :maxlength="11"
               clearable
               remote
+              :show="showmenu"
+              @focus="(e) => {
+                focus(e)
+                emit('setShowSubmit', false)
+              }"
+              @blur="() => {
+                emit('setShowSubmit', true)
+              }
+              "
               @search="searchMember"
               @update:value="handleUpdateValue"
             />
@@ -116,10 +129,10 @@ defineExpose({
             </div>
           </n-form-item-gi>
           <template v-if="userInfo?.id">
-            <n-form-item-gi :span="12" label="会员信息">
+            <n-form-item-gi :span="24" label="会员信息">
               <div class="mr-[16px]">
                 <template v-if="userInfo?.avatar">
-                  <n-image width="68" :src="Userinfo.avatar" />
+                  <n-image width="68" :src="userInfo.avatar" />
                 </template>
                 <template v-else>
                   <icon name="i-svg:avatar" :size="68" />
@@ -147,7 +160,7 @@ defineExpose({
     <common-model
       v-model="showModel" title="新增会员" :show-ok="true" :show-cancel="true" @confirm="submitNewMember"
       @cancel="showModel = false">
-      <div>
+      <div class="h-[300px] overflow-y-auto py-[16px]">
         <member-lists-new v-model:rely="memberParams" :staff-list="props.staffs" @get-staff-list="props.getStaffs" />
       </div>
     </common-model>

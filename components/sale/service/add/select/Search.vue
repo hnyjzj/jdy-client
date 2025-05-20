@@ -18,17 +18,6 @@ const showServiceGoods = defineModel<serviceGoods[]>('list', { default: [] })
 
 const searchCode = ref()
 const nowServiceGoods = defineModel<serviceGoods>('nowServiceGoods', { default: {} })
-// 扫码
-const { useWxWork } = useWxworkStore()
-const scanCode = async () => {
-  const wx = await useWxWork()
-  const code = await wx?.scanQRCode()
-  if (code) {
-    searchShow.value = true
-    searchCode.value = code
-    nowServiceGoods.value = {} as serviceGoods
-  }
-}
 
 // 旧料表单 Ref
 const oldMasterRef = ref()
@@ -78,6 +67,18 @@ const search = async () => {
     nowServiceGoods.value.is_our = true
   }
 }
+// 扫码
+const { useWxWork } = useWxworkStore()
+const scanCode = async () => {
+  const wx = await useWxWork()
+  const code = await wx?.scanQRCode()
+  if (code) {
+    searchShow.value = true
+    searchCode.value = code
+    nowServiceGoods.value = {} as serviceGoods
+    search()
+  }
+}
 </script>
 
 <template>
@@ -88,7 +89,7 @@ const search = async () => {
         nowServiceGoods = {}
         searchShow = false
       }">
-      <div class="grid-12">
+      <div class="grid-12 h-[300px] overflow-y-scroll">
         <div class="col-12">
           <div>
             <div class="flex  py-[12px]">
@@ -107,20 +108,20 @@ const search = async () => {
                 v-model:value="searchCode"
                 type="text"
                 clearable
-                placeholder="请输入商品条码" />
+                placeholder="请输入商品条码" @focus="focus" />
             </div>
             <div class="pl-[16px] flex">
               <n-button type="info" round @click="search()">
                 搜索
               </n-button>
               <div class="pl-[8px]">
-                <n-button type="info" round @click="scanCode()">
+                <n-button strong secondary type="info" round @click="scanCode()">
                   扫码
                 </n-button>
               </div>
             </div>
           </div>
-          <div class="h-[300px] overflow-y-auto py-[16px]">
+          <div class=" py-[16px]">
             <div>
               <template v-if="Object.keys(nowServiceGoods).length !== 0">
                 <n-form ref="oldMasterRef" :model="nowServiceGoods" :rules="oldRules">
@@ -145,6 +146,7 @@ const search = async () => {
                         round
                         min="0"
                         :precision="3"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="备注" path="remark">
@@ -157,6 +159,7 @@ const search = async () => {
                         round
                         min="0"
                         :precision="3"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                   </n-grid>

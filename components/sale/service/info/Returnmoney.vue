@@ -52,7 +52,7 @@ const submit = async () => {
               {{ model.id }}
             </n-form-item-gi>
             <n-form-item-gi :span="12" label="备注" path="remark">
-              <n-input v-model:value="model.remark" type="textarea" rows="2" placeholder="请输入退款说明" />
+              <n-input v-model:value="model.remark" type="textarea" rows="2" placeholder="请输入退款说明" @focus="focus" />
             </n-form-item-gi>
           </n-grid>
         </n-form>

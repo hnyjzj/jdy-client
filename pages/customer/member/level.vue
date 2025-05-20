@@ -28,7 +28,7 @@ const show = ref(false)
             <span>等级名称 </span><span class="color-red-6">*</span>
           </div>
           <div class="bg-[#fff] flex-1  rounded-[24px] border-color-[#E6E6E8] border-solid border py-[6px] px-[12px]">
-            <input type="text" class="w-full border-none bg-transparent" placeholder="0">
+            <input type="text" class="w-full border-none bg-transparent" placeholder="0" @focus="focus">
           </div>
         </div>
         <div class="mb-[16px]">
@@ -36,7 +36,7 @@ const show = ref(false)
             <span>积分范围 </span><span class="color-red-6">*</span>
           </div>
           <div class="bg-[#fff] flex-1  rounded-[24px] border-color-[#E6E6E8] border-solid border py-[6px] px-[12px]">
-            <input type="text" class="w-full border-none bg-transparent" placeholder="0">
+            <input type="text" class="w-full border-none bg-transparent" placeholder="0" @focus="focus">
           </div>
         </div>
         <div class="mb-[16px]">
@@ -49,7 +49,7 @@ const show = ref(false)
                 大类
               </div>
               <div class="bg-[#fff] flex-1  rounded-[24px] border-color-[#E6E6E8] border-solid border py-[6px] px-[12px]">
-                <input type="text" class="w-full border-none bg-transparent" placeholder="0">
+                <input type="text" class="w-full border-none bg-transparent" placeholder="0" @focus="focus">
               </div>
             </div>
             <div class="col-4">
@@ -57,7 +57,7 @@ const show = ref(false)
                 品牌
               </div>
               <div class="bg-[#fff] flex-1  rounded-[24px] border-color-[#E6E6E8] border-solid border py-[6px] px-[12px]">
-                <input type="text" class="w-full border-none bg-transparent" placeholder="0">
+                <input type="text" class="w-full border-none bg-transparent" placeholder="0" @focus="focus">
               </div>
             </div>
             <div class="col-4">
@@ -65,7 +65,7 @@ const show = ref(false)
                 折扣
               </div>
               <div class="bg-[#fff] flex-1  rounded-[24px] border-color-[#E6E6E8] border-solid border py-[6px] px-[12px]">
-                <input type="text" class="w-full border-none bg-transparent" placeholder="0">
+                <input type="text" class="w-full border-none bg-transparent" placeholder="0" @focus="focus">
               </div>
             </div>
           </div>

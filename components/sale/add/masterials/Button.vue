@@ -7,19 +7,19 @@ const emits = defineEmits<{
 
 <template>
   <div class="p-[16px]">
-    <div class="grid-12 gap-[20px]">
+    <div class="grid-12 gap-[8px]">
       <div
-        class="btn-left col-span-4 offset-2 cursor-pointer" @click="emits('handleAdd')">
+        class="btn-left col-6 cursor-pointer" uno-sm="col-4 offset-2" @click="emits('searchQl')">
+        <icon name="i-icon:search" color="#fff" :size="12" />
         <div class="ml-2">
-          手动添加
+          搜索
         </div>
       </div>
       <div
-        class="btn-right col-span-4 cursor-pointer" @click="emits('searchQl')"
+        class="btn-right col-6 cursor-pointer" uno-sm="col-4 offset-6" @click="emits('handleAdd')"
       >
-        <icon name="i-icon:search" color="#1a6beb" :size="12" />
         <div class="ml-2">
-          搜索
+          手动添加
         </div>
       </div>
     </div>
@@ -28,7 +28,7 @@ const emits = defineEmits<{
 
 <style lang="scss" scoped>
 .btn-left {
-  --uno: 'text-[16px] border-none rounded-[36px] text-[#FFFFFF] flex justify-center items-center';
+  --uno: 'text-[16px] border-none py-[9px] rounded-[36px] text-[#FFFFFF] flex justify-center items-center';
   background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
 }
 .btn-right {

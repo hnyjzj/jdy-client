@@ -405,6 +405,7 @@ function filteredOptions(preset: any, val: number) {
                   <n-input
                     v-model:value="productParams[item.name]"
                     :placeholder="`输入${item.label}`"
+                    @focus="focus"
                   />
                 </template>
                 <template v-else-if="item.input === 'number'">
@@ -413,6 +414,7 @@ function filteredOptions(preset: any, val: number) {
                     :placeholder="String(productParams[item.name])"
                     :default-value="0"
                     min="0"
+                    @focus="focus"
                   />
                 </template>
                 <template v-else-if="item?.input === 'select'">
@@ -423,6 +425,7 @@ function filteredOptions(preset: any, val: number) {
                     :placeholder="`请选择${item.label}`"
                     :options="filteredOptions(optonsToSelect(item.preset), productParams[item.name])"
                     filterable
+                    @focus="focus"
                   />
                 </template>
                 <template v-else-if="item?.input === 'switch'">
@@ -432,6 +435,7 @@ function filteredOptions(preset: any, val: number) {
                   <n-input
                     v-model:value="productParams[item.name]"
                     :placeholder="String(productParams[item.name])"
+                    @focus="focus"
                   />
                 </template>
                 <template v-else-if="item?.input === 'list'">
@@ -443,6 +447,7 @@ function filteredOptions(preset: any, val: number) {
                       <n-input
                         v-model:value="productParams[item.name][i]"
                         :placeholder="certific"
+                        @focus="focus"
                       />
                       <div class="flex gap-1 items-center">
                         <div class="w-[32px] h-[32px] rounded-full bg-[#FFF] flex justify-center items-center" @click="productParams[item.name].splice(i, 1)">

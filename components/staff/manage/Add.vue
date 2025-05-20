@@ -121,6 +121,7 @@ defineExpose({
                   v-model:value="formlist.account.phone"
                   placeholder="请输入手机号"
                   round
+                  @focus="focus"
                 />
               </n-form-item-gi>
               <n-form-item-gi :span="12" label="姓名" path="nickname">
@@ -128,6 +129,7 @@ defineExpose({
                   v-model:value="formlist.account.nickname"
                   placeholder="请输入姓名"
                   round
+                  @focus="focus"
                 />
               </n-form-item-gi>
               <n-form-item-gi :span="12" label="密码" path="password">
@@ -135,6 +137,7 @@ defineExpose({
                   v-model:value="formlist.account.password"
                   placeholder="请输入密码"
                   round
+                  @focus="focus"
                 />
               </n-form-item-gi>
               <n-form-item-gi :span="12" label="email" path="email">
@@ -142,6 +145,7 @@ defineExpose({
                   v-model:value="formlist.account.email"
                   placeholder="请输入email"
                   round
+                  @focus="focus"
                 />
               </n-form-item-gi>
             </n-grid>

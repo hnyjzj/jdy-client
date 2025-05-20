@@ -116,6 +116,8 @@ const handleSearch = (query: string) => {
           clearable
           remote
           @search="handleSearch"
+          @focus="focus"
+
         />
       </template>
     </common-filter-where>

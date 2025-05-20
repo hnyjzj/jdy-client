@@ -150,18 +150,18 @@ const canShowFilter = (item: FilterWhere<AccessorieAllocate>) => {
                             />
                           </template>
                           <template v-if="item.input === 'text'">
-                            <n-input v-model:value="params[item.name as keyof AccessorieAllocateReq]" round :placeholder="`输入${item.label}`" />
+                            <n-input v-model:value="params[item.name as keyof AccessorieAllocateReq]" round :placeholder="`输入${item.label}`" @focus="focus" />
                           </template>
                           <template v-if="item.input === 'number'">
                             <div class="w-[100%]">
-                              <n-input-number v-model:value="params[item.name as keyof AccessorieAllocateReq]" round :placeholder="`输入${item.label}`" />
+                              <n-input-number v-model:value="params[item.name as keyof AccessorieAllocateReq]" round :placeholder="`输入${item.label}`" @focus="focus" />
                             </div>
                           </template>
                           <template v-if="item.input === 'switch'">
                             <n-switch v-model:value="params[item.name as keyof AccessorieAllocateReq]" :style="{ 'border-radius': '20px' }" round />
                           </template>
                           <template v-if="item.input === 'textarea'">
-                            <n-input v-model:value="params[item.name as keyof AccessorieAllocateReq]" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" />
+                            <n-input v-model:value="params[item.name as keyof AccessorieAllocateReq]" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" @focus="focus" />
                           </template>
                           <template v-if="item.input === 'search'">
                             <template v-if="item.name === 'from_store_id' || item.name === 'to_store_id'">
@@ -175,7 +175,10 @@ const canShowFilter = (item: FilterWhere<AccessorieAllocate>) => {
                                 clearable
                                 size="large"
                                 remote
-                                @focus="() => { getStoreList({ page: 1, limit: 20 }) }"
+                                @focus="(e) => {
+                                  focus(e)
+                                  getStoreList({ page: 1, limit: 20 })
+                                }"
                               />
                             </template>
                           </template>

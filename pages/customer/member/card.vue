@@ -27,7 +27,7 @@ const checked = ref<boolean>(true)
         <div class="flex-start mb-[12px]">
           <span class="w-[100px]">会员卡名称</span>
           <div class="bg-[#fff] flex-1  rounded-[24px] border-color-[#E6E6E8] border-solid border py-[6px] px-[12px]" :style="{ background: checked ? '#fff' : '#DEDEDE' }">
-            <input :disabled="!checked" type="text" class="w-full border-none bg-transparent" placeholder="请输入">
+            <input :disabled="!checked" type="text" class="w-full border-none bg-transparent" placeholder="请输入" @focus="focus">
           </div>
         </div>
         <div class="flex-start mb-[12px]">

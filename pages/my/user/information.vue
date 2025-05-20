@@ -181,7 +181,7 @@ const beforeUpload = (data: any) => {
             <template #nickname="{ validate, error }">
               <div class="items">
                 <div>昵称</div>
-                <input v-model="userinfoForm.nickname" type="text" class="text-right border-none color-black py-[10px]" placeholder="请输入" @change="validate()">
+                <input v-model="userinfoForm.nickname" type="text" class="text-right border-none color-black py-[10px]" placeholder="请输入" @focus="focus" @change="validate()">
               </div>
               <template v-if="error">
                 <div class="error">
@@ -192,7 +192,7 @@ const beforeUpload = (data: any) => {
             <template #email="{ error, validate }">
               <div class="items">
                 <div>邮箱</div>
-                <input v-model="userinfoForm.email" type="text" class="text-right border-none color-black py-[10px]" placeholder="请输入" @change="validate()">
+                <input v-model="userinfoForm.email" type="text" class="text-right border-none color-black py-[10px]" placeholder="请输入" @focus="focus" @change="validate()">
               </div>
               <template v-if="error">
                 <div class="error">
@@ -232,12 +232,12 @@ const beforeUpload = (data: any) => {
             <template #password>
               <div class="items ">
                 <div>密码</div>
-                <input v-model="userinfoForm.password" type="password" class="text-right border-none color-black py-[10px]" placeholder="请输入密码">
+                <input v-model="userinfoForm.password" type="password" class="text-right border-none color-black py-[10px]" placeholder="请输入密码" @focus="focus">
               </div>
               <template v-if="userinfoForm.password">
                 <div class="items ">
                   <div>确认密码</div>
-                  <input v-model="againPass" type="password" class="text-right border-none color-black py-[10px]" placeholder="请确认密码">
+                  <input v-model="againPass" type="password" class="text-right border-none color-black py-[10px]" placeholder="请确认密码" @focus="focus">
                 </div>
               </template>
             </template>

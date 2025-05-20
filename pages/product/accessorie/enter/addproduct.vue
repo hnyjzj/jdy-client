@@ -151,7 +151,7 @@ function sumStock(category: CategoryHasProduct) {
                                 </div>
                                 <template v-if="filter.input === 'select'">
                                   <div class="value">
-                                    {{ filter.preset[item[filter.name]] }}
+                                    {{ filter.preset[item[filter.name] as number] }}
                                   </div>
                                 </template>
                                 <template v-else-if="filter.input === 'switch'">
@@ -172,13 +172,13 @@ function sumStock(category: CategoryHasProduct) {
                           <div class="key w-[80px]">
                             入库数量
                           </div>
-                          <n-input-number v-model:value="item.in_stock" placeholder="请输入入库数量" min-0 :show-button="false" />
+                          <n-input-number v-model:value="item.in_stock" placeholder="请输入入库数量" min-0 :show-button="false" @focus="focus" />
                         </div>
                         <div class="flex items-center mb-2">
                           <div class="key w-[80px]">
                             入库入网费
                           </div>
-                          <n-input-number v-model:value="item.in_access_fee" placeholder="请输入入库入网费" min-0 :show-button="false" />
+                          <n-input-number v-model:value="item.in_access_fee" placeholder="请输入入库入网费" min-0 :show-button="false" @focus="focus" />
                         </div>
                       </div>
                     </template>
@@ -202,17 +202,18 @@ function sumStock(category: CategoryHasProduct) {
                 label: v.label,
                 value: v.name,
               }))"
+              @focus="focus"
               @change="searchParams.val = ''" />
           </div>
           <div>
             <template v-if="searchWhere?.input === 'text' || searchWhere?.input === 'textarea'">
-              <n-input v-model:value="searchParams.val" placeholder="请搜索" @keydown.enter="searchAccessorie" />
+              <n-input v-model:value="searchParams.val" placeholder="请搜索" @keydown.enter="searchAccessorie" @focus="focus" />
             </template>
             <template v-if="searchWhere?.input === 'number'">
-              <n-input-number v-model:value="searchParams.val" placeholder="请搜索" @keydown.enter="searchAccessorie" />
+              <n-input-number v-model:value="searchParams.val" placeholder="请搜索" @keydown.enter="searchAccessorie" @focus="focus" />
             </template>
             <template v-else-if="searchWhere?.input === 'select'">
-              <n-select v-model:value="searchParams.val" :options="optonsToSelect(searchWhere.preset)" />
+              <n-select v-model:value="searchParams.val" :options="optonsToSelect(searchWhere.preset)" @focus="focus" />
             </template>
           </div>
           <div @click="searchAccessorie">
@@ -224,7 +225,7 @@ function sumStock(category: CategoryHasProduct) {
             <thead>
               <tr class="table-color">
                 <th class="sticky-left table-color px-2">
-                  <input type="checkbox" :disabled="categoryList?.length === 0" @change="toggleSelectAll">
+                  <input type="checkbox" :disabled="categoryList?.length === 0" @change="toggleSelectAll" @focus="focus">
                 </th>
                 <th class="whitespace-nowrap px-2 py-1">
                   库存
@@ -244,7 +245,7 @@ function sumStock(category: CategoryHasProduct) {
                 <template v-for="(category, i) in categoryList" :key="i">
                   <tr class="table-color">
                     <td class="sticky-left table-color py-1 px-2">
-                      <input v-model="selectedCategories" type="checkbox" :value="category.id">
+                      <input v-model="selectedCategories" type="checkbox" :value="category.id" @focus="focus">
                     </td>
                     <td>
                       {{ sumStock(category as CategoryHasProduct) }}
@@ -257,7 +258,7 @@ function sumStock(category: CategoryHasProduct) {
                       </template>
                       <template v-if="item.input === 'select'">
                         <td class="border-collapse">
-                          {{ item.preset[category[item.name]] }}
+                          {{ item.preset[category[item.name] as number] }}
                         </td>
                       </template>
                     </template>

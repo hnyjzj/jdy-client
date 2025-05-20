@@ -54,14 +54,22 @@ const handleAddProductPopup = ref(false)
   <div>
     <common-fold title="货品" :is-collapse="false">
       <div class="p-[16px]">
-        <div class="grid-12 gap-[16px] flex-center-row">
-          <div class="col-4">
-            <common-button-rounded content="选择货品" @button-click="showModal = true" />
+        <div class="btn grid-12 gap-[8px]">
+          <div
+            class="btn-left col-6 cursor-pointer" uno-sm="col-4 offset-2" @click="showModal = true">
+            <icon name="i-icon:search" color="#fff" :size="12" />
+            <div class="ml-2">
+              搜索
+            </div>
           </div>
-          <div class="col-4">
-            <common-button-rounded content="手动添加" bgc="#fff" color="#3E83F1" @button-click="handleAddProductPopup = true" />
+          <div
+            class="btn-right  col-6 cursor-pointer" uno-sm="col-4 offset-6" @click="handleAddProductPopup = true">
+            <div class="ml-2">
+              手动添加
+            </div>
           </div>
         </div>
+
         <div class=" pt-[16px]">
           <sale-deposit-product-list v-model:list="showProductList" :filter-list="props.filterList" />
         </div>
@@ -74,5 +82,11 @@ const handleAddProductPopup = ref(false)
 </template>
 
 <style lang="scss" scoped>
-
+.btn-left {
+  --uno: 'text-[16px] border-none rounded-[36px] text-[#FFFFFF] flex justify-center items-center py-[10px]';
+  background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
+}
+.btn-right {
+  --uno: 'text-[16px] py-[9px] text-[#1a6beb] rounded-[36px] bg-[transparent] flex justify-center items-center border-[1px] border-solid border-[#1a6beb]';
+}
 </style>

@@ -162,6 +162,7 @@ const execute = async () => {
                           size="large"
                           round
                           placeholder="请输入会员姓名"
+                          @focus="focus"
                         />
                       </div>
                     </div>
@@ -176,6 +177,7 @@ const execute = async () => {
                           maxlength="11"
                           round
                           placeholder="请输入会员联系方式"
+                          @focus="focus"
                         />
                       </div>
                     </div>
@@ -189,6 +191,7 @@ const execute = async () => {
                           size="large"
                           round
                           placeholder="请输入会员昵称"
+                          @focus="focus"
                         />
                       </div>
                     </div>
@@ -201,6 +204,8 @@ const execute = async () => {
                         placeholder="请选择会员性别"
                         :options="selectOptions"
                         menu-size="large"
+                        @focus="focus"
+
                         @blur="() => {
                           memberParams.gender = showToUser as any
                         }"
@@ -216,6 +221,7 @@ const execute = async () => {
                           size="large"
                           round
                           placeholder="请输入会员身份证号"
+                          @focus="focus"
                         />
                       </div>
                     </div>
@@ -234,7 +240,11 @@ const execute = async () => {
                           menu-size="large"
                           clearable
                           remote
-                          @focus="() => { getList }"
+
+                          @focus="(e) => {
+                            focus(e)
+                            getList
+                          }"
                         />
                       </div>
                     </div>
@@ -253,7 +263,10 @@ const execute = async () => {
                           menu-size="large"
                           clearable
                           remote
-                          @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+                          @focus="(e) => {
+                            focus(e)
+                            getStoreStaffList({ id: myStore.id })
+                          }"
                         />
                       </div>
                     </div>

@@ -170,6 +170,7 @@ async function changeMyStore() {
           filterable
           placeholder="选择调出门店"
           :options="storeCol"
+          @focus="focus"
         />
       </template>
       <template #to_store_id>
@@ -179,6 +180,7 @@ async function changeMyStore() {
           filterable
           placeholder="选择调入门店"
           :options="storeCol"
+          @focus="focus"
         />
       </template>
     </common-filter-where>
