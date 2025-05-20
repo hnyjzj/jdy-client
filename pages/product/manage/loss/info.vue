@@ -86,6 +86,7 @@ function submitConvert() {
           menu-size="large"
           placeholder="转换为成品或旧料"
           :options="converOption"
+          @focus="focus"
         />
       </div>
     </common-model>

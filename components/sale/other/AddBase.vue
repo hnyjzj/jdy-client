@@ -46,11 +46,14 @@ const formData = defineModel<otherOrderCreate>('form', { default: {} })
               }))"
               clearable
               remote
-              @focus="() => { props.getStaff() }"
+              @focus="(e) => {
+                focus(e)
+                props.getStaff()
+              }"
             />
           </n-form-item-gi>
           <n-form-item-gi :span="12" label="收支内容" path="content">
-            <n-input v-model:value="formData.content" placeholder="请输入收支内容" />
+            <n-input v-model:value="formData.content" placeholder="请输入收支内容" @focus="focus" />
           </n-form-item-gi>
 
           <n-form-item-gi :span="12" label="收支来源" path="source">
@@ -60,11 +63,11 @@ const formData = defineModel<otherOrderCreate>('form', { default: {} })
               :options="optonsToSelect(props.filterList.source?.preset) "
               clearable
               remote
-
+              @focus="focus"
             />
           </n-form-item-gi>
           <n-form-item-gi :span="24" label="关联销售单">
-            <n-input v-model:value="formData.order_id" placeholder="请输入销售单号" />
+            <n-input v-model:value="formData.order_id" placeholder="请输入销售单号" @focus="focus" />
           </n-form-item-gi>
         </n-grid>
       </div>

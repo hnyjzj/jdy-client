@@ -12,8 +12,8 @@ const props = withDefaults(defineProps<{
 
 <template>
   <div>
-    <div class="pt-[50px]">
-      <Icon :name="props.icon" :dark="props.dark" class="!text-[150px]" :size="200" />
+    <div class="pt-[20px]">
+      <Icon :name="props.icon" :dark="props.dark" class="!text-[120px]" :size="200" />
       <div class="flex-center-row text-[16px] color-[#666] dark:color-[#fff]">
         {{ props.text }}
       </div>

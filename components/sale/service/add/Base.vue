@@ -28,7 +28,10 @@ const region = defineModel('region', { default: {} })
               }))"
               clearable
               remote
-              @focus="() => { props.getStaff() }"
+              @focus="(e) => {
+                focus(e)
+                props.getStaff()
+              }"
             />
           </n-form-item-gi>
           <n-form-item-gi
@@ -36,28 +39,28 @@ const region = defineModel('region', { default: {} })
             label="维修项目" label-placement="top"
             path="name"
           >
-            <n-input v-model:value="formData.name" />
+            <n-input v-model:value="formData.name" @focus="focus" />
           </n-form-item-gi>
           <n-form-item-gi
             :span="24"
             label="问题描述" label-placement="top"
             path="desc"
           >
-            <n-input v-model:value="formData.desc" />
+            <n-input v-model:value="formData.desc" @focus="focus" />
           </n-form-item-gi>
           <n-form-item-gi
             :span="12"
             label="维修费用" label-placement="top"
 
           >
-            <n-input-number v-model:value="formData.expense" min="0" :show-button="false" />
+            <n-input-number v-model:value="formData.expense" min="0" :show-button="false" @focus="focus" />
           </n-form-item-gi>
           <n-form-item-gi
             :span="12"
             label="维修成本" label-placement="top"
 
           >
-            <n-input-number v-model:value="formData.cost" min="0" :show-button="false" />
+            <n-input-number v-model:value="formData.cost" min="0" :show-button="false" @focus="focus" />
           </n-form-item-gi>
           <n-form-item-gi
             :span="12"
@@ -88,7 +91,7 @@ const region = defineModel('region', { default: {} })
               :span="24"
               label="详细地址" label-placement="top"
             >
-              <n-input v-model:value="formData.address" />
+              <n-input v-model:value="formData.address" @focus="focus" />
             </n-form-item-gi>
           </template>
         </n-grid>

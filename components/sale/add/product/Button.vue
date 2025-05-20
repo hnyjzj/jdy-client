@@ -6,10 +6,10 @@ const emits = defineEmits<{
 
 <template>
   <div class="p-[16px]">
-    <div class="btn grid-12 gap-[20px]">
+    <div class="btn grid-12 gap-[8px]">
       <div
-        class="btn-left col-span-4 offset-4 cursor-pointer" @click="emits('search')">
-        <icon name="i-icon:search" color="#fff" :size="12" />
+        class="btn-left col-6 offset-3 cursor-pointer" uno-sm="col-4 offset-4" @click="emits('search')">
+        <icon name="i-icon:search" color="#fff" :size="16" />
         <div class="ml-2">
           搜索
         </div>

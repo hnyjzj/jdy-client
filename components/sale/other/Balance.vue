@@ -46,7 +46,8 @@ const totalMoney = () => {
                   }"
                 >
                   <n-select
-                    v-model:value="item.payment_method" :options="payMethods" />
+                    v-model:value="item.payment_method"
+                    :options="payMethods" @focus="focus" />
                 </n-form-item-gi>
                 <n-form-item-gi
                   :span="12"
@@ -59,6 +60,7 @@ const totalMoney = () => {
                       round
                       min="0"
                       :show-button="false"
+                      @focus="focus"
                     />
                   </div>
                   <div>
@@ -78,7 +80,7 @@ const totalMoney = () => {
             </div>
           </template>
         </div>
-        <div class="border-b-[#E6E6E8] border border-b-solid py-[12px] mb-[12px]">
+        <div class=" py-[12px] mb-[12px]">
           <div class="text-[16px] color-[#3971F3] line-height-[24px] text-right font-semibold">
             订单金额:{{ totalMoney() }}
           </div>

@@ -62,7 +62,10 @@ const checkRatio = () => {
               }))"
               clearable
               remote
-              @focus="() => { props.getStaff() }"
+              @focus="(e) => {
+                focus(e)
+                props.getStaff()
+              }"
             />
           </n-form-item-gi>
 
@@ -96,12 +99,15 @@ const checkRatio = () => {
                   }))"
                   clearable
                   remote
-                  @focus="() => { props.getStaff() }"
+                  @focus="(e) => {
+                    focus(e)
+                    props.getStaff()
+                  }"
                 />
               </n-form-item-gi>
               <n-form-item-gi :span="12" label="业绩比例" path="performance_rate" label-placement="top">
                 <div class="w-full">
-                  <n-input-number v-model:value="item.performance_rate" :min="0" :max="100" :show-button="false" @blur="checkRatio()">
+                  <n-input-number v-model:value="item.performance_rate" :min="0" :max="100" :show-button="false" @focus="focus" @blur="checkRatio()">
                     <template #suffix>
                       %
                     </template>

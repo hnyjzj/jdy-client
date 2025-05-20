@@ -85,7 +85,7 @@ onBeforeUnmount (() => {
 
 <style lang="scss" scoped>
 .popup {
-  --uno: 'fixed left-0 right-0 bottom-0 w-[100vw] h-[100vh] z-999 overflow-hidden';
+  --uno: 'fixed left-0 right-0 bottom-0 w-[100vw] h-[100vh] z-999';
   background: rgba($color: #000, $alpha: 0.3);
   top: calc(0 - var(--navbar-height, 0px));
 
@@ -94,7 +94,7 @@ onBeforeUnmount (() => {
   }
 
   .content {
-    --uno: 'fixed left-0 right-0 bottom-0 sm:w-426px sm:translate-x-[-50%] sm:translate-y-[50%] sm:bottom-[50%] sm:left-[50%]';
+    --uno: 'fixed left-0 right-0 bottom-0 sm:w-426px sm:translate-x-[-50%] sm:translate-y-[50%] sm:bottom-[50%] sm:left-[50%] ';
 
     .top {
       --uno: 'relative h-34px border-rd-[20px_20px_0_0]';

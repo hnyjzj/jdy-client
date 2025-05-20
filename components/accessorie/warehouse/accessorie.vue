@@ -164,7 +164,7 @@ defineExpose({
             3、 修改配件入网费，全公司该条目的入网费会重新计算。
           </div>
         </div>
-        <input class="h-[40px] absolute bottom-0 w-full opacity-0" type="file" @change="FileUpload">
+        <input class="h-[40px] absolute bottom-0 w-full opacity-0" type="file" @change="FileUpload" @focus="focus">
         <div class="uploadInp cursor-pointer">
           <div class="text-row-hide w-[60%]">
             {{ fileName || '请添加文件' }}

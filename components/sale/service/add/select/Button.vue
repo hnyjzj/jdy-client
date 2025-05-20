@@ -7,17 +7,17 @@ const emits = defineEmits<{
 
 <template>
   <div class="p-[16px]">
-    <div class="grid-12 gap-[20px]">
+    <div class="grid-12 gap-[8px]">
       <div
-        class="btn-left col-span-4 offset-2 cursor-pointer" @click="emits('searchQl')"
+        class="btn-left col-6  cursor-pointer" uno-sm="col-4 offset-2" @click="emits('searchQl')"
       >
-        <icon name="i-icon:search" color="#fff" :size="12" />
+        <icon name="i-icon:search" color="#fff" :size="16" />
         <div class="ml-2">
           搜索
         </div>
       </div>
       <div
-        class="btn-right col-span-4 cursor-pointer" @click="emits('handleAdd')">
+        class="btn-right col-6 cursor-pointer" uno-sm="col-4 offset-6" @click="emits('handleAdd')">
         <div class="ml-2">
           手动添加
         </div>

@@ -89,7 +89,7 @@ const scanCode = async () => {
         nowServiceGoods = {}
         searchShow = false
       }">
-      <div class="grid-12">
+      <div class="grid-12 h-[300px] overflow-y-scroll">
         <div class="col-12">
           <div>
             <div class="flex  py-[12px]">
@@ -106,9 +106,10 @@ const scanCode = async () => {
             <div class="flex-1">
               <n-input
                 v-model:value="searchCode"
+                size="large"
                 type="text"
                 clearable
-                placeholder="请输入商品条码" />
+                placeholder="请输入商品条码" @focus="focus" />
             </div>
             <div class="pl-[16px] flex">
               <n-button type="info" round @click="search()">
@@ -121,7 +122,7 @@ const scanCode = async () => {
               </div>
             </div>
           </div>
-          <div class="h-[300px] overflow-y-auto py-[16px]">
+          <div class=" py-[16px]">
             <div>
               <template v-if="Object.keys(nowServiceGoods).length !== 0">
                 <n-form ref="oldMasterRef" :model="nowServiceGoods" :rules="oldRules">
@@ -146,6 +147,7 @@ const scanCode = async () => {
                         round
                         min="0"
                         :precision="3"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="备注" path="remark">
@@ -158,6 +160,7 @@ const scanCode = async () => {
                         round
                         min="0"
                         :precision="3"
+                        @focus="focus"
                       />
                     </n-form-item-gi>
                   </n-grid>

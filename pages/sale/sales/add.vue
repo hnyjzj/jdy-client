@@ -25,6 +25,9 @@ const { finishedList } = storeToRefs(useFinished())
 const { createMember } = useMemberManage()
 const { getOrderDetail, getDepositList } = useDepositOrder()
 const { OrderDetail, OrdersList } = storeToRefs(useDepositOrder())
+
+const showSubmitBtn = ref(true)
+
 const addMemberRef = ref()
 const Key = ref()
 const formRef = ref<FormInst | null>(null)
@@ -374,7 +377,7 @@ const changeStore = () => {
 </script>
 
 <template>
-  <div :key="Key" class="grid-12">
+  <div :key="Key" class="grid-12 pb-[16px]">
     <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] pb-[80px] col-12" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3">
       <n-form
         ref="formRef"
@@ -394,6 +397,7 @@ const changeStore = () => {
             :store-staff="StoreStaffList"
             :get-staff="getStaff"
             :set-score="handleIsInterChange"
+            @set-show-submit="showSubmitBtn = $event"
           />
         </div>
         <sale-add-member
@@ -404,6 +408,7 @@ const changeStore = () => {
           :get-staffs="getStaff"
           :add-new-member="addNewMember"
           @set-member-id="formData.member_id = $event"
+          @set-show-submit="showSubmitBtn = $event"
         />
         <div class="pb-[16px]">
           <sale-add-product
@@ -463,13 +468,16 @@ const changeStore = () => {
         >
           <template #score />
         </sale-add-settlement>
-        <div class="h-[80px] bg-[#fff] fixed z-1">
-          <div class="btn grid-12 px-[16px]">
-            <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
-              <common-button-rounded content="开单" />
+
+        <template v-if="showSubmitBtn">
+          <div class="h-[80px] bg-[#fff] fixed z-1">
+            <div class="btn grid-12 px-[16px]">
+              <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
+                <common-button-rounded content="开单" />
+              </div>
             </div>
           </div>
-        </div>
+        </template>
       </n-form>
     </div>
   </div>

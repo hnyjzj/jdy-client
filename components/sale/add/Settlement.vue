@@ -137,6 +137,7 @@ const unPayMoney = computed(() => {
                 min="0"
                 :disabled="props.disScore"
                 placeholder="抵扣积分值"
+                @focus="focus"
               />
             </n-form-item-gi>
           </n-grid>
@@ -174,7 +175,8 @@ const unPayMoney = computed(() => {
                   }"
                 >
                   <n-select
-                    v-model:value="item.payment_method" :options="payMethods" />
+                    v-model:value="item.payment_method"
+                    :options="payMethods" @focus="focus" />
                 </n-form-item-gi>
                 <n-form-item-gi
                   :span="12"
@@ -187,6 +189,7 @@ const unPayMoney = computed(() => {
                       round
                       min="0"
                       :show-button="false"
+                      @focus="focus"
                     />
                   </div>
                   <div>
@@ -206,7 +209,7 @@ const unPayMoney = computed(() => {
             </div>
           </template>
         </div>
-        <div class="border-y-[#E6E6E8] border border-y-solid py-[12px] mb-[12px]">
+        <div class="border-t-[#E6E6E8] border border-t-solid py-[12px] mb-[12px]">
           <div class="text-[16px] color-[#3971F3] line-height-[24px] text-right font-semibold">
             剩余未支付:{{ unPayMoney }}
           </div>
@@ -219,6 +222,7 @@ const unPayMoney = computed(() => {
             :style="{ '--n-border-radius': '20px' }"
             placeholder="备注信息"
             type="textarea"
+            @focus="focus"
           />
         </n-form-item>
       </div>

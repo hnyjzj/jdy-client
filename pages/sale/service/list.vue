@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useCascaderAreaData } from '@vant/area-data'
-
+// 维修单列表
 useSeoMeta({
   title: '维修单列表',
 })
@@ -102,7 +102,7 @@ const setNowcity = () => {
           <product-filter-search
             placeholder="搜索订单号" class="color-[#fff] flex-1" @submit="searchOrder" @clear="clearFn" />
         </div>
-        <div class="flex-center-between gap-2 pt-[12px] pb-[16px]">
+        <div class="flex-center-between gap-2 py-[16px]">
           <div class="text-size-[14px] color-[#fff]">
             共{{ Total }}条数据
           </div>
@@ -145,7 +145,10 @@ const setNowcity = () => {
             }))"
             clearable
             remote
-            @focus="() => { getStoreStaffList({ id: myStore.id }) }"
+            @focus="(e) => {
+              focus(e)
+              getStoreStaffList({ id: myStore.id })
+            }"
           />
         </template>
         <template #member_id>
@@ -160,6 +163,7 @@ const setNowcity = () => {
             clearable
             remote
             @search="getMember"
+            @focus="focus"
           />
         </template>
         <template #province>
@@ -174,6 +178,7 @@ const setNowcity = () => {
             clearable
             remote
             @update:value="setNowProvince"
+            @focus="focus"
           />
         </template>
         <template #city>
@@ -189,6 +194,7 @@ const setNowcity = () => {
               clearable
               remote
               @update:value="setNowcity"
+              @focus="focus"
             />
           </div>
         </template>
@@ -204,6 +210,7 @@ const setNowcity = () => {
               }))"
               clearable
               remote
+              @focus="focus"
             />
           </div>
         </template>

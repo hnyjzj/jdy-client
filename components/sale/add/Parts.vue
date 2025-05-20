@@ -22,12 +22,12 @@ const hold = ref(0)
     <div class="p-[16px]">
       <div class="grid-12">
         <div
-          class="btn-left col-span-4 offset-4 cursor-pointer py-[10px]" @click="() => {
+          class="btn-left col-6 offset-3 cursor-pointer py-[10px]" uno-sm="col-4 offset-4" @click="() => {
             emits('clearList')
             showModal = true
           }
           ">
-          <icon name="i-icon:search" color="#FFF" :size="12" />
+          <icon name="i-icon:search" color="#FFF" :size="16" />
           <div class="ml-2">
             搜索
           </div>

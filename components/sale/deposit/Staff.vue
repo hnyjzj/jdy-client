@@ -25,7 +25,10 @@ const formData = defineModel<DepositOrder>('formData', { default: {} })
                 }))"
                 clearable
                 remote
-                @focus="() => { props.getStaffs() }"
+                @focus="(e) => {
+                  focus(e)
+                  props.getStaffs()
+                }"
               />
             </n-form-item-gi>
 
@@ -48,7 +51,10 @@ const formData = defineModel<DepositOrder>('formData', { default: {} })
                 }))"
                 clearable
                 remote
-                @focus="() => { props.getStaffs() }"
+                @focus="(e) => {
+                  focus(e)
+                  props.getStaffs()
+                }"
               />
             </n-form-item-gi>
           </n-grid>

@@ -137,14 +137,15 @@ defineExpose({
                   v-model:value="model.method"
                   placeholder="请选择退货入库方式"
                   :options="[{ label: '成品仓', value: 1 }, { label: '旧料仓', value: 2 }]"
+                  @focus="focus"
                 />
               </n-form-item-gi>
             </template>
             <n-form-item-gi :span="6" label="退款金额" path="price">
-              <n-input-number v-model:value="model.price" min="0" :disabled="props.showReturnGoods?.FinishedType === 3" />
+              <n-input-number v-model:value="model.price" min="0" :disabled="props.showReturnGoods?.FinishedType === 3" @focus="focus" />
             </n-form-item-gi>
             <n-form-item-gi :span="12" label="备注" path="remark">
-              <n-input v-model:value="model.remark" type="textarea" rows="2" placeholder="请输入退款说明" />
+              <n-input v-model:value="model.remark" type="textarea" rows="2" placeholder="请输入退款说明" @focus="focus" />
             </n-form-item-gi>
             <template v-for="(item, index) in model.payments" :key="index">
               <n-form-item-gi
@@ -159,7 +160,7 @@ defineExpose({
                 }"
               >
                 <n-select
-                  v-model:value="item.payment_method" placeholder="请选择退款方式" :options="optonsToSelect(props.where.payment_method?.preset)" />
+                  v-model:value="item.payment_method" placeholder="请选择退款方式" :options="optonsToSelect(props.where.payment_method?.preset)" @focus="focus" />
               </n-form-item-gi>
               <n-form-item-gi
                 :span="6"
@@ -172,6 +173,7 @@ defineExpose({
                     round
                     min="0"
                     :show-button="false"
+                    @focus="focus"
                   />
                 </div>
                 <div>
