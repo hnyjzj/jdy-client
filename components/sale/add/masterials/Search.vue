@@ -16,6 +16,7 @@ const oldRules = ref<FormRules>({
     message: '请输入金重',
   },
   quality_actual: {
+    type: 'number',
     required: true,
     trigger: ['blur', 'change'],
     message: '请输入实际成色',

@@ -111,7 +111,7 @@ async function changeStore() {
                     </div>
                     <template v-if="item.input === 'select'">
                       <div class="text-align-end val">
-                        {{ item.preset[info.category[item.name]] }}
+                        {{ item.preset[info.category[item.name] as number] }}
                       </div>
                     </template>
                     <template v-else-if="item.name === 'code'">

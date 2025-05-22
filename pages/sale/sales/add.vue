@@ -279,7 +279,10 @@ const searchProductList = async (data: { val: string, type: string }) => {
 }
 // 搜索旧料
 const searchOlds = async (val: string) => {
-  await getOldList({ page: 1, limit: 10, where: { code: val, status: 5 } })
+  await getOldList({ page: 1, limit: 10, where: { code: val, status: ProductFinishedsStatus.Sold } })
+  if (!OldObj.value.id) {
+    $toast.error('搜索货品不存在')
+  }
   return OldObj.value || []
 }
 // 搜索配件
@@ -292,6 +295,9 @@ const searchParts = async (val: string, type: string) => {
   }
   if (type === 'name') {
     await getAccessorieList({ page: 1, limit: 10, where: { name: val, store_id: myStore.value.id } })
+  }
+  if (!accessorieList.value.length) {
+    $toast.error('搜索货品不存在')
   }
   return accessorieList.value || []
 }
