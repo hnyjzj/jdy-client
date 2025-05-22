@@ -130,7 +130,7 @@ interface ProductFinisheds {
    * 产品状态--
    *
    */
-  status: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
+  status: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
   /**
    * 门店
    */
