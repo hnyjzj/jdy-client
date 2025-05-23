@@ -29,16 +29,12 @@ useHead({
   <nuxt-layout>
     <div class="px-[32px] pt-[240px]">
       <div class="flex-center-col gap-[32px]">
-        <div
-          class="text-[#1D1D1D] font-size-[160px] font-bold dark:text-[#F5F5F5] row-height"
-          uno-lg="font-size-[240px]"
-        >
-          403
+        <div>
+          <icon class="cursor-pointer" name="i-svg:forbidden" :size="150" />
         </div>
-
         <div class="flex-center-col gap-[16px]">
           <div class="font-semibold text-[32px] color-[#333] dark:color-[#F2F2F2] row-height">
-            您暂时无权访问!
+            您暂无访问权限!
           </div>
           <div class="font-size-[20px] color-[#333] dark:color-[#F2F2F2] flex-center-col gap-[6px] row-height">
             <span>请联系管理员处理。</span>
