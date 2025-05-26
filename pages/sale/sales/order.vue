@@ -12,7 +12,7 @@ const { getFinishedWhere } = useFinished()
 const { finishedFilterList } = storeToRefs(useFinished())
 const { getOldWhere } = useOld()
 const { oldFilterList } = storeToRefs(useOld())
-const router = useRouter()
+
 const route = useRoute()
 if (route.query.id) {
   await getOrderDetail({ id: route.query.id as string })
@@ -43,16 +43,6 @@ const returnGoods = async (req: ReturnGoods) => {
         :product-filter="finishedFilterList"
         :orders="OrderDetail"
         :return-goods="returnGoods" />
-    </div>
-    <div class="footer">
-      <div class="grid-12 gap-[12px] px-[16px]">
-        <div class="col-6 offset-3" uno-sm="col-6 offset-3">
-          <common-button-rounded
-            content="返回" bgc="#fff" color="#000" @button-click="() => {
-              router.back()
-            }" />
-        </div>
-      </div>
     </div>
   </div>
 </template>
