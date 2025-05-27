@@ -3,13 +3,13 @@
  */
 export enum CheckStatus {
   /** 全部 */
-  all,
+  All,
   /** 草稿 */
   Draft,
   /** 盘点中 */
   Checking,
   /** 待验证 */
-  Tobeverified,
+  ToBeVerified,
   /** 盘点完成 */
   Checked,
   /** 盘点异常 */

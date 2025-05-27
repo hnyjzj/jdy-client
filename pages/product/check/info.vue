@@ -44,10 +44,10 @@ function getFunBtn() {
     funbtns.value.push({ status: CheckStatus.Checking, text: '开始盘点' })
   }
   if (userinfo.id === checkInfo.value.inventory_person_id && checkInfo.value.status === CheckStatus.Checking) {
-    funbtns.value.push({ status: CheckStatus.Tobeverified, text: '结束盘点', finish: true })
-    funbtns.value.push({ status: CheckStatus.Tobeverified, text: '开始盘点', add: true })
+    funbtns.value.push({ status: CheckStatus.ToBeVerified, text: '结束盘点', finish: true })
+    funbtns.value.push({ status: CheckStatus.ToBeVerified, text: '开始盘点', add: true })
   }
-  if (userinfo.id === checkInfo.value.inspector_id && checkInfo.value.status === CheckStatus.Tobeverified) {
+  if (userinfo.id === checkInfo.value.inspector_id && checkInfo.value.status === CheckStatus.ToBeVerified) {
     funbtns.value.push({ status: CheckStatus.Abnormal, text: '异常' })
     funbtns.value.push({ status: CheckStatus.Checked, text: '验证通过' })
   }
@@ -148,6 +148,10 @@ async function submitGoods() {
 
 /** 批量上传盘点货品 */
 async function bulkupload(data: string[]) {
+  if (!data || !data.length) {
+    $toast.error('请上传正确的货品编号文件')
+    return
+  }
   const params: AddCheckProduct = {
     id: checkInfo.value.id,
     codes: data,
@@ -156,7 +160,7 @@ async function bulkupload(data: string[]) {
 }
 
 async function ConfirmUse() {
-  submitChange(CheckStatus.Tobeverified)
+  submitChange(CheckStatus.ToBeVerified)
 }
 
 /** 当前nav货品数据 */

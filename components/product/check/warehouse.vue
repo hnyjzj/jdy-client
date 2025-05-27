@@ -37,11 +37,16 @@ function cleanExcelData(data: any) {
 
 async function submitGoods() {
   const data: string[] = []
-  sheetData.value.forEach((item: any, index: number) => {
+
+  sheetData.value.forEach((row: string[], index: number) => {
     if (index !== 0) {
-      data.push(...item)
+      const firstCell = row[0]?.trim()
+      if (firstCell) {
+        data.push(firstCell)
+      }
     }
   })
+
   emits('upload', [...new Set(data)])
 }
 
