@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { checkInfo, checkFilterList } = storeToRefs(useCheck())
-const { getCheckInfo, getCheckWhere, changeCheckStatus } = useCheck()
+const { getCheckInfo, getCheckWhere, changeCheckStatus, addCheckProduct } = useCheck()
 const { userinfo } = useUser()
 const { $toast } = useNuxtApp()
 const route = useRoute()
@@ -16,17 +16,22 @@ const product_status = ref(0)
 // 盘点单详情
 useSeoMeta({ title: '盘点单详情' })
 
-onMounted(async () => {
-  await getCheckWhere()
-  await getFinishedWhere()
-  await getOldWhere()
-})
-
 interface funBtn {
   status: CheckInfo['status']
   text: string
+  add?: boolean
+  finish?: boolean
 }
 
+const inputModel = ref(false)
+const uploadModel = ref(false)
+const importModel = ref(false)
+const confirmShow = ref(false)
+/** 上传组件引用 */
+const uploadRef = ref()
+
+/** 单个添加盘点的货品code */
+const goodCode = ref('')
 // **先声明并初始化 funbtns**
 const funbtns = ref<funBtn[]>([])
 
@@ -34,17 +39,17 @@ const funbtns = ref<funBtn[]>([])
 function getFunBtn() {
   funbtns.value = [] // 清空按钮数组
   // 根据状态添加按钮
-  if (userinfo.id === checkInfo.value.inventory_person_id && checkInfo.value.status === 1) {
-    funbtns.value.push({ status: 6, text: '取消盘点' })
-    funbtns.value.push({ status: 2, text: '开始盘点' })
+  if (userinfo.id === checkInfo.value.inventory_person_id && checkInfo.value.status === CheckStatus.Draft) {
+    funbtns.value.push({ status: CheckStatus.Cancel, text: '取消盘点' })
+    funbtns.value.push({ status: CheckStatus.Checking, text: '开始盘点' })
   }
-  if (userinfo.id === checkInfo.value.inspector_id && checkInfo.value.status === 2) {
-    funbtns.value.push({ status: 6, text: '取消盘点' })
-    funbtns.value.push({ status: 3, text: '盘点完成' })
+  if (userinfo.id === checkInfo.value.inventory_person_id && checkInfo.value.status === CheckStatus.Checking) {
+    funbtns.value.push({ status: CheckStatus.Tobeverified, text: '结束盘点', finish: true })
+    funbtns.value.push({ status: CheckStatus.Tobeverified, text: '开始盘点', add: true })
   }
-  if (userinfo.id === checkInfo.value.inspector_id && checkInfo.value.status === 3) {
-    funbtns.value.push({ status: 6, text: '取消盘点' })
-    funbtns.value.push({ status: 4, text: '盘点完成' })
+  if (userinfo.id === checkInfo.value.inspector_id && checkInfo.value.status === CheckStatus.Tobeverified) {
+    funbtns.value.push({ status: CheckStatus.Abnormal, text: '异常' })
+    funbtns.value.push({ status: CheckStatus.Checked, text: '验证通过' })
   }
 }
 
@@ -84,11 +89,6 @@ const step = [
   { title: '已完成', subs: 4 },
 ]
 
-// 如果路由中有 id，则获取详情
-if (route.query.id) {
-  await getInfo()
-}
-
 // 切换盘点状态
 function changeStatus(val: number) {
   product_status.value = val
@@ -103,6 +103,77 @@ async function submitChange(status: CheckInfo['status']) {
     getInfo()
   }
 }
+// 如果路由中有 id，则获取详情
+if (route.query.id) {
+  await getCheckWhere()
+  await getFinishedWhere()
+  await getOldWhere()
+  await getInfo()
+}
+
+function handleClick(item: funBtn) {
+  if (item.add) {
+    uploadModel.value = true
+    return
+  }
+  if (item.finish) {
+    confirmShow.value = true
+    return
+  }
+  submitChange(item.status)
+}
+
+/** 添加货品 */
+async function addCheckGood(params: AddCheckProduct) {
+  const res = await addCheckProduct(params)
+  if (res?.code === HttpCode.SUCCESS) {
+    await getInfo()
+    $toast.success(res?.message, 1000)
+  }
+  else {
+    $toast.error(res?.message || '添加失败', 1000)
+  }
+  inputModel.value = false
+  uploadModel.value = false
+  importModel.value = false
+}
+
+async function submitGoods() {
+  const params: AddCheckProduct = {
+    id: checkInfo.value.id,
+    codes: [goodCode.value],
+  }
+  await addCheckGood(params)
+}
+
+/** 批量上传盘点货品 */
+async function bulkupload(data: string[]) {
+  const params: AddCheckProduct = {
+    id: checkInfo.value.id,
+    codes: data,
+  }
+  await addCheckGood(params)
+}
+
+async function ConfirmUse() {
+  submitChange(CheckStatus.Tobeverified)
+}
+
+/** 当前nav货品数据 */
+const product = computed(() => {
+  switch (product_status.value) {
+    case 0:
+      return checkInfo.value.should_products
+    case 1:
+      return checkInfo.value.actual_products
+    case 2:
+      return checkInfo.value.extra_products
+    case 3:
+      return checkInfo.value.loss_products
+    default:
+      return []
+  }
+})
 </script>
 
 <template>
@@ -243,16 +314,16 @@ async function submitChange(status: CheckInfo['status']) {
         </div>
         <div class="info flex flex-col gap-4 rounded-6 blur-bga w-auto px-4 py-4 mb-6">
           <div class="flex flex-col gap-3">
-            <common-tab-secondary :current-selected="product_status" :options="inventoryOptions" @change-status="changeStatus" />
+            <common-tab-secondary :current-selected="product_status" :options="inventoryOptions" :info="checkInfo" @change-status="changeStatus" />
             <common-step :description="step" :active-index="checkInfo.status" />
           </div>
           <div class="color-[#333333] dark:color-[#FFFFFF] font-normal text-[14px]">
-            共 {{ checkInfo.products?.length }} 件条数据
+            共 {{ product?.length || 0 }} 条数据
           </div>
-          <template v-if="!checkInfo.products?.length">
+          <template v-if="!product?.length">
             <common-empty img="/images/empty/bag.png" size="160" text="暂无数据" />
           </template>
-          <template v-for="(item, index) in checkInfo.products" :key="index">
+          <template v-for="(item, index) in product" :key="index">
             <div class="grid mb-3">
               <sale-order-nesting :title="checkInfo.type === GoodsType.ProductFinish ? item.product_finished?.name : item.product_old?.name" :info="checkInfo">
                 <template #left>
@@ -277,12 +348,29 @@ async function submitChange(status: CheckInfo['status']) {
     <template v-if="funbtns?.length">
       <div class="btn">
         <template v-for="(item, index) in funbtns" :key="index">
-          <button class="btntext cursor-pointer" @click="submitChange(item.status)">
+          <button class="btntext cursor-pointer" @click="handleClick(item)">
             {{ item.text }}
           </button>
         </template>
       </div>
     </template>
+    <product-upload-choose v-model:is-model="uploadModel" title="正在盘点" @go-add="uploadModel = false;inputModel = true" @batch="importModel = true" />
+    <common-model v-model="inputModel" title="正在盘点" :show-ok="true" @confirm="submitGoods">
+      <div class="mb-8 relative min-h-[60px]">
+        <div class="uploadInp cursor-pointer">
+          <n-input v-model:value="goodCode" placeholder="请输入条码" />
+        </div>
+      </div>
+    </common-model>
+    <common-confirm
+      v-model:show="confirmShow"
+      title="结束盘点"
+      text="结束盘点，您将不能继续录入条码，如果盘点还未完成，请不要结束盘点，直接返回，之后随时可进入此页面继续开始盘点?"
+      icon="warning"
+      @submit="ConfirmUse"
+      @cancel="confirmShow = false"
+    />
+    <product-check-warehouse ref="uploadRef" v-model="importModel" @upload="bulkupload" />
   </div>
 </template>
 

@@ -74,5 +74,15 @@ export const useCheck = defineStore('check', {
         throw new Error(`更改失败: ${error || '未知错误'}`)
       }
     },
+    /** 添加盘点单产品 */
+    async addCheckProduct(params: AddCheckProduct) {
+      try {
+        const { data } = await https.post<any, AddCheckProduct>('/product/inventory/add', params)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`添加盘点货品失败: ${error || '未知错误'}`)
+      }
+    },
   },
 })

@@ -107,13 +107,16 @@ const option = ref({
 </script>
 
 <template>
-  <div class="px-[16px]">
-    <common-dark />
-    <div class="flex justify-between items-center py-[12px]">
-      <product-manage-company />
-      <product-filter-senior />
-    </div>
-    <summary-total :data="data" title="库存统计数据汇总" />
-    <summary-stock-chart :option="option" />
+  <div>
+    <common-layout-center>
+      <div class="px-[16px]">
+        <div class="flex justify-between items-center py-[12px] text-[#FFF]">
+          <product-manage-company />
+          <product-filter-senior />
+        </div>
+        <summary-total :data="data" title="库存统计数据汇总" />
+        <summary-stock-chart :option="option" />
+      </div>
+    </common-layout-center>
   </div>
 </template>

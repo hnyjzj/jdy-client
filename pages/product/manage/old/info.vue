@@ -54,7 +54,7 @@ async function convert(type: ProductFinisheds['type']) {
               <div class="px-2 py-2 flex gap-2">
                 <!-- 旧料 转成品 -->
                 <div class="flex-1">
-                  <common-button-rounded content="转成品" color="#000" bgc="#FFF" @button-click="convert(GoodsType.ProductFinish)" />
+                  <common-button-rounded content="转成品" color="#FFF" @button-click="convert(GoodsType.ProductFinish)" />
                 </div>
               </div>
             </div>
