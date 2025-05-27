@@ -56,7 +56,7 @@ function getFunBtn() {
 /** 获取详情 */
 async function getInfo() {
   if (route.query.id) {
-    await getCheckInfo(route.query.id as string, product_status.value)
+    await getCheckInfo(route.query.id as string)
     getFunBtn() // 调用 getFunBtn，更新 funbtns
   }
 }
@@ -65,7 +65,7 @@ async function getInfo() {
 function getMultipleVal(key: keyof Where<Check>, val: any) {
   if (!val || !key || !checkFilterList.value[key])
     return ''
-  return val.map((item: number) => checkFilterList.value[key]?.preset[item] || '').join('')
+  return val.map((item: number) => checkFilterList.value[key]?.preset[item] || '').join('、')
 }
 
 /** 单选值 */
@@ -77,8 +77,8 @@ function getRadioVal(key: keyof Where<Check>, val: any) {
 const inventoryOptions = computed(() => [
   { label: '应盘', count: checkInfo.value.count_should || 0, value: 0 },
   { label: '实盘', count: checkInfo.value.count_actual || 0, value: 1 },
-  { label: '盘亏', count: checkInfo.value.count_loss || 0, value: 2 },
-  { label: '盘盈', count: checkInfo.value.count_extra || 0, value: 3 },
+  { label: '盘盈', count: checkInfo.value.count_extra || 0, value: 2 },
+  { label: '盘亏', count: checkInfo.value.count_loss || 0, value: 3 },
 ])
 
 // 步骤条描述文本定义
@@ -259,30 +259,75 @@ const product = computed(() => {
                       {{ getRadioVal('range', checkInfo.range) }}
                     </div>
                   </div>
-                  <div class="part">
-                    <div class="left">
-                      大类
+                  <template v-if="checkInfo.range === 1">
+                    <div class="part">
+                      <div class="left">
+                        大类
+                      </div>
+                      <div class="right">
+                        {{ checkInfo.type === GoodsTypePure.ProductFinish ? getMultipleVal('class_finished', checkInfo.class_finished) : getMultipleVal('class_old', checkInfo.class_old) }}
+                      </div>
                     </div>
-                    <div class="right">
-                      {{ checkInfo.type === GoodsTypePure.ProductFinish ? getMultipleVal('class_finished', checkInfo.class_finished) : getMultipleVal('class_old', checkInfo.class_old) }}
+                    <div class="part">
+                      <div class="left">
+                        品类
+                      </div>
+                      <div class="right">
+                        {{ getMultipleVal('category', checkInfo.category) || '--' }}
+                      </div>
                     </div>
-                  </div>
-                  <div class="part">
-                    <div class="left">
-                      品类
+                    <div class="part">
+                      <div class="left">
+                        工艺
+                      </div>
+                      <div class="right">
+                        {{ getMultipleVal('craft', checkInfo.craft) || '--' }}
+                      </div>
                     </div>
-                    <div class="right">
-                      {{ getMultipleVal('category', checkInfo.category) || '--' }}
+                  </template>
+                  <!-- 按材质 -->
+                  <template v-if="checkInfo.range === 2">
+                    <div class="part">
+                      <div class="left">
+                        品类
+                      </div>
+                      <div class="right">
+                        {{ getMultipleVal('category', checkInfo.category) || '--' }}
+                      </div>
                     </div>
-                  </div>
-                  <div class="part">
-                    <div class="left">
-                      工艺
+                    <div class="part">
+                      <div class="left">
+                        工艺
+                      </div>
+                      <div class="right">
+                        {{ getMultipleVal('craft', checkInfo.craft) || '--' }}
+                      </div>
                     </div>
-                    <div class="right">
-                      {{ getMultipleVal('craft', checkInfo.craft) || '--' }}
+                    <div class="part">
+                      <div class="left">
+                        材质
+                      </div>
+                      <div class="right">
+                        {{ getMultipleVal('material', checkInfo.material) || '--' }}
+                      </div>
                     </div>
-                  </div>
+                    <div class="part">
+                      <div class="left">
+                        成色
+                      </div>
+                      <div class="right">
+                        {{ getMultipleVal('quality', checkInfo.quality) || '--' }}
+                      </div>
+                    </div>
+                    <div class="part">
+                      <div class="left">
+                        主石
+                      </div>
+                      <div class="right">
+                        {{ getMultipleVal('gem', checkInfo.gem) || '--' }}
+                      </div>
+                    </div>
+                  </template>
                 </div>
                 <div class="h-0.5 bg-[#E6E6E8]" />
                 <div class="product-information flex flex-col gap-1">
@@ -291,8 +336,7 @@ const product = computed(() => {
                       总件数
                     </div>
                     <div class="right">
-                      {{ checkInfo.cont_quantity
-                      }}
+                      {{ checkInfo.count_quantity }}
                     </div>
                   </div>
                   <div class="part">
@@ -337,10 +381,10 @@ const product = computed(() => {
                 </template>
                 <template #info>
                   <template v-if="checkInfo.type === GoodsType.ProductFinish">
-                    <product-base-info :info="item.product_finished" :filter-list="finishedFilterListToArray" />
+                    <product-base-info :info="item.product_finished" :code="item.product_code" :filter-list="finishedFilterListToArray" />
                   </template>
                   <template v-else-if="checkInfo.type === GoodsType.ProductOld">
-                    <product-base-info :info="item.product_old" :filter-list="oldFilterListToArray" />
+                    <product-base-info :info="item.product_old" :code="item.product_code" :filter-list="oldFilterListToArray" />
                   </template>
                 </template>
               </sale-order-nesting>
@@ -388,6 +432,9 @@ const product = computed(() => {
 
   .right {
     --uno: 'color-[#333333] dark:color-[#FFFFFF]';
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
   }
 }
 

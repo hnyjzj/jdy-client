@@ -79,7 +79,7 @@ interface CheckInfo {
   /**
    * 总件数
    */
-  cont_quantity?: number
+  count_quantity?: number
   /**
    * 实盘数量
    */
@@ -203,6 +203,7 @@ interface CheckInfo {
 interface CheckProduct {
   product_finished: ProductFinisheds
   product_old: ProductOlds
+  product_code: string
 }
 
 interface AddCheckProduct {
