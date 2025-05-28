@@ -9,7 +9,6 @@ const props = withDefaults(defineProps<{
   rcol?: string
   lcol?: string
 }>(), {
-
   rcol: 'col-6',
   lcol: 'col-6',
   value: '-',
