@@ -60,6 +60,7 @@ interface Check {
   id: string
   start_time: string
   status: number
+  created_at: Data
 }
 
 interface CheckInfo {

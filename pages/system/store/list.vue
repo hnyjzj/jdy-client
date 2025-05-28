@@ -25,7 +25,7 @@ const getList = async (where = {} as Partial<Stores>) => {
 
 // 筛选列表
 const submitWhere = async (f: Partial<Stores>) => {
-  filterData.value = { ...f, ...filterData.value }
+  filterData.value = { ...filterData.value, ...f }
   storesList.value = []
   searchPage.value = 1
   await getList(filterData.value)

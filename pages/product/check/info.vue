@@ -11,7 +11,7 @@ const { oldFilterListToArray } = storeToRefs(useOld())
 const { getOldWhere } = useOld()
 
 // 当前选择的盘点类型
-const product_status = ref(0)
+const product_status = ref(2)
 
 // 盘点单详情
 useSeoMeta({ title: '盘点单详情' })
@@ -75,10 +75,10 @@ function getRadioVal(key: keyof Where<Check>, val: any) {
 
 // 盘点单tab切换选项
 const inventoryOptions = computed(() => [
-  { label: '应盘', count: checkInfo.value.count_should || 0, value: 0 },
-  { label: '实盘', count: checkInfo.value.count_actual || 0, value: 1 },
-  { label: '盘盈', count: checkInfo.value.count_extra || 0, value: 2 },
-  { label: '盘亏', count: checkInfo.value.count_loss || 0, value: 3 },
+  { label: '应盘', count: checkInfo.value.count_should || 0, value: 1 },
+  { label: '实盘', count: checkInfo.value.count_actual || 0, value: 2 },
+  { label: '盘盈', count: checkInfo.value.count_extra || 0, value: 3 },
+  { label: '盘亏', count: checkInfo.value.count_loss || 0, value: 4 },
 ])
 
 // 步骤条描述文本定义
@@ -144,6 +144,7 @@ async function submitGoods() {
     codes: [goodCode.value],
   }
   await addCheckGood(params)
+  goodCode.value = ''
 }
 
 /** 批量上传盘点货品 */
@@ -166,18 +167,32 @@ async function ConfirmUse() {
 /** 当前nav货品数据 */
 const product = computed(() => {
   switch (product_status.value) {
-    case 0:
-      return checkInfo.value.should_products
     case 1:
-      return checkInfo.value.actual_products
+      return checkInfo.value.should_products
     case 2:
-      return checkInfo.value.extra_products
+      return checkInfo.value.actual_products
     case 3:
+      return checkInfo.value.extra_products
+    case 4:
       return checkInfo.value.loss_products
     default:
       return []
   }
 })
+function getStateColor() {
+  switch (checkInfo.value.status) {
+    case CheckStatus.Draft:
+      return 'orange'
+    case CheckStatus.Checking:
+      return 'blue'
+    case CheckStatus.ToBeVerified:
+      return 'lake'
+    case CheckStatus.Abnormal:
+      return 'red'
+    default:
+      return 'ash'
+  }
+}
 </script>
 
 <template>
@@ -245,7 +260,7 @@ const product = computed(() => {
                       状态
                     </div>
                     <div class="right">
-                      <common-tags type="lake" :text="getRadioVal('status', checkInfo.status)" />
+                      <common-tags :type="getStateColor()" :text="getRadioVal('status', checkInfo.status)" />
                     </div>
                   </div>
                 </div>
