@@ -87,6 +87,6 @@ const handleAddProductPopup = ref(false)
   background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
 }
 .btn-right {
-  --uno: 'text-[16px] py-[9px] text-[#1a6beb] rounded-[36px] bg-[transparent] flex justify-center items-center border-[1px] border-solid border-[#1a6beb]';
+  --uno: 'text-[16px] py-[9px]  text-[#1a6beb]  dark:color-#fff dark:border-[#fff] rounded-[36px] bg-[transparent] flex justify-center items-center border-[1px] border-solid border-[#1a6beb]';
 }
 </style>
