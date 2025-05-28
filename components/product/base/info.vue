@@ -2,6 +2,7 @@
 const props = defineProps<{
   info: T
   filterList: FilterWhere<T>[]
+  code?: string
 }>()
 </script>
 
@@ -35,7 +36,16 @@ const props = defineProps<{
               {{ item.label }}
             </div>
             <div class="value text-[rgba(57,113,243,1)]">
-              {{ props.info[item.name] || '--' }}
+              <template v-if="item.name === 'code'">
+                <span>
+                  {{ props.code || props.info[item.name] }}
+                </span>
+              </template>
+              <template v-else>
+                <span>
+                  {{ props.info[item.name] || '--' }}
+                </span>
+              </template>
             </div>
           </div>
         </template>

@@ -60,6 +60,7 @@ interface Check {
   id: string
   start_time: string
   status: number
+  created_at: Data
 }
 
 interface CheckInfo {
@@ -79,7 +80,7 @@ interface CheckInfo {
   /**
    * 总件数
    */
-  cont_quantity?: number
+  count_quantity?: number
   /**
    * 实盘数量
    */
@@ -144,7 +145,6 @@ interface CheckInfo {
    * 产品材质
    */
   material: number[]
-  products?: CheckProduct[]
   /**
    * 产品成色
    */
@@ -183,9 +183,31 @@ interface CheckInfo {
    * 更新时间
    */
   updated_at?: Date
+  /** 应盘货品 */
+  should_products?: CheckProduct[]
+  /** 实盘货品 */
+  actual_products?: CheckProduct[]
+  /** 盘盈货品 */
+  extra_products?: CheckProduct[]
+  /** 盘亏货品 */
+  loss_products?: CheckProduct[]
+  /** 应盘数量 */
+  should_count?: number
+  /** 实盘数量 */
+  actual_count?: number
+  /** 盘盈数量 */
+  extra_count?: number
+  /** 盘亏数量 */
+  loss_count?: number
 }
 
 interface CheckProduct {
   product_finished: ProductFinisheds
   product_old: ProductOlds
+  product_code: string
+}
+
+interface AddCheckProduct {
+  id: Check['id']
+  codes: string[]
 }

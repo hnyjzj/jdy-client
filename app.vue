@@ -35,6 +35,7 @@ const themeOverrides: GlobalThemeOverrides = {
     borderFocus: '1px solid #0068ff',
     boxShadowFocus: '#0068ff',
     railHeightLarge: '36px',
+    railWidthLarge: '60px',
   },
   Checkbox: {
     colorChecked: '#3971F3',
