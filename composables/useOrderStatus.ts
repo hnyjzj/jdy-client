@@ -91,3 +91,38 @@ export enum serviceOrderStatus {
    */
   Completed,
 }
+
+export enum ProductFinishedsStatus {
+  /**
+   * 草稿
+   */
+  Draft = 1,
+  /**
+   * 正常
+   */
+  Normal = 2,
+  /**
+   * 已报损
+   */
+  ReportedLoss = 3,
+  /**
+   * 已调拨
+   */
+  Transferred = 4,
+  /**
+   * 已出售
+   */
+  Sold = 5,
+  /**
+   * 已定出
+   */
+  Reserved = 6,
+  /**
+   * 盘点中
+   */
+  Inventorying = 7,
+  /**
+   * 无库存
+   */
+  OutOfStock = 8,
+}

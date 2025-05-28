@@ -11,4 +11,9 @@ export const HttpCode = {
    * 未授权
    */
   UNAUTHORIZED: 401,
+  /**
+   * 禁止访问
+   */
+  FORBIDDEN: 403,
+
 }

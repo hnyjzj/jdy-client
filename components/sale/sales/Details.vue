@@ -35,6 +35,8 @@ const handleClick = () => {
               </div>
             </div>
           </div>
+        </template>
+        <template #footer>
           <div class="flex-end bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
             <common-button-irregular text="查看详情" @click="handleClick" />
           </div>
