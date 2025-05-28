@@ -142,10 +142,10 @@ const unPayMoney = computed(() => {
             </n-form-item-gi>
           </n-grid>
 
-          <div class="text-[12px] color-[#666]">
+          <div class="text-[12px] color-[#666] dark:color-[#fff]">
             1.注意这里只会扣减填写的积分，不会添加积分抵扣金额，请手动添加或使用整单优惠
           </div>
-          <div class="text-[12px] color-[#666]">
+          <div class="text-[12px] color-[#666] dark:color-[#fff]">
             2.设置了开单积分抵扣比例的，这里不能填写积分，会根据积分抵扣金额自动算积分
           </div>
         </div>
