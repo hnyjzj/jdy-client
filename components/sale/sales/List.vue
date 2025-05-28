@@ -66,11 +66,13 @@ const hanlePay = (id: string) => {
           <div class="flex-between bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
             <div class="color-[#4287F4] cursor-pointer flex justify-center items-center">
               <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === item.status">
-                <div class="pl-[20px]" @click="handleCancel(item.id)">
-                  撤销
-                </div>
-                <div class="pl-[20px]" @click="hanlePay(item.id)">
+                <div class="pl-[16px] flex items-center text-[14px] mr-[16px]" @click="hanlePay(item.id)">
+                  <icon name="i-svg:confirmpay" :size="14" class="mr-[4px]" />
                   支付
+                </div>
+                <div class="flex items-center text-[14px] mr-[16px] color-[rgba(255,47,47,1)]" @click="handleCancel(item.id)">
+                  <icon name="i-svg:cancelpay" :size="14" class="mr-[4px]" />
+                  撤销
                 </div>
               </template>
             </div>

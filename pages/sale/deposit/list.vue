@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: '定金单列表',
+  title: '订金单列表',
 })
 const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
