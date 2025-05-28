@@ -10,6 +10,7 @@ interface Options {
 const props = defineProps<{
   options: Options[]
   currentSelected: number
+  info?: CheckInfo
 }>()
 
 const emits = defineEmits<{
@@ -19,11 +20,12 @@ const emits = defineEmits<{
 function change(val: number) {
   emits('changeStatus', val)
 }
+const counts = ['should_count', 'actual_count', 'extra_count', 'loss_count'] as const
 </script>
 
 <template>
   <div class="flex-center-between gap-1 bg-[#f1f5fe] border-solid border border-[#E6E6E8] rounded-[24px]">
-    <template v-for="item in props.options" :key="item.value">
+    <template v-for="(item, index) in props.options" :key="item.value">
       <div
         class="flex-center-row flex-1 px-4 py-2 w-auto text-3.5 text-[#666666] font-medium rounded-[24px]"
         :style="{ color: item.value === currentSelected ? '#3971F3' : '#666666', background: item.value === currentSelected ? '#FFFFFF' : '', fontWeight: item.value === currentSelected ? 'bold' : 'normal' }"
@@ -32,6 +34,11 @@ function change(val: number) {
         <span class="whitespace-nowrap">
           {{ item.label }}
         </span>
+        <template v-if="props.info">
+          <span>
+            {{ props?.info[counts[index]] || 0 }}
+          </span>
+        </template>
         <template v-if="item.count">
           <span>
             <!-- 插入数量 -->

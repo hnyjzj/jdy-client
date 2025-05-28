@@ -63,7 +63,7 @@ async function submitWhere(f: Partial<Check>, isSearch = false) {
   if (store_id.value) {
     f.store_id = store_id.value
   }
-  filterData.value = { ...f, ...filterData.value }
+  filterData.value = { ...filterData.value, ...f }
   pages.value = 1
   checkList.value = []
   const res = await getList(filterData.value)
@@ -106,6 +106,19 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
 async function changeMyStore() {
   pages.value = 1
   await getList()
+}
+
+/**
+ * 表单唯一标识
+ */
+const Key = ref(useId())
+
+/**
+ * 重置
+ */
+function reset() {
+  filterData.value = { }
+  Key.value = Date.now().toString()
 }
 </script>
 
@@ -189,6 +202,14 @@ async function changeMyStore() {
                   </template>
                 </template>
               </template>
+              <div class="flex py-[4px] justify-between">
+                <div class="label">
+                  创建时间
+                </div>
+                <div class="text-align-end">
+                  {{ formatTimestampToDateTime(info.created_at) }}
+                </div>
+              </div>
             </div>
           </template>
           <template #bottom="{ info }">
@@ -210,42 +231,44 @@ async function changeMyStore() {
     <div class="cursor-pointer">
       <common-create @click="jump('/product/check/add')" />
     </div>
-    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="checkFilterListToArray" @submit="submitWhere">
-      <template #inspector_id>
-        <n-select
-          v-model:value="filterData.inspector_id"
-          placeholder="请选择审核人"
-          :options="StoreStaffList.map(v => ({
-            label: v.nickname,
-            value: v.id,
-          }))"
-          clearable
-          remote
+    <div :id="Key" :key="Key">
+      <common-filter-where v-model:show="isFilter" :data="filterData" :filter="checkFilterListToArray" @submit="submitWhere" @reset="reset">
+        <template #inspector_id>
+          <n-select
+            v-model:value="filterData.inspector_id"
+            placeholder="请选择审核人"
+            :options="StoreStaffList.map(v => ({
+              label: v.nickname,
+              value: v.id,
+            }))"
+            clearable
+            remote
 
-          @focus="(e) => {
-            focus(e)
-            getStoreStaffList({ id: myStore.id })
-          }"
-        />
-      </template>
-      <template #inventory_person_id>
-        <n-select
-          v-model:value="filterData.inventory_person_id"
-          placeholder="请选择盘点人"
-          :options="StoreStaffList.map(v => ({
-            label: v.nickname,
-            value: v.id,
-          }))"
-          clearable
-          remote
+            @focus="(e) => {
+              focus(e)
+              getStoreStaffList({ id: myStore.id })
+            }"
+          />
+        </template>
+        <template #inventory_person_id>
+          <n-select
+            v-model:value="filterData.inventory_person_id"
+            placeholder="请选择盘点人"
+            :options="StoreStaffList.map(v => ({
+              label: v.nickname,
+              value: v.id,
+            }))"
+            clearable
+            remote
 
-          @focus="(e) => {
-            focus(e)
-            getStoreStaffList({ id: myStore.id })
-          }"
-        />
-      </template>
-    </common-filter-where>
+            @focus="(e) => {
+              focus(e)
+              getStoreStaffList({ id: myStore.id })
+            }"
+          />
+        </template>
+      </common-filter-where>
+    </div>
   </div>
 </template>
 

@@ -1,4 +1,9 @@
 <script lang="ts" setup>
+const props = withDefaults(defineProps<{
+  title?: string
+}>(), {
+  title: '入库',
+})
 const emits = defineEmits<{
   goAdd: []
   batch: []
@@ -12,7 +17,7 @@ function batchFun() {
 
 <template>
   <div>
-    <common-model v-model="isModel" title="入库">
+    <common-model v-model="isModel" :title="props.title">
       <div class="mb-8 min-h-[60px] flex">
         <div class="box" @click="batchFun">
           <div class="batch green">

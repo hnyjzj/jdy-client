@@ -34,17 +34,18 @@ type colors =
   | 'greyblue'
   | 'grey'
   | 'black'
+  | string
 
 const tagStyle: { [key in colors]: Tags } = {
   orange: {
     // 标签背景色
-    backgroundColor: '#fff4cd',
+    backgroundColor: 'rgb(221, 146, 0)',
     // 标签字体颜色
-    color: '#dd9200',
+    color: '#FFF',
   },
   red: {
-    backgroundColor: '#ffd5d8',
-    color: '#cc0000',
+    backgroundColor: '#cc0000',
+    color: '#FFF',
   },
   green: {
     backgroundColor: '#baffd6',
@@ -69,6 +70,14 @@ const tagStyle: { [key in colors]: Tags } = {
   black: {
     backgroundColor: '#333333',
     color: '#ffffff',
+  },
+  blue: {
+    backgroundColor: 'rgb(27, 108, 235)',
+    color: '#FFF',
+  },
+  ash: {
+    backgroundColor: 'rgb(153, 153, 153)',
+    color: '#FFF',
   },
 }
 </script>

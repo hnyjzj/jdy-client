@@ -71,7 +71,7 @@ function submitConvert() {
             <div uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
               <div class="px-2 py-2 flex gap-2">
                 <div class="flex-1">
-                  <common-button-rounded content="转成品/旧料" color="#000" bgc="#FFF" @button-click="convertModel = true" />
+                  <common-button-rounded content="转成品/旧料" color="#FFF" @button-click="convertModel = true" />
                 </div>
               </div>
             </div>
