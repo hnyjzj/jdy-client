@@ -285,7 +285,7 @@ const searchOlds = async (val: string) => {
       $toast.error('商品不存在')
     }
   }
-  return OldObj.value || []
+  return OldObj.value || {}
 }
 // 搜索配件
 const searchParts = async (val: string, type: string) => {
