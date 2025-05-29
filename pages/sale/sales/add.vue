@@ -280,9 +280,6 @@ const searchProductList = async (data: { val: string, type: string }) => {
 // 搜索旧料
 const searchOlds = async (val: string) => {
   await getOldList({ page: 1, limit: 10, where: { code: val, status: ProductFinishedsStatus.Sold } })
-  if (!OldObj.value.id) {
-    $toast.error('搜索货品不存在')
-  }
   return OldObj.value || []
 }
 // 搜索配件
