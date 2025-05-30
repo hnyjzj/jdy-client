@@ -337,7 +337,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
           price: item.amount,
           integral: item.integral,
         }
-        formData.value.product_accessories.push(data)
+        formData.value.product_accessories?.push(data)
       })
 
       // 业绩比例

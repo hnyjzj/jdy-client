@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // 通用_列表_卡片
 const props = defineProps<{
+  bg?: string
   title?: string | number
   tagText?: string | number
 }>()
@@ -17,7 +18,7 @@ const props = defineProps<{
         </div>
       </div>
       <template v-if="props.tagText">
-        <common-tags :text="props.tagText" />
+        <common-tags :text="props.tagText" :type="props.bg" />
       </template>
     </div>
     <!-- info -->

@@ -8,12 +8,10 @@ const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 const { getFinishedList } = useFinished()
 const { finishedList } = storeToRefs(useFinished())
-
 const { filterListToArray, OrdersList, total, filterList, searchPage } = storeToRefs(useOrder())
 const { getSaleWhere, getOrderList, revokedOrder, payOrder } = useOrder()
 const filterData = ref({} as Partial<OrderWhere>)
 const filterShow = ref(false)
-
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
