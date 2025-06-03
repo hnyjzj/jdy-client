@@ -45,6 +45,11 @@ class Https {
               toLogin()
             })
           }
+          if (response?.status === HttpCode.FORBIDDEN || response?._data?.code === HttpCode.FORBIDDEN) {
+            nuxapp.runWithContext(() => {
+              navigateTo('/forbidden', { external: true, replace: true, redirectCode: 200 })
+            })
+          }
         },
       })
 

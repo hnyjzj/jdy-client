@@ -9,8 +9,6 @@ const props = withDefaults(defineProps<{
   rcol?: string
   lcol?: string
 }>(), {
-  valColor: 'black',
-  labelColor: 'black',
   rcol: 'col-6',
   lcol: 'col-6',
   value: '-',
@@ -19,11 +17,27 @@ const props = withDefaults(defineProps<{
 
 <template>
   <div class="part pb-[8px]">
-    <div class="part-left break-words" :class="[props.lcol ? props.lcol : 'col-6']" :style="{ color: props.labelColor }">
-      {{ props.label }}
+    <div class="part-left break-words " :class="[props.lcol ? props.lcol : 'col-6']">
+      <template v-if="props.labelColor">
+        <div :style="{ color: props.labelColor }" class="dark:color-[#fff]">
+          {{ props.label }}
+        </div>
+      </template>
+      <template v-else>
+        <div class="dark:color-[#fff]">
+          {{ props.label }}
+        </div>
+      </template>
     </div>
     <div class="part-right break-words" :class="[props.rcol ? props.rcol : 'col-6']" :style="{ color: props.valColor }">
-      {{ props.format ? props.format : '' }} {{ typeof props.value === 'boolean' ? props.value ? '是' : '否' : props.value === '' ? '-' : props.value }}  {{ props.right ? props.right : '' }}
+      <template v-if="props.valColor">
+        {{ props.format ? props.format : '' }} {{ typeof props.value === 'boolean' ? props.value ? '是' : '否' : props.value === '' ? '-' : props.value }}  {{ props.right ? props.right : '' }}
+      </template>
+      <template v-else>
+        <div class="dark:color-[#fff]">
+          {{ props.format ? props.format : '' }} {{ typeof props.value === 'boolean' ? props.value ? '是' : '否' : props.value === '' ? '-' : props.value }}  {{ props.right ? props.right : '' }}
+        </div>
+      </template>
     </div>
   </div>
 </template>

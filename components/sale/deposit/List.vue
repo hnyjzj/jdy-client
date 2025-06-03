@@ -65,12 +65,14 @@ const jumpSaleOreder = (id: string) => {
                 </div>
               </template>
               <template v-if="item.status === DepositOrderStatus.PendingPayment">
-                <div class="pl-[8px]" @click="props.payOrder(item.id as string)">
-                  支付
+                <div class="pl-[8px] flex items-center text-[14px] mr-[16px]" @click="props.payOrder(item.id as string)">
+                  <icon name="i-svg:confirmpay" :size="14" class="mr-[4px]" />
+                  <span>
+                    支付
+                  </span>
                 </div>
-              </template>
-              <template v-if="item.status === DepositOrderStatus.PendingPayment">
-                <div class="pl-[8px]" @click="props.cancelOrder(item.id as string)">
+                <div class="flex items-center text-[14px] mr-[16px] color-[rgba(255,47,47,1)]" @click="props.cancelOrder(item.id as string)">
+                  <icon name="i-svg:cancelpay" :size="14" class="mr-[4px]" />
                   撤销
                 </div>
               </template>

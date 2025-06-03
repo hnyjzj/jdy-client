@@ -279,11 +279,13 @@ const searchProductList = async (data: { val: string, type: string }) => {
 }
 // 搜索旧料
 const searchOlds = async (val: string) => {
-  await getOldList({ page: 1, limit: 10, where: { code: val, status: ProductFinishedsStatus.Sold } })
-  if (!OldObj.value.id) {
-    $toast.error('搜索货品不存在')
+  if (val) {
+    await getOldList({ page: 1, limit: 10, where: { code: val, status: ProductFinishedsStatus.Sold } })
+    if (!OldObj.value.product_id) {
+      $toast.error('商品不存在')
+    }
   }
-  return OldObj.value || []
+  return OldObj.value || {}
 }
 // 搜索配件
 const searchParts = async (val: string, type: string) => {
@@ -335,7 +337,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
           price: item.amount,
           integral: item.integral,
         }
-        formData.value.product_accessories.push(data)
+        formData.value.product_accessories?.push(data)
       })
 
       // 业绩比例

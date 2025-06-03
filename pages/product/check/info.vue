@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { checkInfo, checkFilterList } = storeToRefs(useCheck())
-const { getCheckInfo, getCheckWhere, changeCheckStatus } = useCheck()
+const { getCheckInfo, getCheckWhere, changeCheckStatus, addCheckProduct } = useCheck()
 const { userinfo } = useUser()
 const { $toast } = useNuxtApp()
 const route = useRoute()
@@ -11,22 +11,27 @@ const { oldFilterListToArray } = storeToRefs(useOld())
 const { getOldWhere } = useOld()
 
 // 当前选择的盘点类型
-const product_status = ref(0)
+const product_status = ref(2)
 
 // 盘点单详情
 useSeoMeta({ title: '盘点单详情' })
 
-onMounted(async () => {
-  await getCheckWhere()
-  await getFinishedWhere()
-  await getOldWhere()
-})
-
 interface funBtn {
   status: CheckInfo['status']
   text: string
+  add?: boolean
+  finish?: boolean
 }
 
+const inputModel = ref(false)
+const uploadModel = ref(false)
+const importModel = ref(false)
+const confirmShow = ref(false)
+/** 上传组件引用 */
+const uploadRef = ref()
+
+/** 单个添加盘点的货品code */
+const goodCode = ref('')
 // **先声明并初始化 funbtns**
 const funbtns = ref<funBtn[]>([])
 
@@ -34,24 +39,24 @@ const funbtns = ref<funBtn[]>([])
 function getFunBtn() {
   funbtns.value = [] // 清空按钮数组
   // 根据状态添加按钮
-  if (userinfo.id === checkInfo.value.inventory_person_id && checkInfo.value.status === 1) {
-    funbtns.value.push({ status: 6, text: '取消盘点' })
-    funbtns.value.push({ status: 2, text: '开始盘点' })
+  if (userinfo.id === checkInfo.value.inventory_person_id && checkInfo.value.status === CheckStatus.Draft) {
+    funbtns.value.push({ status: CheckStatus.Cancel, text: '取消盘点' })
+    funbtns.value.push({ status: CheckStatus.Checking, text: '开始盘点' })
   }
-  if (userinfo.id === checkInfo.value.inspector_id && checkInfo.value.status === 2) {
-    funbtns.value.push({ status: 6, text: '取消盘点' })
-    funbtns.value.push({ status: 3, text: '盘点完成' })
+  if (userinfo.id === checkInfo.value.inventory_person_id && checkInfo.value.status === CheckStatus.Checking) {
+    funbtns.value.push({ status: CheckStatus.ToBeVerified, text: '结束盘点', finish: true })
+    funbtns.value.push({ status: CheckStatus.ToBeVerified, text: '开始盘点', add: true })
   }
-  if (userinfo.id === checkInfo.value.inspector_id && checkInfo.value.status === 3) {
-    funbtns.value.push({ status: 6, text: '取消盘点' })
-    funbtns.value.push({ status: 4, text: '盘点完成' })
+  if (userinfo.id === checkInfo.value.inspector_id && checkInfo.value.status === CheckStatus.ToBeVerified) {
+    funbtns.value.push({ status: CheckStatus.Abnormal, text: '异常' })
+    funbtns.value.push({ status: CheckStatus.Checked, text: '验证通过' })
   }
 }
 
 /** 获取详情 */
 async function getInfo() {
   if (route.query.id) {
-    await getCheckInfo(route.query.id as string, product_status.value)
+    await getCheckInfo(route.query.id as string)
     getFunBtn() // 调用 getFunBtn，更新 funbtns
   }
 }
@@ -60,7 +65,7 @@ async function getInfo() {
 function getMultipleVal(key: keyof Where<Check>, val: any) {
   if (!val || !key || !checkFilterList.value[key])
     return ''
-  return val.map((item: number) => checkFilterList.value[key]?.preset[item] || '').join('')
+  return val.map((item: number) => checkFilterList.value[key]?.preset[item] || '').join('、')
 }
 
 /** 单选值 */
@@ -70,10 +75,10 @@ function getRadioVal(key: keyof Where<Check>, val: any) {
 
 // 盘点单tab切换选项
 const inventoryOptions = computed(() => [
-  { label: '应盘', count: checkInfo.value.count_should || 0, value: 0 },
-  { label: '实盘', count: checkInfo.value.count_actual || 0, value: 1 },
-  { label: '盘亏', count: checkInfo.value.count_loss || 0, value: 2 },
+  { label: '应盘', count: checkInfo.value.count_should || 0, value: 1 },
+  { label: '实盘', count: checkInfo.value.count_actual || 0, value: 2 },
   { label: '盘盈', count: checkInfo.value.count_extra || 0, value: 3 },
+  { label: '盘亏', count: checkInfo.value.count_loss || 0, value: 4 },
 ])
 
 // 步骤条描述文本定义
@@ -83,11 +88,6 @@ const step = [
   { title: '待验证', subs: 3 },
   { title: '已完成', subs: 4 },
 ]
-
-// 如果路由中有 id，则获取详情
-if (route.query.id) {
-  await getInfo()
-}
 
 // 切换盘点状态
 function changeStatus(val: number) {
@@ -101,6 +101,96 @@ async function submitChange(status: CheckInfo['status']) {
   if (res?.code === 200) {
     $toast.success('变更成功')
     getInfo()
+  }
+}
+// 如果路由中有 id，则获取详情
+if (route.query.id) {
+  await getCheckWhere()
+  await getFinishedWhere()
+  await getOldWhere()
+  await getInfo()
+}
+
+function handleClick(item: funBtn) {
+  if (item.add) {
+    uploadModel.value = true
+    return
+  }
+  if (item.finish) {
+    confirmShow.value = true
+    return
+  }
+  submitChange(item.status)
+}
+
+/** 添加货品 */
+async function addCheckGood(params: AddCheckProduct) {
+  const res = await addCheckProduct(params)
+  if (res?.code === HttpCode.SUCCESS) {
+    await getInfo()
+    $toast.success(res?.message, 1000)
+  }
+  else {
+    $toast.error(res?.message || '添加失败', 1000)
+  }
+  inputModel.value = false
+  uploadModel.value = false
+  importModel.value = false
+}
+
+async function submitGoods() {
+  const params: AddCheckProduct = {
+    id: checkInfo.value.id,
+    codes: [goodCode.value],
+  }
+  await addCheckGood(params)
+  goodCode.value = ''
+}
+
+/** 批量上传盘点货品 */
+async function bulkupload(data: string[]) {
+  if (!data || !data.length) {
+    $toast.error('请上传正确的货品编号文件')
+    return
+  }
+  const params: AddCheckProduct = {
+    id: checkInfo.value.id,
+    codes: data,
+  }
+  await addCheckGood(params)
+}
+
+async function ConfirmUse() {
+  submitChange(CheckStatus.ToBeVerified)
+}
+
+/** 当前nav货品数据 */
+const product = computed(() => {
+  switch (product_status.value) {
+    case 1:
+      return checkInfo.value.should_products
+    case 2:
+      return checkInfo.value.actual_products
+    case 3:
+      return checkInfo.value.extra_products
+    case 4:
+      return checkInfo.value.loss_products
+    default:
+      return []
+  }
+})
+function getStateColor() {
+  switch (checkInfo.value.status) {
+    case CheckStatus.Draft:
+      return 'orange'
+    case CheckStatus.Checking:
+      return 'blue'
+    case CheckStatus.ToBeVerified:
+      return 'lake'
+    case CheckStatus.Abnormal:
+      return 'red'
+    default:
+      return 'ash'
   }
 }
 </script>
@@ -170,7 +260,7 @@ async function submitChange(status: CheckInfo['status']) {
                       状态
                     </div>
                     <div class="right">
-                      <common-tags type="lake" :text="getRadioVal('status', checkInfo.status)" />
+                      <common-tags :type="getStateColor()" :text="getRadioVal('status', checkInfo.status)" />
                     </div>
                   </div>
                 </div>
@@ -184,30 +274,75 @@ async function submitChange(status: CheckInfo['status']) {
                       {{ getRadioVal('range', checkInfo.range) }}
                     </div>
                   </div>
-                  <div class="part">
-                    <div class="left">
-                      大类
+                  <template v-if="checkInfo.range === 1">
+                    <div class="part">
+                      <div class="left">
+                        大类
+                      </div>
+                      <div class="right">
+                        {{ checkInfo.type === GoodsTypePure.ProductFinish ? getMultipleVal('class_finished', checkInfo.class_finished) : getMultipleVal('class_old', checkInfo.class_old) }}
+                      </div>
                     </div>
-                    <div class="right">
-                      {{ checkInfo.type === GoodsTypePure.ProductFinish ? getMultipleVal('class_finished', checkInfo.class_finished) : getMultipleVal('class_old', checkInfo.class_old) }}
+                    <div class="part">
+                      <div class="left">
+                        品类
+                      </div>
+                      <div class="right">
+                        {{ getMultipleVal('category', checkInfo.category) || '--' }}
+                      </div>
                     </div>
-                  </div>
-                  <div class="part">
-                    <div class="left">
-                      品类
+                    <div class="part">
+                      <div class="left">
+                        工艺
+                      </div>
+                      <div class="right">
+                        {{ getMultipleVal('craft', checkInfo.craft) || '--' }}
+                      </div>
                     </div>
-                    <div class="right">
-                      {{ getMultipleVal('category', checkInfo.category) || '--' }}
+                  </template>
+                  <!-- 按材质 -->
+                  <template v-if="checkInfo.range === 2">
+                    <div class="part">
+                      <div class="left">
+                        品类
+                      </div>
+                      <div class="right">
+                        {{ getMultipleVal('category', checkInfo.category) || '--' }}
+                      </div>
                     </div>
-                  </div>
-                  <div class="part">
-                    <div class="left">
-                      工艺
+                    <div class="part">
+                      <div class="left">
+                        工艺
+                      </div>
+                      <div class="right">
+                        {{ getMultipleVal('craft', checkInfo.craft) || '--' }}
+                      </div>
                     </div>
-                    <div class="right">
-                      {{ getMultipleVal('craft', checkInfo.craft) || '--' }}
+                    <div class="part">
+                      <div class="left">
+                        材质
+                      </div>
+                      <div class="right">
+                        {{ getMultipleVal('material', checkInfo.material) || '--' }}
+                      </div>
                     </div>
-                  </div>
+                    <div class="part">
+                      <div class="left">
+                        成色
+                      </div>
+                      <div class="right">
+                        {{ getMultipleVal('quality', checkInfo.quality) || '--' }}
+                      </div>
+                    </div>
+                    <div class="part">
+                      <div class="left">
+                        主石
+                      </div>
+                      <div class="right">
+                        {{ getMultipleVal('gem', checkInfo.gem) || '--' }}
+                      </div>
+                    </div>
+                  </template>
                 </div>
                 <div class="h-0.5 bg-[#E6E6E8]" />
                 <div class="product-information flex flex-col gap-1">
@@ -216,8 +351,7 @@ async function submitChange(status: CheckInfo['status']) {
                       总件数
                     </div>
                     <div class="right">
-                      {{ checkInfo.cont_quantity
-                      }}
+                      {{ checkInfo.count_quantity }}
                     </div>
                   </div>
                   <div class="part">
@@ -243,16 +377,16 @@ async function submitChange(status: CheckInfo['status']) {
         </div>
         <div class="info flex flex-col gap-4 rounded-6 blur-bga w-auto px-4 py-4 mb-6">
           <div class="flex flex-col gap-3">
-            <common-tab-secondary :current-selected="product_status" :options="inventoryOptions" @change-status="changeStatus" />
+            <common-tab-secondary :current-selected="product_status" :options="inventoryOptions" :info="checkInfo" @change-status="changeStatus" />
             <common-step :description="step" :active-index="checkInfo.status" />
           </div>
           <div class="color-[#333333] dark:color-[#FFFFFF] font-normal text-[14px]">
-            共 {{ checkInfo.products?.length }} 件条数据
+            共 {{ product?.length || 0 }} 条数据
           </div>
-          <template v-if="!checkInfo.products?.length">
+          <template v-if="!product?.length">
             <common-empty img="/images/empty/bag.png" size="160" text="暂无数据" />
           </template>
-          <template v-for="(item, index) in checkInfo.products" :key="index">
+          <template v-for="(item, index) in product" :key="index">
             <div class="grid mb-3">
               <sale-order-nesting :title="checkInfo.type === GoodsType.ProductFinish ? item.product_finished?.name : item.product_old?.name" :info="checkInfo">
                 <template #left>
@@ -262,10 +396,10 @@ async function submitChange(status: CheckInfo['status']) {
                 </template>
                 <template #info>
                   <template v-if="checkInfo.type === GoodsType.ProductFinish">
-                    <product-base-info :info="item.product_finished" :filter-list="finishedFilterListToArray" />
+                    <product-base-info :info="item.product_finished" :code="item.product_code" :filter-list="finishedFilterListToArray" />
                   </template>
                   <template v-else-if="checkInfo.type === GoodsType.ProductOld">
-                    <product-base-info :info="item.product_old" :filter-list="oldFilterListToArray" />
+                    <product-base-info :info="item.product_old" :code="item.product_code" :filter-list="oldFilterListToArray" />
                   </template>
                 </template>
               </sale-order-nesting>
@@ -277,12 +411,29 @@ async function submitChange(status: CheckInfo['status']) {
     <template v-if="funbtns?.length">
       <div class="btn">
         <template v-for="(item, index) in funbtns" :key="index">
-          <button class="btntext cursor-pointer" @click="submitChange(item.status)">
+          <button class="btntext cursor-pointer" @click="handleClick(item)">
             {{ item.text }}
           </button>
         </template>
       </div>
     </template>
+    <product-upload-choose v-model:is-model="uploadModel" title="正在盘点" @go-add="uploadModel = false;inputModel = true" @batch="importModel = true" />
+    <common-model v-model="inputModel" title="正在盘点" :show-ok="true" @confirm="submitGoods">
+      <div class="mb-8 relative min-h-[60px]">
+        <div class="uploadInp cursor-pointer">
+          <n-input v-model:value="goodCode" placeholder="请输入条码" />
+        </div>
+      </div>
+    </common-model>
+    <common-confirm
+      v-model:show="confirmShow"
+      title="结束盘点"
+      text="结束盘点，您将不能继续录入条码，如果盘点还未完成，请不要结束盘点，直接返回，之后随时可进入此页面继续开始盘点?"
+      icon="warning"
+      @submit="ConfirmUse"
+      @cancel="confirmShow = false"
+    />
+    <product-check-warehouse ref="uploadRef" v-model="importModel" @upload="bulkupload" />
   </div>
 </template>
 
@@ -296,6 +447,9 @@ async function submitChange(status: CheckInfo['status']) {
 
   .right {
     --uno: 'color-[#333333] dark:color-[#FFFFFF]';
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
   }
 }
 

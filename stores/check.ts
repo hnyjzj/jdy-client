@@ -53,9 +53,9 @@ export const useCheck = defineStore('check', {
       }
     },
     /** 盘点单详情 */
-    async getCheckInfo(id: string, product_status: number) {
+    async getCheckInfo(id: string) {
       try {
-        const { data } = await https.post<CheckInfo, { id: string, product_status: number }>('/product/inventory/info', { id, product_status })
+        const { data } = await https.post<CheckInfo, { id: string }>('/product/inventory/info', { id })
         if (data.value?.code === HttpCode.SUCCESS) {
           this.checkInfo = data.value.data
         }
@@ -72,6 +72,16 @@ export const useCheck = defineStore('check', {
       }
       catch (error) {
         throw new Error(`更改失败: ${error || '未知错误'}`)
+      }
+    },
+    /** 添加盘点单产品 */
+    async addCheckProduct(params: AddCheckProduct) {
+      try {
+        const { data } = await https.post<any, AddCheckProduct>('/product/inventory/add', params)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`添加盘点货品失败: ${error || '未知错误'}`)
       }
     },
   },

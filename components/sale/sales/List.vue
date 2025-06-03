@@ -52,8 +52,7 @@ const hanlePay = (id: string) => {
             <common-cell label="会员" :value="item.member?.nickname || '--'" />
             <common-cell label="会员手机" :value="item.member?.phone || '--'" />
             <common-cell label="主销" :value="item?.clerks.find(ele => ele.is_main)?.salesman?.nickname || '--'" />
-            <common-cell label="货品信息" :value="item?.product_finisheds[0].product?.name || '--'" />
-            <common-cell label="货品数量" :value="item?.product_finisheds.length || '--'" />
+            <common-cell label="货品信息" :value="item?.products[0].finished?.product?.name || '--'" />
             <common-cell label="实付金额" format="￥" :value="item.price_pay" />
             <common-cell label="货品金额" format="￥" :value="item.product_finished_price" />
             <common-cell label="优惠金额" format="￥" :value="item.price_discount" />
@@ -66,11 +65,13 @@ const hanlePay = (id: string) => {
           <div class="flex-between bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
             <div class="color-[#4287F4] cursor-pointer flex justify-center items-center">
               <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === item.status">
-                <div class="pl-[20px]" @click="handleCancel(item.id)">
-                  撤销
-                </div>
-                <div class="pl-[20px]" @click="hanlePay(item.id)">
+                <div class="pl-[16px] flex items-center text-[14px] mr-[16px]" @click="hanlePay(item.id)">
+                  <icon name="i-svg:confirmpay" :size="14" class="mr-[4px]" />
                   支付
+                </div>
+                <div class="flex items-center text-[14px] mr-[16px] color-[rgba(255,47,47,1)]" @click="handleCancel(item.id)">
+                  <icon name="i-svg:cancelpay" :size="14" class="mr-[4px]" />
+                  撤销
                 </div>
               </template>
             </div>

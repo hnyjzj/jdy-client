@@ -34,15 +34,15 @@ interface Orders {
   /**
    * 配件
    */
-  product_accessories: ProductAccessorie[]
+  product_accessories?: ProductAccessorie[]
   /**
    * 成品
    */
-  product_finisheds: ProductFinished[]
+  product_finisheds?: ProductFinished[]
   /**
    * 旧料
    */
-  product_olds: ProductOld[]
+  product_olds?: ProductOld[]
   /**
    * 订单备注
    */
@@ -197,17 +197,15 @@ interface ProductFinished {
   product?: ProductFinisheds
   weight_gem?: number
   retail_type?: number
-
   label_price?: string
-
   weight_metal?: number
   color_gem?: number
   clarity?: number
   name?: string
-
   code?: string
   status?: number
   id?: string
+  finisheds?: ProductFinisheds
 }
 
 interface ProductOld {
@@ -381,4 +379,91 @@ interface ReturnGoods {
    * 备注
    */
   remark: string
+}
+/**
+ * 销售单详情
+ */
+interface OrderInfo extends Orders {
+  /**
+   * 门店信息
+   */
+  store: Stores
+  /**
+   * id
+   */
+  id: string
+  /**
+   * 会员信息
+   */
+  member: Member
+  /**
+   * 收银员信息
+   */
+  cashier: any
+  /**
+   * 状态
+   */
+  status: number
+  /**
+   * 应付金额
+   */
+  price: string
+  /**
+   * 金额折扣
+   */
+  price_discount: string
+  /**
+   * 原始价格
+   */
+  price_original: string
+
+  /**
+   * 积分
+   */
+  integral: string
+
+  /**
+   * 实付金额
+   */
+  price_pay: string
+  /**
+   * 创建时间
+   */
+  created_at: string
+
+  /**
+   *成品货品金额
+   */
+  product_finished_price: string
+  /**
+   *配件礼品金额
+   */
+  product_accessorie_price: string
+  /**
+   *旧料抵扣金额
+   */
+  product_old_price: string
+
+  order_deposits: DepositOrderInfo[]
+
+  products: orderInfoProducts[]
+
+}
+
+interface orderInfoProducts {
+  code?: string
+  member?: Member
+  accessorie: ProductAccessorie
+  created_at: string
+  finished: ProductFinished
+  id: string
+  old: ProductOld
+  order: OrderInfo
+  order_id: string
+  status: number
+  store: Stores
+  store_id: string
+  type: number
+  updated_at: string
+  name?: string
 }
