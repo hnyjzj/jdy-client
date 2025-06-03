@@ -53,7 +53,6 @@ const hanlePay = (id: string) => {
             <common-cell label="会员手机" :value="item.member?.phone || '--'" />
             <common-cell label="主销" :value="item?.clerks.find(ele => ele.is_main)?.salesman?.nickname || '--'" />
             <common-cell label="货品信息" :value="item?.products[0].finished?.product?.name || '--'" />
-            <!-- <common-cell label="货品数量" :value="item?.product_finisheds.length || '--'" /> -->
             <common-cell label="实付金额" format="￥" :value="item.price_pay" />
             <common-cell label="货品金额" format="￥" :value="item.product_finished_price" />
             <common-cell label="优惠金额" format="￥" :value="item.price_discount" />
