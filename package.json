@@ -20,7 +20,8 @@
     "build": "^0.1.4",
     "nuxt": "^3.15.4",
     "pinia": "^2.2.5",
-    "vue": "latest"
+    "vue": "latest",
+    "vue3-use-print": "^1.0.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.7.3",
