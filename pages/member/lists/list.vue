@@ -152,9 +152,12 @@ const userCancel = () => {
           <div class="item-specific">
             <div>
               <template v-for="(item, index) in items" :key="index">
-                <div class="flex flex-row justify-between items-center gap-[8px]">
+                <div class="flex flex-row justify-between items-center gap-[8px]" style="line-height: initial;">
                   <n-dropdown
-                    trigger="click" placement="bottom-start" :options="item.actions" @select="(action: any) => {
+                    trigger="click"
+                    placement="bottom-start"
+                    :options="item.actions"
+                    @select="(action: any) => {
                       let select = actions.find((item:any) => item.key === action)
                       if (select){
                         item.selected = select.label
@@ -208,11 +211,6 @@ const userCancel = () => {
       </div>
     </common-model>
 
-    <!-- TODO: 以下为测试打印的相关代码，后续删除 -->
-    <div class="px-[30px] py-[40px] bg-gray" @click="jump('/print/list')">
-      打印列表页
-    </div>
-
     <product-filter
       v-model:id="complate" v-model:search="searchKey" :product-list-total="memberListTotal" @filter="openFilter">
       <template #company>
@@ -222,7 +220,7 @@ const userCancel = () => {
 
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
 
-    <div class="flex flex-col px-[16px] py-[16px]">
+    <div class="flex flex-col px-[16px] pb-[16px]">
       <member-lists-list :info="memberList" @go-info="userJump" @view-integral="goIntegral" @change-integral="adjustment" />
     </div>
 
