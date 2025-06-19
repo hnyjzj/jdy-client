@@ -55,7 +55,7 @@ export const useSystemPrint = defineStore('SystemPrint', {
      */
     async updatePrintTemplate(req: Partial<PrintTemplate>) {
       try {
-        const { data } = await https.put<ProductOlds, Partial<ProductOlds>>('/setting/print/update', req)
+        const { data } = await https.put<PrintTemplate, Partial<PrintTemplate>>('/setting/print/update', req)
         return data.value
       }
       catch (error) {
@@ -68,8 +68,6 @@ export const useSystemPrint = defineStore('SystemPrint', {
      */
     setSelectedTemplate(template: PrintTemplate) {
       this.defaultTemplate = template
-      console.log('调用方法传参', template)
-      console.log('this.defaultTemplate', this.defaultTemplate)
     },
 
     /**
@@ -101,7 +99,7 @@ export const useSystemPrint = defineStore('SystemPrint', {
     },
 
     /**
-     * 复制模板，传递模板id和store_id
+     * 复制模板
      */
     async copyPrintTemplate(params: { id: string, store_id: string, name: string }) {
       try {

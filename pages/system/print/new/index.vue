@@ -202,7 +202,6 @@ checkEnv()
                     :options="typeOptions"
                     @blur="() => {
                       print_template.type = showToUser as any
-                      console.log('blur2123', print_template.type)
                     }"
                   />
                 </n-form-item>

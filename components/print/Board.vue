@@ -144,8 +144,7 @@ judgeType()
                         {{ item.finished.labor_fee || '' }}
                       </td>
                       <td class="table-body">
-                        <!-- 这里暂时取出第一个证书号，后期视情况修改 -->
-                        {{ item.finished.product?.certificate[0] || '' }}
+                        {{ item.finished.product?.certificate?.[0] || '' }}
                       </td>
                       <td class="table-body">
                         {{ item.finished.product?.label_price || '' }}
@@ -324,7 +323,7 @@ judgeType()
                         {{ item.finished.labor_fee || '' }}
                       </td>
                       <td class="table-body">
-                        {{ item.finished.product?.certificate[0] || '' }}
+                        {{ item.finished.product?.certificate?.[0] || '' }}
                       </td>
                       <td class="table-body">
                         {{ item.finished.price || '' }}

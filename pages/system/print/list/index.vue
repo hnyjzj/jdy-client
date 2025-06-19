@@ -21,7 +21,7 @@ const getStoreList = async () => await getMyStore({ page: 1, limit: 20 })
 await getStoreList()
 
 async function getList(where = {} as Partial<PrintTemplate>) {
-  const params = { page: searchPage.value, limit, where: { store_id: myStore.value.id } } as ReqList<Member>
+  const params = { page: searchPage.value, limit, where: { store_id: myStore.value.id } } as ReqList<PrintTemplate>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
