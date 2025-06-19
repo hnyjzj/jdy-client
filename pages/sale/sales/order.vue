@@ -88,7 +88,6 @@ const printPre = () => {
   usePrint(PrintComponent)
 }
 
-// 如果订单存在退货商品，点击打印按钮则弹出选择打印模板的弹窗
 const isModel = ref(false)
 
 const jumpPre = () => {
