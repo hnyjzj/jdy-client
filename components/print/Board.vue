@@ -477,6 +477,8 @@ judgeType()
 
   .base {
     position: absolute;
+    font-size: var(--size-font-size);
+
     width: var(--base-width);
     top: var(--base-top);
     right: var(--base-right);
@@ -490,6 +492,8 @@ judgeType()
 
   .phone {
     position: absolute;
+    font-size: var(--size-font-size);
+
     top: var(--phone-top);
     right: var(--phone-right);
   }
@@ -500,6 +504,7 @@ judgeType()
     top: var(--list-top);
     right: var(--list-right);
     left: var(--list-left);
+    font-size: var(--size-font-size);
 
     .table-header {
       padding: 1mm 0;
@@ -526,12 +531,16 @@ judgeType()
 
   .total {
     position: absolute;
+    font-size: var(--size-font-size);
+
     top: var(--total-top);
     right: var(--total-right);
   }
 
   .bottom {
     position: absolute;
+    font-size: var(--size-font-size);
+
     bottom: var(--more-bottom);
     right: var(--more-right);
     left: var(--more-left);

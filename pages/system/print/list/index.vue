@@ -74,6 +74,7 @@ const delConfirm = async () => {
 const copy = (id: string | undefined, store_id: string | undefined, index: number) => {
   if (id === '') {
     const selectedTemplate = printList.value[index]
+
     setSelectedTemplate(selectedTemplate)
     jump('/system/print/new')
   }

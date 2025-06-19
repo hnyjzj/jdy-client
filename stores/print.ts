@@ -8,6 +8,7 @@ export const useSystemPrint = defineStore('SystemPrint', {
   } => ({
     printList: [],
     PrintTemplate: {} as PrintTemplate,
+    defaultTemplate: {} as PrintTemplate,
     printListTotal: 0,
     searchPage: 1,
   }),

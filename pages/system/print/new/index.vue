@@ -12,12 +12,29 @@ useSeoMeta({
 const { $toast } = useNuxtApp()
 
 const { createPrintTemplate } = useSystemPrint()
+const { defaultTemplate } = storeToRefs(useSystemPrint())
+
 const { myStore } = storeToRefs(useStores())
 
 const callOff = () => {
+  // 清空defaultTemplate
+  if (defaultTemplate?.value) {
+    defaultTemplate.value = undefined
+  }
   const { back } = useRouter()
   back()
 }
+
+// defaultTemplate是否存在
+const hasDefault = ref(false)
+
+const replaceDefault = () => {
+  if (defaultTemplate?.value) {
+    hasDefault.value = true
+  }
+}
+
+replaceDefault()
 
 const print_template = ref<PrintTemplate>({
   name: '',
@@ -53,6 +70,15 @@ const print_template = ref<PrintTemplate>({
     },
   },
 })
+
+// 若存在defaultTemplate，将其赋值给print_template
+const finalDelivery = () => {
+  if (defaultTemplate?.value) {
+    print_template.value = defaultTemplate.value
+  }
+}
+
+finalDelivery()
 
 const printPre = () => {
   if (!print_template.value.type) {
@@ -124,6 +150,11 @@ const saveTemp = async () => {
   print_template.value.store_id = myStore.value.id
 
   const res = await createPrintTemplate(print_template.value)
+
+  if (defaultTemplate?.value) {
+    defaultTemplate.value = undefined
+  }
+
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
     backtrack()
