@@ -25,10 +25,10 @@ const showToUser = (type: number) => {
 
 <template>
   <div>
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-2 gap-4" uno-lg="grid-cols-3 gap-4">
       <template v-for="(item, index) in props.list" :key="index">
         <template v-if="item.id && item.store_id">
-          <div class="bg-[#fff] border-solid border-[1px] border-[#EFF0F6] rounded-[24px] overflow-hidden">
+          <div class="bg">
             <div class="exhibition p-[16px]">
               <div class="font-[14px] font-semibold color-[#000] mb-[8px]">
                 {{ item.name }}
@@ -57,13 +57,13 @@ const showToUser = (type: number) => {
         </template>
 
         <template v-else-if="item.is_default === true">
-          <div class="bg-[#fff] border-solid border-[1px] border-[#EFF0F6] rounded-[24px] overflow-hidden">
+          <div class="bg">
             <div class="exhibition p-[16px]">
               <div class="font-[14px] font-semibold color-[#000] mb-[8px]">
                 {{ item.name }}
               </div>
               <div class="font-[14px] color-[#666666]">
-                可复制该模板至所需门店
+                复制至所需门店
               </div>
             </div>
 
@@ -82,11 +82,11 @@ const showToUser = (type: number) => {
 </template>
 
 <style scoped lang="scss">
-.body {
-  --uno: 'bg-[rgba(255,255,255,.7)] h-100vh p-[16px] rounded-t-[24px] border-solid border-[1px] border-[#EFF0F6]';
+.bg {
+  --uno: 'bg-[#fff] border-solid border-[1px] border-[#EFF0F6] rounded-[24px] overflow-hidden';
 }
 
 .ope-but {
-  --uno: 'font-[14px] font-semibold cursor-pointer';
+  --uno: 'font-[14px] font-semibold cursor-pointer text-nowrap';
 }
 </style>

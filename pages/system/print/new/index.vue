@@ -416,12 +416,14 @@ checkEnv()
           </div>
         </div>
       </div>
-      <common-button-bottom
-        cancel-text="返回"
-        confirm-text="确认新增"
-        @cancel="callOff"
-        @confirm="saveTemp"
-      />
+      <div class="fixed z-1">
+        <common-button-bottom
+          cancel-text="返回"
+          confirm-text="确认新增"
+          @cancel="callOff"
+          @confirm="saveTemp"
+        />
+      </div>
     </div>
   </div>
 </template>
