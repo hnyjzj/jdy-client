@@ -201,12 +201,14 @@ const confirm = () => {
       </div>
     </div>
 
-    <common-button-bottom
-      cancel-text="取消"
-      confirm-text="新增模板"
-      @cancel="cancel"
-      @confirm="confirm"
-    />
+    <div class="fixed z-1">
+      <common-button-bottom
+        cancel-text="取消"
+        confirm-text="新增模板"
+        @cancel="cancel"
+        @confirm="confirm"
+      />
+    </div>
   </div>
 </template>
 

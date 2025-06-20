@@ -26,6 +26,8 @@ async function getInfo() {
 
 await getInfo()
 
+const verify = ref(null)
+
 const formRef = ref<FormInst | null>(null)
 const rules = ref<FormRules>({
   name: {
@@ -34,30 +36,15 @@ const rules = ref<FormRules>({
     message: '请输入模板名称',
     type: 'string',
   },
-  typeSelect: {
-    type: 'array',
+  showToUser: {
+    validator() {
+      if (!verify.value) {
+        return new Error('请选择模板类型')
+      }
+    },
     required: true,
     trigger: ['blur', 'change'],
-    message: '请选择打印模板类型',
-  },
-  paper: {
-    height: {
-      required: true,
-      trigger: ['blur', 'input', 'change'],
-      message: '请输入纸张高度',
-      type: 'number',
-    },
-    width: {
-      required: true,
-      trigger: ['blur', 'input', 'change'],
-      message: '请输入纸张宽度',
-    },
-  },
-  color: {
-    required: true,
-    trigger: ['blur', 'input', 'change'],
-    message: '请输入数值',
-    type: 'number',
+    message: '请选择模板类型',
   },
 },
 )
@@ -148,13 +135,15 @@ checkEnv()
                   <n-input v-model:value="tempInfo.name" size="large" @keydown.enter.prevent />
                 </n-form-item>
 
-                <n-form-item path="typeSelect" label="模板类型">
+                <n-form-item path="showToUser" label="模板类型">
                   <n-select
                     v-model:value="showToUser"
                     :options="typeOptions"
                     @blur="() => {
                       tempInfo.type = showToUser as any
-                      console.log('blur2123', tempInfo.type)
+                    }"
+                    @update:value="(value) => {
+                      verify = value
                     }"
                   />
                 </n-form-item>
@@ -183,13 +172,9 @@ checkEnv()
                 基础设置
               </div>
               <div class="gap-[16px] px-[16px] pt-[20px] rounded-[16px] shadow-md bg-[#E2E2E2] dark:bg-[rgba(255,255,255,.3)]">
-                <n-form
-                  ref="formRef"
-                  :rules="rules"
-                  :model="tempInfo"
-                  label-placement="top">
+                <n-form :model="tempInfo" label-placement="top">
                   <n-grid :cols="24" :x-gap="8">
-                    <n-form-item-gi :span="12" path="paper" label="纸张高度">
+                    <n-form-item-gi :span="8" label="纸张高度">
                       <n-input-number v-model:value="tempInfo.config.size.height" :show-button="false" @keydown.enter.prevent>
                         <template #suffix>
                           mm
@@ -197,7 +182,7 @@ checkEnv()
                       </n-input-number>
                     </n-form-item-gi>
 
-                    <n-form-item-gi :span="12" label="纸张宽度">
+                    <n-form-item-gi :span="8" label="纸张宽度">
                       <n-input-number v-model:value="tempInfo.config.size.width" :show-button="false" @keydown.enter.prevent>
                         <template #suffix>
                           mm
@@ -205,7 +190,7 @@ checkEnv()
                       </n-input-number>
                     </n-form-item-gi>
 
-                    <n-form-item-gi :span="12" label="字体大小">
+                    <n-form-item-gi :span="8" label="字体大小">
                       <n-input-number v-model:value="tempInfo.config.size.fontSize" :show-button="false" @keydown.enter.prevent @blur="() => { console.log('blur111', tempInfo.config.size.fontSize) }">
                         <template #suffix>
                           mm
@@ -223,9 +208,9 @@ checkEnv()
               </div>
               <div class="flex flex-col gap-[20px] pt-[8px]">
                 <div class="operate-box shadow-[0_-4px_1px_rgba(255,0,0,1)]">
-                  <n-form ref="formRef" :model="tempInfo.config.base" :rules="rules" label-placement="top">
+                  <n-form :model="tempInfo.config.base" label-placement="top">
                     <n-grid :cols="24" :x-gap="8">
-                      <n-form-item-gi :span="8" path="color" label="红 ①">
+                      <n-form-item-gi :span="8" label="红 ①">
                         <n-input-number v-model:value="tempInfo.config.base.top" :show-button="false" @keydown.enter.prevent>
                           <template #suffix>
                             mm
@@ -233,7 +218,7 @@ checkEnv()
                         </n-input-number>
                       </n-form-item-gi>
 
-                      <n-form-item-gi :span="8" path="color" label="红 ②">
+                      <n-form-item-gi :span="8" label="红 ②">
                         <n-input-number v-model:value="tempInfo.config.base.width" :show-button="false" @keydown.enter.prevent>
                           <template #suffix>
                             mm
@@ -241,7 +226,7 @@ checkEnv()
                         </n-input-number>
                       </n-form-item-gi>
 
-                      <n-form-item-gi :span="8" path="color" label="红 ③">
+                      <n-form-item-gi :span="8" label="红 ③">
                         <n-input-number v-model:value="tempInfo.config.base.right" :show-button="false" @keydown.enter.prevent>
                           <template #suffix>
                             mm
@@ -253,9 +238,9 @@ checkEnv()
                 </div>
 
                 <div class="operate-box shadow-[0_-4px_1px_rgba(221,143,175,1)]">
-                  <n-form ref="formRef" :rules="rules" label-placement="top">
+                  <n-form label-placement="top">
                     <n-grid :cols="24" :x-gap="8">
-                      <n-form-item-gi :span="8" path="color" label="粉 ①">
+                      <n-form-item-gi :span="8" label="粉 ①">
                         <n-input-number v-model:value="tempInfo.config.phone.top" :show-button="false" @keydown.enter.prevent>
                           <template #suffix>
                             mm
@@ -263,7 +248,7 @@ checkEnv()
                         </n-input-number>
                       </n-form-item-gi>
 
-                      <n-form-item-gi :span="8" path="color" label="粉 ②">
+                      <n-form-item-gi :span="8" label="粉 ②">
                         <n-input-number v-model:value="tempInfo.config.phone.right" :show-button="false" @keydown.enter.prevent>
                           <template #suffix>
                             mm
@@ -275,9 +260,9 @@ checkEnv()
                 </div>
 
                 <div class="operate-box shadow-[0_-4px_1px_rgba(255,138,0,1)]">
-                  <n-form ref="formRef" :rules="rules" label-placement="top">
+                  <n-form label-placement="top">
                     <n-grid :cols="24" :x-gap="8">
-                      <n-form-item-gi :span="8" path="color" label="橘 ①">
+                      <n-form-item-gi :span="8" label="橘 ①">
                         <n-input-number v-model:value="tempInfo.config.list.left" :show-button="false" @keydown.enter.prevent>
                           <template #suffix>
                             mm
@@ -285,7 +270,7 @@ checkEnv()
                         </n-input-number>
                       </n-form-item-gi>
 
-                      <n-form-item-gi :span="8" path="color" label="橘 ②">
+                      <n-form-item-gi :span="8" label="橘 ②">
                         <n-input-number v-model:value="tempInfo.config.list.top" :show-button="false" @keydown.enter.prevent>
                           <template #suffix>
                             mm
@@ -293,7 +278,7 @@ checkEnv()
                         </n-input-number>
                       </n-form-item-gi>
 
-                      <n-form-item-gi :span="8" path="color" label="橘 ③">
+                      <n-form-item-gi :span="8" label="橘 ③">
                         <n-input-number v-model:value="tempInfo.config.list.right" :show-button="false" @keydown.enter.prevent>
                           <template #suffix>
                             mm
@@ -301,7 +286,7 @@ checkEnv()
                         </n-input-number>
                       </n-form-item-gi>
 
-                      <n-form-item-gi :span="8" path="color" label="橘 ④">
+                      <n-form-item-gi :span="8" label="橘 ④">
                         <n-input-number v-model:value="tempInfo.config.list.height" :show-button="false" @keydown.enter.prevent>
                           <template #suffix>
                             mm
@@ -313,9 +298,9 @@ checkEnv()
                 </div>
 
                 <div class="operate-box shadow-[0_-4px_1px_rgba(95,161,71,1)]">
-                  <n-form ref="formRef" :rules="rules" label-placement="top">
+                  <n-form label-placement="top">
                     <n-grid :cols="24" :x-gap="8">
-                      <n-form-item-gi :span="8" path="color" label="绿 ①">
+                      <n-form-item-gi :span="8" label="绿 ①">
                         <n-input-number v-model:value="tempInfo.config.total.top" :show-button="false" @keydown.enter.prevent>
                           <template #suffix>
                             mm
@@ -323,7 +308,7 @@ checkEnv()
                         </n-input-number>
                       </n-form-item-gi>
 
-                      <n-form-item-gi :span="8" path="color" label="绿 ②">
+                      <n-form-item-gi :span="8" label="绿 ②">
                         <n-input-number v-model:value="tempInfo.config.total.right" :show-button="false" @keydown.enter.prevent>
                           <template #suffix>
                             mm
@@ -335,9 +320,9 @@ checkEnv()
                 </div>
 
                 <div class="operate-box shadow-[0_-4px_1px_rgba(102,165,213,1)]">
-                  <n-form ref="formRef" :rules="rules" label-placement="top">
+                  <n-form label-placement="top">
                     <n-grid :cols="24" :x-gap="8">
-                      <n-form-item-gi :span="8" path="color" label="蓝 ①">
+                      <n-form-item-gi :span="8" label="蓝 ①">
                         <n-input-number v-model:value="tempInfo.config.more.left" :show-button="false" @keydown.enter.prevent>
                           <template #suffix>
                             mm
@@ -345,7 +330,7 @@ checkEnv()
                         </n-input-number>
                       </n-form-item-gi>
 
-                      <n-form-item-gi :span="8" path="color" label="蓝 ②">
+                      <n-form-item-gi :span="8" label="蓝 ②">
                         <n-input-number v-model:value="tempInfo.config.more.bottom" :show-button="false" @keydown.enter.prevent>
                           <template #suffix>
                             mm
@@ -353,7 +338,7 @@ checkEnv()
                         </n-input-number>
                       </n-form-item-gi>
 
-                      <n-form-item-gi :span="8" path="color" label="蓝 ③">
+                      <n-form-item-gi :span="8" label="蓝 ③">
                         <n-input-number v-model:value="tempInfo.config.more.right" :show-button="false" @keydown.enter.prevent>
                           <template #suffix>
                             mm

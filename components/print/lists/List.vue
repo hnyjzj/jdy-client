@@ -24,7 +24,7 @@ const showToUser = (type: number) => {
 </script>
 
 <template>
-  <div>
+  <div class="pb-[80px]">
     <div class="grid grid-cols-2 gap-4" uno-lg="grid-cols-3 gap-4">
       <template v-for="(item, index) in props.list" :key="index">
         <template v-if="item.id && item.store_id">
