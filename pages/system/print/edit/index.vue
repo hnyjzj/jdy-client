@@ -105,18 +105,8 @@ const saveTemp = async () => {
 // 判断当前环境
 const isMobile = ref(false)
 
-const checkEnv = () => {
-  const flag = navigator.userAgent.match(
-    /(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i,
-  )
-
-  if (flag) {
-    isMobile.value = true
-  }
-}
-
 onMounted(() => {
-  checkEnv()
+  isMobile.value = checkEnv()
 })
 </script>
 
