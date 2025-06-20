@@ -54,6 +54,7 @@ const getMethod = () => {
 }
 
 const limit = 12
+const isPrintable = OrderDetail.value.status === 3 || OrderDetail.value.status === 4
 
 // 获取类别1(销售单)的打印模板
 async function getList(where = {} as Partial<PrintTemplate>) {
@@ -156,7 +157,7 @@ checkEnv()
         :orders="OrderDetail"
         :return-goods="returnGoods" />
     </div>
-    <template v-if="!isMobile">
+    <template v-if="!isMobile && isPrintable">
       <common-button-bottom
         confirm-text="打印"
         cancel-text="返回"
