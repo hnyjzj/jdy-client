@@ -176,7 +176,9 @@ const checkEnv = () => {
   }
 }
 
-checkEnv()
+onMounted(() => {
+  checkEnv()
+})
 </script>
 
 <template>

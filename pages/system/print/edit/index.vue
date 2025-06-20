@@ -115,7 +115,9 @@ const checkEnv = () => {
   }
 }
 
-checkEnv()
+onMounted(() => {
+  checkEnv()
+})
 </script>
 
 <template>
@@ -191,7 +193,7 @@ checkEnv()
                     </n-form-item-gi>
 
                     <n-form-item-gi :span="8" label="字体大小">
-                      <n-input-number v-model:value="tempInfo.config.size.fontSize" :show-button="false" @keydown.enter.prevent @blur="() => { console.log('blur111', tempInfo.config.size.fontSize) }">
+                      <n-input-number v-model:value="tempInfo.config.size.fontSize" :show-button="false" @keydown.enter.prevent>
                         <template #suffix>
                           mm
                         </template>

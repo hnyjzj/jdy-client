@@ -5,8 +5,6 @@ const props = defineProps<{
 }>()
 
 const PLACEHOLDER = '--'
-
-console.log(props.details?.printData)
 </script>
 
 <template>

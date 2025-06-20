@@ -154,9 +154,6 @@ const confirm = () => {
           <n-input
             v-model:value="changeName"
             placeholder="请输入模板名称(非必填项)"
-            @blur="() => {
-              console.log('blur', changeName)
-            }"
             @keydown.enter.prevent
           />
         </div>
