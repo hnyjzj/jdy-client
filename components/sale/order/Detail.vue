@@ -125,7 +125,7 @@ const onReturnProduct = async (index: number) => {
                 <common-cell label="商品条码" :value="obj.finished.product?.code" />
                 <common-cell label="商品名称" :value="obj.finished.product?.name" val-color="#4C8DF6" />
                 <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[(obj.finished.product?.retail_type as number)]" />
-                <common-cell label="金重(g)" :value="obj.finished.product?.weight_gem" />
+                <common-cell label="金重(g)" :value="obj.finished.product?.weight_metal" />
                 <common-cell label="金价(元/g)" format="￥" :value="obj.finished.price_gold" />
                 <common-cell label="工费" format="￥" :value="obj.finished.labor_fee" />
                 <common-cell label="标签价" format="￥" :value="obj.finished.product?.label_price" />

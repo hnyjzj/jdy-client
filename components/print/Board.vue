@@ -247,10 +247,10 @@ judgeType()
                   <tr v-for="(item, index) in props.details.products" :key="index">
                     <template v-if="item.type === 3">
                       <td class="table-body">
-                        {{ item.accessorie.product?.code || '' }}
+                        {{ item.accessorie.product?.category.code || '' }}
                       </td>
                       <td class="table-body">
-                        {{ item.accessorie.product?.name || '' }}
+                        {{ item.accessorie.product?.category.name || '' }}
                       </td>
                       <td class="table-body">
                         {{ item.accessorie.quantity || '' }}

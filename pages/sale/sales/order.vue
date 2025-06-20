@@ -96,8 +96,13 @@ const jumpPre = () => {
 
 // 弹窗确认
 const modelConfirm = async () => {
-  await getSpecificInfo()
-  printPre()
+  if (chosen.value) {
+    await getSpecificInfo()
+    printPre()
+  }
+  else {
+    $toast.error('请先选择打印模板')
+  }
 }
 
 const isMobile = ref(false)
