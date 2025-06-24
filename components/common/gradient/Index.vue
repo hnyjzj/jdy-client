@@ -34,6 +34,10 @@ const props = withDefaults(defineProps<{
    * 是否有阴影
    */
   hasShadow?: boolean
+  /**
+   * 默认展开或折叠
+   */
+  isFolds?: boolean
 }>(), {
   alignDesc: 'space-between',
   theme: 'theme',
@@ -42,9 +46,12 @@ const props = withDefaults(defineProps<{
   bold: true,
   textColor: '#333',
   hasShadow: false,
+  isFolds: true,
 })
 
 const isFold = ref(true)
+isFold.value = props.isFolds
+
 const toggleFold = () => {
   isFold.value = !isFold.value
 }
