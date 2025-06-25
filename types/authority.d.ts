@@ -56,6 +56,8 @@ interface Roles {
    */
   updated_at?: Date
   stores: Stores[]
+  /** 默认角色 */
+  is_default: boolean
 }
 
 interface RolesParams {

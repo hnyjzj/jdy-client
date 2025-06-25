@@ -28,6 +28,8 @@ const staffSelectIds = ref<string[]>([])
 
 /** 确认框显隐 */
 const confirmShow = ref(false)
+/** 倒计时框 */
+const countdownShow = ref(false)
 
 /** 角色列表 */
 await getRoleList()
@@ -182,6 +184,14 @@ async function saveFun() {
     $toast.error(res?.message || '更新失败')
   }
 }
+
+function updataFun() {
+  /** 默认权限组更改确认时 增加倒计时确认 */
+  if (roleList.value[selectRole.value].is_default) {
+    return countdownShow.value = true
+  }
+  saveFun()
+}
 </script>
 
 <template>
@@ -198,6 +208,10 @@ async function saveFun() {
                   </div>
                   <span class="text-[12px] text-[#666666]">{{ item.desc }}</span>
                   <div class="mt-4 flex flex-end cursor-pointer" @click.stop="delRoleFun(item.id, item.name)">
+                    <template v-if="item.is_default">
+                      默认
+                    </template>
+                    <div />
                     <Icon name="i-icon:delete" color="red" :size="14" />
                   </div>
                 </div>
@@ -264,7 +278,7 @@ async function saveFun() {
           </div>
         </template>
         <template v-if="activeIndex !== 2">
-          <common-button-one @confirm="saveFun" />
+          <common-button-one @confirm="updataFun" />
         </template>
       </div>
     </common-layout-center>
@@ -309,11 +323,22 @@ async function saveFun() {
     <common-confirm
       v-model:show="confirmShow"
       title="提示"
-      :text="`确定删除当前${delRoleName}用户组?`"
+      :text="`确定删除当前${delRoleName}权限组?`"
       icon="error"
       cancel-text="否"
       confirm-text="是"
       @submit="delRole"
+      @cancel="confirmShow = false"
+    />
+    <common-confirm
+      v-model:show="countdownShow"
+      title="提示"
+      text="确定更改默认权限组功能?"
+      cancel-text="否"
+      confirm-text="是"
+      :is-countdown="true"
+      icon="error"
+      @submit="saveFun()"
       @cancel="confirmShow = false"
     />
   </div>
