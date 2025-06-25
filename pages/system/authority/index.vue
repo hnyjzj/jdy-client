@@ -174,7 +174,7 @@ async function saveFun() {
     routers: funSelectIds.value,
     stores: storeSelectIds.value,
     staffs: staffSelectIds.value,
-  } as UpdataAuthParams
+  } as UpdateAuthParams
   const res = await updateStaff(params)
   if (res?.code === 200) {
     $toast.success('更新成功')

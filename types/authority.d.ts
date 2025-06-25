@@ -112,7 +112,7 @@ interface Apis {
 }
 
 /** 更新参数 */
-interface UpdataAuthParams {
+interface UpdateAuthParams {
   id: string
   stores?: string[]
   staffs?: string[]
