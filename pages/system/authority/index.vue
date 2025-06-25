@@ -3,7 +3,7 @@ const { roleList, apiList, roleInfo } = storeToRefs(useAuthority())
 const { getStoreList } = useStores()
 const { storesList } = storeToRefs(useStores())
 
-const { getRoleList, addRole, getRoleInfo, getApiList, addStaff, updataStaff, deleteRole } = useAuthority()
+const { getRoleList, addRole, getRoleInfo, getApiList, addStaff, updateStaff, deleteRole } = useAuthority()
 const { getWorkbenchList } = useWorkbenche()
 const { workBenchList } = storeToRefs(useWorkbenche())
 const { useWxWork } = useWxworkStore()
@@ -173,7 +173,7 @@ async function saveFun() {
     stores: storeSelectIds.value,
     staffs: staffSelectIds.value,
   } as UpdataAuthParams
-  const res = await updataStaff(params)
+  const res = await updateStaff(params)
   if (res?.code === 200) {
     $toast.success('更新成功')
     await getInfo()
@@ -188,19 +188,21 @@ async function saveFun() {
   <div>
     <common-layout-center>
       <div class="px-4 pt-6">
-        <common-gradient :title="`用户组（${roleList.length}）`">
+        <common-gradient :title="`权限组（${roleList.length}）`">
           <template #body>
-            <template v-for="(item, index) in roleList" :key="index">
-              <div class="user-box mb-3" :class="selectRole === index ? 'select-role' : ''" @click="selectRole = index;getInfo()">
-                <div class="text-[16px]">
-                  {{ item.name }}
+            <div class="grid grid-cols-2 gap-4">
+              <template v-for="(item, index) in roleList" :key="index">
+                <div class="user-box mb-3" :class="selectRole === index ? 'select-role' : ''" @click="selectRole = index;getInfo()">
+                  <div class="text-[16px]">
+                    {{ item.name }}
+                  </div>
+                  <span class="text-[12px] text-[#666666]">{{ item.desc }}</span>
+                  <div class="mt-4 flex flex-end cursor-pointer" @click.stop="delRoleFun(item.id, item.name)">
+                    <Icon name="i-icon:delete" color="red" :size="14" />
+                  </div>
                 </div>
-                <span class="text-[12px] text-[#666666]">{{ item.desc }}</span>
-                <div class="mt-4 flex flex-end cursor-pointer" @click.stop="delRoleFun(item.id, item.name)">
-                  <Icon name="i-icon:delete" color="red" :size="14" />
-                </div>
-              </div>
-            </template>
+              </template>
+            </div>
             <div class="text-center cursor-pointer" @click="oppeAddRole">
               + 添加用户组
             </div>
@@ -208,7 +210,7 @@ async function saveFun() {
         </common-gradient>
         <div class="my-4 flex items-center">
           <span class="text-[18px] font-bold">
-            公司普通成员
+            {{ roleList[selectRole]?.name || '' }}
           </span>
           <div class="label">
             系统
@@ -232,7 +234,7 @@ async function saveFun() {
           </div>
         </template>
         <template v-else-if="activeIndex === 1">
-          <div class="mb-4">
+          <div class="mb-20">
             <authority-api v-model="apiSelectIds" :api-list="apiList" />
           </div>
         </template>

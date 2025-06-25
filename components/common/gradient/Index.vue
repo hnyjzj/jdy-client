@@ -49,8 +49,12 @@ const props = withDefaults(defineProps<{
   isFolds: true,
 })
 
-const isFold = ref(true)
-isFold.value = props.isFolds
+const isFold = ref(props.isFolds)
+
+// 监听 isFolds 变化
+watchEffect(() => {
+  isFold.value = props.isFolds
+})
 
 const toggleFold = () => {
   isFold.value = !isFold.value

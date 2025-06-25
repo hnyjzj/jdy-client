@@ -55,7 +55,7 @@ interface Roles {
    * 更新时间
    */
   updated_at?: Date
-  [property: string]: any
+  stores: Stores[]
 }
 
 interface RolesParams {
@@ -104,7 +104,7 @@ interface Apis {
   /**
    * 更新时间
    */
-  updated_at: Date
+  updated_at?: Date
   children: Apis[]
   stores: Stores[]
 }

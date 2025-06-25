@@ -29,7 +29,7 @@ function handleSwitchChange(val: boolean, id: Apis['id']) {
   <div>
     <template v-for="(api, aindex) in props.apiList" :key="aindex">
       <div class="mb-2">
-        <common-gradient :title="api.path ?? ''" :foldable="true" :is-folds="true">
+        <common-gradient :title="api.title || api.path" :foldable="true" :is-folds="true">
           <template #body>
             <div>
               <div class="mb-2 flex">
@@ -44,7 +44,7 @@ function handleSwitchChange(val: boolean, id: Apis['id']) {
                     <div class="flex mb-2">
                       <n-checkbox
                         :value="son.id"
-                        :label="son.path"
+                        :label="son.title || son.path"
                         :style="{
                           '--n-color-checked': '#0068ff',
                           '--n-border-color-active': '#000',

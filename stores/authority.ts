@@ -46,7 +46,7 @@ export const useAuthority = defineStore('Authority', {
       return data.value
     },
     /** 更新添加成员 */
-    async updataStaff(params: UpdataAuthParams) {
+    async updateStaff(params: UpdataAuthParams) {
       const { data } = await https.put<string[], any>('/setting/role/update', params)
       return data.value
     },
