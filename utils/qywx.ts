@@ -149,7 +149,7 @@ class WxWork {
     return this.getjsapiTicket()
   }
 }
-
+export type { WxWork }
 export const wxWork = (options: Options) => new WxWork(options)
 export const isWxWorkClient = () => {
   return wx.env.isWeCom || false

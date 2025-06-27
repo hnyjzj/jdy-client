@@ -2,12 +2,15 @@
 import { darkTheme, dateZhCN, type GlobalThemeOverrides, zhCN } from 'naive-ui'
 
 // 扫码
+const { wx } = storeToRefs(useWxworkStore())
 const { useWxWork } = useWxworkStore()
 
 onMounted(async () => {
   await nextTick()
-  const wx = await useWxWork()
-  wx?.UserCaptureScreen(async () => {
+  if (wx?.value) {
+    await useWxWork()
+  }
+  wx.value?.UserCaptureScreen(async () => {
     const params = ref<{ username: string, storename?: string | undefined, url: string }>({
       username: '',
       storename: '',
