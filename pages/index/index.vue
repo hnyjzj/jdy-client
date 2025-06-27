@@ -6,8 +6,9 @@ useSeoMeta({
 const { myStoreTodaySale, myStoreTodayInventory } = homeDataStore()
 const { myStore, myStoreList } = storeToRefs(useStores())
 const { getMyStore, switchStore } = useStores()
-
-await getMyStore({ page: 1, limit: 20 })
+if (!myStore.value.id) {
+  await getMyStore({ page: 1, limit: 20 })
+}
 
 // 切换门店
 const handleSelectFn = async (id: Stores['id']) => {
