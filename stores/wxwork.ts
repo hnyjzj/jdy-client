@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 export const useWxworkStore = defineStore('Wxwork', {
   state: () => ({
     tickets: {} as ticketRes,
+    wx: {} as any,
   }),
   actions: {
     async useWxWork() {
@@ -14,8 +15,10 @@ export const useWxworkStore = defineStore('Wxwork', {
       }
       // 使用现有tickets创建wx对象
       const wx = wxWork(this.tickets)
+      this.wx = wx
       // 检查jsapi权限
       await wx.checkJsApi()
+
       // 返回wx对象
       return wx
     },
