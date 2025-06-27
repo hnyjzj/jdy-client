@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { darkTheme, dateZhCN, type GlobalThemeOverrides, zhCN } from 'naive-ui'
 
-// 扫码
 const { wx } = storeToRefs(useWxworkStore())
 const { useWxWork } = useWxworkStore()
 
