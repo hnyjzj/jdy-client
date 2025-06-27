@@ -23,11 +23,11 @@ onMounted(async () => {
     params.value.username = userinfo.value.nickname
     // 判断是否有门店
     const stores = useStores()
-    if (stores.myStoreList.length === 0) {
-      params.value.storename = undefined
+    if (stores.myStore.name) {
+      params.value.storename = stores.myStore.name
     }
     else {
-      params.value.storename = stores.myStore.name
+      params.value.storename = undefined
     }
     params.value.url = window.location.href
     await UserScreen(params.value)

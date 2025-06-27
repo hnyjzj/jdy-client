@@ -17,7 +17,6 @@ const QWLogin = async () => {
 
 if (import.meta.client) {
   if (isWxWorkClient() || isWeChatClient()) {
-    // navigateTo('/login')
     QWLogin()
   }
   else {
