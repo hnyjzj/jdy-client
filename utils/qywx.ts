@@ -9,10 +9,12 @@ interface Options {
 
 class WxWork {
   public jsApiList = [
+    'checkJsApi',
     'selectEnterpriseContact',
     'scanQRCode',
     'getContext',
     'getCurExternalContact',
+    'onUserCaptureScreen',
   ]
 
   public corp_id: string
@@ -47,10 +49,8 @@ class WxWork {
     }
 
     options.onConfigSuccess = () => {
-
     }
     options.onConfigFail = () => {
-
     }
 
     wx.register(options)
@@ -64,7 +64,6 @@ class WxWork {
     const { checkResult } = await wx.checkJsApi({
       jsApiList: this.jsApiList,
     })
-
     return checkResult
   }
 
@@ -115,6 +114,11 @@ class WxWork {
     }
   }
 
+  //  监听截屏事件
+  UserCaptureScreen = (fun: wx.APICallback<void>) => {
+    return wx.onUserCaptureScreen(fun)
+  }
+
   /**
    * @returns 获取jsapi_ticket
    */
@@ -142,7 +146,7 @@ class WxWork {
     return this.getjsapiTicket()
   }
 }
-
+export type { WxWork }
 export const wxWork = (options: Options) => new WxWork(options)
 export const isWxWorkClient = () => {
   return wx.env.isWeCom || false

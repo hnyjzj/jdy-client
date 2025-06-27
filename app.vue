@@ -1,6 +1,41 @@
 <script setup lang="ts">
 import { darkTheme, dateZhCN, type GlobalThemeOverrides, zhCN } from 'naive-ui'
 
+const { wx } = storeToRefs(useWxworkStore())
+const { useWxWork } = useWxworkStore()
+
+onMounted(async () => {
+  await nextTick()
+  if (wx?.value) {
+    await useWxWork()
+  }
+  wx.value?.UserCaptureScreen(async () => {
+    const params = ref<{ username: string, storename?: string | undefined, url: string }>({
+      username: '',
+      storename: '',
+      url: '',
+    })
+    // 判断是否登录
+    const store = useAuth()
+    if (Date.now() > (store.expires_at) * 1000) {
+      return false
+    }
+    const { userinfo } = storeToRefs(useUser())
+    const { UserScreen } = useUser()
+    params.value.username = userinfo.value.nickname
+    // 判断是否有门店
+    const stores = useStores()
+    if (stores.myStore.name) {
+      params.value.storename = stores.myStore.name
+    }
+    else {
+      params.value.storename = undefined
+    }
+    params.value.url = window.location.href
+    await UserScreen(params.value)
+  })
+})
+
 const { $colorMode } = useNuxtApp()
 const locale = zhCN
 const dateLocale = dateZhCN
