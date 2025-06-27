@@ -17,8 +17,6 @@ class WxWork {
     'onUserCaptureScreen',
   ]
 
-  public jsApiListres = {}
-
   public corp_id: string
   public agent_id?: string
   public agent_ticket?: string
@@ -66,7 +64,6 @@ class WxWork {
     const { checkResult } = await wx.checkJsApi({
       jsApiList: this.jsApiList,
     })
-    this.jsApiListres = checkResult
     return checkResult
   }
 
