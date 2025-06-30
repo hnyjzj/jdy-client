@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { FormRules, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
+import { pinyin } from 'pinyin-pro'
 
 const emits = defineEmits<{
   submit: []
@@ -11,12 +12,22 @@ const formlist = defineModel({ default: {
   account: {
     phone: '',
     nickname: '',
+    username: '',
     password: '',
     avatar: '',
     email: '',
     gender: 0,
   },
 } })
+
+const toPinyin = () => {
+  const pinyinName = pinyin(formlist.value.account.nickname, { toneType: 'none', type: 'array' })
+  const capitalizedStrings = pinyinName.map(str =>
+    str.charAt(0).toUpperCase() + str.substring(1),
+  )
+  formlist.value.account.username = capitalizedStrings.join('')
+}
+
 const genderList = [{ text: '未知', value: 0 }, { text: '男', value: 1 }, { text: '女', value: 2 }]
 const rules = {
   phone: {
@@ -28,6 +39,10 @@ const rules = {
     required: true,
     trigger: ['blur', 'input'],
     message: '请输入姓名',
+    callback: (val: any) => {
+      formlist.value.account.nickname = val.replace(/[^\u4E00-\u9FA5]/g, '')
+      toPinyin()
+    },
   },
   email: {
     required: true,
@@ -124,12 +139,22 @@ defineExpose({
                   @focus="focus"
                 />
               </n-form-item-gi>
+              <n-form-item-gi :span="12" label="用户名" path="nickname">
+                <n-input
+                  v-model:value="formlist.account.username"
+                  placeholder="请输入用户名"
+                  round
+                  @focus="focus"
+
+                />
+              </n-form-item-gi>
               <n-form-item-gi :span="12" label="姓名" path="nickname">
                 <n-input
                   v-model:value="formlist.account.nickname"
                   placeholder="请输入姓名"
                   round
                   @focus="focus"
+                  @blur="toPinyin"
                 />
               </n-form-item-gi>
               <n-form-item-gi :span="12" label="密码" path="password">

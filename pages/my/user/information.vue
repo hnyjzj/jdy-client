@@ -18,6 +18,7 @@ const otherList = ref<{ name: string, icon: string, title: string }[]>([])
 const userinfoForm = ref<Staff>({
   avatar: '',
   nickname: '',
+  username: '',
   phone: '',
   email: '',
   gender: 0,

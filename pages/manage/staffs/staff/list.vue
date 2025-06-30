@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import type { SelectOption } from 'naive-ui'
 
+useSeoMeta({
+  title: '员工列表',
+})
 const { staffList, filterListToArray, total, staffInfo, searchPage } = storeToRefs(useStaff())
-const { getStaffWhere, getStaffList, getStaffInfo } = useStaff()
+const { getStaffWhere, getStaffList } = useStaff()
 const { staffGetStoreList } = useStores()
 const { myStore } = storeToRefs(useStores())
 const complate = ref(0)
@@ -18,7 +21,7 @@ const filterData = ref({} as StaffWhere)
 const getList = async (where = {} as StaffWhere) => {
   if (nomore.value)
     return
-  const params = { page: searchPage.value, limit: 12, where: { store_id: myStore.value.id } } as ReqList<Staff>
+  const params = { page: searchPage.value, limit: 12, where: { store_id: myStore.value.id, id: '1924655540110102529' } } as ReqList<Staff>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
@@ -49,10 +52,6 @@ onMounted(() => {
   height.value = getHeight('header')
 })
 
-const getInfo = async (val: string) => {
-  await getStaffInfo({ id: val })
-  showModal.value = true
-}
 const newAdd = () => {
   navigateTo('/manage/staffs/staff/add')
 }
@@ -89,7 +88,7 @@ const handleSearch = (query: string) => {
     </div>
 
     <div class="px-[16px]">
-      <staff-manage-card :list="staffList" @get-detail="getInfo" />
+      <staff-manage-card :list="staffList" />
     </div>
     <div class="p-[16px]">
       <common-page

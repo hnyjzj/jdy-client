@@ -5,6 +5,7 @@ const formlist = ref<addStaffForm>({
   account: {
     phone: '',
     nickname: '',
+    username: '',
     gender: 0,
     password: '',
     avatar: '',

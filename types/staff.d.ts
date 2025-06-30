@@ -6,6 +6,7 @@ interface Staff {
   id?: string
   phone: string
   nickname: string
+  username: string
   password?: string
   avatar: string
   email: string

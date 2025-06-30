@@ -27,6 +27,7 @@ interface StoresStaff {
   account: null
   accounts: null
   avatar: string
+  username: string
   created_at: string
   email: string
   gender: number

@@ -6,53 +6,50 @@ const props = defineProps<{
 const sex = (val: number) => {
   return val === 0 ? '未知' : val === 1 ? '男' : '女'
 }
+const router = useRouter()
 </script>
 
 <template>
-  <row>
-    <div class="col-12 lg:col-8 lg:offset-2 grid-12 gap-[24px]">
+  <div class="grid-12">
+    <div class="grid-12 gap-[16px]" uno-sm="col-10 offset-1" uno-md="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
       <template v-for="(item, index) in props.list" :key="index">
-        <div
-          class="col-12 sm:col-6 xl:col-4 rounded-[24px] blur-bgc p-[1px]">
-          <div class="h-full flex-col-between">
-            <div
-              class="py-[8px] px-[16px] bg-gradient-linear-[90deg,#E9F1FE,#95D5FB] dark:bg-gradient-linear-[90deg,#23324B01,#2A3E5F01,#70B8E8] rounded-t-[24px] flex-start text-black dark:text-[#FFF]">
-              <common-avatar :size="24" rounded="4px" :img="ImageUrl(item.avatar)" />
-              <div class="ml-[8px] font-semibold line-height-[20px] text-size-[14px]">
-                {{ item.nickname || '' }}
+        <div class=" " uno-xl="col-6 ">
+          <sale-cards :title="`员工id:${item.id}`">
+            <template #info>
+              <div class="info">
+                <img :src="ImageUrl(item.avatar)" alt="" class="wh-[40px] mb-[12px] rounded-[8px]">
+                <common-cell label="姓名" :value="item.nickname" />
+                <common-cell label="用户名" :value="item.username" />
+                <common-cell label="性别" :value="sex(item.gender)" />
+                <common-cell label="手机号" :value="item.phone || '未设置'" />
+                <common-cell label="email" :value="item.email || '暂无' " />
               </div>
-            </div>
-            <div class="flex-1 px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-              <div class="flex-between p-[4px] grid-12">
-                <div class="col-6">
-                  手机号
-                </div>
-                <div class="text-align-end col-6">
-                  {{ item.phone || '未设置' }}
-                </div>
+            </template>
+            <template #footer>
+              <div class="flex-between pl-[8px] bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
+                <div />
+                <common-button-irregular text="查看详情" @click="router.push(`/manage/staffs/staff/info?id=${item.id}`)" />
               </div>
-              <div class=" p-[4px] grid-12">
-                <div class="col-6">
-                  email
-                </div>
-                <div class="text-align-end col-6">
-                  <div class="break-words">
-                    {{ item.email || '暂无' }}
-                  </div>
-                </div>
-              </div>
-              <div class="flex-between p-[4px]">
-                <div class="">
-                  性别
-                </div>
-                <div class="text-align-end">
-                  {{ sex(item.gender) }}
-                </div>
-              </div>
-            </div>
-          </div>
+            </template>
+          </sale-cards>
         </div>
       </template>
     </div>
-  </row>
+  </div>
 </template>
+
+<style lang="scss" scoped>
+  .info {
+  --uno: 'flex flex-col gap-[3px] px-[16px]';
+
+  .part {
+    --uno: 'flex-center-between';
+    &-left {
+      --uno: 'text-size-[14px] color-[#666] dark:color-[#CBCDD1]';
+    }
+    &-right {
+      --uno: 'text-size-[14px] color-[#333] dark:color-[#fff]';
+    }
+  }
+}
+</style>
