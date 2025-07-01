@@ -2,11 +2,11 @@
 import type { FormRules, SelectOption } from 'naive-ui'
 
 useHead({
-  title: '分配员工',
+  title: '分配',
 })
 const { $toast } = useNuxtApp()
-
-const { assignStaff, staffGetStoreList } = useStores()
+const route = useRoute()
+const { assignStaff, assignSuperior } = useStores()
 const { getOptionsStafflist } = useStaff()
 const formRef = ref()
 const model = ref<AssignStaff>({
@@ -14,40 +14,21 @@ const model = ref<AssignStaff>({
   staff_id: [],
 })
 const rules = ref<FormRules>({
-  id: {
-    required: true,
-    trigger: ['blur', 'input', 'change'],
-    message: '请选择门店',
-  },
   staff_id: {
     required: true,
     trigger: ['blur', 'input', 'change'],
-    message: '请选择员工',
+    message: '请选择',
     type: 'array',
   },
 })
-// 门店列表
-const storeList = ref<SelectOption[]>([])
+if (route?.query?.id) {
+  model.value.id = route.query.id as string
+}
 // 员工列表
 const staffList = ref<SelectOption[]>([])
 
-const loading = ref(false)
 const loadingStaff = ref(false)
-// 获取门店列表
-const getStore = useDebounceFn(async (query) => {
-  const res = await staffGetStoreList({ page: 1, limit: 10, where: { name: query } })
-  loading.value = false
-  if (res.length) {
-    storeList.value = res.map(item => ({
-      label: item.name,
-      value: item.id,
-    }))
-  }
-}, 500)
-const searchStore = (query: string) => {
-  loading.value = true
-  getStore(query)
-}
+
 const getStaff = useDebounceFn(async (query) => {
   const res = await getOptionsStafflist({ page: 1, limit: 10, where: { nickname: query } })
   loadingStaff.value = false
@@ -67,9 +48,33 @@ const handleValidateButtonClick = (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
-      const res = await assignStaff(model.value)
-      if (res) {
-        $toast.success('分配成功')
+      if (!route.query.id)
+        return $toast.error('缺少参数')
+      model.value.id = route.query.id as string
+      if (route.query.type === 'staff') {
+        const res = await assignStaff(model.value)
+        if (res) {
+          $toast.success('分配成功')
+        }
+        else {
+          $toast.error('分配失败')
+        }
+      }
+      if (route.query.type === 'superior') {
+        const params = ref<RegionAssignsuperior>({
+          id: '',
+          superior_id: [],
+        })
+        const { id, staff_id } = model.value
+        params.value.id = id
+        params.value.superior_id = staff_id
+        const res = await assignSuperior(params.value)
+        if (res) {
+          $toast.success('分配成功')
+        }
+        else {
+          $toast.error('分配失败')
+        }
       }
     }
     else {
@@ -77,12 +82,18 @@ const handleValidateButtonClick = (e: MouseEvent) => {
     }
   })
 }
+const title = computed(() => {
+  return route.query.type === 'staff' ? '分配员工' : '分配负责人'
+})
+const content = computed(() => {
+  return route.query.type === 'staff' ? '搜索选择要分配的员工' : '搜索选择要分配的负责人'
+})
 </script>
 
 <template>
   <div class="grid-12">
     <div class="p-[16px] col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
-      <common-fold title="分配员工" from-color="#9EBAF9" to-color="#fff" :is-collapse="false">
+      <common-fold :title="title" from-color="#9EBAF9" to-color="#fff" :is-collapse="false">
         <div class="p-[16px]">
           <n-form
             ref="formRef"
@@ -91,25 +102,12 @@ const handleValidateButtonClick = (e: MouseEvent) => {
             size="large"
             label-placement="top"
           >
-            <n-form-item label="门店" path="id">
-              <n-select
-                v-model:value="model.id"
-                filterable
-                placeholder="搜索选择门店"
-                :options="storeList"
-                :loading="loading"
-                clearable
-                remote
-                @search="searchStore"
-                @focus="focus"
-              />
-            </n-form-item>
-            <n-form-item label="分配员工" path="staff_id">
+            <n-form-item :label="title" path="staff_id">
               <n-select
                 v-model:value="model.staff_id"
                 filterable
                 multiple
-                placeholder="搜索选择要分配员工"
+                :placeholder="content"
                 :options="staffList"
                 :loading="loadingStaff"
                 clearable

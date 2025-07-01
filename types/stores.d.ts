@@ -14,7 +14,7 @@ interface Stores {
   sort: number
   staffs: Staff[]
   updated_at: string
-
+  superiors: Superior[]
   // 省市区
   field?: {
     province?: string
@@ -48,4 +48,9 @@ interface uploadLogoFileReq {
 interface AssignStaff {
   id?: string
   staff_id: string[]
+}
+
+interface AssignSuperior {
+  id?: string
+  superior_id: string[]
 }

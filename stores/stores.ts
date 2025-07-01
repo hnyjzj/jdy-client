@@ -151,9 +151,29 @@ export const useStores = defineStore('Store', {
         return false
       }
     },
+    // 为门店分配负责人
+    async assignSuperior(req: AssignSuperior) {
+      const { data } = await https.post<any, AssignSuperior>('/store/superior/add', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return true
+      }
+      else {
+        return false
+      }
+    },
     // 移除员工
     async deleteStaff(req: AssignStaff) {
       const { data } = await https.delete<any, AssignStaff>('/store/staff/del', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return true
+      }
+      else {
+        return false
+      }
+    },
+    // 移除负责人
+    async deleteSuperior(req: AssignSuperior) {
+      const { data } = await https.delete<any, AssignSuperior>('/store/superior/del', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         return true
       }
