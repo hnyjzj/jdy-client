@@ -1,10 +1,10 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: '门店列表',
+  title: '区域列表',
 })
 
-const { storesList, addorUpdateForm, filterListToArray, total, searchPage } = storeToRefs(useStores())
-const { reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
+const { regionList, addorUpdateForm, filterListToArray, total, searchPage } = storeToRefs(useRegion())
+const { reastAddForm, createRegion, getRegionList, deleteRegion, updateRegion, getRegionWhere, uploadImage } = useRegion()
 const { $toast } = useNuxtApp()
 // 新增门店弹窗
 const addOrUpdateShow = ref<boolean>(false)
@@ -12,21 +12,21 @@ const addOrUpdateShow = ref<boolean>(false)
 const show = ref<boolean>(false)
 
 // 筛选请求数据
-const filterData = ref({} as Partial<Stores>)
+const filterData = ref({} as Partial<Region>)
 
 // 获取列表
-const getList = async (where = {} as Partial<Stores>) => {
-  const params = { page: searchPage.value, limit: 12 } as ReqList<Stores>
+const getList = async (where = {} as Partial<Region>) => {
+  const params = { page: searchPage.value, limit: 12 } as ReqList<Region>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
-  await getStoreList(params)
+  await getRegionList(params)
 }
 
 // 筛选列表
-const submitWhere = async (f: Partial<Stores>) => {
+const submitWhere = async (f: Partial<Region>) => {
   filterData.value = { ...filterData.value, ...f }
-  storesList.value = []
+  regionList.value = []
   searchPage.value = 1
   await getList(filterData.value)
 }
@@ -37,11 +37,11 @@ const resetwhere = () => {
 // 获取列表数据
 await getList()
 // 获取筛选条件
-await getStoreWhere()
+await getRegionWhere()
 
 // 展示详情
 const getStoreInfo = async (id: string) => {
-  navigateTo(`/system/store/info?id=${id}`)
+  navigateTo(`/system/region/info?id=${id}`)
 }
 
 // 开发新增门店弹窗, 清空表单数据
@@ -52,13 +52,13 @@ const newAdd = () => {
 
 // 调用新增门店接口
 const newStore = async () => {
-  const res = await createStore(addorUpdateForm.value)
+  const res = await createRegion(addorUpdateForm.value)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建门店成功')
     reastAddForm()
     addOrUpdateShow.value = false
-    storesList.value = []
-    await getStoreList({ page: 1, limit: 12 })
+    regionList.value = []
+    await getRegionList({ page: 1, limit: 12 })
   }
   else {
     $toast.error(res?.message ?? '创建门店失败')
@@ -76,11 +76,11 @@ const deleteStoreFn = async (val: string) => {
 }
 // 确认删除
 const confirmDelete = async () => {
-  const res = await deleteStore(nowDeleteId.value)
+  const res = await deleteRegion(nowDeleteId.value)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('删除成功')
-    storesList.value = []
-    await getStoreList({ page: 1, limit: 12 })
+    regionList.value = []
+    await getRegionList({ page: 1, limit: 12 })
   }
 }
 
@@ -88,30 +88,26 @@ const confirmDelete = async () => {
 const edit = (val: string) => {
   addOrUpdateShow.value = true
   // 找到匹配的商店信息
-  const store = storesList.value.find(item => item.id === val)
-  if (!store) {
+  const region = regionList.value.find(item => item.id === val)
+  if (!region) {
     return
   }
   // 解构赋值，简化代码
-  const { name, id, address, contact, sort, province, city, district, logo } = store
+  const { name, id, address, sort, province, city, district } = region
   // 一次性更新表单数据
-  Object.assign(addorUpdateForm.value, { name, id, address, contact, sort, province, city, district, logo })
+  Object.assign(addorUpdateForm.value, { name, id, address, sort, province, city, district })
 }
 
 // 调用更新门店接口
-const editStore = async () => {
-  const res = await updateStore(addorUpdateForm.value)
+const editRegion = async () => {
+  const res = await updateRegion(addorUpdateForm.value)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('更新成功')
     addOrUpdateShow.value = false
-    storesList.value = []
-    await getStoreList({ page: 1, limit: 12 })
+    regionList.value = []
+    await getRegionList({ page: 1, limit: 12 })
     reastAddForm()
   }
-}
-// 更新省市区请求参数
-const updateArea = (val: Stores['field']) => {
-  filterData.value.field = val
 }
 
 // 高级搜索按钮
@@ -131,9 +127,9 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
       $toast.error(res.data.value?.message || '上传失败')
       return false
     }
-    const url = res.data.value.data.url
+    // const url = res.data.value.data.url
     //  如果有id 说明是 修改logo ,没有id则是新增
-    addorUpdateForm.value.logo = url
+    // addorUpdateForm.value.logo = url
     onfinish && onfinish()
   }
   catch {
@@ -163,24 +159,20 @@ const updatePage = async (page: number) => {
     </div>
 
     <div class="p-[16px]">
-      <stores-card @get-detail="getStoreInfo" @edit-store="edit" @delete-store="deleteStoreFn" />
+      <region-card @get-detail="getStoreInfo" @edit-store="edit" @delete-store="deleteStoreFn" />
     </div>
     <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
     <!-- 新增或更新门店弹窗 -->
     <common-popup v-model="addOrUpdateShow" :title="addorUpdateForm.id ? '编辑门店' : '新增门店'">
-      <stores-add-update
+      <region-add-update
         @upload="uploadFile"
         @submit="newStore"
-        @edit-submit="editStore" />
+        @edit-submit="editRegion" />
     </common-popup>
     <common-confirm v-model:show="deleteDialog" text="确认删除此门店吗?" @submit="confirmDelete" />
 
     <common-create @create="newAdd()" />
 
-    <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetwhere">
-      <template #field>
-        <common-area-select :is-required="false" :showtitle="false" :form="filterData.field" @update="updateArea" />
-      </template>
-    </common-filter-where>
+    <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetwhere" />
   </div>
 </template>

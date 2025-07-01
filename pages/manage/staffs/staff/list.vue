@@ -21,7 +21,7 @@ const filterData = ref({} as StaffWhere)
 const getList = async (where = {} as StaffWhere) => {
   if (nomore.value)
     return
-  const params = { page: searchPage.value, limit: 12, where: { store_id: myStore.value.id, id: '1924655540110102529' } } as ReqList<Staff>
+  const params = { page: searchPage.value, limit: 12, where: { store_id: myStore.value.id } } as ReqList<Staff>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }

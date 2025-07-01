@@ -1,35 +1,33 @@
 <script lang="ts" setup>
 const { $toast } = useNuxtApp()
-const formlist = ref<addStaffForm>({
-  platform: 'account',
-  account: {
-    phone: '',
-    nickname: '',
-    username: '',
-    gender: 0,
-    password: '',
-    avatar: '',
-    email: '',
-    store_id: '',
-  },
-})
-const { useWxWork } = useWxworkStore()
-const { createStaff, uploadAvatar } = useStaff()
 
+const { useWxWork } = useWxworkStore()
+const { createStaff, uploadAvatar, getQyWxUserInfo, getStaffWhere } = useStaff()
+const { filterListToArray } = storeToRefs(useStaff())
 const router = useRouter()
 const addRef = ref()
-
 const dialogShow = ref(false)
-
+await getStaffWhere()
+const formlist = ref<addStaffForm>({
+  phone: '',
+  nickname: '',
+  username: '',
+  password: '',
+  avatar: '',
+  email: '',
+  gender: 0,
+  is_disabled: false,
+} as addStaffForm)
 const continueAdd = () => {
-  formlist.value.account = {
+  formlist.value = {
     phone: '',
     nickname: '',
     gender: 0,
     password: '',
     avatar: '',
     email: '',
-  } as addStaffForm['account']
+    is_disabled: false,
+  } as addStaffForm
   addRef.value.clearAvatar()
 }
 const cancelAdd = () => {
@@ -37,7 +35,6 @@ const cancelAdd = () => {
 }
 // 手动新增员工
 const addStaff = async () => {
-  formlist.value.platform = 'account'
   const res = await createStaff(formlist.value)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
@@ -66,25 +63,9 @@ const wxwordAdd = async () => {
 
   const wx = await useWxWork()
   const users = await wx?.selectPerson()
-  const params = ref<addStaffReq>({
-    platform: 'wxwork',
-    wxwork: {
-      user_id: [],
-    },
-  })
-  if (users?.userList && users.userList?.length > 0) {
-    users?.userList.forEach((item) => {
-      params.value.wxwork?.user_id.push(item.id)
-    })
-  }
-  const res = await createStaff(params.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('创建成功')
-    dialogShow.value = true
-  }
-  else {
-    $toast.error(res?.message || '创建失败')
-  }
+  const { data } = await getQyWxUserInfo({ user_id: users?.userList[0].id as string })
+  formlist.value.nickname = data.value?.data.nickname as string
+  formlist.value.username = data.value?.data.username as string
 }
 const uploadFile = async (file: any, onfinish?: () => void) => {
   try {
@@ -95,7 +76,7 @@ const uploadFile = async (file: any, onfinish?: () => void) => {
     }
     const url = data.value.data.url
     //  如果有id 说明是 修改logo ,没有id则是新增
-    formlist.value.account.avatar = url
+    formlist.value.avatar = url
     onfinish?.()
   }
   catch {
@@ -119,7 +100,7 @@ const other_ways = ref<{
 <template>
   <div class="grid-12 gap-[16px] p-[16px]">
     <div class="col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
-      <staff-manage-add ref="addRef" v-model="formlist" @submit="addStaff" @upload="uploadFile" />
+      <staff-manage-add ref="addRef" v-model="formlist" :filed="filterListToArray" @submit="addStaff" @upload="uploadFile" />
     </div>
     <div class="col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
       <common-fold title="其他方式" from-color="#9EBAF9" to-color="#fff">

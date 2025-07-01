@@ -45,9 +45,9 @@ export const useStaff = defineStore('staffStore', {
     /**
      * 创建员工
      */
-    async createStaff(req: addStaffReq) {
+    async createStaff(req: addStaffForm) {
       try {
-        const { data } = await https.post<ResList<Staff>, addStaffReq>('/staff/create', req)
+        const { data } = await https.post<ResList<Staff>, addStaffForm>('/staff/create', req)
 
         return data.value
       }
@@ -57,7 +57,6 @@ export const useStaff = defineStore('staffStore', {
       }
     },
     // 更新员工信息
-    // /staff/update
     async updateStaff(req: updateStaffReq) {
       try {
         const { data } = await https.put<ResList<Staff>, updateStaffReq>('/staff/update', req)
@@ -71,7 +70,6 @@ export const useStaff = defineStore('staffStore', {
     },
     // 获取where 条件
     async getStaffWhere() {
-      // /staff/where
       const { data } = await https.get<Where<Staff>, null>('/staff/where')
       if (data.value?.code === HttpCode.SUCCESS) {
         this.filterList = data.value.data
@@ -86,6 +84,12 @@ export const useStaff = defineStore('staffStore', {
     },
     async uploadAvatar(req: { avatar: File | undefined }) {
       return await https.upload<UploadRes, { avatar: File | undefined }>('/upload/avatar', req)
+    },
+    /**
+     * 企业微信选择时获取用户信息
+     */
+    async getQyWxUserInfo(req: { user_id: string }) {
+      return await https.post<Staff, { user_id: string }>('/platform/get_user', req)
     },
 
   },

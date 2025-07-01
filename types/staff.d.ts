@@ -19,7 +19,6 @@ interface Staff {
  */
 interface addStaffReq {
   account?: Staff
-  platform: string
   wxwork?: wxUserid
 }
 /**
@@ -31,9 +30,8 @@ interface wxUserid {
 /**
  * 添加员工表单
  */
-interface addStaffForm {
-  platform: string
-  account: Staff & { password: string }
+interface addStaffForm extends Staff {
+  password: string
 }
 
 interface updateStaffReq {

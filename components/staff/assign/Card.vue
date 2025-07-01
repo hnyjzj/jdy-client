@@ -15,7 +15,7 @@ const sex = (val: number) => {
 <template>
   <div class="p-[16px] pb-0 flex-between">
     <div class="text-[16px] font-semibold">
-      门店员工
+      员工
     </div>
     <div>
       <common-button-rounded content="分配员工" @button-click="emits('confirm')" />

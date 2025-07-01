@@ -11,9 +11,9 @@ const router = useRouter()
 
 <template>
   <div class="grid-12">
-    <div class="grid-12 gap-[16px]" uno-sm="col-10 offset-1" uno-md="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
+    <div class="grid-12 gap-[16px] col-12" uno-xs="col-12" uno-sm="col-10 offset-1" uno-md="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
       <template v-for="(item, index) in props.list" :key="index">
-        <div class=" " uno-xl="col-6 ">
+        <div class="col-12" uno-xs="col-12" uno-sm="col-12" uno-md="col-6 " uno-lg="col-6" uno-xl="col-6">
           <sale-cards :title="`员工id:${item.id}`">
             <template #info>
               <div class="info">
