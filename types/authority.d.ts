@@ -58,6 +58,8 @@ interface Roles {
   stores: Stores[]
   /** 默认角色 */
   is_default: boolean
+  /** 身份 */
+  identity: string
 }
 
 interface RolesParams {
@@ -73,6 +75,8 @@ interface RolesParams {
    * 角色名称
    */
   name: string
+  /** 身份 */
+  identity: number
 }
 
 /**

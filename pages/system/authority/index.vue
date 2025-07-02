@@ -1,10 +1,6 @@
 <script lang="ts" setup>
-const { roleList, apiList, roleInfo } = storeToRefs(useAuthority())
-const { getStoreList } = useStores()
-const { storesList } = storeToRefs(useStores())
-
-const { getRoleList, addRole, getRoleInfo, getApiList, addStaff, updateStaff, deleteRole } = useAuthority()
-const { getWorkbenchList } = useWorkbenche()
+const { roleList, apiList, roleInfo, roleWhereList } = storeToRefs(useAuthority())
+const { getRoleWhere, getRoleList, addRole, getRoleInfo, getApiList, addStaff, updateStaff, deleteRole } = useAuthority()
 const { workBenchList } = storeToRefs(useWorkbenche())
 const { useWxWork } = useWxworkStore()
 useSeoMeta({
@@ -21,37 +17,40 @@ const activeIndex = ref(0)
 const funSelectIds = ref<string[]>([])
 /** 权限选中id组 */
 const apiSelectIds = ref<string[]>([])
-/** 门店选中id */
-const storeSelectIds = ref<string[]>([])
 /** 成员选中id */
 const staffSelectIds = ref<string[]>([])
-
+/** 当前身份id */
+const activeTab = ref()
 /** 确认框显隐 */
 const confirmShow = ref(false)
 /** 倒计时框 */
 const countdownShow = ref(false)
 
+watchEffect(() => {
+  const keys = Object.keys(roleWhereList.value.identity?.preset || {})
+  if (keys.length && !activeTab.value) {
+    activeTab.value = keys[0]
+    getRoleListFun()
+  }
+})
+await getRoleWhere()
 /** 角色列表 */
-await getRoleList()
-await getInfo()
+// await getRoleList()
 /** 权限 */
 await getApiList()
-await getWorkbenchList()
-getStoreList({ page: 1, limit: 30 })
+async function getRoleListFun() {
+  getRoleList(activeTab.value)
+}
+
+const handleTabChange = () => {
+  getRoleListFun()
+}
 
 async function getInfo() {
   await getRoleInfo(roleList.value[selectRole.value].id)
-  const storeids = roleInfo.value.stores.map((item: any) => item.id)
+
   const funids = roleInfo.value.routers.map((item: any) => item.id)
   const apiids = roleInfo.value.apis.map((item: any) => item.id)
-  const staffsIds = roleInfo.value.staffs.map((item: any) => item.id)
-  if (storeids && storeids.length) {
-    storeSelectIds.value = storeids
-  }
-  else {
-    storeSelectIds.value = []
-  }
-
   if (funids && funids.length) {
     funSelectIds.value = funids
   }
@@ -65,21 +64,18 @@ async function getInfo() {
   else {
     apiSelectIds.value = []
   }
-
-  if (staffsIds && staffsIds.length) {
-    staffSelectIds.value = staffsIds
-  }
-  else {
-    staffSelectIds.value = []
-  }
 }
+
+await getInfo()
+
 const roleParams = ref({
   name: '',
   desc: '',
   is_admin: false,
+  identity: Number(activeTab.value),
 } as RolesParams)
 
-const navItems = ref(['功能', '权限', '成员', '门店'])
+const navItems = ref(['功能', '权限'])
 const setActive = (index: number) => {
   activeIndex.value = index
 }
@@ -90,10 +86,11 @@ async function oppeAddRole() {
 
 /** 添加用户组 */
 async function addRoleFun() {
+  roleInfo.value.identity = activeTab.value
   const res = await addRole(roleParams.value)
   if (res?.code === 200) {
     isAddModel.value = false
-    await getRoleList()
+    await getRoleListFun()
     return $toast.success('添加成功')
   }
   $toast.error(res?.message || '添加失败')
@@ -112,7 +109,7 @@ async function delRole() {
   const res = await deleteRole(delRoleId.value)
   if (res?.code === 200) {
     confirmShow.value = false
-    await getRoleList()
+    await getRoleListFun()
     return $toast.success('删除成功')
   }
   $toast.error(res?.message || '删除失败')
@@ -172,8 +169,6 @@ async function saveFun() {
     id: roleList.value[selectRole.value].id,
     apis: apiSelectIds.value,
     routers: funSelectIds.value,
-    stores: storeSelectIds.value,
-    staffs: staffSelectIds.value,
   } as UpdateAuthParams
   const res = await updateStaff(params)
   if (res?.code === 200) {
@@ -200,23 +195,30 @@ function updataFun() {
       <div class="px-4 pt-6">
         <common-gradient :title="`权限组（${roleList.length}）`">
           <template #body>
-            <div class="grid grid-cols-2 gap-4">
-              <template v-for="(item, index) in roleList" :key="index">
-                <div class="user-box mb-3" :class="selectRole === index ? 'select-role' : ''" @click="selectRole = index;getInfo()">
-                  <div class="text-[16px]">
-                    {{ item.name }}
-                  </div>
-                  <span class="text-[12px] text-[#666666]">{{ item.desc }}</span>
-                  <div class="mt-4 flex flex-end cursor-pointer" @click.stop="delRoleFun(item.id, item.name)">
-                    <template v-if="item.is_default">
-                      默认
+            <n-tabs v-model:value="activeTab" type="line" animated @update:value="handleTabChange">
+              <template v-for="(item, id, t) in roleWhereList.identity?.preset" :key="t">
+                <n-tab-pane :name="id" :tab="item">
+                  <div class="grid grid-cols-2 gap-4">
+                    <template v-for="(item, index) in roleList" :key="index">
+                      <div class="user-box mb-3" :class="selectRole === index ? 'select-role' : ''" @click="selectRole = index;getInfo()">
+                        <div class="text-[16px]">
+                          {{ item.name }}
+                        </div>
+                        <span class="text-[12px] text-[#666666]">{{ item.desc }}</span>
+                        <div class="mt-4 flex justify-between cursor-pointer" @click.stop="delRoleFun(item.id, item.name)">
+                          <template v-if="item.is_default">
+                            <div class="text-[12px] text-[#666666] bg-[rgba(230,230,232,1)] px-1 rounded-[2px]">
+                              默认
+                            </div>
+                          </template>
+                          <Icon name="i-icon:delete" color="red" :size="14" />
+                        </div>
+                      </div>
                     </template>
-                    <div />
-                    <Icon name="i-icon:delete" color="red" :size="14" />
                   </div>
-                </div>
+                </n-tab-pane>
               </template>
-            </div>
+            </n-tabs>
             <div class="text-center cursor-pointer" @click="oppeAddRole">
               + 添加用户组
             </div>
@@ -272,14 +274,7 @@ function updataFun() {
             </div>
           </div>
         </template>
-        <template v-if="activeIndex === 3">
-          <div class="mb-20">
-            <authority-store v-model="storeSelectIds" :stores-list="storesList" />
-          </div>
-        </template>
-        <template v-if="activeIndex !== 2">
-          <common-button-one @confirm="updataFun" />
-        </template>
+        <common-button-one @confirm="updataFun" />
       </div>
     </common-layout-center>
     <common-model v-model="isAddModel" title="添加角色" :show-ok="true" @confirm="addRoleFun()">

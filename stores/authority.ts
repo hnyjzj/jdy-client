@@ -3,15 +3,17 @@ export const useAuthority = defineStore('Authority', {
     roleList: Roles[]
     roleInfo: Roles
     apiList: Apis[]
+    roleWhereList: Where<Roles>
   } => ({
     roleList: [],
     roleInfo: {} as Roles,
     apiList: [],
+    roleWhereList: {} as Where<Roles>,
   }),
   actions: {
     // 角色列表
-    async getRoleList() {
-      const { data } = await https.post<any>('/setting/role/list')
+    async getRoleList(id: number) {
+      const { data } = await https.post<any, { id: number }>('/setting/role/list', { id })
       if (data.value?.code === HttpCode.SUCCESS) {
         this.roleList = data.value.data
       }
@@ -49,6 +51,18 @@ export const useAuthority = defineStore('Authority', {
     async updateStaff(params: UpdateAuthParams) {
       const { data } = await https.put<string[], any>('/setting/role/update', params)
       return data.value
+    },
+    // 获取权限组列表
+    async getRoleWhere() {
+      try {
+        const { data } = await https.get<Where<Roles>>('/setting/role/where')
+        if (data.value?.code === HttpCode.SUCCESS) {
+          this.roleWhereList = data.value.data
+        }
+      }
+      catch (error) {
+        throw new Error(`筛选失败: ${error || '未知错误'}`)
+      }
     },
   },
 })
