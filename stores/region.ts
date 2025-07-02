@@ -44,7 +44,7 @@ export const useRegion = defineStore('Region', {
         }
       }
     },
-    // 门店列表
+    // 区域列表
     async staffGetRegionList(req: ReqList<Region>) {
       const { data } = await https.post<ResList<Region>, ReqList<Region>>('/region/list', req)
       if (data.value?.code === HttpCode.SUCCESS) {

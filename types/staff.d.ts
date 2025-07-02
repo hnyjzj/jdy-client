@@ -13,6 +13,10 @@ interface Staff {
   gender: number
   is_disabled?: boolean
   store_id?: string
+  regions?: Region[]
+  regions_superiors?: Region[]
+  stores?: Store[]
+  stores_superiors?: Store[]
 }
 /**
  * 添加员工请求参数
@@ -42,4 +46,20 @@ interface updateStaffReq {
 interface fileListArr {
   url: string
   isImage: true
+}
+
+interface updateStaffForm {
+  id: string
+  phone?: string
+  nickname?: string
+  username?: string
+  avatar?: string
+  email?: string
+  gender?: number
+  is_disabled?: boolean
+  store_id?: string
+  regions?: string[]
+  regions_superiors?: string[]
+  stores?: string[]
+  stores_superiors?: string[]
 }

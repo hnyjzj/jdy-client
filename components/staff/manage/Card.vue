@@ -28,7 +28,12 @@ const router = useRouter()
             <template #footer>
               <div class="flex-between pl-[8px] bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
                 <div />
-                <common-button-irregular text="查看详情" @click="router.push(`/manage/staffs/staff/info?id=${item.id}`)" />
+                <div class="flex-between">
+                  <div class="pr-[16px] color-[#1F6FEC] cursor-pointer" @click="router.push(`/manage/staffs/staff/info?id=${item.id}`)">
+                    详情
+                  </div>
+                  <common-button-irregular text="编辑" @click="router.push(`/manage/staffs/staff/edit?id=${item.id}`)" />
+                </div>
               </div>
             </template>
           </sale-cards>

@@ -4,14 +4,13 @@ import type { SelectOption } from 'naive-ui'
 useSeoMeta({
   title: '员工列表',
 })
-const { staffList, filterListToArray, total, staffInfo, searchPage } = storeToRefs(useStaff())
+const { staffList, filterListToArray, total, searchPage } = storeToRefs(useStaff())
 const { getStaffWhere, getStaffList } = useStaff()
 const { staffGetStoreList } = useStores()
 const { myStore } = storeToRefs(useStores())
 const complate = ref(0)
 const searchKey = ref('')
 const show = ref<boolean>(false)
-const showModal = ref<boolean>(false)
 
 // 是否有更多数据
 const nomore = ref<boolean>(false)
@@ -36,6 +35,7 @@ const submitWhere = async (f: StaffWhere) => {
   nomore.value = false
   searchPage.value = 1
   await getList(filterData.value)
+  show.value = false
 }
 // 获取筛选条件
 await getStaffWhere()
@@ -74,6 +74,10 @@ const handleSearch = (query: string) => {
   loading.value = true
   getStore(query)
 }
+const updatePage = async (page: number) => {
+  searchPage.value = page
+  getList()
+}
 </script>
 
 <template>
@@ -92,14 +96,9 @@ const handleSearch = (query: string) => {
     </div>
     <div class="p-[16px]">
       <common-page
-        v-model:page="searchPage" :total="total" :limit="12" @update:page="() => {
-          getList()
-        }
-        " />
+        v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
     </div>
-    <n-modal v-model:show="showModal">
-      <staff-manage-info :info-detail="staffInfo" />
-    </n-modal>
+
     <common-create @create="newAdd()" />
     <common-filter-where
       v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="() => {
@@ -116,7 +115,6 @@ const handleSearch = (query: string) => {
           remote
           @search="handleSearch"
           @focus="focus"
-
         />
       </template>
     </common-filter-where>

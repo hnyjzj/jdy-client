@@ -20,7 +20,7 @@ export const useStaff = defineStore('staffStore', {
       if (data.value?.code === HttpCode.SUCCESS) {
         this.total = data.value.data.total
         if (data.value.data.list.length > 0) {
-          this.staffList = [...this.staffList, ...data.value.data.list]
+          this.staffList = data.value.data.list
           if (this.staffList.length === this.total) {
             return false
           }
@@ -60,6 +60,18 @@ export const useStaff = defineStore('staffStore', {
     async updateStaff(req: updateStaffReq) {
       try {
         const { data } = await https.put<ResList<Staff>, updateStaffReq>('/staff/update', req)
+
+        return data.value
+      }
+      catch (error) {
+        console.error('更新失败：', error)
+        throw error
+      }
+    },
+    // 更新员工信息
+    async EditStaff(req: updateStaffForm) {
+      try {
+        const { data } = await https.put<ResList<Staff>, updateStaffForm>('/staff/edit', req)
 
         return data.value
       }

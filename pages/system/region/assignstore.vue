@@ -21,22 +21,22 @@ const rules = ref<FormRules>({
     type: 'array',
   },
 })
-// 员工列表
-const staffList = ref<SelectOption[]>([])
-const loadingStaff = ref(false)
-const getStaff = useDebounceFn(async (query) => {
+
+const Stores = ref<SelectOption[]>([])
+const loading = ref(false)
+const getStores = useDebounceFn(async (query) => {
   const res = await staffGetStoreList({ page: 1, limit: 10, where: { name: query } })
-  loadingStaff.value = false
+  loading.value = false
   if (res.length) {
-    staffList.value = res.map(item => ({
+    Stores.value = res.map(item => ({
       label: item.name,
       value: item.id,
     }))
   }
 }, 500)
-const searchStaff = (query: string) => {
-  loadingStaff.value = true
-  getStaff(query)
+const searchStores = (query: string) => {
+  loading.value = true
+  getStores(query)
 }
 
 const handleValidateButtonClick = (e: MouseEvent) => {
@@ -80,11 +80,11 @@ const handleValidateButtonClick = (e: MouseEvent) => {
                 filterable
                 multiple
                 placeholder="请选择门店"
-                :options="staffList"
-                :loading="loadingStaff"
+                :options="Stores"
+                :loading="loading"
                 clearable
                 remote
-                @search="searchStaff"
+                @search="searchStores"
                 @focus="focus"
               />
             </n-form-item>
