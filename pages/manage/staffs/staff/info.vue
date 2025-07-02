@@ -55,9 +55,9 @@ onMounted(() => {
             </div>
           </n-tab-pane>
 
-          <n-tab-pane name="chap2" tab="负责" :disabled="!staffInfo.stores_superiors?.length">
+          <n-tab-pane name="chap2" tab="负责" :disabled="!staffInfo.store_superiors?.length">
             <div class="flex flex-wrap flex-start">
-              <template v-for="(item, index) in staffInfo.stores_superiors" :key="index">
+              <template v-for="(item, index) in staffInfo.store_superiors" :key="index">
                 <div class="ml-[12px] model-item">
                   {{ item.name }}
                 </div>
@@ -84,9 +84,9 @@ onMounted(() => {
               </template>
             </div>
           </n-tab-pane>
-          <n-tab-pane name="chap2" tab="负责" :disabled="!staffInfo.regions_superiors?.length">
+          <n-tab-pane name="chap2" tab="负责" :disabled="!staffInfo.region_superiors?.length">
             <div class="flex flex-wrap flex-start">
-              <template v-for="(item, index) in staffInfo.regions_superiors" :key="index">
+              <template v-for="(item, index) in staffInfo.region_superiors" :key="index">
                 <div class="ml-[12px] model-item">
                   {{ item.name }}
                 </div>

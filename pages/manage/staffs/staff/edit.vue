@@ -4,7 +4,7 @@ useSeoMeta({
   title: '编辑员工',
 })
 
-const { uploadAvatar, getStaffWhere } = useStaff()
+const { uploadAvatar, getStaffWhere, EditStaff } = useStaff()
 const { filterListToArray } = storeToRefs(useStaff())
 const { staffGetStoreList } = useStores()
 const { staffGetRegionList } = useRegion()
@@ -18,12 +18,12 @@ const getRegionList = async (query: string) => {
   return res || []
 }
 
-const router = useRouter()
 const route = useRoute()
 const addRef = ref()
 const dialogShow = ref(false)
 await getStaffWhere()
 const formlist = ref<updateStaffForm>({
+  id: '',
   phone: '',
   nickname: '',
   username: '',
@@ -31,28 +31,30 @@ const formlist = ref<updateStaffForm>({
   email: '',
   gender: 0,
   is_disabled: false,
+  store_ids: [],
+  store_superior_ids: [],
+  region_ids: [],
+  region_superior_ids: [],
 } as updateStaffForm)
-const continueAdd = () => {
-  formlist.value = {
-    phone: '',
-    nickname: '',
-    gender: 0,
-    avatar: '',
-    email: '',
-    is_disabled: false,
-  } as updateStaffForm
-  addRef.value.clearAvatar()
-}
-const cancelAdd = () => {
-  router.go(-1)
-}
+const parsswordForm = ref({
+  id: '',
+  password: '',
+})
 
+const defaultform = ref<{ [key: string]: { label: string, value: string }[] }>({
+  stores: [],
+  stores_superior: [],
+  regions: [],
+  regions_superior: [],
+})
 const { getStaffInfo } = useStaff()
 const { staffInfo } = storeToRefs(useStaff())
 if (route.query.id) {
   await getStaffInfo({ id: route.query.id as string })
 
-  const { nickname, username, phone, email, gender, is_disabled, avatar } = staffInfo.value
+  const { nickname, username, phone, email, gender, is_disabled, avatar, id, stores, regions, store_superiors, region_superiors } = staffInfo.value
+  formlist.value.id = id as string
+  parsswordForm.value.id = id as string
   formlist.value.nickname = nickname
   formlist.value.username = username
   formlist.value.phone = phone
@@ -60,21 +62,39 @@ if (route.query.id) {
   formlist.value.gender = gender
   formlist.value.avatar = avatar
   formlist.value.is_disabled = is_disabled
+
+  // 获取所属门店默认数据
+  stores?.forEach((item) => {
+    defaultform.value.stores.push({ label: item.name, value: item.id })
+    formlist.value.store_ids?.push(item.id)
+  })
+
+  // 获取所属区域默认数据
+  regions?.forEach((item) => {
+    defaultform.value.regions.push({ label: item.name, value: item.id })
+    formlist.value.region_ids?.push(item.id)
+  })
+
+  // 获取负责门店数据
+  store_superiors?.forEach((item) => {
+    defaultform.value.stores_superior.push({ label: item.name, value: item.id })
+    formlist.value.store_superior_ids?.push(item.id)
+  })
+  // 获取负责区域数据
+  region_superiors?.forEach((item) => {
+    defaultform.value.regions_superior.push({ label: item.name, value: item.id })
+    formlist.value.region_superior_ids?.push(item.id)
+  })
 }
-// 手动新增员工
-// const addStaff = async () => {
-//   const res = await createStaff(formlist.value)
-//   if (res?.code === HttpCode.SUCCESS) {
-//     $toast.success('创建成功')
-//     dialogShow.value = true
-//   }
-//   else {
-//     $toast.error(res?.message || '创建失败')
-//   }
-// }
 
 const submitEdit = async () => {
-//   await updateStaff(formlist.value)
+  const res = await EditStaff(formlist.value)
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('编辑成功')
+  }
+  else {
+    $toast.error(res?.message || '编辑失败')
+  }
 }
 
 const uploadFile = async (file: any, onfinish?: () => void) => {
@@ -93,6 +113,16 @@ const uploadFile = async (file: any, onfinish?: () => void) => {
     $toast.error('上传失败，请重试')
   }
 }
+
+const continueEdit = async () => {
+  const res = await EditStaff(parsswordForm.value)
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('密码修改成功')
+  }
+  else {
+    $toast.error(res?.message || '修改失败')
+  }
+}
 </script>
 
 <template>
@@ -101,22 +131,26 @@ const uploadFile = async (file: any, onfinish?: () => void) => {
       <staff-manage-edit
         ref="addRef"
         v-model="formlist"
+        v-model:password="parsswordForm"
+        v-model:default-form="defaultform"
         :get-store-list="getStoreList"
         :get-region-list="getRegionList"
         :filed="filterListToArray"
         @submit="submitEdit"
-        @upload="uploadFile" />
+        @upload="uploadFile"
+        @edit-pawd="dialogShow = true"
+      />
     </div>
 
     <common-confirm
       v-model:show="dialogShow"
-      title="创建成功"
-      text="是否继续添加新员工?"
-      icon="success"
+      title="提示"
+      text="确定修改此员工密码?"
+      icon="warning"
       cancel-text="否"
       confirm-text="是"
-      @submit="continueAdd"
-      @cancel="cancelAdd"
+      @submit="continueEdit"
+      @cancel="dialogShow = false"
     />
   </div>
 </template>

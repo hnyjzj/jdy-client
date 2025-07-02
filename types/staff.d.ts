@@ -14,9 +14,9 @@ interface Staff {
   is_disabled?: boolean
   store_id?: string
   regions?: Region[]
-  regions_superiors?: Region[]
+  region_superiors?: Region[]
   stores?: Store[]
-  stores_superiors?: Store[]
+  store_superiors?: Store[]
 }
 /**
  * 添加员工请求参数
@@ -51,15 +51,17 @@ interface fileListArr {
 interface updateStaffForm {
   id: string
   phone?: string
+  password?: string
   nickname?: string
   username?: string
   avatar?: string
   email?: string
+  identity?: string
   gender?: number
+  role_id?: string
   is_disabled?: boolean
-  store_id?: string
-  regions?: string[]
-  regions_superiors?: string[]
-  stores?: string[]
-  stores_superiors?: string[]
+  region_ids?: string[]
+  region_superior_ids?: string[]
+  store_ids?: string[]
+  store_superior_ids?: string[]
 }
