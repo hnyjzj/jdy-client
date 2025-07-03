@@ -5,7 +5,7 @@
  * @returns 加工后的图片地址
  */
 export const ImageUrl = (path: string | undefined, preview = false) => {
-  if (!path)
+  if (!path || path.startsWith('http'))
     return path || ''
 
   const imageUrl = import.meta.env.VITE_IMAGE_URL || ''

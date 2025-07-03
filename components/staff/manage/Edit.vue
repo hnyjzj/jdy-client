@@ -1,15 +1,10 @@
 <script setup lang="ts">
 // 搜索门店
-import type { FormRules, SelectOption, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
+import type { FormRules, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 import { pinyin } from 'pinyin-pro'
 
-const props = defineProps<{
-  getStoreList: (val: string) => Promise<Stores[]>
-  getRegionList: (val: string) => Promise<Region[]>
-}>()
 const emits = defineEmits<{
   submit: []
-  editPawd: []
   upload: [val: any, onFinish: () => void]
 }>()
 
@@ -101,70 +96,7 @@ const clearAvatar = () => {
   previewFileList.value = []
   onChangeKey()
 }
-const defaultform = defineModel<{ [key: string]: { label: string, value: string }[] }>('default-form', { default:
-     { stores: [], stores_superior: [], regions: [], regions_superior: [] } })
-const Stores = ref<SelectOption[]>([])
-if (formlist.value.store_ids?.length) {
-  Stores.value = defaultform.value.stores
-}
-if (formlist.value.store_superior_ids?.length) {
-  Stores.value = defaultform.value.stores_superior
-}
-const loadingStores = ref(false)
-const getStores = useDebounceFn(async (query) => {
-  const res = await props.getStoreList(query)
-  loadingStores.value = false
-  if (res.length) {
-    Stores.value = res.map(item => ({
-      label: item.name,
-      value: item.id,
-    }))
-  }
-}, 500)
-const searchStores = (query: string) => {
-  loadingStores.value = true
-  getStores(query)
-}
-const Regions = ref<SelectOption[]>([])
-if (formlist.value.region_ids?.length) {
-  Regions.value = defaultform.value.regions
-}
-if (formlist.value.region_superior_ids?.length) {
-  Regions.value = defaultform.value.regions_superior
-}
-const loadingRegions = ref(false)
-const getRegions = useDebounceFn(async (query) => {
-  const res = await props.getRegionList(query)
-  loadingRegions.value = false
-  if (res.length) {
-    Regions.value = res.map(item => ({
-      label: item.name,
-      value: item.id,
-    }))
-  }
-}, 500)
-const searchRegions = (query: string) => {
-  loadingRegions.value = true
-  getRegions(query)
-}
 
-const parsswordForm = defineModel('password', {
-  default: {
-    id: '',
-    password: '',
-  },
-})
-
-// 修改密码
-const editPassword = () => {
-  if (!parsswordForm.value.password) {
-    $toast.error('请输入密码')
-    return false
-  }
-  else {
-    emits('editPawd')
-  }
-}
 defineExpose({
   clearAvatar,
 })
@@ -172,7 +104,7 @@ defineExpose({
 
 <template>
   <div>
-    <div class="">
+    <div class="mb-[12px]">
       <common-fold title="编辑员工" from-color="#9EBAF9" to-color="#fff">
         <div class="p-[16px]">
           <n-form
@@ -248,70 +180,6 @@ defineExpose({
                   </n-space>
                 </n-radio-group>
               </n-form-item-gi>
-              <n-form-item-gi :span="12" label="所属门店" path="store_ids">
-                <n-select
-                  v-model:value="formlist.store_ids"
-                  multiple
-                  filterable
-                  placeholder="搜索门店选择"
-                  :options="Stores"
-                  :loading="loadingStores"
-                  clearable
-                  remote
-                  :max-tag-count="1"
-                  :clear-filter-after-select="false"
-                  @search="searchStores"
-                  @focus="focus"
-                />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="负责门店" path="store_superior_ids">
-                <n-select
-                  v-model:value="formlist.store_superior_ids"
-                  multiple
-                  filterable
-                  placeholder="搜索门店选择"
-                  :options="Stores"
-                  :loading="loadingStores"
-                  clearable
-                  remote
-                  :max-tag-count="1"
-                  :clear-filter-after-select="false"
-                  @search="searchStores"
-                  @focus="focus"
-                />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="所属区域" path="region_ids">
-                <n-select
-                  v-model:value="formlist.region_ids"
-                  multiple
-                  filterable
-                  placeholder="搜索区域选择"
-                  :options="Regions"
-                  :loading="loadingRegions"
-                  clearable
-                  remote
-                  :max-tag-count="1"
-                  :clear-filter-after-select="false"
-                  @search="searchRegions"
-                  @focus="focus"
-                />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="负责区域" path="region_superior_ids">
-                <n-select
-                  v-model:value="formlist.region_superior_ids"
-                  multiple
-                  filterable
-                  placeholder="搜索区域选择"
-                  :options="Regions"
-                  :loading="loadingRegions"
-                  clearable
-                  remote
-                  :max-tag-count="1"
-                  :clear-filter-after-select="false"
-                  @search="searchRegions"
-                  @focus="focus"
-                />
-              </n-form-item-gi>
             </n-grid>
 
             <div class="grid-12 px-[26px]">
@@ -332,38 +200,6 @@ defineExpose({
           </n-modal>
         </div>
       </common-fold>
-      <div class="pt-[12px]">
-        <common-fold title="修改密码" from-color="#9EBAF9" to-color="#fff">
-          <div class="p-[16px]">
-            <n-form
-              ref="formRef"
-              :model="parsswordForm"
-              label-placement="left"
-              size="medium"
-            >
-              <n-grid :cols="24" gap="8">
-                <n-form-item-gi :span="24" label="密码">
-                  <n-input
-                    v-model:value="parsswordForm.password"
-                    placeholder="请输入要修改的密码"
-                    round
-                    @focus="focus"
-                  />
-                </n-form-item-gi>
-              </n-grid>
-              <div class="grid-12 px-[26px]">
-                <div
-                  class="font-semibold  cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
-                  <div @click="editPassword">
-                    <common-button-rounded content="修改密码" />
-                  </div>
-                </div>
-              </div>
-            </n-form>
-            <n-grid :cols="24" :x-gap="8" />
-          </div>
-        </common-fold>
-      </div>
     </div>
   </div>
 </template>

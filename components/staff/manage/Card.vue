@@ -1,12 +1,22 @@
 <script setup lang="ts">
 const props = defineProps<{
   list: Staff[]
+  myidentity: number
 }>()
-
+const { $toast } = useNuxtApp()
+const router = useRouter()
 const sex = (val: number) => {
   return val === 0 ? '未知' : val === 1 ? '男' : '女'
 }
-const router = useRouter()
+
+const toEdit = (id: string, identity: number) => {
+  if (props.myidentity > identity) {
+    router.push(`/manage/staffs/staff/edit?id=${id}`)
+  }
+  else {
+    $toast.error('权限不足')
+  }
+}
 </script>
 
 <template>
@@ -17,7 +27,14 @@ const router = useRouter()
           <sale-cards :title="`员工id:${item.id}`">
             <template #info>
               <div class="info">
-                <img :src="ImageUrl(item.avatar)" alt="" class="wh-[40px] mb-[12px] rounded-[8px]">
+                <div class="flex-start">
+                  <template v-if="!item.avatar">
+                    <icon name="i-svg:avatar" :size="40" />
+                  </template>
+                  <template v-else>
+                    <img :src="ImageUrl(item.avatar)" class="wh-[40px] mb-[12px] rounded-[48px]">
+                  </template>
+                </div>
                 <common-cell label="姓名" :value="item.nickname" />
                 <common-cell label="用户名" :value="item.username" />
                 <common-cell label="性别" :value="sex(item.gender)" />
@@ -32,7 +49,7 @@ const router = useRouter()
                   <div class="pr-[16px] color-[#1F6FEC] cursor-pointer" @click="router.push(`/manage/staffs/staff/info?id=${item.id}`)">
                     详情
                   </div>
-                  <common-button-irregular text="编辑" @click="router.push(`/manage/staffs/staff/edit?id=${item.id}`)" />
+                  <common-button-irregular text="编辑" @click="toEdit(item.id as string, item.identity as number)" />
                 </div>
               </div>
             </template>

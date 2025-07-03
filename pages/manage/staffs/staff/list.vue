@@ -7,6 +7,7 @@ useSeoMeta({
 const { staffList, filterListToArray, total, searchPage } = storeToRefs(useStaff())
 const { getStaffWhere, getStaffList } = useStaff()
 const { staffGetStoreList } = useStores()
+const { userinfo } = storeToRefs(useUser())
 const { myStore } = storeToRefs(useStores())
 const complate = ref(0)
 const searchKey = ref('')
@@ -92,7 +93,7 @@ const updatePage = async (page: number) => {
     </div>
 
     <div class="px-[16px]">
-      <staff-manage-card :list="staffList" />
+      <staff-manage-card :list="staffList" :myidentity="userinfo.identity" />
     </div>
     <div class="p-[16px]">
       <common-page

@@ -2,26 +2,38 @@
 useSeoMeta({
   title: '员工详情',
 })
+const { $toast } = useNuxtApp()
 const route = useRoute()
 const { getStaffInfo } = useStaff()
 const { staffInfo } = storeToRefs(useStaff())
+const { userinfo } = storeToRefs(useUser())
 if (route.query.id) {
   getStaffInfo({ id: route.query.id as string })
 }
 const sex = (val: number) => {
   return val === 0 ? '未知' : val === 1 ? '男' : '女'
 }
-onMounted(() => {
 
-})
+const router = useRouter()
+const toEdit = () => {
+  if (userinfo.value.identity > (staffInfo.value.identity as number)) {
+    router.push(`/manage/staffs/staff/edit?id=${route.query.id}`)
+  }
+  else {
+    $toast.error('权限不足')
+  }
+}
 </script>
 
 <template>
   <div class="grid-12 gap-[12px] p-[16px]">
     <div class="card col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" uno-lg="col-4 offset-4">
       <div class="p-[1px]">
-        <div class="text-[16px] py-[12px] px-[16px] bg-gradient-linear-[90deg,#FFF,#8AD4FB] rounded-t-[16px]">
+        <div class="text-[16px] py-[12px] px-[16px] bg-gradient-linear-[90deg,#FFF,#8AD4FB] rounded-t-[16px] flex-between">
           员工详情
+          <div class="px-[12px] py-[6px] bg-[#2B78EF] color-[#fff] rounded-[12px] text-[14px] cursor-pointer" @click="toEdit()">
+            编辑
+          </div>
         </div>
       </div>
       <div class="p-[16px] text-[14px] color-[#666]">

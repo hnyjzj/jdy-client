@@ -17,6 +17,8 @@ interface Staff {
   region_superiors?: Region[]
   stores?: Store[]
   store_superiors?: Store[]
+  identity?: number
+  role_id?: string
 }
 /**
  * 添加员工请求参数
@@ -56,7 +58,7 @@ interface updateStaffForm {
   username?: string
   avatar?: string
   email?: string
-  identity?: string
+  identity?: number
   gender?: number
   role_id?: string
   is_disabled?: boolean
@@ -64,4 +66,33 @@ interface updateStaffForm {
   region_superior_ids?: string[]
   store_ids?: string[]
   store_superior_ids?: string[]
+}
+
+interface updateRegion {
+  id: string
+  store_ids: string[]
+  store_superior_ids: string[]
+  region_ids: string[]
+  region_superior_ids: string[]
+}
+/**
+ * 更新员工密码
+ */
+interface updatePassword {
+  id: string
+  password: string
+  store_ids: string[]
+  store_superior_ids: string[]
+  region_ids: string[]
+  region_superior_ids: string[]
+}
+
+interface updateAuthRole {
+  id: string
+  role_id: string
+  identity: number
+  store_ids: string[]
+  store_superior_ids: string[]
+  region_ids: string[]
+  region_superior_ids: string[]
 }
