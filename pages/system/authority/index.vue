@@ -29,8 +29,8 @@ async function getRoleListFun() {
     activeTab.value = keys[0]
     await getRoleListFun()
     await getRoleList(Number(activeTab.value))
-    await getInfo()
     await changeDeffault()
+    await getInfo()
   }
 }
 
@@ -55,12 +55,15 @@ await getWorkbenchList()
 await getRoleWhere()
 
 const handleTabChange = async () => {
-  await getRoleListFun()
+  await getRoleList(Number(activeTab.value))
+  await changeDeffault()
+  await getInfo()
 }
 
 async function getInfo() {
   await getRoleInfo(roleList.value[selectRole.value]?.id)
-
+  funSelectIds.value = []
+  apiSelectIds.value = []
   const funids = roleInfo.value?.routers?.map((item: any) => item.id)
   const apiids = roleInfo.value?.apis?.map((item: any) => item.id)
   if (funids && funids.length) {
@@ -104,7 +107,7 @@ async function oppeAddRole(is: boolean) {
 
 /** 添加用户组 */
 async function addRoleFun() {
-  roleInfo.value.identity = activeTab.value
+  roleParams.value.identity = Number(activeTab.value)
   const res = await addRole(roleParams.value)
   if (res?.code === 200) {
     isAddModel.value = false
@@ -116,7 +119,6 @@ async function addRoleFun() {
 const editRoleInfo = ref()
 /** 编辑用户组 */
 async function editRoleFun() {
-  roleInfo.value.identity = activeTab.value
   roleParams.value.identity = Number(activeTab.value)
 
   const res = await editRole(roleParams.value)
@@ -151,7 +153,7 @@ async function delRole() {
   const res = await deleteRole(delRoleId.value)
   if (res?.code === 200) {
     confirmShow.value = false
-    await getRoleListFun()
+    await getRoleList(Number(activeTab.value))
     return $toast.success('删除成功')
   }
   $toast.error(res?.message || '删除失败')
@@ -210,9 +212,11 @@ function updataFun() {
                               <Icon name="i-icon:edit" color="" :size="16" />
                             </div>
                           </div>
-                          <div class="cursor-pointer" @click.stop="delRoleFun(role.id, role.name)">
-                            <Icon name="i-icon:delete" color="red" :size="14" />
-                          </div>
+                          <template v-if="!role.is_default">
+                            <div class="cursor-pointer" @click.stop="delRoleFun(role.id, role.name)">
+                              <Icon name="i-icon:delete" color="red" :size="14" />
+                            </div>
+                          </template>
                         </div>
                       </div>
                     </template>

@@ -1,31 +1,63 @@
 <script lang="ts" setup>
+import { onMounted, ref, watch } from 'vue'
+
 const props = withDefaults(defineProps<{
   workBenchList: WorkBench[]
-}>(), {
-})
+}>(), {})
 
+// 双向绑定选中的功能 ID 列表
 const funSelectIds = defineModel<WorkBench['id'][]>({ default: () => [] })
 
-const switchStates = ref([])
+// 存储每个工作台的“多选开关”状态，索引与 workBenchList 对应
+const switchStates = ref<boolean[]>([])
 
-/** 全选和全不选 */
+/**
+ * 多选开关切换时触发
+ * @param val 开关状态
+ * @param id 当前工作台的 ID
+ */
 function handleSwitchChange(val: boolean, id: Apis['id']) {
   const bench = props.workBenchList.find(bench => bench.id === id)?.children
   const arr = bench?.flatMap(group => group.children)
 
   if (!arr || !arr.length)
     return
+
   if (val) {
-    arr.forEach((item) => {
-      item?.id && funSelectIds.value.push(item.id)
-    })
+    // 多选：合并功能 ID，并去重
+    arr.forEach(item => item?.id && funSelectIds.value.push(item.id))
     funSelectIds.value = [...new Set(funSelectIds.value)]
   }
   else {
+    // 全不选：移除当前工作台的功能 ID
     const idArr = arr.map(item => item?.id)
-    funSelectIds.value = funSelectIds.value.filter(item => !idArr.includes(item))
+    funSelectIds.value = funSelectIds.value.filter(id => !idArr.includes(id))
   }
 }
+
+/**
+ * 根据当前 funSelectIds 判断每个工作台是否全选，更新 switchStates
+ */
+function updateSwitchStates() {
+  switchStates.value = props.workBenchList.map((bench) => {
+    const allIds = bench.children?.flatMap(group =>
+      (group.children ?? [])
+        .map(item => item.id)
+        .filter((id): id is string => !!id),
+    ) ?? []
+
+    return allIds.length > 0 && allIds.every(id => funSelectIds.value.includes(id))
+  })
+}
+
+onMounted(() => {
+  updateSwitchStates()
+})
+
+// 每当选中项变化时，同步按钮状态
+watch(funSelectIds, () => {
+  updateSwitchStates()
+}, { deep: true })
 </script>
 
 <template>
