@@ -3,17 +3,17 @@ export const useAuthority = defineStore('Authority', {
     roleList: Roles[]
     roleInfo: Roles
     apiList: Apis[]
-    roleWhereList: Where<Roles>
+    roleWhereList: Record<number, string>
   } => ({
     roleList: [],
     roleInfo: {} as Roles,
     apiList: [],
-    roleWhereList: {} as Where<Roles>,
+    roleWhereList: {} as Record<number, string>,
   }),
   actions: {
     // 角色列表
-    async getRoleList(id: number) {
-      const { data } = await https.post<any, { id: number }>('/setting/role/list', { id })
+    async getRoleList(identity: number) {
+      const { data } = await https.post<any, { identity: number }>('/setting/role/list', { identity })
       if (data.value?.code === HttpCode.SUCCESS) {
         this.roleList = data.value.data
       }
@@ -52,10 +52,15 @@ export const useAuthority = defineStore('Authority', {
       const { data } = await https.put<string[], any>('/setting/role/update', params)
       return data.value
     },
+    /** 更新添加成员 */
+    async editRole(params: RolesParams) {
+      const { data } = await https.put<RolesParams, any>('/setting/role/edit', params)
+      return data.value
+    },
     // 获取权限组列表
     async getRoleWhere() {
       try {
-        const { data } = await https.get<Where<Roles>>('/setting/role/where')
+        const { data } = await https.get<Record<Roles['id'], string>>('/setting/role/identity')
         if (data.value?.code === HttpCode.SUCCESS) {
           this.roleWhereList = data.value.data
         }

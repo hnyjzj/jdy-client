@@ -59,7 +59,7 @@ interface Roles {
   /** 默认角色 */
   is_default: boolean
   /** 身份 */
-  identity: string
+  identity: number
 }
 
 interface RolesParams {
@@ -70,13 +70,14 @@ interface RolesParams {
   /**
    * 是否管理员
    */
-  is_admin?: boolean
+  is_default?: boolean
   /**
    * 角色名称
    */
   name: string
   /** 身份 */
   identity: number
+  id?: string
 }
 
 /**
@@ -122,4 +123,9 @@ interface UpdateAuthParams {
   staffs?: string[]
   routers?: string[]
   apis?: string[]
+}
+
+/** 身份等级 */
+interface Identity {
+
 }

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 const { roleList, apiList, roleInfo, roleWhereList } = storeToRefs(useAuthority())
-const { getRoleWhere, getRoleList, addRole, getRoleInfo, getApiList, addStaff, updateStaff, deleteRole } = useAuthority()
+const { getRoleWhere, getRoleList, addRole, getRoleInfo, getApiList, updateStaff, deleteRole, editRole } = useAuthority()
 const { workBenchList } = storeToRefs(useWorkbenche())
-const { useWxWork } = useWxworkStore()
+const { getWorkbenchList } = useWorkbenche()
 useSeoMeta({
   title: '权限管理',
 })
@@ -17,40 +17,52 @@ const activeIndex = ref(0)
 const funSelectIds = ref<string[]>([])
 /** 权限选中id组 */
 const apiSelectIds = ref<string[]>([])
-/** 成员选中id */
-const staffSelectIds = ref<string[]>([])
 /** 当前身份id */
 const activeTab = ref()
 /** 确认框显隐 */
 const confirmShow = ref(false)
 /** 倒计时框 */
 const countdownShow = ref(false)
-
-watchEffect(() => {
-  const keys = Object.keys(roleWhereList.value.identity?.preset || {})
+async function getRoleListFun() {
+  const keys = Object.keys(roleWhereList.value)
   if (keys.length && !activeTab.value) {
     activeTab.value = keys[0]
-    getRoleListFun()
+    await getRoleListFun()
+    await getRoleList(Number(activeTab.value))
+    await getInfo()
+    await changeDeffault()
   }
-})
-await getRoleWhere()
-/** 角色列表 */
-// await getRoleList()
-/** 权限 */
-await getApiList()
-async function getRoleListFun() {
-  getRoleList(activeTab.value)
 }
 
-const handleTabChange = () => {
-  getRoleListFun()
+/** 角色二 */
+function changeDeffault() {
+  roleList.value.forEach((item: Roles, index: number) => {
+    if (item.is_default) {
+      selectRole.value = index
+    }
+  })
+}
+onMounted(async () => {
+  /** 初始化请求 */
+  await getRoleListFun()
+})
+
+/** 权限 */
+await getApiList()
+/** 工作台 */
+await getWorkbenchList()
+/** 角色列表 */
+await getRoleWhere()
+
+const handleTabChange = async () => {
+  await getRoleListFun()
 }
 
 async function getInfo() {
-  await getRoleInfo(roleList.value[selectRole.value].id)
+  await getRoleInfo(roleList.value[selectRole.value]?.id)
 
-  const funids = roleInfo.value.routers.map((item: any) => item.id)
-  const apiids = roleInfo.value.apis.map((item: any) => item.id)
+  const funids = roleInfo.value?.routers?.map((item: any) => item.id)
+  const apiids = roleInfo.value?.apis?.map((item: any) => item.id)
   if (funids && funids.length) {
     funSelectIds.value = funids
   }
@@ -66,12 +78,10 @@ async function getInfo() {
   }
 }
 
-await getInfo()
-
 const roleParams = ref({
   name: '',
   desc: '',
-  is_admin: false,
+  is_default: false,
   identity: Number(activeTab.value),
 } as RolesParams)
 
@@ -79,8 +89,16 @@ const navItems = ref(['功能', '权限'])
 const setActive = (index: number) => {
   activeIndex.value = index
 }
-
-async function oppeAddRole() {
+const isAdd = ref()
+async function oppeAddRole(is: boolean) {
+  /** 添加时删除回显 */
+  if (is) {
+    roleParams.value.name = ''
+    roleParams.value.desc = ''
+    roleParams.value.is_default = false
+    delete roleParams.value.id
+  }
+  isAdd.value = is
   isAddModel.value = true
 }
 
@@ -90,10 +108,34 @@ async function addRoleFun() {
   const res = await addRole(roleParams.value)
   if (res?.code === 200) {
     isAddModel.value = false
-    await getRoleListFun()
+    await getRoleList(Number(activeTab.value))
     return $toast.success('添加成功')
   }
   $toast.error(res?.message || '添加失败')
+}
+const editRoleInfo = ref()
+/** 编辑用户组 */
+async function editRoleFun() {
+  roleInfo.value.identity = activeTab.value
+  roleParams.value.identity = Number(activeTab.value)
+
+  const res = await editRole(roleParams.value)
+  if (res?.code === 200) {
+    isAddModel.value = false
+    await getRoleList(Number(activeTab.value))
+    return $toast.success('更新成功')
+  }
+  $toast.error(res?.message || '更新失败')
+}
+
+function edit(role: Roles) {
+  /** 回显 */
+  roleParams.value.name = role.name
+  roleParams.value.desc = role.desc
+  roleParams.value.is_default = role.is_default
+  roleParams.value.id = role.id
+  editRoleInfo.value = role
+  oppeAddRole(false)
 }
 
 const delRoleName = ref('')
@@ -114,54 +156,6 @@ async function delRole() {
   }
   $toast.error(res?.message || '删除失败')
 }
-
-// 是否是企业微信环境
-const iswx = ref(false)
-if (import.meta.client) {
-  if (isWxWorkClient() || isWeChatClient()) {
-    iswx.value = true
-  }
-  else {
-    iswx.value = false
-  }
-}
-const wxwordAdd = async () => {
-  if (!iswx.value) {
-    $toast.error('请在企业微信中使用')
-    return
-  }
-
-  const wx = await useWxWork()
-  const users = await wx?.selectPerson()
-  addMember(users?.userList)
-}
-
-/** 添加成员 */
-async function addMember(userList: any) {
-  const staffs = userList.map((item: any) => item.id)
-  const id = roleList.value[selectRole.value].id
-  const res = await addStaff(id, staffs)
-  if (res?.code === 200) {
-    $toast.success('添加成功')
-    await getInfo()
-  }
-  else {
-    $toast.error(res?.message || '添加失败')
-  }
-}
-/** 删除成员 */
-async function delMerber(id: string) {
-  const staffsArr = roleInfo.value.staffs
-  if (!staffsArr)
-    return
-  const ids = staffsArr.map((item: any) => item.id)
-  staffSelectIds.value = ids.filter((item: any) => item !== id)
-  await saveFun()
-}
-
-const delMerberDebounce = useThrottleFn((id: string) => {
-  delMerber(id)
-}, 200)
 
 /** 确认提交更正 */
 async function saveFun() {
@@ -196,22 +190,29 @@ function updataFun() {
         <common-gradient :title="`权限组（${roleList.length}）`">
           <template #body>
             <n-tabs v-model:value="activeTab" type="line" animated @update:value="handleTabChange">
-              <template v-for="(item, id, t) in roleWhereList.identity?.preset" :key="t">
+              <template v-for="(item, id, t) in roleWhereList" :key="t">
                 <n-tab-pane :name="id" :tab="item">
                   <div class="grid grid-cols-2 gap-4">
-                    <template v-for="(item, index) in roleList" :key="index">
+                    <template v-for="(role, index) in roleList" :key="index">
                       <div class="user-box mb-3" :class="selectRole === index ? 'select-role' : ''" @click="selectRole = index;getInfo()">
                         <div class="text-[16px]">
-                          {{ item.name }}
+                          {{ role.name }}
                         </div>
-                        <span class="text-[12px] text-[#666666]">{{ item.desc }}</span>
-                        <div class="mt-4 flex justify-between cursor-pointer" @click.stop="delRoleFun(item.id, item.name)">
-                          <template v-if="item.is_default">
-                            <div class="text-[12px] text-[#666666] bg-[rgba(230,230,232,1)] px-1 rounded-[2px]">
-                              默认
+                        <span class="text-[12px] text-[#666666]">{{ role.desc }}</span>
+                        <div class="mt-4 flex justify-between items-center">
+                          <div class="flex items-center">
+                            <template v-if="role.is_default">
+                              <div class="text-[12px] text-[#666666] bg-[rgba(230,230,232,1)] px-1 rounded-[2px] mr-2">
+                                默认
+                              </div>
+                            </template>
+                            <div class="cursor-pointer" @click.stop="edit(role)">
+                              <Icon name="i-icon:edit" color="" :size="16" />
                             </div>
-                          </template>
-                          <Icon name="i-icon:delete" color="red" :size="14" />
+                          </div>
+                          <div class="cursor-pointer" @click.stop="delRoleFun(role.id, role.name)">
+                            <Icon name="i-icon:delete" color="red" :size="14" />
+                          </div>
                         </div>
                       </div>
                     </template>
@@ -219,7 +220,7 @@ function updataFun() {
                 </n-tab-pane>
               </template>
             </n-tabs>
-            <div class="text-center cursor-pointer" @click="oppeAddRole">
+            <div class="text-center cursor-pointer pt-4" @click="oppeAddRole(true)">
               + 添加用户组
             </div>
           </template>
@@ -254,31 +255,24 @@ function updataFun() {
             <authority-api v-model="apiSelectIds" :api-list="apiList" />
           </div>
         </template>
-        <template v-if="activeIndex === 2">
-          <div class="mb-20">
-            <div class="flex">
-              <template v-for="(item, index) in roleInfo.staffs" :key="index">
-                <div class="flex flex-col items-center mr-2">
-                  <div class="relative">
-                    <img class="rounded-[20px]" :src="item.avatar" alt="widthFix" width="100">
-                    <icon class="cursor-pointer absolute top-[-3px] right-[-3px]" name="i-svg:reduce" :size="20" @click="delMerberDebounce(item.id)" />
-                  </div>
-                  <div>
-                    {{ item?.nickname }}
-                  </div>
-                </div>
-              </template>
-            </div>
-            <div class="text-center mt-4" @click="wxwordAdd">
-              + 添加成员
-            </div>
-          </div>
-        </template>
         <common-button-one @confirm="updataFun" />
       </div>
     </common-layout-center>
-    <common-model v-model="isAddModel" title="添加角色" :show-ok="true" @confirm="addRoleFun()">
+    <common-model v-model="isAddModel" :title="isAdd ? '添加角色' : '编辑角色'" :show-ok="true" @confirm="isAdd ? addRoleFun() : editRoleFun()">
       <div>
+        <div class="mb-3">
+          <div class="mb-1">
+            身份
+          </div>
+          <n-input
+            :value="roleWhereList[activeTab]"
+            size="large"
+            round
+            placeholder="请输入角色名称"
+            :disabled="true"
+            @focus="focus"
+          />
+        </div>
         <div class="mb-3">
           <div class="mb-1">
             角色名称
@@ -305,10 +299,10 @@ function updataFun() {
         </div>
         <div class="mb-3">
           <div class="mb-1">
-            是否管理员
+            是否默认
           </div>
           <n-switch
-            v-model:value="roleParams.is_admin"
+            v-model:value="roleParams.is_default"
             round
             @focus="focus"
           />
