@@ -1,85 +1,111 @@
 <script lang="ts" setup>
+import { onMounted, ref, watch } from 'vue'
+
 const props = withDefaults(defineProps<{
   apiList: Apis[]
-}>(), {
-})
+}>(), {})
 
+// 选中的叶子节点 id
 const apiSelectIds = defineModel<Apis['id'][]>({ default: () => [] })
 
-// 每个 api 的 switch 状态，初始化长度和 apiList 一致，元素默认 false
+// 每个 api（第一层）对应的全选开关状态
 const switchStates = ref<boolean[]>([])
 
-/** 全选和全不选 */
+/**
+ * 获取某个 api 下所有叶子节点（真正可选接口）的 id
+ */
+function getLeafIds(api: Apis) {
+  const sections = api.children ?? []
+  return sections.flatMap(section => (section.children ?? []).map(c => c.id))
+}
+
+/**
+ * 顶部开关：全选 / 全不选
+ */
 function handleSwitchChange(val: boolean, id: Apis['id']) {
-  const arr = props.apiList.find(item => item.id === id)?.children
-  if (!arr || !arr.length)
+  const api = props.apiList.find(item => item.id === id)
+  if (!api)
+    return
+
+  const leafIds = getLeafIds(api)
+  if (!leafIds.length)
     return
 
   if (val) {
-    arr.forEach((item) => {
-      // 避免重复添加
-      if (!apiSelectIds.value.includes(item.id)) {
-        apiSelectIds.value.push(item.id)
-      }
+    // 全选：把该 api 下的所有叶子 id 加入选中列表（避免重复）
+    leafIds.forEach((lid) => {
+      if (!apiSelectIds.value.includes(lid))
+        apiSelectIds.value.push(lid)
     })
   }
   else {
-    const idArr = arr.map(item => item.id)
-    apiSelectIds.value = apiSelectIds.value.filter(item => !idArr.includes(item))
+    // 全不选：从选中列表中剔除这些 id
+    apiSelectIds.value = apiSelectIds.value.filter(current => !leafIds.includes(current))
   }
 }
 
-// 同步开关状态（判断每个 api 的所有子 id 是否都被选中）
+/**
+ * 根据 apiSelectIds 同步每个开关的显示状态
+ */
 function updateSwitchStates() {
   switchStates.value = props.apiList.map((api) => {
-    const children = api.children ?? []
-    if (!children.length)
+    const leafIds = getLeafIds(api)
+    if (!leafIds.length)
       return false
-    const childrenIds = children.map(c => c.id)
-    return childrenIds.every(id => apiSelectIds.value.includes(id))
+    return leafIds.every(id => apiSelectIds.value.includes(id))
   })
 }
 
-// 监听 apiSelectIds 变化，更新开关状态
 watch(apiSelectIds, updateSwitchStates, { deep: true })
 
-// 初始化 switchStates
-onMounted(() => {
-  updateSwitchStates()
-})
+onMounted(updateSwitchStates)
 </script>
 
 <template>
   <div>
-    <template v-for="(api, aindex) in props.apiList" :key="aindex">
+    <!-- 第一层：api 模块 -->
+    <template v-for="(api, aindex) in props.apiList" :key="api.id">
       <div class="mb-2">
-        <common-gradient :title="api.title || api.path" :foldable="true" :is-folds="true">
+        <common-gradient
+          :title="api.title || api.path"
+          foldable
+          :is-folds="true"
+        >
           <template #body>
-            <div>
-              <div class="mb-2 flex justify-end">
-                <div class="mr-2">
-                  全选
-                </div>
-                <n-switch v-model:value="switchStates[aindex]" size="medium" @update:value="(val) => handleSwitchChange(val, api.id)" />
+            <!-- 顶部全选开关 -->
+            <div class="mb-2 flex justify-end items-center">
+              <span class="mr-2">全选</span>
+              <n-switch
+                v-model:value="switchStates[aindex]"
+                size="medium"
+                @update:value="val => handleSwitchChange(val, api.id)"
+              />
+            </div>
+
+            <!-- 第二层：section 分类 -->
+            <template v-for="section in api.children" :key="section.id">
+              <div class="py-2 font-medium text-[16px]">
+                {{ section.title || section.path }}
               </div>
+
+              <!-- 第三层：真正的接口叶子节点 -->
               <n-checkbox-group v-model:value="apiSelectIds">
-                <div class="flex gap-2 flex-wrap">
-                  <template v-for="(son, j) in api.children" :key="j">
-                    <div class="flex mb-2">
-                      <n-checkbox
-                        :value="son.id"
-                        :label="son.title || son.path"
-                        :style="{
-                          '--n-color-checked': '#0068ff',
-                          '--n-border-color-active': '#000',
-                          '--n-check-mark-color': 'white', // 可选：✔ 图标颜色
-                        }"
-                      />
-                    </div>
+                <div class="flex gap-2 flex-wrap mb-4">
+                  <template v-for="leaf in section.children" :key="leaf.id">
+                    <n-checkbox
+                      :value="leaf.id"
+                      :label="leaf.title || leaf.path"
+                      class="mb-2"
+                      :style="{
+                        '--n-color-checked': '#0068ff',
+                        '--n-border-color-active': '#000',
+                        '--n-check-mark-color': 'white',
+                      }"
+                    />
                   </template>
                 </div>
               </n-checkbox-group>
-            </div>
+            </template>
           </template>
         </common-gradient>
       </div>

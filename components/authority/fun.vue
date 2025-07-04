@@ -66,9 +66,11 @@ watch(funSelectIds, () => {
       <common-gradient :title="bench.title" :foldable="true" :is-folds="true">
         <template #body>
           <div>
-            <div class="mb-2">
-              多选
-              <n-switch v-model:value="switchStates[aindex]" size="medium" @update:value="(val) => handleSwitchChange(val, bench.id)" />
+            <div class="flex justify-end">
+              <div class="mb-2">
+                多选
+                <n-switch v-model:value="switchStates[aindex]" size="medium" @update:value="(val) => handleSwitchChange(val, bench.id)" />
+              </div>
             </div>
             <template v-for="(children, i) in bench.children" :key="i">
               <div class="text-[14px] mb-2">

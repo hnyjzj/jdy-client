@@ -195,16 +195,15 @@ function sumStock(category: CategoryHasProduct) {
     </common-layout-center>
     <common-model v-model="isAddSingle" title="选择配件" :show-ok="true" @confirm="addCategory">
       <div>
-        <div class="grid grid-cols-[30%_60%_10%] items-center gap-2">
-          <div class="">
-            <n-select
-              v-model:value="searchParams.label" :options="categoryFilterListToArray.map(v => ({
-                label: v.label,
-                value: v.name,
-              }))"
-              @focus="focus"
-              @change="searchParams.val = ''" />
-          </div>
+        <div class="grid grid-cols-[40%_40%_10%] items-center gap-2">
+          <n-select
+            v-model:value="searchParams.label" :options="categoryFilterListToArray.map(v => ({
+              label: v.label,
+              value: v.name,
+            }))"
+            @focus="focus"
+            @change="searchParams.val = ''" />
+
           <div>
             <template v-if="searchWhere?.input === 'text' || searchWhere?.input === 'textarea'">
               <n-input v-model:value="searchParams.val" placeholder="请搜索" @keydown.enter="searchAccessorie" @focus="focus" />

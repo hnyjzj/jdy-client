@@ -124,8 +124,3 @@ interface UpdateAuthParams {
   routers?: string[]
   apis?: string[]
 }
-
-/** 身份等级 */
-interface Identity {
-
-}

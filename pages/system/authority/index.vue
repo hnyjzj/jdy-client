@@ -39,6 +39,7 @@ function changeDeffault() {
   roleList.value.forEach((item: Roles, index: number) => {
     if (item.is_default) {
       selectRole.value = index
+      console.log(111111111111)
     }
   })
 }
@@ -110,8 +111,11 @@ async function addRoleFun() {
   roleParams.value.identity = Number(activeTab.value)
   const res = await addRole(roleParams.value)
   if (res?.code === 200) {
+    funSelectIds.value = []
+    apiSelectIds.value = []
     isAddModel.value = false
     await getRoleList(Number(activeTab.value))
+    selectRole.value = 0
     return $toast.success('添加成功')
   }
   $toast.error(res?.message || '添加失败')
@@ -154,6 +158,8 @@ async function delRole() {
   if (res?.code === 200) {
     confirmShow.value = false
     await getRoleList(Number(activeTab.value))
+    await changeDeffault()
+    await getInfo()
     return $toast.success('删除成功')
   }
   $toast.error(res?.message || '删除失败')
@@ -196,11 +202,13 @@ function updataFun() {
                 <n-tab-pane :name="id" :tab="item">
                   <div class="grid grid-cols-2 gap-4">
                     <template v-for="(role, index) in roleList" :key="index">
-                      <div class="user-box mb-3" :class="selectRole === index ? 'select-role' : ''" @click="selectRole = index;getInfo()">
+                      <div class="user-box mb-3 flex flex-col justify-between" :class="selectRole === index ? 'select-role' : ''" @click="selectRole = index;getInfo()">
                         <div class="text-[16px]">
                           {{ role.name }}
                         </div>
-                        <span class="text-[12px] text-[#666666]">{{ role.desc }}</span>
+                        <div class="text-[12px] text-[#666666]">
+                          {{ role.desc }}
+                        </div>
                         <div class="mt-4 flex justify-between items-center">
                           <div class="flex items-center">
                             <template v-if="role.is_default">
@@ -366,7 +374,7 @@ function updataFun() {
 }
 
 .select-nav {
-  color: #007bff;
+  color: #000;
 }
 
 .select-nav::after {
@@ -376,7 +384,7 @@ function updataFun() {
   width: 100%;
   bottom: -5px;
   height: 2px;
-  background-color: #007bff;
+  background-color: #000;
 }
 
 .select-role {
