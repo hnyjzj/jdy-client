@@ -34,7 +34,7 @@ export const useStores = defineStore('Store', {
       if (data.value?.code === HttpCode.SUCCESS) {
         this.total = data.value.data.total
         if (data.value.data.list.length > 0) {
-          this.storesList = [...this.storesList, ...data.value.data.list]
+          this.storesList = [...data.value.data.list]
 
           if (search) {
             return this.storesList
@@ -136,9 +136,14 @@ export const useStores = defineStore('Store', {
     },
     // 门店员工列表
     async getStoreStaffList(req: { id: StoresStaff['id'] }) {
-      const { data } = await https.post<StoresStaff[], { id: StoresStaff['id'] }>('/store/staff/list', req)
+      const res = await https.post<StoresStaff[], { id: StoresStaff['id'] }>('/store/staff/list', req)
+      const { data } = res
       if (data.value?.code === HttpCode.SUCCESS) {
         this.StoreStaffList = data.value.data
+      }
+      else {
+        this.StoreStaffList = []
+        return res
       }
     },
     // 为门店分配员工
@@ -151,9 +156,29 @@ export const useStores = defineStore('Store', {
         return false
       }
     },
+    // 为门店分配负责人
+    async assignSuperior(req: AssignSuperior) {
+      const { data } = await https.post<any, AssignSuperior>('/store/superior/add', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return true
+      }
+      else {
+        return false
+      }
+    },
     // 移除员工
     async deleteStaff(req: AssignStaff) {
       const { data } = await https.delete<any, AssignStaff>('/store/staff/del', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return true
+      }
+      else {
+        return false
+      }
+    },
+    // 移除负责人
+    async deleteSuperior(req: AssignSuperior) {
+      const { data } = await https.delete<any, AssignSuperior>('/store/superior/del', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         return true
       }

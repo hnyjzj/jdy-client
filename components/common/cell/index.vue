@@ -2,6 +2,7 @@
 const props = withDefaults(defineProps<{
   label: string | number
   value?: string | number | boolean
+  valueWeight?: string
   valColor?: string
   labelColor?: string
   format?: string
@@ -29,7 +30,7 @@ const props = withDefaults(defineProps<{
         </div>
       </template>
     </div>
-    <div class="part-right break-words" :class="[props.rcol ? props.rcol : 'col-6']" :style="{ color: props.valColor }">
+    <div class="part-right break-words" :class="[props.rcol ? props.rcol : 'col-6']" :style="{ color: props.valColor, fontWeight: props.valueWeight }">
       <template v-if="props.valColor">
         {{ props.format ? props.format : '' }} {{ typeof props.value === 'boolean' ? props.value ? '是' : '否' : props.value === '' ? '-' : props.value }}  {{ props.right ? props.right : '' }}
       </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const props = defineProps<{
-  list: Staff[]
+  list: Superior[]
 }>()
 
 const emits = defineEmits<{
@@ -15,10 +15,10 @@ const sex = (val: number) => {
 <template>
   <div class="p-[16px] pb-0 flex-between">
     <div class="text-[16px] font-semibold">
-      员工
+      负责人
     </div>
     <div>
-      <common-button-rounded content="分配员工" @button-click="emits('confirm', 'staff')" />
+      <common-button-rounded content="分配负责人" @button-click="emits('confirm', 'superior')" />
     </div>
   </div>
   <div class="grid-12 gap-[16px] py-[16px] ">

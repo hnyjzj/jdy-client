@@ -1,29 +1,22 @@
-type StoresWhere = Partial<Stores>
+type RegionWhere = Partial<Region>
 // 门店列表
-interface Stores {
+interface Region {
   addressName?: string
   address: string
   city: string
-  contact: string
   created_at: string
   district: string
   id: string
-  logo?: string
   name: string
   province: string
   sort: number
   staffs: Staff[]
   updated_at: string
-  superiors: Superior[]
-  // 省市区
-  field?: {
-    province?: string
-    city?: string
-    district?: string
-  }
+  superiors: Staff[]
+  stores: Stores[]
 }
 
-interface StoresStaff {
+interface RegionStaff {
   account: null
   accounts: null
   avatar: string
@@ -39,18 +32,17 @@ interface StoresStaff {
   updated_at: string
 }
 
-interface uploadLogoFileReq {
-  image: File | undefined
-  store_id?: string
-}
 // 门店列表筛选请求参数
 
-interface AssignStaff {
+interface RegionAssignStaff {
   id?: string
   staff_id: string[]
 }
-
-interface AssignSuperior {
+interface RegionAssignsuperior {
   id?: string
   superior_id: string[]
+}
+interface RegionassignStores {
+  id?: string
+  store_id: string[]
 }

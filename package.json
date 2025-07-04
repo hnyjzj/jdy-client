@@ -20,6 +20,7 @@
     "build": "^0.1.4",
     "nuxt": "^3.15.4",
     "pinia": "^2.2.5",
+    "pinyin-pro": "^3.26.0",
     "vue": "latest",
     "vue3-use-print": "^1.0.0"
   },

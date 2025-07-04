@@ -5,7 +5,10 @@ interface UserInfo {
   name: string
   phone: string
   nickname: string
+  username: string
   gender: number
+  identity: number
+
 }
 
 interface UserOpts {

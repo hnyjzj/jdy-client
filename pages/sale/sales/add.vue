@@ -132,7 +132,12 @@ const getMember = async (val: string) => {
   return memberList.value || []
 }
 // 获取门店员工列表
-const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
+const getStaff = async () => {
+  const res = await getStoreStaffList({ id: myStore.value.id })
+  if (res) {
+    $toast.error(res?.data.value?.message || '获取员工列表失败')
+  }
+}
 // 添加商品
 const addProduct = async (product: ProductFinisheds) => {
   const index = showProductList.value.findIndex(item => item.product_id === product?.id)

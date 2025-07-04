@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 const props = defineProps<{
-
-  staffs: Staff[]
+  staffs: StoresStaff[]
   areaBorder: boolean
   getStaff: () => void
 }>()

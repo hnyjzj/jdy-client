@@ -13,9 +13,12 @@ const props = defineProps<{
     <div class="flex-center-between shrink-0 px-[16px] h-[44px] py-[8px] bg-[linear-gradient(90deg,#477ef500,#82d0faf2)]">
       <div class="flex-center-between gap-2 flex-1">
         <slot name="avatar" />
-        <div class="text-[14px] font-semibold color-[#1B2129] dark:color-[#fff]">
-          {{ props.title }}
-        </div>
+        <template v-if="props.title">
+          <div class="text-[14px] font-semibold color-[#1B2129] dark:color-[#fff]">
+            {{ props.title }}
+          </div>
+        </template>
+        <slot name="status" />
       </div>
       <template v-if="props.tagText">
         <common-tags :text="props.tagText" :type="props.bg" />

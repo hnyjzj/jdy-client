@@ -18,19 +18,20 @@ const otherList = ref<{ name: string, icon: string, title: string }[]>([])
 const userinfoForm = ref<Staff>({
   avatar: '',
   nickname: '',
+  username: '',
   phone: '',
   email: '',
   gender: 0,
   password: '',
-  store_id: '',
 })
 const againPass = ref('')
 // 初始化数据 给表单赋值 userinfoForm
-const { avatar, nickname, phone, email, gender } = userinfo.value
+const { avatar, nickname, phone, email, gender, username } = userinfo.value
 userinfoForm.value = {
   ...userinfoForm.value, // 保留原有的所有字段
   avatar,
   nickname,
+  username,
   phone,
   email,
   gender,
@@ -83,13 +84,16 @@ const submitForm = async () => {
   }
 
   // 发起更新用户信息的请求
-  const res = await staff.updateStaff({ platform: 'account', account: userinfoForm.value })
+  const res = await staff.updateStaff(userinfoForm.value)
 
   // 根据响应结果判断更新是否成功
   if (res?.code === HttpCode.SUCCESS) {
     // 更新成功时，显示成功提示信息
     $toast.success('更新成功')
     await getUserInfo()
+  }
+  else {
+    $toast.error(res?.message || '更新失败')
   }
 }
 
@@ -108,6 +112,7 @@ const otherAuth = async (data: string) => {
     const route = useRoute()
     // 调用获取OAuth URI的函数，准备进行微信企业号认证
     // 第一个参数是当前路由的路径，第二个参数是认证成功后的重定向路径
+
     await getOauthUri(route.path || '', '/my/user/oauth')
   }
 }
@@ -120,6 +125,7 @@ if (userinfo.value.avatar) {
     status: 'finished',
     url: ImageUrl(userinfo.value.avatar),
     name: 'avatar',
+    type: 'image/png',
   }]
 }
 function removeImg(data: { index: number }) {
