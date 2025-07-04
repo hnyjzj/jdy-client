@@ -39,7 +39,6 @@ function changeDeffault() {
   roleList.value.forEach((item: Roles, index: number) => {
     if (item.is_default) {
       selectRole.value = index
-      console.log(111111111111)
     }
   })
 }

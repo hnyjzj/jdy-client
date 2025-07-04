@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
-
 const props = withDefaults(defineProps<{
   apiList: Apis[]
 }>(), {})
@@ -16,7 +14,14 @@ const switchStates = ref<boolean[]>([])
  */
 function getLeafIds(api: Apis) {
   const sections = api.children ?? []
-  return sections.flatMap(section => (section.children ?? []).map(c => c.id))
+  return sections.flatMap((section) => {
+    if (section.children?.length) {
+      return section.children.map(c => c.id)
+    }
+    else {
+      return [section.id] // section 本身是叶子节点
+    }
+  })
 }
 
 /**
@@ -73,7 +78,7 @@ onMounted(updateSwitchStates)
         >
           <template #body>
             <!-- 顶部全选开关 -->
-            <div class="mb-2 flex justify-end items-center">
+            <div class="mb-1 flex justify-end items-center">
               <span class="mr-2">全选</span>
               <n-switch
                 v-model:value="switchStates[aindex]"
@@ -84,17 +89,37 @@ onMounted(updateSwitchStates)
 
             <!-- 第二层：section 分类 -->
             <template v-for="section in api.children" :key="section.id">
-              <div class="py-2 font-medium text-[16px]">
-                {{ section.title || section.path }}
-              </div>
+              <!-- 有 children：原来的三层结构 -->
+              <template v-if="section.children && section.children.length">
+                <div class="py-2 font-medium text-[16px]">
+                  {{ section.title || section.path }}
+                </div>
 
-              <!-- 第三层：真正的接口叶子节点 -->
-              <n-checkbox-group v-model:value="apiSelectIds">
-                <div class="flex gap-2 flex-wrap mb-4">
-                  <template v-for="leaf in section.children" :key="leaf.id">
+                <n-checkbox-group v-model:value="apiSelectIds">
+                  <div class="flex gap-2 flex-wrap mb-4">
+                    <template v-for="leaf in section.children" :key="leaf.id">
+                      <n-checkbox
+                        :value="leaf.id"
+                        :label="leaf.title || leaf.path"
+                        class="mb-2"
+                        :style="{
+                          '--n-color-checked': '#0068ff',
+                          '--n-border-color-active': '#000',
+                          '--n-check-mark-color': 'white',
+                        }"
+                      />
+                    </template>
+                  </div>
+                </n-checkbox-group>
+              </template>
+
+              <!-- 没有 children：section 自身就是一个可选项 -->
+              <template v-else>
+                <n-checkbox-group v-model:value="apiSelectIds">
+                  <div class="flex gap-2 flex-wrap mb-4">
                     <n-checkbox
-                      :value="leaf.id"
-                      :label="leaf.title || leaf.path"
+                      :value="section.id"
+                      :label="section.title || section.path"
                       class="mb-2"
                       :style="{
                         '--n-color-checked': '#0068ff',
@@ -102,9 +127,9 @@ onMounted(updateSwitchStates)
                         '--n-check-mark-color': 'white',
                       }"
                     />
-                  </template>
-                </div>
-              </n-checkbox-group>
+                  </div>
+                </n-checkbox-group>
+              </template>
             </template>
           </template>
         </common-gradient>

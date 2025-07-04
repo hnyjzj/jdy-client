@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { onMounted, ref, watch } from 'vue'
-
 const props = withDefaults(defineProps<{
   workBenchList: WorkBench[]
 }>(), {})
