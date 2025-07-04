@@ -1,14 +1,18 @@
 <script lang="ts" setup>
 import type { FormRules, SelectOption } from 'naive-ui'
 
+const props = defineProps<{
+  nowid: string
+}>()
+const emits = defineEmits<{
+  close: []
+}>()
 useHead({
   title: '分配',
 })
 const { $toast } = useNuxtApp()
 const { assignStores } = useRegion()
 const { staffGetStoreList } = useStores()
-const route = useRoute()
-const router = useRouter()
 const formRef = ref()
 const model = ref<RegionassignStores>({
   id: undefined,
@@ -44,14 +48,14 @@ const handleValidateButtonClick = (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
-      if (!route.query.id)
+      if (!props.nowid)
         return $toast.error('缺少参数')
-      model.value.id = route.query.id as string
+      model.value.id = props.nowid as string
 
       const res = await assignStores(model.value)
       if (res) {
         $toast.success('分配成功')
-        router.back()
+        emits('close')
       }
       else {
         $toast.error('分配失败')
@@ -65,43 +69,37 @@ const handleValidateButtonClick = (e: MouseEvent) => {
 </script>
 
 <template>
-  <div class="grid-12">
-    <div class="p-[16px] col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
-      <common-fold title="分配门店" from-color="#9EBAF9" to-color="#fff" :is-collapse="false">
-        <div class="p-[16px]">
-          <n-form
-            ref="formRef"
-            :model="model"
-            :rules="rules"
-            size="large"
-            label-placement="top"
-          >
-            <n-form-item label="分配门店" path="store_id">
-              <n-select
-                v-model:value="model.store_id"
-                filterable
-                multiple
-                placeholder="请选择门店"
-                :options="Stores"
-                :loading="loading"
-                clearable
-                remote
-                @search="searchStores"
-                @focus="focus"
-              />
-            </n-form-item>
-            <div class="grid-12 px-[26px]">
-              <div
-                class="font-semibold pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
-                <div @click="handleValidateButtonClick">
-                  <common-button-rounded content="确定" />
-                </div>
-              </div>
-            </div>
-          </n-form>
+  <div class="p-[16px]">
+    <n-form
+      ref="formRef"
+      :model="model"
+      :rules="rules"
+      size="large"
+      label-placement="top"
+    >
+      <n-form-item label="分配门店" path="store_id">
+        <n-select
+          v-model:value="model.store_id"
+          filterable
+          multiple
+          placeholder="请选择门店"
+          :options="Stores"
+          :loading="loading"
+          clearable
+          remote
+          @search="searchStores"
+          @focus="focus"
+        />
+      </n-form-item>
+      <div class="grid-12 px-[26px]">
+        <div
+          class="font-semibold pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
+          <div @click="handleValidateButtonClick">
+            <common-button-rounded content="确定" />
+          </div>
         </div>
-      </common-fold>
-    </div>
+      </div>
+    </n-form>
   </div>
 </template>
 

@@ -15,6 +15,7 @@ export const useRegion = defineStore('Region', {
     myRegion: {} as Region,
     RegionStaffList: [] as RegionStaff[],
     filterListToArray: [] as FilterWhere<Region>[],
+    nowTba: 'chap1' as string,
   }),
 
   actions: {

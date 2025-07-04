@@ -5,19 +5,12 @@ const emits = defineEmits<{
   deleteStore: [val: string]
 }>()
 const { regionList } = storeToRefs(useRegion())
-// 转换省市区名字
-const addressName = computed(() => {
-  regionList.value.forEach((item) => {
-    item.addressName = toProvinces(item.province, item.city, item.district)
-  })
-  return regionList.value
-})
 </script>
 
 <template>
   <row>
     <div class="col-12 lg:col-8 lg:offset-2 grid-12 gap-[24px]">
-      <template v-for="(item, index) in addressName" :key="index">
+      <template v-for="(item, index) in regionList" :key="index">
         <div
           class="col-12 sm:col-6 xl:col-4 rounded-[24px] blur-bgc p-[1px]">
           <div class="h-full flex-col-between">
@@ -28,18 +21,33 @@ const addressName = computed(() => {
               </div>
             </div>
             <div class="flex-1 px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-              <div class="flex-between">
-                <div>
-                  员工列表
-                </div>
-                <div class="text-align-end w-[60%]">
-                  <template v-for="(staff, i) in item.staffs" :key="i">
+              <template v-if="item.staffs.length > 0">
+                <div class="flex-between">
+                  <div>
+                    员工列表
+                  </div>
+                  <div class="text-align-end w-[60%]">
                     <span class="mr-[4px]">
-                      {{ staff.nickname }}
+                      <n-tag> {{ item.staffs[0].nickname }} </n-tag>
+                      <template v-if="item.staffs.length - 1 > 0">
+                        <n-tag>+{{ item.staffs.length - 1 }} </n-tag>
+                      </template>
                     </span>
-                  </template>
+                  </div>
                 </div>
-              </div>
+              </template>
+              <template v-else>
+                <div class="flex-between">
+                  <div>
+                    员工列表
+                  </div>
+                  <div class="text-align-end w-[60%]">
+                    <span class="mr-[4px]">
+                      无
+                    </span>
+                  </div>
+                </div>
+              </template>
             </div>
             <div class="bg-[#F3F5FE] dark:bg-[#F3F5FE1A] rounded-b-[24px] ">
               <div class="flex justify-between">

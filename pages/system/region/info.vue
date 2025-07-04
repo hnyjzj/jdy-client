@@ -86,12 +86,22 @@ const confirmDelete = async () => {
     }
   }
 }
+const isModel = ref(false)
+const isModelStaff = ref(false)
+const nowid = ref('')
+const nowidStaff = ref('')
+const nowidtype = ref('')
 const assign = (data: string) => {
   if (data === 'store') {
-    navigateTo(`/system/region/assignstore?id=${regionDetails.value.id}`)
+    nowid.value = regionDetails.value.id
+    isModel.value = true
+    // navigateTo(`/system/region/assignstore?id=${regionDetails.value.id}`)
   }
   else {
-    navigateTo(`/system/region/assign?id=${regionDetails.value.id}&type=${data}`)
+    isModelStaff.value = true
+    nowidStaff.value = regionDetails.value.id
+    nowidtype.value = data
+    // navigateTo(`/system/region/assign?id=${regionDetails.value.id}&type=${data}`)
   }
 }
 
@@ -102,7 +112,7 @@ const showDeleteText = computed(() => {
 
 <template>
   <div class="grid-12 p-[16px]">
-    <div class="col-12" uno-md="col-8 offset-2" uno-lg="col-4 offset-4">
+    <div class="col-12" uno-md="col-6 offset-3" uno-lg="col-6 offset-3" uno-xl="col-4 offset-4">
       <region-info :info-detail="regionDetails" />
       <region-assign-super
         :stores="regionDetails.stores"
@@ -117,6 +127,21 @@ const showDeleteText = computed(() => {
       </template>
       <common-confirm v-model:show="dialogShow" title="提示" :text="showDeleteText" @submit="confirmDelete" />
     </div>
+
+    <common-model v-model="isModel" title="添加门店" :show-ok="false" :show-cancel="false" confirm-text="导入货品">
+      <region-assignstore
+        :nowid="nowid" @close="async () => {
+          isModel = false
+          await getRegionDetail(route.query.id as Stores['id'])
+        }" />
+    </common-model>
+    <common-model v-model="isModelStaff" title="添加员工" :show-ok="false" :show-cancel="false" confirm-text="导入货品">
+      <region-assign-staff
+        :nowid-staff="nowidStaff" :nowidtype="nowidtype" @close="async () => {
+          isModelStaff = false
+          await getRegionDetail(route.query.id as Stores['id'])
+        }" />
+    </common-model>
   </div>
 </template>
 

@@ -69,7 +69,23 @@ const formatISODate = (isoString?: string) => {
                 <common-cell label="最后登录时间" :value="formatISODate(item.last_login_at)" />
                 <div>
                   <template v-if="item.stores?.length">
-                    <common-cell label="所属门店" :value="`${item.stores[0].name}${item.stores.length - 1 > 0 ? `+${item.stores.length - 1}` : ''}`" />
+                    <div class="flex-between pb-[8px]">
+                      <div class="color-[#666]">
+                        所属门店
+                      </div>
+                      <div class="text-align-end w-[60%]">
+                        <span class="mr-[4px]">
+                          <n-tag size="small">
+                            {{ item.stores[0].name }}
+                          </n-tag>
+                        </span>
+                        <template v-if="item.stores.length - 1 > 0">
+                          <n-tag size="small">
+                            +{{ item.stores.length - 1 }}
+                          </n-tag>
+                        </template>
+                      </div>
+                    </div>
                   </template>
                   <template v-else>
                     <common-cell label="所属门店" value="无" />
@@ -77,7 +93,21 @@ const formatISODate = (isoString?: string) => {
                 </div>
                 <div>
                   <template v-if="item.store_superiors?.length">
-                    <common-cell label="负责门店" :value="`${item.store_superiors[0].name}${item.store_superiors.length - 1 > 0 ? `+${item.store_superiors.length - 1}` : ''}`" />
+                    <div class="flex-between pb-[8px]">
+                      <div class="color-[#666]">
+                        负责门店
+                      </div>
+                      <div class="text-align-end w-[60%]">
+                        <span class="mr-[4px]">
+                          <n-tag size="small"> {{ item.store_superiors[0].name }} </n-tag>
+                        </span>
+                        <template v-if="item.store_superiors.length - 1 > 0">
+                          <n-tag size="small">
+                            +{{ item.store_superiors.length - 1 }}
+                          </n-tag>
+                        </template>
+                      </div>
+                    </div>
                   </template>
                   <template v-else>
                     <common-cell label="负责门店" value="无" />
@@ -85,7 +115,21 @@ const formatISODate = (isoString?: string) => {
                 </div>
                 <div>
                   <template v-if="item.regions?.length">
-                    <common-cell label="所属区域" :value="`${item.regions[0].name}${item.regions.length - 1 > 0 ? `+${item.regions.length - 1}` : ''}`" />
+                    <div class="flex-between pb-[8px]">
+                      <div class="color-[#666]">
+                        所属区域
+                      </div>
+                      <div class="text-align-end w-[60%]">
+                        <span class="mr-[4px]">
+                          <n-tag size="small"> {{ item.regions[0].name }} </n-tag>
+                        </span>
+                        <template v-if="item.regions.length - 1 > 0">
+                          <n-tag size="small">
+                            +{{ item.regions.length - 1 }}
+                          </n-tag>
+                        </template>
+                      </div>
+                    </div>
                   </template>
                   <template v-else>
                     <common-cell label="所属区域" value="无" />
@@ -93,7 +137,21 @@ const formatISODate = (isoString?: string) => {
                 </div>
                 <div>
                   <template v-if="item.region_superiors?.length">
-                    <common-cell label="负责区域" :value="`${item.region_superiors[0].name}${item.region_superiors.length - 1 > 0 ? `+${item.region_superiors.length - 1}` : ''}`" />
+                    <div class="flex-between pb-[8px]">
+                      <div class="color-[#666]">
+                        负责区域
+                      </div>
+                      <div class="text-align-end w-[60%]">
+                        <span class="mr-[4px]">
+                          <n-tag size="small"> {{ item.region_superiors[0].name }} </n-tag>
+                        </span>
+                        <template v-if="item.region_superiors.length - 1 > 0">
+                          <n-tag size="small">
+                            +{{ item.region_superiors.length - 1 }}
+                          </n-tag>
+                        </template>
+                      </div>
+                    </div>
                   </template>
                   <template v-else>
                     <common-cell label="负责区域" value="无" />

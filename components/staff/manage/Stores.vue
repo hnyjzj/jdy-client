@@ -20,15 +20,28 @@ const storeForm = defineModel({ default: {
 
 const defaultform = defineModel<{ [key: string]: { label: string, value: string }[] }>('default-form', { default:
      { stores: [], stores_superior: [], regions: [], regions_superior: [] } })
-const Stores = ref<SelectOption[]>([])
-if (storeForm.value.store_ids?.length) {
-  Stores.value = defaultform.value.stores
-}
+
+// 负责门店模块
+const Stores_sup = ref<SelectOption[]>([])
+const loadingStores_sup = ref(false)
+const searchStores_sup = useDebounceFn(async (query) => {
+  const res = await props.getStoreList(query)
+  loadingStores_sup.value = false
+  if (res.length) {
+    Stores_sup.value = res.map(item => ({
+      label: item.name,
+      value: item.id,
+    }))
+  }
+}, 500)
 if (storeForm.value.store_superior_ids?.length) {
-  Stores.value = defaultform.value.stores_superior
+  Stores_sup.value = defaultform.value.stores_superior
 }
+// 所属门店模块
+const Stores = ref<SelectOption[]>([])
 const loadingStores = ref(false)
-const getStores = useDebounceFn(async (query) => {
+const searchStores = useDebounceFn(async (query) => {
+  loadingStores.value = true
   const res = await props.getStoreList(query)
   loadingStores.value = false
   if (res.length) {
@@ -38,19 +51,15 @@ const getStores = useDebounceFn(async (query) => {
     }))
   }
 }, 500)
-const searchStores = (query: string) => {
-  loadingStores.value = true
-  getStores(query)
+if (storeForm.value.store_ids?.length) {
+  Stores.value = defaultform.value.stores
 }
+
+// 所属区域模块
 const Regions = ref<SelectOption[]>([])
-if (storeForm.value.region_ids?.length) {
-  Regions.value = defaultform.value.regions
-}
-if (storeForm.value.region_superior_ids?.length) {
-  Regions.value = defaultform.value.regions_superior
-}
 const loadingRegions = ref(false)
-const getRegions = useDebounceFn(async (query) => {
+const searchRegions = useDebounceFn(async (query) => {
+  loadingRegions.value = true
   const res = await props.getRegionList(query)
   loadingRegions.value = false
   if (res.length) {
@@ -60,10 +69,28 @@ const getRegions = useDebounceFn(async (query) => {
     }))
   }
 }, 500)
-const searchRegions = (query: string) => {
-  loadingRegions.value = true
-  getRegions(query)
+if (storeForm.value.region_ids?.length) {
+  Regions.value = defaultform.value.regions
 }
+
+// 负责区域模块
+const Regions_sup = ref<SelectOption[]>([])
+const loadingRegions_sup = ref(false)
+const searchRegions_sup = useDebounceFn(async (query) => {
+  loadingRegions_sup.value = true
+  const res = await props.getRegionList(query)
+  loadingRegions.value = false
+  if (res.length) {
+    Regions.value = res.map(item => ({
+      label: item.name,
+      value: item.id,
+    }))
+  }
+}, 500)
+if (storeForm.value.region_superior_ids?.length) {
+  Regions_sup.value = defaultform.value.regions_superior
+}
+
 const formRef = ref()
 function handleValidateButtonClick(e: MouseEvent) {
   e.preventDefault()
@@ -112,13 +139,13 @@ function handleValidateButtonClick(e: MouseEvent) {
                   multiple
                   filterable
                   placeholder="搜索门店选择"
-                  :options="Stores"
-                  :loading="loadingStores"
+                  :options="Stores_sup"
+                  :loading="loadingStores_sup"
                   clearable
                   remote
                   :max-tag-count="1"
                   :clear-filter-after-select="false"
-                  @search="searchStores"
+                  @search="searchStores_sup"
                   @focus="focus"
                 />
               </n-form-item-gi>
@@ -144,13 +171,13 @@ function handleValidateButtonClick(e: MouseEvent) {
                   multiple
                   filterable
                   placeholder="搜索区域选择"
-                  :options="Regions"
-                  :loading="loadingRegions"
+                  :options="Regions_sup"
+                  :loading="loadingRegions_sup"
                   clearable
                   remote
                   :max-tag-count="1"
                   :clear-filter-after-select="false"
-                  @search="searchRegions"
+                  @search="searchRegions_sup"
                   @focus="focus"
                 />
               </n-form-item-gi>

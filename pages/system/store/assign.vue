@@ -6,6 +6,7 @@ useHead({
 })
 const { $toast } = useNuxtApp()
 const route = useRoute()
+const router = useRouter()
 const { assignStaff, assignSuperior } = useStores()
 const { getOptionsStafflist } = useStaff()
 const formRef = ref()
@@ -55,6 +56,7 @@ const handleValidateButtonClick = (e: MouseEvent) => {
         const res = await assignStaff(model.value)
         if (res) {
           $toast.success('分配成功')
+          router.back()
         }
         else {
           $toast.error('分配失败')

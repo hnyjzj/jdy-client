@@ -80,7 +80,7 @@ const confirmDelete = async () => {
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('删除成功')
     storesList.value = []
-    await getStoreList({ page: 1, limit: 12 })
+    await getStoreList({ page: searchPage.value, limit: 12 })
   }
 }
 
@@ -105,7 +105,7 @@ const editStore = async () => {
     $toast.success('更新成功')
     addOrUpdateShow.value = false
     storesList.value = []
-    await getStoreList({ page: 1, limit: 12 })
+    await getStoreList({ page: searchPage.value, limit: 12 })
     reastAddForm()
   }
 }

@@ -1,14 +1,19 @@
 <script lang="ts" setup>
 import type { FormRules, SelectOption } from 'naive-ui'
 
+const props = defineProps<{
+  nowidStaff: string
+  nowidtype: string
+}>()
+const emits = defineEmits<{
+  close: []
+}>()
 useHead({
   title: '分配',
 })
 const { $toast } = useNuxtApp()
 const { assignStaff, assignSuperiors } = useRegion()
 const { getOptionsStafflist } = useStaff()
-const route = useRoute()
-const router = useRouter()
 const formRef = ref()
 const model = ref<AssignStaff>({
   id: undefined,
@@ -44,20 +49,20 @@ const handleValidateButtonClick = (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
-      if (!route.query.id)
+      if (!props.nowidStaff)
         return $toast.error('缺少参数')
-      model.value.id = route.query.id as string
-      if (route.query.type === 'staff') {
+      model.value.id = props.nowidStaff as string
+      if (props.nowidtype === 'staff') {
         const res = await assignStaff(model.value)
         if (res) {
           $toast.success('分配成功')
-          router.back()
+          emits('close')
         }
         else {
           $toast.error('分配失败')
         }
       }
-      if (route.query.type === 'super') {
+      if (props.nowidtype === 'super') {
         const params = ref<RegionAssignsuperior>({
           id: '',
           superior_id: [],
@@ -68,7 +73,7 @@ const handleValidateButtonClick = (e: MouseEvent) => {
         const res = await assignSuperiors(params.value)
         if (res) {
           $toast.success('分配成功')
-          router.back()
+          emits('close')
         }
         else {
           $toast.error('分配失败')
@@ -81,51 +86,45 @@ const handleValidateButtonClick = (e: MouseEvent) => {
   })
 }
 const title = computed(() => {
-  return route.query.type === 'staff' ? '分配员工' : '分配负责人'
+  return props.nowidtype === 'staff' ? '分配员工' : '分配负责人'
 })
 const content = computed(() => {
-  return route.query.type === 'staff' ? '搜索选择要分配的员工' : '搜索选择要分配的负责人'
+  return props.nowidtype === 'staff' ? '搜索选择要分配的员工' : '搜索选择要分配的负责人'
 })
 </script>
 
 <template>
-  <div class="grid-12">
-    <div class="p-[16px] col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
-      <common-fold :title="title" from-color="#9EBAF9" to-color="#fff" :is-collapse="false">
-        <div class="p-[16px]">
-          <n-form
-            ref="formRef"
-            :model="model"
-            :rules="rules"
-            size="large"
-            label-placement="top"
-          >
-            <n-form-item :label="title" path="staff_id">
-              <n-select
-                v-model:value="model.staff_id"
-                filterable
-                multiple
-                :placeholder="content"
-                :options="staffList"
-                :loading="loadingStaff"
-                clearable
-                remote
-                @search="searchStaff"
-                @focus="focus"
-              />
-            </n-form-item>
-            <div class="grid-12 px-[26px]">
-              <div
-                class="font-semibold pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
-                <div @click="handleValidateButtonClick">
-                  <common-button-rounded content="确定" />
-                </div>
-              </div>
-            </div>
-          </n-form>
+  <div class="p-[16px]">
+    <n-form
+      ref="formRef"
+      :model="model"
+      :rules="rules"
+      size="large"
+      label-placement="top"
+    >
+      <n-form-item :label="title" path="staff_id">
+        <n-select
+          v-model:value="model.staff_id"
+          filterable
+          multiple
+          :placeholder="content"
+          :options="staffList"
+          :loading="loadingStaff"
+          clearable
+          remote
+          @search="searchStaff"
+          @focus="focus"
+        />
+      </n-form-item>
+      <div class="grid-12 px-[26px]">
+        <div
+          class="font-semibold pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
+          <div @click="handleValidateButtonClick">
+            <common-button-rounded content="确定" />
+          </div>
         </div>
-      </common-fold>
-    </div>
+      </div>
+    </n-form>
   </div>
 </template>
 
