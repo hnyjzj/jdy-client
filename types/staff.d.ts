@@ -19,6 +19,8 @@ interface Staff {
   store_superiors?: Store[]
   identity?: number
   role_id?: string
+  updated_at?: string
+  last_login_at?: string
 }
 /**
  * 添加员工请求参数

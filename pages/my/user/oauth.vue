@@ -26,7 +26,7 @@ onMounted(async () => {
         loading: true,
       }
       timer.value = setTimeout(async () => {
-        jump(redirect_url || '/')
+        navigateTo(redirect_url || '/', { external: true, replace: true, redirectCode: 200 })
       }, 2000)
     }
     else {

@@ -4,15 +4,15 @@ import type { SelectOption } from 'naive-ui'
 useSeoMeta({
   title: '员工列表',
 })
-const { staffList, filterListToArray, total, searchPage } = storeToRefs(useStaff())
+const { staffList, filterListToArray, total, searchPage, filterList: staffWhereList } = storeToRefs(useStaff())
 const { getStaffWhere, getStaffList } = useStaff()
 const { staffGetStoreList } = useStores()
 const { userinfo } = storeToRefs(useUser())
 const { myStore } = storeToRefs(useStores())
+
 const complate = ref(0)
 const searchKey = ref('')
 const show = ref<boolean>(false)
-
 // 是否有更多数据
 const nomore = ref<boolean>(false)
 // 筛选请求数据
@@ -79,6 +79,11 @@ const updatePage = async (page: number) => {
   searchPage.value = page
   getList()
 }
+const changeStore = async () => {
+  searchPage.value = 1
+  nomore.value = false
+  await getList()
+}
 </script>
 
 <template>
@@ -87,13 +92,13 @@ const updatePage = async (page: number) => {
       <product-filter
         v-model:id="complate" v-model:search="searchKey" :product-list-total="total" @filter="heightSearchFn">
         <template #company>
-          <product-manage-company />
+          <product-manage-company @change="changeStore" />
         </template>
       </product-filter>
     </div>
 
     <div class="px-[16px]">
-      <staff-manage-card :list="staffList" :myidentity="userinfo.identity" />
+      <staff-manage-card :list="staffList" :myidentity="userinfo.identity" :filter-data="staffWhereList" />
     </div>
     <div class="p-[16px]">
       <common-page
