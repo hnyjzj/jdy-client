@@ -76,11 +76,11 @@ const assign = (data: string) => {
       <stores-info :info-detail="storeDetails" />
       <div class="mt-[12px]">
         <n-tabs type="segment" animated>
-          <n-tab-pane name="chap1" tab="分配负责人">
-            <staff-assign-superior :list="storeDetails.superiors" @delete-store-staff="deleteStoreSuperiorFn" @confirm="assign" />
-          </n-tab-pane>
-          <n-tab-pane name="chap2" tab="分配员工">
+          <n-tab-pane name="chap1" tab="分配员工">
             <staff-assign-card :list="storeDetails.staffs" @delete-store-staff="deleteStoreStaffFn" @confirm="assign" />
+          </n-tab-pane>
+          <n-tab-pane name="chap2" tab="分配负责人">
+            <staff-assign-superior :list="storeDetails.superiors" @delete-store-staff="deleteStoreSuperiorFn" @confirm="assign" />
           </n-tab-pane>
         </n-tabs>
       </div>

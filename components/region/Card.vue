@@ -20,34 +20,94 @@ const { regionList } = storeToRefs(useRegion())
                 {{ item.name }}
               </div>
             </div>
-            <div class="flex-1 px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-              <template v-if="item.staffs.length > 0">
-                <div class="flex-between">
-                  <div>
-                    员工列表
+            <div class="py-[4px]">
+              <div class="flex-1 px-[16px] py-[2px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                <template v-if="item.staffs.length > 0">
+                  <div class="flex-between min-h-[28px]">
+                    <div>
+                      员工
+                    </div>
+                    <div class="text-align-end w-[60%]">
+                      <span class="mr-[4px]">
+                        <n-tag> {{ item.staffs[0].nickname }} </n-tag>
+                        <template v-if="item.staffs.length - 1 > 0">
+                          <n-tag>+{{ item.staffs.length - 1 }} </n-tag>
+                        </template>
+                      </span>
+                    </div>
                   </div>
-                  <div class="text-align-end w-[60%]">
-                    <span class="mr-[4px]">
-                      <n-tag> {{ item.staffs[0].nickname }} </n-tag>
-                      <template v-if="item.staffs.length - 1 > 0">
-                        <n-tag>+{{ item.staffs.length - 1 }} </n-tag>
-                      </template>
-                    </span>
+                </template>
+                <template v-else>
+                  <div class="flex-between min-h-[28px]">
+                    <div>
+                      员工
+                    </div>
+                    <div class="text-align-end w-[60%]">
+                      <span class="mr-[4px]">
+                        无
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </template>
-              <template v-else>
-                <div class="flex-between">
-                  <div>
-                    员工列表
+                </template>
+              </div>
+              <div class="flex-1 px-[16px] py-[2px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                <template v-if="item.superiors.length > 0">
+                  <div class="flex-between min-h-[28px]">
+                    <div>
+                      负责人
+                    </div>
+                    <div class="text-align-end w-[60%]">
+                      <span class="mr-[4px]">
+                        <n-tag> {{ item.superiors[0].nickname }} </n-tag>
+                        <template v-if="item.superiors.length - 1 > 0">
+                          <n-tag>+{{ item.superiors.length - 1 }} </n-tag>
+                        </template>
+                      </span>
+                    </div>
                   </div>
-                  <div class="text-align-end w-[60%]">
-                    <span class="mr-[4px]">
-                      无
-                    </span>
+                </template>
+                <template v-else>
+                  <div class="flex-between min-h-[28px]">
+                    <div>
+                      负责人
+                    </div>
+                    <div class="text-align-end w-[60%]">
+                      <span class="mr-[4px]">
+                        无
+                      </span>
+                    </div>
                   </div>
-                </div>
-              </template>
+                </template>
+              </div>
+              <div class="flex-1 px-[16px] py-[2px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                <template v-if="item.stores.length > 0">
+                  <div class="flex-between min-h-[28px]">
+                    <div>
+                      门店
+                    </div>
+                    <div class="text-align-end w-[60%]">
+                      <span class="mr-[4px]">
+                        <n-tag> {{ item.stores[0].name }} </n-tag>
+                        <template v-if="item.stores.length - 1 > 0">
+                          <n-tag>+{{ item.stores.length - 1 }} </n-tag>
+                        </template>
+                      </span>
+                    </div>
+                  </div>
+                </template>
+                <template v-else>
+                  <div class="flex-between min-h-[28px]">
+                    <div>
+                      门店
+                    </div>
+                    <div class="text-align-end w-[60%]">
+                      <span class="mr-[4px]">
+                        无
+                      </span>
+                    </div>
+                  </div>
+                </template>
+              </div>
             </div>
             <div class="bg-[#F3F5FE] dark:bg-[#F3F5FE1A] rounded-b-[24px] ">
               <div class="flex justify-between">

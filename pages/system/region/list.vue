@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: '区域列表',
+  title: '区域',
 })
 
 const { regionList, addorUpdateForm, filterListToArray, total, searchPage } = storeToRefs(useRegion())
@@ -159,7 +159,7 @@ const updatePage = async (page: number) => {
     </div>
 
     <div class="p-[16px]">
-      <region-card @get-detail="getStoreInfo" @edit-rgion="edit" @delete-rgion="deleteStoreFn" />
+      <region-card @get-detail="getStoreInfo" @edit-region="edit" @delete-rgion="deleteStoreFn" />
     </div>
     <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
     <!-- 新增或更新门店弹窗 -->

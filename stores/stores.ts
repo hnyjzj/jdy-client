@@ -136,9 +136,14 @@ export const useStores = defineStore('Store', {
     },
     // 门店员工列表
     async getStoreStaffList(req: { id: StoresStaff['id'] }) {
-      const { data } = await https.post<StoresStaff[], { id: StoresStaff['id'] }>('/store/staff/list', req)
+      const res = await https.post<StoresStaff[], { id: StoresStaff['id'] }>('/store/staff/list', req)
+      const { data } = res
       if (data.value?.code === HttpCode.SUCCESS) {
         this.StoreStaffList = data.value.data
+      }
+      else {
+        this.StoreStaffList = []
+        return res
       }
     },
     // 为门店分配员工

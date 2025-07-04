@@ -111,15 +111,8 @@ defineExpose({
               clearable
               remote
               :show="showmenu"
-              @focus="(e) => {
-                focus(e)
-                emit('setShowSubmit', false)
-              }"
-              @blur="() => {
-                emit('setShowSubmit', true)
-              }
-              "
               @search="searchMember"
+              @blur="showmenu = false"
               @update:value="handleUpdateValue"
             />
           </n-form-item-gi>
