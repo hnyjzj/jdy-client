@@ -58,8 +58,15 @@ const confirmDelete = async () => {
 
   await getStoreDetail(route.query.id as Stores['id'])
 }
+
+const isModelStaff = ref(false)
+
+const nowidStaff = ref('')
+const nowidtype = ref('')
 const assign = (data: string) => {
-  navigateTo(`/system/store/assign?id=${storeDetails.value.id}&type=${data}`)
+  isModelStaff.value = true
+  nowidStaff.value = storeDetails.value.id
+  nowidtype.value = data
 }
 </script>
 
@@ -83,6 +90,13 @@ const assign = (data: string) => {
       </template>
       <common-confirm v-model:show="dialogShow" title="提示" :text="`确认移除此${deleteObj === 'staff' ? '员工' : '负责人'}吗?`" @submit="confirmDelete" />
     </div>
+    <common-model v-model="isModelStaff" title="添加员工" :show-ok="false" :show-cancel="false" confirm-text="导入货品">
+      <stores-assign-staff
+        :nowid-staff="nowidStaff" :nowidtype="nowidtype" @close="async () => {
+          isModelStaff = false
+          await getStoreDetail(route.query.id as Stores['id'])
+        }" />
+    </common-model>
   </div>
 </template>
 
