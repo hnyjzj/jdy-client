@@ -64,9 +64,9 @@ function handleSelect(id: Stores['id']) {
 
 <template>
   <div>
-    <n-dropdown trigger="click" placement="bottom-start" :options="columns" @select="handleSelect">
+    <n-dropdown trigger="click" placement="bottom-start" :options="columns" :style="{ maxHeight: '400px', overflowY: 'auto' }" @select="handleSelect">
       <div
-        class="py-[6px] px-[12px]  bg-[#FFFFFF66] border-rd-full h-full flex-center-row shadow-lg cursor-pointer "
+        class="py-[6px] px-[12px] bg-[#FFFFFF66] border-rd-full h-full flex-center-row shadow-lg cursor-pointer max-h-[32px] "
         @click="changeStoer">
         <client-only>
           <div class="store-name font-bold text-size-[14px] mr-[4px]">
@@ -97,5 +97,18 @@ function handleSelect(id: Stores['id']) {
   text-overflow: ellipsis;
   overflow: hidden;
   word-break: break-all;
+}
+</style>
+
+<style lang="scss">
+.n-dropdown-option:nth-child(odd) {
+  background-color: #fafafa;
+}
+.n-dropdown-option:nth-child(even) {
+  background-color: #ffffff;
+}
+.n-dropdown-option-body__label {
+  display: flex;
+  align-items: center;
 }
 </style>

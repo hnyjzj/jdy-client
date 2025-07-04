@@ -79,6 +79,11 @@ const themeOverrides: GlobalThemeOverrides = {
     border: '1px solid #3971F3',
     borderChecked: '1px solid #3971F3',
   },
+  Tabs: {
+    tabTextColorActiveLine: '#0068ff', // 激活标签颜色
+    barColor: '#0068ff', // 激活标签条颜色
+    tabTextColorHoverLine: '#0068ff', // 悬停标签颜色
+  },
 }
 </script>
 
