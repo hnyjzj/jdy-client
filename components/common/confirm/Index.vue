@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-// 二次确认弹窗  极简版
 const props = withDefaults(defineProps<{
   title?: string
   text?: string
@@ -7,24 +6,66 @@ const props = withDefaults(defineProps<{
   icon?: string
   cancelText?: string
   confirmText?: string
-
+  isCountdown?: boolean
+  countdownSeconds?: number
 }>(), {
   title: '提示',
   text: '确认删除此数据吗',
   icon: 'none',
   cancelText: '取消',
   confirmText: '确认',
+  isCountdown: false,
+  countdownSeconds: 5,
 })
+
 const emits = defineEmits<{
   submit: []
   cancel: []
 }>()
+
 const show = defineModel('show', { default: false })
 
+const timeLeft = ref(props.countdownSeconds)
+let timer: ReturnType<typeof setInterval> | null = null
+
+const startCountdown = () => {
+  if (!props.isCountdown)
+    return
+  timeLeft.value = props.countdownSeconds
+  timer && clearInterval(timer)
+  timer = setInterval(() => {
+    timeLeft.value--
+    if (timeLeft.value <= 0) {
+      clearInterval(timer!)
+      timer = null
+    }
+  }, 1000)
+}
+
+watch(
+  () => show.value,
+  (val) => {
+    if (val) {
+      startCountdown()
+    }
+    else {
+      timer && clearInterval(timer)
+      timer = null
+    }
+  },
+)
+
+onBeforeUnmount(() => {
+  timer && clearInterval(timer)
+})
+
 const submit = () => {
+  if (props.isCountdown && timeLeft.value > 0)
+    return
   emits('submit')
   show.value = false
 }
+
 const cancle = () => {
   show.value = false
   emits('cancel')
@@ -69,14 +110,20 @@ const cancle = () => {
         </div>
       </template>
       <div class="flex justify-between">
-        <div
-          class="cancle "
-          @click="cancle">
+        <div class="cancle" @click="cancle">
           {{ props.cancelText }}
         </div>
         <div
-          class="confirm" @click="submit">
-          {{ props.confirmText }}
+          class="confirm"
+          :class="{ 'opacity-40 cursor-not-allowed': props.isCountdown && timeLeft > 0 }"
+          @click="submit"
+        >
+          <template v-if="props.isCountdown && timeLeft > 0">
+            {{ props.confirmText }} ({{ timeLeft }}s)
+          </template>
+          <template v-else>
+            {{ props.confirmText }}
+          </template>
         </div>
       </div>
     </div>
