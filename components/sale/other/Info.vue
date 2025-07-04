@@ -77,7 +77,7 @@ const returnGoods = (val: number) => {
                   <common-cell label="主石重(ct)" :value="item.product_finished?.weight_gem" />
                   <common-cell label="颜色" :value="props.productFilter.color_gem?.preset[item.product_finished?.color_gem] " />
                   <common-cell label="净度" :value="props.productFilter.clarity?.preset[item.product_finished?.clarity] " />
-                  <common-cell label="金重(g)" :value="item.product_finished?.weight_gem" />
+                  <common-cell label="金重(g)" :value="item.product_finished?.weight_metal" />
                   <common-cell label="工费" format="￥" :value="item.product_finished?.labor_fee" />
                   <common-cell label="标签价" format="￥" :value="item.product_finished?.label_price" />
                 </template>
@@ -87,7 +87,7 @@ const returnGoods = (val: number) => {
                   <common-cell label="主石重(ct)" :value="item.product_demand?.weight_gem" />
                   <common-cell label="颜色" :value="props.productFilter.color_gem?.preset[item.product_demand?.color_gem as number] " />
                   <common-cell label="净度" :value="props.productFilter.clarity?.preset[item.product_demand?.clarity as number] " />
-                  <common-cell label="金重(g)" :value="item.product_demand?.weight_gem" />
+                  <common-cell label="金重(g)" :value="item.product_demand?.weight_metal" />
                   <common-cell label="工费" format="￥" :value="item.product_demand?.labor_fee" />
                   <common-cell label="标签价" format="￥" :value="item.product_demand?.label_price" />
                 </template>
