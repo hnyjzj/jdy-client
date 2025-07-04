@@ -188,7 +188,7 @@ defineExpose({
                       />
                     </template>
                     <template v-if="item.input === 'select'">
-                      <n-radio-group v-model:value="formlist.gender">
+                      <n-radio-group v-model:value="(formlist[item.name] as number)">
                         <n-space>
                           <template v-for="(obj, i) in genderList" :key="i">
                             <n-radio

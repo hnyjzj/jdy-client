@@ -17,7 +17,7 @@ const { assignStaff, assignSuperior } = useStores()
 const { getOptionsStafflist } = useStaff()
 const formRef = ref()
 const model = ref<AssignStaff>({
-  id: undefined,
+  id: '',
   staff_id: [],
 })
 const rules = ref<FormRules>({
@@ -55,8 +55,10 @@ const handleValidateButtonClick = (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
-      if (!props.nowidStaff)
-        return $toast.error('缺少参数')
+      if (!props.nowidStaff) {
+        $toast.error('缺少参数')
+        return false
+      }
       model.value.id = props.nowidStaff as string
       if (props.nowidtype === 'staff') {
         const res = await assignStaff(model.value)

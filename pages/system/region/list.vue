@@ -159,7 +159,7 @@ const updatePage = async (page: number) => {
     </div>
 
     <div class="p-[16px]">
-      <region-card @get-detail="getStoreInfo" @edit-store="edit" @delete-store="deleteStoreFn" />
+      <region-card @get-detail="getStoreInfo" @edit-rgion="edit" @delete-rgion="deleteStoreFn" />
     </div>
     <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
     <!-- 新增或更新门店弹窗 -->

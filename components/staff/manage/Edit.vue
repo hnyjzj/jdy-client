@@ -25,6 +25,8 @@ const formlist = defineModel({ default: {
 } as updateStaffForm })
 
 const toPinyin = () => {
+  if (!formlist.value.nickname)
+    return
   const pinyinName = pinyin(formlist.value.nickname!, { toneType: 'none', type: 'array' })
   const capitalizedStrings = pinyinName.map(str =>
     str.charAt(0).toUpperCase() + str.substring(1),
@@ -138,7 +140,7 @@ defineExpose({
                   @focus="focus"
                 />
               </n-form-item-gi>
-              <n-form-item-gi :span="12" label="用户名" path="nickname">
+              <n-form-item-gi :span="12" label="用户名" path="username">
                 <n-input
                   v-model:value="formlist.username"
                   placeholder="请输入用户名"

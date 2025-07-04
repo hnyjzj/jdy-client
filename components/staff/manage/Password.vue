@@ -4,7 +4,7 @@ const emits = defineEmits<{
 }>()
 const { $toast } = useNuxtApp()
 
-const parsswordForm = defineModel('password', {
+const passwordForm = defineModel('password', {
   default: {
     id: '',
     password: '',
@@ -13,7 +13,7 @@ const parsswordForm = defineModel('password', {
 
 // 修改密码
 const editPassword = () => {
-  if (!parsswordForm.value.password) {
+  if (!passwordForm.value.password) {
     $toast.error('请输入密码')
     return false
   }
@@ -29,14 +29,14 @@ const editPassword = () => {
       <common-fold title="修改密码" from-color="#9EBAF9" to-color="#fff">
         <div class="p-[16px]">
           <n-form
-            :model="parsswordForm"
+            :model="passwordForm"
             label-placement="left"
             size="medium"
           >
             <n-grid :cols="24" gap="8">
               <n-form-item-gi :span="24" label="密码">
                 <n-input
-                  v-model:value="parsswordForm.password"
+                  v-model:value="passwordForm.password"
                   placeholder="请输入要修改的密码"
                   round
                   @focus="focus"

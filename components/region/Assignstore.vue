@@ -10,6 +10,7 @@ const emits = defineEmits<{
 useHead({
   title: '分配',
 })
+
 const { $toast } = useNuxtApp()
 const { assignStores } = useRegion()
 const { staffGetStoreList } = useStores()
@@ -18,6 +19,7 @@ const model = ref<RegionassignStores>({
   id: undefined,
   store_id: [],
 })
+
 const rules = ref<FormRules>({
   stores_id: {
     required: true,

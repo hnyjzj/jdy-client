@@ -16,7 +16,7 @@ const formRef = ref()
 const rules = {
   name: {
     required: true,
-    message: '请输入门店名称',
+    message: '请输入区域名称',
     trigger: ['input', 'blur'],
   },
 }
