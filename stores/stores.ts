@@ -34,7 +34,7 @@ export const useStores = defineStore('Store', {
       if (data.value?.code === HttpCode.SUCCESS) {
         this.total = data.value.data.total
         if (data.value.data.list.length > 0) {
-          this.storesList = [...this.storesList, ...data.value.data.list]
+          this.storesList = [...data.value.data.list]
 
           if (search) {
             return this.storesList

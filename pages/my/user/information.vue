@@ -123,7 +123,7 @@ if (userinfo.value.avatar) {
   previewFileList.value = [{
     id: userinfo.value.avatar,
     status: 'finished',
-    url: userinfo.value.avatar,
+    url: ImageUrl(userinfo.value.avatar),
     name: 'avatar',
     type: 'image/png',
   }]

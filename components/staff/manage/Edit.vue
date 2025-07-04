@@ -72,7 +72,7 @@ if (formlist.value.avatar) {
     id: useId(),
     name: formlist.value.username!,
     status: 'finished',
-    url: formlist.value.avatar,
+    url: ImageUrl(formlist.value.avatar),
     type: 'image/png',
   })
 }
