@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
-  roleWhereList: any
-  getroleListFn: (val: number) => Promise<any[]>
+  roleWhereList: Record<number, string>
+  getroleListFn: (val: number) => Promise<Roles[]>
 }>()
 const emits = defineEmits<{
   updateRole: []
@@ -15,8 +15,8 @@ const auth = defineModel<updateAuthRole>('authform', {
   },
 })
 
-const roleList = ref<any[]>([])
-function transformRoleObjToArray(obj: any) {
+const roleList = ref<{ num: number, role: string }[]>([])
+function transformRoleObjToArray(obj: Record<number, string>) {
   return Object.entries(obj).map(([key, value]) => ({
     num: Number.parseInt(key),
     role: value,
@@ -30,7 +30,7 @@ const editRole = () => {
   emits('updateRole')
 }
 
-const array = ref<any[]>([])
+const array = ref<{ label: string, value: string }[]>([])
 const updateRole = async (e: any) => {
   array.value = []
   const res = await props.getroleListFn(e)
