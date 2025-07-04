@@ -41,10 +41,14 @@ interface addStaffForm extends Staff {
 }
 
 interface updateStaffReq {
-  platform: 'account' | 'wxwork'
-  account?: Staff
-  wxwork?: { code: string }
+  code?: string
+  password?: string
+  nickname?: string
+  avatar?: string
+  email?: string
+  gender?: number
 }
+
 interface fileListArr {
   url: string
   isImage: true

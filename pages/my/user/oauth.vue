@@ -17,8 +17,9 @@ onMounted(async () => {
   const code = route.query?.code as string
 
   const redirect_url = route.query?.redirect_url as string
+
   if (code) {
-    const res = await staff.updateStaff({ platform: 'wxwork', wxwork: { code } })
+    const res = await staff.updateStaff({ code })
     if (res?.code === HttpCode.SUCCESS) {
       content.value = {
         title: '授权成功',

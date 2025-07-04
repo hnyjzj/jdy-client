@@ -18,6 +18,8 @@ export const useAuth = defineStore('authStore', {
      */
     async getOauthUri(redirect_url: string = '', now_url = '/login/oauth') {
       const location = useBrowserLocation()
+      console.log(location.value)
+
       if (location.value.origin) {
         // 获取当前地址栏的参数 并抓换回去
         const uri = UrlAndParams(`${location.value?.origin || ''}${now_url}`, {
@@ -25,8 +27,12 @@ export const useAuth = defineStore('authStore', {
         })
         // 获取授权地址
         const { data } = await https.post<OAuthRes, OAuthReq>('/platform/oauth', { uri, platform: 'wxwork' }, false)
+        console.log(data, 'data')
+
         if (data.value?.code === HttpCode.SUCCESS) {
           this.redirect = data.value.data.redirect_url
+          console.log(this.redirect, 'this.redirect')
+
           await useStores().getMyStore({ page: 1, limit: 10 })
           navigateTo(this.redirect, { external: true, replace: true, redirectCode: 200 })
         }
