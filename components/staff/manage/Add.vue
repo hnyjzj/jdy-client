@@ -22,6 +22,10 @@ const formlist = defineModel({ default: {
 } as addStaffForm })
 
 const toPinyin = () => {
+  if (!formlist.value.nickname?.trim()) {
+    formlist.value.username = ''
+    return
+  }
   const pinyinName = pinyin(formlist.value.nickname, { toneType: 'none', type: 'array' })
   const capitalizedStrings = pinyinName.map(str =>
     str.charAt(0).toUpperCase() + str.substring(1),

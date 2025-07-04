@@ -71,14 +71,11 @@ const handleValidateButtonClick = (e: MouseEvent) => {
         }
       }
       if (props.nowidtype === 'superior') {
-        const params = ref<RegionAssignsuperior>({
-          id: '',
-          superior_id: [],
-        })
-        const { id, staff_id } = model.value
-        params.value.id = id
-        params.value.superior_id = staff_id
-        const res = await assignSuperior(params.value)
+        const params: RegionAssignsuperior = {
+          id: model.value.id,
+          superior_id: model.value.staff_id,
+        }
+        const res = await assignSuperior(params)
         if (res) {
           $toast.success('分配成功')
           emits('close')

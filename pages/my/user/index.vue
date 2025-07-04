@@ -11,16 +11,16 @@ const optionsList = ref<UserOpts[]>([{
   iconName: 'i-svg:my-profile',
   optName: '资料管理',
   link: '/my/user/information',
-}, {
-  iconName: 'i-svg:my-setting',
-  optName: '提醒设置',
-  link: '/my/user/information',
-}, {
-  iconName: 'i-svg:my-question',
-  optName: '问题反馈',
-  link: '/my/user/information',
 }])
-
+// , {
+//   iconName: 'i-svg:my-setting',
+//   optName: '提醒设置',
+//   link: '/my/user/information',
+// }, {
+//   iconName: 'i-svg:my-question',
+//   optName: '问题反馈',
+//   link: '/my/user/information',
+// }
 const Logout = () => {
   exit()
 }

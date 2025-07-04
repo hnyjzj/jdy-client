@@ -17,7 +17,12 @@ const memberParams = ref<Member>({
 } as Member)
 
 await getMyStore({ page: 1, limit: 20 })
-await getStoreStaffList({ id: myStore.value.id })
+const getStaff = async () => {
+  const res = await getStoreStaffList({ id: myStore.value.id })
+  if (res) {
+    $toast.error(res.data.value?.message || '获取员工失败')
+  }
+}
 
 const backtrack = () => {
   const { back } = useRouter()
@@ -51,7 +56,7 @@ const execute = async () => {
           <div class="primary">
             <common-gradient title="会员归属" theme="gradient" :italic="true">
               <template #body>
-                <member-lists-new v-model:rely="memberParams" :staff-list="StoreStaffList" />
+                <member-lists-new v-model:rely="memberParams" :staff-list="StoreStaffList" @get-staff-list="getStaff" />
               </template>
             </common-gradient>
           </div>
