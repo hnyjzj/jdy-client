@@ -135,7 +135,7 @@ const getMember = async (val: string) => {
 const getStaff = async () => {
   const res = await getStoreStaffList({ id: myStore.value.id })
   if (res) {
-    $toast.error(res?.data.value?.message || '')
+    $toast.error(res?.data.value?.message || '获取员工列表失败')
   }
 }
 // 添加商品
