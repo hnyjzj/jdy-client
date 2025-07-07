@@ -141,6 +141,13 @@ function handleSwitchChange(e: boolean, name: keyof Check) {
 
   params.value[name] = e ? selected : []
 }
+
+async function getStoreStaffListFun() {
+  const res = await getStoreStaffList({ id: myStore.value.id })
+  if (res) {
+    $toast.error(res?.data.value?.message || '获取员工列表失败')
+  }
+}
 </script>
 
 <template>
@@ -237,7 +244,7 @@ function handleSwitchChange(e: boolean, name: keyof Check) {
 
                                 @focus="(e) => {
                                   focus(e)
-                                  getStoreStaffList({ id: myStore.id })
+                                  getStoreStaffListFun()
                                 }"
                               />
                             </template>

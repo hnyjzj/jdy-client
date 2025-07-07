@@ -1,100 +1,84 @@
 <script lang="ts" setup>
-const props = withDefaults(defineProps<{
-  workBenchList: WorkBench[]
-}>(), {})
+import { NTree } from 'naive-ui'
 
-// 双向绑定选中的功能 ID 列表
-const funSelectIds = defineModel<WorkBench['id'][]>({ default: () => [] })
-
-// 存储每个工作台的“多选开关”状态，索引与 workBenchList 对应
-const switchStates = ref<boolean[]>([])
-
-/**
- * 多选开关切换时触发
- * @param val 开关状态
- * @param id 当前工作台的 ID
- */
-function handleSwitchChange(val: boolean, id: Apis['id']) {
-  const bench = props.workBenchList.find(bench => bench.id === id)?.children
-  const arr = bench?.flatMap(group => group.children)
-
-  if (!arr || !arr.length)
-    return
-
-  if (val) {
-    // 多选：合并功能 ID，并去重
-    arr.forEach(item => item?.id && funSelectIds.value.push(item.id))
-    funSelectIds.value = [...new Set(funSelectIds.value)]
-  }
-  else {
-    // 全不选：移除当前工作台的功能 ID
-    const idArr = arr.map(item => item?.id)
-    funSelectIds.value = funSelectIds.value.filter(id => !idArr.includes(id))
-  }
+interface WorkBench {
+  id: string | number
+  title?: string
+  children?: WorkBench[]
 }
 
-/**
- * 根据当前 funSelectIds 判断每个工作台是否全选，更新 switchStates
- */
-function updateSwitchStates() {
-  switchStates.value = props.workBenchList.map((bench) => {
-    const allIds = bench.children?.flatMap(group =>
-      (group.children ?? [])
-        .map(item => item.id)
-        .filter((id): id is string => !!id),
-    ) ?? []
+// 父组件传入工作台列表
+const props = defineProps<{ workBenchList: WorkBench[] }>()
 
-    return allIds.length > 0 && allIds.every(id => funSelectIds.value.includes(id))
-  })
-}
-
-onMounted(() => {
-  updateSwitchStates()
+// 选中的叶子节点 ID
+const funSelectIds = defineModel<(string | number)[]>({
+  default: () => [],
 })
 
-// 每当选中项变化时，同步按钮状态
-watch(funSelectIds, () => {
-  updateSwitchStates()
-}, { deep: true })
+// 递归转换为 NTree 需要的树节点格式
+function toTreeNodes(list: WorkBench[]): any[] {
+  return list.map(item => ({
+    key: item.id,
+    label: item.title || '',
+    children: item.children?.length ? toTreeNodes(item.children) : undefined,
+  }))
+}
+
+// 收集所有叶子节点，供 transfer options 使用
+function collectLeaves(list: WorkBench[]) {
+  const leaves: { label: string, value: string | number }[] = []
+  function dfs(nodes: WorkBench[]) {
+    nodes.forEach((node) => {
+      if (node.children && node.children.length) {
+        dfs(node.children)
+      }
+      else {
+        leaves.push({ label: node.title || '', value: node.id })
+      }
+    })
+  }
+  dfs(list)
+  return leaves
+}
+
+// 树数据和 options
+const treeData = ref<any[]>([])
+const options = ref<{ label: string, value: string | number }[]>([])
+
+watch(() => props.workBenchList, (list) => {
+  treeData.value = toTreeNodes(list)
+  options.value = collectLeaves(list)
+}, { immediate: true })
+
+// 自定义穿梭框左边列表，使用树组件支持多层级父子联动勾选
+function renderSourceList({ onCheck, pattern }: any) {
+  return h(NTree, {
+    'checkable': true,
+    'selectable': false,
+    'blockLine': true,
+    'checkOnClick': true,
+    'cascade': true, // 级联勾选父子联动
+    'checkStrategy': 'child', // 只回传叶子节点 key
+    'data': treeData.value,
+    pattern,
+    'checkedKeys': funSelectIds.value,
+    'onUpdate:checkedKeys': (keys: any) => onCheck(keys),
+  })
+}
 </script>
 
 <template>
-  <template v-for="(bench, aindex) in props.workBenchList" :key="aindex">
-    <div class="mb-2">
-      <common-gradient :title="bench.title" :foldable="true" :is-folds="true">
-        <template #body>
-          <div>
-            <div class="flex justify-end">
-              <div class="mb-2">
-                多选
-                <n-switch v-model:value="switchStates[aindex]" size="medium" @update:value="(val) => handleSwitchChange(val, bench.id)" />
-              </div>
-            </div>
-            <template v-for="(children, i) in bench.children" :key="i">
-              <div class="text-[14px] mb-2">
-                {{ children.title }}
-              </div>
-              <n-checkbox-group v-model:value="funSelectIds">
-                <div class="flex gap-2 flex-wrap">
-                  <template v-for="(son, j) in children.children" :key="j">
-                    <div class="flex mb-2">
-                      <n-checkbox
-                        :value="son.id"
-                        :label="son.title"
-                        :style="{
-                          '--n-color-checked': '#0068ff',
-                          '--n-border-color-active': '#000',
-                          '--n-check-mark-color': 'white', // 可选：✔ 图标颜色
-                        }"
-                      />
-                    </div>
-                  </template>
-                </div>
-              </n-checkbox-group>
-            </template>
-          </div>
-        </template>
-      </common-gradient>
-    </div>
-  </template>
+  <div>
+    <NTransfer
+      v-model:value="funSelectIds"
+      :options="options"
+      :render-source-list="renderSourceList"
+      source-filterable
+      size="large"
+      :style="{
+        height: '500px',
+        overflow: 'auto',
+      }"
+    />
+  </div>
 </template>

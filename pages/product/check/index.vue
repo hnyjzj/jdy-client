@@ -120,6 +120,13 @@ function reset() {
   filterData.value = { }
   Key.value = Date.now().toString()
 }
+
+async function getStoreStaffListFun() {
+  const res = await getStoreStaffList({ id: myStore.value.id })
+  if (res) {
+    $toast.error(res?.data.value?.message || '获取员工列表失败')
+  }
+}
 </script>
 
 <template>
@@ -246,7 +253,7 @@ function reset() {
 
             @focus="(e) => {
               focus(e)
-              getStoreStaffList({ id: myStore.id })
+              getStoreStaffListFun()
             }"
           />
         </template>
@@ -263,7 +270,7 @@ function reset() {
 
             @focus="(e) => {
               focus(e)
-              getStoreStaffList({ id: myStore.id })
+              getStoreStaffListFun()
             }"
           />
         </template>

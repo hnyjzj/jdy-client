@@ -236,36 +236,30 @@ function updataFun() {
             </div>
           </template>
         </common-gradient>
-        <div class="my-4 flex items-center">
-          <span class="text-[18px] font-bold">
-            {{ roleList[selectRole]?.name || '' }}
-          </span>
-          <div class="label">
-            系统
-          </div>
+        <div class="h-4" />
+        <div class="pb-20">
+          <common-gradient :title="roleList[selectRole]?.name || ''">
+            <template #body>
+              <div class="nav mb-4">
+                <div
+                  v-for="(item, index) in navItems"
+                  :key="index"
+                  :class="{ 'select-nav': activeIndex === index }"
+                  class="nav-item"
+                  @click="setActive(index)"
+                >
+                  {{ item }}
+                </div>
+              </div>
+              <template v-if="activeIndex === 0">
+                <authority-fun v-model="funSelectIds" :work-bench-list="workBenchList" />
+              </template>
+              <template v-else-if="activeIndex === 1">
+                <authority-api v-model="apiSelectIds" :api-list="apiList" />
+              </template>
+            </template>
+          </common-gradient>
         </div>
-
-        <div class="nav mb-4">
-          <div
-            v-for="(item, index) in navItems"
-            :key="index"
-            :class="{ 'select-nav': activeIndex === index }"
-            class="nav-item"
-            @click="setActive(index)"
-          >
-            {{ item }}
-          </div>
-        </div>
-        <template v-if="activeIndex === 0">
-          <div class="mb-20">
-            <authority-fun v-model="funSelectIds" :work-bench-list="workBenchList" />
-          </div>
-        </template>
-        <template v-else-if="activeIndex === 1">
-          <div class="mb-20">
-            <authority-api v-model="apiSelectIds" :api-list="apiList" />
-          </div>
-        </template>
         <common-button-one @confirm="updataFun" />
       </div>
     </common-layout-center>
@@ -373,7 +367,7 @@ function updataFun() {
 }
 
 .select-nav {
-  color: #000;
+  color: #0068ff;
 }
 
 .select-nav::after {
@@ -383,7 +377,7 @@ function updataFun() {
   width: 100%;
   bottom: -5px;
   height: 2px;
-  background-color: #000;
+  background-color: #0068ff;
 }
 
 .select-role {
