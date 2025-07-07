@@ -73,10 +73,15 @@ const count = (p: ProductFinished) => {
     })
     // 计算应得的积分 +
     if (Props.isIntegral) {
-      p.integral = calc('(a / b) | =0 ~5 ,!n', {
-        a: p.price,
-        b: p.rate,
-      })
+      if (p.rate === 0) {
+        p.integral = 0
+      }
+      else {
+        p.integral = calc('(a / b) | =0 ~5 ,!n', {
+          a: p.price,
+          b: p.rate,
+        })
+      }
     }
     else {
       p.integral = 0
@@ -115,10 +120,15 @@ const count = (p: ProductFinished) => {
       })
     }
     if (Props.isIntegral) {
-      p.integral = calc('(a / b) | =0 ~5 ,!n', {
-        a: p.price,
-        b: p.rate,
-      })
+      if (p.rate === 0) {
+        p.integral = 0
+      }
+      else {
+        p.integral = calc('(a / b) | =0 ~5 ,!n', {
+          a: p.price,
+          b: p.rate,
+        })
+      }
     }
     else {
       p.integral = 0
@@ -156,10 +166,15 @@ const count = (p: ProductFinished) => {
       })
     }
     if (Props.isIntegral) {
-      p.integral = calc('(a / b) | =0 ~5 ,!n', {
-        a: p.price,
-        b: p.rate,
-      })
+      if (p.rate === 0) {
+        p.integral = 0
+      }
+      else {
+        p.integral = calc('(a / b) | =0 ~5 ,!n', {
+          a: p.price,
+          b: p.rate,
+        })
+      }
     }
     else {
       p.integral = 0

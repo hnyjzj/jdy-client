@@ -117,8 +117,11 @@ const selectDepositList = ref<DepositOrderInfo[]>([])
 // 获取成品积分比例
 const checkProductClass = async (params: { class: number }) => {
   const data = await getFinishedsClass(params)
-  if (data.rate) {
+  if (data?.rate) {
     return data.rate as string
+  }
+  else {
+    return '0'
   }
 }
 const searchDepositOrders = async (val?: string) => {
@@ -170,6 +173,10 @@ const addProduct = async (product: ProductFinisheds) => {
     if (rate && rate !== '0') {
       data.rate = Number(rate)
     }
+    else {
+      data.rate = 0
+    }
+
     showProductList.value.push(data)
   }
   else {
