@@ -143,7 +143,6 @@ const uploadFile = async (file: any, onfinish?: () => void) => {
       return false
     }
     const url = data.value.data.url
-    //  如果有id 说明是 修改logo ,没有id则是新增
     formlist.value.avatar = url
     onfinish?.()
   }

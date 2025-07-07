@@ -54,7 +54,7 @@ const jumpSaleOreder = (id: string) => {
         <template #footer>
           <div class="flex-between pl-[8px] bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
             <div class="color-[#4287F4] cursor-pointer flex justify-center items-center">
-              <template v-if="item.status === DepositOrderStatus.Verified">
+              <template v-if="item.status === DepositOrderStatus.Booking">
                 <div class="pl-[8px] " @click="openOrder(item.id)">
                   开单
                 </div>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const porps = defineProps<{
   userinfo: UserInfo
+  filterList: Where<Staff>
 }>()
 
 const emit = defineEmits<{
@@ -21,7 +22,7 @@ const emit = defineEmits<{
       </div>
       <div class="ml-[8px] cursor-pointer">
         <div class="mb-[4px] font-semibold text-[16px] line-height-[20px]">
-          {{ porps.userinfo?.nickname || '' }}
+          {{ porps.userinfo?.nickname || '' }} - {{ filterList.identity?.preset[porps.userinfo?.identity] }}
         </div>
         <div class="text-[14px] line-height-[20px]">
           {{ porps.userinfo?.phone || '' }}

@@ -63,7 +63,7 @@ const showToUser = (type: number) => {
                 {{ item.name }}
               </div>
               <div class="font-[14px] color-[#666666]">
-                复制至所需门店
+                复制至本门店
               </div>
             </div>
 

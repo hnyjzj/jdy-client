@@ -88,10 +88,10 @@ const confirmDelete = async () => {
 }
 const isModel = ref(false)
 const isModelStaff = ref(false)
-const nowid = ref('')
-const nowidStaff = ref('')
-const nowidtype = ref('')
-const assign = (data: string) => {
+const nowid = ref<string>('')
+const nowidStaff = ref<string>('')
+const nowidtype = ref<'superior' | 'staff'>('staff')
+const assign = (data: 'superior' | 'staff' | 'store') => {
   if (data === 'store') {
     nowid.value = regionDetails.value.id
     isModel.value = true
