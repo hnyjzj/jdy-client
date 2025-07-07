@@ -184,9 +184,9 @@ const addProduct = async (product: ProductFinisheds) => {
   }
 }
 
-if (route.query.id) {
+if (route?.query?.id) {
   // 判断是否有定金单订单详情
-  await getOrderDetail({ id: route.query.id as string })
+  await getOrderDetail({ id: route?.query?.id as string })
   showDepositList.value.push(OrderDetail.value)
   OrderDetail.value.products.forEach((item) => {
     if (item.is_our) {
@@ -365,6 +365,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
       const res = await submitOrder(formData.value)
       if (res?.code === HttpCode.SUCCESS) {
         $toast.success('开单成功')
+        navigateTo('/sale/sales/list', { external: true, replace: true, redirectCode: 200 })
         formData.value = { ...initFormData.value }
         showProductList.value = []
         showMasterialsList.value = []

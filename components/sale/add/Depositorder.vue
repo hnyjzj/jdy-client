@@ -37,7 +37,7 @@ const cute = (index: number) => {
             </div>
           </div>
         </div>
-        <n-checkbox-group v-model:value="depositSelect">
+        <n-checkbox-group v-model:value="depositSelect" @update:value="handleBlur">
           <div>
             <template v-for="(item, index) in showDepositList" :key="index">
               <div class="flex-between items-start pb-[8px]">
@@ -47,9 +47,8 @@ const cute = (index: number) => {
                     :label="`订金金额${item.price_pay},订金单号:${item.id},${item.products[0].product_finished.name}`" :style="{
                       '--n-color-checked': '#1D6DEC',
                       '--n-border-focus': '#1D6DEC',
-                      '--n-border-checked': '#1D6DEC',
                       '--n-box-shadow-focus': '0 0 0 2px rgba(37, 115, 238, 0.3)',
-                    }" @blur="handleBlur" />
+                    }" />
                 </div>
                 <div
                   class="wh-[25px] flex-shrink-0 bg-[#fff] rounded-3xl flex-center-col border-[#2080F0] border-solid border text-[20px] "
