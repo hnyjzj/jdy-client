@@ -328,12 +328,8 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-    //   // 成功的操作
+    // 成功的操作
       formData.value.product_finisheds = showProductList.value
-      if (formData.value.product_finisheds.length === 0) {
-        $toast.error('请选择成品')
-        return
-      }
       formData.value.product_olds = showMasterialsList.value
       showPartsList.value.forEach((item) => {
         const data = {

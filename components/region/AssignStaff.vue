@@ -3,7 +3,7 @@ import type { FormRules, SelectOption } from 'naive-ui'
 
 const props = defineProps<{
   nowidStaff: string
-  nowidtype: string
+  nowidtype: 'superior' | 'staff'
 }>()
 const emits = defineEmits<{
   close: []
@@ -64,7 +64,7 @@ const handleValidateButtonClick = (e: MouseEvent) => {
           $toast.error('分配失败')
         }
       }
-      if (props.nowidtype === 'super') {
+      if (props.nowidtype === 'superior') {
         const params = ref<RegionAssignsuperior>({
           id: '',
           superior_id: [],
