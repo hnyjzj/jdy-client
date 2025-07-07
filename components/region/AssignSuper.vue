@@ -9,7 +9,7 @@ const emits = defineEmits<{
   deleteRegionStaff: [val: string, index: number]
   deleteRegionSuper: [val: string, index: number]
   deleteRegionStore: [val: string, index: number]
-  confirm: [val: string]
+  confirm: [val: 'store' | 'superior' | 'staff']
 }>()
 
 const sex = (val: number) => {
@@ -79,7 +79,7 @@ const sex = (val: number) => {
       <n-tab-pane name="chap2" tab="负责人">
         <div class="flex justify-center items-center">
           <div class="w-[200px] mb-[12px]">
-            <common-button-rounded content="添加负责人" @button-click="emits('confirm', 'super')" />
+            <common-button-rounded content="添加负责人" @button-click="emits('confirm', 'superior')" />
           </div>
         </div>
         <div class="grid-12 gap-[8px]">

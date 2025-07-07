@@ -47,7 +47,7 @@ class Https {
           }
           if (response?.status === HttpCode.FORBIDDEN || response?._data?.code === HttpCode.FORBIDDEN) {
             nuxapp.runWithContext(() => {
-              navigateTo('/forbidden', { external: true, replace: true, redirectCode: 200 })
+              navigateTo(`/forbidden?message=${response?._data?.message || '暂无访问权限'}`, { external: true, replace: true, redirectCode: 200 })
             })
           }
         },

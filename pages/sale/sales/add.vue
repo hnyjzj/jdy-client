@@ -117,8 +117,11 @@ const selectDepositList = ref<DepositOrderInfo[]>([])
 // 获取成品积分比例
 const checkProductClass = async (params: { class: number }) => {
   const data = await getFinishedsClass(params)
-  if (data.rate) {
+  if (data?.rate) {
     return data.rate as string
+  }
+  else {
+    return '0'
   }
 }
 const searchDepositOrders = async (val?: string) => {
@@ -170,6 +173,10 @@ const addProduct = async (product: ProductFinisheds) => {
     if (rate && rate !== '0') {
       data.rate = Number(rate)
     }
+    else {
+      data.rate = 0
+    }
+
     showProductList.value.push(data)
   }
   else {
@@ -328,12 +335,8 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-    //   // 成功的操作
+    // 成功的操作
       formData.value.product_finisheds = showProductList.value
-      if (formData.value.product_finisheds.length === 0) {
-        $toast.error('请选择成品')
-        return
-      }
       formData.value.product_olds = showMasterialsList.value
       showPartsList.value.forEach((item) => {
         const data = {

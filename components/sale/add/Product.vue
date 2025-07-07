@@ -63,6 +63,9 @@ const addProduct = async (product: ProductFinisheds) => {
     if (rate && rate !== '0') {
       data.rate = Number(rate)
     }
+    else {
+      data.rate = 0
+    }
 
     showProductList.value.push(data)
     showModal.value = false
