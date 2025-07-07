@@ -23,10 +23,6 @@ const jumpTo = () => {
 useHead({
   title: '无权限',
 })
-const displayMessage = computed(() => {
-  const message = route.query.message
-  return (Array.isArray(message) ? message[0] : message) || '您暂无访问权限!'
-})
 </script>
 
 <template>
@@ -38,7 +34,7 @@ const displayMessage = computed(() => {
         </div>
         <div class="flex-center-col gap-[16px]">
           <div class="font-semibold text-[32px] color-[#333] dark:color-[#F2F2F2] row-height">
-            {{ displayMessage }}
+            {{ route?.query?.message || "您暂无访问权限!" }}
           </div>
           <div class="font-size-[20px] color-[#333] dark:color-[#F2F2F2] flex-center-col gap-[6px] row-height">
             <span>请联系管理员处理。</span>
