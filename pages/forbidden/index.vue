@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const router = useRouter()
-
+const route = useRoute()
 const HINT_TEXT = '返回上一页'
 
 const jumpTo = () => {
@@ -34,7 +34,7 @@ useHead({
         </div>
         <div class="flex-center-col gap-[16px]">
           <div class="font-semibold text-[32px] color-[#333] dark:color-[#F2F2F2] row-height">
-            您暂无访问权限!
+            {{ route.query.message }}
           </div>
           <div class="font-size-[20px] color-[#333] dark:color-[#F2F2F2] flex-center-col gap-[6px] row-height">
             <span>请联系管理员处理。</span>
