@@ -62,6 +62,10 @@ const confirmDel = async () => {
 const changeStores = async () => {
   await getList()
 }
+const router = useRouter()
+const newAdd = async () => {
+  await router.push('/sale/other/add')
+}
 </script>
 
 <template>
@@ -96,6 +100,7 @@ const changeStores = async () => {
         </div>
       </div>
     </div>
+    <common-create @create="newAdd()" />
     <common-confirm v-model:show="delDialog" icon="error" title="删除提醒" text="确认删除此收支单吗?" @submit="confirmDel" />
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere" />
   </div>

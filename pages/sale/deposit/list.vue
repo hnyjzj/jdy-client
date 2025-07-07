@@ -102,6 +102,10 @@ const submitCancel = async () => {
 const changeStores = async () => {
   await getList()
 }
+const router = useRouter()
+const newAdd = async () => {
+  await router.push('/sale/deposit/add')
+}
 </script>
 
 <template>
@@ -188,7 +192,7 @@ const changeStores = async () => {
         />
       </template>
     </common-filter-where>
-
+    <common-create @create="newAdd()" />
     <common-confirm v-model:show="payDialog" icon="success" title="支付提示" text="确认要完成支付吗?" @submit="submitPay" />
     <common-confirm v-model:show="cancelDialog" icon="error" title="撤销提示" text="确认撤销此订金单吗?" @submit="submitCancel" />
   </div>

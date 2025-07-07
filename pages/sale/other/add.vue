@@ -98,6 +98,7 @@ const handleValidateButtonClick = (e: any) => {
         const res = await addOtherOrder(formData.value)
         if (res?.value?.code === HttpCode.SUCCESS) {
           $toast.success('下单成功')
+          navigateTo('/sale/other/list', { external: true, replace: true, redirectCode: 200 })
           formData.value = { ...initForm.value }
           Key.value = Date.now().toString()
         }
