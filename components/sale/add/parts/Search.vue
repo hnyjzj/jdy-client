@@ -8,7 +8,6 @@ const Props = defineProps<{
   checkAccessoriesScore: (params: { classes: AccessorieCategory['type_part'][] }) => any
 }>()
 const showModal = defineModel('show', { default: false })
-const { $toast } = useNuxtApp()
 // 搜索商品 名称name 和 条码code   编号number
 const searchType = ref('number')
 const searchPartsVal = ref('')
@@ -86,8 +85,11 @@ const confirmParts = async () => {
   // 获取大类的比例
   const classArray = await Props.checkAccessoriesScore({ classes: arr.value })
   if (!classArray?.length) {
-    $toast.error('获取配件比例失败')
-    return
+    // $toast.error('获取配件比例失败')
+    // return
+    arr.value.forEach(() => {
+      classArray.push(0)
+    })
   }
 
   // 创建分类快速查询索引

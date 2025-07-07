@@ -91,6 +91,10 @@ const setNowcity = () => {
   areaOptions.value = areaOptions.value[0].children
   Key.value = new Date().getTime().toString()
 }
+const router = useRouter()
+const newAdd = async () => {
+  await router.push('/sale/service/add')
+}
 </script>
 
 <template>
@@ -216,6 +220,7 @@ const setNowcity = () => {
         </template>
       </common-filter-where>
     </div>
+    <common-create @create="newAdd()" />
   </div>
 </template>
 

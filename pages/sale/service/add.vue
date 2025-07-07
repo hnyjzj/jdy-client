@@ -117,6 +117,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
       const res = await createRepairOrder(formData.value)
       if (res) {
         $toast.success('创建维修单成功')
+        navigateTo('/sale/service/list', { external: true, replace: true, redirectCode: 200 })
         showServiceGoods.value = []
         previewFileList.value = []
         formData.value = { ...initform.value }

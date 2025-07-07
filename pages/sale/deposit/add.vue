@@ -73,6 +73,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
       const res = await submitDepositOrder(formData.value)
       if (res?.code === HttpCode.SUCCESS) {
         $toast.success('下单成功')
+        navigateTo('/sale/deposit/list', { external: true, replace: true, redirectCode: 200 })
         formData.value = { ...initForm.value }
         showProductList.value = []
         Key.value = Date.now().toString()

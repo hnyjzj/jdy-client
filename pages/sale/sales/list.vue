@@ -93,6 +93,10 @@ const payOrderConfirm = async (id: string) => {
 const changeStores = async () => {
   await getList()
 }
+const router = useRouter()
+const newAdd = async () => {
+  await router.push('/sale/sales/add')
+}
 </script>
 
 <template>
@@ -194,6 +198,7 @@ const changeStores = async () => {
         />
       </template>
     </common-filter-where>
+    <common-create @create="newAdd()" />
   </div>
 </template>
 
