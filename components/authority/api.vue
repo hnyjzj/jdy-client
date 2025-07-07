@@ -76,7 +76,7 @@ function renderSourceList({ onCheck, pattern }: any) {
       :render-source-list="renderSourceList"
       source-filterable
       :style="{
-        height: '600px',
+        height: '500px',
         overflow: 'auto',
       }"
     />

@@ -68,10 +68,17 @@ function renderSourceList({ onCheck, pattern }: any) {
 </script>
 
 <template>
-  <NTransfer
-    v-model:value="funSelectIds"
-    :options="options"
-    :render-source-list="renderSourceList"
-    source-filterable
-  />
+  <div>
+    <NTransfer
+      v-model:value="funSelectIds"
+      :options="options"
+      :render-source-list="renderSourceList"
+      source-filterable
+      size="large"
+      :style="{
+        height: '500px',
+        overflow: 'auto',
+      }"
+    />
+  </div>
 </template>

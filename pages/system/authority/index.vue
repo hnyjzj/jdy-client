@@ -237,31 +237,29 @@ function updataFun() {
           </template>
         </common-gradient>
         <div class="h-4" />
-        <common-gradient :title="roleList[selectRole]?.name || ''">
-          <template #body>
-            <div class="nav mb-4">
-              <div
-                v-for="(item, index) in navItems"
-                :key="index"
-                :class="{ 'select-nav': activeIndex === index }"
-                class="nav-item"
-                @click="setActive(index)"
-              >
-                {{ item }}
+        <div class="pb-20">
+          <common-gradient :title="roleList[selectRole]?.name || ''">
+            <template #body>
+              <div class="nav mb-4">
+                <div
+                  v-for="(item, index) in navItems"
+                  :key="index"
+                  :class="{ 'select-nav': activeIndex === index }"
+                  class="nav-item"
+                  @click="setActive(index)"
+                >
+                  {{ item }}
+                </div>
               </div>
-            </div>
-            <template v-if="activeIndex === 0">
-              <div class="mb-20">
+              <template v-if="activeIndex === 0">
                 <authority-fun v-model="funSelectIds" :work-bench-list="workBenchList" />
-              </div>
-            </template>
-            <template v-else-if="activeIndex === 1">
-              <div class="mb-20">
+              </template>
+              <template v-else-if="activeIndex === 1">
                 <authority-api v-model="apiSelectIds" :api-list="apiList" />
-              </div>
+              </template>
             </template>
-          </template>
-        </common-gradient>
+          </common-gradient>
+        </div>
         <common-button-one @confirm="updataFun" />
       </div>
     </common-layout-center>
