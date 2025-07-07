@@ -1,9 +1,24 @@
 <script setup lang="ts">
 const props = defineProps<{
+  /**
+   * 订单详情
+   */
   details?: Partial<OrderInfo>
+  /**
+   * 打印模板
+   */
   numerical: Partial<PrintTemplate>
+  /**
+   * 打印单类型
+   */
   type?: number
+  /**
+   * 操作员
+   */
   operator?: string
+  /**
+   * 支付方式
+   */
   payMethod?: string
 }>()
 
