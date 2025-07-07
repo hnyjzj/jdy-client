@@ -145,8 +145,8 @@ onMounted(() => {
         </common-gradient>
 
         <div class="bg-[#fff] dark:bg-[rgba(0,0,0,.3)] rounded-[16px] shadow-2xl px-[16px] py-[16px] grid col-12 gap-[12px]">
-          <div class="w-full h-[300px] col-12">
-            占位/示意图
+          <div class="w-auto h-auto col-12">
+            <img class="w-full h-auto" src="/images/print/printtemp.png">
           </div>
 
           <!-- 打印预览 -->

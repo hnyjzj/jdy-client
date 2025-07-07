@@ -68,14 +68,18 @@ async function getList(where = {} as Partial<PrintTemplate>) {
 await getList()
 
 const chosen = ref(null)
+const sign = ref(false)
 const tempInfo = ref<PrintTemplate>({} as PrintTemplate)
 
-const tempList = printList.value.map(item => ({ label: item.name, value: item.id })).filter(item => item.value !== '')
+const tempList = printList.value.map(item => ({ label: item.name, value: item.id }))
 
 const getSpecificInfo = async () => {
   if (chosen.value) {
     await getTempInfo({ id: chosen.value, type: 1, store_id: myStore.value.id })
     tempInfo.value = JSON.parse(JSON.stringify(PrintTemplate.value))
+  }
+  else if (sign.value) {
+    tempInfo.value = JSON.parse(JSON.stringify(printList.value[0]))
   }
 }
 
@@ -95,11 +99,19 @@ const jumpPre = () => {
   isModel.value = true
 }
 
+const clear = () => {
+  chosen.value = null
+  sign.value = false
+  tempInfo.value = {} as PrintTemplate
+  isModel.value = false
+}
+
 // 弹窗确认
 const modelConfirm = async () => {
-  if (chosen.value) {
+  if (sign.value) {
     await getSpecificInfo()
     printPre()
+    clear()
   }
   else {
     $toast.error('请先选择打印模板')
@@ -121,10 +133,9 @@ onMounted(() => {
       :show-ok="true"
       title="选择打印模板"
       @confirm="modelConfirm"
-      @cancel="() => (
-        isModel = false,
-        chosen = null
-      )"
+      @cancel="() => {
+        clear()
+      }"
     >
       <div class="flex flex-col gap-[16px] px-[12px]">
         <div class="describe font-size-[16px] text-color-[#333] pt-[32px]">
@@ -135,6 +146,10 @@ onMounted(() => {
             <n-select
               v-model:value="chosen"
               :options="tempList"
+              @blur="() => {
+                const loc = tempList.findIndex(item => item.value === chosen)
+                sign = loc === -1 ? false : true
+              }"
             />
           </n-space>
         </div>
