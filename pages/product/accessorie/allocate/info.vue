@@ -4,6 +4,7 @@ const { accessorieAllocateInfo, accessorieAllocateFilterList, accessorieAllocate
 const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
 const { getAccessorieCategoryWhere } = useAccessorieCategory()
 const { myStore, storesList } = storeToRefs(useStores())
+const { getStoreList } = useStores()
 useSeoMeta({
   title: '调拨单详情',
 })
@@ -16,6 +17,7 @@ if (route.query.id) {
   await getAccessorieAllocateInfo(route.query.id as string)
   await getAccessorieCategoryWhere()
   await getAccessorieAllocateWhere()
+  await getStoreList({ limit: 20, page: 1 })
 }
 
 async function cancel() {
@@ -205,7 +207,7 @@ function getStoreName(id: Stores['id']) {
                             </div>
                             <template v-if="filter.input === 'select'">
                               <div class="value">
-                                {{ filter.preset[item.product.category[filter.name]] || '--' }}
+                                {{ filter.preset[item.product.category[filter.name] as string] || '--' }}
                               </div>
                             </template>
                             <template v-else>
