@@ -187,7 +187,7 @@ onMounted(() => {
         :orders="OrderDetail"
         :return-goods="returnGoods"
       />
-      <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === OrderDetail.status && OrderDetail.clerks[0].salesman?.id === userinfo.id">
+      <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === OrderDetail.status && OrderDetail.clerks.length > 0 && OrderDetail.clerks[0]?.salesman?.id === userinfo.id">
         <common-confirm-pay @pay="payOrderConfirm" @cancle="cancelOrder" />
       </template>
     </div>

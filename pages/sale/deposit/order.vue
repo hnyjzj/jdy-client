@@ -41,10 +41,10 @@ const submitPay = async () => {
 const submitCancel = async () => {
   const res = await rovkeDepositOrder({ id: route.query.id as string })
   if (res) {
-    $toast.success('支付成功')
+    $toast.success('撤销成功')
   }
   else {
-    $toast.error('支付失败')
+    $toast.error('撤销失败')
   }
   await getOrderDetail({ id: route.query.id as string })
 }

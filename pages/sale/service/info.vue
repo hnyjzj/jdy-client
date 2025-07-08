@@ -48,10 +48,10 @@ const operation = async (val: { id: string, operation: number }) => {
 const cancelOrder = async () => {
   const res = await cancelRepairOrder({ id: route.query.id as string })
   if (res) {
-    $toast.success('支付成功')
+    $toast.success('撤销成功')
   }
   else {
-    $toast.error('支付失败')
+    $toast.error('撤销失败')
   }
   await getDetail(route.query.id as string)
 }
