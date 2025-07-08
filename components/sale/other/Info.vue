@@ -4,6 +4,7 @@ const props = defineProps<{
   where: Where<DepositOrderWhere>
   memberFiler: Where<Member>
   productFilter: Where<ProductFinisheds>
+  identity: number
   returnGoods: (val: DepositReturnGoods) => Promise<boolean>
 }>()
 const payMethods = (val: number) => {
@@ -97,7 +98,7 @@ const returnGoods = (val: number) => {
                   <common-cell label="货品状态" value="已退款" val-color="#FF9900" />
                 </template>
                 <div class="flex-end">
-                  <template v-if="item.status === DepositOrderStatus.Booking">
+                  <template v-if="item.status === DepositOrderStatus.Booking && props?.identity > 1">
                     <common-button-rounded content="退款" @button-click="returnGoods(index)" />
                   </template>
                 </div>

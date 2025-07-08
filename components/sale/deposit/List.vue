@@ -3,8 +3,6 @@
 const props = defineProps<{
   info: DepositOrderInfo[]
   where: Where<DepositOrderWhere>
-  payOrder: (val: string) => Promise<void>
-  cancelOrder: (val: string) => Promise<void>
 }>()
 
 const handleClick = (id?: string) => {
@@ -62,18 +60,6 @@ const jumpSaleOreder = (id: string) => {
               <template v-if="item.order_sales.length">
                 <div class="pl-[8px] " @click="jumpSaleOreder(item.order_sales[0].id)">
                   销售单
-                </div>
-              </template>
-              <template v-if="item.status === DepositOrderStatus.PendingPayment">
-                <div class="pl-[8px] flex items-center text-[14px] mr-[16px]" @click="props.payOrder(item.id as string)">
-                  <icon name="i-svg:confirmpay" :size="14" class="mr-[4px]" />
-                  <span>
-                    支付
-                  </span>
-                </div>
-                <div class="flex items-center text-[14px] mr-[16px] color-[rgba(255,47,47,1)]" @click="props.cancelOrder(item.id as string)">
-                  <icon name="i-svg:cancelpay" :size="14" class="mr-[4px]" />
-                  撤销
                 </div>
               </template>
             </div>

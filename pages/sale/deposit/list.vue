@@ -6,7 +6,7 @@ const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 
 const { filterListToArray, OrdersList, total, filterList, searchPage } = storeToRefs(useDepositOrder())
-const { getSaleWhere, getDepositList, payDepositOrder, rovkeDepositOrder } = useDepositOrder()
+const { getSaleWhere, getDepositList } = useDepositOrder()
 const filterData = ref({} as Partial<DepositOrderWhere>)
 const filterShow = ref(false)
 
@@ -61,44 +61,7 @@ const updatePage = async (page: number) => {
   searchPage.value = page
   await getList()
 }
-const { $toast } = useNuxtApp()
 
-const payDialog = ref(false)
-const payId = ref('')
-const submitPay = async () => {
-  const res = await payDepositOrder({ id: payId.value })
-  if (res) {
-    $toast.success('支付成功')
-  }
-  else {
-    $toast.error('支付失败')
-  }
-  await getList()
-  return res
-}
-
-const payOrder = async (val: string) => {
-  payId.value = val
-  payDialog.value = true
-}
-
-const cancelDialog = ref(false)
-const cancelId = ref('')
-const cancelOrder = async (val: string) => {
-  cancelId.value = val
-  cancelDialog.value = true
-}
-const submitCancel = async () => {
-  const res = await rovkeDepositOrder({ id: cancelId.value })
-  if (res) {
-    $toast.success('支付成功')
-  }
-  else {
-    $toast.error('支付失败')
-  }
-  await getList()
-  return res
-}
 const changeStores = async () => {
   await getList()
 }
@@ -131,7 +94,7 @@ const newAdd = async () => {
       <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <div class="p-[16px]">
           <template v-if="OrdersList.length">
-            <sale-deposit-list :info="OrdersList" :where="filterList" :pay-order="payOrder" :cancel-order="cancelOrder" @user-click="handleClick" />
+            <sale-deposit-list :info="OrdersList" :where="filterList" @user-click="handleClick" />
             <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
           </template>
           <template v-else>
@@ -193,8 +156,6 @@ const newAdd = async () => {
       </template>
     </common-filter-where>
     <common-create @create="newAdd()" />
-    <common-confirm v-model:show="payDialog" icon="success" title="支付提示" text="确认要完成支付吗?" @submit="submitPay" />
-    <common-confirm v-model:show="cancelDialog" icon="error" title="撤销提示" text="确认撤销此订金单吗?" @submit="submitCancel" />
   </div>
 </template>
 

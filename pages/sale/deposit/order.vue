@@ -3,15 +3,16 @@
 useSeoMeta({
   title: '订金单详情',
 })
+const { $toast } = useNuxtApp()
 const { getFinishedWhere } = useFinished()
 const { finishedFilterList } = storeToRefs(useFinished())
 const { getMemberWhere } = useMemberManage()
 const { filterList: memberFiler } = storeToRefs(useMemberManage())
 const { OrderDetail, filterList } = storeToRefs(useDepositOrder())
-const { getOrderDetail, getSaleWhere, returnGoodsDepositOrder } = useDepositOrder()
-
+const { getOrderDetail, getSaleWhere, returnGoodsDepositOrder, payDepositOrder, rovkeDepositOrder } = useDepositOrder()
+const { userinfo } = storeToRefs(useUser())
 const route = useRoute()
-if (route.query.id) {
+if (route?.query?.id) {
   await getOrderDetail({ id: route.query.id as string })
   await getMemberWhere()
   await getSaleWhere()
@@ -23,15 +24,39 @@ const returnGoods = async (req: DepositReturnGoods) => {
   if (res) {
     await getOrderDetail({ id: route.query.id as string })
   }
-
   return res
+}
+
+const submitPay = async () => {
+  const res = await payDepositOrder({ id: route.query.id as string })
+  if (res) {
+    $toast.success('支付成功')
+  }
+  else {
+    $toast.error('支付失败')
+  }
+  await getOrderDetail({ id: route.query.id as string })
+}
+
+const submitCancel = async () => {
+  const res = await rovkeDepositOrder({ id: route.query.id as string })
+  if (res) {
+    $toast.success('支付成功')
+  }
+  else {
+    $toast.error('支付失败')
+  }
+  await getOrderDetail({ id: route.query.id as string })
 }
 </script>
 
 <template>
   <div>
     <div class="p-[16px] pb-[80px]">
-      <sale-deposit-details :member-filer="memberFiler" :product-filter="finishedFilterList" :where="filterList" :orders="OrderDetail" :return-goods="returnGoods" />
+      <sale-deposit-details :identity="userinfo?.identity" :member-filer="memberFiler" :product-filter="finishedFilterList" :where="filterList" :orders="OrderDetail" :return-goods="returnGoods" />
+      <template v-if="OrderDetail.status === DepositOrderStatus.PendingPayment">
+        <common-confirm-pay @pay="submitPay" @cancle="submitCancel" />
+      </template>
     </div>
   </div>
 </template>

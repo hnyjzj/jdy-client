@@ -12,12 +12,11 @@ const { getPrintTempList, getTempInfo } = useSystemPrint()
 const { printList, searchPage, PrintTemplate } = storeToRefs(useSystemPrint())
 const { filterList: memberFiler } = storeToRefs(useMemberManage())
 const { OrderDetail, filterList } = storeToRefs(useOrder())
-const { getOrderDetail, getSaleWhere, returnOrderGoods } = useOrder()
+const { getOrderDetail, getSaleWhere, returnOrderGoods, revokedOrder, payOrder } = useOrder()
 const { getFinishedWhere } = useFinished()
 const { finishedFilterList } = storeToRefs(useFinished())
 const { getOldWhere } = useOld()
 const { oldFilterList } = storeToRefs(useOld())
-
 const { myStore } = storeToRefs(useStores())
 
 const { userinfo } = storeToRefs(useUser())
@@ -54,7 +53,6 @@ const getMethod = () => {
 }
 
 const limit = 12
-const isPrintable = OrderDetail.value.status === 3 || OrderDetail.value.status === 4
 
 // 获取类别1(销售单)的打印模板
 async function getList(where = {} as Partial<PrintTemplate>) {
@@ -118,6 +116,29 @@ const modelConfirm = async () => {
   }
 }
 
+// 撤销订单
+const cancelOrder = async () => {
+  const res = await revokedOrder({ id: route.query.id as string })
+  if (res) {
+    $toast.success('撤销成功')
+    await getOrderDetail({ id: route.query.id as string })
+  }
+  else {
+    $toast.error('撤销失败')
+  }
+}
+// 支付订单确认完成
+const payOrderConfirm = async () => {
+  const res = await payOrder({ id: route.query.id as string })
+  if (res) {
+    $toast.success('支付成功')
+    await getOrderDetail({ id: route.query.id as string })
+  }
+  else {
+    $toast.error('支付失败')
+  }
+}
+
 // 判断当前环境
 const isMobile = ref(false)
 
@@ -158,14 +179,20 @@ onMounted(() => {
     <div class="p-[16px] pb-[80px]">
       <sale-order-detail
         v-model:dialog="showModel"
+        :identity="userinfo.identity"
         :old-filter="oldFilterList"
         :member-filer="memberFiler"
         :order-where="filterList"
         :product-filter="finishedFilterList"
         :orders="OrderDetail"
-        :return-goods="returnGoods" />
+        :return-goods="returnGoods"
+      />
+      <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === OrderDetail.status && OrderDetail.clerks[0].salesman?.id === userinfo.id">
+        <common-confirm-pay @pay="payOrderConfirm" @cancle="cancelOrder" />
+      </template>
     </div>
-    <template v-if="!isMobile && isPrintable">
+
+    <template v-if="(!isMobile && OrderDetail?.status === 3) || (!isMobile && OrderDetail?.status === 4)">
       <common-button-bottom
         confirm-text="打印"
         cancel-text="返回"
