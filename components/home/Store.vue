@@ -30,7 +30,7 @@ const choiceStore = () => {
         <div class="flex-1 dark:color-[#fff]">
           {{ store.name }}
         </div>
-        <n-dropdown trigger="click" :options="columns" @select="(e) => { emits('handleSelect', e) }">
+        <n-dropdown trigger="click" :options="columns" :style="{ maxHeight: '300px', overflowY: 'auto' }" @select="(e) => { emits('handleSelect', e) }">
           <div class="bg-[#0068FF] py-[10px] px-[16px] rounded-[40px] color-[#fff] flex items-center w-auto" @click="choiceStore">
             <icon name="i-icon:product-toggle" :size="16" /> <div class="pl-[4px]">
               切换门店
