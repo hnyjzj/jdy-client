@@ -132,7 +132,7 @@ async function uploadImg() {
         <div class="color-[#fff] py-[12px] flex justify-between">
           <product-manage-company />
           <div class="flex-1 px-2 sm:px-4">
-            <product-filter-search @submit="getInfo" />
+            <product-filter-search placeholder="搜索条码" @submit="getInfo" />
           </div>
           <div
             class="flex items-center justify-end cursor-pointer"

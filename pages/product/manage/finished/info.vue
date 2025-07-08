@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { AuthVerify } from '#components'
+
 const { getFinishedInfo, getFinishedWhere } = useFinished()
 const { damageFinished } = useLoss()
 const { finishedInfo, finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
-
 const { $toast } = useNuxtApp()
 const productName = ref('')
 // 成品列表详情
@@ -57,9 +58,12 @@ async function loss() {
                 <div class="flex-1">
                   <common-button-rounded content="报损" color="#000" bgc="#FFF" @button-click="goLoss" />
                 </div>
-                <div class="flex-1">
-                  <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: finishedInfo.code })" />
-                </div>
+                <!-- 身份总部以上有编辑权限 -->
+                <AuthVerify :min="UserLevel.IdentityHeadquarters">
+                  <div class="flex-1">
+                    <common-button-rounded content="编辑" @button-click="jump('/product/manage/edit', { code: finishedInfo.code })" />
+                  </div>
+                </AuthVerify>
               </div>
             </div>
           </div>

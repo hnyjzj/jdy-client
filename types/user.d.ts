@@ -7,8 +7,7 @@ interface UserInfo {
   nickname: string
   username: string
   gender: number
-  identity: number
-
+  identity: UserLevel
 }
 
 interface UserOpts {
