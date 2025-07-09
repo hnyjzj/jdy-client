@@ -9,6 +9,7 @@ const { getMemberWhere } = useMemberManage()
 const { filterList: memberFiler } = storeToRefs(useMemberManage())
 const { OrderDetail, filterList } = storeToRefs(useDepositOrder())
 const { getOrderDetail, getSaleWhere, returnGoodsDepositOrder } = useDepositOrder()
+const { userinfo } = storeToRefs(useUser())
 const router = useRouter()
 const route = useRoute()
 if (route.query.id) {
@@ -33,7 +34,7 @@ const returnGoods = async (req: DepositReturnGoods) => {
 <template>
   <div>
     <div class="p-[16px] pb-[80px]">
-      <sale-other-info :member-filer="memberFiler" :product-filter="finishedFilterList" :where="filterList" :orders="OrderDetail" :return-goods="returnGoods" />
+      <sale-other-info :identity="userinfo?.identity" :member-filer="memberFiler" :product-filter="finishedFilterList" :where="filterList" :orders="OrderDetail" :return-goods="returnGoods" />
     </div>
     <div class="footer">
       <div class="grid-12 gap-[12px] px-[16px]">

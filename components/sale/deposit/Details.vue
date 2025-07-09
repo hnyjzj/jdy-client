@@ -5,6 +5,7 @@ const props = defineProps<{
   memberFiler: Where<Member>
   productFilter: Where<ProductFinisheds>
   returnGoods: (val: DepositReturnGoods) => Promise<boolean>
+  identity: number
 }>()
 const payMethods = (val: number) => {
   const arrary = optonsToSelect(props.where.payment_method?.preset)
@@ -26,7 +27,7 @@ const returnGoods = (val: number) => {
 
 <template>
   <div class="grid-12 gap-[12px]">
-    <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4" uno-lt="col-3">
+    <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
       <sale-cards title="订单信息">
         <template #info>
           <div class="info">
@@ -49,7 +50,7 @@ const returnGoods = (val: number) => {
         </template>
       </sale-cards>
     </div>
-    <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4" uno-lt="col-3">
+    <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
       <sale-cards title="店员信息">
         <template #info>
           <div class="info">
@@ -62,7 +63,7 @@ const returnGoods = (val: number) => {
       </sale-cards>
     </div>
     <template v-if="props.orders.products?.length > 0 || false">
-      <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4" uno-lt="col-3">
+      <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
         <sale-cards title="成品信息">
           <template #info>
             <div class="info">
@@ -97,7 +98,7 @@ const returnGoods = (val: number) => {
                   <common-cell label="货品状态" value="已退款" val-color="#FF9900" />
                 </template>
                 <div class="flex-end">
-                  <template v-if="item.status === DepositOrderStatus.Booking">
+                  <template v-if="item.status === DepositOrderStatus.Booking && props?.identity > 1">
                     <common-button-rounded content="退款" @button-click="returnGoods(index)" />
                   </template>
                 </div>

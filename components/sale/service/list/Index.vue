@@ -15,46 +15,6 @@ const handleClick = (id?: string) => {
   }
   navigateTo(`/sale/service/info?id=${id}`)
 }
-const revokeDialog = ref(false)
-const readyRevokId = ref<string>()
-const { $toast } = useNuxtApp()
-const revoke = async () => {
-  const res = await props.cancelOrder(readyRevokId.value!)
-  if (res) {
-    $toast.success('撤销订单成功')
-    await props.getList()
-  }
-  else {
-    $toast.error('撤销订单失败')
-  }
-}
-
-const handleCancel = (id: string) => {
-  if (!id) {
-    return
-  }
-  readyRevokId.value = id
-  revokeDialog.value = true
-}
-const paydialog = ref(false)
-const payid = ref<string>()
-const pay = async () => {
-  const res = await props.payOrder(payid.value!)
-  if (res) {
-    $toast.success('支付订单成功')
-    await props.getList()
-  }
-  else {
-    $toast.error('支付订单失败')
-  }
-}
-const handlePay = (id: string) => {
-  if (!id) {
-    return
-  }
-  payid.value = id
-  paydialog.value = true
-}
 </script>
 
 <template>
@@ -75,28 +35,12 @@ const handlePay = (id: string) => {
         </template>
         <template #footer>
           <div class="flex-between bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
-            <div class="color-[#4287F4] cursor-pointer flex justify-center items-center">
-              <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === item.status">
-                <div class="pl-[16px] flex items-center text-[14px] mr-[16px]" @click="handlePay(item.id as string)">
-                  <icon name="i-svg:confirmpay" :size="14" class="mr-[4px]" />
-                  <span>
-                    支付
-                  </span>
-                </div>
-                <div class="flex items-center text-[14px] mr-[16px] color-[rgba(255,47,47,1)]" @click="handleCancel(item.id as string)">
-                  <icon name="i-svg:cancelpay" :size="14" class="mr-[4px]" />
-                  撤销
-                </div>
-              </template>
-            </div>
+            <div class="" />
             <common-button-irregular text="查看详情" @click="handleClick(item.id)" />
           </div>
         </template>
       </sale-cards>
     </template>
-
-    <common-confirm v-model:show="revokeDialog" icon="error" title="撤销提醒" text="确认要撤销此订单吗?" @submit="revoke" />
-    <common-confirm v-model:show="paydialog" icon="success" title="支付确认" text="确认支付了此订单吗?" @submit="pay" />
   </div>
 </template>
 
