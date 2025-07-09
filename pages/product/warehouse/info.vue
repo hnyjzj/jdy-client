@@ -24,7 +24,7 @@ const deleteDialog = ref(false)
 const clearDialog = ref(false)
 const cancelDialog = ref(false)
 const finishDialog = ref(false)
-
+const loading = ref(false)
 const productParams = ref({} as Partial<ProductFinisheds>)
 
 /** 要删除的产品code */
@@ -86,12 +86,14 @@ async function submitGoods(req: ProductFinisheds[]) {
   if (!req?.length) {
     return
   }
+  loading.value = true
   const res = await addFinishedEnter({ products: req, enter_id: enterInfo.value.id })
   if (res?.code === HttpCode.SUCCESS) {
     isChooseModel.value = false
     isImportModel.value = false
     await getInfo()
     uploadRef.value.clearData()
+    loading.value = false
     return $toast.success('批量导入成功')
   }
   else if (res?.code === HttpCode.ERROR) {
@@ -99,8 +101,11 @@ async function submitGoods(req: ProductFinisheds[]) {
     Object.keys(res?.data).forEach((key) => {
       msg += `\n条码【${key}】：${res?.data[key]}`
     })
+    loading.value = false
     return $toast.error(msg)
   }
+
+  loading.value = false
   $toast.error(res?.message ?? '上传失败')
 }
 
@@ -190,6 +195,7 @@ function pull() {
 
 <template>
   <div class="storage pb-20" style="position: relative;">
+    <common-loading v-model="loading" title="正在处理中" />
     <common-layout-center>
       <div class="pt-4">
         <div class="flex flex-col gap-4">
@@ -235,7 +241,7 @@ function pull() {
                         门店
                       </div>
                       <div class="info-val">
-                        {{ enterInfo.store.name }}
+                        {{ enterInfo?.store?.name }}
                       </div>
                     </div>
                     <div class="other-information flex flex-col gap-1">
