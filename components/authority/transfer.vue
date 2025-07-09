@@ -8,7 +8,7 @@ interface ApiItem {
   children?: ApiItem[]
 }
 
-const props = defineProps<{ apiList: ApiItem[] }>()
+const props = defineProps<{ list: ApiItem[] }>()
 
 // 选中叶子节点（父组件双向绑定）
 const selectedIds = defineModel<(string | number)[]>({
@@ -42,7 +42,7 @@ const treeData = ref<any[]>([])
 const options = ref<{ label: string, value: string | number }[]>([])
 
 watch(
-  () => props.apiList,
+  () => props.list,
   (list) => {
     treeData.value = toTreeNodes(list)
     options.value = collectLeaves(list)

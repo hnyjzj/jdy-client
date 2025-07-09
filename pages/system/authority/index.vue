@@ -252,10 +252,10 @@ function updataFun() {
                 </div>
               </div>
               <template v-if="activeIndex === 0">
-                <authority-fun v-model="funSelectIds" :work-bench-list="workBenchList" />
+                <authority-transfer v-model="funSelectIds" :list="workBenchList" />
               </template>
               <template v-else-if="activeIndex === 1">
-                <authority-api v-model="apiSelectIds" :api-list="apiList" />
+                <authority-transfer v-model="apiSelectIds" :list="apiList" />
               </template>
             </template>
           </common-gradient>
