@@ -26,6 +26,7 @@ const deleteDialog = ref(false)
 const clearDialog = ref(false)
 const cancelDialog = ref(false)
 const finishDialog = ref(false)
+const loading = ref(false)
 
 /** 页面加载时，初始化数据 */
 await getAccessorieCategoryWhere()
@@ -64,7 +65,7 @@ async function cancel() {
 /** 点击清空时调用，触发确认弹窗 */
 function clearFun() {
   if (!enterInfo.value?.products?.length) {
-    $toast.warning('货品为空')
+    $toast.error('货品为空')
     return
   }
   clearDialog.value = true
@@ -73,7 +74,7 @@ function clearFun() {
 /** 点击完成按钮时调用，触发确认弹窗 */
 function finishFun() {
   if (!enterInfo.value?.products?.length) {
-    $toast.warning('货品为空')
+    $toast.error('货品为空')
     return
   }
   finishDialog.value = true
@@ -125,6 +126,10 @@ async function clearProduct() {
  * @param data - 产品数组（包含每个产品的基本数据）
  */
 async function bulkupload(data: any) {
+  if (!data.length) {
+    return $toast.error('数据格式不正确，请添加配件信息')
+  }
+  loading.value = true
   const res = await addAccessorieEnter({
     enter_id: enterInfo.value.id,
     products: data,
@@ -138,6 +143,7 @@ async function bulkupload(data: any) {
     $toast.error(res?.message ?? '添加失败')
   }
   // 关闭弹窗
+  loading.value = false
   isChooseModel.value = false
   isImportModel.value = false
 }
@@ -176,6 +182,7 @@ async function bulkupload(data: any) {
         </template>
       </common-button-bottom>
     </template>
+    <common-loading v-model="loading" title="正在处理中" />
     <common-confirm v-model:show="deleteDialog" icon="error" title="删除产品" text="确认要删除此产品吗?" @submit="delProduct" />
     <common-confirm v-model:show="clearDialog" icon="error" title="清空列表" text="确认要清空所有入库的产品吗?" @submit="clearProduct" />
     <common-confirm v-model:show="cancelDialog" icon="error" title="撤销" text="确认要撤销入库单吗? 撤销后将不可进行其他操作" @submit="cancel" />

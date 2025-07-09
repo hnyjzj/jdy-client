@@ -37,10 +37,9 @@ function cleanExcelData(data: any) {
 
 async function submitGoods() {
   const data: string[] = []
-
   sheetData.value.forEach((row: string[], index: number) => {
     if (index !== 0) {
-      const firstCell = row[0]?.trim()
+      const firstCell = (row[0] || '').toString().trim()
       if (firstCell) {
         data.push(firstCell)
       }
