@@ -12,6 +12,6 @@ export enum UserLevel {
   IdentityHeadquarters,
   /** 管理员 */
   IdentityAdmin,
-  /** 超级管理眼 */
+  /** 超级管理员 */
   IdentitySuperAdmin,
 }

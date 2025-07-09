@@ -25,11 +25,9 @@ if (props?.list && props?.list?.length > 0 && props.list?.indexOf(userinfo.value
 </script>
 
 <template>
-  <div>
-    <template v-if="ok">
-      <slot />
-    </template>
-  </div>
+  <template v-if="ok">
+    <slot />
+  </template>
 </template>
 
 <style lang="scss" scoped>
