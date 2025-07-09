@@ -81,7 +81,7 @@ const payOrder = async () => {
         :operation="operation"
         :refund="refund"
       />
-      <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === repairOrderDetail.status">
+      <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === repairOrderDetail.status && repairOrderDetail.cashier_id === userinfo.id">
         <common-confirm-pay @pay="payOrder" @cancle="cancelOrder" />
       </template>
     </div>

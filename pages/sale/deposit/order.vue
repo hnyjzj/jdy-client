@@ -54,7 +54,7 @@ const submitCancel = async () => {
   <div>
     <div class="p-[16px] pb-[80px]">
       <sale-deposit-details :identity="userinfo?.identity" :member-filer="memberFiler" :product-filter="finishedFilterList" :where="filterList" :orders="OrderDetail" :return-goods="returnGoods" />
-      <template v-if="OrderDetail.status === DepositOrderStatus.PendingPayment">
+      <template v-if="OrderDetail.status === DepositOrderStatus.PendingPayment && OrderDetail.cashier_id === userinfo.id">
         <common-confirm-pay @pay="submitPay" @cancle="submitCancel" />
       </template>
     </div>
