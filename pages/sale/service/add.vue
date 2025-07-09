@@ -69,6 +69,7 @@ const formData = ref<serviceOrederCreate>({
 })
 const rules = {
   receptionist_id: { required: true, message: '请选择接待人', trigger: ['blur', 'change'] },
+  cashier_id: { required: true, message: '请选择收银员', trigger: ['blur', 'change'] },
   name: { required: true, message: '请输入项目名称', trigger: ['blur', 'change'] },
   desc: { required: true, message: '请输入项目描述', trigger: ['blur', 'change'] },
 

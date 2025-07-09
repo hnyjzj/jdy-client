@@ -55,6 +55,8 @@ interface serviceOrederCreate {
 
   payments?: Payment[]
   products?: ProductFinished[]
+
+  cashier_id?: string
 }
 /**
  * 维修订单Where
@@ -252,6 +254,8 @@ interface ServiceOrderInfo {
   member?: Member
 
   operator?: Staff
+
+  cashier_id?: string
 }
 
 /**

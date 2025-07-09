@@ -8,8 +8,9 @@ const props = defineProps<{
   productFilter: Where<ProductFinisheds>
   oldFilter: Where<ProductOlds>
   returnGoods: (req: ReturnGoods) => void
-
+  identity: number
 }>()
+
 const payMethods = (val: number) => {
   const arrary = optonsToSelect(props.orderWhere.payment_method?.preset)
   const data = arrary.find(item => item.value === val)
@@ -71,7 +72,7 @@ const onReturnProduct = async (index: number) => {
 
 <template>
   <div class="grid-12 gap-[12px]">
-    <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4 offset-4" uno-lt="col-3">
+    <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
       <sale-cards title="基本信息">
         <template #info>
           <div class="info">
@@ -99,7 +100,7 @@ const onReturnProduct = async (index: number) => {
         </template>
       </sale-cards>
     </div>
-    <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4 offset-4" uno-lt="col-3">
+    <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
       <sale-cards title="店员信息">
         <template #info>
           <div class="info">
@@ -118,7 +119,7 @@ const onReturnProduct = async (index: number) => {
     </div>
     <template v-for="(obj, i) in props.orders.products" :key="i">
       <template v-if="obj.type === 1">
-        <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4 offset-4" uno-lt="col-3">
+        <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
           <sale-cards title="成品信息">
             <template #info>
               <div class="info">
@@ -140,7 +141,7 @@ const onReturnProduct = async (index: number) => {
                   <common-cell label="成品状态" value="已退货" val-color="#FF9900" />
                 </template>
                 <div class="flex-end">
-                  <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusComplete">
+                  <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > 1">
                     <common-button-rounded content="退货" @button-click="onReturnProduct(i)" />
                   </template>
                 </div>
@@ -152,7 +153,7 @@ const onReturnProduct = async (index: number) => {
       </template>
 
       <template v-if="obj.type === 2">
-        <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4 offset-4" uno-lt="col-3">
+        <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
           <sale-cards title="旧料信息">
             <template #info>
               <div class="info">
@@ -179,7 +180,7 @@ const onReturnProduct = async (index: number) => {
                   <common-cell label="状态" value="已退货" val-color="#FF9900" />
                 </template>
                 <div class="flex-end">
-                  <template v-if="obj?.status === OrderStatusText.OrderSalesProductStatusComplete">
+                  <template v-if="obj?.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > 1">
                     <common-button-rounded content="退货" @button-click="onReturnProduct(i)" />
                   </template>
                 </div>
@@ -190,7 +191,7 @@ const onReturnProduct = async (index: number) => {
         </div>
       </template>
       <template v-if="obj.type === 3">
-        <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4 offset-4" uno-lt="col-3">
+        <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
           <sale-cards title="配件信息">
             <template #info>
               <div class="grid grid-cols-1 gap-[12px]">
@@ -204,7 +205,7 @@ const onReturnProduct = async (index: number) => {
                     <common-cell label="状态" value="已退货" val-color="#FF9900" />
                   </template>
                   <div class="flex-end">
-                    <template v-if="obj?.status === OrderStatusText.OrderSalesProductStatusComplete">
+                    <template v-if="obj?.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > 1">
                       <common-button-rounded content="退货" @button-click="onReturnProduct(i)" />
                     </template>
                   </div>
@@ -217,7 +218,7 @@ const onReturnProduct = async (index: number) => {
       </template>
     </template>
 
-    <div class="col-12" uno-sm="col-6" uno-md="col-6" uno-lg="col-4 offset-4" uno-lt="col-3">
+    <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
       <sale-cards title="结算信息">
         <template #info>
           <div class="info">

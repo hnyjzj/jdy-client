@@ -5,6 +5,7 @@ const props = defineProps<{
   detail: ServiceOrderInfo
   finishedWhere: Where<ProductFinisheds>
   orderWhere: Where<service>
+  identity: number
   updateOrder: (req: updateRepairParams) => Promise<boolean>
   uploadFile: (file: any) => Promise<string | false>
   refund: (req: { id: string, remark: string }) => Promise<boolean>
@@ -151,7 +152,7 @@ const confirmChange = async () => {
 
 <template>
   <div class="grid-12 gap-[12px]">
-    <div class="col-12" uno-sm="col-10 offset-1" uno-md="col-8 offset-2" uno-lg="col-6 offset-3" uno-lt="col-3 offset-3">
+    <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
       <common-fold title="基础信息" :is-collapse="false">
         <div class="info">
           <common-cell label="维修单状态" :value="props.orderWhere.status?.preset[props.detail.status] " rcol="col-8" lcol="col-4" val-color="#0B57D0" />
@@ -236,7 +237,7 @@ const confirmChange = async () => {
               <common-cell label="备注" :value="item.remark" rcol="col-8" lcol="col-4" />
               <div class="line" />
               <template
-                v-if="item.status === serviceOrderStatus.StoreReceived ">
+                v-if="item.status === serviceOrderStatus.StoreReceived && props?.identity > 1">
                 <div class="flex-end">
                   <common-button-rounded content="退款" @button-click="showModel = true" />
                 </div>

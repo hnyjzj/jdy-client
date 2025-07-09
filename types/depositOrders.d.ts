@@ -171,7 +171,7 @@ interface DepositOrderInfo {
   /**
    * 订单状态
    */
-  status?: number
+  status: DepositOrderStatus
   store?: Stores
   /**
    * 门店ID

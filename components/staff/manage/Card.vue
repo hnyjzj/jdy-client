@@ -11,7 +11,7 @@ const sex = (val: number) => {
 }
 
 const toEdit = (id: string, identity: number) => {
-  if (props.myidentity > identity) {
+  if (props.myidentity > identity || props.myidentity === 6) {
     router.push(`/manage/staffs/staff/edit?id=${id}`)
   }
   else {
