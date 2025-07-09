@@ -9,6 +9,7 @@ const isFilter = ref(false)
 const page = ref(1)
 const isChooseModel = ref(false)
 const isImportModel = ref(false)
+const loading = ref(false)
 useSeoMeta({
   title: '配件条目',
 })
@@ -80,6 +81,10 @@ async function bulkupload(e: AccessorieCategory[]) {
   if (!myStore.value?.id) {
     return $toast.error('请先选择门店')
   }
+  if (!e.length) {
+    return $toast.error('数据格式不正确，请添加配件条目')
+  }
+  loading.value = true
   const res = await addAccessorieCategory({ list: e })
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建成功', 1000)
@@ -88,6 +93,7 @@ async function bulkupload(e: AccessorieCategory[]) {
   else {
     $toast.error(res?.message ?? '创建失败')
   }
+  loading.value = false
   isImportModel.value = false
 }
 
@@ -145,6 +151,7 @@ async function changeStore() {
         <common-empty width="100px" />
       </template>
     </div>
+    <common-loading v-model="loading" title="正在处理中" />
     <common-create @click="isChooseModel = true" />
     <product-upload-choose v-model:is-model="isChooseModel" @go-add="goAdd" @batch="isImportModel = true" />
     <accessorie-warehouse-category v-model="isImportModel" :filter-list="categoryFilterList" :type="1" @upload="bulkupload" />
