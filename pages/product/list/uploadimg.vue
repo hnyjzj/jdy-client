@@ -114,7 +114,7 @@ async function uploadImg() {
     images: previewFileList.value.map(item => item.url),
     id: finishedInfo.value.id,
   }
-  const res = await uploadFinishedImg(params as ProductFinisheds)
+  const res = await uploadFinishedImg(params as UpdateProductFinishedImages)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('上传成功')
     getInfo(productCode.value)

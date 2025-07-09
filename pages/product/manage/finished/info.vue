@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { AuthVerify } from '#components'
-
 const { getFinishedInfo, getFinishedWhere } = useFinished()
 const { damageFinished } = useLoss()
 const { finishedInfo, finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())

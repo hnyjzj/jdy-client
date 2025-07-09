@@ -162,7 +162,7 @@ async function changemyStore() {
               <div class="py-[4px] flex justify-between">
                 <div>入库数量</div>
                 <div class="text-align-end">
-                  {{ info.products?.length || 0 }}
+                  {{ info.product_count }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">

@@ -127,6 +127,22 @@ async function changeMyStore() {
               </div>
               <div class="flex py-[4px] justify-between">
                 <div>
+                  调拨数量
+                </div>
+                <div class="val">
+                  {{ info.product_count }}
+                </div>
+              </div>
+              <div class="flex py-[4px] justify-between">
+                <div>
+                  调入门店
+                </div>
+                <div class="val">
+                  {{ info?.to_store?.name }}
+                </div>
+              </div>
+              <div class="flex py-[4px] justify-between">
+                <div>
                   备注
                 </div>
                 <div class="val">

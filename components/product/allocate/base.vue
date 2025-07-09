@@ -81,26 +81,34 @@ const props = defineProps<{
             <div class="product-information flex flex-col gap-1">
               <div class="info-row">
                 <div class="info-title">
-                  总件数
+                  调拨件数
                 </div>
                 <div class="info-val">
-                  {{ productList?.length }}
+                  {{ info.product_count }}
                 </div>
               </div>
               <div class="info-row">
                 <div class="info-title">
-                  总金重
+                  入网费合计
                 </div>
                 <div class="info-val">
-                  {{ productList?.reduce((sum, item) => sum + (Number(item.weight_metal) || 0), 0) ?? 0 }}
+                  {{ info.product_total_access_fee }}
                 </div>
               </div>
               <div class="info-row">
                 <div class="info-title">
-                  总标价
+                  金重合计
                 </div>
                 <div class="info-val">
-                  {{ productList?.reduce((sum, item) => sum + (Number(item.label_price) || 0), 0) ?? 0 }}
+                  {{ info.product_total_weight_metal }}
+                </div>
+              </div>
+              <div class="info-row">
+                <div class="info-title">
+                  标签价合计
+                </div>
+                <div class="info-val">
+                  {{ info.product_total_label_price }}
                 </div>
               </div>
             </div>
