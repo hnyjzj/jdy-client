@@ -53,9 +53,9 @@ export const useCheck = defineStore('check', {
       }
     },
     /** 盘点单详情 */
-    async getCheckInfo(id: string) {
+    async getCheckInfo(params: CheckInfoParams) {
       try {
-        const { data } = await https.post<CheckInfo, { id: string }>('/product/inventory/info', { id })
+        const { data } = await https.post<CheckInfo, CheckInfoParams>('/product/inventory/info', params)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.checkInfo = data.value.data
         }

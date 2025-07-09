@@ -55,19 +55,21 @@ forRules()
  */
 const Key = ref(useId())
 const params = ref({ store_id: myStore.value?.id, range: 1 } as Check)
-async function submit() {
+
+const submit = useDebounceFn(async () => {
   const res = await createCheck(params.value as Check)
   Key.value = Date.now().toString()
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建成功', 1000)
     setTimeout(() => {
       router.back()
-    }, 1000)
+    }, 500)
   }
   else {
     $toast.error(res?.message ?? '创建失败')
   }
-}
+}, 500)
+
 const presetToSelect = (key: keyof Check): { label: string, value: any }[] => {
   if (!key)
     return []

@@ -161,7 +161,7 @@ interface CheckInfo {
    * 盘点状态
    * 0: "全部", 1: "草稿", 2: "盘点中", 3: "待验证", 4: "盘点完成", 5: "盘点异常", 6: "盘点取消"
    */
-  status: number
+  status: CheckStatus
   /**
    * 产品状态
    * 0: "应盘", 1: "实盘", 2: "盘盈", 3: "盘亏"
@@ -192,13 +192,13 @@ interface CheckInfo {
   /** 盘亏货品 */
   loss_products?: CheckProduct[]
   /** 应盘数量 */
-  should_count?: number
+  should_count: number
   /** 实盘数量 */
-  actual_count?: number
+  actual_count: number
   /** 盘盈数量 */
-  extra_count?: number
+  extra_count: number
   /** 盘亏数量 */
-  loss_count?: number
+  loss_count: number
 }
 
 interface CheckProduct {
@@ -210,4 +210,10 @@ interface CheckProduct {
 interface AddCheckProduct {
   id: Check['id']
   codes: string[]
+}
+
+interface CheckInfoParams {
+  id: string
+  page: number
+  limit: number
 }

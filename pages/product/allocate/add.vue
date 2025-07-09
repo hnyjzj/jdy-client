@@ -132,6 +132,9 @@ function handleValidateButtonClick() {
   <div>
     <common-layout-center>
       <div class="pt-4 pb-20">
+        <div class="mb-4 w-[40%]">
+          <product-manage-company class="text-[#FFF]" />
+        </div>
         <div class="flex flex-col gap-4">
           <div class="rounded-6 bg-white w-auto blur-bga top">
             <common-gradient title="新增调拨单">
@@ -180,17 +183,7 @@ function handleValidateButtonClick() {
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" path="remark" label="备注">
-                      <n-input v-model:value="params.remark" round placeholder="输入备注" @focus="focus" />
-                    </n-form-item-gi>
-                    <n-form-item-gi :span="12" path="status" label="状态">
-                      <n-select
-                        v-model:value="params.status"
-                        menu-size="large"
-                        placeholder="选择调拨状态 "
-                        :options="presetToSelect('status') "
-                        clearable
-                        @focus="focus"
-                      />
+                      <n-input v-model:value="params.remark" type="textarea" round placeholder="输入备注" @focus="focus" />
                     </n-form-item-gi>
                   </n-grid>
                 </n-form>
