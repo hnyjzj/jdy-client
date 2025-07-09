@@ -15,7 +15,7 @@ useSeoMeta({
 })
 const productCode = ref()
 const statusCode = ref()
-productName.value = finishedInfo.value.name
+productName.value = finishedInfo.value?.name || ''
 await getFinishedWhere()
 
 /** 图片列表 */

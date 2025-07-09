@@ -115,11 +115,6 @@ function goAdd() {
   jump('/product/warehouse/add')
 }
 
-/** 汇总 */
-function sum(info: FinishedEnter, key: keyof ProductFinisheds) {
-  return info?.products?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
-}
-
 async function changemyStore() {
   pages.value = 1
   await getList()
@@ -173,19 +168,19 @@ async function changemyStore() {
               <div class="py-[4px] flex justify-between">
                 <div>入网费合计</div>
                 <div class="text-align-end">
-                  {{ sum(info, 'access_fee') && sum(info, 'access_fee').toFixed(2) }}
+                  {{ info.product_total_access_fee }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
                 <div>标签价合计</div>
                 <div class="text-align-end">
-                  {{ sum(info, 'label_price') && sum(info, 'label_price').toFixed(2) }}
+                  {{ info.product_total_label_price }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
                 <div>金重合计</div>
                 <div class="text-align-end">
-                  {{ sum(info, 'weight_metal') && sum(info, 'weight_metal').toFixed(2) }}
+                  {{ info.product_total_weight_metal }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">

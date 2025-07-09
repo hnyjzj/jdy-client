@@ -11,7 +11,7 @@ useSeoMeta({
   title: '成品检索',
 })
 const statusCode = ref()
-productName.value = finishedInfo.value.name
+productName.value = finishedInfo.value?.name || ''
 await getFinishedWhere()
 
 async function getInfo(code: string) {

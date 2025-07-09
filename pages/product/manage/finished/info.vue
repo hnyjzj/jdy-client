@@ -10,7 +10,7 @@ const productName = ref('')
 useSeoMeta({
   title: finishedInfo.value.name,
 })
-productName.value = finishedInfo.value.name
+productName.value = finishedInfo.value?.name || ''
 
 const route = useRoute()
 const router = useRouter()

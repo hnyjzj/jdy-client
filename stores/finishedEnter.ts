@@ -75,9 +75,9 @@ export const useFinishedEnter = defineStore('finishedEnter', {
       }
     },
     // 获取入库单详情
-    async getFinishedEnterInfo(id: FinishedEnter['id']) {
+    async getFinishedEnterInfo(params: EnterInfoParams) {
       try {
-        const { data } = await https.post<FinishedEnter, { id: FinishedEnter['id'] }>('/product/finished/enter/info', { id })
+        const { data } = await https.post<FinishedEnter, EnterInfoParams>('/product/finished/enter/info', params)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.enterInfo = data.value.data
         }
