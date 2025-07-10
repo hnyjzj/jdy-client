@@ -36,6 +36,7 @@ const execute = async () => {
     $toast.warning('手机号码格式不正确')
     return
   }
+
   const res = await createMember(memberParams.value)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('新增成功')
