@@ -202,8 +202,21 @@ async function getStoreStaffListFun() {
                           {{ item.label }}
                         </div>
                         <template v-if="item.name === 'inventory_person_ids'">
-                          <div class="text-align-end">
-                            {{ info.inventory_persons.map(v => v.nickname).join('、') }}
+                          <div class="text-align-end w-[60%]">
+                            <span
+                              v-for="(person) in info.inventory_persons.slice(0, 2)" :key="person.id"
+                              class="mr-[4px]"
+                            >
+                              <n-tag size="small">
+                                {{ person.nickname }}
+                              </n-tag>
+                            </span>
+
+                            <template v-if="info.inventory_persons.length > 2">
+                              <n-tag size="small">
+                                +{{ info.inventory_persons.length - 2 }}
+                              </n-tag>
+                            </template>
                           </div>
                         </template>
                         <template v-else>

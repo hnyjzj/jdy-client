@@ -150,9 +150,7 @@ async function addCheckGood(params: AddCheckProduct, isClose = true) {
   else {
     $toast.error(res?.message || '添加失败', 1000)
   }
-  setTimeout(() => {
-    loading.value = false
-  }, 2000)
+  loading.value = false
   inputModel.value = isClose
 }
 
