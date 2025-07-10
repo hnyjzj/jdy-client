@@ -62,7 +62,6 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
 const formRef = ref()
 const rules = ref<FormRules>({
   name: {
-    required: true,
     trigger: ['blur', 'input', 'change'],
     message: '请输入会员姓名',
     type: 'string',
@@ -74,13 +73,11 @@ const rules = ref<FormRules>({
     type: 'string',
   },
   nickname: {
-    required: true,
     trigger: ['blur', 'input', 'change'],
     message: '请输入会员昵称',
     type: 'string',
   },
   gender: {
-    required: true,
     trigger: ['blur', 'input', 'change'],
     message: '请选择会员性别',
     type: 'number',
@@ -92,13 +89,11 @@ const rules = ref<FormRules>({
     type: 'string',
   },
   birthday: {
-    required: true,
     trigger: ['blur', 'input', 'change'],
     message: '请选择生日',
     type: 'date',
   },
   anniversary: {
-    required: true,
     trigger: ['blur', 'input', 'change'],
     message: '请选择纪念日',
     type: 'date',
