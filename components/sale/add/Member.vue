@@ -75,6 +75,9 @@ const submitNewMember = async () => {
     searchList.value = await props.getMember(memberParams.value?.phone)
     setUserInfo(searchList.value)
   }
+  else {
+    $toast.error(res.message)
+  }
 }
 const setMbid = async (id: string, phone: string) => {
   memberId.value = id

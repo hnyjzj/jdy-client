@@ -17,62 +17,61 @@ const formData = defineModel('formData', { default: {} as Orders })
 const showModal = ref(false)
 
 // 添加商品
-const addProduct = async (product: ProductFinisheds) => {
-  const index = showProductList.value.findIndex(item => item.product_id === product?.id)
+const addProduct = async (products: ProductFinisheds[]) => {
+  products.forEach(async (product: ProductFinisheds) => {
+    const index = showProductList.value.findIndex(item => item.product_id === product?.id)
 
-  //   添加成品到列表中
-  if (index === -1) {
-    const data = {
-      name: product.name,
-      retail_type: product.retail_type,
-      label_price: product.label_price,
-      weight_metal: product.weight_metal,
-      code: product.code,
-      price_gold: 0, // 金价
-      discount_fixed: 100, // 折扣
-      price: 0, // 应付金额
-      product_id: product?.id as string, // 商品id
-      labor_fee: 0, // 工费
-      round_off: 0, // 抹零
-      discount_final: 0, // 显示折扣
-      price_original: 0, // 原始价格
-      discount_member: 100, // 会员折扣
-      integral: 0, // 积分
-      integral_deduction: 0, // 积分抵扣
-      rate: 0, // 积分比例
-      class: product.class,
-    //   product,
-    }
-    data.labor_fee = Number(product.labor_fee)
-    // 匹配金价
-    const filtered = Props.price.filter(item => item.product_type === product.retail_type)
-    const exists = filtered.some(item =>
-      item.product_type === product.retail_type
-      && item.product_material === product.material
-      && item.product_quality.includes(product.quality)
-      && item.product_brand?.includes(product.brand),
-    )
+    //   添加成品到列表中
+    if (index === -1) {
+      const data = {
+        name: product.name,
+        retail_type: product.retail_type,
+        label_price: product.label_price,
+        weight_metal: product.weight_metal,
+        code: product.code,
+        price_gold: 0, // 金价
+        discount_fixed: 100, // 折扣
+        price: 0, // 应付金额
+        product_id: product?.id as string, // 商品id
+        labor_fee: 0, // 工费
+        round_off: 0, // 抹零
+        discount_final: 0, // 显示折扣
+        price_original: 0, // 原始价格
+        discount_member: 100, // 会员折扣
+        integral: 0, // 积分
+        integral_deduction: 0, // 积分抵扣
+        rate: 0, // 积分比例
+        class: product.class,
+        //   product,
+      }
+      data.labor_fee = Number(product.labor_fee)
+      // 匹配金价
+      const filtered = Props.price.filter(item => item.product_type === product.retail_type)
+      const exists = filtered.some(item =>
+        item.product_type === product.retail_type
+        && item.product_material === product.material
+        && item.product_quality.includes(product.quality)
+        && item.product_brand?.includes(product.brand),
+      )
 
-    if (exists) {
-      data.price_gold = Number(filtered[0].price)
-    }
-    else {
-      data.price_gold = 0
-    }
-    const rate = await Props.checkProductClass({ class: data.class })
-    if (rate && rate !== '0') {
-      data.rate = Number(rate)
-    }
-    else {
-      data.rate = 0
-    }
+      if (exists) {
+        data.price_gold = Number(filtered[0].price)
+      }
+      else {
+        data.price_gold = 0
+      }
+      const rate = await Props.checkProductClass({ class: data.class })
+      if (rate && rate !== '0') {
+        data.rate = Number(rate)
+      }
+      else {
+        data.rate = 0
+      }
 
-    showProductList.value.push(data)
-    showModal.value = false
-  }
-  else {
-    $toast.error('该商品已经添加过')
-  }
+      showProductList.value.push(data)
+      showModal.value = false
+    }
+  })
 }
 
 // 设置折扣率
