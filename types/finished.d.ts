@@ -203,3 +203,17 @@ interface DelProductFinishedEnter {
    */
   product_ids: string[]
 }
+
+/**
+ * 更新图片参数
+ */
+interface UpdateProductFinishedImages {
+  /**
+   * 商品ID
+   */
+  id: ProductFinisheds['id']
+  /**
+   * 图片列表
+   */
+  images: string[]
+}

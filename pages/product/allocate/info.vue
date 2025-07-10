@@ -238,23 +238,22 @@ async function getOldids() {
 
         <template v-if="productList?.length">
           <div class="p-4 blur-bgc rounded-6">
-            <div class="text-[14px] pb-4 text-color">
-              共 {{ productList.length }} 条数据
-            </div>
             <template v-if="type === GoodsTypePure.ProductFinish">
               <template v-for="(item, index) in allocateInfo.product_finisheds" :key="index">
-                <sale-order-nesting :title="item.name" :info="allocateInfo">
-                  <template #left>
-                    <!-- 状态为盘点中时可以删除 -->
-                    <template v-if="allocateInfo.status === 1">
-                      <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="delProduct(item.id)" />
+                <div class="mb-2">
+                  <sale-order-nesting :title="item.name" :info="allocateInfo">
+                    <template #left>
+                      <!-- 状态为盘点中时可以删除 -->
+                      <template v-if="allocateInfo.status === 1">
+                        <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="delProduct(item.id)" />
+                      </template>
+                      <common-tags type="pink" :text="GoodsStatusMap[item.status as GoodsStatus]" :is-oval="true" />
                     </template>
-                    <common-tags type="pink" :text="GoodsStatusMap[item.status as GoodsStatus]" :is-oval="true" />
-                  </template>
-                  <template #info>
-                    <product-base-info :info="item" :filter-list="finishedFilterListToArray" />
-                  </template>
-                </sale-order-nesting>
+                    <template #info>
+                      <product-base-info :info="item" :filter-list="finishedFilterListToArray" />
+                    </template>
+                  </sale-order-nesting>
+                </div>
               </template>
             </template>
             <template v-if="type === GoodsTypePure.ProductOld">

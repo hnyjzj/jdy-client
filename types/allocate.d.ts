@@ -81,6 +81,14 @@ interface Allocate {
   to_store: Stores
   start_time: Date
   end_time: Date
+  /** 总数量 */
+  product_count: number
+  /** 总入网费 */
+  product_total_access_fee: number
+  /** 总标签价 */
+  product_total_label_price: number
+  /** 总重 */
+  product_total_weight_metal: number
 }
 
 interface AllocateReq {

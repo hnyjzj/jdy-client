@@ -207,14 +207,16 @@ const beforeUpload = (data: any) => {
           <div class="flex-1 px-2 sm:px-4">
             <product-filter-search @submit="searchListFn" />
           </div>
-          <div
-            class="flex items-center justify-end cursor-pointer"
-            @click="set">
-            <icon name="i-svg:setup" :size="14" color="#FFF" />
-            <div class="text-[#fff] text-[14px] pl-1">
-              {{ isSetup ? '退出' : '编辑' }}
+          <auth-verify :min="UserLevel.IdentitySuperAdmin">
+            <div
+              class="flex items-center justify-end cursor-pointer"
+              @click="set">
+              <icon name="i-svg:setup" :size="14" color="#FFF" />
+              <div class="text-[#fff] text-[14px] pl-1">
+                {{ isSetup ? '退出' : '编辑' }}
+              </div>
             </div>
-          </div>
+          </auth-verify>
         </div>
       </common-layout-center>
     </div>

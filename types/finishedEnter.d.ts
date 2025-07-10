@@ -53,6 +53,14 @@ interface FinishedEnter {
    */
   updated_at: Date
   type: ProductFinisheds['type']
+  /** 总数 */
+  product_count: number
+  /** 总入网费 */
+  product_total_access_fee: number
+  /** 总标签价格 */
+  product_total_label_price: number
+  /** 总重 */
+  product_total_weight_metal: number
 }
 
 /**
@@ -100,4 +108,10 @@ interface DelFinishedEnter {
    * 商品ID列表
    */
   product_ids: string[]
+}
+
+interface EnterInfoParams {
+  id: FinishedEnter['id']
+  page: number
+  limit: number
 }

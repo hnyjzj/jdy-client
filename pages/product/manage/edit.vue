@@ -135,7 +135,7 @@ const customRequest = useDebounceFn(async ({ file }: UploadCustomRequestOptions)
         status: 'finished',
         url: ImageUrl(res?.data.url),
       })
-      await updateFinishedInfo(productParams.value)
+    //   await updateFinishedInfo(productParams.value)
     }
     else {
       $toast.error(res?.message || '图片上传失败')

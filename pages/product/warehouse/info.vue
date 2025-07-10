@@ -16,7 +16,7 @@ const enterStatus = {
   2: '已完成',
   3: '已撤销',
 }
-
+const pages = ref(1)
 const isImportModel = ref(false)
 const isChooseModel = ref(false)
 const isEditModel = ref(false)
@@ -24,7 +24,7 @@ const deleteDialog = ref(false)
 const clearDialog = ref(false)
 const cancelDialog = ref(false)
 const finishDialog = ref(false)
-
+const loading = ref(false)
 const productParams = ref({} as Partial<ProductFinisheds>)
 
 /** 要删除的产品code */
@@ -36,12 +36,12 @@ if (route.query.id) {
   await getFinishedWhere()
 }
 async function getInfo() {
-  await getFinishedEnterInfo(enterId.value)
-}
-type ProductKey = keyof ProductFinisheds
-/** 汇总 */
-function sum(key: ProductKey) {
-  return enterInfo.value?.products?.reduce((sum, item) => sum + Number(item[key]), 0) ?? 0
+  const params = {
+    id: enterId.value,
+    page: pages.value,
+    limit: 10,
+  } as EnterInfoParams
+  await getFinishedEnterInfo(params)
 }
 async function del(params: DelProductFinishedEnter) {
   const res = await delFinishedEnter(params)
@@ -83,24 +83,30 @@ const uploadRef = ref()
 
 // 提交入库
 async function submitGoods(req: ProductFinisheds[]) {
-  if (req?.length) {
-    const res = await addFinishedEnter({ products: req, enter_id: enterInfo.value.id })
-    if (res?.code === HttpCode.SUCCESS) {
-      isChooseModel.value = false
-      isImportModel.value = false
-      await getInfo()
-      uploadRef.value.clearData()
-      return $toast.success('批量导入成功')
-    }
-    else if (res?.code === HttpCode.ERROR) {
-      let msg = res?.message
-      Object.keys(res?.data).forEach((key) => {
-        msg += `\n条码【${key}】：${res?.data[key]}`
-      })
-      return $toast.error(msg)
-    }
-    $toast.error(res?.message ?? '上传失败')
+  if (!req?.length) {
+    return
   }
+  loading.value = true
+  const res = await addFinishedEnter({ products: req, enter_id: enterInfo.value.id })
+  if (res?.code === HttpCode.SUCCESS) {
+    isChooseModel.value = false
+    isImportModel.value = false
+    await getInfo()
+    uploadRef.value.clearData()
+    loading.value = false
+    return $toast.success('批量导入成功')
+  }
+  else if (res?.code === HttpCode.ERROR) {
+    let msg = res?.message
+    Object.keys(res?.data).forEach((key) => {
+      msg += `\n条码【${key}】：${res?.data[key]}`
+    })
+    loading.value = false
+    return $toast.error(msg)
+  }
+
+  loading.value = false
+  $toast.error(res?.message ?? '上传失败')
 }
 
 /** 撤销入库 */
@@ -182,10 +188,14 @@ function filteredOptions(preset: any, val: number) {
   }
   return preset
 }
+function pull() {
+  getInfo()
+}
 </script>
 
 <template>
-  <div class="storage pb-20">
+  <div class="storage pb-20" style="position: relative;">
+    <common-loading v-model="loading" title="正在处理中" />
     <common-layout-center>
       <div class="pt-4">
         <div class="flex flex-col gap-4">
@@ -231,7 +241,7 @@ function filteredOptions(preset: any, val: number) {
                         门店
                       </div>
                       <div class="info-val">
-                        {{ enterInfo.store.name }}
+                        {{ enterInfo?.store?.name }}
                       </div>
                     </div>
                     <div class="other-information flex flex-col gap-1">
@@ -260,7 +270,7 @@ function filteredOptions(preset: any, val: number) {
                         入库数量
                       </div>
                       <div class="info-val">
-                        {{ enterInfo.products?.length }}
+                        {{ enterInfo.product_count }}
                       </div>
                     </div>
                     <div class="flex-start gap-3 text-sm font-normal">
@@ -268,7 +278,7 @@ function filteredOptions(preset: any, val: number) {
                         入网费合计
                       </div>
                       <div class="info-val">
-                        {{ sum('access_fee') }}
+                        {{ enterInfo.product_total_access_fee }}
                       </div>
                     </div>
                     <div class="flex-start gap-3 text-sm font-normal">
@@ -276,7 +286,7 @@ function filteredOptions(preset: any, val: number) {
                         标签价合计
                       </div>
                       <div class="info-val">
-                        {{ sum('label_price') }}
+                        {{ enterInfo.product_total_label_price }}
                       </div>
                     </div>
                     <div class="flex-start gap-3 text-sm font-normal">
@@ -284,7 +294,7 @@ function filteredOptions(preset: any, val: number) {
                         金重合计
                       </div>
                       <div class="info-val">
-                        {{ sum('weight_metal') }}
+                        {{ enterInfo.product_total_weight_metal }}
                       </div>
                     </div>
                   </div>
@@ -295,9 +305,6 @@ function filteredOptions(preset: any, val: number) {
 
           <template v-if="enterInfo.products?.length">
             <div class="p-4 blur-bgc rounded-6">
-              <div class="text-[14px] pb-4 text-color">
-                共 {{ enterInfo.products.length }}
-              </div>
               <template v-for="(item, index) in enterInfo.products" :key="index">
                 <div class="grid mb-3">
                   <sale-order-nesting :title="item.name" :info="enterInfo">
@@ -357,6 +364,11 @@ function filteredOptions(preset: any, val: number) {
                   </sale-order-nesting>
                 </div>
               </template>
+              <common-page
+                v-model:page="pages" :total="enterInfo.product_count" :limit="10" @update:page="() => {
+                  pull()
+                }
+                " />
             </div>
           </template>
         </div>

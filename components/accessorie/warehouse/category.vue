@@ -13,7 +13,6 @@ const emits = defineEmits<{
   upload: [params: AccessorieCategory[]]
 }>()
 
-const { $toast } = useNuxtApp()
 const isModel = defineModel({ type: Boolean, default: false })
 const fileName = ref()
 // 上传xlsx文件数据
@@ -49,7 +48,6 @@ function cleanExcelData(data: any) {
  */
 async function transformData(data: any[][]) {
   if (!data || data.length < 2) {
-    $toast.error('数据格式不正确，至少需要表头和一行数据')
     return []
   }
 

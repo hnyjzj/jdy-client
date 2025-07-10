@@ -55,6 +55,25 @@ export const useFinished = defineStore('Finished', {
         if (data.value?.code === HttpCode.SUCCESS) {
           this.finishedInfo = data.value.data
         }
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
+      }
+    },
+    /**
+     * 成品详情
+     * 检索专用
+     * @param code
+     * @returns
+     */
+    async getFinishedRetrieval(code: ProductFinisheds['code']) {
+      try {
+        const { data } = await https.post<ProductFinisheds, { code: ProductFinisheds['code'] }>('/product/finished/retrieval', { code })
+        if (data.value?.code === HttpCode.SUCCESS) {
+          this.finishedInfo = data.value.data
+        }
+        return data.value
       }
       catch (error) {
         throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
@@ -90,6 +109,16 @@ export const useFinished = defineStore('Finished', {
       }
       catch (error) {
         throw new Error(`获取积分比例失败: ${error || '未知错误'}`)
+      }
+    },
+    /** 上传产品图片 */
+    async uploadFinishedImg(pamars: UpdateProductFinishedImages) {
+      try {
+        const { data } = await https.put<any, UpdateProductFinishedImages>('/product/finished/upload', pamars)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`更新失败: ${error || '未知错误'}`)
       }
     },
   },

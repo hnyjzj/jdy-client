@@ -3,6 +3,8 @@ const { checkInfo, checkFilterList } = storeToRefs(useCheck())
 const { getCheckInfo, getCheckWhere, changeCheckStatus, addCheckProduct } = useCheck()
 const { userinfo } = useUser()
 const { $toast } = useNuxtApp()
+const { useWxWork } = useWxworkStore()
+
 const route = useRoute()
 
 const { finishedFilterListToArray } = storeToRefs(useFinished())
@@ -27,6 +29,8 @@ const inputModel = ref(false)
 const uploadModel = ref(false)
 const importModel = ref(false)
 const confirmShow = ref(false)
+const loading = ref(false)
+
 /** 上传组件引用 */
 const uploadRef = ref()
 
@@ -53,12 +57,20 @@ function getFunBtn() {
   }
 }
 
+const page = ref(1)
+const limit = ref(20)
 /** 获取详情 */
 async function getInfo() {
-  if (route.query.id) {
-    await getCheckInfo(route.query.id as string)
-    getFunBtn() // 调用 getFunBtn，更新 funbtns
-  }
+  if (!route.query.id)
+    return
+
+  const params = {
+    id: route.query.id,
+    page: page.value,
+    limit: limit.value,
+  } as CheckInfoParams
+  await getCheckInfo(params)
+  getFunBtn() // 调用 getFunBtn，更新 funbtns
 }
 
 /** 多选值 */
@@ -128,11 +140,12 @@ async function addCheckGood(params: AddCheckProduct) {
   const res = await addCheckProduct(params)
   if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
-    $toast.success(res?.message, 1000)
+    $toast.success('添加成功', 1000)
   }
   else {
     $toast.error(res?.message || '添加失败', 1000)
   }
+  loading.value = false
   inputModel.value = false
   uploadModel.value = false
   importModel.value = false
@@ -146,13 +159,13 @@ async function submitGoods() {
   await addCheckGood(params)
   goodCode.value = ''
 }
-
 /** 批量上传盘点货品 */
 async function bulkupload(data: string[]) {
   if (!data || !data.length) {
     $toast.error('请上传正确的货品编号文件')
     return
   }
+  loading.value = true
   const params: AddCheckProduct = {
     id: checkInfo.value.id,
     codes: data,
@@ -179,6 +192,23 @@ const product = computed(() => {
       return []
   }
 })
+
+/** 当前nav货品数据 */
+const infoTotal = computed(() => {
+  switch (product_status.value) {
+    case 1:
+      return checkInfo.value.should_count
+    case 2:
+      return checkInfo.value.actual_count
+    case 3:
+      return checkInfo.value.extra_count
+    case 4:
+      return checkInfo.value.loss_count
+    default:
+      return 0
+  }
+})
+
 function getStateColor() {
   switch (checkInfo.value.status) {
     case CheckStatus.Draft:
@@ -191,6 +221,19 @@ function getStateColor() {
       return 'red'
     default:
       return 'ash'
+  }
+}
+
+async function pull() {
+  await getInfo()
+}
+
+/** 扫码 */
+const scanCode = async () => {
+  const wx = await useWxWork()
+  const code = await wx?.scanQRCode()
+  if (code) {
+    goodCode.value = code
   }
 }
 </script>
@@ -380,9 +423,6 @@ function getStateColor() {
             <common-tab-secondary :current-selected="product_status" :options="inventoryOptions" :info="checkInfo" @change-status="changeStatus" />
             <common-step :description="step" :active-index="checkInfo.status" />
           </div>
-          <div class="color-[#333333] dark:color-[#FFFFFF] font-normal text-[14px]">
-            共 {{ product?.length || 0 }} 条数据
-          </div>
           <template v-if="!product?.length">
             <common-empty img="/images/empty/bag.png" size="160" text="暂无数据" />
           </template>
@@ -405,6 +445,13 @@ function getStateColor() {
               </sale-order-nesting>
             </div>
           </template>
+          <template v-if="infoTotal && product">
+            <common-page
+              v-model:page="page" :total="infoTotal" :limit="limit" @update:page="() => {
+                pull()
+              }
+              " />
+          </template>
         </div>
       </div>
     </div>
@@ -420,8 +467,13 @@ function getStateColor() {
     <product-upload-choose v-model:is-model="uploadModel" title="正在盘点" @go-add="uploadModel = false;inputModel = true" @batch="importModel = true" />
     <common-model v-model="inputModel" title="正在盘点" :show-ok="true" @confirm="submitGoods">
       <div class="mb-8 relative min-h-[60px]">
-        <div class="uploadInp cursor-pointer">
+        <div class="uploadInp cursor-pointer flex">
           <n-input v-model:value="goodCode" placeholder="请输入条码" />
+          <div
+            class="flex items-center justify-end cursor-pointer"
+            @click="scanCode()">
+            <icon class="ml-2" name="i-icon:scanit" :size="18" />
+          </div>
         </div>
       </div>
     </common-model>
@@ -433,6 +485,7 @@ function getStateColor() {
       @submit="ConfirmUse"
       @cancel="confirmShow = false"
     />
+    <common-loading v-show="loading" text="正在处理中" />
     <product-check-warehouse ref="uploadRef" v-model="importModel" @upload="bulkupload" />
   </div>
 </template>
