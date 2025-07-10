@@ -69,9 +69,9 @@ const addProduct = async (products: ProductFinisheds[]) => {
       }
 
       showProductList.value.push(data)
-      showModal.value = false
     }
   })
+  showModal.value = false
 }
 
 // 设置折扣率
