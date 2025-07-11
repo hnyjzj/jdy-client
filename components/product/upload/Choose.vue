@@ -18,7 +18,7 @@ function batchFun() {
 <template>
   <div>
     <common-model v-model="isModel" :title="props.title">
-      <div class="mb-8 min-h-[60px] flex">
+      <div class="mb-8 min-h-[200px] flex">
         <div class="box" @click="batchFun">
           <div class="batch green">
             <img class="block" src="/images/icon/export.png" width="24" height="24">
