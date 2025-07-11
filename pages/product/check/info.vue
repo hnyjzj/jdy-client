@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { checkInfo, checkFilterList } = storeToRefs(useCheck())
-const { getCheckInfo, getCheckWhere, changeCheckStatus, addCheckProduct } = useCheck()
+const { getCheckInfo, getCheckWhere, changeCheckStatus, addCheckProduct, remove } = useCheck()
 const { userinfo } = useUser()
 const { $toast } = useNuxtApp()
 const { useWxWork } = useWxworkStore()
@@ -43,15 +43,15 @@ const funbtns = ref<funBtn[]>([])
 function getFunBtn() {
   funbtns.value = [] // 清空按钮数组
   // 根据状态添加按钮
-  if (userinfo.id === checkInfo.value.inventory_person_id && checkInfo.value.status === CheckStatus.Draft) {
+  if (checkInfo.value.inventory_person_ids?.indexOf(userinfo.id) !== -1 && checkInfo.value.status === CheckStatus.Draft) {
     funbtns.value.push({ status: CheckStatus.Cancel, text: '取消盘点' })
     funbtns.value.push({ status: CheckStatus.Checking, text: '开始盘点' })
   }
-  if (userinfo.id === checkInfo.value.inventory_person_id && checkInfo.value.status === CheckStatus.Checking) {
+  if (checkInfo.value.inventory_person_ids?.indexOf(userinfo.id) !== -1 && checkInfo.value.status === CheckStatus.Checking) {
     funbtns.value.push({ status: CheckStatus.ToBeVerified, text: '结束盘点', finish: true })
     funbtns.value.push({ status: CheckStatus.ToBeVerified, text: '开始盘点', add: true })
   }
-  if (userinfo.id === checkInfo.value.inspector_id && checkInfo.value.status === CheckStatus.ToBeVerified) {
+  if (checkInfo.value.inventory_person_ids?.indexOf(userinfo.id) !== -1 && checkInfo.value.status === CheckStatus.ToBeVerified) {
     funbtns.value.push({ status: CheckStatus.Abnormal, text: '异常' })
     funbtns.value.push({ status: CheckStatus.Checked, text: '验证通过' })
   }
@@ -135,20 +135,23 @@ function handleClick(item: funBtn) {
   submitChange(item.status)
 }
 
-/** 添加货品 */
-async function addCheckGood(params: AddCheckProduct) {
+/**
+ * 添加货品
+ * @params params: AddCheckProduct
+ * @params isClose: boolean 是否关闭添加弹窗
+ */
+async function addCheckGood(params: AddCheckProduct, isClose = true) {
   const res = await addCheckProduct(params)
   if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
     $toast.success('添加成功', 1000)
+    goodCode.value = ''
   }
   else {
     $toast.error(res?.message || '添加失败', 1000)
   }
   loading.value = false
-  inputModel.value = false
-  uploadModel.value = false
-  importModel.value = false
+  inputModel.value = isClose
 }
 
 async function submitGoods() {
@@ -156,8 +159,8 @@ async function submitGoods() {
     id: checkInfo.value.id,
     codes: [goodCode.value],
   }
+  loading.value = true
   await addCheckGood(params)
-  goodCode.value = ''
 }
 /** 批量上传盘点货品 */
 async function bulkupload(data: string[]) {
@@ -170,7 +173,7 @@ async function bulkupload(data: string[]) {
     id: checkInfo.value.id,
     codes: data,
   }
-  await addCheckGood(params)
+  await addCheckGood(params, false)
 }
 
 async function ConfirmUse() {
@@ -236,6 +239,17 @@ const scanCode = async () => {
     goodCode.value = code
   }
 }
+
+const removeDict = useDebounceFn(async (product_id) => {
+  const res = await remove(checkInfo.value.id, product_id)
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('删除成功')
+    await getInfo()
+  }
+  else {
+    $toast.error(res?.message || '删除失败')
+  }
+}, 1000)
 </script>
 
 <template>
@@ -252,7 +266,7 @@ const scanCode = async () => {
                       盘点人
                     </div>
                     <div class="right">
-                      {{ checkInfo.inventory_person?.nickname }}
+                      {{ checkInfo.inventory_persons.map(v => v.nickname).join('、') }}
                     </div>
                   </div>
                   <div class="part">
@@ -430,17 +444,22 @@ const scanCode = async () => {
             <div class="grid mb-3">
               <sale-order-nesting :title="checkInfo.type === GoodsType.ProductFinish ? item.product_finished?.name : item.product_old?.name" :info="checkInfo">
                 <template #left>
+                  <template v-if="checkInfo.status === CheckStatus.Checking">
+                    <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="removeDict(item.id)" />
+                  </template>
                   <template v-if="checkInfo.type === GoodsType.ProductFinish">
                     <common-tags type="pink" :text="GoodsStatusMap[item.product_finished?.status as GoodsStatus]" :is-oval="true" />
                   </template>
                 </template>
                 <template #info>
-                  <template v-if="checkInfo.type === GoodsType.ProductFinish">
-                    <product-base-info :info="item.product_finished" :code="item.product_code" :filter-list="finishedFilterListToArray" />
-                  </template>
-                  <template v-else-if="checkInfo.type === GoodsType.ProductOld">
-                    <product-base-info :info="item.product_old" :code="item.product_code" :filter-list="oldFilterListToArray" />
-                  </template>
+                  <div>
+                    <template v-if="checkInfo.type === GoodsType.ProductFinish">
+                      <product-base-info :info="item.product_finished" :code="item.product_code" :filter-list="finishedFilterListToArray" />
+                    </template>
+                    <template v-else-if="checkInfo.type === GoodsType.ProductOld">
+                      <product-base-info :info="item.product_old" :code="item.product_code" :filter-list="oldFilterListToArray" />
+                    </template>
+                  </div>
                 </template>
               </sale-order-nesting>
             </div>
@@ -466,13 +485,13 @@ const scanCode = async () => {
     </template>
     <product-upload-choose v-model:is-model="uploadModel" title="正在盘点" @go-add="uploadModel = false;inputModel = true" @batch="importModel = true" />
     <common-model v-model="inputModel" title="正在盘点" :show-ok="true" @confirm="submitGoods">
-      <div class="mb-8 relative min-h-[60px]">
+      <div class="mb-8 relative min-h-[200px]">
         <div class="uploadInp cursor-pointer flex">
           <n-input v-model:value="goodCode" placeholder="请输入条码" />
           <div
             class="flex items-center justify-end cursor-pointer"
             @click="scanCode()">
-            <icon class="ml-2" name="i-icon:scanit" :size="18" />
+            <icon class="ml-2" name="i-icon:scanit" :size="20" />
           </div>
         </div>
       </div>

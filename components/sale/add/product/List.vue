@@ -51,7 +51,7 @@ const count = (p: ProductFinished) => {
   // 如果是计件方式 标签价格 x 数量 x 折扣
   if (p?.retail_type === 1) {
     const total = calc(`(price * quantity * discount * member_discount) - notCount - scoreDeduction - cardDeduction | =${hold} ~${rounding},!n`, {
-      price: p?.label_price, // 标签价格
+      price: p?.label_price || 0, // 标签价格
       quantity: 1, // 数量
       scoreDeduction: methA(p.integral_deduction || 0) || 0,
       cardDeduction: 0, // 卡券抵扣
@@ -61,8 +61,8 @@ const count = (p: ProductFinished) => {
     })
     p.price = total
     // 计算不算折扣的原价
-    const orign = calc('(price * quantity) | <=2,!n', {
-      price: p?.label_price,
+    const orign = calc(`(price * quantity) | =${hold} ~${rounding},!n`, {
+      price: p?.label_price || 0,
       quantity: 1,
     })
     p.price_original = orign
@@ -93,20 +93,20 @@ const count = (p: ProductFinished) => {
   // 计重工费按克 [（金价 + 工费）X克重] X折扣
   if (p.retail_type === 2) {
     const total = calc(`((price + labor_fee) * weight_metal * discount  * member_discount) - notCount - scoreDeduction - cardDeduction  | =${hold} ~${rounding},!n`, {
-      price: p?.price_gold,
-      labor_fee: p?.labor_fee,
-      weight_metal: p?.weight_metal,
-      scoreDeduction: methA(p.integral_deduction),
+      price: p?.price_gold || 0,
+      labor_fee: p?.labor_fee || 0,
+      weight_metal: p?.weight_metal || 0,
+      scoreDeduction: methA(p.integral_deduction) || 0,
       cardDeduction: 0,
       member_discount: (p.discount_member || 100) * 0.01,
       discount: ((p.discount_fixed || 100) * 0.01),
-      notCount: p?.round_off,
+      notCount: p?.round_off || 0,
     })
     p.price = total
-    const orign = calc('(price + labor_fee) * weight_metal | <=2,!n', {
-      price: p?.price_gold,
-      labor_fee: p?.labor_fee,
-      weight_metal: p.weight_metal,
+    const orign = calc(`(price + labor_fee) * weight_metal | =${hold} ~${rounding},!n`, {
+      price: p?.price_gold || 0,
+      labor_fee: p?.labor_fee || 0,
+      weight_metal: p.weight_metal || 0,
     })
     p.price_original = orign
     if (total === 0 && orign === 0) {
@@ -114,11 +114,12 @@ const count = (p: ProductFinished) => {
     }
     else {
       p.discount_final = calc('(total / orign) * a | <=2 ,!n', {
-        total: p?.price,
-        orign: p?.price_original,
+        total: p?.price || 0,
+        orign: p?.price_original || 0,
         a: 100,
       })
     }
+
     if (Props.isIntegral) {
       if (p.rate === 0) {
         p.integral = 0
@@ -139,20 +140,20 @@ const count = (p: ProductFinished) => {
   //   计重工费按件   （(金价X克重)) + 工费）X件数 X折扣
   if (p.retail_type === 3) {
     const total = calc(`(((price * weight_metal) + labor_fee)  * discount  * member_discount ) - notCount  - scoreDeduction - cardDeduction |  =${hold} ~${rounding},!n`, {
-      price: p.price_gold,
-      labor_fee: p?.labor_fee,
-      weight_metal: p?.weight_metal,
-      scoreDeduction: methA(p.integral_deduction),
+      price: p.price_gold || 0,
+      labor_fee: p?.labor_fee || 0,
+      weight_metal: p?.weight_metal || 0,
+      scoreDeduction: methA(p.integral_deduction) || 0,
       cardDeduction: 0,
       member_discount: (p.discount_member || 100) * 0.01,
       discount: ((p.discount_fixed || 100) * 0.01),
-      notCount: p?.round_off,
+      notCount: p?.round_off || 0,
     })
     p.price = total
-    const orign = calc('(((price * weight_metal) + labor_fee) ) | <=2,!n', {
-      price: p.price_gold,
-      labor_fee: p?.labor_fee,
-      weight_metal: p?.weight_metal,
+    const orign = calc(`(((price * weight_metal) + labor_fee) ) | =${hold} ~${rounding},!n`, {
+      price: p.price_gold || 0,
+      labor_fee: p?.labor_fee || 0,
+      weight_metal: p?.weight_metal || 0,
     })
     p.price_original = orign
     if (total === 0 && orign === 0) {
@@ -324,6 +325,7 @@ const count = (p: ProductFinished) => {
                         :show-button="false"
                         placeholder="请输入金价(元/g)"
                         round
+                        min="0"
                         @focus="focus"
 
                         @blur="() => {

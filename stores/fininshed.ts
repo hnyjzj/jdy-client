@@ -65,7 +65,6 @@ export const useFinished = defineStore('Finished', {
      * 成品详情
      * 检索专用
      * @param code
-     * @returns
      */
     async getFinishedRetrieval(code: ProductFinisheds['code']) {
       try {

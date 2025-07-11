@@ -84,5 +84,15 @@ export const useCheck = defineStore('check', {
         throw new Error(`添加盘点货品失败: ${error || '未知错误'}`)
       }
     },
+    /** 删除已添加盘点产品 */
+    async remove(id: Check['id'], product_id: string) {
+      try {
+        const { data } = await https.put<{ id: string, product_id: string }, any >('/product/inventory/remove', { id, product_id })
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`删除失败: ${error || '未知错误'}`)
+      }
+    },
   },
 })

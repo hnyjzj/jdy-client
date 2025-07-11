@@ -84,7 +84,7 @@ const getSpecificInfo = async () => {
 const printPre = () => {
   const PrintComponent = defineComponent({
     render() {
-      return h(PrintTemp, { details: OrderDetail.value, type: 1, operator: userinfo.value.nickname, payMethod: gather.value, numerical: tempInfo.value })
+      return h(PrintTemp, { details: OrderDetail.value, type: 1, payMethod: gather.value, numerical: tempInfo.value })
     },
   })
   getMethod()

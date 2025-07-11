@@ -68,7 +68,7 @@ const submit = useDebounceFn(async () => {
   else {
     $toast.error(res?.message ?? '创建失败')
   }
-}, 500)
+}, 1000)
 
 const presetToSelect = (key: keyof Check): { label: string, value: any }[] => {
   if (!key)
@@ -232,7 +232,7 @@ async function getStoreStaffListFun() {
                             <n-input v-model:value="params[item.name] as string" round :placeholder="`输入${item.label}`" @focus="focus" />
                           </template>
                           <template v-if="item.input === 'search'">
-                            <template v-if="item.name === 'inventory_person_id' || item.name === 'inspector_id'">
+                            <template v-if="item.name === 'inspector_id'">
                               <n-select
                                 v-model:value="params[item.name]"
                                 :placeholder="`请输入${item.label}`"
@@ -252,32 +252,52 @@ async function getStoreStaffListFun() {
                             </template>
                           </template>
                           <template v-if="item.input === 'multiple'">
-                            <div class="flex items-center w-[100%]">
+                            <template v-if="item.name === 'inventory_person_ids'">
                               <n-select
                                 v-model:value="params[item.name]"
-                                multiple
-                                size="large"
-                                :placeholder="`请选择${item.label}`"
-                                :options="presetToSelect(item.name)"
-                                :consistent-menu-width="false"
+                                :placeholder="`请输入${item.label}`"
+                                :options="StoreStaffList.map(v => ({
+                                  label: v.nickname,
+                                  value: v.id,
+                                }))"
                                 clearable
-                                @focus="focus"
+                                size="large"
+                                remote
+                                multiple
+                                @focus="(e) => {
+                                  focus(e)
+                                  getStoreStaffListFun()
+                                }"
                               />
-                              <div class="ml-2">
-                                <n-switch size="large" @change="(e) => handleSwitchChange(e, item.name)">
-                                  <template #unchecked>
-                                    <div>
-                                      全选
-                                    </div>
-                                  </template>
-                                  <template #checked>
-                                    <div class="pl-2">
-                                      清空
-                                    </div>
-                                  </template>
-                                </n-switch>
+                            </template>
+                            <template v-else>
+                              <div class="flex items-center w-[100%]">
+                                <n-select
+                                  v-model:value="params[item.name]"
+                                  multiple
+                                  size="large"
+                                  :placeholder="`请选择${item.label}`"
+                                  :options="presetToSelect(item.name)"
+                                  :consistent-menu-width="false"
+                                  clearable
+                                  @focus="focus"
+                                />
+                                <div class="ml-2">
+                                  <n-switch size="large" @change="(e) => handleSwitchChange(e, item.name)">
+                                    <template #unchecked>
+                                      <div>
+                                        全选
+                                      </div>
+                                    </template>
+                                    <template #checked>
+                                      <div class="pl-2">
+                                        清空
+                                      </div>
+                                    </template>
+                                  </n-switch>
+                                </div>
                               </div>
-                            </div>
+                            </template>
                           </template>
                         </n-form-item>
                       </template>

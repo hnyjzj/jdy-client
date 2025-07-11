@@ -31,7 +31,8 @@ interface Check {
   /**
    * 盘点人ID
    */
-  inventory_person_id: string
+  inventory_person_ids: string
+  inventory_persons: Staff[]
   /**
    * 产品材质
    */
@@ -136,11 +137,11 @@ interface CheckInfo {
   /**
    * 盘带你人信息
    */
-  inventory_person?: Staff
+  inventory_persons: Staff[]
   /**
    * 盘点人ID
    */
-  inventory_person_id: string
+  inventory_person_ids: string
   /**
    * 产品材质
    */
@@ -205,6 +206,7 @@ interface CheckProduct {
   product_finished: ProductFinisheds
   product_old: ProductOlds
   product_code: string
+  id: string
 }
 
 interface AddCheckProduct {
