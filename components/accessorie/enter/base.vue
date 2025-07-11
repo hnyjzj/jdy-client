@@ -93,7 +93,7 @@ function sumCategory(key: string): number {
                   数量
                 </div>
                 <div class="info-val">
-                  {{ props.enterInfo.products?.length }}
+                  {{ props.enterInfo?.product_count }}
                 </div>
               </div>
               <div class="info-row">
@@ -117,7 +117,7 @@ function sumCategory(key: string): number {
                   入库总件数
                 </div>
                 <div class="info-val">
-                  {{ sum('stock') || 0 }}
+                  {{ props.enterInfo?.product_total }}
                 </div>
               </div>
               <div class="info-row">

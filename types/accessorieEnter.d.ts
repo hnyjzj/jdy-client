@@ -47,6 +47,10 @@ interface AccessorieEnter {
    */
   updated_at: Date
   type: ProductAccessories['type']
+  /** 入库数量 */
+  product_count?: number
+  /** 入库总件数 */
+  product_total?: number
 }
 
 /**

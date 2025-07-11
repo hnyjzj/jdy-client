@@ -156,13 +156,7 @@ async function changeStore() {
               <div class="py-[4px] flex justify-between">
                 <div>入库数量</div>
                 <div class="text-align-end">
-                  {{ info.products?.length || 0 }}
-                </div>
-              </div>
-              <div class="py-[4px] flex justify-between">
-                <div>入网费合计</div>
-                <div class="text-align-end">
-                  {{ info.products?.reduce((pre, cur:ProductFinisheds) => pre + Number(cur?.access_fee || 0), 0) || 0 }}
+                  {{ info?.product_total }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
@@ -172,7 +166,13 @@ async function changeStore() {
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
-                <div>总重</div>
+                <div>入网费合计</div>
+                <div class="text-align-end">
+                  {{ info.products?.reduce((pre, cur:ProductFinisheds) => pre + Number(cur?.access_fee || 0), 0) || 0 }}
+                </div>
+              </div>
+              <div class="py-[4px] flex justify-between">
+                <div>重量合计</div>
                 <div class="text-align-end">
                   {{ info.products?.reduce((pre, cur) => pre + Number(cur?.category.weight || 0), 0) || 0 }}
                 </div>

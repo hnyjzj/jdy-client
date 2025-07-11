@@ -158,15 +158,7 @@ function getStoreName(id: Stores['id']) {
                       总件数
                     </div>
                     <div class="info-val">
-                      {{ accessorieAllocateInfo.products?.length }}
-                    </div>
-                  </div>
-                  <div class="info-row">
-                    <div class="info-title">
-                      调拨总数量
-                    </div>
-                    <div class="info-val">
-                      {{ accessorieAllocateInfo.products?.reduce((total, item) => total + Number(item.quantity), 0) ?? 0 }}
+                      {{ accessorieAllocateInfo.product_total }}
                     </div>
                   </div>
                 </div>
@@ -177,7 +169,7 @@ function getStoreName(id: Stores['id']) {
         <template v-if="accessorieAllocateInfo.products?.length">
           <div class="p-4 blur-bgc rounded-6">
             <div class="text-[14px] pb-4 text-color">
-              共 {{ accessorieAllocateInfo.products.length }} 条数据
+              共 {{ accessorieAllocateInfo.product_count }} 条数据
             </div>
             <template v-for="(item, index) in accessorieAllocateInfo.products" :key="index">
               <div class="grid mb-3">

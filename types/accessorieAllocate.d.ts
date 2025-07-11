@@ -77,6 +77,10 @@ interface AccessorieAllocate {
   to_store: Stores
   start_time: Date
   end_time: Date
+  /** 调拨总数 */
+  product_count?: number
+  /** 调拨总件数 */
+  product_total?: number
 }
 
 interface allocateProduct {
