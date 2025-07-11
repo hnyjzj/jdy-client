@@ -13,10 +13,6 @@ const props = defineProps<{
    */
   type?: number
   /**
-   * 操作员
-   */
-  operator?: string
-  /**
    * 支付方式
    */
   payMethod?: string
@@ -36,6 +32,19 @@ const intercepting = () => {
 const hasFinished = ref(false)
 const hasOld = ref(false)
 const hasAccessorie = ref(false)
+const majorSalesman = ref('')
+
+const findSalesman = () => {
+  if (props.details?.clerks) {
+    for (let i = 0; i < props.details?.clerks.length; i++) {
+      if (props.details?.clerks[i].is_main) {
+        // 销售员没有昵称会被赋值为'''
+        majorSalesman.value = props.details?.clerks[i].salesman?.nickname || ''
+        break
+      }
+    }
+  }
+}
 
 const judgeType = () => {
   if (props.details) {
@@ -54,6 +63,7 @@ const judgeType = () => {
   }
 }
 
+findSalesman()
 judgeType()
 </script>
 
@@ -459,7 +469,7 @@ judgeType()
       </div>
 
       <div>
-        {{ props.operator || '开票人' }}
+        {{ majorSalesman || '开票人' }}
       </div>
 
       <div>
