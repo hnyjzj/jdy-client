@@ -90,7 +90,9 @@ const handleValidateButtonClick = (e: MouseEvent) => {
           clearable
           remote
           @search="searchStores"
-          @focus="focus"
+          @focus="() => {
+            searchStores('')
+          }"
         />
       </n-form-item>
       <div class="grid-12 px-[26px]">
