@@ -118,7 +118,9 @@ const content = computed(() => {
           clearable
           remote
           @search="searchStaff"
-          @focus="focus"
+          @focus="() => {
+            searchStaff('')
+          }"
         />
       </n-form-item>
       <div class="grid-12 px-[26px]">
