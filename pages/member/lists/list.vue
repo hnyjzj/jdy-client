@@ -25,7 +25,6 @@ const items = ref([{
   selected: '',
 }])
 
-const complate = ref(0)
 const searchKey = ref('')
 const isFilter = ref(false)
 const filterData = ref({} as Partial<Member>)
@@ -86,6 +85,15 @@ const disposeNumerical = () => {
   }
 }
 
+const searchMember = async () => {
+  if (searchKey.value) {
+    await getMemberList({ page: searchPage.value, limit, where: { phone: searchKey.value, store_id: myStore.value.id } })
+  }
+  else if (searchKey.value === '') {
+    await getList()
+  }
+}
+
 const adjustIntegral = async () => {
   if (adjustWay.value !== 0 && fluctuant.value !== 0 && fluctuant.value !== undefined && integralParams.value.remark) {
     disposeNumerical()
@@ -103,6 +111,16 @@ async function submitWhere(f: Partial<Member>) {
   filterData.value = { ...f }
   memberList.value = []
   await getList(filterData.value)
+}
+
+const clearFn = async () => {
+  memberList.value = []
+  searchPage.value = 1
+  await getList()
+}
+
+const changeStores = async () => {
+  await getList()
 }
 
 const updatePage = async (page: number) => {
@@ -124,7 +142,7 @@ const userCancel = () => {
 </script>
 
 <template>
-  <div class="pb-[80px]">
+  <div class="pb-[80px] grid-12">
     <common-model
       v-model:model-value="show"
       :show-ok="true"
@@ -211,20 +229,34 @@ const userCancel = () => {
       </div>
     </common-model>
 
-    <product-filter
-      v-model:id="complate" v-model:search="searchKey" :product-list-total="memberListTotal" @filter="openFilter">
-      <template #company>
-        <product-manage-company />
-      </template>
-    </product-filter>
+    <div id="header" class="px-[16px] py-[12px] w-full col-12" uno-lg="col-8 offset-2">
+      <div class="flex flex-row gap-2">
+        <product-manage-company class="color-[#fff]" @change="changeStores" />
+        <product-filter-search
+          v-model:search-key="searchKey"
+          placeholder="搜索手机号"
+          class="color-[#fff] flex-1"
+          @submit="searchMember"
+          @clear="clearFn"
+        />
+      </div>
+      <div class="flex-center-between gap-2 py-[16px]">
+        <div class="text-size-[14px] color-[#fff]">
+          共{{ memberListTotal }}条数据
+        </div>
+        <div @click="openFilter()">
+          <product-filter-senior class="color-[#fff]" />
+        </div>
+      </div>
 
-    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
+      <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
 
-    <div class="flex flex-col px-[16px] pb-[16px]">
-      <member-lists-list :info="memberList" @go-info="userJump" @view-integral="goIntegral" @change-integral="adjustment" />
+      <div class="flex flex-col pb-[16px]">
+        <member-lists-list :info="memberList" @go-info="userJump" @view-integral="goIntegral" @change-integral="adjustment" />
+      </div>
+
+      <common-page v-model:page="searchPage" :total="memberListTotal" :limit="limit" @update:page="updatePage" />
     </div>
-
-    <common-page v-model:page="searchPage" :total="memberListTotal" :limit="limit" @update:page="updatePage" />
   </div>
 </template>
 
