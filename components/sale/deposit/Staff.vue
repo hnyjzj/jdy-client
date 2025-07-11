@@ -25,8 +25,7 @@ const formData = defineModel<DepositOrder>('formData', { default: {} })
                 }))"
                 clearable
                 remote
-                @focus="(e) => {
-                  focus(e)
+                @focus="() => {
                   props.getStaffs()
                 }"
               />
@@ -51,8 +50,7 @@ const formData = defineModel<DepositOrder>('formData', { default: {} })
                 }))"
                 clearable
                 remote
-                @focus="(e) => {
-                  focus(e)
+                @focus="() => {
                   props.getStaffs()
                 }"
               />

@@ -27,8 +27,7 @@ const region = defineModel('region', { default: {} })
               }))"
               clearable
               remote
-              @focus="(e) => {
-                focus(e)
+              @focus="() => {
                 props.getStaff()
               }"
             />
@@ -47,8 +46,7 @@ const region = defineModel('region', { default: {} })
               }))"
               clearable
               remote
-              @focus="(e) => {
-                focus(e)
+              @focus="() => {
                 props.getStaff()
               }"
             />

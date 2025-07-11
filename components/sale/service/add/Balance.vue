@@ -49,7 +49,7 @@ const unPayMoney = computed(() => {
                   }"
                 >
                   <n-select
-                    v-model:value="item.payment_method" :options="payMethods" @focus="focus" />
+                    v-model:value="item.payment_method" :options="payMethods" />
                 </n-form-item-gi>
                 <n-form-item-gi
                   :span="12"
