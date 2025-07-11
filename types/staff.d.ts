@@ -17,7 +17,7 @@ interface Staff {
   region_superiors?: Region[]
   stores?: Store[]
   store_superiors?: Store[]
-  identity?: number
+  identity?: UserLevel
   role_id?: string
   updated_at?: string
   last_login_at?: string
@@ -64,7 +64,7 @@ interface updateStaffForm {
   username?: string
   avatar?: string
   email?: string
-  identity?: number
+  identity?: UserLevel
   gender?: number
   role_id?: string
   is_disabled?: boolean
@@ -96,7 +96,7 @@ interface updatePassword {
 interface updateAuthRole {
   id: string
   role_id: string
-  identity: number
+  identity: UserLevel
   store_ids: string[]
   store_superior_ids: string[]
   region_ids: string[]
