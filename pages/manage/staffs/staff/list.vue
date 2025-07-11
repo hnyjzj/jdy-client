@@ -79,10 +79,16 @@ const updatePage = async (page: number) => {
   searchPage.value = page
   getList()
 }
-const changeStore = async () => {
+const retrieve = async () => {
   searchPage.value = 1
   nomore.value = false
   await getList()
+}
+
+const searchKeyFn = async (data: string) => {
+  searchPage.value = 1
+  nomore.value = false
+  await getList({ nickname: data })
 }
 </script>
 
@@ -90,9 +96,9 @@ const changeStore = async () => {
   <div>
     <div id="header">
       <product-filter
-        v-model:id="complate" v-model:search="searchKey" :product-list-total="total" @filter="heightSearchFn">
+        v-model:id="complate" v-model:search="searchKey" :product-list-total="total" @filter="heightSearchFn" @search="searchKeyFn" @clear-search="retrieve">
         <template #company>
-          <product-manage-company @change="changeStore" />
+          <product-manage-company @change="retrieve" />
         </template>
       </product-filter>
     </div>
