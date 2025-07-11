@@ -75,10 +75,6 @@ async function submitProduct() {
       $toast.error('请填写入库数量')
       return
     }
-    if (!item.in_access_fee) {
-      $toast.error('请填写入库入网费')
-      return
-    }
   }
 
   // 验证通过后，收集所有产品信息

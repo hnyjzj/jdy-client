@@ -227,12 +227,15 @@ function getStoreName(id: Stores['id']) {
         </template>
       </div>
     </div>
-    <template v-if="accessorieAllocateInfo.status === 1 && myStore?.id === accessorieAllocateInfo.from_store_id">
+    <template v-if="accessorieAllocateInfo.status === AllocateStatus.Draft && myStore?.id === accessorieAllocateInfo.from_store_id">
       <common-button-bottom cancel-text="取消调拨" text="确认调拨" @cancel="cancel" @confirm="confirm" />
     </template>
-    <template v-if="accessorieAllocateInfo.status === 2">
+    <template v-if="accessorieAllocateInfo.status === AllocateStatus.InTransit">
       <template v-if="accessorieAllocateInfo.method === 2 || myStore?.id === accessorieAllocateInfo.to_store_id">
         <common-button-bottom cancel-text="取消调拨" confirm-text="完成调拨" @cancel="cancel" @confirm="finish" />
+      </template>
+      <template v-if="myStore?.id === accessorieAllocateInfo.from_store_id">
+        <common-button-one text="取消调拨" @confirm="cancel" />
       </template>
     </template>
     <!-- 状态为盘点中 增加产品 -->

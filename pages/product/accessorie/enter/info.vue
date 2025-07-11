@@ -84,10 +84,14 @@ function finishFun() {
 async function finish() {
   const res = await successAccessorieEnter(enterInfo.value.id)
   if (res?.code === HttpCode.SUCCESS) {
-    await fetchEnterInfo()
-    return $toast.success('完成入库成功')
+    $toast.success('完成入库成功')
+    setTimeout(() => {
+      router.back()
+    }, 1000)
   }
-  $toast.error(res?.message ?? '完成入库失败')
+  else {
+    $toast.error(res?.message ?? '完成入库失败')
+  }
 }
 
 /** 删除入库单中的指定产品 */
