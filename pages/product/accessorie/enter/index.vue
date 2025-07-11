@@ -107,8 +107,10 @@ function goAdd() {
   jump('/product/warehouse/add')
 }
 
+const filterRef = ref()
 async function changeStore() {
   pages.value = 1
+  filterRef.value.reset()
   await getList()
 }
 </script>
@@ -154,13 +156,7 @@ async function changeStore() {
               <div class="py-[4px] flex justify-between">
                 <div>入库数量</div>
                 <div class="text-align-end">
-                  {{ info.products?.length || 0 }}
-                </div>
-              </div>
-              <div class="py-[4px] flex justify-between">
-                <div>入网费合计</div>
-                <div class="text-align-end">
-                  {{ info.products?.reduce((pre, cur:ProductFinisheds) => pre + Number(cur?.access_fee || 0), 0) || 0 }}
+                  {{ info?.product_total }}
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
@@ -170,7 +166,13 @@ async function changeStore() {
                 </div>
               </div>
               <div class="py-[4px] flex justify-between">
-                <div>总重</div>
+                <div>入网费合计</div>
+                <div class="text-align-end">
+                  {{ info.products?.reduce((pre, cur:ProductFinisheds) => pre + Number(cur?.access_fee || 0), 0) || 0 }}
+                </div>
+              </div>
+              <div class="py-[4px] flex justify-between">
+                <div>重量合计</div>
                 <div class="text-align-end">
                   {{ info.products?.reduce((pre, cur) => pre + Number(cur?.category.weight || 0), 0) || 0 }}
                 </div>
@@ -207,7 +209,7 @@ async function changeStore() {
       </template>
     </div>
     <accessorie-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
-    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" />
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" />
     <common-create @create="isCreateModel = true" />
     <common-model v-model="isCreateModel" title="添加入库单" :show-ok="true" @confirm="createEnter">
       <div class="mb-8 min-h-[60px]">

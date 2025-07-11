@@ -158,15 +158,7 @@ function getStoreName(id: Stores['id']) {
                       总件数
                     </div>
                     <div class="info-val">
-                      {{ accessorieAllocateInfo.products?.length }}
-                    </div>
-                  </div>
-                  <div class="info-row">
-                    <div class="info-title">
-                      调拨总数量
-                    </div>
-                    <div class="info-val">
-                      {{ accessorieAllocateInfo.products?.reduce((total, item) => total + Number(item.quantity), 0) ?? 0 }}
+                      {{ accessorieAllocateInfo.product_total }}
                     </div>
                   </div>
                 </div>
@@ -177,7 +169,7 @@ function getStoreName(id: Stores['id']) {
         <template v-if="accessorieAllocateInfo.products?.length">
           <div class="p-4 blur-bgc rounded-6">
             <div class="text-[14px] pb-4 text-color">
-              共 {{ accessorieAllocateInfo.products.length }} 条数据
+              共 {{ accessorieAllocateInfo.product_count }} 条数据
             </div>
             <template v-for="(item, index) in accessorieAllocateInfo.products" :key="index">
               <div class="grid mb-3">
@@ -227,12 +219,15 @@ function getStoreName(id: Stores['id']) {
         </template>
       </div>
     </div>
-    <template v-if="accessorieAllocateInfo.status === 1 && myStore?.id === accessorieAllocateInfo.from_store_id">
+    <template v-if="accessorieAllocateInfo.status === AllocateStatus.Draft && myStore?.id === accessorieAllocateInfo.from_store_id">
       <common-button-bottom cancel-text="取消调拨" text="确认调拨" @cancel="cancel" @confirm="confirm" />
     </template>
-    <template v-if="accessorieAllocateInfo.status === 2">
+    <template v-if="accessorieAllocateInfo.status === AllocateStatus.InTransit">
       <template v-if="accessorieAllocateInfo.method === 2 || myStore?.id === accessorieAllocateInfo.to_store_id">
         <common-button-bottom cancel-text="取消调拨" confirm-text="完成调拨" @cancel="cancel" @confirm="finish" />
+      </template>
+      <template v-if="myStore?.id === accessorieAllocateInfo.from_store_id">
+        <common-button-one text="取消调拨" @confirm="cancel" />
       </template>
     </template>
     <!-- 状态为盘点中 增加产品 -->

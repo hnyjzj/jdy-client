@@ -83,8 +83,10 @@ function goInfo(info: ProductOlds) {
   jump('/product/manage/old/info', { id: info.id })
 }
 
+const filterRef = ref()
 async function changeStore() {
   pages.value = 1
+  filterRef.value.reset()
   await getList()
 }
 </script>
@@ -114,6 +116,6 @@ async function changeStore() {
     </div>
     <product-manage-bottom />
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
-    <common-filter-where v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="oldFilterListToArray" @submit="submitWhere" />
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="oldFilterListToArray" @submit="submitWhere" />
   </div>
 </template>

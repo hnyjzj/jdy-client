@@ -97,8 +97,10 @@ async function bulkupload(e: AccessorieCategory[]) {
   isImportModel.value = false
 }
 
+const filterRef = ref()
 async function changeStore() {
   page.value = 1
+  filterRef.value.reset()
   await getList()
 }
 </script>
@@ -155,6 +157,6 @@ async function changeStore() {
     <common-create @click="isChooseModel = true" />
     <product-upload-choose v-model:is-model="isChooseModel" @go-add="goAdd" @batch="isImportModel = true" />
     <accessorie-warehouse-category v-model="isImportModel" :filter-list="categoryFilterList" :type="1" @upload="bulkupload" />
-    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="categoryFilterListToArray" @submit="submitWhere" />
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="categoryFilterListToArray" @submit="submitWhere" />
   </div>
 </template>

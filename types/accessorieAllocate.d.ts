@@ -56,7 +56,7 @@ interface AccessorieAllocate {
   products?: allocateProduct[]
   /**
    * 调拨状态
-   * 0:全部 1:盘点中 2:调拨中 3:已完成 4:已取消
+   * 1:草稿 2:在途 3:已完成 4:已取消
    */
   status: number
   /**
@@ -77,6 +77,10 @@ interface AccessorieAllocate {
   to_store: Stores
   start_time: Date
   end_time: Date
+  /** 调拨总数 */
+  product_count?: number
+  /** 调拨总件数 */
+  product_total?: number
 }
 
 interface allocateProduct {

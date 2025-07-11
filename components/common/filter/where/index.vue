@@ -12,7 +12,12 @@ const props = defineProps<{
    * 表单禁用
    */
   disabled?: Array<keyof T>
+  /**
+   * 是否只展示
+   */
+  isOnlyShow?: boolean
 }>()
+
 const emits = defineEmits<{
   /**
    * 提交
@@ -92,6 +97,10 @@ const presetToSelect = (filter: FilterWhere<T>): { label: string, value: any }[]
 const canShowFilter = (item: FilterWhere<Check>) => {
   if (!item.find) {
     return false
+  }
+
+  if (props.isOnlyShow) {
+    return true
   }
 
   if (item.condition) {

@@ -82,8 +82,10 @@ function goAdd() {
   jump('/product/warehouse/add', { type: type.value })
 }
 
+const filterRef = ref()
 async function changeStore() {
   pages.value = 1
+  filterRef.value.reset()
   await getList()
 }
 </script>
@@ -154,6 +156,6 @@ async function changeStore() {
       </template>
     </div>
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
-    <common-filter-where v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="accessorieFilterListToArray" @submit="submitWhere" />
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="accessorieFilterListToArray" @submit="submitWhere" />
   </div>
 </template>
