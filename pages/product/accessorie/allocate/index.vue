@@ -67,8 +67,10 @@ async function submitWhere(f: Partial<AccessorieAllocate>, isSearch: boolean = f
   $toast.error(res?.message ?? '筛选失败')
 }
 
+const filterRef = ref()
 async function changeStore() {
   pages.value = 1
+  filterRef.value.reset()
   await getList()
 }
 
@@ -151,7 +153,7 @@ function getStoreName(id: Stores['id']) {
     <product-manage-bottom />
     <common-create @click="jump('/product/accessorie/allocate/add')" />
 
-    <common-filter-where v-model:show="isFilter" :is-only-show="true" :data="filterData" :filter="accessorieAllocateFilterListToArray" @submit="submitWhere" @reset="filterData = {}">
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :is-only-show="true" :data="filterData" :filter="accessorieAllocateFilterListToArray" @submit="submitWhere" @reset="filterData = {}">
       <template #from_store_id>
         <n-select
           v-model:value="filterData.from_store_id"

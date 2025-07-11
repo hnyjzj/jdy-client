@@ -58,8 +58,10 @@ async function submitWhere(f: Partial<ProductFinisheds>, isSearch: boolean = fal
   $toast.error(res?.message ?? '筛选失败')
 }
 
+const filterRef = ref()
 async function changeStore() {
   pages.value = 1
+  filterRef.value.reset()
   await getList()
 }
 </script>
@@ -178,7 +180,7 @@ async function changeStore() {
       </template>
     </div>
     <product-manage-bottom />
-    <common-filter-where v-model:show="isFilter" :data="filterData" :disabled="['status']" :filter="lossFilterListToArray" @submit="submitWhere" />
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['status']" :filter="lossFilterListToArray" @submit="submitWhere" />
   </div>
 </template>
 

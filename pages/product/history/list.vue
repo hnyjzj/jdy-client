@@ -80,8 +80,10 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
   $toast.error(res.message ?? '筛选失败')
 }
 
+const filterRef = ref()
 async function changeMyStore() {
   pages.value = 1
+  filterRef.value.reset()
   await getList()
 }
 </script>
@@ -210,7 +212,7 @@ async function changeMyStore() {
         <common-empty width="100px" />
       </template>
 
-      <common-filter-where v-model:show="isFilter" :data="filterData" :filter="HistoryFilterListToArray" @submit="submitWhere" />
+      <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="HistoryFilterListToArray" @submit="submitWhere" />
     </div>
   </div>
 </template>

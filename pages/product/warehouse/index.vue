@@ -115,8 +115,11 @@ function goAdd() {
   jump('/product/warehouse/add')
 }
 
+const filterRef = ref()
+
 async function changemyStore() {
   pages.value = 1
+  filterRef.value.reset()
   await getList()
 }
 </script>
@@ -216,7 +219,7 @@ async function changemyStore() {
     <product-manage-bottom />
     <common-create @click="create" />
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
-    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" />
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" />
     <common-model v-model="isCreateModel" title="添加入库单" :show-ok="true" @confirm="createEnter">
       <div class="mb-8 min-h-[60px]">
         <div class="flex items-center mb-4">

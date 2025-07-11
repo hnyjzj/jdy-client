@@ -105,6 +105,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
 
 async function changeMyStore() {
   pages.value = 1
+  reset()
   await getList()
 }
 
