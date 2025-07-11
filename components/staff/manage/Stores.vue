@@ -79,9 +79,9 @@ const loadingRegions_sup = ref(false)
 const searchRegions_sup = useDebounceFn(async (query) => {
   loadingRegions_sup.value = true
   const res = await props.getRegionList(query)
-  loadingRegions.value = false
+  loadingRegions_sup.value = false
   if (res.length) {
-    Regions.value = res.map(item => ({
+    Regions_sup.value = res.map(item => ({
       label: item.name,
       value: item.id,
     }))
@@ -130,7 +130,10 @@ function handleValidateButtonClick(e: MouseEvent) {
                   :max-tag-count="1"
                   :clear-filter-after-select="false"
                   @search="searchStores"
-                  @focus="focus"
+                  @focus="() => {
+                    loadingStores = true
+                    searchStores('')
+                  }"
                 />
               </n-form-item-gi>
               <n-form-item-gi :span="12" label="负责门店" path="store_superior_ids">
@@ -146,7 +149,10 @@ function handleValidateButtonClick(e: MouseEvent) {
                   :max-tag-count="1"
                   :clear-filter-after-select="false"
                   @search="searchStores_sup"
-                  @focus="focus"
+                  @focus="() => {
+                    loadingStores_sup = true
+                    searchStores_sup('')
+                  }"
                 />
               </n-form-item-gi>
               <n-form-item-gi :span="12" label="所属区域" path="region_ids">
@@ -162,7 +168,10 @@ function handleValidateButtonClick(e: MouseEvent) {
                   :max-tag-count="1"
                   :clear-filter-after-select="false"
                   @search="searchRegions"
-                  @focus="focus"
+                  @focus="() => {
+                    loadingRegions = true
+                    searchRegions('')
+                  }"
                 />
               </n-form-item-gi>
               <n-form-item-gi :span="12" label="负责区域" path="region_superior_ids">
@@ -178,7 +187,10 @@ function handleValidateButtonClick(e: MouseEvent) {
                   :max-tag-count="1"
                   :clear-filter-after-select="false"
                   @search="searchRegions_sup"
-                  @focus="focus"
+                  @focus="() => {
+                    loadingRegions_sup = true
+                    searchRegions_sup('')
+                  }"
                 />
               </n-form-item-gi>
             </n-grid>
