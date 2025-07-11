@@ -12,8 +12,8 @@ export const useAuthority = defineStore('Authority', {
   }),
   actions: {
     // 角色列表
-    async getRoleList(identity: number) {
-      const { data } = await https.post<any, { identity: number }>('/setting/role/list', { identity })
+    async getRoleList(identity: UserLevel) {
+      const { data } = await https.post<any, { identity: UserLevel }>('/setting/role/list', { identity })
       if (data.value?.code === HttpCode.SUCCESS) {
         this.roleList = data.value.data
       }
