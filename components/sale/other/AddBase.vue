@@ -46,8 +46,7 @@ const formData = defineModel<otherOrderCreate>('form', { default: {} })
               }))"
               clearable
               remote
-              @focus="(e) => {
-                focus(e)
+              @focus="() => {
                 props.getStaff()
               }"
             />
@@ -63,7 +62,6 @@ const formData = defineModel<otherOrderCreate>('form', { default: {} })
               :options="optonsToSelect(props.filterList.source?.preset) "
               clearable
               remote
-              @focus="focus"
             />
           </n-form-item-gi>
           <n-form-item-gi :span="24" label="关联销售单">

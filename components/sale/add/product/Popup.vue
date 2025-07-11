@@ -3,15 +3,23 @@ const Props = defineProps<{
   searchProductList: (data: { val: string, type: string }) => Promise<ProductFinisheds[]>
 }>()
 const emits = defineEmits<{
-  addProduct: [val: ProductFinisheds]
+  addProduct: [val: ProductFinisheds[]]
 }>()
 const showModal = defineModel('show', { default: false })
 // 搜索商品 名称 和 条码   code
 const searchType = ref('code')
 // 选择成品
-const readyAddproduct = ref()
+const readyAddproduct = ref([] as ProductFinisheds[])
 const setAddProduct = (product: ProductFinisheds) => {
-  readyAddproduct.value = product
+  const index = readyAddproduct.value.findIndex(p => p.id === product.id) // 假设每个产品都有一个唯一的 id 属性
+  if (index !== -1) {
+    // 如果产品已存在，则从数组中移除
+    readyAddproduct.value.splice(index, 1)
+  }
+  else {
+    // 如果产品不存在，则添加进数组
+    readyAddproduct.value.push(product)
+  }
 }
 const productList = ref<ProductFinisheds[]>([])
 const searchProduct = ref('')
@@ -20,11 +28,15 @@ const changeType = (type: 'name' | 'code') => {
   productList.value = []
   searchType.value = type
   searchProduct.value = ''
-//   emits('searchProduct') // 搜索
 }
 
 const search = async () => {
-  productList.value = await Props.searchProductList({ val: searchProduct.value, type: searchType.value })
+  const res = await Props.searchProductList({ val: searchProduct.value, type: searchType.value })
+  const index = readyAddproduct.value.findIndex(p => p.id === res[0].id)
+  if (index !== -1)
+    return
+  productList.value.push(...res)
+  setAddProduct(res[0])
 }
 const confirm = () => {
   emits('addProduct', readyAddproduct.value)
@@ -61,6 +73,7 @@ const realtype = (val?: number) => {
         showModal = false
         searchProduct = ''
         productList = []
+        readyAddproduct = []
       }">
       <div class="grid-12 h-[300px] overflow-y-scroll">
         <div class="col-12">
@@ -74,14 +87,14 @@ const realtype = (val?: number) => {
                 </div>
                 <div class="w-[32px] h-[4px] rounded" :style="{ background: searchType === 'code' ? '#2080F0' : '' }" />
               </div>
-              <div
+              <!-- <div
                 class="flex-center-col"
                 @click="changeType('name')">
                 <div class="text-[16px] pb-[2px] font-semibold line-height-[24px]" :style="{ color: searchType === 'name' ? '#333' : '#53565C' }">
                   名称搜索
                 </div>
                 <div class="w-[32px] h-[4px] rounded " :style="{ background: searchType === 'name' ? '#2080F0' : '' }" />
-              </div>
+              </div> -->
             </div>
           </div>
           <div class="flex items-center pb-[16px]">
@@ -123,9 +136,9 @@ const realtype = (val?: number) => {
           <div class="py-[16px]">
             <template v-for="(item, index) in productList" :key="index">
               <div
-                class="py-[12px] px-[8px] rounded-2xl grid-12 "
-                :style="{ color: readyAddproduct && item.id === readyAddproduct.id ? '#2080F0' : '',
-                          background: readyAddproduct && item.id === readyAddproduct.id ? '#fff' : '' }"
+                class="py-[12px] px-[8px] rounded-2xl grid-12 mb-[4px]"
+                :style="{ color: readyAddproduct && readyAddproduct.findIndex(p => p.id === item.id) !== -1 ? '#2080F0' : '',
+                          background: readyAddproduct && readyAddproduct.findIndex(p => p.id === item.id) !== -1 ? '#fff' : '' }"
                 @click="setAddProduct(item)">
                 <div class="col-4 whitespace-nowrap text-ellipsis overflow-hidden">
                   {{ item.code }}
@@ -133,7 +146,7 @@ const realtype = (val?: number) => {
                 <div class="col-3 whitespace-nowrap text-ellipsis overflow-hidden">
                   {{ item.name }}
                 </div>
-                <div class="col-3">
+                <div class="col-3 text-[12px] text-center">
                   {{ realtype(item.retail_type) }}
                 </div>
                 <div class="col-2">

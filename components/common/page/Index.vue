@@ -23,7 +23,7 @@ const updatePage = (p: number) => {
 
 <template>
   <div>
-    <template v-if="pageCount !== 1">
+    <template v-if="pageCount !== 1 && props.total > 0">
       <div class="py-[16px] flex-center-row">
         <n-pagination
           v-model:page="page"
