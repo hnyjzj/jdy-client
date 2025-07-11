@@ -59,7 +59,9 @@ async function cancel() {
     }, 1000)
     $toast.success('撤销成功', 1000)
   }
-  $toast.error(res?.message ?? '撤销失败')
+  else {
+    $toast.error(res?.message ?? '撤销失败')
+  }
 }
 
 /** 点击清空时调用，触发确认弹窗 */
@@ -166,7 +168,7 @@ async function bulkupload(data: any) {
     <product-upload-choose v-model:is-model="isChooseModel" @go-add="goAdd" @batch="isImportModel = true" />
     <accessorie-warehouse-accessorie ref="uploadRef" v-model="isImportModel" :filter-list="accessorieFilterList" :type="1" @upload="bulkupload" />
     <!-- 状态为草稿时 功能操作 -->
-    <template v-if="enterInfo.status === 1">
+    <template v-if="enterInfo.status === EnterStatus.Draft">
       <common-create @create="isChooseModel = true" />
       <common-button-bottom>
         <template #content>
@@ -185,6 +187,9 @@ async function bulkupload(data: any) {
           </div>
         </template>
       </common-button-bottom>
+    </template>
+    <template v-if="enterInfo.status === EnterStatus.Completed">
+      <common-button-one text="撤销入库" @confirm="cancelDialog = true" />
     </template>
     <common-loading v-model="loading" title="正在处理中" />
     <common-confirm v-model:show="deleteDialog" icon="error" title="删除产品" text="确认要删除此产品吗?" @submit="delProduct" />

@@ -397,8 +397,8 @@ function pull() {
         </template>
       </common-button-bottom>
     </template>
-    <template v-if="enterInfo.status === 2">
-      <common-button-one text="整单调拨" @confirm="jump('/product/allocate/add', { enter_id: enterInfo.id })" />
+    <template v-if="enterInfo.status === EnterStatus.Completed">
+      <common-button-bottom confirm-text="整单调拨" cancel-text="撤销入库" @cancel="cancelDialog = true" @confirm="jump('/product/allocate/add', { enter_id: enterInfo.id })" />
     </template>
     <common-confirm v-model:show="deleteDialog" icon="error" title="删除产品" text="确认要删除此产品吗?" @submit="delProduct" />
     <common-confirm v-model:show="clearDialog" icon="error" title="清空列表" text="确认要清空所有入库的产品吗?" @submit="clearProduct" />

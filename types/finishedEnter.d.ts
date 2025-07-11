@@ -42,7 +42,7 @@ interface FinishedEnter {
    * 状态
    * 1:草稿 2:已完成 3:已撤销
    */
-  status: 1 | 2 | 3
+  status: EnterStatus
   store: Stores
   /**
    * 门店ID
