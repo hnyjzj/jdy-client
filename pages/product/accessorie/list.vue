@@ -42,7 +42,7 @@ async function getList(where = {} as Partial<ProductAccessories>) {
 }
 
 try {
-  if (myStore.value?.id) {
+  if (myStore.value.id || myStore.value.id === '') {
     getAccessorieCategoryWhere()
     await getList()
     await getAccessorieWhere()

@@ -35,7 +35,7 @@ async function getList(where = {} as Partial<ProductFinisheds>) {
 }
 
 try {
-  if (myStore.value?.id) {
+  if (myStore.value.id || myStore.value.id === '') {
     await getList()
     await getFinishedWhere()
   }
