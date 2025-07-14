@@ -46,7 +46,7 @@ interface Orders {
   /**
    * 订单备注
    */
-  remark?: string
+  remarks?: string[]
   /**
    * 抹零
    */

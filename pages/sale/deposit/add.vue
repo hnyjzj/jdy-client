@@ -12,7 +12,13 @@ const { createMember } = useMemberManage()
 const { getStoreStaffList } = useStores()
 const { getMemberList } = useMemberManage()
 const { $toast } = useNuxtApp()
+const { getPhraseList } = usePhrase()
 const Key = ref()
+const getSearchPhrase = async (value: string) => {
+  const res = await getPhraseList({ page: 1, limit: 10, where: { store_id: myStore.value.id, content: value || '' } })
+  return res || [] as Phrase[]
+}
+const userremark = ref<string>('')
 // 展示成品列表
 const showProductList = ref<DepositOrderProduct[]>([])
 await getSaleWhere()
@@ -37,7 +43,7 @@ const searchProductList = async (val: string) => {
 }
 const formRef = ref()
 const initForm = ref<DepositOrder>({
-  remark: '', // 备注
+  remarks: [], // 备注
   member_id: undefined, // 会员ID
   store_id: myStore.value.id, // 门店ID
   cashier_id: undefined, // 收银员ID
@@ -46,7 +52,7 @@ const initForm = ref<DepositOrder>({
   payments: [{ amount: 0, payment_method: 1 }], // 支付方式
 })
 const formData = ref<DepositOrder>({
-  remark: '', // 备注
+  remarks: [], // 备注
   member_id: undefined, // 会员ID
   store_id: myStore.value.id, // 门店ID
   cashier_id: undefined, // 收银员ID
@@ -69,7 +75,14 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
     if (!errors) {
       // 成功的操作
       formData.value.products = [...showProductList.value]
-
+      // 添加备注
+      if (userremark.value && userremark.value.trim()) {
+        const trimmedRemark = userremark.value.trim()
+        const exists = formData.value.remarks?.includes(trimmedRemark)
+        if (!exists) {
+          formData.value.remarks?.push(trimmedRemark)
+        }
+      }
       const res = await submitDepositOrder(formData.value)
       if (res?.code === HttpCode.SUCCESS) {
         $toast.success('下单成功')
@@ -125,7 +138,7 @@ const changeStore = () => {
           </div>
 
           <div class="pb-[16px]">
-            <sale-deposit-balance v-model="formData" v-model:list="showProductList" :filter-list="filterList" />
+            <sale-deposit-balance v-model:userremark="userremark" v-model="formData" v-model:list="showProductList" :filter-list="filterList" :get-search-phrase="getSearchPhrase" />
           </div>
 
           <div class="h-[80px] bg-[#fff] fixed z-1">
