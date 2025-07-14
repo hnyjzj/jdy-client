@@ -184,7 +184,7 @@ const clearFn = async () => {
     </div>
     <common-model
       v-model="isModel" :title="!editStatus ? '新增常用语' : '编辑常用语'" :show-ok="true" confirm-text="确定" @confirm="confirm" @cancel="() => {
-        model.content = ''
+        model = {} as Phrase
       }">
       <div class="mb-8 relative min-h-[60px]">
         <n-form
