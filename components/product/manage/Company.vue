@@ -66,7 +66,7 @@ function handleSelect(id: Stores['id']) {
   <div>
     <n-dropdown trigger="click" placement="bottom-start" :options="columns" :style="{ maxHeight: '400px', overflowY: 'auto' }" @select="handleSelect">
       <div
-        class="py-[6px] px-[12px] bg-[#FFFFFF66] border-rd-full h-full flex-center-row shadow-lg cursor-pointer max-h-[32px] "
+        class="py-[6px] px-[12px] bg-[#FFFFFF66] border-rd-full h-full flex-center-row shadow-lg cursor-pointer  "
         @click="changeStoer">
         <client-only>
           <div class="store-name font-bold text-size-[14px] mr-[4px]">
