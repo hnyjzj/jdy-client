@@ -19,38 +19,46 @@ await getList()
 const formRef = ref()
 const model = ref({
 } as Phrase)
-const rules = {}
+const rules = {
+  content: [
+    { required: true, message: '请输入常用语内容', trigger: ['blur', 'input'] },
+  ],
+}
 const changeStores = async () => {
   await getList()
 }
 
 const confirm = async () => {
   model.value.store_id = myStore.value.id
-  if (!editStatus.value) {
-    const res = await addPhrase(model.value)
-    if (res) {
-      $toast.success('添加成功')
-    }
-    else {
-      $toast.error('添加失败')
-    }
+  formRef.value?.validate(async (errors: any) => {
+    if (!errors) {
+      if (!editStatus.value) {
+        const res = await addPhrase(model.value)
+        if (res) {
+          $toast.success('添加成功')
+        }
+        else {
+          $toast.error('添加失败')
+        }
 
-    await getList()
-    isModel.value = false
-    model.value = {} as Phrase
-  }
-  else {
-    const res = await updatePhrase(model.value)
-    if (res) {
-      $toast.success('更新成功')
+        await getList()
+        isModel.value = false
+        model.value = {} as Phrase
+      }
+      else {
+        const res = await updatePhrase(model.value)
+        if (res) {
+          $toast.success('更新成功')
+        }
+        else {
+          $toast.error('更新失败')
+        }
+        await getList()
+        isModel.value = false
+        model.value = {} as Phrase
+      }
     }
-    else {
-      $toast.error('更新失败')
-    }
-    await getList()
-    isModel.value = false
-    model.value = {} as Phrase
-  }
+  })
 }
 
 const deleteDialog = ref(false)
@@ -185,7 +193,7 @@ const clearFn = async () => {
           <n-grid :cols="24">
             <template v-for="(item, index) in filterListToArray" :key="index">
               <template v-if="item.create && item.name !== 'store_id'">
-                <n-form-item-gi :span="24" :label="item.label" :path="item.label">
+                <n-form-item-gi :span="24" :label="item.label" :path="item.name">
                   <n-input v-model:value="(model[item.name] as string)" :placeholder="`请输入${item.label}`" />
                 </n-form-item-gi>
               </template>
@@ -195,7 +203,6 @@ const clearFn = async () => {
       </div>
     </common-model>
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere" />
-
     <common-confirm v-model:show="deleteDialog" icon="error" title="删除产品" text="确认要删除此短语吗?" @submit="deleteConfirm" />
   </div>
 </template>
