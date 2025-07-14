@@ -25,16 +25,20 @@ const { finishedList } = storeToRefs(useFinished())
 const { createMember } = useMemberManage()
 const { getOrderDetail, getDepositList } = useDepositOrder()
 const { OrderDetail, OrdersList } = storeToRefs(useDepositOrder())
-
+const { getPhraseList } = usePhrase()
 const showSubmitBtn = ref(true)
 
+const getSearchPhrase = async (value: string) => {
+  const res = await getPhraseList({ page: 1, limit: 10, where: { store_id: myStore.value.id, content: value || '' } })
+  return res || [] as Phrase[]
+}
 const addMemberRef = ref()
 const Key = ref()
 const formRef = ref<FormInst | null>(null)
 // 初始化表单数据
 const initFormData = ref<Orders>({
   source: 1, // 订单来源
-  remark: '', // 备注
+  remarks: [], // 备注
   discount_rate: 100, // 整单折扣
   round_off: 0, // 抹零金额
   member_id: undefined, // 会员ID
@@ -54,9 +58,10 @@ const initFormData = ref<Orders>({
   payments: [{ amount: 0, payment_method: 1 }], // 支付方式
   order_deposit_ids: [], // 定金单id
 })
+const userremark = ref('')
 const formData = ref<Orders>({
   source: 1, // 订单来源
-  remark: '', // 备注
+  remarks: [], // 备注
   discount_rate: 100, // 整单折扣
   round_off: 0, // 抹零金额
   member_id: undefined, // 会员ID
@@ -347,7 +352,13 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
         }
         formData.value.product_accessories?.push(data)
       })
-
+      // 添加备注
+      if (userremark.value) {
+        const flage = formData.value.remarks?.includes(userremark.value)
+        if (!flage) {
+          formData.value.remarks?.push(userremark.value)
+        }
+      }
       // 业绩比例
       const result = ref(0)
       formData.value.clerks.forEach((item) => {
@@ -475,6 +486,7 @@ const changeStore = () => {
         </template>
 
         <sale-add-settlement
+          v-model:userremark="userremark"
           v-model:form="formData"
           v-model:show-list="showProductList"
           v-model:master="showMasterialsList"
@@ -482,6 +494,7 @@ const changeStore = () => {
           v-model:deposit="selectDepositList"
           :filter-list="filterList"
           :dis-score="disScore"
+          :get-search-phrase="getSearchPhrase"
         >
           <template #score />
         </sale-add-settlement>

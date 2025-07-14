@@ -24,7 +24,7 @@ interface DepositOrder {
   /**
    * 订单备注
    */
-  remark?: string
+  remarks?: string[]
   /**
    * 订单状态
    */
@@ -167,7 +167,7 @@ interface DepositOrderInfo {
   /**
    * 订单备注
    */
-  remark?: string
+  remarks?: string[]
   /**
    * 订单状态
    */
