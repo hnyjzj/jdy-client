@@ -28,7 +28,10 @@ export const usePhrase = defineStore('Phrase', {
     async addPhrase(params: Partial<Phrase>) {
       const { data } = await https.post<any, Partial<Phrase>>('/setting/remark/create', params)
       if (data.value?.code === HttpCode.SUCCESS) {
-        // this.List.push(data.value?.data)
+        return true
+      }
+      else {
+        return false
       }
     },
     async deletePhrase(params: { id: string }) {
@@ -37,7 +40,12 @@ export const usePhrase = defineStore('Phrase', {
     },
     async updatePhrase(params: Partial<Phrase>) {
       const { data } = await https.put<any, Partial<Phrase>>('/setting/remark/update', params)
-      return data.value
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return true
+      }
+      else {
+        return false
+      }
     },
   },
 })

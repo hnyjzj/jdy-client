@@ -76,10 +76,11 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
       // 成功的操作
       formData.value.products = [...showProductList.value]
       // 添加备注
-      if (userremark.value) {
-        const flage = formData.value.remarks?.includes(userremark.value)
-        if (!flage) {
-          formData.value.remarks?.push(userremark.value)
+      if (userremark.value && userremark.value.trim()) {
+        const trimmedRemark = userremark.value.trim()
+        const exists = formData.value.remarks?.includes(trimmedRemark)
+        if (!exists) {
+          formData.value.remarks?.push(trimmedRemark)
         }
       }
       const res = await submitDepositOrder(formData.value)

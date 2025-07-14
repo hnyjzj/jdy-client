@@ -353,10 +353,11 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
         formData.value.product_accessories?.push(data)
       })
       // 添加备注
-      if (userremark.value) {
-        const flage = formData.value.remarks?.includes(userremark.value)
-        if (!flage) {
-          formData.value.remarks?.push(userremark.value)
+      if (userremark.value && userremark.value.trim()) {
+        const trimmedRemark = userremark.value.trim()
+        const exists = formData.value.remarks?.includes(trimmedRemark)
+        if (!exists) {
+          formData.value.remarks?.push(trimmedRemark)
         }
       }
       // 业绩比例

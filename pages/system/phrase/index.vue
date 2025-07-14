@@ -2,6 +2,7 @@
 const { getPhraseWhere, getPhraseList, addPhrase, deletePhrase, updatePhrase } = usePhrase()
 const { filterListToArray, List, page, total } = storeToRefs(usePhrase())
 const { myStore } = storeToRefs(useStores())
+const { $toast } = useNuxtApp()
 const isModel = ref(false)
 const editStatus = ref(false)
 await getPhraseWhere()
@@ -26,13 +27,26 @@ const changeStores = async () => {
 const confirm = async () => {
   model.value.store_id = myStore.value.id
   if (!editStatus.value) {
-    await addPhrase(model.value)
+    const res = await addPhrase(model.value)
+    if (res) {
+      $toast.success('添加成功')
+    }
+    else {
+      $toast.error('添加失败')
+    }
+
     await getList()
     isModel.value = false
     model.value = {} as Phrase
   }
   else {
-    await updatePhrase(model.value)
+    const res = await updatePhrase(model.value)
+    if (res) {
+      $toast.success('更新成功')
+    }
+    else {
+      $toast.error('更新失败')
+    }
     await getList()
     isModel.value = false
     model.value = {} as Phrase
@@ -45,7 +59,7 @@ const delProduct = async (item: Phrase) => {
   dleId.value = item.id
   deleteDialog.value = true
 }
-const { $toast } = useNuxtApp()
+
 const deleteConfirm = async () => {
   const res = await deletePhrase({ id: dleId.value })
   if (res?.code === 200) {
