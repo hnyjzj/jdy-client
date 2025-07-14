@@ -81,6 +81,7 @@ const submitWhere = async (f: Phrase) => {
   List.value = []
   page.value = 1
   await getList(filterData.value as Phrase)
+  isFilter.value = false
 }
 const resetWhere = async () => {
   filterData.value = {} as Phrase
