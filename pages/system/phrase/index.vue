@@ -182,7 +182,10 @@ const clearFn = async () => {
         </div>
       </common-fold>
     </div>
-    <common-model v-model="isModel" :title="!editStatus ? '新增常用语' : '编辑常用语'" :show-ok="true" confirm-text="确定" @confirm="confirm">
+    <common-model
+      v-model="isModel" :title="!editStatus ? '新增常用语' : '编辑常用语'" :show-ok="true" confirm-text="确定" @confirm="confirm" @cancel="() => {
+        model.content = ''
+      }">
       <div class="mb-8 relative min-h-[60px]">
         <n-form
           ref="formRef"
