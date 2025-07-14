@@ -21,9 +21,9 @@ const enterStatus = {
 }
 /** 门店选择列表 */
 const storeCol = ref()
-enterParams.value.store_id = myStore.value.id
 function changeStoer() {
   storeCol.value = []
+  enterParams.value.store_id = myStore.value.id
   myStoreList.value.forEach((item: Stores) => {
     storeCol.value.push({ label: item.name, value: item.id })
   })
@@ -109,6 +109,7 @@ function goAdd() {
 
 const filterRef = ref()
 async function changeStore() {
+  await changeStoer()
   pages.value = 1
   filterRef.value.reset()
   await getList()

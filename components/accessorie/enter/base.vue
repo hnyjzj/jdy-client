@@ -53,6 +53,14 @@ function sumCategory(key: string): number {
               </div>
               <div class="info-row">
                 <div class="info-title">
+                  门店
+                </div>
+                <div class="info-val">
+                  {{ props.enterInfo.store?.name }}
+                </div>
+              </div>
+              <div class="info-row">
+                <div class="info-title">
                   状态
                 </div>
                 <div class="info-val">
