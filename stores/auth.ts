@@ -96,7 +96,7 @@ export const useAuth = defineStore('authStore', {
           this.imageCaptcha.id = ''
           this.imageCaptcha.code = ''
           await userStore.getUserInfo()
-          await navigateTo(decodeURIComponent(redirect_url as string), { replace: true, redirectCode: 200 })
+          await navigateTo(decodeURIComponent(redirect_url as string), { external: true, replace: true, redirectCode: 200 })
           //   登录成功获取我的门店
           await useStores().getMyStore({ page: 1, limit: 10 })
         }
@@ -112,7 +112,7 @@ export const useAuth = defineStore('authStore', {
       try {
         const { data } = await https.post('/auth/logout', null)
         if (data.value?.code === HttpCode.SUCCESS) {
-          await navigateTo('/login', { replace: true, redirectCode: 200 })
+          await navigateTo('/login', { external: true, replace: true, redirectCode: 200 })
         }
         return true
       }

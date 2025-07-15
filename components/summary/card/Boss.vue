@@ -1,7 +1,7 @@
 <script setup lang="ts">
-const { StorePerformance } = homeDataStore()
-const { StorePerformanceList } = storeToRefs(homeDataStore())
-await StorePerformance({ duration: 'today' })
+const props = defineProps<{
+  storePerformanceList: StorePerformance[]
+}>()
 const { $colorMode } = useNuxtApp()
 </script>
 
@@ -78,7 +78,7 @@ const { $colorMode } = useNuxtApp()
             align: 'center',
           }]"
 
-        :data="StorePerformanceList"
+        :data="props.storePerformanceList"
         :max-height="300"
         :scroll-x="800"
         :bordered="true"

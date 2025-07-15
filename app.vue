@@ -9,6 +9,9 @@ onMounted(async () => {
   if (wx?.value) {
     await useWxWork()
   }
+  if (!wx.value?.UserCaptureScreen) {
+    return
+  }
   wx.value?.UserCaptureScreen(async () => {
     const params = ref<{ username: string, storename?: string | undefined, url: string }>({
       username: '',
