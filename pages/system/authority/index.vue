@@ -363,16 +363,18 @@ function GetModelStatusText() {
             @focus="focus"
           />
         </div>
-        <div class="mb-3">
-          <div class="mb-1">
-            是否默认
+        <template v-if="modelStatus !== 'copy'">
+          <div class="mb-3">
+            <div class="mb-1">
+              是否默认
+            </div>
+            <n-switch
+              v-model:value="roleParams.is_default"
+              round
+              @focus="focus"
+            />
           </div>
-          <n-switch
-            v-model:value="roleParams.is_default"
-            round
-            @focus="focus"
-          />
-        </div>
+        </template>
       </div>
     </common-model>
     <common-confirm
