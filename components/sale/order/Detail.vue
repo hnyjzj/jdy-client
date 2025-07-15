@@ -238,7 +238,18 @@ const onReturnProduct = async (index: number) => {
             <common-cell label="旧料积分" format="-" :value="masterListScore" label-color="#4C8DF6" val-color="#4C8DF6" />
             <common-cell label="配件积分" format="+" :value="PartsListScore" label-color="#4C8DF6" val-color="#4C8DF6" />
             <common-cell label="积分合计" :value="totalScore || props.orders.integral" label-color="#4C8DF6" val-color="#4C8DF6" />
-            <common-cell label="订单备注" :value="props.orders.remarks?.join(',') || '~'" />
+            <div class="flex flex-row justify-between">
+              <div class="text-size-[14px] color-[#666] dark:color-[#CBCDD1] dark:color-[#fff]">
+                订单备注
+              </div>
+              <div class="text-size-[14px] text-end color-[#333] dark:color-[#fff]">
+                <template v-for="(item, index) in props.orders.remarks" :key="index">
+                  <div>
+                    {{ item }}
+                  </div>
+                </template>
+              </div>
+            </div>
           </div>
         </template>
       </sale-cards>
