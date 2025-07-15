@@ -30,6 +30,11 @@ export const useAuthority = defineStore('Authority', {
       const { data } = await https.post<any, RolesParams>('/setting/role/create', params)
       return data.value
     },
+    // 复制角色
+    async copyRole(params: RolesParams) {
+      const { data } = await https.post<any, RolesParams>('/setting/role/copy', params)
+      return data.value
+    },
     // 删除角色
     async deleteRole(id: string) {
       const { data } = await https.delete<any, { id: string }>('/setting/role/delete', { id })
