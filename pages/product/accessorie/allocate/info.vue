@@ -132,36 +132,34 @@ function getStoreName(id: Stores['id']) {
                   <div class="h-0.5 bg-[#E6E6E8]" />
                   <div class="other-information flex flex-col gap-1">
                     <template v-for="(item, index) in accessorieAllocateFilterListToArray" :key="index">
-                      <template v-if="item.find">
-                        <div class="info-row">
-                          <div class="info-title">
-                            {{ item.label }}
-                          </div>
-                          <template v-if="item.input === 'text'">
-                            <div class="info-val">
-                              {{ accessorieAllocateInfo[item.name] }}
-                            </div>
-                          </template>
-                          <template v-else-if="item.input === 'select'">
-                            <div class="info-val">
-                              {{ accessorieAllocateFilterList[item.name]?.preset[accessorieAllocateInfo[item.name] as number] }}
-                            </div>
-                          </template>
-                          <template v-else-if="item.input === 'date'">
-                            <div v-if="item.name === 'start_time'" class="info-val">
-                              {{ formatTimestampToDateTime(accessorieAllocateInfo.created_at) }}
-                            </div>
-                            <div v-if="item.name === 'end_time'" class="info-val">
-                              {{ formatTimestampToDateTime(accessorieAllocateInfo.updated_at) }}
-                            </div>
-                          </template>
-                          <template v-else-if="item.input === 'search'">
-                            <div class="info-val">
-                              {{ getStoreName(accessorieAllocateInfo[item.name] as Stores['id']) }}
-                            </div>
-                          </template>
+                      <div class="info-row">
+                        <div class="info-title">
+                          {{ item.label }}
                         </div>
-                      </template>
+                        <template v-if="item.input === 'text'">
+                          <div class="info-val">
+                            {{ accessorieAllocateInfo[item.name] }}
+                          </div>
+                        </template>
+                        <template v-else-if="item.input === 'select'">
+                          <div class="info-val">
+                            {{ accessorieAllocateFilterList[item.name]?.preset[accessorieAllocateInfo[item.name] as number] }}
+                          </div>
+                        </template>
+                        <template v-else-if="item.input === 'date'">
+                          <div v-if="item.name === 'start_time'" class="info-val">
+                            {{ formatTimestampToDateTime(accessorieAllocateInfo.created_at) }}
+                          </div>
+                          <div v-if="item.name === 'end_time'" class="info-val">
+                            {{ formatTimestampToDateTime(accessorieAllocateInfo.updated_at) }}
+                          </div>
+                        </template>
+                        <template v-else-if="item.input === 'search'">
+                          <div class="info-val">
+                            {{ getStoreName(accessorieAllocateInfo[item.name] as Stores['id']) }}
+                          </div>
+                        </template>
+                      </div>
                     </template>
                   </div>
                 </div>
