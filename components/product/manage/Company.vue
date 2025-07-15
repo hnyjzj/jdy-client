@@ -1,8 +1,10 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
   confirm?: boolean
+  maxHeight?: string
 }>(), {
   confirm: false,
+  maxHeight: '400px',
 })
 
 const emits = defineEmits(['change'])
@@ -64,7 +66,7 @@ function handleSelect(id: Stores['id']) {
 
 <template>
   <div>
-    <n-dropdown trigger="click" placement="bottom-start" :options="columns" :style="{ maxHeight: '400px', overflowY: 'auto' }" @select="handleSelect">
+    <n-dropdown trigger="click" placement="bottom-start" :options="columns" :style="{ maxHeight: props.maxHeight, overflowY: 'auto' }" @select="handleSelect">
       <div
         class="py-[6px] px-[12px] bg-[#FFFFFF66] border-rd-full h-full flex-center-row shadow-lg cursor-pointer max-h-[32px] "
         @click="changeStoer">
