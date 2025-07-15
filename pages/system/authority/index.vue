@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const { roleList, apiList, roleInfo, roleWhereList } = storeToRefs(useAuthority())
-const { getRoleWhere, getRoleList, addRole, getRoleInfo, getApiList, updateStaff, deleteRole, editRole } = useAuthority()
+const { getRoleWhere, getRoleList, addRole, getRoleInfo, getApiList, updateStaff, deleteRole, editRole, copyRole } = useAuthority()
 const { workBenchList } = storeToRefs(useWorkbenche())
 const { getWorkbenchList } = useWorkbenche()
 useSeoMeta({
@@ -81,27 +81,22 @@ async function getInfo() {
   }
 }
 
-const roleParams = ref({
-  name: '',
-  desc: '',
-  is_default: false,
-  identity: Number(activeTab.value),
-} as RolesParams)
+const roleParams = ref({} as RolesParams)
 
 const navItems = ref(['功能', '权限'])
 const setActive = (index: number) => {
   activeIndex.value = index
 }
-const isAdd = ref()
-async function oppeAddRole(is: boolean) {
+const modelStatus = ref()
+async function oppeAddRole(is: string) {
   /** 添加时删除回显 */
-  if (is) {
+  if (is === 'add') {
     roleParams.value.name = ''
     roleParams.value.desc = ''
     roleParams.value.is_default = false
     delete roleParams.value.id
   }
-  isAdd.value = is
+  modelStatus.value = is
   isAddModel.value = true
 }
 
@@ -140,7 +135,7 @@ function edit(role: Roles) {
   roleParams.value.is_default = role.is_default
   roleParams.value.id = role.id
   editRoleInfo.value = role
-  oppeAddRole(false)
+  oppeAddRole('edit')
 }
 
 const delRoleName = ref('')
@@ -188,6 +183,63 @@ function updataFun() {
   }
   saveFun()
 }
+
+function omit(obj: any, keyToRemove: string) {
+  const { [keyToRemove]: _, ...rest } = obj
+  return rest
+}
+
+async function copyFun(role: Roles) {
+  isAddModel.value = true
+  roleParams.value.name = `${role.name}(副本)`
+  roleParams.value.desc = role.desc
+  roleParams.value.is_default = false
+  roleParams.value.id = role.id
+  modelStatus.value = 'copy'
+}
+
+async function copy() {
+  /** 复制不传identity */
+  const params = omit(roleParams.value, 'identity')
+  const res = await copyRole(params)
+  if (res?.code === 200) {
+    funSelectIds.value = []
+    apiSelectIds.value = []
+    isAddModel.value = false
+    selectRole.value = 0
+    await getRoleList(Number(activeTab.value))
+    await getInfo()
+    return $toast.success('复制成功')
+  }
+  $toast.error(res?.message || '复制失败')
+}
+
+async function submitModel() {
+  switch (modelStatus.value) {
+    case 'add':
+      addRoleFun()
+      break
+    case 'edit':
+      editRoleFun()
+      break
+    case 'copy':
+      await copy()
+      break
+  }
+}
+
+function GetModelStatusText() {
+  switch (modelStatus.value) {
+    case 'add':
+      return '添加角色'
+    case 'edit':
+      return '编辑角色'
+    case 'copy':
+      return '复制角色'
+    default:
+      return ''
+  }
+}
 </script>
 
 <template>
@@ -202,19 +254,28 @@ function updataFun() {
                   <div class="grid grid-cols-2 gap-4">
                     <template v-for="(role, index) in roleList" :key="index">
                       <div class="user-box mb-3 flex flex-col justify-between" :class="selectRole === index ? 'select-role' : ''" @click="selectRole = index;getInfo()">
-                        <div class="text-[16px]">
-                          {{ role.name }}
-                        </div>
-                        <div class="text-[12px] text-[#666666]">
-                          {{ role.desc }}
+                        <div class="flex justify-between">
+                          <div>
+                            <div class="text-[16px]">
+                              {{ role.name }}
+                            </div>
+                            <div class="text-[12px] text-[#666666] flex">
+                              {{ role.desc }}
+                            </div>
+                          </div>
+                          <template v-if="role.is_default">
+                            <div class="shrink-1">
+                              <div class="text-[12px] text-[#666666] bg-[rgba(230,230,232,1)] px-1 rounded-[2px]">
+                                默认
+                              </div>
+                            </div>
+                          </template>
                         </div>
                         <div class="mt-4 flex justify-between items-center">
                           <div class="flex items-center">
-                            <template v-if="role.is_default">
-                              <div class="text-[12px] text-[#666666] bg-[rgba(230,230,232,1)] px-1 rounded-[2px] mr-2">
-                                默认
-                              </div>
-                            </template>
+                            <div class="text-[12px] text-[#666666] bg-[rgba(230,230,232,1)] px-1 rounded-[2px] mr-2" @click.stop="copyFun(role)">
+                              复制
+                            </div>
                             <div class="cursor-pointer" @click.stop="edit(role)">
                               <Icon name="i-icon:edit" color="" :size="16" />
                             </div>
@@ -231,7 +292,7 @@ function updataFun() {
                 </n-tab-pane>
               </template>
             </n-tabs>
-            <div class="text-center cursor-pointer pt-4" @click="oppeAddRole(true)">
+            <div class="text-center cursor-pointer pt-4" @click="oppeAddRole('add')">
               + 添加用户组
             </div>
           </template>
@@ -263,7 +324,7 @@ function updataFun() {
         <common-button-one @confirm="updataFun" />
       </div>
     </common-layout-center>
-    <common-model v-model="isAddModel" :title="isAdd ? '添加角色' : '编辑角色'" :show-ok="true" @confirm="isAdd ? addRoleFun() : editRoleFun()">
+    <common-model v-model="isAddModel" :title="GetModelStatusText()" :show-ok="true" @confirm="submitModel">
       <div>
         <div class="mb-3">
           <div class="mb-1">
@@ -302,16 +363,18 @@ function updataFun() {
             @focus="focus"
           />
         </div>
-        <div class="mb-3">
-          <div class="mb-1">
-            是否默认
+        <template v-if="modelStatus !== 'copy'">
+          <div class="mb-3">
+            <div class="mb-1">
+              是否默认
+            </div>
+            <n-switch
+              v-model:value="roleParams.is_default"
+              round
+              @focus="focus"
+            />
           </div>
-          <n-switch
-            v-model:value="roleParams.is_default"
-            round
-            @focus="focus"
-          />
-        </div>
+        </template>
       </div>
     </common-model>
     <common-confirm

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { myStore } = storeToRefs(useStores())
 const { categoryListTotal, categoryList, categoryFilterListToArray, categoryFilterList } = storeToRefs(useAccessorieCategory())
 const { getAccessorieCategoryList, getAccessorieCategoryWhere, addAccessorieCategory } = useAccessorieCategory()
 const complate = ref(0)
@@ -40,13 +39,8 @@ async function getList(where = {} as Partial<AccessorieCategory>) {
 }
 
 try {
-  if (myStore.value?.id) {
-    await getList()
-    await getAccessorieCategoryWhere()
-  }
-  else {
-    $toast.error('您尚未分配任何门店，请先添加门店')
-  }
+  await getList()
+  await getAccessorieCategoryWhere()
 }
 catch (error) {
   throw new Error(`初始化失败: ${error || '未知错误'}`)
@@ -78,9 +72,6 @@ function goAdd() {
 }
 
 async function bulkupload(e: AccessorieCategory[]) {
-  if (!myStore.value?.id) {
-    return $toast.error('请先选择门店')
-  }
   if (!e.length) {
     return $toast.error('数据格式不正确，请添加配件条目')
   }
@@ -109,7 +100,7 @@ async function changeStore() {
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:id="complate" :product-list-total="categoryListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:id="complate" :product-list-total="categoryListTotal" placeholder="搜索条码" :show-company="false" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changeStore" />
       </template>

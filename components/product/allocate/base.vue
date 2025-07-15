@@ -41,7 +41,7 @@ const props = defineProps<{
               <div class="h-0.5 bg-[#E6E6E8]" />
               <div class="other-information flex flex-col gap-1">
                 <template v-for="(item, index) in props.filterListToArray" :key="index">
-                  <template v-if="item.find && item.name !== 'store_id'">
+                  <template v-if="item.name !== 'store_id'">
                     <div class="info-row">
                       <div class="info-title">
                         {{ item.label }}

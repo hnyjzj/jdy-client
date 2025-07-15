@@ -162,16 +162,18 @@ function handleValidateButtonClick() {
                         @focus="focus"
                       />
                     </n-form-item-gi>
-                    <n-form-item-gi :span="12" path="to_store_id" label="调入门店" required>
-                      <n-select
-                        v-model:value="params.to_store_id"
-                        menu-size="large"
-                        placeholder="选择调入门店"
-                        :options="storeCol"
-                        clearable
-                        @focus="focus"
-                      />
-                    </n-form-item-gi>
+                    <template v-if="params.method === 1">
+                      <n-form-item-gi :span="12" path="to_store_id" label="调入门店" required>
+                        <n-select
+                          v-model:value="params.to_store_id"
+                          menu-size="large"
+                          placeholder="选择调入门店"
+                          :options="storeCol"
+                          clearable
+                          @focus="focus"
+                        />
+                      </n-form-item-gi>
+                    </template>
                     <n-form-item-gi :span="12" path="reason" required label="调拨原因">
                       <n-select
                         v-model:value="params.reason"

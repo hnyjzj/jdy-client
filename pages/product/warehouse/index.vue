@@ -22,6 +22,7 @@ const enterStatus = {
 const storeCol = ref()
 function changeStore() {
   storeCol.value = []
+  enterParams.value.store_id = myStore.value.id
   myStoreList.value.forEach((item: Stores) => {
     storeCol.value.push({ label: item.name, value: item.id })
   })
@@ -119,6 +120,7 @@ const filterRef = ref()
 
 async function changemyStore() {
   pages.value = 1
+  await changeStore()
   filterRef.value.reset()
   await getList()
 }

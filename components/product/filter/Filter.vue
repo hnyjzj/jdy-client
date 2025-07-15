@@ -1,8 +1,12 @@
 <script setup lang="ts">
-const props = defineProps({
-  productListTotal: Number,
-  placeholder: String,
+const props = withDefaults(defineProps<{
+  productListTotal?: number
+  placeholder?: string
+  showCompany?: boolean
+}>(), {
+  showCompany: true,
 })
+
 const emits = defineEmits<{
   search: [e: string]
   clear: []
@@ -25,7 +29,9 @@ const clearSearch = () => {
     <common-layout-center>
       <div class="flex flex-col pt-5 px-[16px] w-full color-[#fff]">
         <div class="flex flex-row gap-2">
-          <slot name="company" />
+          <template v-if="showCompany">
+            <slot name="company" />
+          </template>
           <div class="flex-1">
             <product-filter-search :placeholder="placeholder" @submit="search" @clear="clearSearch" />
           </div>

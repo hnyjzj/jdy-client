@@ -393,6 +393,7 @@ async function getOldids() {
     <template v-if="allocateInfo.status === 1">
       <common-create @click="create" />
     </template>
+    <correspond-store :correspond-ids="[allocateInfo.from_store_id, allocateInfo.to_store_id]" />
   </div>
 </template>
 
