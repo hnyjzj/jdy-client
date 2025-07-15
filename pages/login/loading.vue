@@ -21,14 +21,14 @@ if (import.meta.client) {
   const redirect_url = route.query?.redirect_url as string
   if (isWxWorkClient() || isWeChatClient()) {
     if (import.meta.env.DEV === true) {
-      navigateTo(`/login?redirect_url=${redirect_url}`, { external: true, replace: true, redirectCode: 200 })
+      navigateTo(`/login?redirect_url=${redirect_url || ''}`, { external: true, replace: true, redirectCode: 200 })
     }
     else {
       QWLogin()
     }
   }
   else {
-    navigateTo(`/login?redirect_url=${redirect_url}`, { external: true, replace: true, redirectCode: 200 })
+    navigateTo(`/login?redirect_url=${redirect_url || ''}`, { external: true, replace: true, redirectCode: 200 })
   }
 }
 </script>

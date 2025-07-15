@@ -112,7 +112,7 @@ export const useAuth = defineStore('authStore', {
       try {
         const { data } = await https.post('/auth/logout', null)
         if (data.value?.code === HttpCode.SUCCESS) {
-          await navigateTo('/login', { replace: true, redirectCode: 200 })
+          await navigateTo('/login', { external: true, replace: true, redirectCode: 200 })
         }
         return true
       }
