@@ -5,7 +5,6 @@ const props = defineProps<{
 
 const { myStore } = storeToRefs(useStores())
 const isGoChangestore = ref(false)
-const goChangestore = ref(false)
 
 if (props.correspondIds?.length) {
   if (!props.correspondIds.includes(myStore.value.id))
@@ -15,29 +14,29 @@ if (props.correspondIds?.length) {
 
 <template>
   <div>
-    <template v-if="goChangestore">
+    <template v-if="isGoChangestore">
       <div class="fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.5)] flex-center-row z-[999]">
         <div class="w-[327px] rounded-[24px] px-[16px] py-[24px]  bg-[#f3f3f3]">
           <div class="flex-center-row">
-            <div class="font-semibold line-height-[20px] color-[#333] dark:color-[#fff] text-[16px]">
-              切换门店
+            <div class="font-semibold line-height-[20px] color-[#333] dark:color-[#fff] text-[14px] text-center text-[14px]">
+              提醒
             </div>
           </div>
-          <div class="py-6">
+          <div class="line-height-[20px] color-[#333] dark:color-[#fff] py-[16px] text-center">
+            当前门店与操作门店不匹配，是否切换门店?
+          </div>
+          <div class="flex pb-4 items-center justify-center">
+            <div class="pr-2">
+              切换门店
+            </div>
             <product-manage-company max-height="260px" />
           </div>
-          <div class="confirm" @click="goChangestore = false">
+          <div class="confirm" @click="isGoChangestore = false">
             完成
           </div>
         </div>
       </div>
     </template>
-
-    <common-confirm
-      v-model:show="isGoChangestore" title="提醒" text="当前门店与操作门店不匹配，是否切换门店?" @submit="() => {
-        isGoChangestore = false;
-        goChangestore = true
-      }" />
   </div>
 </template>
 
