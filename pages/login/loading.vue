@@ -17,16 +17,18 @@ const QWLogin = async () => {
 }
 
 if (import.meta.client) {
+  const route = useRoute()
+  const redirect_url = route.query?.redirect_url as string
   if (isWxWorkClient() || isWeChatClient()) {
     if (import.meta.env.DEV === true) {
-      navigateTo('/login')
+      navigateTo(`/login?redirect_url=${redirect_url || ''}`, { external: true, replace: true, redirectCode: 200 })
     }
     else {
       QWLogin()
     }
   }
   else {
-    navigateTo('/login')
+    navigateTo(`/login?redirect_url=${redirect_url || ''}`, { external: true, replace: true, redirectCode: 200 })
   }
 }
 </script>

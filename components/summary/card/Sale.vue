@@ -3,14 +3,12 @@ const props = withDefaults(defineProps<{
   rbText?: string
   marginBottom?: string
   goldPrice?: string
+  todaySaleData: todaySales
 }>(), {
   rbText: '查看排行',
   marginBottom: '16px',
 })
-const { myStoreTodaySale } = homeDataStore()
-const { todaySaleData } = storeToRefs(homeDataStore())
-const { myStore } = storeToRefs(useStores())
-await myStoreTodaySale({ store_id: myStore.value.id })
+
 const id = useId()
 const { run, stop } = addMouseEvent(`#${id}`)
 onMounted(() => {
@@ -39,7 +37,7 @@ const toTodayPrice = () => {
         class="skew col-6" uno-md="col-4">
         <div class="skew-right" />
         <div class="skew-text pl-[15px] text-[16px]">
-          本店今日销售
+          今日销售
         </div>
       </div>
     </div>
@@ -64,7 +62,7 @@ const toTodayPrice = () => {
       <div class="mt-[12px] flex-between">
         <div class="color-[#4B576D] bg-[#C7DAFF] text-[12px] line-height-[24px] px-[10px] rounded-[60px]" @click="toTodayPrice">
           <div>
-            金价: ￥{{ todaySaleData.gold_price || 0 }}/g
+            金价: ￥{{ props.todaySaleData.gold_price || 0 }}/g
           </div>
         </div>
         <div class="color-[#333]  dark:color-[#fff] text-[12px] line-height-[24px] flex">
