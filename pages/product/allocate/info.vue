@@ -32,7 +32,6 @@ async function getWhere() {
     await getOldWhere()
   }
 }
-const isGoChangestore = ref(false)
 const correspondIds = ref()
 if (route.query.id) {
   await getAllocateInfo(route.query.id as string)
@@ -40,12 +39,6 @@ if (route.query.id) {
   await getAllocateWhere()
   await getWhere()
   await setCorrespondId()
-  if (myStore.value.id !== allocateInfo.value?.to_store_id || myStore.value.id !== allocateInfo.value?.from_store_id) {
-    isGoChangestore.value = true
-  }
-  else {
-    isGoChangestore.value = false
-  }
 }
 /** 判断相应门店是否是当前门店 收集相应id */
 function setCorrespondId() {

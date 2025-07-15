@@ -12,7 +12,6 @@ const route = useRoute()
 const router = useRouter()
 const { $toast } = useNuxtApp()
 const allocateId = ref()
-const isGoChangestore = ref(false)
 const correspondIds = ref()
 if (route.query.id) {
   allocateId.value = route.query.id
@@ -21,12 +20,6 @@ if (route.query.id) {
   await getAccessorieAllocateWhere()
   await getStoreList({ limit: 20, page: 1 })
   await setCorrespondId()
-  if (myStore.value.id !== accessorieAllocateInfo.value?.to_store_id || myStore.value.id !== accessorieAllocateInfo.value?.from_store_id) {
-    isGoChangestore.value = true
-  }
-  else {
-    isGoChangestore.value = false
-  }
 }
 /** 判断相应门店是否是当前门店 收集相应id */
 function setCorrespondId() {
