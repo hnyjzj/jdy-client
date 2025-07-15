@@ -20,7 +20,7 @@ const deposit = defineModel<DepositOrderInfo[]>('deposit', { default: [] })
 // 转换支付方式下拉菜单
 const payMethods = optonsToSelect(props.filterList.payment_method?.preset)
 const addNewMethod = () => {
-  formData.value.payments.push({ payment_method: 1, amount: 0 })
+  formData.value.payments.push({ payment_method: 1, amount: undefined })
 }
 
 // 删除支付方式
@@ -110,7 +110,7 @@ const payMoney = computed(() => {
 const payMethodsTotal = computed(() => {
   const total = ref(0)
   formData.value.payments.forEach((item) => {
-    total.value += item.amount
+    total.value += item.amount || 0
   })
   return total.value
 })
@@ -199,7 +199,6 @@ const searchRmk = async (query: string) => {
                       v-model:value="item.amount"
                       placeholder="支付金额"
                       round
-                      min="0"
                       :show-button="false"
                       @focus="focus"
                     />

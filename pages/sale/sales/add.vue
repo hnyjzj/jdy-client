@@ -42,7 +42,7 @@ const initFormData = ref<Orders>({
   discount_rate: 100, // 整单折扣
   round_off: 0, // 抹零金额
   member_id: undefined, // 会员ID
-  store_id: myStore.value.id, // 门店ID
+  store_id: '', // 门店ID
   cashier_id: undefined, // 收银员ID
   //   积分抵扣
   integral_deduction: 0,
@@ -55,7 +55,7 @@ const initFormData = ref<Orders>({
     performance_rate: 100,
     is_main: true,
   }],
-  payments: [{ amount: 0, payment_method: 1 }], // 支付方式
+  payments: [{ amount: undefined, payment_method: 1 }], // 支付方式
   order_deposit_ids: [], // 定金单id
 })
 const userremark = ref('')
@@ -65,7 +65,7 @@ const formData = ref<Orders>({
   discount_rate: 100, // 整单折扣
   round_off: 0, // 抹零金额
   member_id: undefined, // 会员ID
-  store_id: myStore.value.id, // 门店ID
+  store_id: '', // 门店ID
   cashier_id: undefined, // 收银员ID
   //   积分抵扣
   integral_deduction: 0,
@@ -78,7 +78,7 @@ const formData = ref<Orders>({
     performance_rate: 100,
     is_main: true,
   }],
-  payments: [{ amount: 0, payment_method: 1 }], // 支付方式
+  payments: [{ amount: undefined, payment_method: 1 }], // 支付方式
   order_deposit_ids: [], // 定金单id
 })
 
@@ -342,6 +342,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
     if (!errors) {
     // 成功的操作
       formData.value.product_finisheds = showProductList.value
+      formData.value.store_id = myStore.value.id
       formData.value.product_olds = showMasterialsList.value
       showPartsList.value.forEach((item) => {
         const data = {

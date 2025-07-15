@@ -111,7 +111,7 @@ interface Payment {
   /**
    * 金额
    */
-  amount: number
+  amount?: number
   /**
    * 支付方式
    */
