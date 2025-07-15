@@ -45,20 +45,20 @@ const formRef = ref()
 const initForm = ref<DepositOrder>({
   remarks: [], // 备注
   member_id: undefined, // 会员ID
-  store_id: myStore.value.id, // 门店ID
+  store_id: '', // 门店ID
   cashier_id: undefined, // 收银员ID
   products: [], // 商品列表
   clerk_id: undefined,
-  payments: [{ amount: 0, payment_method: 1 }], // 支付方式
+  payments: [{ amount: undefined, payment_method: 1 }], // 支付方式
 })
 const formData = ref<DepositOrder>({
   remarks: [], // 备注
   member_id: undefined, // 会员ID
-  store_id: myStore.value.id, // 门店ID
+  store_id: '', // 门店ID
   cashier_id: undefined, // 收银员ID
   products: [], // 商品列表
   clerk_id: undefined,
-  payments: [{ amount: 0, payment_method: 1 }], // 支付方式
+  payments: [{ amount: undefined, payment_method: 1 }], // 支付方式
 })
 const rules = {
   cashier_id: {
@@ -75,6 +75,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
     if (!errors) {
       // 成功的操作
       formData.value.products = [...showProductList.value]
+      formData.value.store_id = myStore.value.id
       // 添加备注
       if (userremark.value && userremark.value.trim()) {
         const trimmedRemark = userremark.value.trim()

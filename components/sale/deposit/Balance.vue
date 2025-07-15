@@ -12,7 +12,7 @@ const showProductList = defineModel<DepositOrderProduct[]>('list', { default: {}
 // 转换支付方式下拉菜单
 const payMethods = optonsToSelect(props.filterList.payment_method?.preset)
 const addNewMethod = () => {
-  formData.value.payments.push({ payment_method: 1, amount: 0 })
+  formData.value.payments.push({ payment_method: 1, amount: undefined })
 }
 // 删除支付方式
 const deleteMethod = (index: number) => {
