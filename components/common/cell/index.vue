@@ -35,7 +35,7 @@ const props = withDefaults(defineProps<{
         {{ props.format ? props.format : '' }} {{ typeof props.value === 'boolean' ? props.value ? '是' : '否' : props.value === '' ? '-' : props.value }}  {{ props.right ? props.right : '' }}
       </template>
       <template v-else>
-        <div class="dark:color-[#fff]" style="white-space: pre-wrap;">
+        <div class="dark:color-[#fff]">
           {{ props.format ? props.format : '' }} {{ typeof props.value === 'boolean' ? props.value ? '是' : '否' : props.value === '' ? '-' : props.value }}  {{ props.right ? props.right : '' }}
         </div>
       </template>
