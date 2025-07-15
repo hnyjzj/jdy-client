@@ -3,14 +3,12 @@ const props = withDefaults(defineProps<{
   rbText?: string
   marginBottom?: string
   goldPrice?: string
+  todayInventory: TodayInventory
 }>(), {
   rbText: '查看排行',
   marginBottom: '16px',
 })
-const { myStoreTodayInventory } = homeDataStore()
-const { TodayInventory } = storeToRefs(homeDataStore())
-const { myStore } = storeToRefs(useStores())
-await myStoreTodayInventory({ store_id: myStore.value.id })
+
 const id = useId()
 const { run, stop } = addMouseEvent(`#${id}`)
 onMounted(() => {
@@ -51,7 +49,7 @@ const TodayInventoryList = ref<DataCardList<TodayInventory>>({
               </div>
             </div>
             <div class="color-[#3971F3] dark:color-[#fff] font-semibold  line-height-[24px]">
-              <span class="text-[16px]">{{ TodayInventory[key] }}</span>
+              <span class="text-[16px]">{{ props.todayInventory[key] }}</span>
             </div>
           </div>
         </template>

@@ -4,6 +4,7 @@ useSeoMeta({
 })
 
 const { myStoreTodaySale, myStoreTodayInventory } = homeDataStore()
+const { TodayInventory, todaySaleData } = storeToRefs(homeDataStore())
 const { myStore, myStoreList } = storeToRefs(useStores())
 const { getMyStore, switchStore } = useStores()
 if (!myStore.value.id) {
@@ -18,6 +19,18 @@ const handleSelectFn = async (id: Stores['id']) => {
     await myStoreTodaySale({ store_id: myStore.value.id })
     await myStoreTodayInventory({ store_id: myStore.value.id })
   }
+}
+
+const isShowInventory = ref(true)
+const InventoryCode = await myStoreTodayInventory({ store_id: myStore.value.id })
+if (InventoryCode === HttpCode.ERROR) {
+  isShowInventory.value = false
+}
+
+const isShowtoday = ref(true)
+const TodayCode = await myStoreTodaySale({ store_id: myStore.value.id })
+if (TodayCode === HttpCode.ERROR) {
+  isShowtoday.value = false
 }
 </script>
 
@@ -40,8 +53,12 @@ const handleSelectFn = async (id: Stores['id']) => {
           }" />
         <!-- <summary-card-boss /> -->
         <!-- <home-action /> -->
-        <summary-card-sale />
-        <summary-card-inventory />
+        <template v-if="isShowtoday">
+          <summary-card-sale :today-sale-data="todaySaleData" />
+        </template>
+        <template v-if="isShowInventory">
+          <summary-card-inventory :today-inventory="TodayInventory" />
+        </template>
       </template>
       <template v-else>
         <common-emptys text="暂未分配门店" />
