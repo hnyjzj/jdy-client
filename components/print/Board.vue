@@ -33,7 +33,6 @@ const hasFinished = ref(false)
 const hasOld = ref(false)
 const hasAccessorie = ref(false)
 const majorSalesman = ref('')
-const allRemarks = ref('')
 
 const showToUser = !!props.details
 
@@ -43,7 +42,7 @@ const findSalesman = () => {
       if (props.details?.clerks[i].is_main) {
         // 销售员没有昵称会被赋值为'''
         majorSalesman.value = props.details?.clerks[i].salesman?.nickname || ''
-        break
+        return
       }
     }
   }
@@ -66,16 +65,6 @@ const judgeType = () => {
   }
 }
 
-// 处理备注数组
-const getRemarks = () => {
-  if (props.details?.remarks) {
-    for (let i = 0; i < props.details?.remarks.length; i++) {
-      allRemarks.value += `${props.details?.remarks[i]}\n`
-    }
-  }
-}
-
-getRemarks()
 findSalesman()
 judgeType()
 </script>
@@ -472,8 +461,12 @@ judgeType()
 
     <div class="remarks">
       <!-- 备注 -->
-      <div class="center" style="white-space: pre-wrap;">
-        {{ allRemarks || '' }}
+      <div class="center flex flex-col gap-[1mm]" style="white-space: pre-wrap;">
+        <template v-for="(item, index) in props.details?.remarks" :key="index">
+          <div>
+            {{ item }}
+          </div>
+        </template>
       </div>
     </div>
 
