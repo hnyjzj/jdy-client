@@ -12,26 +12,12 @@ const route = useRoute()
 const router = useRouter()
 const { $toast } = useNuxtApp()
 const allocateId = ref()
-const correspondIds = ref()
 if (route.query.id) {
   allocateId.value = route.query.id
   await getAccessorieAllocateInfo(route.query.id as string)
   await getAccessorieCategoryWhere()
   await getAccessorieAllocateWhere()
   await getStoreList({ limit: 20, page: 1 })
-  await setCorrespondId()
-}
-/** 判断相应门店是否是当前门店 收集相应id */
-function setCorrespondId() {
-  const arr = []
-  if (accessorieAllocateInfo.value?.to_store_id) {
-    arr.push(accessorieAllocateInfo.value.to_store_id)
-  }
-
-  if (accessorieAllocateInfo.value?.from_store_id) {
-    arr.push(accessorieAllocateInfo.value.from_store_id)
-  }
-  correspondIds.value = arr
 }
 
 async function cancel() {
@@ -246,7 +232,7 @@ function getStoreName(id: Stores['id']) {
     <template v-if="accessorieAllocateInfo.status === 1">
       <common-create @create="jump('/product/accessorie/allocate/addproduct', { id: accessorieAllocateInfo.id })" />
     </template>
-    <correspond-store :correspond-ids="correspondIds" />
+    <correspond-store :correspond-ids="[accessorieAllocateInfo.from_store_id, accessorieAllocateInfo.to_store_id]" />
   </div>
 </template>
 

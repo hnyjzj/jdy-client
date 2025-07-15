@@ -32,25 +32,12 @@ async function getWhere() {
     await getOldWhere()
   }
 }
-const correspondIds = ref()
+
 if (route.query.id) {
   await getAllocateInfo(route.query.id as string)
   type.value = allocateInfo.value.type
   await getAllocateWhere()
   await getWhere()
-  await setCorrespondId()
-}
-/** 判断相应门店是否是当前门店 收集相应id */
-function setCorrespondId() {
-  const arr = []
-  if (allocateInfo.value?.to_store_id) {
-    arr.push(allocateInfo.value.to_store_id)
-  }
-
-  if (allocateInfo.value?.from_store_id) {
-    arr.push(allocateInfo.value.from_store_id)
-  }
-  correspondIds.value = arr
 }
 
 async function cancel() {
@@ -406,7 +393,7 @@ async function getOldids() {
     <template v-if="allocateInfo.status === 1">
       <common-create @click="create" />
     </template>
-    <correspond-store :correspond-ids="correspondIds" />
+    <correspond-store :correspond-ids="[allocateInfo.from_store_id, allocateInfo.to_store_id]" />
   </div>
 </template>
 

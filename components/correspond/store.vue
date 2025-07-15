@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  correspondIds: string[]
+  correspondIds: Array<string | undefined>
 }>()
 
 const { myStore } = storeToRefs(useStores())
 const isGoChangestore = ref(false)
 
 if (props.correspondIds?.length) {
-  if (!props.correspondIds.includes(myStore.value.id))
+  if (!props.correspondIds.filter(Boolean).includes(myStore.value.id))
     isGoChangestore.value = true
 }
 </script>
