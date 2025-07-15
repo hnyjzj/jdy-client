@@ -3,8 +3,8 @@ useSeoMeta({
   title: '待办',
 })
 
-const { myStoreTodaySale, myStoreTodayInventory } = homeDataStore()
-const { TodayInventory, todaySaleData } = storeToRefs(homeDataStore())
+const { myStoreTodaySale, myStoreTodayInventory, StorePerformance } = homeDataStore()
+const { TodayInventory, todaySaleData, StorePerformanceList } = storeToRefs(homeDataStore())
 const { myStore, myStoreList } = storeToRefs(useStores())
 const { getMyStore, switchStore } = useStores()
 if (!myStore.value.id) {
@@ -32,6 +32,11 @@ const TodayCode = await myStoreTodaySale({ store_id: myStore.value.id })
 if (TodayCode === HttpCode.ERROR) {
   isShowtoday.value = false
 }
+const isShowPerformance = ref(true)
+const formcode = await StorePerformance({ duration: 'today' })
+if (formcode === HttpCode.ERROR) {
+  isShowPerformance.value = false
+}
 </script>
 
 <template>
@@ -51,7 +56,9 @@ if (TodayCode === HttpCode.ERROR) {
           @get-store-list="() => {
             getMyStore({ page: 1, limit: 20 })
           }" />
-        <!-- <summary-card-boss /> -->
+        <template v-if="isShowPerformance">
+          <summary-card-boss :store-performance-list="StorePerformanceList" />
+        </template>
         <!-- <home-action /> -->
         <template v-if="isShowtoday">
           <summary-card-sale :today-sale-data="todaySaleData" />

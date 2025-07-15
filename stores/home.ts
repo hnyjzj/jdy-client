@@ -13,6 +13,10 @@ export const homeDataStore = defineStore('homeDataStore', {
       const { data } = await https.post<StorePerformance[], { duration: string }>('/statistic/store_sales_total', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.StorePerformanceList = data.value.data
+        return data.value?.code
+      }
+      else {
+        return data.value?.code
       }
     },
     // 获取今日本店销售数据
