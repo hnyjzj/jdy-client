@@ -25,20 +25,24 @@ const { finishedList } = storeToRefs(useFinished())
 const { createMember } = useMemberManage()
 const { getOrderDetail, getDepositList } = useDepositOrder()
 const { OrderDetail, OrdersList } = storeToRefs(useDepositOrder())
-
+const { getPhraseList } = usePhrase()
 const showSubmitBtn = ref(true)
 
+const getSearchPhrase = async (value: string) => {
+  const res = await getPhraseList({ page: 1, limit: 10, where: { store_id: myStore.value.id, content: value || '' } })
+  return res || [] as Phrase[]
+}
 const addMemberRef = ref()
 const Key = ref()
 const formRef = ref<FormInst | null>(null)
 // 初始化表单数据
 const initFormData = ref<Orders>({
   source: 1, // 订单来源
-  remark: '', // 备注
+  remarks: [], // 备注
   discount_rate: 100, // 整单折扣
   round_off: 0, // 抹零金额
   member_id: undefined, // 会员ID
-  store_id: myStore.value.id, // 门店ID
+  store_id: '', // 门店ID
   cashier_id: undefined, // 收银员ID
   //   积分抵扣
   integral_deduction: 0,
@@ -51,16 +55,17 @@ const initFormData = ref<Orders>({
     performance_rate: 100,
     is_main: true,
   }],
-  payments: [{ amount: 0, payment_method: 1 }], // 支付方式
+  payments: [{ amount: undefined, payment_method: 1 }], // 支付方式
   order_deposit_ids: [], // 定金单id
 })
+const userremark = ref('')
 const formData = ref<Orders>({
   source: 1, // 订单来源
-  remark: '', // 备注
+  remarks: [], // 备注
   discount_rate: 100, // 整单折扣
   round_off: 0, // 抹零金额
   member_id: undefined, // 会员ID
-  store_id: myStore.value.id, // 门店ID
+  store_id: '', // 门店ID
   cashier_id: undefined, // 收银员ID
   //   积分抵扣
   integral_deduction: 0,
@@ -73,7 +78,7 @@ const formData = ref<Orders>({
     performance_rate: 100,
     is_main: true,
   }],
-  payments: [{ amount: 0, payment_method: 1 }], // 支付方式
+  payments: [{ amount: undefined, payment_method: 1 }], // 支付方式
   order_deposit_ids: [], // 定金单id
 })
 
@@ -337,6 +342,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
     if (!errors) {
     // 成功的操作
       formData.value.product_finisheds = showProductList.value
+      formData.value.store_id = myStore.value.id
       formData.value.product_olds = showMasterialsList.value
       showPartsList.value.forEach((item) => {
         const data = {
@@ -347,7 +353,14 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
         }
         formData.value.product_accessories?.push(data)
       })
-
+      // 添加备注
+      if (userremark.value && userremark.value.trim()) {
+        const trimmedRemark = userremark.value.trim()
+        const exists = formData.value.remarks?.includes(trimmedRemark)
+        if (!exists) {
+          formData.value.remarks?.push(trimmedRemark)
+        }
+      }
       // 业绩比例
       const result = ref(0)
       formData.value.clerks.forEach((item) => {
@@ -475,6 +488,7 @@ const changeStore = () => {
         </template>
 
         <sale-add-settlement
+          v-model:userremark="userremark"
           v-model:form="formData"
           v-model:show-list="showProductList"
           v-model:master="showMasterialsList"
@@ -482,6 +496,7 @@ const changeStore = () => {
           v-model:deposit="selectDepositList"
           :filter-list="filterList"
           :dis-score="disScore"
+          :get-search-phrase="getSearchPhrase"
         >
           <template #score />
         </sale-add-settlement>

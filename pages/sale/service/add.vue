@@ -40,7 +40,7 @@ const showServiceGoods = ref<serviceGoods[]>([]) // 展示维修货品
 const previewFileList = ref<UploadFileInfo[]>([])
 const formRef = ref()
 const initform = ref<serviceOrederCreate>({
-  store_id: myStore.value.id,
+  store_id: '',
   receptionist_id: undefined,
   member_id: undefined,
   desc: '',
@@ -50,11 +50,11 @@ const initform = ref<serviceOrederCreate>({
   delivery_method: 1, // 1: '自提', 2: '配送'
   address: undefined,
   products: [],
-  payments: [{ amount: 0, payment_method: 1 }],
+  payments: [{ amount: undefined, payment_method: 1 }],
   images: [],
 })
 const formData = ref<serviceOrederCreate>({
-  store_id: myStore.value.id,
+  store_id: '',
   receptionist_id: undefined,
   member_id: undefined,
   desc: '',
@@ -64,7 +64,7 @@ const formData = ref<serviceOrederCreate>({
   delivery_method: 1, // 1: '自提', 2: '配送'
   address: undefined,
   products: [],
-  payments: [{ amount: 0, payment_method: 1 }],
+  payments: [{ amount: undefined, payment_method: 1 }],
   images: [],
 })
 const rules = {
@@ -97,6 +97,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
+      formData.value.store_id = myStore.value.id
       // 如果选择邮寄,判断省市区是否选择
       if (formData.value.delivery_method === 2) {
         if (!vilidateArea()) {

@@ -46,7 +46,7 @@ interface Orders {
   /**
    * 订单备注
    */
-  remark?: string
+  remarks?: string[]
   /**
    * 抹零
    */
@@ -111,7 +111,7 @@ interface Payment {
   /**
    * 金额
    */
-  amount: number
+  amount?: number
   /**
    * 支付方式
    */

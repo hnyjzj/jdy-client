@@ -1,11 +1,15 @@
 <script lang="ts" setup>
+import type { SelectOption } from 'naive-ui'
 import { calc } from 'a-calc'
 
 const props = defineProps<{
   disScore: boolean
   filterList: Where<OrderWhere>
+  getSearchPhrase: (val: string) => Promise<Phrase[]>
 }>()
+
 const formData = defineModel<Orders>('form', { default: {} })
+const userremark = defineModel<string>('userremark', { default: {} })
 // 成品列表数据
 const showProductList = defineModel<ProductFinished[]>('showList', { default: [] })
 // 旧料列表数据
@@ -16,7 +20,7 @@ const deposit = defineModel<DepositOrderInfo[]>('deposit', { default: [] })
 // 转换支付方式下拉菜单
 const payMethods = optonsToSelect(props.filterList.payment_method?.preset)
 const addNewMethod = () => {
-  formData.value.payments.push({ payment_method: 1, amount: 0 })
+  formData.value.payments.push({ payment_method: 1, amount: undefined })
 }
 
 // 删除支付方式
@@ -106,7 +110,7 @@ const payMoney = computed(() => {
 const payMethodsTotal = computed(() => {
   const total = ref(0)
   formData.value.payments.forEach((item) => {
-    total.value += item.amount
+    total.value += item.amount || 0
   })
   return total.value
 })
@@ -120,6 +124,14 @@ const unPayMoney = computed(() => {
   })
   return total.value
 })
+const remarkList = ref<SelectOption[]>([])
+const searchRmk = async (query: string) => {
+  const res = await props.getSearchPhrase(query)
+  remarkList.value = res.map(item => ({
+    label: item.content,
+    value: item.content,
+  }))
+}
 </script>
 
 <template>
@@ -187,7 +199,6 @@ const unPayMoney = computed(() => {
                       v-model:value="item.amount"
                       placeholder="支付金额"
                       round
-                      min="0"
                       :show-button="false"
                       @focus="focus"
                     />
@@ -217,13 +228,26 @@ const unPayMoney = computed(() => {
         <n-form-item
           label="备注信息"
         >
-          <n-input
-            v-model:value="formData.remark"
-            :style="{ '--n-border-radius': '20px' }"
-            placeholder="备注信息"
-            type="textarea"
-            @focus="focus"
-          />
+          <div class="flex flex-col w-full">
+            <div class="pb-[12px]">
+              <n-select
+                v-model:value="formData.remarks" filterable
+                multiple
+                :options="remarkList"
+                @search="searchRmk"
+                @focus="() => {
+                  searchRmk('')
+                }"
+              />
+            </div>
+            <n-input
+              v-model:value="userremark"
+              :style="{ '--n-border-radius': '20px' }"
+              placeholder="备注信息"
+              type="textarea"
+              @focus="focus"
+            />
+          </div>
         </n-form-item>
       </div>
     </div>

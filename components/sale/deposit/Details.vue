@@ -34,7 +34,18 @@ const returnGoods = (val: number) => {
             <common-cell label="订单编号" :value="props.orders.id" />
             <common-cell label="订单状态" :value="where.status?.preset[(props.orders.status as number)]" val-color="#FF9900" />
             <common-cell label="销售时间" :value="formatISODate(props.orders.created_at)" />
-            <common-cell label="订单备注" :value="props.orders.remark " />
+            <div class="flex flex-row justify-between">
+              <div class="text-size-[14px] color-[#666] dark:color-[#CBCDD1] dark:color-[#fff]">
+                订单备注
+              </div>
+              <div class="text-size-[14px] text-end color-[#333] dark:color-[#fff]">
+                <template v-for="(item, index) in props.orders.remarks" :key="index">
+                  <div>
+                    {{ item }}
+                  </div>
+                </template>
+              </div>
+            </div>
             <div class="border-b-solid border-b-[#E0E0E0] border" />
             <common-cell label="会员姓名" :value="props.orders.member?.name || ''" />
             <common-cell label="会员昵称" :value="props.orders.member?.nickname || ''" />

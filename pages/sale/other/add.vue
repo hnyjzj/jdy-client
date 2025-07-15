@@ -24,7 +24,7 @@ const route = useRoute()
 const Key = ref()
 const formRef = ref()
 const initForm = ref<otherOrderCreate>({
-  store_id: myStore.value.id,
+  store_id: '',
   content: '',
   type: 1,
   clerk_id: undefined,
@@ -32,10 +32,10 @@ const initForm = ref<otherOrderCreate>({
   order_id: '',
   amount: '',
   source: undefined,
-  payments: [{ payment_method: 1, amount: 0 }],
+  payments: [{ payment_method: 1, amount: undefined }],
 })
 const formData = ref<otherOrderCreate>({
-  store_id: myStore.value.id,
+  store_id: '',
   content: '',
   type: 1,
   clerk_id: undefined,
@@ -43,7 +43,7 @@ const formData = ref<otherOrderCreate>({
   order_id: '',
   amount: '',
   source: undefined,
-  payments: [{ payment_method: 1, amount: 0 }],
+  payments: [{ payment_method: 1, amount: undefined }],
 })
 const rules = ref<FormRules>({
   type: {
@@ -93,6 +93,7 @@ const handleValidateButtonClick = (e: any) => {
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
       // 成功的操作
+      formData.value.store_id = myStore.value.id
       if (!route.query.id) {
         // 新增
         const res = await addOtherOrder(formData.value)

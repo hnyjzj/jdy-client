@@ -34,13 +34,15 @@ const hasOld = ref(false)
 const hasAccessorie = ref(false)
 const majorSalesman = ref('')
 
+const showToUser = !!props.details
+
 const findSalesman = () => {
   if (props.details?.clerks) {
     for (let i = 0; i < props.details?.clerks.length; i++) {
       if (props.details?.clerks[i].is_main) {
         // 销售员没有昵称会被赋值为'''
         majorSalesman.value = props.details?.clerks[i].salesman?.nickname || ''
-        break
+        return
       }
     }
   }
@@ -457,27 +459,38 @@ judgeType()
       </template>
     </div>
 
+    <div class="remarks">
+      <!-- 备注 -->
+      <div class="center flex flex-col gap-[1mm]" style="white-space: pre-wrap;">
+        <template v-for="(item, index) in props.details?.remarks" :key="index">
+          <div>
+            {{ item }}
+          </div>
+        </template>
+      </div>
+    </div>
+
     <div class="total">
       <div>
-        {{ props.details?.price || '实收/实付' }}
+        {{ showToUser ? props.details?.price : '实付/实收' }}
       </div>
     </div>
 
     <div class="bottom">
       <div>
-        {{ props.payMethod || '付款方式' }}
+        {{ showToUser ? props.payMethod : '付款方式' }}
       </div>
 
       <div>
-        {{ majorSalesman || '开票人' }}
+        {{ showToUser ? majorSalesman : '主销' }}
       </div>
 
       <div>
-        {{ props.details?.member?.name || '顾客姓名' }}
+        {{ showToUser ? props.details?.member?.name : '顾客姓名' }}
       </div>
 
       <div>
-        {{ props.details?.member?.phone || '顾客电话' }}
+        {{ showToUser ? props.details?.member?.phone : '顾客电话' }}
       </div>
     </div>
   </div>
@@ -550,6 +563,27 @@ judgeType()
       overflow-wrap: break-word;
       word-break: break-all;
       border-top: none;
+    }
+  }
+
+  .remarks {
+    position: absolute;
+    height: var(--list-height);
+    top: var(--list-top);
+    right: var(--list-right);
+    left: var(--list-left);
+    font-size: var(--size-font-size);
+
+    .center {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+
+      div {
+        width: 100%;
+        text-align: center;
+      }
     }
   }
 
