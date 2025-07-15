@@ -21,22 +21,9 @@ const handleSelectFn = async (id: Stores['id']) => {
   }
 }
 
-const isShowInventory = ref(true)
-const InventoryCode = await myStoreTodayInventory({ store_id: myStore.value.id })
-if (InventoryCode === HttpCode.ERROR) {
-  isShowInventory.value = false
-}
-
-const isShowtoday = ref(true)
-const TodayCode = await myStoreTodaySale({ store_id: myStore.value.id })
-if (TodayCode === HttpCode.ERROR) {
-  isShowtoday.value = false
-}
-const isShowPerformance = ref(true)
-const formcode = await StorePerformance({ duration: 'today' })
-if (formcode === HttpCode.ERROR) {
-  isShowPerformance.value = false
-}
+await myStoreTodayInventory({ store_id: myStore.value.id })
+await myStoreTodaySale({ store_id: myStore.value.id })
+await StorePerformance({ duration: 'today' })
 </script>
 
 <template>
@@ -56,14 +43,14 @@ if (formcode === HttpCode.ERROR) {
           @get-store-list="() => {
             getMyStore({ page: 1, limit: 20 })
           }" />
-        <template v-if="isShowPerformance">
+        <template v-if="StorePerformanceList">
           <summary-card-boss :store-performance-list="StorePerformanceList" />
         </template>
         <!-- <home-action /> -->
-        <template v-if="isShowtoday">
+        <template v-if="todaySaleData">
           <summary-card-sale :today-sale-data="todaySaleData" />
         </template>
-        <template v-if="isShowInventory">
+        <template v-if="TodayInventory">
           <summary-card-inventory :today-inventory="TodayInventory" />
         </template>
       </template>
