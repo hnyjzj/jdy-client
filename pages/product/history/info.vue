@@ -22,12 +22,11 @@ if (route.query.id) {
 type ProductKey = keyof ProductFinisheds
 /** 字段是否更新 */
 function isUpdate(key: ProductKey) {
-  try {
-    return JSON.stringify(historyInfo.value.new_value[key]) !== JSON.stringify(historyInfo.value.old_value[key])
+  if (historyInfo.value.action !== 2) {
+    return
   }
-  catch {
-    return false
-  }
+
+  return JSON.stringify(historyInfo.value.new_value[key]) !== JSON.stringify(historyInfo.value.old_value[key])
 }
 </script>
 
