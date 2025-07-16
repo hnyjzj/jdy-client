@@ -4,11 +4,23 @@ const props = defineProps<{
 }>()
 
 const { myStore } = storeToRefs(useStores())
+const { switchStore } = useStores()
 const isGoChangestore = ref(false)
 
 if (props.correspondIds?.length && myStore.value && myStore.value.id) {
   if (!props.correspondIds.filter(Boolean).includes(myStore.value.id))
     isGoChangestore.value = true
+}
+
+const changeStore = ref()
+
+async function change(store: Stores) {
+  changeStore.value = store
+}
+
+async function confirm() {
+  await switchStore(changeStore.value)
+  isGoChangestore.value = false
 }
 </script>
 
@@ -29,10 +41,15 @@ if (props.correspondIds?.length && myStore.value && myStore.value.id) {
             <div class="pr-2">
               切换门店
             </div>
-            <product-manage-company max-height="260px" />
+            <correspond-change max-height="260px" @change="change" />
           </div>
-          <div class="confirm" @click="isGoChangestore = false">
-            完成
+          <div class="flex justify-center">
+            <div class="cancle" @click="isGoChangestore = false">
+              取消
+            </div>
+            <div class="confirm" @click="confirm">
+              确认
+            </div>
           </div>
         </div>
       </div>
@@ -42,9 +59,9 @@ if (props.correspondIds?.length && myStore.value && myStore.value.id) {
 
 <style lang="scss" scoped>
 .confirm {
-  --uno: 'shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)] cursor-pointer shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)] py-[6px] text-[16px] font-semibold line-height-[24px] text-center color-[#fff] bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF]  rounded-3xl';
+  --uno: 'shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)] cursor-pointer shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)] py-[6px] px-[44px] text-[16px] font-semibold line-height-[24px] text-center color-[#fff] bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] rounded-3xl';
 }
 .cancle {
-  --uno: 'shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)] cursor-pointer px-[44px] py-[6px] text-[16px] font-semibold line-height-[24px] color-[#3971F3] bg-[#fff] rounded-3xl  shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)]';
+  --uno: 'shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)] cursor-pointer px-[44px] py-[6px] text-[16px] font-semibold mr-2 line-height-[24px] color-[#3971F3] bg-[#fff] rounded-3xl  shadow-[0px_8px_8px_0px_rgba(57,113,243,0.24)]';
 }
 </style>
