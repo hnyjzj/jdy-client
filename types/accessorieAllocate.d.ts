@@ -58,7 +58,7 @@ interface AccessorieAllocate {
    * 调拨状态
    * 1:草稿 2:在途 3:已完成 4:已取消
    */
-  status: number
+  status: AllocateStatus
   /**
    * 调出门店id
    */
