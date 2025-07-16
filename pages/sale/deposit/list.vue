@@ -31,7 +31,7 @@ const openFilter = () => {
   filterShow.value = true
 }
 const isStaff = async () => {
-  return await isStoreStaff({ id: myStore.value.id })
+  return await isStoreStaff({ id: myStore.value.id }) || false
 }
 
 const submitWhere = async (f: DepositOrderWhere) => {

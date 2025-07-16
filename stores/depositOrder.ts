@@ -91,6 +91,7 @@ export const useDepositOrder = defineStore('depositOrder', {
       if (data.value?.code === HttpCode.SUCCESS) {
         return data.value?.data
       }
+      return false
     },
     // 是否是门店负责人
     async isSuperior(params: { id: string, staff_id?: string }) {
@@ -98,6 +99,7 @@ export const useDepositOrder = defineStore('depositOrder', {
       if (data.value?.code === HttpCode.SUCCESS) {
         return data.value?.data
       }
+      return false
     },
 
   },
