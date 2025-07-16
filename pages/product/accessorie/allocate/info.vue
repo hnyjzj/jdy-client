@@ -228,8 +228,8 @@ function getStoreName(id: Stores['id']) {
         <common-button-one text="取消调拨" @confirm="cancel" />
       </template>
     </template>
-    <!-- 状态为盘点中 增加产品 -->
-    <template v-if="accessorieAllocateInfo.status === 1">
+    <!-- 状态为草稿中 增加产品 -->
+    <template v-if="accessorieAllocateInfo.status === AllocateStatus.Draft && myStore?.id === accessorieAllocateInfo.from_store_id">
       <common-create @create="jump('/product/accessorie/allocate/addproduct', { id: accessorieAllocateInfo.id })" />
     </template>
     <correspond-store :correspond-ids="[accessorieAllocateInfo.from_store_id, accessorieAllocateInfo.to_store_id]" />

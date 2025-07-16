@@ -60,9 +60,9 @@ interface Allocate {
   product_olds: ProductOlds[]
   /**
    * 调拨状态
-   * 0:全部 1:盘点中 2:调拨中 3:已完成 4:已取消
+   * 1:草稿 2:在途 3:已完成 4:已取消
    */
-  status: number
+  status: AllocateStatus
   /**
    * 调出门店id
    */

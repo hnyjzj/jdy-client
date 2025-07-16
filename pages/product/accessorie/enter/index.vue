@@ -211,7 +211,9 @@ async function changeStore() {
     </div>
     <accessorie-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" />
-    <common-create @create="isCreateModel = true" />
+    <template v-if="myStore.id">
+      <common-create @create="isCreateModel = true" />
+    </template>
     <common-model v-model="isCreateModel" title="添加入库单" :show-ok="true" @confirm="createEnter">
       <div class="mb-8 min-h-[60px]">
         <div class="flex items-center mb-4">

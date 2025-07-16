@@ -389,8 +389,8 @@ async function getOldids() {
         <common-button-one text="取消调拨" @confirm="cancel" />
       </template>
     </template>
-    <!-- 状态为盘点中 增加产品 -->
-    <template v-if="allocateInfo.status === 1">
+    <!-- 状态为草稿中 增加产品 -->
+    <template v-if="allocateInfo.status === AllocateStatus.Draft && myStore.id && myStore.id === allocateInfo.from_store_id">
       <common-create @click="create" />
     </template>
     <correspond-store :correspond-ids="[allocateInfo.from_store_id, allocateInfo.to_store_id]" />

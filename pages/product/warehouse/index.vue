@@ -30,7 +30,7 @@ function changeStore() {
 await getMyStore({ page: 1, limit: 20 })
 await changeStore()
 
-if (myStore.value.id) {
+if (myStore.value && Object.keys(myStore.value).length) {
   enterParams.value.store_id = myStore.value.id
 }
 else {
@@ -219,7 +219,9 @@ async function changemyStore() {
       </template>
     </div>
     <product-manage-bottom />
-    <common-create @click="create" />
+    <template v-if="myStore.id">
+      <common-create @click="create" />
+    </template>
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" />
     <common-model v-model="isCreateModel" title="添加入库单" :show-ok="true" @confirm="createEnter">
