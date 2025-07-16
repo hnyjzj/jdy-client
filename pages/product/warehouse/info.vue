@@ -4,6 +4,7 @@ const { getFinishedEnterInfo, delFinishedEnter, cancelFinishedEnter, successFini
 const { enterInfo } = storeToRefs(useFinishedEnter())
 const { finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
 const { getFinishedWhere } = useFinished()
+const { myStore } = storeToRefs(useStores())
 
 useSeoMeta({
   title: '入库单详情',
@@ -377,7 +378,7 @@ function pull() {
     <product-upload-choose v-model:is-model="isChooseModel" @go-add="goAdd" @batch="isImportModel = true" />
     <product-upload-warehouse ref="uploadRef" v-model="isImportModel" :filter-list="finishedFilterList" :type="1" @upload="submitGoods" />
     <!-- 状态为草稿时 功能操作 -->
-    <template v-if="enterInfo.status === 1">
+    <template v-if="enterInfo.status === 1 && myStore.id === enterInfo.store_id">
       <common-create @create="isChooseModel = true" />
       <common-button-bottom>
         <template #content>
@@ -397,7 +398,7 @@ function pull() {
         </template>
       </common-button-bottom>
     </template>
-    <template v-if="enterInfo.status === EnterStatus.Completed">
+    <template v-if="enterInfo.status === EnterStatus.Completed && myStore.id === enterInfo.store_id">
       <common-button-bottom confirm-text="整单调拨" cancel-text="撤销入库" @cancel="cancelDialog = true" @confirm="jump('/product/allocate/add', { enter_id: enterInfo.id })" />
     </template>
     <common-confirm v-model:show="deleteDialog" icon="error" title="删除产品" text="确认要删除此产品吗?" @submit="delProduct" />
@@ -480,6 +481,7 @@ function pull() {
         </template>
       </div>
     </common-model>
+    <correspond-store :correspond-ids="[enterInfo.store_id]" />
   </div>
 </template>
 

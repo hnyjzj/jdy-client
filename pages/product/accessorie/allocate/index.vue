@@ -2,7 +2,7 @@
 const { $toast } = useNuxtApp()
 const { getAccessorieAllocate, getAccessorieAllocateWhere } = useAccessorieAllocate()
 const { accessorieAllocateList, accessorieAllocateFilterListToArray, accessorieAllocateFilterList, accessorieAllocateTotal } = storeToRefs(useAccessorieAllocate())
-const { storesList } = storeToRefs(useStores())
+const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const storeCol = ref()
 function changeStoer() {
@@ -151,7 +151,9 @@ function getStoreName(id: Stores['id']) {
       </template>
     </div>
     <product-manage-bottom />
-    <common-create @click="jump('/product/accessorie/allocate/add')" />
+    <template v-if="myStore.id">
+      <common-create @click="jump('/product/accessorie/allocate/add')" />
+    </template>
 
     <common-filter-where ref="filterRef" v-model:show="isFilter" :is-only-show="true" :data="filterData" :filter="accessorieAllocateFilterListToArray" @submit="submitWhere" @reset="filterData = {}">
       <template #from_store_id>
