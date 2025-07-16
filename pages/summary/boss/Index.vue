@@ -10,6 +10,9 @@ await StorePerformance({ duration: 'today' })
       <template v-if="StorePerformanceList">
         <summary-card-boss :store-performance-list="StorePerformanceList" />
       </template>
+      <template v-else>
+        <common-tmptys />
+      </template>
     </div>
   </div>
 </template>

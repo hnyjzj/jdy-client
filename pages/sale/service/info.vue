@@ -9,6 +9,7 @@ const { finishedFilterList } = storeToRefs(useFinished())
 const { getRepairOrderDetail, updateRepairOrder, uploadRepairOrderImg, refundRepairOrder, getRepairOrderWhere, operationRepairOrder, cancelRepairOrder, payRepairOrder } = useRepair()
 const { repairOrderDetail, repairFilterList } = storeToRefs(useRepair())
 const { userinfo } = storeToRefs(useUser())
+const { myStore } = storeToRefs(useStores())
 const { $toast } = useNuxtApp()
 const route = useRoute()
 const getDetail = async (val?: string) => {
@@ -80,11 +81,13 @@ const payOrder = async () => {
         :upload-file="uploadFile"
         :operation="operation"
         :refund="refund"
+        :store="myStore.id"
       />
-      <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === repairOrderDetail.status && repairOrderDetail.cashier_id === userinfo.id">
+      <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === repairOrderDetail.status && repairOrderDetail.cashier_id === userinfo.id && myStore.id === repairOrderDetail.store_id">
         <common-confirm-pay @pay="payOrder" @cancle="cancelOrder" />
       </template>
     </div>
+    <correspond-store :correspond-ids="[repairOrderDetail.store_id]" />
   </div>
 </template>
 
