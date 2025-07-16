@@ -2,7 +2,7 @@
 import type { FormInst, FormRules } from 'naive-ui'
 
 const { $toast } = useNuxtApp()
-const { storesList, myStore } = storeToRefs(useStores())
+const { storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const { getAccessorieCategoryWhere, addAccessorieCategory } = useAccessorieCategory()
 const { categoryFilterList, categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
@@ -69,9 +69,6 @@ await getStoreList({ page: 1, limit: 20 })
 await changeStore()
 forRules()
 async function submit() {
-  if (!myStore.value?.id) {
-    return $toast.error('请先选择门店')
-  }
   const res = await addAccessorieCategory({ list: [params.value] })
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建成功', 1000)

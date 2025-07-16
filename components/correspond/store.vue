@@ -6,7 +6,7 @@ const props = defineProps<{
 const { myStore } = storeToRefs(useStores())
 const isGoChangestore = ref(false)
 
-if (props.correspondIds?.length) {
+if (props.correspondIds?.length && myStore.value && myStore.value.id) {
   if (!props.correspondIds.filter(Boolean).includes(myStore.value.id))
     isGoChangestore.value = true
 }
