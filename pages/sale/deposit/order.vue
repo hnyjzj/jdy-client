@@ -11,6 +11,7 @@ const { filterList: memberFiler } = storeToRefs(useMemberManage())
 const { OrderDetail, filterList } = storeToRefs(useDepositOrder())
 const { getOrderDetail, getSaleWhere, returnGoodsDepositOrder, payDepositOrder, rovkeDepositOrder } = useDepositOrder()
 const { userinfo } = storeToRefs(useUser())
+const { myStore } = storeToRefs(useStores())
 const route = useRoute()
 if (route?.query?.id) {
   await getOrderDetail({ id: route.query.id as string })
@@ -53,11 +54,19 @@ const submitCancel = async () => {
 <template>
   <div>
     <div class="p-[16px] pb-[80px]">
-      <sale-deposit-details :identity="userinfo?.identity" :member-filer="memberFiler" :product-filter="finishedFilterList" :where="filterList" :orders="OrderDetail" :return-goods="returnGoods" />
-      <template v-if="OrderDetail.status === DepositOrderStatus.PendingPayment && OrderDetail.cashier_id === userinfo.id">
+      <sale-deposit-details
+        :store="myStore.id"
+        :identity="userinfo?.identity"
+        :member-filer="memberFiler"
+        :product-filter="finishedFilterList"
+        :where="filterList"
+        :orders="OrderDetail"
+        :return-goods="returnGoods" />
+      <template v-if="OrderDetail.status === DepositOrderStatus.PendingPayment && OrderDetail.cashier_id === userinfo.id && myStore.id === OrderDetail.store_id">
         <common-confirm-pay @pay="submitPay" @cancle="submitCancel" />
       </template>
     </div>
+    <correspond-store :correspond-ids="[OrderDetail.store_id]" />
   </div>
 </template>
 

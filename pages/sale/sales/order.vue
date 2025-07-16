@@ -186,8 +186,9 @@ onMounted(() => {
         :product-filter="finishedFilterList"
         :orders="OrderDetail"
         :return-goods="returnGoods"
+        :store="myStore.id"
       />
-      <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === OrderDetail.status && OrderDetail.cashier_id === userinfo.id">
+      <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === OrderDetail.status && OrderDetail.cashier_id === userinfo.id && myStore.id === OrderDetail.store_id">
         <common-confirm-pay @pay="payOrderConfirm" @cancle="cancelOrder" />
       </template>
     </div>
@@ -196,10 +197,18 @@ onMounted(() => {
       <common-button-bottom
         confirm-text="打印"
         cancel-text="返回"
-        @confirm="() => jumpPre()"
+        @confirm="() => {
+          if (myStore.id === OrderDetail.store_id){
+            jumpPre()
+          }
+          else {
+            $toast.error('当前门店与操作门店不匹配,无法操作')
+          }
+        }"
         @cancel="router.back()"
       />
     </template>
+    <correspond-store :correspond-ids="[OrderDetail.store_id]" />
   </div>
 </template>
 

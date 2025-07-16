@@ -92,6 +92,11 @@ const handleValidateButtonClick = (e: any) => {
   e.preventDefault()
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
+      if (otherOrderDetail.value.store_id !== myStore.value.id && route.query.id) {
+        $toast.error('当前门店与操作门店不匹配,无法操作')
+        return
+      }
+
       // 成功的操作
       formData.value.store_id = myStore.value.id
       if (!route.query.id) {
@@ -161,6 +166,9 @@ const handleValidateButtonClick = (e: any) => {
         </n-form>
       </div>
     </div>
+    <template v-if="otherOrderDetail.store_id && otherOrderDetail.store_id !== '' && route.query.id">
+      <correspond-store :correspond-ids="[otherOrderDetail.store_id]" />
+    </template>
   </div>
 </template>
 

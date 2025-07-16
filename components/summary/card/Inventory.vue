@@ -58,10 +58,10 @@ const TodayInventoryList = ref<DataCardList<TodayInventory>>({
       <div class="mt-[12px] flex-between">
         <div />
         <div class="color-[#333]  dark:color-[#fff] text-[12px] line-height-[24px] flex">
-          <span>
+          <!-- <span>
             {{ rbText }}
           </span>
-          <icon name="i-icon:left" :size="12" />
+          <icon name="i-icon:left" :size="12" /> -->
         </div>
       </div>
     </div>
