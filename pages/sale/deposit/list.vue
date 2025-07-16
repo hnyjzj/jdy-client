@@ -6,7 +6,7 @@ const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 
 const { filterListToArray, OrdersList, total, filterList, searchPage } = storeToRefs(useDepositOrder())
-const { getSaleWhere, getDepositList } = useDepositOrder()
+const { getSaleWhere, getDepositList, isStoreStaff } = useDepositOrder()
 const filterData = ref({} as Partial<DepositOrderWhere>)
 const filterShow = ref(false)
 
@@ -29,6 +29,9 @@ const handleClick = async (id: string) => {
 const openFilter = () => {
   // 打开筛选
   filterShow.value = true
+}
+const isStaff = async () => {
+  return await isStoreStaff({ id: myStore.value.id }) || false
 }
 
 const submitWhere = async (f: DepositOrderWhere) => {
@@ -94,7 +97,7 @@ const newAdd = async () => {
       <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <div class="p-[16px]">
           <template v-if="OrdersList.length">
-            <sale-deposit-list :info="OrdersList" :where="filterList" @user-click="handleClick" />
+            <sale-deposit-list :info="OrdersList" :where="filterList" :is-store-staff="isStaff" @user-click="handleClick" />
             <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
           </template>
           <template v-else>

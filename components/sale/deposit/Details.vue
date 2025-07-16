@@ -6,6 +6,7 @@ const props = defineProps<{
   productFilter: Where<ProductFinisheds>
   returnGoods: (val: DepositReturnGoods) => Promise<boolean>
   identity: number
+  store: string
 }>()
 const payMethods = (val: number) => {
   const arrary = optonsToSelect(props.where.payment_method?.preset)
@@ -109,7 +110,7 @@ const returnGoods = (val: number) => {
                   <common-cell label="货品状态" value="已退款" val-color="#FF9900" />
                 </template>
                 <div class="flex-end">
-                  <template v-if="item.status === DepositOrderStatus.Booking && props?.identity > 1">
+                  <template v-if="item.status === DepositOrderStatus.Booking && props?.identity > 1 && props.store === orders.store_id">
                     <common-button-rounded content="退款" @button-click="returnGoods(index)" />
                   </template>
                 </div>
