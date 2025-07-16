@@ -9,6 +9,7 @@ const props = defineProps<{
   oldFilter: Where<ProductOlds>
   returnGoods: (req: ReturnGoods) => void
   identity: number
+  store: string
 }>()
 
 const payMethods = (val: number) => {
@@ -141,7 +142,7 @@ const onReturnProduct = async (index: number) => {
                   <common-cell label="成品状态" value="已退货" val-color="#FF9900" />
                 </template>
                 <div class="flex-end">
-                  <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > 1">
+                  <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > 1 && props.store === orders.store_id">
                     <common-button-rounded content="退货" @button-click="onReturnProduct(i)" />
                   </template>
                 </div>
@@ -180,7 +181,7 @@ const onReturnProduct = async (index: number) => {
                   <common-cell label="状态" value="已退货" val-color="#FF9900" />
                 </template>
                 <div class="flex-end">
-                  <template v-if="obj?.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > 1">
+                  <template v-if="obj?.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > 1 && props.store === orders.store_id">
                     <common-button-rounded content="退货" @button-click="onReturnProduct(i)" />
                   </template>
                 </div>
@@ -205,7 +206,7 @@ const onReturnProduct = async (index: number) => {
                     <common-cell label="状态" value="已退货" val-color="#FF9900" />
                   </template>
                   <div class="flex-end">
-                    <template v-if="obj?.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > 1">
+                    <template v-if="obj?.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > 1 && props.store === orders.store_id">
                       <common-button-rounded content="退货" @button-click="onReturnProduct(i)" />
                     </template>
                   </div>

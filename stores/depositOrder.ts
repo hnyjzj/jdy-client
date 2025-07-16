@@ -86,6 +86,21 @@ export const useDepositOrder = defineStore('depositOrder', {
       }
       return false
     },
+    async isStoreStaff(params: { id: string, staff_id?: string }) {
+      const { data } = await https.post<any, { id: string }>('/store/staff/is_in', params)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return data.value?.data
+      }
+      return false
+    },
+    // 是否是门店负责人
+    async isSuperior(params: { id: string, staff_id?: string }) {
+      const { data } = await https.post<any, { id: string }>('/superior/is_in', params)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return data.value?.data
+      }
+      return false
+    },
 
   },
 })

@@ -44,7 +44,7 @@ const cute = (index: number) => {
                 <div>
                   <n-checkbox
                     :value="item.id"
-                    :label="`订金金额${item.price_pay},订金单号:${item.id},${item.products[0].product_finished.name}`" :style="{
+                    :label="`订金金额${item.price_pay},订金单号:${item.id},${item.products[0]?.product_finished?.name || ''}`" :style="{
                       '--n-color-checked': '#1D6DEC',
                       '--n-border-focus': '#1D6DEC',
                       '--n-box-shadow-focus': '0 0 0 2px rgba(37, 115, 238, 0.3)',

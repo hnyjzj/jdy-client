@@ -6,6 +6,7 @@ const props = defineProps<{
   finishedWhere: Where<ProductFinisheds>
   orderWhere: Where<service>
   identity: number
+  store: string
   updateOrder: (req: updateRepairParams) => Promise<boolean>
   uploadFile: (file: any) => Promise<string | false>
   refund: (req: { id: string, remark: string }) => Promise<boolean>
@@ -55,6 +56,10 @@ if (props.detail.images?.length) {
 }
 // 更新
 const updateButton = async () => {
+  if (props.store !== props.detail.store_id) {
+    $toast.error('当前门店与操作门店不匹配,无法操作')
+    return
+  }
   if (props.detail.status === serviceOrderStatus.Completed) {
     return $toast.error('已完成订单无法修改')
   }
@@ -92,6 +97,11 @@ const changeParams = {
   operation: props.detail.status,
 }
 const changeStatusBtn = async () => {
+  if (props.store !== props.detail.store_id) {
+    $toast.error('当前门店与操作门店不匹配,无法操作')
+    return
+  }
+
   if (props.detail.status === serviceOrderStatus.Refund) {
     $toast.error('已退款不支持标记操作')
     return
@@ -237,7 +247,7 @@ const confirmChange = async () => {
               <common-cell label="备注" :value="item.remark" rcol="col-8" lcol="col-4" />
               <div class="line" />
               <template
-                v-if="item.status === serviceOrderStatus.StoreReceived && props?.identity > 1">
+                v-if="item.status === serviceOrderStatus.StoreReceived && props?.identity > 1 && props.store === props.detail.store_id">
                 <div class="flex-end">
                   <common-button-rounded content="退款" @button-click="showModel = true" />
                 </div>
