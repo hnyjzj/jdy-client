@@ -49,9 +49,11 @@ const submitWhere = async (f: service) => {
   repairOrderList.value = []
   searchPage.value = 1
   await getList(filterData.value as any)
+  filterShow.value = false
 }
 const resetWhere = async () => {
   filterData.value = {}
+  filterShow.value = false
 }
 await getList()
 

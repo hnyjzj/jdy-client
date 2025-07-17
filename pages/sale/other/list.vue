@@ -38,9 +38,11 @@ const submitWhere = async (f: otherOrderWhere) => {
   orderList.value = []
   searchPage.value = 1
   await getList(filterData.value as otherOrderWhere)
+  filterShow.value = false
 }
 const resetWhere = async () => {
   filterData.value = {}
+  filterShow.value = false
 }
 const delDialog = ref(false)
 const delId = ref('')

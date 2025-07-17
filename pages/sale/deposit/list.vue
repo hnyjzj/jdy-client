@@ -39,9 +39,11 @@ const submitWhere = async (f: DepositOrderWhere) => {
   OrdersList.value = []
   searchPage.value = 1
   await getList(filterData.value as any)
+  filterShow.value = false
 }
 const resetWhere = async () => {
   filterData.value = {}
+  filterShow.value = false
 }
 await getList()
 await getSaleWhere()
