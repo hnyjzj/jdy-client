@@ -22,6 +22,8 @@ if (route.query.id) {
 type ProductKey = keyof ProductFinisheds
 /** 字段是否更新 */
 function isUpdate(key: ProductKey) {
+  if (!historyInfo.value || !historyInfo.value.new_value || !historyInfo.value.old_value)
+    return false
   try {
     return JSON.stringify(historyInfo.value.new_value[key]) !== JSON.stringify(historyInfo.value.old_value[key])
   }
@@ -56,7 +58,7 @@ function isUpdate(key: ProductKey) {
               </div>
 
               <div class="h-0.5 bg-[#E6E6E8]" />
-              <div class="other-information flex flex-col" uno-sm="grid grid-cols-[1fr_1fr] gap-x-10">
+              <div v-if="historyInfo?.new_value" class="other-information flex flex-col" uno-sm="grid grid-cols-[1fr_1fr] gap-x-10">
                 <template v-for="(item, index) in finishedFilterListToArray" :key="index">
                   <template v-if="item.find">
                     <div class="info-row">
@@ -78,11 +80,6 @@ function isUpdate(key: ProductKey) {
                           <template v-else-if="item.input === 'select'">
                             <div class="info-val">
                               {{ item.preset[historyInfo?.new_value[item.name]] || '' }}
-                            </div>
-                          </template>
-                          <template v-else-if="item.input === 'switch'">
-                            <div class="info-val">
-                              {{ historyInfo?.new_value[item.name] ? '是' : '否' }}
                             </div>
                           </template>
                           <template v-else-if="item.input === 'list'">
