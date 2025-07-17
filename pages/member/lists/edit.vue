@@ -12,16 +12,15 @@ useSeoMeta({
 const { createMember, getMemberInfo, updateMemberInfo } = useMemberManage()
 const { memberInfo } = storeToRefs(useMemberManage())
 
-const { myStore, myStoreList, StoreStaffList } = storeToRefs(useStores())
-
-const { getMyStore, getStoreStaffList } = useStores()
+const { getMyStore, getStoreStaffList, getStoreDetail } = useStores()
+const { myStore, myStoreList, storeDetails } = storeToRefs(useStores())
 
 const getList = async () => await getMyStore({ page: 1, limit: 20 })
 
-const memberParams = ref<Member>({
-  // 初始化store_id为当前门店id
-  store_id: myStore.value.id,
-} as Member)
+const chosenStoreId = ref(memberInfo.value.store_id)
+const targerStaffList = ref<Staff[]>([])
+
+const memberParams = ref<Member>({} as Member)
 
 const selectOptions = [
   {
@@ -140,6 +139,25 @@ const execute = async () => {
     console.error(error)
   }
 }
+
+const getTargetStaff = async (id: string) => {
+  await getStoreDetail(id)
+
+  if (storeDetails.value) {
+    targerStaffList.value = storeDetails.value.staffs
+  }
+}
+
+// 当前用户有store_id时，则获取该门店的员工详情
+if (memberInfo.value.store_id) {
+  getTargetStaff(memberInfo.value.store_id)
+}
+
+// 更换门店时，重置顾问选项
+const changeClear = () => {
+  memberParams.value.consultant_id = ''
+  targerStaffList.value = []
+}
 </script>
 
 <template>
@@ -233,17 +251,22 @@ const execute = async () => {
                         <n-select
                           v-model:value="memberParams.store_id"
                           placeholder="请选择入会门店"
-                          :options="myStoreList.map(v => ({
+                          :options="myStoreList.filter(v => Boolean(v.id)).map(v => ({
                             label: v.name,
                             value: v.id,
                           }))"
                           menu-size="large"
                           clearable
                           remote
-
+                          @update:value="() => {
+                            changeClear()
+                          }"
                           @focus="(e) => {
                             focus(e)
                             getList
+                          }"
+                          @blur="() => {
+                            chosenStoreId = memberParams.store_id
                           }"
                         />
                       </div>
@@ -256,7 +279,7 @@ const execute = async () => {
                         <n-select
                           v-model:value="memberParams.consultant_id"
                           placeholder="请选择专属顾问"
-                          :options="StoreStaffList.map(v => ({
+                          :options="targerStaffList.map(v => ({
                             label: v.nickname,
                             value: v.id,
                           }))"
@@ -265,7 +288,7 @@ const execute = async () => {
                           remote
                           @focus="(e) => {
                             focus(e)
-                            getStoreStaffList({ id: myStore.id })
+                            getTargetStaff(chosenStoreId)
                           }"
                         />
                       </div>
