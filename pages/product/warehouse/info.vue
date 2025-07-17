@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { getFinishedEnterInfo, delFinishedEnter, cancelFinishedEnter, successFinishedEnter, addFinishedEnter, editFinishedEnter } = useFinishedEnter()
+const { getFinishedEnterInfo, delFinishedEnter, cancelFinishedEnter, successFinishedEnter, addFinishedEnter, editFinishedEnter, clearFinishedEnter } = useFinishedEnter()
 const { enterInfo } = storeToRefs(useFinishedEnter())
 const { finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
 const { getFinishedWhere } = useFinished()
@@ -66,15 +66,17 @@ async function delProduct() {
 }
 /** 清空产品列表 */
 async function clearProduct() {
-  const idAll = enterInfo.value?.products?.map(item => item.id)
-  if (!idAll || !idAll.length) {
+  if (!enterInfo.value.id)
     return
+  loading.value = true
+  const res = await clearFinishedEnter(enterInfo.value.id)
+  if (res?.code === HttpCode.SUCCESS) {
+    await getInfo()
+    loading.value = false
+    return $toast.success('清空成功')
   }
-  const params = {
-    enter_id: enterInfo.value.id,
-    product_ids: idAll,
-  }
-  await del(params)
+  loading.value = false
+  $toast.error(res?.message ?? '清空失败')
 }
 function goAdd() {
   isChooseModel.value = false
@@ -87,11 +89,11 @@ async function submitGoods(req: ProductFinisheds[]) {
   if (!req?.length) {
     return
   }
+  isChooseModel.value = false
+  isImportModel.value = false
   loading.value = true
   const res = await addFinishedEnter({ products: req, enter_id: enterInfo.value.id })
   if (res?.code === HttpCode.SUCCESS) {
-    isChooseModel.value = false
-    isImportModel.value = false
     await getInfo()
     uploadRef.value.clearData()
     loading.value = false
