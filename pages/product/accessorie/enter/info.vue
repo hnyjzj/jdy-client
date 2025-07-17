@@ -9,7 +9,7 @@ const { accessorieFilterList } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
 const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
 const { getAccessorieCategoryWhere } = useAccessorieCategory()
-
+const { myStore } = storeToRefs(useStores())
 useSeoMeta({ title: '入库单详情' })
 
 /** 当前入库单 ID 和待删除产品 ID */
@@ -168,7 +168,7 @@ async function bulkupload(data: any) {
     <product-upload-choose v-model:is-model="isChooseModel" @go-add="goAdd" @batch="isImportModel = true" />
     <accessorie-warehouse-accessorie ref="uploadRef" v-model="isImportModel" :filter-list="accessorieFilterList" :type="1" @upload="bulkupload" />
     <!-- 状态为草稿时 功能操作 -->
-    <template v-if="enterInfo.status === EnterStatus.Draft">
+    <template v-if="enterInfo.status === EnterStatus.Draft && myStore.id === enterInfo.store_id">
       <common-create @create="isChooseModel = true" />
       <common-button-bottom>
         <template #content>
@@ -188,7 +188,7 @@ async function bulkupload(data: any) {
         </template>
       </common-button-bottom>
     </template>
-    <template v-if="enterInfo.status === EnterStatus.Completed">
+    <template v-if="enterInfo.status === EnterStatus.Completed && myStore.id === enterInfo.store_id">
       <common-button-one text="撤销入库" @confirm="cancelDialog = true" />
     </template>
     <common-loading v-model="loading" title="正在处理中" />
@@ -196,6 +196,7 @@ async function bulkupload(data: any) {
     <common-confirm v-model:show="clearDialog" icon="error" title="清空列表" text="确认要清空所有入库的产品吗?" @submit="clearProduct" />
     <common-confirm v-model:show="cancelDialog" icon="error" title="撤销" text="确认要撤销入库单吗? 撤销后将不可进行其他操作" @submit="cancel" />
     <common-confirm v-model:show="finishDialog" icon="success" title="完成入库" text="确认要完成此入库单吗?" @submit="finish" />
+    <correspond-store :correspond-ids="[enterInfo.store_id]" />
   </div>
 </template>
 

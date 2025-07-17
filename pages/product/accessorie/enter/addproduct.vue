@@ -118,6 +118,16 @@ function sumStock(category: CategoryHasProduct) {
   }
   return 0
 }
+
+function toggleCategory(id: string) {
+  const index = selectedCategories.value.indexOf(id)
+  if (index > -1) {
+    selectedCategories.value.splice(index, 1)
+  }
+  else {
+    selectedCategories.value.push(id)
+  }
+}
 </script>
 
 <template>
@@ -238,7 +248,7 @@ function sumStock(category: CategoryHasProduct) {
             <template v-if="categoryList?.length">
               <tbody class="pt-2">
                 <template v-for="(category, i) in categoryList" :key="i">
-                  <tr class="table-color">
+                  <tr class="table-color" @click="toggleCategory(category.id)">
                     <td class="sticky-left table-color py-1 px-2">
                       <input v-model="selectedCategories" type="checkbox" :value="category.id" @focus="focus">
                     </td>

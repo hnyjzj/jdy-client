@@ -256,9 +256,11 @@ async function getStoreStaffListFun() {
         <common-empty width="100px" />
       </template>
     </div>
-    <div class="cursor-pointer">
-      <common-create @click="jump('/product/check/add')" />
-    </div>
+    <template v-if="myStore.id">
+      <div class="cursor-pointer">
+        <common-create @click="jump('/product/check/add')" />
+      </div>
+    </template>
     <div :id="Key" :key="Key">
       <common-filter-where v-model:show="isFilter" :data="filterData" :filter="checkFilterListToArray" @submit="submitWhere" @reset="reset">
         <template #inspector_id>

@@ -27,10 +27,12 @@ async function changeStoer() {
     columns.value.push({ label: item.name, key: item.id })
   })
 }
+const selectStore = ref()
 
 function handleSelect(id: Stores['id']) {
   saveStoreId.value = id
   const stored = myStoreList.value.find(item => item.id === id)
+  selectStore.value = stored
   if (stored) {
     saveStoreId.value = ''
     emits('change', stored)
@@ -46,7 +48,7 @@ function handleSelect(id: Stores['id']) {
         @click="changeStoer">
         <client-only>
           <div class="store-name font-bold text-size-[14px] mr-[4px]">
-            {{ myStore.name || '选择门店' }}
+            {{ selectStore?.name || myStore.name || '选择门店' }}
           </div>
         </client-only>
         <icon name="i-icon:product-toggle" :size="24" />

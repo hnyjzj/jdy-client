@@ -4,7 +4,7 @@ const { getCheckInfo, getCheckWhere, changeCheckStatus, addCheckProduct, remove 
 const { userinfo } = useUser()
 const { $toast } = useNuxtApp()
 const { useWxWork } = useWxworkStore()
-
+const { myStore } = storeToRefs(useStores())
 const route = useRoute()
 
 const { finishedFilterListToArray } = storeToRefs(useFinished())
@@ -474,7 +474,7 @@ const removeDict = useDebounceFn(async (product_id) => {
         </div>
       </div>
     </div>
-    <template v-if="funbtns?.length">
+    <template v-if="funbtns?.length && myStore.id === checkInfo.store_id">
       <div class="btn">
         <template v-for="(item, index) in funbtns" :key="index">
           <button class="btntext cursor-pointer" @click="handleClick(item)">
@@ -506,6 +506,7 @@ const removeDict = useDebounceFn(async (product_id) => {
     />
     <common-loading v-show="loading" text="正在处理中" />
     <product-check-warehouse ref="uploadRef" v-model="importModel" @upload="bulkupload" />
+    <correspond-store :correspond-ids="[checkInfo.store_id]" />
   </div>
 </template>
 
