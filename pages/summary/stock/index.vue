@@ -130,7 +130,7 @@ const getOldData = async () => {
 
 const changeTab = async (val: string) => {
   tab.value = val
-  if (val === 'old' && oldtitle.value.length === 0) {
+  if (val === 'old') {
     await OldGetStockType()
     await OldGetStockTitle()
     await getOldData()

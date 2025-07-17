@@ -4,7 +4,7 @@ const props = withDefaults(defineProps<{
   stockList?: any
   loading?: boolean
 }>(), {
-  stockList: [] as any[],
+  stockList: [],
 })
 const { $colorMode } = useNuxtApp()
 const scrollX = ref(0)
