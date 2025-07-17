@@ -135,6 +135,11 @@ const changeTab = async (val: string) => {
     await OldGetStockTitle()
     await getOldData()
   }
+  else {
+    await getStockType()
+    await getStockTitle()
+    await getData()
+  }
 }
 </script>
 
