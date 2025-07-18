@@ -5,6 +5,7 @@ useSeoMeta({
 // 企业微信、单聊入口所需页面
 
 const { useWxWork, getTickets } = useWxworkStore()
+const { wx } = storeToRefs(useWxworkStore())
 const { getMemberInfo } = useMemberManage()
 const { memberInfo } = storeToRefs(useMemberManage())
 
@@ -12,6 +13,7 @@ type MemberParams = Pick<Member, 'id' | 'external_user_id'>
 const memberParams = ref<MemberParams>({} as MemberParams)
 
 const route = useRoute()
+
 if (route.query?.external_user_id) {
   const external_user_id = route.query.external_user_id as string
   memberParams.value.external_user_id = external_user_id
@@ -25,16 +27,18 @@ await getInfo()
 await getTickets({ platform: 'wxwork' })
 
 onMounted(async () => {
-  const wx = await useWxWork()
-
-  if (wx) {
-    const res = await wx.getContext()
-    if (res?.entry && !memberParams.value.external_user_id) {
-      const userid = await wx.getUserId()
-      if (userid) {
-        memberParams.value.external_user_id = userid
-        await getInfo()
-      }
+  if (wx?.value) {
+    await useWxWork()
+  }
+  if (!wx.value?.getContext) {
+    return
+  }
+  const res = await wx.value?.getContext()
+  if (res?.entry && !memberParams.value.external_user_id) {
+    const userid = await wx.value.getUserId()
+    if (userid) {
+      memberParams.value.external_user_id = userid
+      await getInfo()
     }
   }
 })

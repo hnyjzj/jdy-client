@@ -131,7 +131,7 @@ const backtrack = () => {
                     常去门店
                   </div>
                   <div class="item-right">
-                    {{ props.data.store?.name || PERCH }}
+                    {{ PERCH }}
                   </div>
                 </div>
                 <div class="item">
@@ -139,47 +139,7 @@ const backtrack = () => {
                     来源
                   </div>
                   <div class="item-right">
-                    {{ props.data.store?.name || PERCH }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </template>
-        </common-gradient>
-
-        <common-gradient title="收货地址" theme="gradient" :italic="true" :foldable="true">
-          <template #body>
-            <div class="flex flex-col gap-[12px]">
-              <div class="base flex flex-1 flex-col gap-[12px]">
-                <div class="secondary">
-                  <div class="secondary-top">
-                    姓名
-                  </div>
-                  <div class="secondary-bottom">
-                    <common-frame :disabled-style="true" :tip="props.data.name || PERCH" />
-                  </div>
-                </div>
-                <div class="secondary">
-                  <div class="secondary-top">
-                    联系方式
-                  </div>
-                  <div class="secondary-bottom">
-                    <common-frame :disabled-style="true" :tip="props.data.phone || PERCH" />
-                  </div>
-                </div>
-                <div class="secondary">
-                  <div class="secondary-top">
-                    地址
-                  </div>
-                  <div class="secondary-bottom">
-                    <textarea
-                      name="textarea"
-                      placeholder="该会员暂无地址"
-                      rows="5"
-                      cols="30"
-                      disabled
-                      class="area"
-                    />
+                    {{ PERCH }}
                   </div>
                 </div>
               </div>
@@ -268,6 +228,52 @@ const backtrack = () => {
               </div>
             </div>
           </template>
+        </common-gradient>
+
+        <common-gradient title="收货地址" theme="gradient" :italic="true" :foldable="true">
+          <template #body>
+            <div class="flex flex-col gap-[12px]">
+              <div class="base flex flex-1 flex-col gap-[12px]">
+                <div class="secondary">
+                  <div class="secondary-top">
+                    姓名
+                  </div>
+                  <div class="secondary-bottom">
+                    <common-frame :disabled-style="true" :tip="props.data.name || PERCH" />
+                  </div>
+                </div>
+                <div class="secondary">
+                  <div class="secondary-top">
+                    联系方式
+                  </div>
+                  <div class="secondary-bottom">
+                    <common-frame :disabled-style="true" :tip="props.data.phone || PERCH" />
+                  </div>
+                </div>
+                <div class="secondary">
+                  <div class="secondary-top">
+                    地址
+                  </div>
+                  <div class="secondary-bottom">
+                    <textarea
+                      name="textarea"
+                      placeholder="该会员暂无地址"
+                      rows="5"
+                      cols="30"
+                      disabled
+                      class="area"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+        </common-gradient>
+
+        <common-gradient title="消费记录" theme="gradient" :italic="true" :foldable="true">
+          <div>
+            测试
+          </div>
         </common-gradient>
       </div>
     </template>
