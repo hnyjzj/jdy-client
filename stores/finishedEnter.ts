@@ -96,6 +96,16 @@ export const useFinishedEnter = defineStore('finishedEnter', {
         throw new Error(`删除入库单产品失败: ${error || '未知错误'}`)
       }
     },
+    // 清空入库单产品
+    async clearFinishedEnter(enter_id: string) {
+      try {
+        const { data } = await https.delete<any, { enter_id: string }>('/product/finished/enter/clear_product', { enter_id })
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`清空入库单产品失败: ${error || '未知错误'}`)
+      }
+    },
     // 取消入库
     async cancelFinishedEnter(enter_id: FinishedEnter['id']) {
       try {

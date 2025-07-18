@@ -156,7 +156,7 @@ async function bulkupload(data: any) {
 </script>
 
 <template>
-  <div class="pb-20">
+  <div class="pb-20 px-4">
     <common-layout-center>
       <div class="pt-4">
         <div class="flex flex-col gap-4">
