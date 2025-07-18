@@ -226,7 +226,7 @@ async function getOldids() {
 </script>
 
 <template>
-  <div class="storage pb-20">
+  <div class="storage pb-20 px-4">
     <div class="grid-12 pt-4">
       <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <template v-if="type === GoodsTypePure.ProductFinish">

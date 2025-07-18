@@ -197,7 +197,7 @@ function pull() {
 </script>
 
 <template>
-  <div class="storage pb-20" style="position: relative;">
+  <div class="storage pb-20 px-4" style="position: relative;">
     <common-loading v-model="loading" title="正在处理中" />
     <common-layout-center>
       <div class="pt-4">
