@@ -26,10 +26,10 @@ const cancelOrder = async (id: string) => {
 const payOrder = async (id: string) => {
   return await payRepairOrder({ id })
 }
-
+const limits = ref(12)
 // 获取列表
 const getList = async (where = {} as Partial<OrderInfo>) => {
-  const params = { page: searchPage.value, limit: 12, where: { store_id: myStore.value.id } } as ReqList<OrderInfo>
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<OrderInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
@@ -53,16 +53,18 @@ const submitWhere = async (f: service) => {
 }
 const resetWhere = async () => {
   filterData.value = {}
-  filterShow.value = false
 }
 await getList()
 
 await getRepairOrderWhere()
 
 const searchOrder = async (id: string) => {
-  await getRepairOrderList({ page: 1, limit: 5, where: { id, store_id: myStore.value.id } })
+  filterData.value = { id, store_id: myStore.value.id }
+  searchPage.value = 1
+  await getList(filterData.value as any)
 }
 const clearFn = async () => {
+  filterData.value = {}
   repairOrderList.value = []
   searchPage.value = 1
   await getList()
@@ -70,7 +72,7 @@ const clearFn = async () => {
 
 const updatePage = async (page: number) => {
   searchPage.value = page
-  await getList()
+  await getList(filterData.value as any)
 }
 
 const changeStores = async () => {
@@ -96,6 +98,13 @@ const setNowcity = () => {
 const router = useRouter()
 const newAdd = async () => {
   await router.push('/sale/service/add')
+}
+const { $toast } = useNuxtApp()
+const getSaleman = async () => {
+  const res = await getStoreStaffList({ id: myStore.value.id })
+  if (res?.data.value?.code === HttpCode.ERROR) {
+    $toast.error(res?.data.value?.message || '请求失败')
+  }
 }
 </script>
 
@@ -130,7 +139,7 @@ const newAdd = async () => {
               :get-list="getList"
               @user-click="handleClick"
             />
-            <common-page v-model:page="searchPage" :total="Total" :limit="12" @update:page="updatePage" />
+            <common-page v-model:page="searchPage" :total="Total" :limit="limits" @update:page="updatePage" />
           </template>
           <template v-else>
             <common-emptys text="暂无数据" />
@@ -144,6 +153,19 @@ const newAdd = async () => {
         <template #receptionist_id>
           <n-select
             v-model:value="filterData.receptionist_id"
+            placeholder="接待员"
+            :options="StoreStaffList.map(v => ({
+              label: v.nickname,
+              value: v.id,
+            }))"
+            clearable
+            remote
+            @focus="getSaleman"
+          />
+        </template>
+        <template #cashier_id>
+          <n-select
+            v-model:value="filterData.cashier_id"
             placeholder="请选择收银员"
             :options="StoreStaffList.map(v => ({
               label: v.nickname,
@@ -151,10 +173,7 @@ const newAdd = async () => {
             }))"
             clearable
             remote
-            @focus="(e) => {
-              focus(e)
-              getStoreStaffList({ id: myStore.id })
-            }"
+            @focus="getSaleman"
           />
         </template>
         <template #member_id>

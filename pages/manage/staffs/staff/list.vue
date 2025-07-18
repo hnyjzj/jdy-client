@@ -77,7 +77,9 @@ const handleSearch = (query: string) => {
 }
 const updatePage = async (page: number) => {
   searchPage.value = page
-  getList()
+  staffList.value = []
+  nomore.value = false
+  await getList(filterData.value)
 }
 const retrieve = async () => {
   searchPage.value = 1
@@ -86,9 +88,11 @@ const retrieve = async () => {
 }
 
 const searchKeyFn = async (data: string) => {
-  searchPage.value = 1
+  filterData.value = { nickname: data }
+  staffList.value = []
   nomore.value = false
-  await getList({ nickname: data })
+  searchPage.value = 1
+  await getList(filterData.value)
 }
 </script>
 
