@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { FormRules } from 'naive-ui'
+
 const { $toast } = useNuxtApp()
 
 const route = useRoute()
@@ -158,6 +160,28 @@ const changeClear = () => {
   memberParams.value.consultant_id = ''
   targerStaffList.value = []
 }
+
+const formRef = ref()
+const rules = ref<FormRules>({
+  phone: {
+    required: true,
+    trigger: ['blur', 'input', 'change'],
+    message: '请输入11位的会员联系方式',
+    type: 'string',
+  },
+  store_id: {
+    required: true,
+    trigger: ['blur', 'input', 'change'],
+    message: '请选择入会门店',
+  },
+  consultant_id: {
+    required: true,
+    trigger: ['blur', 'input', 'change'],
+    message: '请选择专属顾问',
+    type: 'string',
+  },
+},
+)
 </script>
 
 <template>
@@ -170,70 +194,46 @@ const changeClear = () => {
               <template #body>
                 <div class="flex flex-col gap-[12px]">
                   <div class="base flex flex-1 flex-col gap-[12px]">
-                    <div class="secondary">
-                      <div class="secondary-top">
-                        姓名
-                      </div>
-                      <div class="secondary-bottom">
+                    <n-form ref="formRef" :rules="rules" :model="memberParams" label-placement="top">
+                      <n-form-item label="姓名">
                         <n-input
                           v-model:value="memberParams.name"
-                          size="large"
-                          round
                           placeholder="请输入会员姓名"
-                          @focus="focus"
+                          @keydown.enter.prevent
                         />
-                      </div>
-                    </div>
-                    <div class="secondary">
-                      <div class="secondary-top">
-                        联系方式
-                      </div>
-                      <div class="secondary-bottom">
+                      </n-form-item>
+
+                      <n-form-item path="phone" label="联系方式">
                         <n-input
                           v-model:value="memberParams.phone"
-                          size="large"
-                          maxlength="11"
-                          round
                           placeholder="请输入会员联系方式"
-                          @focus="focus"
+                          @keydown.enter.prevent
                         />
-                      </div>
-                    </div>
-                    <div class="secondary">
-                      <div class="secondary-top">
-                        昵称
-                      </div>
-                      <div class="secondary-bottom">
+                      </n-form-item>
+
+                      <n-form-item label="昵称">
                         <n-input
                           v-model:value="memberParams.nickname"
-                          size="large"
-                          round
                           placeholder="请输入会员昵称"
-                          @focus="focus"
+                          @keydown.enter.prevent
                         />
-                      </div>
-                    </div>
-                    <div class="secondary">
-                      <div class="secondary-top">
-                        性别
-                      </div>
-                      <n-select
-                        v-model:value="showToUser"
-                        placeholder="请选择会员性别"
-                        :options="selectOptions"
-                        menu-size="large"
-                        @focus="focus"
+                      </n-form-item>
 
-                        @blur="() => {
-                          memberParams.gender = showToUser as any
-                        }"
-                      />
-                    </div>
-                    <div class="secondary">
-                      <div class="secondary-top">
-                        身份证号
-                      </div>
-                      <div class="secondary-bottom">
+                      <n-form-item label="性别">
+                        <n-select
+                          v-model:value="showToUser"
+                          placeholder="请选择会员性别"
+                          :options="selectOptions"
+                          menu-size="large"
+                          @focus="focus"
+
+                          @blur="() => {
+                            memberParams.gender = showToUser as any
+                          }"
+                        />
+                      </n-form-item>
+
+                      <n-form-item label="身份证号">
                         <n-input
                           v-model:value="memberParams.id_card"
                           size="large"
@@ -241,13 +241,9 @@ const changeClear = () => {
                           placeholder="请输入会员身份证号"
                           @focus="focus"
                         />
-                      </div>
-                    </div>
-                    <div class="secondary">
-                      <div class="secondary-top">
-                        入会门店
-                      </div>
-                      <div class="secondary-bottom">
+                      </n-form-item>
+
+                      <n-form-item path="store_id" label="入会门店">
                         <n-select
                           v-model:value="memberParams.store_id"
                           placeholder="请选择入会门店"
@@ -269,13 +265,9 @@ const changeClear = () => {
                             chosenStoreId = memberParams.store_id
                           }"
                         />
-                      </div>
-                    </div>
-                    <div class="secondary">
-                      <div class="secondary-top">
-                        专属顾问
-                      </div>
-                      <div class="secondary-bottom">
+                      </n-form-item>
+
+                      <n-form-item path="consultant_id" label="专属顾问">
                         <n-select
                           v-model:value="memberParams.consultant_id"
                           placeholder="请选择专属顾问"
@@ -291,8 +283,8 @@ const changeClear = () => {
                             getTargetStaff(chosenStoreId)
                           }"
                         />
-                      </div>
-                    </div>
+                      </n-form-item>
+                    </n-form>
                   </div>
                 </div>
               </template>
