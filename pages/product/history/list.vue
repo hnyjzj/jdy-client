@@ -41,7 +41,6 @@ async function getList(where = {} as Partial<HistoryWhere>) {
   params.where = where
   if (myStore.value.id) {
     where.store_id = myStore.value.id
-    where.type = [1, 2]
   }
   const res = await getProductHistory(params)
   return res as any
@@ -72,6 +71,7 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
   productRocordList.value = []
   const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
+    isFilter.value = false
     if (!isSearch) {
       $toast.success('筛选成功')
     }

@@ -70,6 +70,7 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
   productRocordList.value = []
   const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
+    isFilter.value = false
     if (!isSearch) {
       $toast.success('筛选成功')
     }
