@@ -44,9 +44,9 @@ export const useAllocate = defineStore('Allocate', {
       }
     },
     /** 调拨单详情 */
-    async getAllocateInfo(id: Allocate['id']) {
+    async getAllocateInfo(param: AllocateInfoParams) {
       try {
-        const { data } = await https.post<Allocate, { id: Allocate['id'] }>('/product/allocate/info', { id })
+        const { data } = await https.post<Allocate, AllocateInfoParams>('/product/allocate/info', param)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.allocateInfo = data.value.data
         }

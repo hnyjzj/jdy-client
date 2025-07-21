@@ -47,7 +47,7 @@ async function loss() {
 <template>
   <div>
     <common-layout-center>
-      <div class="pt-6 pb-18">
+      <div class="pt-6 pb-18 px-4">
         <product-manage-info :info="finishedInfo" :filter-list="finishedFilterList" :filter-list-to-array="finishedFilterListToArray" @go-loss="goLoss" />
         <div class="bottom">
           <div class="sm:grid-12">
