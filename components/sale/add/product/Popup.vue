@@ -31,6 +31,7 @@ const changeType = (type: 'name' | 'code') => {
 }
 
 const search = async () => {
+  readyAddproduct.value = []
   const res = await Props.searchProductList({ val: searchProduct.value, type: searchType.value })
   const index = readyAddproduct.value.findIndex(p => p.id === res[0].id)
   if (index !== -1)
