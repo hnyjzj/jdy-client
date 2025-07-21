@@ -32,9 +32,25 @@ async function getWhere() {
     await getOldWhere()
   }
 }
+const page = ref(1)
+const limit = ref(10)
+async function getInfo() {
+  if (!route.query.id)
+    return
+  const params = {
+    page: page.value,
+    limit: limit.value,
+    id: route.query.id,
+  } as AllocateInfoParams
+  await getAllocateInfo(params)
+}
+
+async function pull() {
+  await getInfo()
+}
 
 if (route.query.id) {
-  await getAllocateInfo(route.query.id as string)
+  await getInfo()
   type.value = allocateInfo.value.type
   await getAllocateWhere()
   await getWhere()
@@ -43,7 +59,7 @@ if (route.query.id) {
 async function cancel() {
   const res = await cancelAllcate(allocateInfo.value?.id)
   if (res?.code === HttpCode.SUCCESS) {
-    await getAllocateInfo(route.query.id as string)
+    await getInfo()
     $toast.success('取消调拨成功', 1000)
     setTimeout(() => {
       router.back()
@@ -66,7 +82,7 @@ async function confirm() {
 
   const res = await confirmAllcate(allocateInfo.value?.id)
   if (res?.code === HttpCode.SUCCESS) {
-    await getAllocateInfo(route.query.id as string)
+    await getInfo()
     $toast.success('确认调拨成功')
   }
   else {
@@ -77,7 +93,7 @@ async function confirm() {
 async function finish() {
   const res = await finishAllcate(allocateInfo.value?.id)
   if (res?.code === HttpCode.SUCCESS) {
-    await getAllocateInfo(route.query.id as string)
+    await getInfo()
     $toast.success('完成调拨成功')
   }
   else {
@@ -88,7 +104,7 @@ async function finish() {
 const delProduct = useThrottleFn(async (code: ProductFinisheds['code'] | ProductOlds['code']) => {
   const res = await remove(allocateInfo.value?.id, code)
   if (res?.code === HttpCode.SUCCESS) {
-    await getAllocateInfo(route.query.id as string)
+    await getInfo()
     $toast.success('删除成功')
   }
   else {
@@ -141,7 +157,7 @@ async function addProduct() {
   }
   const res = await add(allocateInfo.value?.id, ids)
   if (res?.code === HttpCode.SUCCESS) {
-    await getAllocateInfo(route.query.id as string)
+    await getInfo()
     $toast.success('添加成功')
     pCode.value = ''
     isAddModel.value = false
@@ -272,6 +288,11 @@ async function getOldids() {
                 </sale-order-nesting>
               </template>
             </template>
+            <common-page
+              v-model:page="page" :total="allocateInfo.product_count" :limit="limit" @update:page="() => {
+                pull()
+              }
+              " />
           </div>
         </template>
       </div>
