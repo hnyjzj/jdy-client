@@ -70,6 +70,9 @@ const formartMoney = (money: number | string | undefined) => {
   if (money === 0 || money === '0') {
     return ''
   }
+  else {
+    return money
+  }
 }
 
 findSalesman()
