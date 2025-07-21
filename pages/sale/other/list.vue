@@ -10,8 +10,9 @@ const filterShow = ref(false)
 const filterData = ref({} as Partial<otherOrderWhere>)
 await otherOrderWhere()
 // 获取列表
+const limits = ref(12)
 const getList = async (where = {} as Partial<otherOrderInfo>) => {
-  const params = { page: searchPage.value, limit: 12, where: { store_id: myStore.value.id } } as ReqList<otherOrderInfo>
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<otherOrderInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
@@ -19,15 +20,20 @@ const getList = async (where = {} as Partial<otherOrderInfo>) => {
 }
 await getList()
 const searchOrder = async (id: string) => {
-  await getOtherOrderList({ page: 1, limit: 5, where: { id, store_id: myStore.value.id } })
+  filterData.value = { id, store_id: myStore.value.id }
+  searchPage.value = 1
+  await getList(filterData.value)
 }
 const clearFn = async () => {
+  filterData.value = {}
   orderList.value = []
   searchPage.value = 1
   await getList()
 }
 const handleClick = () => {}
-const updatePage = () => {}
+const updatePage = async () => {
+  await getList(filterData.value as otherOrderWhere)
+}
 // 打开高级筛选
 const openFilter = () => {
   filterShow.value = true
@@ -38,6 +44,7 @@ const submitWhere = async (f: otherOrderWhere) => {
   orderList.value = []
   searchPage.value = 1
   await getList(filterData.value as otherOrderWhere)
+  filterShow.value = false
 }
 const resetWhere = async () => {
   filterData.value = {}
@@ -92,7 +99,7 @@ const newAdd = async () => {
         <div class="p-[16px]">
           <template v-if="orderList.length">
             <sale-other-list :info="orderList" :del="delOrder" :where="filterList" @user-click="handleClick" />
-            <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
+            <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
           </template>
           <template v-else>
             <common-emptys text="暂无数据" />
