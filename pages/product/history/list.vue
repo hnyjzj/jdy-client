@@ -29,7 +29,7 @@ const openFilter = () => {
 }
 /** 搜索 */
 async function search(e: string) {
-  await submitWhere({ product_id: e }, true)
+  await submitWhere({ code: e }, true)
 }
 /** 关闭搜索 */
 async function clearSearch() {
@@ -92,7 +92,7 @@ async function changeMyStore() {
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:id="complate" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜素关联产品单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:id="complate" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜素关联产品编号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changeMyStore" />
       </template>

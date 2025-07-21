@@ -18,9 +18,9 @@ interface HistoryWhere {
    */
   action: number
   /**
-   * 产品ID
+   * 编号
    */
-  product_id: string
+  code: string
   /**
    * 门店 ID
    */
