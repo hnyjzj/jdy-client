@@ -21,7 +21,7 @@ export const useAcessorieRecord = defineStore('AcessorieRecord', {
     async getProductHistory(params: ReqList<HistoryWhere>) {
       try {
         params = { ...params, where: { ...params.where } }
-        const { data } = await https.post<ResList<AccessorieRecord>, ReqList<HistoryWhere>>('/product/history/list', params)
+        const { data } = await https.post<ResList<AccessorieRecord>, ReqList<HistoryWhere>>('/product/history/list_accessorie', params)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.historyListTotal = data.value.data.total
           this.productRocordList = data.value.data.list
@@ -47,7 +47,7 @@ export const useAcessorieRecord = defineStore('AcessorieRecord', {
     // 获取记录筛选列表
     async getHistoryWhere() {
       try {
-        const { data } = await https.get<Where<AccessorieRecord>>('/product/history/where')
+        const { data } = await https.get<Where<AccessorieRecord>>('/product/history/where_accessorie')
         if (data.value?.code === HttpCode.SUCCESS) {
           this.historyFilterList = data.value.data
           this.HistoryFilterListToArray = sortArr(this.historyFilterList)

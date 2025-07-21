@@ -129,3 +129,9 @@ interface AllocateReq {
    */
   enter_id?: Enter['id']
 }
+
+interface AllocateInfoParams {
+  id: string
+  page: number
+  limit: number
+}

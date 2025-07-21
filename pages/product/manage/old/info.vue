@@ -46,7 +46,7 @@ async function convert(type: ProductFinisheds['type']) {
 <template>
   <div>
     <common-layout-center>
-      <div class="pt-6 pb-18">
+      <div class="pt-6 pb-18 px-4">
         <product-manage-info :info="oldInfo" :filter-list="oldFilterList" :filter-list-to-array="oldFilterListToArray" @go-loss="goLoss" />
         <div class="bottom">
           <div class="sm:grid-12">

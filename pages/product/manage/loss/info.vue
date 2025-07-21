@@ -64,7 +64,7 @@ function submitConvert() {
 <template>
   <div>
     <common-layout-center>
-      <div class="pt-6 pb-18">
+      <div class="pt-6 pb-18 px-4">
         <product-manage-info :info="lossInfo" :filter-list="lossFilterList" :filter-list-to-array="lossFilterListToArray" @go-loss="goLoss" />
         <div class="bottom">
           <div class="sm:grid-12">

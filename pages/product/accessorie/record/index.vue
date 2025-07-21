@@ -27,7 +27,7 @@ const openFilter = () => {
 }
 /** 搜索 */
 async function search(e: string) {
-  await submitWhere({ product_id: e }, true)
+  await submitWhere({ code: e }, true)
 }
 /** 关闭搜索 */
 async function clearSearch() {
@@ -39,7 +39,6 @@ async function getList(where = {} as Partial<HistoryWhere>) {
   params.where = where
   if (myStore.value?.id) {
     params.where.store_id = myStore.value.id
-    params.where.type = [3]
   }
   const res = await getProductHistory(params)
   return res as any
@@ -70,6 +69,7 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
   productRocordList.value = []
   const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
+    isFilter.value = false
     if (!isSearch) {
       $toast.success('筛选成功')
     }
@@ -90,7 +90,7 @@ async function changeMyStore() {
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:id="complate" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜素关联产品单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:id="complate" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜素关联产品编号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changeMyStore" />
       </template>
