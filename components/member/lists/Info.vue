@@ -50,7 +50,7 @@ const OrderStatusTextMap = {
   5: '已退货',
 }
 
-// 处理时间，例如：将‘"2025-07-18T09:45:41+08:00"’转变为‘"2025-07-18"’
+// 精简时间字符串
 const processDate = (date: string) => {
   const dateObj = new Date(date)
   const year = dateObj.getFullYear()

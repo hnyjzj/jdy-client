@@ -6,13 +6,15 @@ useSeoMeta({
 
 const { useWxWork, getTickets } = useWxworkStore()
 const { wx } = storeToRefs(useWxworkStore())
-const { getMemberInfo } = useMemberManage()
-const { memberInfo } = storeToRefs(useMemberManage())
+const { getMemberInfo, getMemberConsume } = useMemberManage()
+const { memberInfo, memberConsume } = storeToRefs(useMemberManage())
 
 type MemberParams = Pick<Member, 'id' | 'external_user_id'>
 const memberParams = ref<MemberParams>({} as MemberParams)
 
 const route = useRoute()
+const show = ref(false)
+const targetId = ref('')
 
 if (route.query?.external_user_id) {
   const external_user_id = route.query.external_user_id as string
@@ -21,6 +23,9 @@ if (route.query?.external_user_id) {
 
 async function getInfo() {
   await getMemberInfo(memberParams.value)
+  if (memberInfo.value.id) {
+    await getMemberConsume({ id: memberInfo.value.id })
+  }
 }
 
 await getInfo()
@@ -49,11 +54,32 @@ const relyOnId = () => {
     jump('/member/lists/edit', { external_user_id: memberParams.value.external_user_id })
   }
 }
+
+const exhibition = (id: string) => {
+  targetId.value = id
+  show.value = true
+}
 </script>
 
 <template>
   <div>
-    <member-lists-info-wx :data="memberInfo" @go-edit="relyOnId" />
+    <n-modal v-model:show="show">
+      <n-card
+        style="width: 600px;height: 60vh;"
+        title="订单详情"
+        :bordered="false"
+        size="huge"
+        role="dialog"
+        aria-modal="true"
+      >
+        <iframe
+          width="100%"
+          height="100%"
+          :src="`/sale/sales/order?id=${targetId}&&embedded=true`"
+        />
+      </n-card>
+    </n-modal>
+    <member-lists-info :data="memberInfo" :consumes="memberConsume" @go-edit="relyOnId" @show-detail="exhibition" />
   </div>
 </template>
 

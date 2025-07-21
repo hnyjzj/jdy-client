@@ -1,11 +1,13 @@
 <script setup lang="ts">
 const props = defineProps<{
   data: Member
+  consumes: orderInfoProducts[]
 }>()
 // 企业微信、单聊入口所需页面
 
-const emit = defineEmits<{
+const emits = defineEmits<{
   goEdit: [id: string]
+  showDetail: [id: string]
 }>()
 
 const PERCH = '-- --'
@@ -50,6 +52,22 @@ const showText = () => {
   else if (!props.data.external_user_id) {
     content.value = '查询中，请稍后...'
   }
+}
+
+const OrderStatusTextMap = {
+  1: '待付款',
+  2: '已取消',
+  3: '已完成',
+  4: '有退款',
+  5: '已退货',
+}
+
+const processDate = (date: string) => {
+  const dateObj = new Date(date)
+  const year = dateObj.getFullYear()
+  const month = dateObj.getMonth() + 1
+  const day = dateObj.getDate()
+  return `${year}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`
 }
 
 onMounted(() => {
@@ -297,9 +315,66 @@ onMounted(() => {
         </common-gradient>
 
         <common-gradient title="消费记录" theme="gradient" :italic="true" :foldable="true">
-          <div>
-            测试
-          </div>
+          <template #body>
+            <template v-if="props.consumes.length > 0">
+              <div class="flex flex-col gap-[12px]">
+                <template v-for="(item, index) in props.consumes" :key="index">
+                  <common-gradient :title="`订单号：${item.order_id}`" theme="solid" :foldable="true" font-size="14px">
+                    <template #right>
+                      <div class="butt" @click="emits('showDetail', item.order_id)">
+                        查看详情
+                      </div>
+                    </template>
+                    <template #body>
+                      <div class="grid grid-cols-1 gap-[8px]" uno-md="grid-cols-2" uno-lg="grid-cols-2">
+                        <div class="base flex flex-1 flex-col gap-[8px]">
+                          <div class="item">
+                            <div class="item-left">
+                              所属门店
+                            </div>
+                            <div class="item-right">
+                              {{ item.store.name || PERCH }}
+                            </div>
+                          </div>
+                          <div class="item">
+                            <div class="item-left">
+                              销售单号
+                            </div>
+                            <div class="item-right">
+                              {{ item.order_id }}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="secendary flex flex-1 flex-col gap-[8px]">
+                          <div class="item">
+                            <div class="item-left">
+                              订单状态
+                            </div>
+                            <div class="item-right">
+                              {{ OrderStatusTextMap[item.status as OrderStatusText] }}
+                            </div>
+                          </div>
+                          <div class="item">
+                            <div class="item-left">
+                              销售时间
+                            </div>
+                            <div class="item-right">
+                              {{ processDate(item.created_at) }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+                  </common-gradient>
+                </template>
+              </div>
+            </template>
+
+            <template v-else>
+              <common-emptys text="暂无消费记录" />
+            </template>
+          </template>
         </common-gradient>
       </div>
     </template>
@@ -312,7 +387,7 @@ onMounted(() => {
   <template v-if="props.data.id || props.data.external_user_id">
     <common-button-One
       text="编辑"
-      @confirm="() => emit('goEdit', props.data.id)"
+      @confirm="() => emits('goEdit', props.data.id)"
       @cancel="backtrack"
     />
   </template>
