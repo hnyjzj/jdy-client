@@ -79,7 +79,7 @@ const exhibition = (id: string) => {
         />
       </n-card>
     </n-modal>
-    <member-lists-info :data="memberInfo" :consumes="memberConsume" @go-edit="relyOnId" @show-detail="exhibition" />
+    <member-lists-info-wx :data="memberInfo" :consumes="memberConsume" @go-edit="relyOnId" @show-detail="exhibition" />
   </div>
 </template>
 
