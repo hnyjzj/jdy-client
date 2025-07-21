@@ -188,12 +188,12 @@ onMounted(() => {
         :return-goods="returnGoods"
         :store="myStore.id"
       />
-      <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === OrderDetail.status && OrderDetail.cashier_id === userinfo.id && myStore.id === OrderDetail.store_id">
+      <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === OrderDetail.status && OrderDetail.cashier_id === userinfo.id && myStore.id === OrderDetail.store_id && !route.query.embedded">
         <common-confirm-pay @pay="payOrderConfirm" @cancle="cancelOrder" />
       </template>
     </div>
 
-    <template v-if="(!isMobile && OrderDetail?.status === 3) || (!isMobile && OrderDetail?.status === 4)">
+    <template v-if="(!isMobile && OrderDetail?.status === 3) && !route.query.embedded || (!isMobile && OrderDetail?.status === 4) && !route.query.embedded">
       <common-button-bottom
         confirm-text="打印"
         cancel-text="返回"

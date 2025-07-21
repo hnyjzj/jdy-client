@@ -25,7 +25,6 @@ const items = ref([{
   selected: '',
 }])
 
-const searchKey = ref('')
 const isFilter = ref(false)
 const filterData = ref({} as Partial<Member>)
 const limit = 12
@@ -85,15 +84,6 @@ const disposeNumerical = () => {
   }
 }
 
-const searchMember = async () => {
-  if (searchKey.value) {
-    await getMemberList({ page: searchPage.value, limit, where: { phone: searchKey.value, store_id: myStore.value.id } })
-  }
-  else if (searchKey.value === '') {
-    await getList()
-  }
-}
-
 const adjustIntegral = async () => {
   if (adjustWay.value !== 0 && fluctuant.value !== 0 && fluctuant.value !== undefined && integralParams.value.remark) {
     disposeNumerical()
@@ -109,23 +99,33 @@ const adjustIntegral = async () => {
 // 筛选列表
 async function submitWhere(f: Partial<Member>) {
   filterData.value = { ...f }
+  searchPage.value = 1
   memberList.value = []
-  await getList(filterData.value)
+  await getMemberList({ page: 1, limit, where: filterData.value })
 }
 
+const searchMember = async (phone: string) => {
+//   filterData.value = { phone, store_id: myStore.value.id }
+  await getMemberList({ page: 1, limit, where: { phone, store_id: myStore.value.id } })
+}
+
+// 清空选项
 const clearFn = async () => {
   memberList.value = []
   searchPage.value = 1
   await getList()
 }
 
-const changeStores = async () => {
+const filterRef = ref()
+async function changeStores() {
+  searchPage.value = 1
+  filterRef.value?.reset()
   await getList()
 }
 
 const updatePage = async (page: number) => {
   searchPage.value = page
-  await getList()
+  await getList(filterData.value)
 }
 
 const goIntegral = (id: string) => {
@@ -233,7 +233,6 @@ const userCancel = () => {
       <div class="flex flex-row gap-2">
         <product-manage-company class="color-[#fff]" @change="changeStores" />
         <product-filter-search
-          v-model:search-key="searchKey"
           placeholder="搜索手机号"
           class="color-[#fff] flex-1"
           @submit="searchMember"

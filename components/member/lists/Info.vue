@@ -1,10 +1,12 @@
 <script setup lang="ts">
 const props = defineProps<{
   data: Member
+  consumes: orderInfoProducts[]
 }>()
 
-const emit = defineEmits<{
+const emits = defineEmits<{
   goEdit: [id: string]
+  showDetail: [id: string]
 }>()
 
 const PERCH = '-- --'
@@ -39,6 +41,27 @@ const backtrack = () => {
   const { back } = useRouter()
   back()
 }
+
+const OrderStatusTextMap = {
+  1: '待付款',
+  2: '已取消',
+  3: '已完成',
+  4: '有退款',
+  5: '已退货',
+}
+
+// 处理时间，例如：将‘"2025-07-18T09:45:41+08:00"’转变为‘"2025-07-18"’
+const processDate = (date: string) => {
+  const dateObj = new Date(date)
+  const year = dateObj.getFullYear()
+  const month = dateObj.getMonth() + 1
+  const day = dateObj.getDate()
+  return `${year}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`
+}
+
+// 弹窗事件
+
+// console.log(props.consumes)
 </script>
 
 <template>
@@ -271,9 +294,66 @@ const backtrack = () => {
         </common-gradient>
 
         <common-gradient title="消费记录" theme="gradient" :italic="true" :foldable="true">
-          <div>
-            测试
-          </div>
+          <template #body>
+            <template v-if="props.consumes.length > 0">
+              <div class="flex flex-col gap-[12px]">
+                <template v-for="(item, index) in props.consumes" :key="index">
+                  <common-gradient :title="`订单号：${item.order_id}`" theme="solid" :foldable="true" font-size="14px">
+                    <template #right>
+                      <div class="butt" @click="emits('showDetail', item.order_id)">
+                        查看详情
+                      </div>
+                    </template>
+                    <template #body>
+                      <div class="grid grid-cols-1 gap-[8px]" uno-md="grid-cols-2" uno-lg="grid-cols-2">
+                        <div class="base flex flex-1 flex-col gap-[8px]">
+                          <div class="item">
+                            <div class="item-left">
+                              所属门店
+                            </div>
+                            <div class="item-right">
+                              {{ item.store.name || PERCH }}
+                            </div>
+                          </div>
+                          <div class="item">
+                            <div class="item-left">
+                              销售单号
+                            </div>
+                            <div class="item-right">
+                              {{ item.order_id }}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="secendary flex flex-1 flex-col gap-[8px]">
+                          <div class="item">
+                            <div class="item-left">
+                              订单状态
+                            </div>
+                            <div class="item-right">
+                              {{ OrderStatusTextMap[item.status as OrderStatusText] }}
+                            </div>
+                          </div>
+                          <div class="item">
+                            <div class="item-left">
+                              销售时间
+                            </div>
+                            <div class="item-right">
+                              {{ processDate(item.created_at) }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+                  </common-gradient>
+                </template>
+              </div>
+            </template>
+
+            <template v-else>
+              <common-emptys text="暂无消费记录" />
+            </template>
+          </template>
         </common-gradient>
       </div>
     </template>
@@ -286,7 +366,7 @@ const backtrack = () => {
   <common-button-bottom
     confirm-text="编辑"
     cancel-text="返回"
-    @confirm="() => emit('goEdit', props.data.id)"
+    @confirm="() => emits('goEdit', props.data.id)"
     @cancel="backtrack"
   />
 </template>
@@ -301,6 +381,10 @@ const backtrack = () => {
   &-right {
     --uno: 'font-size-[14px] color-[#333333] font-normal dark:color-[#fff]';
   }
+}
+
+.butt {
+  --uno: 'px-[10px] py-[4px] bg-[#0068FF] text-color-[#fff] font-size-[12px] rounded-[6px] cursor-pointer text-nowrap';
 }
 
 .secondary {

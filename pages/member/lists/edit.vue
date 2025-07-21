@@ -74,10 +74,10 @@ await getStoreStaffList({ id: myStore.value.id })
 // 渲染日期信息
 const conductEditDate = () => {
   if (routeQuery.value.id || routeQuery.value.external_user_id) {
-    const birthdayDate = memberParams.value.birthday ? new Date(memberParams.value.birthday) : null
+    const birthdayDate = memberParams.value?.birthday ? new Date(memberParams.value.birthday) : null
     const birthdayFormattedDate = birthdayDate?.getTime()
 
-    const anniversaryDate = memberParams.value.anniversary ? new Date(memberParams.value.anniversary) : null
+    const anniversaryDate = memberParams.value?.anniversary ? new Date(memberParams.value.anniversary) : null
     const anniversaryFormattedDate = anniversaryDate?.getTime()
 
     birthday.value = birthdayFormattedDate

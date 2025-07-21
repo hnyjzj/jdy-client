@@ -3,6 +3,7 @@ export const useMemberManage = defineStore('Member', {
     memberList: Member[]
     filterList: Where<Member>
     memberInfo: Member
+    memberConsume: orderInfoProducts[]
     integralRecord: IntegralRecord[]
     filterIntegralList: Where<IntegralRecord>
     memberListTotal: number
@@ -15,6 +16,7 @@ export const useMemberManage = defineStore('Member', {
     memberList: [],
     filterList: {},
     memberInfo: {} as Member,
+    memberConsume: [] as orderInfoProducts[],
     integralRecord: {} as IntegralRecord[],
     filterIntegralList: {},
     memberListTotal: 0,
@@ -87,7 +89,19 @@ export const useMemberManage = defineStore('Member', {
         throw new Error(`获取会员详情失败: ${error || '未知错误'}`)
       }
     },
-
+    // 获取会员消费记录
+    async getMemberConsume(req: { id: string }) {
+      try {
+        const { data } = await https.post<orderInfoProducts[], { id: string }>('/member/consumptions', req)
+        if (data.value?.code === HttpCode.SUCCESS) {
+          this.memberConsume = data.value.data
+          return true
+        }
+      }
+      catch (error) {
+        throw new Error(`获取会员消费记录失败: ${error || '未知错误'}`)
+      }
+    },
     // 获取会员积分详情
     async getIntegralRecord(params: ReqList<IntegralRecord>) {
       if (params.page === 1) {
