@@ -58,10 +58,6 @@ const processDate = (date: string) => {
   const day = dateObj.getDate()
   return `${year}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`
 }
-
-// 弹窗事件
-
-// console.log(props.consumes)
 </script>
 
 <template>

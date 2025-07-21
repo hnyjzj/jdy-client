@@ -65,6 +65,13 @@ const judgeType = () => {
   }
 }
 
+// 判断金额是否为0
+const formartMoney = (money: number | string | undefined) => {
+  if (money === 0 || money === '0') {
+    return ''
+  }
+}
+
 findSalesman()
 judgeType()
 </script>
@@ -165,16 +172,16 @@ judgeType()
                         {{ item.finished.product?.weight_metal || '' }}
                       </td>
                       <td class="table-body">
-                        {{ item.finished.price_gold || '' }}
+                        {{ formartMoney(item.finished.price_gold) || '' }}
                       </td>
                       <td class="table-body">
-                        {{ item.finished.labor_fee || '' }}
+                        {{ formartMoney(item.finished.labor_fee) || '' }}
                       </td>
                       <td class="table-body">
                         {{ item.finished.product?.certificate?.[0] || '' }}
                       </td>
                       <td class="table-body">
-                        {{ item.finished.product?.label_price || '' }}
+                        {{ formartMoney(item.finished.product?.label_price) || '' }}
                       </td>
                       <td class="table-body">
                         {{ item.finished.price || '' }}
