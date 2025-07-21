@@ -133,12 +133,12 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                 <slot :name="name" :filter="props.filter[i]">
                   <template v-if="input === 'text'">
                     <div>
-                      <n-input v-model:value="datas[name as string]" size="large" :placeholder="`输入${label}`" round :disabled="disabled?.includes(name)" @focus="focus" />
+                      <n-input v-model:value="datas[name as string]" size="large" clearable :placeholder="`输入${label}`" round :disabled="disabled?.includes(name)" />
                     </div>
                   </template>
                   <template v-if="input === 'number'">
                     <div>
-                      <n-input-number v-model:value="datas[name as string]" size="large" :placeholder="`输入${label}`" round :disabled="disabled?.includes(name)" @focus="focus" />
+                      <n-input-number v-model:value="datas[name as string]" size="large" clearable :placeholder="`输入${label}`" round :disabled="disabled?.includes(name)" @focus="focus" />
                     </div>
                   </template>
                   <template v-if="input === 'switch'">
@@ -147,6 +147,7 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                   <template v-if="input === 'select'">
                     <n-select
                       v-model:value="datas[name as string]"
+                      clearable
                       :default-value="0 || '' || undefined || null"
                       menu-size="large"
                       :placeholder="`请选择${label}`"

@@ -253,7 +253,7 @@ const removeDict = useDebounceFn(async (product_id) => {
 </script>
 
 <template>
-  <div class="pt-6">
+  <div class="pt-6 px-4">
     <div class="grid-12 pb-10">
       <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <div class="rounded-6 w-auto top">

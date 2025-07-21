@@ -78,6 +78,7 @@ interface service {
   start_date?: string
   status?: string
   store_id?: string
+  cashier_id?: string
 }
 
 interface serviceGoods {

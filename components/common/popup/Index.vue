@@ -37,7 +37,8 @@ function close() {
 
 <template>
   <n-drawer
-    v-model:show="show" :style="{
+    v-model:show="show" :auto-focus="false"
+    :style="{
       '--n-color': 'transparent',
       '--n-header-padding': '0',
       '--n-header-border-bottom': 'none',
