@@ -15,9 +15,8 @@ const goTop = () => {
     block: 'start',
   })
 }
-const updatePage = (p: number) => {
+const updatePage = () => {
   goTop()
-  page.value = p
 }
 </script>
 

@@ -29,9 +29,10 @@ const submitWhere = async (f: Partial<Stores>) => {
   storesList.value = []
   searchPage.value = 1
   await getList(filterData.value)
+  show.value = false
 }
 
-const resetwhere = () => {
+const resetwhere = async () => {
   filterData.value = {}
 }
 // 获取列表数据
