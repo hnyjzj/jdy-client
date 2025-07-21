@@ -15,10 +15,10 @@ const filterShow = ref(false)
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
-
+const limit = ref(12)
 // 获取列表
 const getList = async (where = {} as Partial<OrderInfo>) => {
-  const params = { page: searchPage.value, limit: 12, where: { store_id: myStore.value.id } } as ReqList<OrderInfo>
+  const params = { page: searchPage.value, limit: limit.value, where: { store_id: myStore.value.id } } as ReqList<OrderInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
@@ -37,6 +37,7 @@ const submitWhere = async (f: OrderWhere) => {
   OrdersList.value = []
   searchPage.value = 1
   await getList(filterData.value as any)
+  filterShow.value = false
 }
 const resetWhere = async () => {
   filterData.value = {}
@@ -55,9 +56,12 @@ const searchProduct = async (e: string) => {
 }
 
 const searchOrder = async (id: string) => {
-  await getOrderList({ page: 1, limit: 5, where: { id, store_id: myStore.value.id } })
+  filterData.value = { id, store_id: myStore.value.id }
+  searchPage.value = 1
+  await getList(filterData.value)
 }
 const clearFn = async () => {
+  filterData.value = {}
   OrdersList.value = []
   searchPage.value = 1
   await getList()
@@ -65,7 +69,7 @@ const clearFn = async () => {
 
 const updatePage = async (page: number) => {
   searchPage.value = page
-  await getList()
+  await getList(filterData.value)
 }
 
 // 撤销订单
@@ -97,6 +101,13 @@ const router = useRouter()
 const newAdd = async () => {
   await router.push('/sale/sales/add')
 }
+
+const getSaleman = async () => {
+  const res = await getStoreStaffList({ id: myStore.value.id })
+  if (res?.data.value?.code === HttpCode.ERROR) {
+    $toast.error(res?.data.value?.message || '请求失败')
+  }
+}
 </script>
 
 <template>
@@ -123,7 +134,7 @@ const newAdd = async () => {
         <div class="p-[16px]">
           <template v-if="OrdersList.length">
             <sale-sales-list :info="OrdersList" :where="filterList" @cancle="cancelOrder" @pay="payOrderConfirm" />
-            <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
+            <common-page v-model:page="searchPage" :total="total" :limit="limit" @update:page="updatePage" />
           </template>
           <template v-else>
             <common-emptys text="暂无数据" />
@@ -143,11 +154,7 @@ const newAdd = async () => {
           }))"
           clearable
           remote
-
-          @focus="(e) => {
-            focus(e)
-            getStoreStaffList({ id: myStore.id })
-          }"
+          @focus="getSaleman"
         />
       </template>
       <template #salesman_id>
@@ -160,10 +167,7 @@ const newAdd = async () => {
           }))"
           clearable
           remote
-          @focus="(e) => {
-            focus(e)
-            getStoreStaffList({ id: myStore.id })
-          }"
+          @focus="getSaleman"
         />
       </template>
       <template #member_id>

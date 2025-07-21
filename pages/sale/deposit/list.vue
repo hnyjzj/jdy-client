@@ -9,14 +9,14 @@ const { filterListToArray, OrdersList, total, filterList, searchPage } = storeTo
 const { getSaleWhere, getDepositList, isStoreStaff } = useDepositOrder()
 const filterData = ref({} as Partial<DepositOrderWhere>)
 const filterShow = ref(false)
-
+const limits = ref(12)
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
 
 // 获取列表
 const getList = async (where = {} as Partial<DepositOrderInfo>) => {
-  const params = { page: searchPage.value, limit: 12, where: { store_id: myStore.value.id } } as ReqList<DepositOrderInfo>
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<DepositOrderInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
@@ -39,6 +39,7 @@ const submitWhere = async (f: DepositOrderWhere) => {
   OrdersList.value = []
   searchPage.value = 1
   await getList(filterData.value as any)
+  filterShow.value = false
 }
 const resetWhere = async () => {
   filterData.value = {}
@@ -52,9 +53,12 @@ onMounted(async () => {
 })
 
 const searchOrder = async (id: string) => {
-  await getDepositList({ page: 1, limit: 5, where: { id, store_id: myStore.value.id } })
+  filterData.value = { id, store_id: myStore.value.id }
+  searchPage.value = 1
+  await getList(filterData.value)
 }
 const clearFn = async () => {
+  filterData.value = {}
   OrdersList.value = []
   searchPage.value = 1
   await getList()
@@ -62,7 +66,7 @@ const clearFn = async () => {
 
 const updatePage = async (page: number) => {
   searchPage.value = page
-  await getList()
+  await getList(filterData.value)
 }
 
 const changeStores = async () => {
@@ -98,7 +102,7 @@ const newAdd = async () => {
         <div class="p-[16px]">
           <template v-if="OrdersList.length">
             <sale-deposit-list :info="OrdersList" :where="filterList" :is-store-staff="isStaff" @user-click="handleClick" />
-            <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
+            <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
           </template>
           <template v-else>
             <common-emptys text="暂无数据" />
