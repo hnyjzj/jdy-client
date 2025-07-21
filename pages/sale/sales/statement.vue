@@ -33,6 +33,7 @@ const submitWhere = async (f: StatementWhere) => {
   statementList.value = []
   searchPage.value = 1
   await getList(filterData.value as any)
+  filterShow.value = false
 }
 const resetWhere = async () => {
   filterData.value = {}
@@ -44,17 +45,20 @@ const height = ref<number | undefined>(0)
 onMounted(async () => {
   height.value = getHeight('header')
 })
-const searchOrder = async (id: string) => {
-  await getStatementList({ page: 1, limit: 5, where: { id, store_id: myStore.value.id } })
+const searchOrder = async (val: string) => {
+  filterData.value = { code: val, store_id: myStore.value.id }
+  searchPage.value = 1
+  await getList(filterData.value)
 }
+
 const clearFn = async () => {
+  filterData.value = {}
   statementList.value = []
   searchPage.value = 1
   await getList()
 }
-const updatePage = async (page: number) => {
-  searchPage.value = page
-  await getList()
+const updatePage = async () => {
+  await getList(filterData.value as otherOrderWhere)
 }
 const changeStores = async () => {
   await getList()

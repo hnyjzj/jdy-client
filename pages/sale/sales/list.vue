@@ -1,5 +1,7 @@
 <script setup lang="ts">
 // 销售单列表页
+import { NButton } from 'naive-ui'
+
 useSeoMeta({
   title: '销售单列表',
 })
@@ -15,9 +17,10 @@ const filterShow = ref(false)
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
-const limit = ref(12)
+const limit = ref(50)
 // 获取列表
 const getList = async (where = {} as Partial<OrderInfo>) => {
+  OrdersList.value = []
   const params = { page: searchPage.value, limit: limit.value, where: { store_id: myStore.value.id } } as ReqList<OrderInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
@@ -33,8 +36,6 @@ const openFilter = () => {
 
 const submitWhere = async (f: OrderWhere) => {
   filterData.value = { ...filterData.value, ...f }
-
-  OrdersList.value = []
   searchPage.value = 1
   await getList(filterData.value as any)
   filterShow.value = false
@@ -62,7 +63,6 @@ const searchOrder = async (id: string) => {
 }
 const clearFn = async () => {
   filterData.value = {}
-  OrdersList.value = []
   searchPage.value = 1
   await getList()
 }
@@ -108,6 +108,99 @@ const getSaleman = async () => {
     $toast.error(res?.data.value?.message || '请求失败')
   }
 }
+
+const showtype = ref<'list' | 'table'>('list')
+const nowPage = computed(() => searchPage.value)
+const pageOption = ref({
+  page: nowPage,
+  pageSize: 50,
+  itemCount: total.value,
+  showSizePicker: true,
+  pageSizes: [50, 100, 150, 200],
+  onUpdatePageSize: (pageSize: number) => {
+    pageOption.value.pageSize = pageSize
+    limit.value = pageSize
+    updatePage(1)
+  },
+  onChange: (page: number) => {
+    updatePage(page)
+  },
+})
+
+const cols = [
+  {
+    title: '所属门店',
+    key: 'store.name',
+  },
+  {
+    title: '会员',
+    key: 'member.nickname',
+    render: (rowData: OrderInfo) => {
+      return rowData.member.nickname || '--'
+    },
+  },
+  {
+    title: '会员手机号',
+    key: 'member.phone',
+  },
+  {
+    title: '主销',
+    key: 'age',
+    render: (rowData: OrderInfo) => {
+      return rowData.clerks.find((ele: OrderSalesClerks) => ele.is_main)?.salesman?.nickname
+    },
+  },
+  {
+    title: '货品信息',
+    key: 'products[0].finished.product.name',
+  },
+  {
+    title: '实付金额',
+    key: 'price_pay',
+  },
+  {
+    title: '货品金额',
+    key: 'product_finished_price',
+  },
+  {
+    title: '优惠金额',
+    key: 'price_discount',
+  },
+  {
+    title: '旧料抵扣',
+    key: 'product_old_price',
+  },
+  {
+    title: '积分',
+    key: 'integral',
+  },
+  {
+    title: '销售时间',
+    key: 'age',
+    render: (rowData: OrderInfo) => {
+      return formatISODate(rowData.created_at)
+    },
+  },
+  {
+    title: '操作',
+    key: 'action',
+    render: (rowData: OrderInfo) => {
+      return h(
+        NButton,
+        {
+          type: 'info',
+          size: 'small',
+          onClick: () => {
+            if (!rowData.id)
+              return
+            navigateTo(`/sale/sales/order?id=${rowData.id}`)
+          },
+        },
+        { default: () => '查看详情' },
+      )
+    },
+  },
+]
 </script>
 
 <template>
@@ -120,8 +213,15 @@ const getSaleman = async () => {
             placeholder="搜索订单号" class="color-[#fff] flex-1" @submit="searchOrder" @clear="clearFn" />
         </div>
         <div class="flex-center-between gap-2 py-[16px]">
-          <div class="text-size-[14px] color-[#fff]">
-            共{{ total }}条数据
+          <div class="flex items-center gap-[12px]">
+            <div class="text-size-[14px] color-[#fff]">
+              共{{ total }}条数据
+            </div>
+            <div
+              class="px-[8px] py-[4px] bg-[#fff] color-[#2775EE] text-center rounded-[20px] cursor-pointer"
+              @click="showtype = showtype === 'list' ? 'table' : 'list'">
+              {{ showtype === 'list' ? '切换表格' : '切换列表' }}
+            </div>
           </div>
           <div @click="openFilter()">
             <product-filter-senior class="color-[#fff]" />
@@ -129,19 +229,30 @@ const getSaleman = async () => {
         </div>
       </div>
     </div>
-    <div class="grid-12">
-      <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-        <div class="p-[16px]">
-          <template v-if="OrdersList.length">
-            <sale-sales-list :info="OrdersList" :where="filterList" @cancle="cancelOrder" @pay="payOrderConfirm" />
-            <common-page v-model:page="searchPage" :total="total" :limit="limit" @update:page="updatePage" />
-          </template>
-          <template v-else>
-            <common-emptys text="暂无数据" />
-          </template>
+    <template v-if="showtype === 'list'">
+      <div class="grid-12">
+        <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
+          <div class="p-[16px]">
+            <template v-if="OrdersList.length">
+              <sale-sales-list :info="OrdersList" :where="filterList" @cancle="cancelOrder" @pay="payOrderConfirm" />
+              <common-page
+                v-model:page="searchPage" :total="total" :limit="limit" @update:page="updatePage" />
+            </template>
+            <template v-else>
+              <common-emptys text="暂无数据" />
+            </template>
+          </div>
         </div>
       </div>
-    </div>
+    </template>
+    <template v-else>
+      <div class="grid-12">
+        <div class="flex flex-col col-12 p-[16px]" uno-lg="col-8 offset-2" uno-sm="col-12">
+          <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" />
+        </div>
+      </div>
+    </template>
+
     <!-- filter -->
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #cashier_id>
@@ -152,6 +263,7 @@ const getSaleman = async () => {
             label: v.nickname,
             value: v.id,
           }))"
+          size="large"
           clearable
           remote
           @focus="getSaleman"
@@ -165,6 +277,7 @@ const getSaleman = async () => {
             label: v.nickname,
             value: v.id,
           }))"
+          size="large"
           clearable
           remote
           @focus="getSaleman"
@@ -180,6 +293,7 @@ const getSaleman = async () => {
             value: v.id,
           }))"
           clearable
+          size="large"
           remote
           @search="getMember"
           @focus="focus"
@@ -195,6 +309,7 @@ const getSaleman = async () => {
             label: v.name,
             value: v.id,
           }))"
+          size="large"
           clearable
           remote
           @search="searchProduct"
