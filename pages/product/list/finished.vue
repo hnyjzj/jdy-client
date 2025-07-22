@@ -101,7 +101,7 @@ async function changeStore() {
     <!-- 列表 -->
     <div class="px-[16px] pb-20">
       <template v-if="finishedList?.length">
-        <product-list-main :product-list="finishedList" :filter-list="finishedFilterList" @edit="edit" @go-info="goInfo" />
+        <product-list-main :is-finshed="true" :product-list="finishedList" :filter-list="finishedFilterList" @edit="edit" @go-info="goInfo" />
         <common-page
           v-model:page="pages" :total="finishedListTotal" :limit="10" @update:page="() => {
             pull()

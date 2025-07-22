@@ -57,3 +57,22 @@ export function formatISODate(isoString: string) {
   // 拼接目标格式
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
 }
+
+/**
+ * 计算目标日期距离当前日期多少天
+ * @param targetDate 目标日期
+ * @returns 相差的天数
+ */
+export const getDaysFromToday = (targetDate: Date | string) => {
+  if (!targetDate)
+    return
+  const today = new Date()
+  today.setHours(0, 0, 0, 0) // 去掉时间部分，只保留日期
+
+  const date = new Date(targetDate)
+  date.setHours(0, 0, 0, 0)
+
+  const diffTime = today.getTime() - date.getTime()
+  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24))
+  return diffDays
+}
