@@ -75,7 +75,6 @@ const deleteDialog = ref(false)
 const deleteStoreFn = async (val: string) => {
   nowDeleteId.value = val
   deleteDialog.value = true
-  console.log(deleteDialog.value)
 }
 // 确认删除
 const confirmDelete = async () => {
@@ -150,7 +149,7 @@ const nowPage = computed(() => searchPage.value)
 const pageOption = ref({
   page: nowPage,
   pageSize: 50,
-  itemCount: total.value,
+  itemCount: total,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
@@ -180,7 +179,7 @@ const cols = [
     title: '操作',
     key: 'action',
     width: 250,
-    render: (rowData: otherOrderInfo) => {
+    render: (rowData: Region) => {
       return [h(
         NButton,
         {

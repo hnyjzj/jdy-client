@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { NButton } from 'naive-ui'
+
 useSeoMeta({
   title: '会员列表',
 })
@@ -28,10 +30,10 @@ const items = ref([{
 const searchKey = ref('')
 const isFilter = ref(false)
 const filterData = ref({} as Partial<Member>)
-const limit = 12
+const limit = ref(50)
 
 async function getList(where = {} as Partial<Member>) {
-  const params = { page: searchPage.value, limit, where: { store_id: myStore.value.id } } as ReqList<Member>
+  const params = { page: searchPage.value, limit: limit.value, where: { store_id: myStore.value.id } } as ReqList<Member>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
@@ -87,7 +89,7 @@ const disposeNumerical = () => {
 
 const searchMember = async () => {
   if (searchKey.value) {
-    await getMemberList({ page: searchPage.value, limit, where: { phone: searchKey.value, store_id: myStore.value.id } })
+    await getMemberList({ page: searchPage.value, limit: limit.value, where: { phone: searchKey.value, store_id: myStore.value.id } })
   }
   else if (searchKey.value === '') {
     await getList()
@@ -139,10 +141,90 @@ const userJump = (id: string) => {
 const userCancel = () => {
   initPopup()
 }
+
+const showInfo = filterListToArray.value
+const getTarget = (arrs: Member, keyword: string, type: 'level' | 'status') => {
+  const targetOption = showInfo?.find(p => p.name === keyword)
+  const targetPreset = targetOption?.preset
+  return targetPreset[arrs[type]]
+}
+const showtype = ref<'list' | 'table'>('list')
+
+const pageOption = ref({
+  page: searchPage,
+  pageSize: 50,
+  itemCount: memberListTotal,
+  showSizePicker: true,
+  pageSizes: [50, 100, 150, 200],
+  onUpdatePageSize: (pageSize: number) => {
+    pageOption.value.pageSize = pageSize
+    limit.value = pageSize
+    updatePage(1)
+  },
+  onChange: (page: number) => {
+    updatePage(page)
+  },
+})
+
+const cols = [
+  {
+    title: '姓名',
+    key: 'name',
+  },
+  { title: '手机号', key: 'phone' },
+  { title: '专属顾问', key: 'consultant.nickname' },
+  { title: '等级', key: 'gender', render: (rowData: Member) => {
+    return getTarget(rowData, 'level', 'level')
+  } },
+  { title: '状态', key: 'gender', render: (rowData: Member) => {
+    return getTarget(rowData, 'status', 'status')
+  } },
+  { title: '入会门店', key: 'store.name' },
+  {
+    title: '操作',
+    width: 300,
+    key: 'action',
+    render: (rowData: Member) => {
+      return [h(
+        NButton,
+        {
+          type: 'primary',
+          size: 'small',
+          class: 'mr-[4px]',
+          onClick: () => {
+            userJump(rowData.id)
+          },
+        },
+        { default: () => '查看详情' },
+      ), h(
+        NButton,
+        {
+          type: 'info',
+          size: 'small',
+          class: 'mr-[4px]',
+          onClick: () => {
+            goIntegral(rowData.id)
+          },
+        },
+        { default: () => '查看积分' },
+      ), h(
+        NButton,
+        {
+          type: 'info',
+          size: 'small',
+          onClick: () => {
+            adjustment(rowData.id)
+          },
+        },
+        { default: () => '调整积分' },
+      )]
+    },
+  },
+]
 </script>
 
 <template>
-  <div class="pb-[80px] grid-12">
+  <div class="">
     <common-model
       v-model:model-value="show"
       :show-ok="true"
@@ -228,35 +310,36 @@ const userCancel = () => {
         </div>
       </div>
     </common-model>
-
-    <div id="header" class="px-[16px] py-[12px] w-full col-12" uno-lg="col-8 offset-2">
-      <div class="flex flex-row gap-2">
-        <product-manage-company class="color-[#fff]" @change="changeStores" />
-        <product-filter-search
-          v-model:search-key="searchKey"
-          placeholder="搜索手机号"
-          class="color-[#fff] flex-1"
-          @submit="searchMember"
-          @clear="clearFn"
-        />
-      </div>
-      <div class="flex-center-between gap-2 py-[16px]">
-        <div class="text-size-[14px] color-[#fff]">
-          共{{ memberListTotal }}条数据
+    <div class="grid-12 sticky top-0 bg-gradient-linear-[180deg,#3875C5,#467EC9]  z-1">
+      <div id="header" class="px-[16px] py-[12px] w-full   col-12" uno-lg="col-8 offset-2">
+        <div class="flex flex-row gap-2">
+          <product-manage-company class="color-[#fff]" @change="changeStores" />
+          <product-filter-search
+            placeholder="搜索手机号" class="color-[#fff] flex-1" @submit="searchMember" @clear="clearFn" />
         </div>
-        <div @click="openFilter()">
-          <product-filter-senior class="color-[#fff]" />
-        </div>
+        <common-tool-list v-model="showtype" :total="memberListTotal" @height="openFilter" />
       </div>
-
-      <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
-
-      <div class="flex flex-col pb-[16px]">
-        <member-lists-list :info="memberList" @go-info="userJump" @view-integral="goIntegral" @change-integral="adjustment" />
-      </div>
-
-      <common-page v-model:page="searchPage" :total="memberListTotal" :limit="limit" @update:page="updatePage" />
     </div>
+
+    <template v-if="showtype === 'list'">
+      <div class="grid-12">
+        <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
+          <div class="p-[16px]">
+            <template v-if="memberList.length">
+              <member-lists-list :info="memberList" @go-info="userJump" @view-integral="goIntegral" @change-integral="adjustment" />
+              <common-page v-model:page="searchPage" :total="memberListTotal" :limit="limit" @update:page="updatePage" />
+            </template>
+            <template v-else>
+              <common-emptys text="暂无数据" />
+            </template>
+          </div>
+        </div>
+      </div>
+    </template>
+    <template v-else>
+      <common-datatable :columns="cols" :list="memberList" :page-option="pageOption" />
+    </template>
+    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
   </div>
 </template>
 
