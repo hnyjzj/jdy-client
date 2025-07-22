@@ -2,12 +2,12 @@
 const props = defineProps<{
   filterList: Where<T>
   productList: T[]
-  isFinshed?: boolean
+  isFinished?: boolean
 }>()
 const emits = defineEmits<{
   edit: [code: T['code']]
   goInfo: [info: T]
-  isFinshed: false
+  isFinished: false
 }>()
 
 const edit = (code: string) => {
@@ -104,7 +104,7 @@ const jumpInfo = (info: T) => {
               {{ info.craft }}
             </div>
           </div>
-          <template v-if="isFinshed">
+          <template v-if="isFinished">
             <div class="flex-between">
               <div>
                 库龄
