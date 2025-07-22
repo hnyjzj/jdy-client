@@ -8,6 +8,7 @@ useSeoMeta({
 const { storesList, addorUpdateForm, filterListToArray, total, showtype } = storeToRefs(useStores())
 const { searchPage } = storeToRefs(usePages())
 const { reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
+const { myRegion } = storeToRefs(useRegion())
 const { $toast } = useNuxtApp()
 // 新增门店弹窗
 const addOrUpdateShow = ref<boolean>(false)
@@ -19,10 +20,10 @@ const filterData = ref({} as Partial<Stores>)
 const limits = ref<number>(50)
 // 获取列表
 const getList = async (where = {} as Partial<Stores>) => {
-  const params = { page: searchPage.value, limit: limits.value } as ReqList<Stores>
-  if (JSON.stringify(where) !== '{}') {
-    params.where = where
-  }
+  const params = { page: searchPage.value, limit: limits.value } as ReqList<Region>
+  params.where = where
+  params.where.region_id = myRegion.value.id
+
   await getStoreList(params)
 }
 
@@ -216,15 +217,18 @@ const cols = [
     },
   },
 ]
+
+const complate = ref(0)
 </script>
 
 <template>
   <div>
-    <div class="grid-12 sticky top-0 bg-gradient-linear-[180deg,#3875C5,#467EC9]  z-1">
-      <div id="header" class="px-[16px] py-[12px] w-full   col-12" uno-lg="col-8 offset-2">
-        <common-tool-list v-model="showtype" :total="total" @height="heightSearchFn" />
-      </div>
-    </div>
+    <product-filter
+      v-model:id="complate" :product-list-total="total" placeholder="搜索条码" :show-input="false" @filter="heightSearchFn()">
+      <template #company>
+        <region-change @change="getList" />
+      </template>
+    </product-filter>
 
     <template v-if="showtype === 'list'">
       <div class="p-[16px]">
