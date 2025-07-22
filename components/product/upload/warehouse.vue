@@ -113,6 +113,9 @@ async function transformData(data: any[][]) {
               row[index] = false
             }
             break
+          case 'time':
+            row[index] = row[index] ? toFixedChinaISOString(excelSerialToDate(row[index])) : undefined
+            break
           default:
             row[index] = row[index] ?? ''
             break
