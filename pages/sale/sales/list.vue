@@ -10,7 +10,8 @@ const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 const { getFinishedList } = useFinished()
 const { finishedList } = storeToRefs(useFinished())
-const { filterListToArray, OrdersList, total, filterList, searchPage, showtype } = storeToRefs(useOrder())
+const { filterListToArray, OrdersList, total, filterList, showtype } = storeToRefs(useOrder())
+const { searchPage } = storeToRefs(usePages())
 const { getSaleWhere, getOrderList, revokedOrder, payOrder } = useOrder()
 const filterData = ref({} as Partial<OrderWhere>)
 const filterShow = ref(false)
@@ -37,6 +38,7 @@ const openFilter = () => {
 const submitWhere = async (f: OrderWhere) => {
   filterData.value = { ...filterData.value, ...f }
   searchPage.value = 1
+
   await getList(filterData.value as any)
   filterShow.value = false
 }

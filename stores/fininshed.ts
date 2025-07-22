@@ -19,6 +19,7 @@ export const useFinished = defineStore('Finished', {
     searchPage: 1,
     showtype: 'list',
   }),
+
   actions: {
     // 成品列表
     async getFinishedList(pamars: ReqList<ProductFinisheds>) {

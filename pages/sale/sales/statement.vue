@@ -8,7 +8,8 @@ useSeoMeta({
 const { myStore } = storeToRefs(useStores())
 // 获取销售明细列表
 const { getStatementList, getStatementWhere } = useStatement()
-const { statementList, total, filterListToArray, searchPage, filterList, showtype } = storeToRefs(useStatement())
+const { statementList, total, filterListToArray, filterList, showtype } = storeToRefs(useStatement())
+const { searchPage } = storeToRefs(usePages())
 const filterData = ref({} as Partial<StatementWhere>)
 const filterShow = ref(false)
 const { getMemberList } = useMemberManage()

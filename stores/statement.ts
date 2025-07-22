@@ -8,8 +8,7 @@ export const useStatement = defineStore('statement', {
     filterListToArray: [] as FilterWhere <StatementWhere> [],
     ReturnfilterList: {} as Where<StatementRefundWhere>,
     ReturnfilterListToArray: [] as FilterWhere<StatementRefundWhere>[],
-    searchPage: 1 as number,
-    searchPageReturn: 1 as number,
+
     showtype: 'list' as 'list' | 'table',
   }),
   actions: {

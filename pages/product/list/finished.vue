@@ -4,13 +4,13 @@ import { NButton } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 const { getFinishedList, getFinishedWhere } = useFinished()
-const { finishedList, finishedFilterList, finishedFilterListToArray, finishedListTotal, searchPage, showtype } = storeToRefs(useFinished())
+const { finishedList, finishedFilterList, finishedFilterListToArray, finishedListTotal, showtype } = storeToRefs(useFinished())
+const { searchPage } = storeToRefs(usePages())
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const isModel = ref(false)
 const isBatchImportModel = ref(false)
-
 const type = ref(1 as ProductFinisheds['type'])
 const filterData = ref({} as Partial<ProductFinisheds>)
 const limits = ref(50)
@@ -23,6 +23,7 @@ const openFilter = () => {
 }
 /** 搜索 */
 async function search(e: string) {
+  searchPage.value = 1
   await submitWhere({ code: e }, true)
 }
 /** 关闭搜索 */
@@ -50,9 +51,9 @@ catch (error) {
   throw new Error(`初始化失败: ${error || '未知错误'}`)
 }
 
-function pull(page: number) {
+const pull = async (page: number) => {
   searchPage.value = page
-  getList(filterData.value)
+  await getList(filterData.value)
 }
 
 // 筛选列表
@@ -110,30 +111,30 @@ const pageOption = ref({
 
 const cols = [
   { title: '条码', key: 'code' },
-  { title: '所属大类', key: 'code', render: (row: ProductFinisheds) => {
+  { title: '所属大类', key: '', render: (row: ProductFinisheds) => {
     return finishedFilterList.value.class?.preset[row.class]
   } },
   { title: '货品名称', key: 'name' },
-  { title: '货品品牌', key: 'code', render: (row: ProductFinisheds) => {
+  { title: '货品品牌', key: '', render: (row: ProductFinisheds) => {
     return finishedFilterList.value.brand?.preset[row.brand]
   } },
-  { title: '供应商', key: 'code', render: (row: ProductFinisheds) => {
+  { title: '供应商', key: '', render: (row: ProductFinisheds) => {
     return finishedFilterList.value.supplier?.preset[row.supplier]
   } },
-  { title: '材质', key: 'code', render: (row: ProductFinisheds) => {
+  { title: '材质', key: '', render: (row: ProductFinisheds) => {
     return finishedFilterList.value.material?.preset[row.material]
   } },
-  { title: '成色', key: 'code', render: (row: ProductFinisheds) => {
+  { title: '成色', key: '', render: (row: ProductFinisheds) => {
     return finishedFilterList.value.quality?.preset[row.quality]
   } },
-  { title: '宝石', key: 'code', render: (row: ProductFinisheds) => {
+  { title: '宝石', key: '', render: (row: ProductFinisheds) => {
     return finishedFilterList.value.gem?.preset[row.gem]
   } },
-  { title: '品类', key: 'code', render: (row: ProductFinisheds) => {
+  { title: '品类', key: '', render: (row: ProductFinisheds) => {
     return finishedFilterList.value.category?.preset[row.category]
   } },
   { title: '工艺', key: 'craft' },
-  { title: '库龄', key: 'code', render: (row: ProductFinisheds) => {
+  { title: '库龄', key: '', render: (row: ProductFinisheds) => {
     return getDaysFromToday(row.enter_time || '')
   } },
   {

@@ -11,7 +11,6 @@ export const useRepair = defineStore('Repair', {
      */
     repairOrderList: [] as ServiceOrderInfo[],
     total: 0,
-    searchPage: 1,
     repairOrderDetail: {} as ServiceOrderInfo,
     showtype: 'list' as 'list' | 'table',
   }),

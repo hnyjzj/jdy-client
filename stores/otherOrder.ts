@@ -3,7 +3,6 @@ export const useOtherOrder = defineStore('OtherOrder', {
     filterList: {} as Where<otherOrderWhere>,
     total: 0 as number,
     filterListToArray: [] as FilterWhere<otherOrderWhere>[],
-    searchPage: 1 as number, // 订单列表页面搜索页数
     orderList: [] as otherOrderInfo[],
     otherOrderDetail: {} as otherOrderInfo,
     showtype: 'list' as 'list' | 'table',

@@ -5,7 +5,8 @@ import { NButton } from 'naive-ui'
 useSeoMeta({
   title: '员工列表',
 })
-const { staffList, filterListToArray, total, searchPage, filterList: staffWhereList, showtype } = storeToRefs(useStaff())
+const { staffList, filterListToArray, total, filterList: staffWhereList, showtype } = storeToRefs(useStaff())
+const { searchPage } = storeToRefs(usePages())
 const { getStaffWhere, getStaffList } = useStaff()
 const { staffGetStoreList } = useStores()
 const { userinfo } = storeToRefs(useUser())

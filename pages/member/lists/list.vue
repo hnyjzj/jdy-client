@@ -7,8 +7,8 @@ useSeoMeta({
 const { $toast } = useNuxtApp()
 
 const { getMemberList, getMemberInfo, getMemberWhere, updateIntegral } = useMemberManage()
-const { memberList, memberInfo, filterListToArray, memberListTotal, searchPage, showtype } = storeToRefs(useMemberManage())
-
+const { memberList, memberInfo, filterListToArray, memberListTotal, showtype } = storeToRefs(useMemberManage())
+const { searchPage } = storeToRefs(usePages())
 // 获取当前员工的store信息
 const { myStore } = storeToRefs(useStores())
 const { getMyStore } = useStores()

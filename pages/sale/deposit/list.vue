@@ -7,7 +7,8 @@ useSeoMeta({
 const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 
-const { filterListToArray, OrdersList, total, filterList, searchPage, showtype } = storeToRefs(useDepositOrder())
+const { filterListToArray, OrdersList, total, filterList, showtype } = storeToRefs(useDepositOrder())
+const { searchPage } = storeToRefs(usePages())
 const { getSaleWhere, getDepositList, isStoreStaff } = useDepositOrder()
 const filterData = ref({} as Partial<DepositOrderWhere>)
 const filterShow = ref(false)

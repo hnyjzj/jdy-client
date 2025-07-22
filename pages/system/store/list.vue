@@ -5,7 +5,8 @@ useSeoMeta({
   title: '门店列表',
 })
 
-const { storesList, addorUpdateForm, filterListToArray, total, searchPage, showtype } = storeToRefs(useStores())
+const { storesList, addorUpdateForm, filterListToArray, total, showtype } = storeToRefs(useStores())
+const { searchPage } = storeToRefs(usePages())
 const { reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
 const { $toast } = useNuxtApp()
 // 新增门店弹窗

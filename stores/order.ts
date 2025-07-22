@@ -6,11 +6,11 @@ export const useOrder = defineStore('Order', {
     total: 0 as number,
     OrderDetail: {} as OrderInfo,
     filterListToArray: [] as FilterWhere<OrderWhere>[],
-    searchPage: 1 as number, // 订单列表页面搜索页数
     oldFilterList: {} as Where<ProductOld>,
     oldFilterListToArray: {} as FilterWhere<ProductOld>[],
     showtype: 'list' as 'list' | 'table',
     OldObj: {} as ProductOld,
+    pageNew: 2 as number,
   }),
 
   actions: {

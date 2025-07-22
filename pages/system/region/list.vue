@@ -4,7 +4,8 @@ import { NButton } from 'naive-ui'
 useSeoMeta({
   title: '区域',
 })
-const { regionList, addorUpdateForm, filterListToArray, total, searchPage, showtype } = storeToRefs(useRegion())
+const { regionList, addorUpdateForm, filterListToArray, total, showtype } = storeToRefs(useRegion())
+const { searchPage } = storeToRefs(usePages())
 const { reastAddForm, createRegion, getRegionList, deleteRegion, updateRegion, getRegionWhere, uploadImage } = useRegion()
 const { $toast } = useNuxtApp()
 // 新增门店弹窗

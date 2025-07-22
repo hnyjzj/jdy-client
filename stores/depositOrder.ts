@@ -5,7 +5,6 @@ export const useDepositOrder = defineStore('depositOrder', {
     total: 0 as number,
     OrderDetail: {} as DepositOrderInfo,
     filterListToArray: [] as FilterWhere<DepositOrderWhere>[],
-    searchPage: 1 as number, // 订单列表页面搜索页数
     oldFilterList: {} as Where<ProductOld>,
     oldFilterListToArray: {} as FilterWhere<ProductOld>[],
     showtype: 'list' as 'list' | 'table',
