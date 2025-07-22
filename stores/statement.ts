@@ -2,7 +2,7 @@ export const useStatement = defineStore('statement', {
   state: () => ({
     statementList: [] as orderInfoProducts[],
     statementReturnList: [] as StatementRefundInfo[],
-    statementListTotal: 0 as number,
+    total: 0 as number,
     statementRetrunListTotal: 0 as number,
     filterList: {} as Where<StatementWhere>,
     filterListToArray: [] as FilterWhere <StatementWhere> [],
@@ -20,7 +20,7 @@ export const useStatement = defineStore('statement', {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
         const { data } = await https.post<ResList<orderInfoProducts>, ReqList<orderInfoProducts>>('/order/sales/detail/list', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {
-          this.statementListTotal = data.value.data.total
+          this.total = data.value.data.total
           this.statementList = data.value.data.list
         }
         return data.value

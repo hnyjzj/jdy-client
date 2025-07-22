@@ -215,11 +215,7 @@ const cols = [
       </div>
     </template>
     <template v-else>
-      <div class="grid-12">
-        <div class="flex flex-col col-12 p-[16px]" uno-lg="col-8 offset-2" uno-sm="col-12">
-          <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" />
-        </div>
-      </div>
+      <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" />
     </template>
     <!-- filter -->
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCascaderAreaData } from '@vant/area-data'
+import { NButton } from 'naive-ui'
 // 维修单列表
 useSeoMeta({
   title: '维修单列表',
@@ -106,6 +107,97 @@ const getSaleman = async () => {
     $toast.error(res?.data.value?.message || '请求失败')
   }
 }
+
+const showtype = ref<'list' | 'table'>('list')
+const nowPage = computed(() => searchPage.value)
+const pageOption = ref({
+  page: nowPage,
+  pageSize: 50,
+  itemCount: Total.value,
+  showSizePicker: true,
+  pageSizes: [50, 100, 150, 200],
+  onUpdatePageSize: (pageSize: number) => {
+    pageOption.value.pageSize = pageSize
+    limits.value = pageSize
+    updatePage(1)
+  },
+  onChange: (page: number) => {
+    updatePage(page)
+  },
+})
+
+const cols = [
+  {
+    title: '所属门店',
+    key: 'store.name',
+  },
+  {
+    title: '会员',
+    key: 'member.nickname',
+    render: (rowData: ServiceOrderInfo) => {
+      return rowData.member?.nickname || '--'
+    },
+  },
+  {
+    title: '会员手机号',
+    key: 'member.phone',
+  },
+  {
+    title: '维修项目',
+    key: 'name',
+  },
+  {
+    title: '货品名称',
+    key: '',
+    render: (rowData: ServiceOrderInfo) => {
+      return rowData?.products?.length ? rowData?.products[0]?.name : '--'
+    },
+  },
+  {
+    title: '维修费',
+    key: 'expense',
+  },
+  {
+    title: '取货方式',
+    render: (rowData: ServiceOrderInfo) => {
+      return rowData?.delivery_method === 1 ? '自提' : '邮寄'
+    },
+  },
+
+  {
+    title: '创建时间',
+    key: 'age',
+    render: (rowData: ServiceOrderInfo) => {
+      return formatISODate(rowData.created_at as string)
+    },
+  },
+  {
+    title: '更新时间',
+    key: 'age',
+    render: (rowData: ServiceOrderInfo) => {
+      return formatISODate(rowData.updated_at as string)
+    },
+  },
+  {
+    title: '操作',
+    key: 'action',
+    render: (rowData: ServiceOrderInfo) => {
+      return h(
+        NButton,
+        {
+          type: 'info',
+          size: 'small',
+          onClick: () => {
+            if (!rowData.id)
+              return
+            navigateTo(`/sale/service/info?id=${rowData.id}`)
+          },
+        },
+        { default: () => '查看详情' },
+      )
+    },
+  },
+]
 </script>
 
 <template>
@@ -118,8 +210,15 @@ const getSaleman = async () => {
             placeholder="搜索订单号" class="color-[#fff] flex-1" @submit="searchOrder" @clear="clearFn" />
         </div>
         <div class="flex-center-between gap-2 py-[16px]">
-          <div class="text-size-[14px] color-[#fff]">
-            共{{ Total }}条数据
+          <div class="flex items-center gap-[12px]">
+            <div class="text-size-[14px] color-[#fff]">
+              共{{ Total }}条数据
+            </div>
+            <div
+              class="px-[8px] py-[4px] bg-[#fff] color-[#2775EE] text-center rounded-[20px] cursor-pointer"
+              @click="showtype = showtype === 'list' ? 'table' : 'list'">
+              {{ showtype === 'list' ? '切换表格' : '切换列表' }}
+            </div>
           </div>
           <div @click="openFilter()">
             <product-filter-senior class="color-[#fff]" />
@@ -127,26 +226,31 @@ const getSaleman = async () => {
         </div>
       </div>
     </div>
-    <div class="grid-12">
-      <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-        <div class="p-[16px]">
-          <template v-if="repairOrderList.length">
-            <sale-service-list
-              :list="repairOrderList"
-              :cancel-order="cancelOrder"
-              :pay-order="payOrder"
-              :where="repairFilterList"
-              :get-list="getList"
-              @user-click="handleClick"
-            />
-            <common-page v-model:page="searchPage" :total="Total" :limit="limits" @update:page="updatePage" />
-          </template>
-          <template v-else>
-            <common-emptys text="暂无数据" />
-          </template>
+    <template v-if="showtype === 'list'">
+      <div class="grid-12">
+        <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
+          <div class="p-[16px]">
+            <template v-if="repairOrderList.length">
+              <sale-service-list
+                :list="repairOrderList"
+                :cancel-order="cancelOrder"
+                :pay-order="payOrder"
+                :where="repairFilterList"
+                :get-list="getList"
+                @user-click="handleClick"
+              />
+              <common-page v-model:page="searchPage" :total="Total" :limit="limits" @update:page="updatePage" />
+            </template>
+            <template v-else>
+              <common-emptys text="暂无数据" />
+            </template>
+          </div>
         </div>
       </div>
-    </div>
+    </template>
+    <template v-else>
+      <common-datatable :columns="cols" :list="repairOrderList" :page-option="pageOption" />
+    </template>
     <!-- filter -->
     <div>
       <common-filter-where v-model:show="filterShow" :data="filterData" :filter="repairFilterListToArray" @submit="submitWhere" @reset="resetWhere">
