@@ -6,13 +6,13 @@ const props = withDefaults(defineProps<{
 }>(), {
   showCompany: true,
 })
-
 const emits = defineEmits<{
   search: [e: string]
   clear: []
   filter: []
   clearSearch: []
 }>()
+const showtype = defineModel<'table' | 'list'>('showtype')
 const search = (e: string) => {
   emits('search', e)
 }
@@ -36,14 +36,7 @@ const clearSearch = () => {
             <product-filter-search :placeholder="placeholder" @submit="search" @clear="clearSearch" />
           </div>
         </div>
-        <div class="flex-center-between py-4">
-          <div class="py-[6px] px-[12px] line-height-[20px]">
-            共 {{ props.productListTotal }} 条数据
-          </div>
-          <div class="col-4">
-            <product-filter-Senior @filter="filter" />
-          </div>
-        </div>
+        <common-tool-list v-model="showtype" :total="props.productListTotal" @height="filter" />
       </div>
     </common-layout-center>
   </div>

@@ -8,12 +8,16 @@ export const useFinished = defineStore('Finished', {
      * 排序后的筛选条件列表
      */
     finishedFilterListToArray: FilterWhere<ProductFinisheds>[]
+    searchPage: number
+    showtype: 'list' | 'table'
   } => ({
     finishedFilterList: {} as Where<ProductFinisheds>,
     finishedList: [],
     finishedInfo: {} as ProductFinisheds,
     finishedListTotal: 0,
     finishedFilterListToArray: [] as FilterWhere<ProductFinisheds>[],
+    searchPage: 1,
+    showtype: 'list',
   }),
   actions: {
     // 成品列表

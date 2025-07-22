@@ -110,7 +110,7 @@ const jumpInfo = (info: T) => {
                 库龄
               </div>
               <div class="text-align-end val">
-                {{ getDaysFromToday(info.enter_time) }}
+                {{ getDaysFromToday(info.enter_time || '') }}
               </div>
             </div>
           </template>

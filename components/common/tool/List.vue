@@ -7,9 +7,7 @@ const props = withDefaults(defineProps<{
 const emits = defineEmits<{
   height: []
 }>()
-const showtype = defineModel<'table' | 'list'>({
-  default: 'list',
-})
+const showtype = defineModel<'table' | 'list'>()
 </script>
 
 <template>
@@ -18,11 +16,13 @@ const showtype = defineModel<'table' | 'list'>({
       <div class="text-size-[14px] color-[#fff]">
         共{{ props.total }}条数据
       </div>
-      <div
-        class="px-[8px] py-[4px] bg-[#fff] color-[#2775EE] text-center rounded-[20px] cursor-pointer"
-        @click="showtype = showtype === 'list' ? 'table' : 'list'">
-        {{ showtype === 'list' ? '切换表格' : '切换列表' }}
-      </div>
+      <template v-if="showtype">
+        <div
+          class="px-[8px] py-[4px] bg-[#fff] color-[#2775EE] text-center rounded-[20px] cursor-pointer"
+          @click="showtype = showtype === 'list' ? 'table' : 'list'">
+          {{ showtype === 'list' ? '切换表格' : '切换列表' }}
+        </div>
+      </template>
     </div>
     <div @click="emits('height')">
       <product-filter-senior class="color-[#fff]" />
