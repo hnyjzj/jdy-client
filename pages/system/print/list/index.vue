@@ -8,9 +8,9 @@ const { $toast } = useNuxtApp()
 const { getPrintTempList, deletePrintTemplate, copyPrintTemplate, setSelectedTemplate } = useSystemPrint()
 const { getMyStore } = useStores()
 
-const { printList, searchPage, printListTotal } = storeToRefs(useSystemPrint())
+const { printList, printListTotal } = storeToRefs(useSystemPrint())
 const { myStore, myStoreList } = storeToRefs(useStores())
-
+const { searchPage } = storeToRefs(usePages())
 const delModel = ref(false)
 const copyModel = ref(false)
 

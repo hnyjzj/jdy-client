@@ -9,8 +9,8 @@ export const useMemberManage = defineStore('Member', {
     integralRecordTotal: number
     filterListToArray: FilterWhere<Member>[]
     filterIntegralListToArray: FilterWhere<IntegralRecord>[]
-    searchPage: number
     searchIntegralPage: number
+    showtype: 'list' | 'table'
   } => ({
     memberList: [],
     filterList: {},
@@ -21,8 +21,8 @@ export const useMemberManage = defineStore('Member', {
     integralRecordTotal: 0,
     filterListToArray: [] as FilterWhere<Member>[],
     filterIntegralListToArray: [] as FilterWhere<IntegralRecord>[],
-    searchPage: 1,
     searchIntegralPage: 1,
+    showtype: 'list',
   }),
 
   actions: {

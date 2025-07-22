@@ -10,9 +10,9 @@ export const useRepair = defineStore('Repair', {
      * 维修单列表
      */
     repairOrderList: [] as ServiceOrderInfo[],
-    Total: 0,
-    searchPage: 1,
+    total: 0,
     repairOrderDetail: {} as ServiceOrderInfo,
+    showtype: 'list' as 'list' | 'table',
   }),
 
   actions: {
@@ -58,7 +58,7 @@ export const useRepair = defineStore('Repair', {
       const { data } = await https.post<ResList<ServiceOrderInfo>, null>('/order/repair/list', params)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.repairOrderList = data.value.data.list
-        this.Total = data.value.data.total
+        this.total = data.value.data.total
       }
     },
     /**

@@ -3,7 +3,6 @@ export const useStores = defineStore('Store', {
     filterList: {} as Where<Stores>, // 筛选条件
     storesList: [] as Stores[], // 门店列表
     total: 0,
-    searchPage: 1, // 页码
     storeDetails: {} as Stores, //  门店详情
     addorUpdateForm: {
       id: undefined,
@@ -22,6 +21,7 @@ export const useStores = defineStore('Store', {
     myStore: {} as Stores,
     StoreStaffList: [] as StoresStaff[],
     filterListToArray: [] as FilterWhere<Stores>[],
+    showtype: 'list' as 'list' | 'table',
   }),
 
   actions: {

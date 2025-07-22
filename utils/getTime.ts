@@ -44,6 +44,8 @@ export const formatTimestampToDateTime = (timestamp: string | Date) => {
  */
 export function formatISODate(isoString: string) {
   // 将ISO字符串转换为Date对象
+  if (!isoString)
+    return '--'
   const date = new Date(isoString)
 
   // 提取各时间组件（自动处理时区转换）

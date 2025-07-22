@@ -1,22 +1,24 @@
 <script setup lang="ts">
+import { NButton } from 'naive-ui'
+
 useSeoMeta({
   title: '区域',
 })
-
-const { regionList, addorUpdateForm, filterListToArray, total, searchPage } = storeToRefs(useRegion())
+const { regionList, addorUpdateForm, filterListToArray, total, showtype } = storeToRefs(useRegion())
+const { searchPage } = storeToRefs(usePages())
 const { reastAddForm, createRegion, getRegionList, deleteRegion, updateRegion, getRegionWhere, uploadImage } = useRegion()
 const { $toast } = useNuxtApp()
 // 新增门店弹窗
 const addOrUpdateShow = ref<boolean>(false)
 // 搜索弹窗显示状态
 const show = ref<boolean>(false)
-
+const limits = ref<number>(50)
 // 筛选请求数据
 const filterData = ref({} as Partial<Region>)
 
 // 获取列表
 const getList = async (where = {} as Partial<Region>) => {
-  const params = { page: searchPage.value, limit: 12 } as ReqList<Region>
+  const params = { page: searchPage.value, limit: limits.value } as ReqList<Region>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
@@ -142,35 +144,105 @@ const updatePage = async (page: number) => {
   searchPage.value = page
   await getList()
 }
+
+const pageOption = ref({
+  page: searchPage,
+  pageSize: 50,
+  itemCount: total,
+  showSizePicker: true,
+  pageSizes: [50, 100, 150, 200],
+  onUpdatePageSize: (pageSize: number) => {
+    pageOption.value.pageSize = pageSize
+    limits.value = pageSize
+    updatePage(1)
+  },
+  onChange: (page: number) => {
+    updatePage(page)
+  },
+})
+
+const cols = [
+  { title: '区域名称', key: 'name' },
+
+  { title: '员工', key: '', render: (rowData: Region) => {
+    return rowData.staffs?.length ? `${rowData.staffs[0].nickname}${rowData.staffs.length - 1 > 0 ? `+${rowData.staffs.length - 1}` : ''}` : '--'
+  } },
+  { title: '负责人', key: '', render: (rowData: Region) => {
+    return rowData.superiors?.length ? `${rowData.superiors[0].nickname}${rowData.superiors.length - 1 > 0 ? `+${rowData.superiors.length - 1}` : ''}` : '--'
+  } },
+
+  { title: '门店', key: 'contact', render: (rowData: Region) => {
+    return rowData.stores?.length ? `${rowData.stores[0].name}${rowData.stores.length - 1 > 0 ? `+${rowData.stores.length - 1}` : ''}` : '--'
+  } },
+  {
+    title: '操作',
+    key: 'action',
+    width: 250,
+    render: (rowData: Region) => {
+      return [h(
+        NButton,
+        {
+          type: 'primary',
+          size: 'small',
+          class: 'mr-[4px]',
+          onClick: () => {
+            getStoreInfo(rowData.id)
+          },
+        },
+        { default: () => '查看详情' },
+      ), h(
+        NButton,
+        {
+          type: 'info',
+          size: 'small',
+          class: 'mr-[4px]',
+          onClick: () => {
+            edit(rowData.id)
+          },
+        },
+        { default: () => '编辑' },
+      ), h(
+        NButton,
+        {
+          type: 'error',
+          size: 'small',
+          onClick: () => {
+            deleteStoreFn(rowData.id)
+          },
+        },
+        { default: () => '删除' },
+      )]
+    },
+  },
+]
 </script>
 
 <template>
   <div>
-    <div id="header" class="px-[16px]">
-      <div class="col-12 grid-12 lg:col-8 lg:offset-2 pt-[12px] pb-[16px] color-[#fff]">
-        <div
-          class="col-8 py-[6px] px-[12px] line-height-[20px]" uno-lg="col-4 offset-2">
-          共{{ total }}条数据
-        </div>
-        <div
-          class="col-4" uno-lg="col-4" @click="heightSearchFn()">
-          <product-filter-Senior />
-        </div>
+    <div class="grid-12 sticky top-0 bg-gradient-linear-[180deg,#3875C5,#467EC9]  z-1">
+      <div id="header" class="px-[16px] py-[12px] w-full   col-12" uno-lg="col-8 offset-2">
+        <common-tool-list v-model="showtype" :total="total" @height="heightSearchFn" />
       </div>
     </div>
 
-    <div class="p-[16px]">
-      <region-card @get-detail="getStoreInfo" @edit-region="edit" @delete-rgion="deleteStoreFn" />
-    </div>
-    <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
+    <template v-if="showtype === 'list'">
+      <div class="p-[16px]">
+        <region-card @get-detail="getStoreInfo" @edit-region="edit" @delete-region="deleteStoreFn" />
+        <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
+      </div>
+    </template>
+    <template v-else>
+      <common-datatable :columns="cols" :list="regionList" :page-option="pageOption" />
+    </template>
+
     <!-- 新增或更新门店弹窗 -->
-    <common-popup v-model="addOrUpdateShow" :title="addorUpdateForm.id ? '编辑门店' : '新增门店'">
+    <common-popup v-model="addOrUpdateShow" :title="addorUpdateForm.id ? '编辑区域' : '新增区域'">
       <region-add-update
         @upload="uploadFile"
         @submit="newStore"
         @edit-submit="editRegion" />
     </common-popup>
-    <common-confirm v-model:show="deleteDialog" text="确认删除此门店吗?" @submit="confirmDelete" />
+    <common-confirm v-model:show="deleteDialog" text="确认删除此区域吗?" @submit="confirmDelete" />
 
     <common-create @create="newAdd()" />
 

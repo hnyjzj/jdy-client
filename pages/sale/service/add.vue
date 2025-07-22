@@ -25,11 +25,16 @@ const searchServiceGoods = async (val: string) => {
   await getFinishedList({ page: 1, limit: 5, where: { store_id: myStore.value.id, code: val, all: true, status: 5 } })
   return finishedList.value || []
 }
-
+const { $toast } = useNuxtApp()
 // 新增会员
 const addNewMember = async (val: Member) => await createMember(val)
 // 获取门店员工列表
-const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
+const getStaff = async () => {
+  const res = await getStoreStaffList({ id: myStore.value.id })
+  if (res) {
+    $toast.error(res?.data.value?.message || '获取员工列表失败')
+  }
+}
 const areaBorder = ref(false)
 const region = ref({
   province: undefined,
@@ -74,7 +79,6 @@ const rules = {
   desc: { required: true, message: '请输入项目描述', trigger: ['blur', 'change'] },
 
 }
-const { $toast } = useNuxtApp()
 
 const vilidateArea = () => {
   if (region.value.province === '' || region.value.city === '' || region.value.district === '' || region.value.province === undefined || region.value.city === undefined || region.value.district === undefined) {

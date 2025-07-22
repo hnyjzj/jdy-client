@@ -15,7 +15,7 @@ const addressName = computed(() => {
 </script>
 
 <template>
-  <row>
+  <common-layout-center>
     <div class="col-12 lg:col-8 lg:offset-2 grid-12 gap-[24px]">
       <template v-for="(item, index) in addressName" :key="index">
         <div
@@ -73,5 +73,5 @@ const addressName = computed(() => {
         </div>
       </template>
     </div>
-  </row>
+  </common-layout-center>
 </template>

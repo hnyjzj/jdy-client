@@ -24,9 +24,11 @@ const handleClick = (id?: string) => {
         <template #info>
           <div class="info">
             <common-cell label="所属门店" :value="item.store?.name" />
-            <common-cell :label="item.member?.nickname!" :value="item.member?.phone" />
+            <common-cell :label="item.member?.nickname! || '会员'" :value="item.member?.phone" />
             <common-cell label="维修项目" :value="item.name" />
-            <common-cell label="货品名称" :value="item.name" />
+            <template v-if="item.products?.length">
+              <common-cell label="货品名称" :value="item?.products[0]?.name || '--'" />
+            </template>
             <common-cell label="维修费" :value="item.expense" />
             <common-cell label="取货方式" :value="item.delivery_method === 1 ? '自提' : '邮寄'" />
             <common-cell label="创建时间" :value="formatISODate(item.created_at as string)" />
