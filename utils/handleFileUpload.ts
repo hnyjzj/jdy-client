@@ -34,6 +34,7 @@ export default async function (headers: any) {
     '系列': 'series',
     '备注': 'remark',
     '是否特价': 'is_special_offer',
+    '入库时间': 'enter_time',
   }
   const cleanedHeaders = headers.map((header: keyof ProductFinisheds) =>
     typeof header === 'string' ? header.replace(/\s/g, '') : header,
