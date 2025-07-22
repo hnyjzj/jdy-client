@@ -3,7 +3,8 @@ useSeoMeta({
   title: '门店列表',
 })
 
-const { storesList, addorUpdateForm, filterListToArray, total, searchPage } = storeToRefs(useStores())
+const { storesList, addorUpdateForm, filterListToArray, total } = storeToRefs(useStores())
+const { searchPage } = storeToRefs(usePages())
 const { reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
 const { myRegion } = storeToRefs(useRegion())
 const { $toast } = useNuxtApp()

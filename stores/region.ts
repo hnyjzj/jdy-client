@@ -3,7 +3,6 @@ export const useRegion = defineStore('Region', {
     filterList: {} as Where<Region>, // 筛选条件
     regionList: [] as Region[], // 门店列表
     total: 0,
-    searchPage: 1, // 页码
     regionDetails: {} as Region, //  门店详情
     addorUpdateForm: {
       id: undefined,
@@ -16,6 +15,7 @@ export const useRegion = defineStore('Region', {
     RegionStaffList: [] as RegionStaff[],
     filterListToArray: [] as FilterWhere<Region>[],
     nowTba: 'chap1' as string,
+    showtype: 'list' as 'list' | 'table',
   }),
 
   actions: {

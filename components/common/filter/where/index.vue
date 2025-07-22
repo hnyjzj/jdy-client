@@ -148,6 +148,7 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                     <n-select
                       v-model:value="datas[name as string]"
                       clearable
+                      size="large"
                       :default-value="0 || '' || undefined || null"
                       menu-size="large"
                       :placeholder="`请选择${label}`"
@@ -196,10 +197,6 @@ const canShowFilter = (item: FilterWhere<Check>) => {
 <style>
 .n-base-selection {
   border-radius: 20px;
-}
-
-.n-base-selection-label {
-  height: 40px !important;
 }
 
 .n-input-wrapper {

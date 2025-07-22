@@ -24,14 +24,14 @@ const setAddProduct = (product: ProductFinisheds) => {
 const productList = ref<ProductFinisheds[]>([])
 const searchProduct = ref('')
 // 搜索商品时候选择名称搜索还是条码搜索
-const changeType = (type: 'name' | 'code') => {
-  productList.value = []
-  searchType.value = type
-  searchProduct.value = ''
-}
+// const changeType = (type: 'name' | 'code') => {
+//   productList.value = []
+//   searchType.value = type
+//   searchProduct.value = ''
+// }
 
 const search = async () => {
-  readyAddproduct.value = []
+//
   const res = await Props.searchProductList({ val: searchProduct.value, type: searchType.value })
   const index = readyAddproduct.value.findIndex(p => p.id === res[0].id)
   if (index !== -1)
@@ -43,6 +43,7 @@ const confirm = () => {
   emits('addProduct', readyAddproduct.value)
   searchProduct.value = ''
   productList.value = []
+  readyAddproduct.value = []
 }
 
 const { useWxWork } = useWxworkStore()
@@ -81,8 +82,7 @@ const realtype = (val?: number) => {
           <div>
             <div class="flex justify-start py-[12px]">
               <div
-                class="flex-center-col pr-[32px]"
-                @click="changeType('code')">
+                class="flex-center-col pr-[32px]">
                 <div class="text-[16px] pb-[2px] font-semibold line-height-[24px]" :style="{ color: searchType === 'code' ? '#333' : '#53565C' }">
                   条码搜索
                 </div>

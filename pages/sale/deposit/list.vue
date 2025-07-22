@@ -1,11 +1,14 @@
 <script setup lang="ts">
+import { NButton } from 'naive-ui'
+
 useSeoMeta({
   title: '订金单列表',
 })
 const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 
-const { filterListToArray, OrdersList, total, filterList, searchPage } = storeToRefs(useDepositOrder())
+const { filterListToArray, OrdersList, total, filterList, showtype } = storeToRefs(useDepositOrder())
+const { searchPage } = storeToRefs(usePages())
 const { getSaleWhere, getDepositList, isStoreStaff } = useDepositOrder()
 const filterData = ref({} as Partial<DepositOrderWhere>)
 const filterShow = ref(false)
@@ -76,6 +79,97 @@ const router = useRouter()
 const newAdd = async () => {
   await router.push('/sale/deposit/add')
 }
+
+const pageOption = ref({
+  page: searchPage,
+  pageSize: 50,
+  itemCount: total,
+  showSizePicker: true,
+  pageSizes: [50, 100, 150, 200],
+  onUpdatePageSize: (pageSize: number) => {
+    pageOption.value.pageSize = pageSize
+    limits.value = pageSize
+    updatePage(1)
+  },
+  onChange: (page: number) => {
+    updatePage(page)
+  },
+})
+
+const cols = [
+  {
+    title: '所属门店',
+    key: 'store.name',
+  },
+  {
+    title: '会员',
+    key: 'member.nickname',
+    render: (rowData: DepositOrderInfo) => {
+      return rowData.member?.nickname || '--'
+    },
+  },
+  {
+    title: '会员手机号',
+    key: 'member.phone',
+  },
+  {
+    title: '主销',
+    key: 'clerk.nickname',
+  },
+
+  {
+    title: '定金金额',
+    key: 'price',
+  },
+  {
+    title: '货品',
+    key: 'price',
+    render: (rowData: DepositOrderInfo) => {
+      return rowData.products?.map((item) => {
+        return item.is_our ? item.product_finished.name : item.product_demand?.name
+      }).join(',') || '--'
+    },
+  },
+  {
+    title: '销售时间',
+    key: 'age',
+    render: (rowData: DepositOrderInfo) => {
+      return formatISODate(rowData.created_at)
+    },
+  },
+  {
+    title: '操作',
+    key: 'action',
+    render: (rowData: DepositOrderInfo) => {
+      return [h(
+        NButton,
+        {
+          type: 'primary',
+          size: 'small',
+          class: 'mr-[4px]',
+          onClick: () => {
+            if (!rowData.id)
+              return
+            navigateTo(`/sale/sales/order?id=${rowData.order_sales[0].id}`)
+          },
+        },
+        { default: () => '销售单' },
+      ), h(
+        NButton,
+        {
+          type: 'info',
+          size: 'small',
+          onClick: () => {
+            if (!rowData.id)
+              return
+            navigateTo(`/sale/deposit/order?id=${rowData.id}`)
+          },
+        },
+        { default: () => '查看详情' },
+      )]
+    },
+  },
+]
 </script>
 
 <template>
@@ -87,29 +181,27 @@ const newAdd = async () => {
           <product-filter-search
             placeholder="搜索订单号" class="color-[#fff] flex-1" @submit="searchOrder" @clear="clearFn" />
         </div>
-        <div class="flex-center-between gap-2 py-[16px]">
-          <div class="text-size-[14px] color-[#fff]">
-            共{{ total }}条数据
-          </div>
-          <div @click="openFilter()">
-            <product-filter-senior class="color-[#fff]" />
+        <common-tool-list v-model="showtype" :total="total" @height="openFilter" />
+      </div>
+    </div>
+    <template v-if="showtype === 'list'">
+      <div class="grid-12">
+        <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
+          <div class="p-[16px]">
+            <template v-if="OrdersList.length">
+              <sale-deposit-list :info="OrdersList" :where="filterList" :is-store-staff="isStaff" @user-click="handleClick" />
+              <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
+            </template>
+            <template v-else>
+              <common-emptys text="暂无数据" />
+            </template>
           </div>
         </div>
       </div>
-    </div>
-    <div class="grid-12">
-      <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-        <div class="p-[16px]">
-          <template v-if="OrdersList.length">
-            <sale-deposit-list :info="OrdersList" :where="filterList" :is-store-staff="isStaff" @user-click="handleClick" />
-            <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
-          </template>
-          <template v-else>
-            <common-emptys text="暂无数据" />
-          </template>
-        </div>
-      </div>
-    </div>
+    </template>
+    <template v-else>
+      <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" />
+    </template>
     <!-- filter -->
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #cashier_id>
