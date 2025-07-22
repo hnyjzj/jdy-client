@@ -153,7 +153,7 @@ const cols = [
           onClick: () => {
             if (!rowData.id)
               return
-            navigateTo(`/sale/other/add?id=${rowData.id}`)
+            navigateTo(`/manage/staffs/staff/info?id=${rowData.id}`)
           },
         },
         { default: () => '查看详情' },

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { NButton } from 'naive-ui'
+
 useSeoMeta({
   title: '门店列表',
 })
@@ -13,10 +15,10 @@ const show = ref<boolean>(false)
 
 // 筛选请求数据
 const filterData = ref({} as Partial<Stores>)
-
+const limits = ref<number>(50)
 // 获取列表
 const getList = async (where = {} as Partial<Stores>) => {
-  const params = { page: searchPage.value, limit: 12 } as ReqList<Stores>
+  const params = { page: searchPage.value, limit: limits.value } as ReqList<Stores>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
@@ -146,27 +148,99 @@ const updatePage = async (page: number) => {
   searchPage.value = page
   await getList()
 }
+
+const showtype = ref<'list' | 'table'>('list')
+const nowPage = computed(() => searchPage.value)
+const pageOption = ref({
+  page: nowPage,
+  pageSize: 50,
+  itemCount: total.value,
+  showSizePicker: true,
+  pageSizes: [50, 100, 150, 200],
+  onUpdatePageSize: (pageSize: number) => {
+    pageOption.value.pageSize = pageSize
+    limits.value = pageSize
+    updatePage(1)
+  },
+  onChange: (page: number) => {
+    updatePage(page)
+  },
+})
+
+const cols = [
+  { title: '店铺名称', key: 'name' },
+  { title: '省市区', key: 'name', render: (rowData: Stores) => {
+    return toProvinces(rowData.province, rowData.city, rowData.district)
+  } },
+  { title: '详细地址', key: 'address' },
+  { title: '联系方式', key: 'contact' },
+  {
+    title: '操作',
+    key: 'action',
+    width: 250,
+    render: (rowData: otherOrderInfo) => {
+      return [h(
+        NButton,
+        {
+          type: 'primary',
+          size: 'small',
+          class: 'mr-[4px]',
+          onClick: () => {
+            if (!rowData.id)
+              return
+            navigateTo(`/sale/other/add?id=${rowData.id}`)
+          },
+        },
+        { default: () => '查看详情' },
+      ), h(
+        NButton,
+        {
+          type: 'info',
+          size: 'small',
+          class: 'mr-[4px]',
+          onClick: () => {
+            if (!rowData.id)
+              return
+            navigateTo(`/sale/other/add?id=${rowData.id}`)
+          },
+        },
+        { default: () => '编辑' },
+      ), h(
+        NButton,
+        {
+          type: 'error',
+          size: 'small',
+          onClick: () => {
+            if (!rowData.id)
+              return
+            navigateTo(`/sale/other/add?id=${rowData.id}`)
+          },
+        },
+        { default: () => '删除' },
+      )]
+    },
+  },
+]
 </script>
 
 <template>
   <div>
-    <div id="header" class="px-[16px]">
-      <div class="col-12 grid-12 lg:col-8 lg:offset-2 pt-[12px] pb-[16px] color-[#fff]">
-        <div
-          class="col-8 py-[6px] px-[12px] line-height-[20px]" uno-lg="col-4 offset-2">
-          共{{ total }}条数据
-        </div>
-        <div
-          class="col-4" uno-lg="col-4" @click="heightSearchFn()">
-          <product-filter-Senior />
-        </div>
+    <div class="grid-12 sticky top-0 bg-gradient-linear-[180deg,#3875C5,#467EC9]  z-1">
+      <div id="header" class="px-[16px] py-[12px] w-full   col-12" uno-lg="col-8 offset-2">
+        <common-tool-list v-model="showtype" :total="total" @height="heightSearchFn" />
       </div>
     </div>
 
-    <div class="p-[16px]">
-      <stores-card @get-detail="getStoreInfo" @edit-store="edit" @delete-store="deleteStoreFn" />
-    </div>
-    <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
+    <template v-if="showtype === 'list'">
+      <div class="p-[16px]">
+        <stores-card @get-detail="getStoreInfo" @edit-store="edit" @delete-store="deleteStoreFn" />
+        <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
+      </div>
+    </template>
+    <template v-else>
+      <common-datatable :columns="cols" :list="storesList" :page-option="pageOption" />
+    </template>
+
     <!-- 新增或更新门店弹窗 -->
     <common-popup v-model="addOrUpdateShow" :title="addorUpdateForm.id ? '编辑门店' : '新增门店'">
       <stores-add-update
