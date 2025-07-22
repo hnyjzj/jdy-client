@@ -13,7 +13,7 @@ for (let i = 0; i < props.columns.length; ++i) {
 </script>
 
 <template>
-  <div class="">
+  <div class="grid-12">
     <div class="flex flex-col col-12 p-[16px]" uno-lg="col-8 offset-2" uno-sm="col-12">
       <n-data-table
         :style="{
@@ -29,6 +29,7 @@ for (let i = 0; i < props.columns.length; ++i) {
         :scroll-x="scrollX"
         :data="props.list"
         :pagination="props.pageOption"
+        :max-height="600"
       />
     </div>
   </div>
