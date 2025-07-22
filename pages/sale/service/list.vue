@@ -9,7 +9,7 @@ const areaoptions = useCascaderAreaData()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 const { getRepairOrderWhere, getRepairOrderList, cancelRepairOrder, payRepairOrder } = useRepair()
-const { repairOrderList, Total, repairFilterList, searchPage, repairFilterListToArray } = storeToRefs(useRepair())
+const { repairOrderList, total, repairFilterList, searchPage, repairFilterListToArray } = storeToRefs(useRepair())
 const filterData = ref({} as Partial<service>)
 const filterShow = ref(false)
 
@@ -113,7 +113,7 @@ const nowPage = computed(() => searchPage.value)
 const pageOption = ref({
   page: nowPage,
   pageSize: 50,
-  itemCount: Total.value,
+  itemCount: total.value,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
@@ -209,21 +209,7 @@ const cols = [
           <product-filter-search
             placeholder="搜索订单号" class="color-[#fff] flex-1" @submit="searchOrder" @clear="clearFn" />
         </div>
-        <div class="flex-center-between gap-2 py-[16px]">
-          <div class="flex items-center gap-[12px]">
-            <div class="text-size-[14px] color-[#fff]">
-              共{{ Total }}条数据
-            </div>
-            <div
-              class="px-[8px] py-[4px] bg-[#fff] color-[#2775EE] text-center rounded-[20px] cursor-pointer"
-              @click="showtype = showtype === 'list' ? 'table' : 'list'">
-              {{ showtype === 'list' ? '切换表格' : '切换列表' }}
-            </div>
-          </div>
-          <div @click="openFilter()">
-            <product-filter-senior class="color-[#fff]" />
-          </div>
-        </div>
+        <common-tool-list v-model="showtype" :total="total" @height="openFilter" />
       </div>
     </div>
     <template v-if="showtype === 'list'">
@@ -239,7 +225,7 @@ const cols = [
                 :get-list="getList"
                 @user-click="handleClick"
               />
-              <common-page v-model:page="searchPage" :total="Total" :limit="limits" @update:page="updatePage" />
+              <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
             </template>
             <template v-else>
               <common-emptys text="暂无数据" />

@@ -212,21 +212,7 @@ const cols = [
           <product-filter-search
             placeholder="搜索订单号" class="color-[#fff] flex-1" @submit="searchOrder" @clear="clearFn" />
         </div>
-        <div class="flex-center-between gap-2 py-[16px]">
-          <div class="flex items-center gap-[12px]">
-            <div class="text-size-[14px] color-[#fff]">
-              共{{ total }}条数据
-            </div>
-            <div
-              class="px-[8px] py-[4px] bg-[#fff] color-[#2775EE] text-center rounded-[20px] cursor-pointer"
-              @click="showtype = showtype === 'list' ? 'table' : 'list'">
-              {{ showtype === 'list' ? '切换表格' : '切换列表' }}
-            </div>
-          </div>
-          <div @click="openFilter()">
-            <product-filter-senior class="color-[#fff]" />
-          </div>
-        </div>
+        <common-tool-list v-model="showtype" :total="total" @height="openFilter" />
       </div>
     </div>
     <template v-if="showtype === 'list'">
