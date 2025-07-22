@@ -14,6 +14,7 @@ interface Region {
   updated_at: string
   superiors: Staff[]
   stores: Stores[]
+  region_id?: string
 }
 
 interface RegionStaff {

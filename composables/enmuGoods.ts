@@ -8,7 +8,7 @@ export enum GoodsStatus {
   ProductStatusNormal,
   /** 已报损 */
   ProductStatusDamage,
-  /** 已调拨 */
+  /** 调拨中 */
   ProductStatusAllocate,
   /** 已出售 */
   ProductStatusSold,
@@ -24,7 +24,7 @@ export const GoodsStatusMap = {
   1: '草稿',
   2: '正常',
   3: '已报损',
-  4: '已调拨',
+  4: '调拨中',
   5: '已出售',
   6: '已定出',
   7: '盘点中',
