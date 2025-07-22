@@ -9,9 +9,9 @@ export const useRegion = defineStore('Region', {
       id: undefined,
       name: '',
     } as Partial<Region>,
-    // 我的门店
+    // 我的区域
     myRegionList: [] as Region[],
-    // 当前门店
+    // 当前区域
     myRegion: {} as Region,
     RegionStaffList: [] as RegionStaff[],
     filterListToArray: [] as FilterWhere<Region>[],
@@ -19,7 +19,7 @@ export const useRegion = defineStore('Region', {
   }),
 
   actions: {
-    // 门店列表
+    // 区域列表
     async getRegionList(req: ReqList<Region>, search?: boolean) {
       if (req.page === 1) {
         this.regionList = []
@@ -69,7 +69,7 @@ export const useRegion = defineStore('Region', {
       const { data } = await https.delete<undefined, { id: Region['id'] }>('/region/delete', { id })
       return data.value
     },
-    // 获取门店详情
+    // 获取区域详情
     async getRegionDetail(id: Region['id'], update: boolean = false) {
       const { data } = await https.post<Region, { id: Region['id'] }>('/region/info', { id })
       if (data.value?.code === HttpCode.SUCCESS) {
@@ -101,17 +101,17 @@ export const useRegion = defineStore('Region', {
         sort: 0,
       }
     },
-    // 我的门店
+    // 我的区域
     async getMyRegion(req: ReqList<Stores>) {
       try {
         const { data } = await https.post<Region[], ReqList<Region>>('/region/my', req)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.myRegionList = data.value.data
-          //   如果选择当前门店，则默认选中第一个
+          //   如果选择当前区域，则默认选中第一个
           if (!this.myRegion.id) {
             this.myRegion = this.myRegionList[0] || {}
           }
-          //   如果列表中没有当前的门店，则默认选中第一个 (应对分配门店被移除时的情况)
+          //   如果列表中没有当前的区域，则默认选中第一个 (应对分配门店被移除时的情况)
           const isStore = this.myRegionList.find(store => store.id === this.myRegion.id)
           if (!isStore) {
             this.myRegion = this.myRegionList[0] || {}
@@ -123,7 +123,7 @@ export const useRegion = defineStore('Region', {
       }
     },
     // 切换区域
-    async switchStore(params: Region) {
+    async switchRegion(params: Region) {
       this.myRegion = params
     },
     // 区域员工列表
@@ -156,7 +156,7 @@ export const useRegion = defineStore('Region', {
       }
     },
     /**
-     * 分配门店
+     * 分配区域
      */
     async assignStores(req: RegionassignStores) {
       const { data } = await https.post<any, RegionassignStores>('/region/store/add', req)
@@ -204,6 +204,6 @@ export const useRegion = defineStore('Region', {
   },
   persist: {
     storage: piniaPluginPersistedstate.cookies(),
-    pick: ['myStore'],
+    pick: ['myRegion'],
   },
 })

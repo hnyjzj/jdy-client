@@ -5,6 +5,7 @@ useSeoMeta({
 
 const { storesList, addorUpdateForm, filterListToArray, total, searchPage } = storeToRefs(useStores())
 const { reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
+const { myRegion } = storeToRefs(useRegion())
 const { $toast } = useNuxtApp()
 // 新增门店弹窗
 const addOrUpdateShow = ref<boolean>(false)
@@ -16,10 +17,10 @@ const filterData = ref({} as Partial<Stores>)
 
 // 获取列表
 const getList = async (where = {} as Partial<Stores>) => {
-  const params = { page: searchPage.value, limit: 12 } as ReqList<Stores>
-  if (JSON.stringify(where) !== '{}') {
-    params.where = where
-  }
+  const params = { page: searchPage.value, limit: 12 } as ReqList<Region>
+  params.where = where
+  params.where.region_id = myRegion.value.id
+
   await getStoreList(params)
 }
 
@@ -146,22 +147,18 @@ const updatePage = async (page: number) => {
   searchPage.value = page
   await getList()
 }
+
+const complate = ref(0)
 </script>
 
 <template>
   <div>
-    <div id="header" class="px-[16px]">
-      <div class="col-12 grid-12 lg:col-8 lg:offset-2 pt-[12px] pb-[16px] color-[#fff]">
-        <div
-          class="col-8 py-[6px] px-[12px] line-height-[20px]" uno-lg="col-4 offset-2">
-          共{{ total }}条数据
-        </div>
-        <div
-          class="col-4" uno-lg="col-4" @click="heightSearchFn()">
-          <product-filter-Senior />
-        </div>
-      </div>
-    </div>
+    <product-filter
+      v-model:id="complate" :product-list-total="total" placeholder="搜索条码" :show-input="false" @filter="heightSearchFn()">
+      <template #company>
+        <region-change @change="getList" />
+      </template>
+    </product-filter>
 
     <div class="p-[16px]">
       <stores-card @get-detail="getStoreInfo" @edit-store="edit" @delete-store="deleteStoreFn" />
