@@ -167,13 +167,12 @@ async function addProduct() {
   }
 }
 
-async function scanit() {
+const scanit = useDebounceFn(async () => {
   try {
     const wx = await useWxWork()
-    pCode.value = wx?.scanQRCode()
-    const result = await wx?.scanQRCode()
-    if (result) {
-      pCode.value = result
+    const code = await wx?.scanQRCode()
+    if (code) {
+      pCode.value = code
     }
     else {
       $toast.error('扫码失败，请重试')
@@ -182,7 +181,7 @@ async function scanit() {
   catch (error) {
     throw new Error(`扫码失败: ${error || '未知错误'}`)
   }
-}
+}, 1000)
 
 /** 调拨产品列表 */
 const productList = computed(() => {

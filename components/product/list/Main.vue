@@ -2,10 +2,12 @@
 const props = defineProps<{
   filterList: Where<T>
   productList: T[]
+  isFinished?: boolean
 }>()
 const emits = defineEmits<{
   edit: [code: T['code']]
   goInfo: [info: T]
+  isFinished: false
 }>()
 
 const edit = (code: string) => {
@@ -102,6 +104,16 @@ const jumpInfo = (info: T) => {
               {{ info.craft }}
             </div>
           </div>
+          <template v-if="isFinished">
+            <div class="flex-between">
+              <div>
+                库龄
+              </div>
+              <div class="text-align-end val">
+                {{ getDaysFromToday(info.enter_time) }}
+              </div>
+            </div>
+          </template>
         </div>
       </template>
       <template #bottom="{ info }">

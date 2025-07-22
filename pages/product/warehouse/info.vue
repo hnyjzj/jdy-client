@@ -100,11 +100,11 @@ async function submitGoods(req: ProductFinisheds[]) {
     return $toast.success('批量导入成功')
   }
   else if (res?.code === HttpCode.ERROR) {
+    loading.value = false
     let msg = res?.message
     Object.keys(res?.data).forEach((key) => {
       msg += `\n条码【${key}】：${res?.data[key]}`
     })
-    loading.value = false
     return $toast.error(msg)
   }
 
@@ -362,6 +362,14 @@ function pull() {
                             </template>
                           </template>
                         </template>
+                        <div class="flex">
+                          <div class="key">
+                            入库时间
+                          </div>
+                          <div class="value">
+                            {{ formatTimestampToDateTime(item.enter_time) }}
+                          </div>
+                        </div>
                       </div>
                     </template>
                   </sale-order-nesting>
