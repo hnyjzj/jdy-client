@@ -10,7 +10,7 @@ const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 const { getFinishedList } = useFinished()
 const { finishedList } = storeToRefs(useFinished())
-const { filterListToArray, OrdersList, total, filterList, searchPage } = storeToRefs(useOrder())
+const { filterListToArray, OrdersList, total, filterList, searchPage, showtype } = storeToRefs(useOrder())
 const { getSaleWhere, getOrderList, revokedOrder, payOrder } = useOrder()
 const filterData = ref({} as Partial<OrderWhere>)
 const filterShow = ref(false)
@@ -109,12 +109,10 @@ const getSaleman = async () => {
   }
 }
 
-const showtype = ref<'list' | 'table'>('list')
-const nowPage = computed(() => searchPage.value)
 const pageOption = ref({
-  page: nowPage,
+  page: searchPage,
   pageSize: 50,
-  itemCount: total.value,
+  itemCount: total,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {

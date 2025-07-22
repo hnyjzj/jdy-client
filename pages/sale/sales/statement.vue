@@ -8,7 +8,7 @@ useSeoMeta({
 const { myStore } = storeToRefs(useStores())
 // 获取销售明细列表
 const { getStatementList, getStatementWhere } = useStatement()
-const { statementList, total, filterListToArray, searchPage, filterList } = storeToRefs(useStatement())
+const { statementList, total, filterListToArray, searchPage, filterList, showtype } = storeToRefs(useStatement())
 const filterData = ref({} as Partial<StatementWhere>)
 const filterShow = ref(false)
 const { getMemberList } = useMemberManage()
@@ -66,12 +66,10 @@ const changeStores = async () => {
   await getList()
 }
 
-const showtype = ref<'list' | 'table'>('list')
-const nowPage = computed(() => searchPage.value)
 const pageOption = ref({
-  page: nowPage,
+  page: searchPage,
   pageSize: 50,
-  itemCount: total.value,
+  itemCount: total,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {

@@ -6,6 +6,8 @@ export const useStaff = defineStore('staffStore', {
     total: 0,
     filterListToArray: [] as FilterWhere<Staff>[],
     searchPage: 1 as number,
+    showtype: 'list' as 'list' | 'table',
+
   }),
   getters: {
 

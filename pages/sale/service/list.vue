@@ -9,7 +9,7 @@ const areaoptions = useCascaderAreaData()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 const { getRepairOrderWhere, getRepairOrderList, cancelRepairOrder, payRepairOrder } = useRepair()
-const { repairOrderList, total, repairFilterList, searchPage, repairFilterListToArray } = storeToRefs(useRepair())
+const { repairOrderList, total, repairFilterList, searchPage, repairFilterListToArray, showtype } = storeToRefs(useRepair())
 const filterData = ref({} as Partial<service>)
 const filterShow = ref(false)
 
@@ -108,12 +108,10 @@ const getSaleman = async () => {
   }
 }
 
-const showtype = ref<'list' | 'table'>('list')
-const nowPage = computed(() => searchPage.value)
 const pageOption = ref({
-  page: nowPage,
+  page: searchPage,
   pageSize: 50,
-  itemCount: total.value,
+  itemCount: total,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {

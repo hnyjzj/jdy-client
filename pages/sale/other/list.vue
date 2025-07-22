@@ -7,7 +7,7 @@ useSeoMeta({
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 const { getOtherOrderList, otherOrderWhere, delOtherOrder } = useOtherOrder()
-const { searchPage, total, orderList, filterList, filterListToArray } = storeToRefs(useOtherOrder())
+const { searchPage, total, orderList, filterList, filterListToArray, showtype } = storeToRefs(useOtherOrder())
 const filterShow = ref(false)
 const filterData = ref({} as Partial<otherOrderWhere>)
 await otherOrderWhere()
@@ -77,12 +77,10 @@ const newAdd = async () => {
   await router.push('/sale/other/add')
 }
 
-const showtype = ref<'list' | 'table'>('list')
-const nowPage = computed(() => searchPage.value)
 const pageOption = ref({
-  page: nowPage,
+  page: searchPage,
   pageSize: 50,
-  itemCount: total.value,
+  itemCount: total,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {

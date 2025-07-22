@@ -22,6 +22,7 @@ export const useStores = defineStore('Store', {
     myStore: {} as Stores,
     StoreStaffList: [] as StoresStaff[],
     filterListToArray: [] as FilterWhere<Stores>[],
+    showtype: 'list' as 'list' | 'table',
   }),
 
   actions: {

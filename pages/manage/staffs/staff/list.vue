@@ -5,7 +5,7 @@ import { NButton } from 'naive-ui'
 useSeoMeta({
   title: '员工列表',
 })
-const { staffList, filterListToArray, total, searchPage, filterList: staffWhereList } = storeToRefs(useStaff())
+const { staffList, filterListToArray, total, searchPage, filterList: staffWhereList, showtype } = storeToRefs(useStaff())
 const { getStaffWhere, getStaffList } = useStaff()
 const { staffGetStoreList } = useStores()
 const { userinfo } = storeToRefs(useUser())
@@ -94,12 +94,10 @@ const searchKeyFn = async (data: string) => {
   await getList(filterData.value)
 }
 
-const showtype = ref<'list' | 'table'>('list')
-const nowPage = computed(() => searchPage.value)
 const pageOption = ref({
-  page: nowPage,
+  page: searchPage,
   pageSize: 50,
-  itemCount: total.value,
+  itemCount: total,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {

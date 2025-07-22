@@ -4,7 +4,7 @@ import { NButton } from 'naive-ui'
 useSeoMeta({
   title: '区域',
 })
-const { regionList, addorUpdateForm, filterListToArray, total, searchPage } = storeToRefs(useRegion())
+const { regionList, addorUpdateForm, filterListToArray, total, searchPage, showtype } = storeToRefs(useRegion())
 const { reastAddForm, createRegion, getRegionList, deleteRegion, updateRegion, getRegionWhere, uploadImage } = useRegion()
 const { $toast } = useNuxtApp()
 // 新增门店弹窗
@@ -144,10 +144,8 @@ const updatePage = async (page: number) => {
   await getList()
 }
 
-const showtype = ref<'list' | 'table'>('list')
-const nowPage = computed(() => searchPage.value)
 const pageOption = ref({
-  page: nowPage,
+  page: searchPage,
   pageSize: 50,
   itemCount: total,
   showSizePicker: true,
@@ -237,13 +235,13 @@ const cols = [
     </template>
 
     <!-- 新增或更新门店弹窗 -->
-    <common-popup v-model="addOrUpdateShow" :title="addorUpdateForm.id ? '编辑门店' : '新增门店'">
+    <common-popup v-model="addOrUpdateShow" :title="addorUpdateForm.id ? '编辑区域' : '新增区域'">
       <region-add-update
         @upload="uploadFile"
         @submit="newStore"
         @edit-submit="editRegion" />
     </common-popup>
-    <common-confirm v-model:show="deleteDialog" text="确认删除此门店吗?" @submit="confirmDelete" />
+    <common-confirm v-model:show="deleteDialog" text="确认删除此区域吗?" @submit="confirmDelete" />
 
     <common-create @create="newAdd()" />
 

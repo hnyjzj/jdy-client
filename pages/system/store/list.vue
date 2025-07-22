@@ -5,7 +5,7 @@ useSeoMeta({
   title: '门店列表',
 })
 
-const { storesList, addorUpdateForm, filterListToArray, total, searchPage } = storeToRefs(useStores())
+const { storesList, addorUpdateForm, filterListToArray, total, searchPage, showtype } = storeToRefs(useStores())
 const { reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
 const { $toast } = useNuxtApp()
 // 新增门店弹窗
@@ -149,12 +149,10 @@ const updatePage = async (page: number) => {
   await getList()
 }
 
-const showtype = ref<'list' | 'table'>('list')
-const nowPage = computed(() => searchPage.value)
 const pageOption = ref({
-  page: nowPage,
+  page: searchPage,
   pageSize: 50,
-  itemCount: total.value,
+  itemCount: total,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
@@ -178,7 +176,7 @@ const cols = [
     title: '操作',
     key: 'action',
     width: 250,
-    render: (rowData: otherOrderInfo) => {
+    render: (rowData: Stores) => {
       return [h(
         NButton,
         {
@@ -188,7 +186,7 @@ const cols = [
           onClick: () => {
             if (!rowData.id)
               return
-            navigateTo(`/sale/other/add?id=${rowData.id}`)
+            navigateTo(`/system/store/info?id=${rowData.id}`)
           },
         },
         { default: () => '查看详情' },
@@ -199,9 +197,7 @@ const cols = [
           size: 'small',
           class: 'mr-[4px]',
           onClick: () => {
-            if (!rowData.id)
-              return
-            navigateTo(`/sale/other/add?id=${rowData.id}`)
+            edit(rowData.id)
           },
         },
         { default: () => '编辑' },
@@ -211,9 +207,7 @@ const cols = [
           type: 'error',
           size: 'small',
           onClick: () => {
-            if (!rowData.id)
-              return
-            navigateTo(`/sale/other/add?id=${rowData.id}`)
+            deleteStoreFn(rowData.id)
           },
         },
         { default: () => '删除' },

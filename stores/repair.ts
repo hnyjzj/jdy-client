@@ -13,6 +13,7 @@ export const useRepair = defineStore('Repair', {
     total: 0,
     searchPage: 1,
     repairOrderDetail: {} as ServiceOrderInfo,
+    showtype: 'list' as 'list' | 'table',
   }),
 
   actions: {

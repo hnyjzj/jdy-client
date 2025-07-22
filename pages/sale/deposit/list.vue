@@ -7,7 +7,7 @@ useSeoMeta({
 const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 
-const { filterListToArray, OrdersList, total, filterList, searchPage } = storeToRefs(useDepositOrder())
+const { filterListToArray, OrdersList, total, filterList, searchPage, showtype } = storeToRefs(useDepositOrder())
 const { getSaleWhere, getDepositList, isStoreStaff } = useDepositOrder()
 const filterData = ref({} as Partial<DepositOrderWhere>)
 const filterShow = ref(false)
@@ -79,12 +79,10 @@ const newAdd = async () => {
   await router.push('/sale/deposit/add')
 }
 
-const showtype = ref<'list' | 'table'>('list')
-const nowPage = computed(() => searchPage.value)
 const pageOption = ref({
-  page: nowPage,
+  page: searchPage,
   pageSize: 50,
-  itemCount: total.value,
+  itemCount: total,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {

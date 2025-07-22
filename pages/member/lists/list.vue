@@ -7,7 +7,7 @@ useSeoMeta({
 const { $toast } = useNuxtApp()
 
 const { getMemberList, getMemberInfo, getMemberWhere, updateIntegral } = useMemberManage()
-const { memberList, memberInfo, filterListToArray, memberListTotal, searchPage } = storeToRefs(useMemberManage())
+const { memberList, memberInfo, filterListToArray, memberListTotal, searchPage, showtype } = storeToRefs(useMemberManage())
 
 // 获取当前员工的store信息
 const { myStore } = storeToRefs(useStores())
@@ -148,7 +148,6 @@ const getTarget = (arrs: Member, keyword: string, type: 'level' | 'status') => {
   const targetPreset = targetOption?.preset
   return targetPreset[arrs[type]]
 }
-const showtype = ref<'list' | 'table'>('list')
 
 const pageOption = ref({
   page: searchPage,
