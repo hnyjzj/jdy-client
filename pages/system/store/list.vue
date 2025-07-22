@@ -17,9 +17,6 @@ const filterData = ref({} as Partial<Stores>)
 
 // 获取列表
 const getList = async (where = {} as Partial<Stores>) => {
-  if (!myRegion.value?.id) {
-    return $toast.error('请先选择区域')
-  }
   const params = { page: searchPage.value, limit: 12 } as ReqList<Region>
   params.where = where
   params.where.region_id = myRegion.value.id
