@@ -123,7 +123,7 @@ export const useRegion = defineStore('Region', {
       }
     },
     // 切换区域
-    async switchStore(params: Region) {
+    async switchRegion(params: Region) {
       this.myRegion = params
     },
     // 区域员工列表
