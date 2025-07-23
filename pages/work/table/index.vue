@@ -5,7 +5,7 @@ import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { addWorkbench, getWorkbenchList, delWorkbench, updateWorkbench, uploadIcon } = useWorkbenche()
 const { workBenchList } = storeToRefs(useWorkbenche())
-const { searchPage } = storeToRefs(useOrder())
+const { searchPage } = storeToRefs(usePages())
 searchPage.value = 1
 useSeoMeta({
   title: '工作台',

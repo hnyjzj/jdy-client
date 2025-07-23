@@ -3,7 +3,8 @@ useSeoMeta({
   title: '门店列表',
 })
 
-const { storesList, addorUpdateForm, filterListToArray, total, searchPage } = storeToRefs(useStores())
+const { storesList, addorUpdateForm, filterListToArray, total } = storeToRefs(useStores())
+const { searchPage } = storeToRefs(usePages())
 const { reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
 const { myRegion } = storeToRefs(useRegion())
 const { $toast } = useNuxtApp()
@@ -17,6 +18,9 @@ const filterData = ref({} as Partial<Stores>)
 
 // 获取列表
 const getList = async (where = {} as Partial<Stores>) => {
+  if (!Object.keys(myRegion.value).length) {
+    return $toast.error('请先选择区域')
+  }
   const params = { page: searchPage.value, limit: 12 } as ReqList<Region>
   params.where = where
   params.where.region_id = myRegion.value.id

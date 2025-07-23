@@ -6,7 +6,8 @@ useSeoMeta({
 const { myStore } = storeToRefs(useStores())
 // 获取销售明细列表
 const { getReturnList, getReturnWhere } = useStatement()
-const { statementReturnList, statementRetrunListTotal, ReturnfilterListToArray, searchPageReturn, ReturnfilterList } = storeToRefs(useStatement())
+const { statementReturnList, statementRetrunListTotal, ReturnfilterListToArray, ReturnfilterList } = storeToRefs(useStatement())
+const { searchPage } = storeToRefs(usePages())
 
 const filterData = ref({} as Partial<StatementRefundWhere>)
 const filterShow = ref(false)
@@ -17,7 +18,7 @@ const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5
 
 // 获取列表
 const getList = async (where = {} as Partial<StatementRefundWhere>) => {
-  const params = { page: searchPageReturn.value, limit: 12, where: { store_id: myStore.value.id } } as ReqList<StatementRefundInfo>
+  const params = { page: searchPage.value, limit: 12, where: { store_id: myStore.value.id } } as ReqList<StatementRefundInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
@@ -31,7 +32,7 @@ const openFilter = () => {
 const submitWhere = async (f: StatementRefundWhere) => {
   filterData.value = { ...filterData.value, ...f }
   statementReturnList.value = []
-  searchPageReturn.value = 1
+  searchPage.value = 1
   await getList(filterData.value as any)
 }
 const resetWhere = async () => {
@@ -49,11 +50,11 @@ const searchOrder = async (id: string) => {
 }
 const clearFn = async () => {
   statementReturnList.value = []
-  searchPageReturn.value = 1
+  searchPage.value = 1
   await getList()
 }
 const updatePage = async (page: number) => {
-  searchPageReturn.value = page
+  searchPage.value = page
   await getList()
 }
 const changeStores = async () => {
@@ -85,7 +86,7 @@ const changeStores = async () => {
         <div class="p-[16px]">
           <template v-if="statementReturnList.length">
             <sale-statement-return :info="statementReturnList" :where="ReturnfilterList" />
-            <common-page v-model:page="searchPageReturn" :total="statementRetrunListTotal" :limit="12" @update:page="updatePage" />
+            <common-page v-model:page="searchPage" :total="statementRetrunListTotal" :limit="12" @update:page="updatePage" />
           </template>
           <template v-else>
             <common-emptys text="暂无数据" />
