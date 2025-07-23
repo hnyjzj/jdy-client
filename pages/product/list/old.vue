@@ -116,26 +116,26 @@ const pageOption = ref({
 const cols = [
   { title: '条码', key: 'code' },
   { title: '所属大类', key: '', render: (row: ProductOlds) => {
-    return oldFilterList.value.class?.preset[row.class]
+    return oldFilterList.value.class?.preset[row.class] || ''
   } },
   { title: '货品名称', key: 'name' },
   { title: '货品品牌', key: '', render: (row: ProductOlds) => {
-    return oldFilterList.value.brand?.preset[row.brand]
+    return oldFilterList.value.brand?.preset[row.brand] || ''
   } },
   { title: '供应商', key: '', render: (row: ProductOlds) => {
-    return oldFilterList.value.supplier?.preset[row.supplier]
+    return oldFilterList.value.supplier?.preset[row.supplier] || ''
   } },
   { title: '材质', key: '', render: (row: ProductOlds) => {
-    return oldFilterList.value.material?.preset[row.material]
+    return oldFilterList.value.material?.preset[row.material] || ''
   } },
   { title: '成色', key: '', render: (row: ProductOlds) => {
-    return oldFilterList.value.quality?.preset[row.quality]
+    return oldFilterList.value.quality?.preset[row.quality] || ''
   } },
   { title: '宝石', key: '', render: (row: ProductOlds) => {
-    return oldFilterList.value.gem?.preset[row.gem]
+    return oldFilterList.value.gem?.preset[row.gem] || ''
   } },
   { title: '品类', key: '', render: (row: ProductOlds) => {
-    return oldFilterList.value.category?.preset[row.category]
+    return oldFilterList.value.category?.preset[row.category] || ''
   } },
   { title: '工艺', key: 'craft' },
   {

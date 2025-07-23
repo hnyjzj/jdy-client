@@ -58,13 +58,17 @@ async function clearSearch() {
 // 获取货品列表
 async function getList(where = {} as Partial<FinishedEnter>) {
   tableLoading.value = true
-  const params = { page: searchPage.value, limit: limits.value } as ReqList<FinishedEnter>
-  if (JSON.stringify(where) !== '{}') {
-    params.where = where
+  try {
+    const params = { page: searchPage.value, limit: limits.value } as ReqList<FinishedEnter>
+    if (JSON.stringify(where) !== '{}') {
+      params.where = where
+    }
+    const res = await getFinishedEnterList(params)
+    return res
   }
-  const res = await getFinishedEnterList(params)
-  tableLoading.value = false
-  return res
+  finally {
+    tableLoading.value = false
+  }
 }
 
 await getList()
@@ -157,12 +161,12 @@ const cols = [
         2: '完成',
         3: '撤销',
       }
-      return statusMap[row.status] || '未知'
+      return statusMap[row.status] || ''
     },
   },
   { title: '入库单号', key: 'id' },
   { title: '备注', key: 'remark' },
-  { title: '所属门店', key: 'store.name' },
+  { title: '所属门店', key: 'store', render: (row: FinishedEnter) => row.store?.name || '-' },
   { title: '入库数量', key: 'product_count' },
   { title: '入网费合计', key: 'product_total_access_fee' },
   { title: '标签价合计', key: 'product_total_label_price' },
@@ -283,8 +287,7 @@ const cols = [
             </template>
           </product-manage-card>
           <common-page
-            v-model:page="searchPage" :total="EnterListTotal" :limit="limits" @update:page="pull
-            " />
+            v-model:page="searchPage" :total="EnterListTotal" :limit="limits" @update:page="pull" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="EnterList" :page-option="pageOption" :loading="tableLoading" />

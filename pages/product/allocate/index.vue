@@ -39,13 +39,17 @@ async function clearSearch() {
 // 获取货品列表
 async function getList(where = {} as Partial<Allocate>) {
   tableLoading.value = true
-  const params = { page: searchPage.value, limit: limits.value } as ReqList<Allocate>
-  if (JSON.stringify(where) !== '{}') {
-    params.where = where
+  try {
+    const params = { page: searchPage.value, limit: limits.value } as ReqList<Allocate>
+    if (JSON.stringify(where) !== '{}') {
+      params.where = where
+    }
+    const res = await getAllocateList(params)
+    return res as any
   }
-  const res = await getAllocateList(params)
-  tableLoading.value = false
-  return res as any
+  finally {
+    tableLoading.value = false
+  }
 }
 
 await getList()
@@ -267,7 +271,7 @@ const cols = [
             " />
         </template>
         <template v-else>
-          <common-datatable :columns="cols" :list="allocateList" :page-option="pageOption" />
+          <common-datatable :columns="cols" :list="allocateList" :page-option="pageOption" :loading="tableLoading" />
         </template>
       </template>
       <template v-else>

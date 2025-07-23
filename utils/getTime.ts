@@ -84,7 +84,7 @@ export const getDaysFromToday = (targetDate: Date | string) => {
  * @param dateStr 日期字符串
  * @returns
  */
-export function DateStringToexcelSerial(dateStr: string): number {
+export function dateStringToExcelSerial(dateStr: string): number {
   const date = new Date(dateStr.replace(' ', 'T'))
   const excelEpoch = new Date('1899-12-30T00:00:00Z') // Excel day 1 is 1900-01-01
   const diffMs = date.getTime() - excelEpoch.getTime()
@@ -101,7 +101,7 @@ export const excelSerialToDate = (serial: number | string): string => {
 
   // 如果 serial 是字符串，则尝试将其转换为excel日期
   if (typeof serial === 'string') {
-    serial = DateStringToexcelSerial(serial)
+    serial = dateStringToExcelSerial(serial)
   }
 
   const utc_days = Math.floor(serial) - 25569

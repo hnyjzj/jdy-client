@@ -269,7 +269,7 @@ const cols = [
     <!-- 筛选 -->
     <div id="header" class="sticky top-0 bg-[#3875C5] z-1">
       <product-filter
-        v-model:id="complate" :product-list-total="checkTotal" placeholder="搜索盘点单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+        v-model:showtype="showtype" :product-list-total="checkTotal" placeholder="搜索盘点单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
         <template #company>
           <product-manage-company @change="changeMyStore" />
         </template>

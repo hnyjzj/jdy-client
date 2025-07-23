@@ -132,7 +132,7 @@ const cols = [
     title: '所属大类',
     key: 'class',
     render(row: ProductHistories) {
-      return finishedFilterList.value.class?.preset?.[row?.new_value?.class] ?? '-'
+      return finishedFilterList.value?.class?.preset?.[row?.new_value?.class] ?? '-'
     },
   },
   {

@@ -39,17 +39,18 @@ async function clearSearch() {
 // 获取货品列表
 async function getList(where = {} as Partial<AccessorieAllocate>) {
   tableLoading.value = true
-  const params = { page: searchPage.value, limit: limits.value } as ReqList<AccessorieAllocate>
-  if (JSON.stringify(where) !== '{}') {
-    params.where = where
+  try {
+    const params = { page: searchPage.value, limit: limits.value } as ReqList<AccessorieAllocate>
+    if (JSON.stringify(where) !== '{}') {
+      params.where = where
+    }
+    const res = await getAccessorieAllocate(params)
+    return res as any
   }
-
-  const res = await getAccessorieAllocate(params)
-  tableLoading.value = false
-  return res as any
+  finally {
+    tableLoading.value = false
+  }
 }
-
-await getList()
 
 const filterData = ref({} as Partial<AccessorieAllocate>)
 
