@@ -25,6 +25,7 @@ for (let i = 0; i < props.columns.length; ++i) {
           '--n-item-text-color-active': '#4678B9',
           '--n-item-border-active': '1px solid #2976EF',
           '--n-item-text-color-hover': '#333',
+          '--n-loading-color': 'orange',
         }"
         size="large"
         remote
@@ -35,6 +36,7 @@ for (let i = 0; i < props.columns.length; ++i) {
         :data="props.list"
         :pagination="props.pageOption"
         :max-height="600"
+
       />
     </div>
   </div>
