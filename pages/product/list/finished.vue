@@ -4,9 +4,8 @@ import { NButton } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 const { getFinishedList, getFinishedWhere } = useFinished()
-const { finishedList, finishedFilterList, finishedFilterListToArray, finishedListTotal, showtype } = storeToRefs(useFinished())
+const { finishedList, finishedFilterList, finishedFilterListToArray, finishedListTotal, showtype, finisheStatistics } = storeToRefs(useFinished())
 const { searchPage } = storeToRefs(usePages())
-const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const isModel = ref(false)
@@ -140,17 +139,35 @@ const cols = [
   {
     title: '操作',
     key: 'action',
+    fixed: 'right', // 固定到右侧
     render: (rowData: ProductFinisheds) => {
       return h(
-        NButton,
-        {
-          type: 'info',
-          size: 'small',
-          onClick: () => {
-            goInfo(rowData)
-          },
-        },
-        { default: () => '查看详情' },
+        'div',
+        { style: 'display: flex; gap: 8px;' },
+        [
+          h(
+            NButton,
+            {
+              type: 'primary',
+              size: 'small',
+              onClick: () => {
+                edit(rowData.code)
+              },
+            },
+            { default: () => '编辑' },
+          ),
+          h(
+            NButton,
+            {
+              type: 'info',
+              size: 'small',
+              onClick: () => {
+                goInfo(rowData)
+              },
+            },
+            { default: () => '详情' },
+          ),
+        ],
       )
     },
   },
@@ -162,15 +179,19 @@ const cols = [
     <!-- 筛选 -->
     <product-filter
       v-model:showtype="showtype"
-      v-model:id="complate" :product-list-total="finishedListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      :product-list-total="finishedListTotal"
+      placeholder="搜索条码"
+      @filter="openFilter"
+      @search="search"
+      @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changeStore" />
       </template>
     </product-filter>
 
     <!-- 列表 -->
-    <template v-if="showtype === 'list'">
-      <div class="px-[16px] pb-20">
+    <div class="px-[16px] pb-20">
+      <template v-if="showtype === 'list'">
         <template v-if="finishedList?.length">
           <product-list-main :is-finished="true" :product-list="finishedList" :filter-list="finishedFilterList" @edit="edit" @go-info="goInfo" />
           <common-page
@@ -180,14 +201,13 @@ const cols = [
         <template v-else>
           <common-empty width="100px" />
         </template>
-      </div>
-    </template>
+      </template>
+      <template v-else>
+        <common-datatable :columns="cols" :list="finishedList" :page-option="pageOption" />
+      </template>
+    </div>
 
-    <template v-else>
-      <common-datatable :columns="cols" :list="finishedList" :page-option="pageOption" />
-    </template>
-
-    <product-manage-bottom />
+    <product-manage-bottom :statistics="finisheStatistics" />
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="finishedFilterListToArray" @submit="submitWhere" />
   </div>
