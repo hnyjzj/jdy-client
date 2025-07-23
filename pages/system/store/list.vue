@@ -6,6 +6,7 @@ useSeoMeta({
 const { storesList, addorUpdateForm, filterListToArray, total } = storeToRefs(useStores())
 const { searchPage } = storeToRefs(usePages())
 const { reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
+const { getMyRegion } = useRegion()
 const { myRegion } = storeToRefs(useRegion())
 const { $toast } = useNuxtApp()
 // 新增门店弹窗
@@ -40,6 +41,7 @@ const submitWhere = async (f: Partial<Stores>) => {
 const resetwhere = async () => {
   filterData.value = {}
 }
+await getMyRegion({ page: 1, limit: 20 })
 // 获取列表数据
 await getList()
 // 获取筛选条件

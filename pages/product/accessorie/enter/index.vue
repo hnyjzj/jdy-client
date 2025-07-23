@@ -1,15 +1,16 @@
 <script setup lang="ts">
+import { NButton } from 'naive-ui'
+
 const { $toast } = useNuxtApp()
 const { myStoreList, myStore } = storeToRefs(useStores())
 const { getMyStore } = useStores()
-
 const { getAccessorieEnterList, getAccessorieEnterWhere, createAccessorieEnter } = useAccessorieEnter()
-
 const { EnterList, EnterToArray, EnterListTotal } = storeToRefs(useAccessorieEnter())
-const complate = ref(0)
+const { searchPage, showtype } = storeToRefs(usePages())
+const limits = ref(50)
+const tableLoading = ref(false)
 // 筛选框显示隐藏
 const isFilter = ref(false)
-const pages = ref(1)
 const isModel = ref(false)
 const isCreateModel = ref(false)
 const isBatchImportModel = ref(false)
@@ -48,7 +49,7 @@ async function clearSearch() {
 }
 // 获取货品列表
 async function getList(where = {} as Partial<AccessorieEnter>) {
-  const params = { page: pages.value, limit: 10 } as ReqList<AccessorieEnter>
+  const params = { page: searchPage.value, limit: limits.value } as ReqList<AccessorieEnter>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
@@ -62,10 +63,10 @@ await getAccessorieEnterWhere()
 
 const filterData = ref({} as Partial<AccessorieEnter>)
 
-function pull() {
-  getList(filterData.value)
+const pull = async (page: number) => {
+  searchPage.value = page
+  await getList(filterData.value)
 }
-
 /** 创建入库单 */
 async function createEnter() {
   if (!enterParams.value?.store_id) {
@@ -84,7 +85,7 @@ async function createEnter() {
 // 筛选列表
 async function submitWhere(f: Partial<AccessorieEnter>, isSearch: boolean = false) {
   filterData.value = { ...f }
-  pages.value = 1
+  searchPage.value = 1
   EnterList.value = []
   const res = await getList(filterData.value)
   if (res?.code === HttpCode.SUCCESS) {
@@ -110,17 +111,133 @@ function goAdd() {
 const filterRef = ref()
 async function changeStore() {
   await changeStoer()
-  pages.value = 1
+  searchPage.value = 1
   filterRef.value.reset()
   await getList()
 }
+
+const pageOption = ref({
+  page: searchPage,
+  pageSize: 50,
+  itemCount: EnterListTotal,
+  showSizePicker: true,
+  pageSizes: [50, 100, 150, 200],
+  onUpdatePageSize: (pageSize: number) => {
+    pageOption.value.pageSize = pageSize
+    limits.value = pageSize
+    pull(1)
+  },
+  onChange: (page: number) => {
+    pull(page)
+  },
+})
+const cols = [
+  {
+    title: '状态',
+    key: 'status',
+    render(row: AccessorieEnter) {
+      return enterStatus[row.status] ?? '-'
+    },
+  },
+  {
+    title: '入库单号',
+    key: 'id',
+    render(row: AccessorieEnter) {
+      return row.id
+    },
+  },
+  {
+    title: '备注',
+    key: 'remark',
+    render(row: AccessorieEnter) {
+      return row.remark || '-'
+    },
+  },
+  {
+    title: '所属门店',
+    key: 'store',
+    render(row: AccessorieEnter) {
+      return row.store?.name || '未知门店'
+    },
+  },
+  {
+    title: '入库数量',
+    key: 'product_total',
+    render(row: AccessorieEnter) {
+      return row.product_total
+    },
+  },
+  {
+    title: '标签价合计',
+    key: 'label_price_total',
+    render(row: AccessorieEnter) {
+      const total = row.products?.reduce(
+        (pre: number, cur: any) => pre + Number(cur?.category?.label_price || 0),
+        0,
+      )
+      return total || 0
+    },
+  },
+  {
+    title: '入网费合计',
+    key: 'access_fee_total',
+    render(row: AccessorieEnter) {
+      const total = row.products?.reduce(
+        (pre: number, cur: any) => pre + Number(cur?.access_fee || 0),
+        0,
+      )
+      return total || 0
+    },
+  },
+  {
+    title: '重量合计',
+    key: 'weight_total',
+    render(row: AccessorieEnter) {
+      const total = row.products?.reduce(
+        (pre: number, cur: any) => pre + Number(cur?.category?.weight || 0),
+        0,
+      )
+      return total || 0
+    },
+  },
+  {
+    title: '操作人',
+    key: 'operator',
+    render(row: AccessorieEnter) {
+      return row?.operator?.nickname || '-'
+    },
+  },
+  {
+    title: '入库时间',
+    key: 'created_at',
+    render(row: AccessorieEnter) {
+      return formatTimestampToDateTime(row?.created_at)
+    },
+  },
+  {
+    title: '操作',
+    key: 'action',
+    fixed: 'right',
+    render(row: AccessorieEnter) {
+      return h(
+        NButton,
+        {
+          type: 'info',
+          size: 'small',
+          onClick: () => jump('/product/accessorie/enter/info', { id: row.id }),
+        },
+        { default: () => '详情' },
+      )
+    },
+  },
+]
 </script>
 
 <template>
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:id="complate" :product-list-total="EnterListTotal" placeholder="搜索入库单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:showtype="showtype" :product-list-total="EnterListTotal" placeholder="搜索入库单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changeStore" />
       </template>
@@ -128,82 +245,84 @@ async function changeStore() {
     <!-- 小卡片组件 -->
     <div class="px-[16px] pb-20">
       <template v-if="EnterList?.length">
-        <product-manage-card :list="EnterList" @edit="edit">
-          <template #top="{ info }">
-            <div class="enter-title" :class="info.status === 1 ? 'caogao' : info.status === 2 ? 'wancheng' : 'chexiao'">
-              {{ enterStatus[info.status] }}
-            </div>
-          </template>
-          <template #info="{ info }">
-            <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-              <div class="py-[4px] flex justify-between">
-                <div>入库单号</div>
-                <div class="text-align-end">
-                  {{ info.id }}
+        <template v-if="showtype === 'list'">
+          <product-manage-card :list="EnterList" @edit="edit">
+            <template #top="{ info }">
+              <div class="enter-title" :class="info.status === 1 ? 'caogao' : info.status === 2 ? 'wancheng' : 'chexiao'">
+                {{ enterStatus[info.status] }}
+              </div>
+            </template>
+            <template #info="{ info }">
+              <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                <div class="py-[4px] flex justify-between">
+                  <div>入库单号</div>
+                  <div class="text-align-end">
+                    {{ info.id }}
+                  </div>
+                </div>
+                <div class="py-[4px] flex justify-between">
+                  <div>备注</div>
+                  <div class="text-align-end">
+                    {{ info?.remark }}
+                  </div>
+                </div>
+                <div class="py-[4px] flex justify-between">
+                  <div>所属门店</div>
+                  <div class="text-align-end">
+                    {{ info.store?.name || '未知门店' }}
+                  </div>
+                </div>
+                <div class="py-[4px] flex justify-between">
+                  <div>入库数量</div>
+                  <div class="text-align-end">
+                    {{ info?.product_total }}
+                  </div>
+                </div>
+                <div class="py-[4px] flex justify-between">
+                  <div>标签价合计</div>
+                  <div class="text-align-end">
+                    {{ info.products?.reduce((pre, cur) => pre + Number(cur?.category?.label_price || 0), 0) || 0 }}
+                  </div>
+                </div>
+                <div class="py-[4px] flex justify-between">
+                  <div>入网费合计</div>
+                  <div class="text-align-end">
+                    {{ info.products?.reduce((pre, cur:ProductFinisheds) => pre + Number(cur?.access_fee || 0), 0) || 0 }}
+                  </div>
+                </div>
+                <div class="py-[4px] flex justify-between">
+                  <div>重量合计</div>
+                  <div class="text-align-end">
+                    {{ info.products?.reduce((pre, cur) => pre + Number(cur?.category.weight || 0), 0) || 0 }}
+                  </div>
+                </div>
+                <div class="py-[4px] flex justify-between">
+                  <div>操作人</div>
+                  <div class="text-align-end">
+                    {{ info?.operator?.nickname }}
+                  </div>
+                </div>
+                <div class="py-[4px] flex justify-between">
+                  <div>入库时间</div>
+                  <div class="text-align-end">
+                    {{ formatTimestampToDateTime(info?.created_at) }}
+                  </div>
                 </div>
               </div>
-              <div class="py-[4px] flex justify-between">
-                <div>备注</div>
-                <div class="text-align-end">
-                  {{ info?.remark }}
-                </div>
+            </template>
+            <template #bottom="{ info }">
+              <div class="flex-end text-size-[14px]">
+                <common-button-irregular
+                  text="详情" @submit="jump('/product/accessorie/enter/info', { id: info.id })" />
               </div>
-              <div class="py-[4px] flex justify-between">
-                <div>所属门店</div>
-                <div class="text-align-end">
-                  {{ info.store?.name || '未知门店' }}
-                </div>
-              </div>
-              <div class="py-[4px] flex justify-between">
-                <div>入库数量</div>
-                <div class="text-align-end">
-                  {{ info?.product_total }}
-                </div>
-              </div>
-              <div class="py-[4px] flex justify-between">
-                <div>标签价合计</div>
-                <div class="text-align-end">
-                  {{ info.products?.reduce((pre, cur) => pre + Number(cur?.category?.label_price || 0), 0) || 0 }}
-                </div>
-              </div>
-              <div class="py-[4px] flex justify-between">
-                <div>入网费合计</div>
-                <div class="text-align-end">
-                  {{ info.products?.reduce((pre, cur:ProductFinisheds) => pre + Number(cur?.access_fee || 0), 0) || 0 }}
-                </div>
-              </div>
-              <div class="py-[4px] flex justify-between">
-                <div>重量合计</div>
-                <div class="text-align-end">
-                  {{ info.products?.reduce((pre, cur) => pre + Number(cur?.category.weight || 0), 0) || 0 }}
-                </div>
-              </div>
-              <div class="py-[4px] flex justify-between">
-                <div>操作人</div>
-                <div class="text-align-end">
-                  {{ info?.operator?.nickname }}
-                </div>
-              </div>
-              <div class="py-[4px] flex justify-between">
-                <div>入库时间</div>
-                <div class="text-align-end">
-                  {{ formatTimestampToDateTime(info?.created_at) }}
-                </div>
-              </div>
-            </div>
-          </template>
-          <template #bottom="{ info }">
-            <div class="flex-end text-size-[14px]">
-              <common-button-irregular
-                text="详情" @submit="jump('/product/accessorie/enter/info', { id: info.id })" />
-            </div>
-          </template>
-        </product-manage-card>
-        <common-page
-          v-model:page="pages" :total="EnterListTotal" :limit="10" @update:page="() => {
-            pull()
-          }
-          " />
+            </template>
+          </product-manage-card>
+          <common-page
+            v-model:page="searchPage" :total="EnterListTotal" :limit="limits" @update:page="pull" />
+        </template>
+        <template v-else>
+          <common-datatable :columns="cols" :list="EnterList" :page-option="pageOption" :loading="tableLoading" />
+        </template>
       </template>
       <template v-else>
         <common-empty width="100px" />

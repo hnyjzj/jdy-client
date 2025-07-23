@@ -171,4 +171,5 @@ interface ProductOlds {
    * 积分比例
    */
   rate: number | string
+  supplier: number
 }

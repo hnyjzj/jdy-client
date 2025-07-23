@@ -69,14 +69,6 @@ async function loss() {
       </div>
     </common-layout-center>
     <common-model v-model="isModel" title="报损" :show-ok="true" @confirm="loss">
-      <div>
-        <div class="title">
-          数量
-        </div>
-        <div class="block w-[96px]">
-          {{ finishedInfo.num_gem }}
-        </div>
-      </div>
       <div class="my-4">
         <div class="title">
           条码
