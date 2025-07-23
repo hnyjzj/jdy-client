@@ -52,6 +52,8 @@ async function getList(where = {} as Partial<AccessorieAllocate>) {
   }
 }
 
+await getList()
+
 const filterData = ref({} as Partial<AccessorieAllocate>)
 
 const pull = async (page: number) => {

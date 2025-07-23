@@ -23,7 +23,6 @@ await getStoreList({ page: 1, limit: 20 })
 await getMyStore({ page: 1, limit: 20 })
 await changeStore()
 await getCheckWhere()
-const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
 useSeoMeta({
