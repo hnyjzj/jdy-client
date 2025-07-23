@@ -190,8 +190,7 @@ const cols = [
         <template v-if="showtype === 'list'">
           <product-list-main :product-list="oldList" :filter-list="oldFilterList" @edit="edit" @go-info="goInfo" />
           <common-page
-            v-model:page="searchPage" :total="oldListTotal" :limit="limits" @update:page="pull
-            " />
+            v-model:page="searchPage" :total="oldListTotal" :limit="limits" @update:page="pull" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="oldList" :page-option="pageOption" :loading="tableLoading" />

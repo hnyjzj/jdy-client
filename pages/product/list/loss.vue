@@ -284,8 +284,7 @@ const cols = [
             </template>
           </product-manage-card>
           <common-page
-            v-model:page="searchPage" :total="lossListTotal" :limit="limits" @update:page="pull
-            " />
+            v-model:page="searchPage" :total="lossListTotal" :limit="limits" @update:page="pull" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="lossList" :page-option="pageOption" :loading="tableLoading" />

@@ -332,8 +332,7 @@ const cols = [
             </template>
           </product-manage-card>
           <common-page
-            v-model:page="searchPage" :total="historyListTotal" :limit="limits" @update:page="pull
-            " />
+            v-model:page="searchPage" :total="historyListTotal" :limit="limits" @update:page="pull" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="productRocordList" :page-option="pageOption" :loading="tableLoading" />

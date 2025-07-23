@@ -222,8 +222,7 @@ const cols = [
             </template>
           </product-manage-card>
           <common-page
-            v-model:page="searchPage" :total="accessorieListTotal" :limit="limits" @update:page="pull
-            " />
+            v-model:page="searchPage" :total="accessorieListTotal" :limit="limits" @update:page="pull" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="accessorieList" :page-option="pageOption" :loading="tableLoading" />
