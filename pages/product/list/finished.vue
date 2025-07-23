@@ -14,6 +14,7 @@ const isBatchImportModel = ref(false)
 const type = ref(1 as ProductFinisheds['type'])
 const filterData = ref({} as Partial<ProductFinisheds>)
 const limits = ref(50)
+const tableLoading = ref(false)
 useSeoMeta({
   title: '成品列表',
 })
@@ -32,9 +33,12 @@ async function clearSearch() {
 }
 // 获取成品列表
 async function getList(where = {} as Partial<ProductFinisheds>) {
+  tableLoading.value = true
   const params = { page: searchPage.value, limit: limits.value } as ReqList<ProductFinisheds>
   params.where = where
   const res = await getFinishedList(params)
+  tableLoading.value = false
+
   return res as any
 }
 
@@ -184,7 +188,7 @@ const cols = [
     </template>
 
     <template v-else>
-      <common-datatable :columns="cols" :list="finishedList" :page-option="pageOption" />
+      <common-datatable :columns="cols" :list="finishedList" :page-option="pageOption" :loading="tableLoading" />
     </template>
 
     <product-manage-bottom />

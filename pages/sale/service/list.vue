@@ -13,7 +13,7 @@ const { repairOrderList, total, repairFilterList, repairFilterListToArray, showt
 const { searchPage } = storeToRefs(usePages())
 const filterData = ref({} as Partial<service>)
 const filterShow = ref(false)
-
+const tableLoading = ref(false)
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
 const getMember = async (val: string) => {
@@ -31,11 +31,13 @@ const payOrder = async (id: string) => {
 const limits = ref(12)
 // 获取列表
 const getList = async (where = {} as Partial<OrderInfo>) => {
+  tableLoading.value = true
   const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<OrderInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
   await getRepairOrderList(params)
+  tableLoading.value = false
 }
 const handleClick = async (id: string) => {
   navigateTo(`/sale/sales/order?id=${id}`)
@@ -234,7 +236,7 @@ const cols = [
       </div>
     </template>
     <template v-else>
-      <common-datatable :columns="cols" :list="repairOrderList" :page-option="pageOption" />
+      <common-datatable :columns="cols" :list="repairOrderList" :page-option="pageOption" :loading="tableLoading" />
     </template>
     <!-- filter -->
     <div>

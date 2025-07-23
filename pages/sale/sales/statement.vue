@@ -15,15 +15,18 @@ const filterShow = ref(false)
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
 const limits = ref(50)
+const tableLoading = ref(false)
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
 
 // 获取列表
 const getList = async (where = {} as Partial<StatementWhere>) => {
+  tableLoading.value = true
   const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<orderInfoProducts>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
   await getStatementList(params)
+  tableLoading.value = false
 }
 // 打开高级筛选
 const openFilter = () => {
@@ -187,7 +190,7 @@ const cols = [
       </div>
     </template>
     <template v-else>
-      <common-datatable :columns="cols" :list="statementList" :page-option="pageOption" />
+      <common-datatable :columns="cols" :list="statementList" :page-option="pageOption" :loading="tableLoading" />
     </template>
 
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere">

@@ -1,9 +1,12 @@
 <script setup lang="ts">
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   columns: any[]
   list: any[]
   pageOption: any
-}>()
+  loading?: boolean
+}>(), {
+  loading: false,
+})
 
 let scrollX = 0
 
@@ -16,6 +19,8 @@ for (let i = 0; i < props.columns.length; ++i) {
   <div class="grid-12">
     <div class="flex flex-col col-12 p-[16px]" uno-lg="col-8 offset-2" uno-sm="col-12">
       <n-data-table
+        :loading="props.loading"
+        striped
         :style="{
           '--n-item-text-color-active': '#4678B9',
           '--n-item-border-active': '1px solid #2976EF',

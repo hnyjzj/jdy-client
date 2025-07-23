@@ -15,14 +15,16 @@ const show = ref<boolean>(false)
 const limits = ref<number>(50)
 // 筛选请求数据
 const filterData = ref({} as Partial<Region>)
-
+const tableLoading = ref<boolean>(false)
 // 获取列表
 const getList = async (where = {} as Partial<Region>) => {
+  tableLoading.value = true
   const params = { page: searchPage.value, limit: limits.value } as ReqList<Region>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
   await getRegionList(params)
+  tableLoading.value = false
 }
 
 // 筛选列表
@@ -232,7 +234,7 @@ const cols = [
       </div>
     </template>
     <template v-else>
-      <common-datatable :columns="cols" :list="regionList" :page-option="pageOption" />
+      <common-datatable :columns="cols" :list="regionList" :page-option="pageOption" :loading="tableLoading" />
     </template>
 
     <!-- 新增或更新门店弹窗 -->
