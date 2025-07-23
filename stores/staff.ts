@@ -14,9 +14,6 @@ export const useStaff = defineStore('staffStore', {
   actions: {
     // 员工列表
     async getStaffList(req: ReqList<Staff>) {
-      if (req.page === 1) {
-        this.staffList = []
-      }
       const { data } = await https.post<ResList<Staff>, ReqList<Staff>>('/staff/list', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.total = data.value.data.total

@@ -11,15 +11,18 @@ const { total, orderList, filterList, filterListToArray, showtype } = storeToRef
 const { searchPage } = storeToRefs(usePages())
 const filterShow = ref(false)
 const filterData = ref({} as Partial<otherOrderWhere>)
+const tableLoading = ref(false)
 await otherOrderWhere()
 // 获取列表
-const limits = ref(12)
+const limits = ref(50)
 const getList = async (where = {} as Partial<otherOrderInfo>) => {
+  tableLoading.value = true
   const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<otherOrderInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
   await getOtherOrderList(params)
+  tableLoading.value = false
 }
 await getList()
 const searchOrder = async (id: string) => {
@@ -29,7 +32,6 @@ const searchOrder = async (id: string) => {
 }
 const clearFn = async () => {
   filterData.value = {}
-  orderList.value = []
   searchPage.value = 1
   await getList()
 }
@@ -45,7 +47,6 @@ const openFilter = () => {
 
 const submitWhere = async (f: otherOrderWhere) => {
   filterData.value = { ...filterData.value, ...f }
-  orderList.value = []
   searchPage.value = 1
   await getList(filterData.value as otherOrderWhere)
   filterShow.value = false
@@ -178,7 +179,7 @@ const cols = [
       </div>
     </template>
     <template v-else>
-      <common-datatable :columns="cols" :list="orderList" :page-option="pageOption" />
+      <common-datatable :columns="cols" :list="orderList" :page-option="pageOption" :loading="tableLoading" />
     </template>
 
     <common-create @create="newAdd()" />

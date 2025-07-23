@@ -14,7 +14,7 @@ const { myStore } = storeToRefs(useStores())
 const { getMyStore } = useStores()
 
 await getMyStore({ page: 1, limit: 20 })
-
+const tableLoading = ref(false)
 const actions = ref([
   { key: 1, label: '增加' },
   { key: 2, label: '减少' },
@@ -33,11 +33,13 @@ const filterData = ref({} as Partial<Member>)
 const limit = ref(50)
 
 async function getList(where = {} as Partial<Member>) {
+  tableLoading.value = true
   const params = { page: searchPage.value, limit: limit.value, where: { store_id: myStore.value.id } } as ReqList<Member>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
   await getMemberList(params)
+  tableLoading.value = false
 }
 
 await getList()
@@ -336,7 +338,7 @@ const cols = [
       </div>
     </template>
     <template v-else>
-      <common-datatable :columns="cols" :list="memberList" :page-option="pageOption" />
+      <common-datatable :columns="cols" :list="memberList" :page-option="pageOption" :loading="tableLoading" />
     </template>
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
   </div>
