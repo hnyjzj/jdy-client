@@ -5,16 +5,16 @@ const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 
 const { getOldList, getOldWhere } = useOld()
-const { oldList, oldFilterList, oldFilterListToArray, oldListTotal, showtype } = storeToRefs(useOld())
-const { searchPage } = storeToRefs(usePages())
+const { oldList, oldFilterList, oldFilterListToArray, oldListTotal } = storeToRefs(useOld())
+const { searchPage, showtype } = storeToRefs(usePages())
 
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const isModel = ref(false)
 const isBatchImportModel = ref(false)
-const page = ref(1)
 const type = ref(2 as ProductOlds['type'])
 const limits = ref(50)
+const tableLoading = ref(false)
 
 useSeoMeta({
   title: '旧料列表',
@@ -33,9 +33,11 @@ async function clearSearch() {
 }
 // 获取货品列表
 async function getList(where = {} as Partial<ProductOlds>) {
-  const params = { page: page.value, limit: 10 } as ReqList<ProductOlds>
+  tableLoading.value = true
+  const params = { page: searchPage.value, limit: limits.value } as ReqList<ProductOlds>
   params.where = where
   const res = await getOldList(params)
+  tableLoading.value = false
   return res as any
 }
 
@@ -62,7 +64,7 @@ const pull = async (page: number) => {
 // 筛选列表
 async function submitWhere(f: Partial<ProductOlds>, isSearch: boolean = false) {
   filterData.value = { ...f }
-  page.value = 1
+  searchPage.value = 1
   oldList.value = []
   const res = await getList(filterData.value)
   if (res?.code === HttpCode.SUCCESS) {
@@ -91,7 +93,7 @@ function goInfo(info: ProductOlds) {
 
 const filterRef = ref()
 async function changeStore() {
-  page.value = 1
+  searchPage.value = 1
   filterRef.value.reset()
   await getList()
 }
@@ -184,19 +186,19 @@ const cols = [
     </product-filter>
     <!-- 列表 -->
     <div class="px-[16px] pb-20">
-      <template v-if="showtype === 'list'">
-        <template v-if="oldList?.length">
+      <template v-if="oldList?.length">
+        <template v-if="showtype === 'list'">
           <product-list-main :product-list="oldList" :filter-list="oldFilterList" @edit="edit" @go-info="goInfo" />
           <common-page
             v-model:page="searchPage" :total="oldListTotal" :limit="limits" @update:page="pull
             " />
         </template>
         <template v-else>
-          <common-empty width="100px" />
+          <common-datatable :columns="cols" :list="oldList" :page-option="pageOption" :loading="tableLoading" />
         </template>
       </template>
       <template v-else>
-        <common-datatable :columns="cols" :list="oldList" :page-option="pageOption" />
+        <common-empty width="100px" />
       </template>
     </div>
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />

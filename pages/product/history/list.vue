@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { NButton } from 'naive-ui'
+
 const { $toast } = useNuxtApp()
 const { getProductHistory, getHistoryWhere } = useProductManage()
 const { getFinishedWhere } = useFinished()
@@ -7,12 +9,13 @@ const { finishedFilterList } = storeToRefs(useFinished())
 
 const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList, getMyStore } = useStores()
+const { searchPage, showtype } = storeToRefs(usePages())
+const limits = ref(50)
+const tableLoading = ref(false)
 
 const searchKey = ref('')
-const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
-const pages = ref(1)
 const storeCol = ref()
 function changeStore() {
   storeCol.value = []
@@ -37,12 +40,14 @@ async function clearSearch() {
 }
 // 获取货品列表
 async function getList(where = {} as Partial<HistoryWhere>) {
-  const params = { page: pages.value, limit: 10 } as ReqList<HistoryWhere>
+  tableLoading.value = true
+  const params = { page: searchPage.value, limit: limits.value } as ReqList<HistoryWhere>
   params.where = where
   if (myStore.value.id) {
     where.store_id = myStore.value.id
   }
   const res = await getProductHistory(params)
+  tableLoading.value = false
   return res as any
 }
 try {
@@ -60,14 +65,15 @@ catch (error) {
 
 const filterData = ref({} as Partial<ProductHistories>)
 
-function pull() {
-  getList(filterData.value)
+const pull = async (page: number) => {
+  searchPage.value = page
+  await getList(filterData.value)
 }
 
 // 筛选列表
 async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) {
   filterData.value = { ...f }
-  pages.value = 1
+  searchPage.value = 1
   productRocordList.value = []
   const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
@@ -82,17 +88,139 @@ async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) 
 
 const filterRef = ref()
 async function changeMyStore() {
-  pages.value = 1
+  searchPage.value = 1
   filterRef.value.reset()
   await getList()
 }
+
+const pageOption = ref({
+  page: searchPage,
+  pageSize: 50,
+  itemCount: historyListTotal,
+  showSizePicker: true,
+  pageSizes: [50, 100, 150, 200],
+  onUpdatePageSize: (pageSize: number) => {
+    pageOption.value.pageSize = pageSize
+    limits.value = pageSize
+    pull(1)
+  },
+  onChange: (page: number) => {
+    pull(page)
+  },
+})
+
+const cols = [
+  {
+    title: '操作类型',
+    key: 'action',
+    render(row: ProductHistories) {
+      return historyFilterList.value.action?.preset?.[row.action] ?? '-'
+    },
+  },
+  {
+    title: '操作时间',
+    key: 'updated_at',
+    render(row: ProductHistories) {
+      return formatTimestampToDateTime(row.updated_at)
+    },
+  },
+  {
+    title: '关联单号',
+    key: 'source_id',
+  },
+  {
+    title: '所属大类',
+    key: 'class',
+    render(row: ProductHistories) {
+      return finishedFilterList.value.class?.preset?.[row?.new_value?.class] ?? '-'
+    },
+  },
+  {
+    title: '所属门店',
+    key: 'store',
+    render(row: ProductHistories) {
+      return row?.new_value?.store?.name ?? '-'
+    },
+  },
+  {
+    title: '条码',
+    key: 'code',
+    render(row: ProductHistories) {
+      return row?.new_value?.code ?? '-'
+    },
+  },
+  {
+    title: '货品名称',
+    key: 'name',
+    render(row: ProductHistories) {
+      return row?.new_value?.name ?? '-'
+    },
+  },
+  {
+    title: '入网费',
+    key: 'access_fee',
+    render(row: ProductHistories) {
+      return row?.new_value?.access_fee ?? '-'
+    },
+  },
+  {
+    title: '零售方式',
+    key: 'retail_type',
+    render(row: ProductHistories) {
+      return finishedFilterList.value.retail_type?.preset?.[row?.new_value?.retail_type] ?? '-'
+    },
+  },
+  {
+    title: '标签价',
+    key: 'label_price',
+    render(row: ProductHistories) {
+      return row?.new_value?.label_price ?? '-'
+    },
+  },
+  {
+    title: '零售工费',
+    key: 'labor_fee',
+    render(row: ProductHistories) {
+      return row?.new_value?.labor_fee ?? '-'
+    },
+  },
+  {
+    title: '供应商',
+    key: 'supplier',
+    render(row: ProductHistories) {
+      return finishedFilterList.value.supplier?.preset?.[row?.new_value?.supplier] ?? '-'
+    },
+  },
+  {
+    title: '操作',
+    key: 'action-btn',
+    fixed: 'right',
+    render(row: ProductHistories) {
+      return h(
+        'div',
+        { style: 'display: flex; justify-content: flex-end;' },
+        [
+          h(
+            NButton,
+            {
+              type: 'info',
+              size: 'small',
+              onClick: () => jump('/product/history/info', { id: row?.id }),
+            },
+            { default: () => '详情' },
+          ),
+        ],
+      )
+    },
+  },
+]
 </script>
 
 <template>
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:id="complate" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜素关联产品编号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:showtype="showtype" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜素关联产品编号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changeMyStore" />
       </template>
@@ -100,113 +228,116 @@ async function changeMyStore() {
     <!-- 列表 -->
     <div class="px-[16px] pb-10">
       <template v-if="productRocordList?.length">
-        <product-manage-card :list="productRocordList">
-          <template #top="{ info }">
-            <div>{{ historyFilterList.action?.preset[info.action] }}</div>
-          </template>
-          <template #info="{ info }">
-            <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-              <div class="flex-between">
-                <div>
-                  操作时间
+        <template v-if="showtype === 'list'">
+          <product-manage-card :list="productRocordList">
+            <template #top="{ info }">
+              <div>{{ historyFilterList.action?.preset[info.action] }}</div>
+            </template>
+            <template #info="{ info }">
+              <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                <div class="flex-between">
+                  <div>
+                    操作时间
+                  </div>
+                  <div class="text-align-end">
+                    {{ formatTimestampToDateTime(info.updated_at) }}
+                  </div>
                 </div>
-                <div class="text-align-end">
-                  {{ formatTimestampToDateTime(info.updated_at) }}
+                <div class="flex-between">
+                  <div>
+                    关联单号
+                  </div>
+                  <div class="text-align-end">
+                    {{ info.source_id }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    所属大类
+                  </div>
+                  <div class="text-align-end">
+                    {{ finishedFilterList.class?.preset[info?.new_value?.class] }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    所属门店
+                  </div>
+                  <div class="text-align-end">
+                    {{ info?.new_value?.store?.name }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    条码
+                  </div>
+                  <div class="text-align-end">
+                    {{ info?.new_value?.code }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    货品名称
+                  </div>
+                  <div class="text-align-end">
+                    {{ info?.new_value?.name }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    入网费
+                  </div>
+                  <div class="text-align-end">
+                    {{ info?.new_value?.access_fee }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    零售方式
+                  </div>
+                  <div class="text-align-end">
+                    {{ finishedFilterList.retail_type?.preset[info?.new_value?.retail_type] }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    标签价
+                  </div>
+                  <div class="text-align-end">
+                    {{ info?.new_value?.label_price }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    零售工费
+                  </div>
+                  <div class="text-align-end">
+                    {{ info?.new_value?.labor_fee }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    供应商
+                  </div>
+                  <div class="text-align-end">
+                    {{ finishedFilterList.supplier?.preset[info?.new_value?.supplier] }}
+                  </div>
                 </div>
               </div>
-              <div class="flex-between">
-                <div>
-                  关联单号
-                </div>
-                <div class="text-align-end">
-                  {{ info.source_id }}
-                </div>
+            </template>
+            <template #bottom="{ info }">
+              <div class="flex-end text-size-[14px]">
+                <common-button-irregular text="详情" @click="jump('/product/history/info', { id: info?.id })" />
               </div>
-              <div class="flex-between">
-                <div>
-                  所属大类
-                </div>
-                <div class="text-align-end">
-                  {{ finishedFilterList.class?.preset[info?.new_value?.class] }}
-                </div>
-              </div>
-              <div class="flex-between">
-                <div>
-                  所属门店
-                </div>
-                <div class="text-align-end">
-                  {{ info?.new_value?.store?.name }}
-                </div>
-              </div>
-              <div class="flex-between">
-                <div>
-                  条码
-                </div>
-                <div class="text-align-end">
-                  {{ info?.new_value?.code }}
-                </div>
-              </div>
-              <div class="flex-between">
-                <div>
-                  货品名称
-                </div>
-                <div class="text-align-end">
-                  {{ info?.new_value?.name }}
-                </div>
-              </div>
-              <div class="flex-between">
-                <div>
-                  入网费
-                </div>
-                <div class="text-align-end">
-                  {{ info?.new_value?.access_fee }}
-                </div>
-              </div>
-              <div class="flex-between">
-                <div>
-                  零售方式
-                </div>
-                <div class="text-align-end">
-                  {{ finishedFilterList.retail_type?.preset[info?.new_value?.retail_type] }}
-                </div>
-              </div>
-              <div class="flex-between">
-                <div>
-                  标签价
-                </div>
-                <div class="text-align-end">
-                  {{ info?.new_value?.label_price }}
-                </div>
-              </div>
-              <div class="flex-between">
-                <div>
-                  零售工费
-                </div>
-                <div class="text-align-end">
-                  {{ info?.new_value?.labor_fee }}
-                </div>
-              </div>
-              <div class="flex-between">
-                <div>
-                  供应商
-                </div>
-                <div class="text-align-end">
-                  {{ finishedFilterList.supplier?.preset[info?.new_value?.supplier] }}
-                </div>
-              </div>
-            </div>
-          </template>
-          <template #bottom="{ info }">
-            <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="详情" @click="jump('/product/history/info', { id: info?.id })" />
-            </div>
-          </template>
-        </product-manage-card>
-        <common-page
-          v-model:page="pages" :total="historyListTotal" :limit="10" @update:page="() => {
-            pull()
-          }
-          " />
+            </template>
+          </product-manage-card>
+          <common-page
+            v-model:page="searchPage" :total="historyListTotal" :limit="limits" @update:page="pull
+            " />
+        </template>
+        <template v-else>
+          <common-datatable :columns="cols" :list="productRocordList" :page-option="pageOption" :loading="tableLoading" />
+        </template>
       </template>
       <template v-else>
         <common-empty width="100px" />

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { NButton } from 'naive-ui'
+
 const { $toast } = useNuxtApp()
 const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
@@ -6,6 +8,10 @@ const { getCheckList, getCheckWhere } = useCheck()
 const { checkList, checkFilterList, checkFilterListToArray, checkTotal } = storeToRefs(useCheck())
 const { storesList } = storeToRefs(useStores())
 const { getStoreList, getMyStore } = useStores()
+const { searchPage, showtype } = storeToRefs(usePages())
+const limits = ref(50)
+const tableLoading = ref(false)
+
 const storeCol = ref()
 async function changeStore() {
   storeCol.value = []
@@ -20,7 +26,6 @@ await getCheckWhere()
 const complate = ref(0)
 // 筛选框显示隐藏
 const isFilter = ref(false)
-const pages = ref(1)
 useSeoMeta({
   title: '货品盘点',
 })
@@ -38,12 +43,13 @@ async function clearSearch() {
 }
 // 获取货品列表
 async function getList(where = {} as Partial<Check>) {
-  const params = { page: pages.value, limit: 10 } as ReqList<Check>
+  tableLoading.value = true
+  const params = { page: searchPage.value, limit: limits.value } as ReqList<Check>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
-
   const res = await getCheckList(params)
+  tableLoading.value = false
   return res as any
 }
 
@@ -51,12 +57,11 @@ await getList()
 
 const filterData = ref({} as Partial<Check>)
 
-function pull() {
-  if (pages.value === 1) {
-    return
-  }
-  getList(filterData.value)
+const pull = async (page: number) => {
+  searchPage.value = page
+  await getList(filterData.value)
 }
+
 const store_id = ref()
 // 筛选列表
 async function submitWhere(f: Partial<Check>, isSearch = false) {
@@ -64,7 +69,7 @@ async function submitWhere(f: Partial<Check>, isSearch = false) {
     f.store_id = store_id.value
   }
   filterData.value = { ...filterData.value, ...f }
-  pages.value = 1
+  searchPage.value = 1
   checkList.value = []
   const res = await getList(filterData.value)
   if (res?.code === HttpCode.SUCCESS) {
@@ -104,7 +109,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
 }
 
 async function changeMyStore() {
-  pages.value = 1
+  searchPage.value = 1
   reset()
   await getList()
 }
@@ -128,6 +133,135 @@ async function getStoreStaffListFun() {
     $toast.error(res?.data.value?.message || '获取员工列表失败')
   }
 }
+
+const pageOption = ref({
+  page: searchPage,
+  pageSize: 50,
+  itemCount: checkTotal,
+  showSizePicker: true,
+  pageSizes: [50, 100, 150, 200],
+  onUpdatePageSize: (pageSize: number) => {
+    pageOption.value.pageSize = pageSize
+    limits.value = pageSize
+    pull(1)
+  },
+  onChange: (page: number) => {
+    pull(page)
+  },
+})
+
+const cols = [
+  {
+    title: '盘点状态',
+    key: 'status',
+    render(row: Check) {
+      return checkFilterList.value.status?.preset?.[row.status] ?? '-'
+    },
+  },
+  // 以下动态生成的字段来自 checkFilterListToArray，根据 item.input 渲染
+  ...checkFilterListToArray.value
+    .filter(item => item.find)
+    .map((item) => {
+      if (item.name === 'class_finished') {
+        return {
+          title: item.label,
+          key: 'class_finished',
+          render(row: Check) {
+            return row.type === GoodsType.ProductFinish
+              ? getMultipleVal(item.preset, row.class_finished)
+              : '-'
+          },
+        }
+      }
+
+      if (item.name === 'class_old') {
+        return {
+          title: item.label,
+          key: 'class_old',
+          render(row: Check) {
+            return row.type === GoodsType.ProductOld
+              ? getMultipleVal(item.preset, row.class_old)
+              : '-'
+          },
+        }
+      }
+
+      if (item.input === 'text') {
+        return {
+          title: item.label === 'ID' ? '盘点单号' : item.label,
+          key: item.name,
+        }
+      }
+
+      if (item.input === 'select') {
+        return {
+          title: item.label,
+          key: item.name,
+          render(row: Check) {
+            return getRadioVal(item.preset, row[item.name])
+          },
+        }
+      }
+
+      if (item.input === 'multiple') {
+        if (item.name === 'inventory_person_ids') {
+          return {
+            title: item.label,
+            key: 'inventory_persons',
+            render(row: Check) {
+              const list = row.inventory_persons || []
+              if (list.length === 0)
+                return '-'
+              const shown = list.slice(0, 2).map(p => p.nickname).join(', ')
+              const more = list.length > 2 ? ` +${list.length - 2}` : ''
+              return `${shown}${more}`
+            },
+          }
+        }
+        else {
+          return {
+            title: item.label,
+            key: item.name,
+            render(row: Check) {
+              return getMultipleVal(item.preset, row[item.name])
+            },
+          }
+        }
+      }
+
+      return null // fallback
+    })
+    .filter(Boolean),
+  {
+    title: '创建时间',
+    key: 'created_at',
+    render(row: Check) {
+      return formatTimestampToDateTime(row.created_at)
+    },
+  },
+  {
+    title: '操作',
+    key: 'action',
+    fixed: 'right',
+    render(row: Check) {
+      return h(
+        'div',
+        { style: 'display: flex; gap: 8px;' },
+        [
+          h(
+            NButton,
+            {
+              type: 'info',
+              size: 'small',
+              onClick: () => jump('/product/check/info', { id: row.id }),
+            },
+            { default: () => '详情' },
+          ),
+        ],
+      )
+    },
+  },
+]
 </script>
 
 <template>
@@ -144,113 +278,116 @@ async function getStoreStaffListFun() {
     <!-- 小卡片组件 -->
     <div class="px-[16px] pb-20">
       <template v-if="checkList?.length">
-        <product-manage-card :list="checkList">
-          <template #top="{ info }">
-            <div class="status-title" :class="info.status === 1 ? 'orange' : info.status === 2 ? 'bule' : 'grey'">
-              {{ checkFilterList.status?.preset[info.status] }}
-            </div>
-          </template>
-          <template #info="{ info }">
-            <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-              <template v-for="(item, index) in checkFilterListToArray" :key="index">
-                <template v-if="item.find">
-                  <template v-if="item.name === 'class_finished' || item.name === 'class_old'">
-                    <template v-if="info.type === GoodsType.ProductFinish && item.name === 'class_finished'">
-                      <div class="flex py-[4px] justify-between">
-                        <div class="label">
-                          {{ item.label }}
-                        </div>
-                        <div class="text-align-end">
-                          {{ getMultipleVal(item?.preset, info[item.name]) }}
-                        </div>
-                      </div>
-                    </template>
-                    <template v-if="info.type === GoodsType.ProductOld && item.name === 'class_old'">
-                      <div class="flex py-[4px] justify-between">
-                        <div class="label">
-                          {{ item.label }}
-                        </div>
-                        <div class="text-align-end">
-                          {{ getMultipleVal(item?.preset, info[item.name]) }}
-                        </div>
-                      </div>
-                    </template>
-                  </template>
-                  <template v-else>
-                    <template v-if="item.input === 'text'">
-                      <div class="flex py-[4px] justify-between">
-                        <div class="label">
-                          {{ item.label === 'ID' ? '盘点单号' : item.label }}
-                        </div>
-                        <div class="text-align-end">
-                          {{ info[item.name] }}
-                        </div>
-                      </div>
-                    </template>
-                    <template v-if="item.input === 'select'">
-                      <div class="flex py-[4px] justify-between">
-                        <div class="label">
-                          {{ item.label }}
-                        </div>
-                        <div class="text-align-end">
-                          {{ getRadioVal(item.preset, info[item.name]) }}
-                        </div>
-                      </div>
-                    </template>
-                    <template v-if="item.input === 'multiple'">
-                      <div class="flex py-[4px] justify-between">
-                        <div class="label">
-                          {{ item.label }}
-                        </div>
-                        <template v-if="item.name === 'inventory_person_ids'">
-                          <div class="text-align-end w-[60%]">
-                            <span
-                              v-for="(person) in info.inventory_persons.slice(0, 2)" :key="person.id"
-                              class="mr-[4px]"
-                            >
-                              <n-tag size="small">
-                                {{ person.nickname }}
-                              </n-tag>
-                            </span>
-
-                            <template v-if="info.inventory_persons.length > 2">
-                              <n-tag size="small">
-                                +{{ info.inventory_persons.length - 2 }}
-                              </n-tag>
-                            </template>
+        <template v-if="showtype === 'list'">
+          <product-manage-card :list="checkList">
+            <template #top="{ info }">
+              <div class="status-title" :class="info.status === 1 ? 'orange' : info.status === 2 ? 'bule' : 'grey'">
+                {{ checkFilterList.status?.preset[info.status] }}
+              </div>
+            </template>
+            <template #info="{ info }">
+              <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                <template v-for="(item, index) in checkFilterListToArray" :key="index">
+                  <template v-if="item.find">
+                    <template v-if="item.name === 'class_finished' || item.name === 'class_old'">
+                      <template v-if="info.type === GoodsType.ProductFinish && item.name === 'class_finished'">
+                        <div class="flex py-[4px] justify-between">
+                          <div class="label">
+                            {{ item.label }}
                           </div>
-                        </template>
-                        <template v-else>
                           <div class="text-align-end">
                             {{ getMultipleVal(item?.preset, info[item.name]) }}
                           </div>
-                        </template>
-                      </div>
+                        </div>
+                      </template>
+                      <template v-if="info.type === GoodsType.ProductOld && item.name === 'class_old'">
+                        <div class="flex py-[4px] justify-between">
+                          <div class="label">
+                            {{ item.label }}
+                          </div>
+                          <div class="text-align-end">
+                            {{ getMultipleVal(item?.preset, info[item.name]) }}
+                          </div>
+                        </div>
+                      </template>
+                    </template>
+                    <template v-else>
+                      <template v-if="item.input === 'text'">
+                        <div class="flex py-[4px] justify-between">
+                          <div class="label">
+                            {{ item.label === 'ID' ? '盘点单号' : item.label }}
+                          </div>
+                          <div class="text-align-end">
+                            {{ info[item.name] }}
+                          </div>
+                        </div>
+                      </template>
+                      <template v-if="item.input === 'select'">
+                        <div class="flex py-[4px] justify-between">
+                          <div class="label">
+                            {{ item.label }}
+                          </div>
+                          <div class="text-align-end">
+                            {{ getRadioVal(item.preset, info[item.name]) }}
+                          </div>
+                        </div>
+                      </template>
+                      <template v-if="item.input === 'multiple'">
+                        <div class="flex py-[4px] justify-between">
+                          <div class="label">
+                            {{ item.label }}
+                          </div>
+                          <template v-if="item.name === 'inventory_person_ids'">
+                            <div class="text-align-end w-[60%]">
+                              <span
+                                v-for="(person) in info.inventory_persons.slice(0, 2)" :key="person.id"
+                                class="mr-[4px]"
+                              >
+                                <n-tag size="small">
+                                  {{ person.nickname }}
+                                </n-tag>
+                              </span>
+
+                              <template v-if="info.inventory_persons.length > 2">
+                                <n-tag size="small">
+                                  +{{ info.inventory_persons.length - 2 }}
+                                </n-tag>
+                              </template>
+                            </div>
+                          </template>
+                          <template v-else>
+                            <div class="text-align-end">
+                              {{ getMultipleVal(item?.preset, info[item.name]) }}
+                            </div>
+                          </template>
+                        </div>
+                      </template>
                     </template>
                   </template>
                 </template>
-              </template>
-              <div class="flex py-[4px] justify-between">
-                <div class="label">
-                  创建时间
-                </div>
-                <div class="text-align-end">
-                  {{ formatTimestampToDateTime(info.created_at) }}
+                <div class="flex py-[4px] justify-between">
+                  <div class="label">
+                    创建时间
+                  </div>
+                  <div class="text-align-end">
+                    {{ formatTimestampToDateTime(info.created_at) }}
+                  </div>
                 </div>
               </div>
-            </div>
-          </template>
-          <template #bottom="{ info }">
-            <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="详情" @click="jump('/product/check/info', { id: info.id })" />
-            </div>
-          </template>
-        </product-manage-card>
-        <common-page
-          v-model:page="pages" :total="checkTotal" :limit="10" @update:page="() => {
-            pull()
-          }
-          " />
+            </template>
+            <template #bottom="{ info }">
+              <div class="flex-end text-size-[14px]">
+                <common-button-irregular text="详情" @click="jump('/product/check/info', { id: info.id })" />
+              </div>
+            </template>
+          </product-manage-card>
+          <common-page
+            v-model:page="searchPage" :total="checkTotal" :limit="limits" @update:page="pull
+            " />
+        </template>
+        <template v-else>
+          <common-datatable :columns="cols" :list="checkList" :page-option="pageOption" :loading="tableLoading" />
+        </template>
       </template>
       <template v-else>
         <common-empty width="100px" />

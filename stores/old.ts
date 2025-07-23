@@ -9,7 +9,6 @@ export const useOld = defineStore('Old', {
      */
     oldFilterListToArray: FilterWhere<ProductOlds>[]
     rate: string
-    showtype: 'list' | 'table'
   } => ({
     oldFilterList: {} as Where<ProductOlds>,
     oldList: [],
@@ -17,7 +16,6 @@ export const useOld = defineStore('Old', {
     oldListTotal: 0,
     oldFilterListToArray: [] as FilterWhere<ProductOlds>[],
     rate: '',
-    showtype: 'list',
   }),
   actions: {
     // 旧料列表

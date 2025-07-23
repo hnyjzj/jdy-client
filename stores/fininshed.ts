@@ -10,7 +10,6 @@ export const useFinished = defineStore('Finished', {
     finishedFilterListToArray: FilterWhere<ProductFinisheds>[]
     searchPage: number
     finisheStatistics: FinisheStatistics
-    showtype: 'list' | 'table'
   } => ({
     finishedFilterList: {} as Where<ProductFinisheds>,
     finishedList: [],
@@ -19,7 +18,6 @@ export const useFinished = defineStore('Finished', {
     finishedFilterListToArray: [] as FilterWhere<ProductFinisheds>[],
     searchPage: 1,
     finisheStatistics: {} as FinisheStatistics,
-    showtype: 'list',
   }),
 
   actions: {

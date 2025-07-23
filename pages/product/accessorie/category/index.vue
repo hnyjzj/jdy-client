@@ -2,10 +2,11 @@
 const { $toast } = useNuxtApp()
 const { categoryListTotal, categoryList, categoryFilterListToArray, categoryFilterList } = storeToRefs(useAccessorieCategory())
 const { getAccessorieCategoryList, getAccessorieCategoryWhere, addAccessorieCategory } = useAccessorieCategory()
-const complate = ref(0)
+const { searchPage, showtype } = storeToRefs(usePages())
+const limits = ref(50)
+const tableLoading = ref(false)
 // 筛选框显示隐藏
 const isFilter = ref(false)
-const page = ref(1)
 const isChooseModel = ref(false)
 const isImportModel = ref(false)
 const loading = ref(false)
@@ -27,13 +28,16 @@ async function clearSearch() {
 }
 // 获取货品列表
 async function getList(where = {} as Partial<AccessorieCategory>) {
-  const params = { page: page.value, limit: 10 } as ReqList<AccessorieCategory>
+  tableLoading.value = true
+  const params = { page: searchPage.value, limit: limits.value } as ReqList<AccessorieCategory>
   params.where = where
   try {
     const res = await getAccessorieCategoryList(params)
+    tableLoading.value = false
     return res as any
   }
   catch (error) {
+    tableLoading.value = false
     $toast.error(error as string)
   }
 }
@@ -48,14 +52,15 @@ catch (error) {
 
 const filterData = ref({} as AccessorieCategory)
 
-function pull() {
-  getList(filterData.value)
+const pull = async (page: number) => {
+  searchPage.value = page
+  await getList(filterData.value)
 }
 
 // 筛选列表
 async function submitWhere(f: Partial<AccessorieCategory>, isSearch: boolean = false) {
   filterData.value = { ...f } as AccessorieCategory
-  page.value = 1
+  searchPage.value = 1
   const res = await getList(filterData.value)
   if (res.code === HttpCode.SUCCESS) {
     isFilter.value = false
@@ -90,17 +95,53 @@ async function bulkupload(e: AccessorieCategory[]) {
 
 const filterRef = ref()
 async function changeStore() {
-  page.value = 1
+  searchPage.value = 1
   filterRef.value.reset()
   await getList()
 }
+
+const pageOption = ref({
+  page: searchPage,
+  pageSize: 50,
+  itemCount: categoryListTotal,
+  showSizePicker: true,
+  pageSizes: [50, 100, 150, 200],
+  onUpdatePageSize: (pageSize: number) => {
+    pageOption.value.pageSize = pageSize
+    limits.value = pageSize
+    pull(1)
+  },
+  onChange: (page: number) => {
+    pull(page)
+  },
+})
+
+const cols = [
+  ...categoryFilterListToArray.value
+    .filter(item => item.create)
+    .map(item => ({
+      title: item.label,
+      key: item.name,
+      render(row: any) {
+        if (['text', 'number', 'textarea'].includes(item.input)) {
+          return row[item.name] ?? '-'
+        }
+        else if (item.input === 'select') {
+          return item.preset?.[row[item.name]] ?? '-'
+        }
+        else {
+          return '-'
+        }
+      },
+    })),
+]
 </script>
 
 <template>
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:id="complate" :product-list-total="categoryListTotal" placeholder="搜索条码" :show-company="false" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:showtype="showtype" :product-list-total="categoryListTotal" placeholder="搜索条码" :show-company="false" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changeStore" />
       </template>
@@ -108,37 +149,40 @@ async function changeStore() {
     <!-- 列表 -->
     <div class="px-[16px] pb-20">
       <template v-if="categoryList?.length">
-        <product-manage-card :list="categoryList">
-          <template #info="{ info }">
-            <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-              <template v-for="(item, index) in categoryFilterListToArray" :key="index">
-                <template v-if="item.create">
-                  <div class="flex-between">
-                    <div>
-                      {{ item.label }}
-                    </div>
-                    <template v-if="item.input === 'text' || item.input === 'number' || item.input === 'textarea'">
-                      <div class="text-align-end val">
-                        {{ info[item.name] }}
+        <template v-if="showtype === 'list'">
+          <product-manage-card :list="categoryList">
+            <template #info="{ info }">
+              <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                <template v-for="(item, index) in categoryFilterListToArray" :key="index">
+                  <template v-if="item.create">
+                    <div class="flex-between">
+                      <div>
+                        {{ item.label }}
                       </div>
-                    </template>
+                      <template v-if="item.input === 'text' || item.input === 'number' || item.input === 'textarea'">
+                        <div class="text-align-end val">
+                          {{ info[item.name] }}
+                        </div>
+                      </template>
 
-                    <template v-else-if="item.input === 'select'">
-                      <div class="text-align-end val">
-                        {{ item.preset[(info[item.name] as number)] }}
-                      </div>
-                    </template>
-                  </div>
+                      <template v-else-if="item.input === 'select'">
+                        <div class="text-align-end val">
+                          {{ item.preset[(info[item.name] as number)] }}
+                        </div>
+                      </template>
+                    </div>
+                  </template>
                 </template>
-              </template>
-            </div>
-          </template>
-        </product-manage-card>
-        <common-page
-          v-model:page="page" :total="categoryListTotal" :limit="10" @update:page="() => {
-            pull()
-          }
-          " />
+              </div>
+            </template>
+          </product-manage-card>
+          <common-page
+            v-model:page="searchPage" :total="categoryListTotal" :limit="limits" @update:page="pull
+            " />
+        </template>
+        <template v-else>
+          <common-datatable :columns="cols" :list="categoryList" :page-option="pageOption" :loading="tableLoading" />
+        </template>
       </template>
       <template v-else>
         <common-empty width="100px" />

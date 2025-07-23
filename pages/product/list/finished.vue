@@ -4,8 +4,8 @@ import { NButton } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 const { getFinishedList, getFinishedWhere } = useFinished()
-const { finishedList, finishedFilterList, finishedFilterListToArray, finishedListTotal, showtype, finisheStatistics } = storeToRefs(useFinished())
-const { searchPage } = storeToRefs(usePages())
+const { finishedList, finishedFilterList, finishedFilterListToArray, finishedListTotal, finisheStatistics } = storeToRefs(useFinished())
+const { searchPage, showtype } = storeToRefs(usePages())
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const isModel = ref(false)
@@ -37,7 +37,6 @@ async function getList(where = {} as Partial<ProductFinisheds>) {
   params.where = where
   const res = await getFinishedList(params)
   tableLoading.value = false
-
   return res as any
 }
 
@@ -195,19 +194,19 @@ const cols = [
 
     <!-- 列表 -->
     <div class="px-[16px] pb-20">
-      <template v-if="showtype === 'list'">
-        <template v-if="finishedList?.length">
+      <template v-if="finishedList?.length">
+        <template v-if="showtype === 'list'">
           <product-list-main :is-finished="true" :product-list="finishedList" :filter-list="finishedFilterList" @edit="edit" @go-info="goInfo" />
           <common-page
             v-model:page="searchPage" :total="finishedListTotal" :limit="limits" @update:page="pull
             " />
         </template>
         <template v-else>
-          <common-empty width="100px" />
+          <common-datatable :columns="cols" :list="finishedList" :page-option="pageOption" :loading="tableLoading" />
         </template>
       </template>
       <template v-else>
-        <common-datatable :columns="cols" :list="finishedList" :page-option="pageOption" />
+        <common-empty width="100px" />
       </template>
     </div>
 

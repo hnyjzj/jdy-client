@@ -1,14 +1,15 @@
 <script setup lang="ts">
+import { NButton } from 'naive-ui'
+
 const { $toast } = useNuxtApp()
 const { myStoreList, myStore } = storeToRefs(useStores())
 const { getMyStore } = useStores()
 const { getFinishedEnterList, getFinishedEnterWhere, createFinishedEnter } = useFinishedEnter()
-
 const { EnterList, EnterToArray, EnterListTotal } = storeToRefs(useFinishedEnter())
-const complate = ref(0)
+const { searchPage, showtype } = storeToRefs(usePages())
+
 // 筛选框显示隐藏
 const isFilter = ref(false)
-const pages = ref(1)
 const isModel = ref(false)
 const isCreateModel = ref(false)
 const isBatchImportModel = ref(false)
@@ -18,6 +19,9 @@ const enterStatus = {
   2: '已完成',
   3: '已撤销',
 }
+const limits = ref(50)
+const tableLoading = ref(false)
+
 /** 门店选择列表 */
 const storeCol = ref()
 function changeStore() {
@@ -53,12 +57,13 @@ async function clearSearch() {
 }
 // 获取货品列表
 async function getList(where = {} as Partial<FinishedEnter>) {
-  const params = { page: pages.value, limit: 10 } as ReqList<FinishedEnter>
+  tableLoading.value = true
+  const params = { page: searchPage.value, limit: limits.value } as ReqList<FinishedEnter>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
-
   const res = await getFinishedEnterList(params)
+  tableLoading.value = false
   return res
 }
 
@@ -67,8 +72,9 @@ await getFinishedEnterWhere()
 
 const filterData = ref({} as Partial<FinishedEnter>)
 
-function pull() {
-  getList(filterData.value)
+const pull = async (page: number) => {
+  searchPage.value = page
+  await getList(filterData.value)
 }
 
 /** 创建入库单 */
@@ -89,7 +95,7 @@ async function createEnter() {
 // 筛选列表
 async function submitWhere(f: Partial<FinishedEnter>, isSearch: boolean = false) {
   filterData.value = { ...f }
-  pages.value = 1
+  searchPage.value = 1
   EnterList.value = []
   const res = await getList(filterData.value)
   if (res?.code === HttpCode.SUCCESS) {
@@ -119,18 +125,85 @@ function goAdd() {
 const filterRef = ref()
 
 async function changemyStore() {
-  pages.value = 1
+  searchPage.value = 1
   await changeStore()
   filterRef.value.reset()
   await getList()
 }
+
+const pageOption = ref({
+  page: searchPage,
+  pageSize: 50,
+  itemCount: EnterListTotal,
+  showSizePicker: true,
+  pageSizes: [50, 100, 150, 200],
+  onUpdatePageSize: (pageSize: number) => {
+    pageOption.value.pageSize = pageSize
+    limits.value = pageSize
+    pull(1)
+  },
+  onChange: (page: number) => {
+    pull(page)
+  },
+})
+
+const cols = [
+  {
+    title: '入库状态',
+    key: 'status',
+    render(row: FinishedEnter) {
+      const statusMap: Record<number, string> = {
+        1: '草稿',
+        2: '完成',
+        3: '撤销',
+      }
+      return statusMap[row.status] || '未知'
+    },
+  },
+  { title: '入库单号', key: 'id' },
+  { title: '备注', key: 'remark' },
+  { title: '所属门店', key: 'store.name' },
+  { title: '入库数量', key: 'product_count' },
+  { title: '入网费合计', key: 'product_total_access_fee' },
+  { title: '标签价合计', key: 'product_total_label_price' },
+  { title: '金重合计', key: 'product_total_weight_metal' },
+  { title: '操作人', key: 'operator.nickname' },
+  {
+    title: '入库时间',
+    key: 'created_at',
+    render(row: FinishedEnter) {
+      return formatTimestampToDateTime(row.created_at)
+    },
+  },
+  {
+    title: '操作',
+    key: 'action',
+    fixed: 'right',
+    render(row: FinishedEnter) {
+      return h(
+        'div',
+        { style: 'display: flex; gap: 8px;' },
+        [
+          h(
+            NButton,
+            {
+              type: 'info',
+              size: 'small',
+              onClick: () => jump('/product/warehouse/info', { id: row.id }),
+            },
+            { default: () => '详情' },
+          ),
+        ],
+      )
+    },
+  },
+]
 </script>
 
 <template>
   <div>
     <!-- 筛选 -->
-    <product-filter
-      v-model:id="complate" :product-list-total="EnterListTotal" placeholder="搜索入库单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+    <product-filter v-model:showtype="showtype" :product-list-total="EnterListTotal" placeholder="搜索入库单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changemyStore" />
       </template>
@@ -138,86 +211,90 @@ async function changemyStore() {
     <!-- 小卡片组件 -->
     <div class="px-[16px] pb-20">
       <template v-if="EnterList?.length">
-        <product-manage-card :list="EnterList" @edit="edit">
-          <template #top="{ info }">
-            <div class="enter-title" :class="info.status === 1 ? 'caogao' : info.status === 2 ? 'wancheng' : 'chexiao'">
-              {{ enterStatus[info.status] }}
-            </div>
-          </template>
-          <template #info="{ info }">
-            <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-              <div class="py-[4px] flex justify-between">
-                <div>入库单号</div>
-                <div class="text-align-end">
-                  {{ info.id }}
+        <template v-if="showtype === 'list'">
+          <product-manage-card :list="EnterList" @edit="edit">
+            <template #top="{ info }">
+              <div class="enter-title" :class="info.status === 1 ? 'caogao' : info.status === 2 ? 'wancheng' : 'chexiao'">
+                {{ enterStatus[info.status] }}
+              </div>
+            </template>
+            <template #info="{ info }">
+              <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                <div class="py-[4px] flex justify-between">
+                  <div>入库单号</div>
+                  <div class="text-align-end">
+                    {{ info.id }}
+                  </div>
+                </div>
+                <div class="py-[4px] flex justify-between">
+                  <div>备注</div>
+                  <div class="text-align-end">
+                    {{ info?.remark }}
+                  </div>
+                </div>
+                <div class="py-[4px] flex justify-between">
+                  <div>所属门店</div>
+                  <div class="text-align-end">
+                    {{ info.store?.name }}
+                  </div>
+                </div>
+                <div class="py-[4px] flex justify-between">
+                  <div>入库数量</div>
+                  <div class="text-align-end">
+                    {{ info.product_count }}
+                  </div>
+                </div>
+                <div class="py-[4px] flex justify-between">
+                  <div>入网费合计</div>
+                  <div class="text-align-end">
+                    {{ info.product_total_access_fee }}
+                  </div>
+                </div>
+                <div class="py-[4px] flex justify-between">
+                  <div>标签价合计</div>
+                  <div class="text-align-end">
+                    {{ info.product_total_label_price }}
+                  </div>
+                </div>
+                <div class="py-[4px] flex justify-between">
+                  <div>金重合计</div>
+                  <div class="text-align-end">
+                    {{ info.product_total_weight_metal }}
+                  </div>
+                </div>
+                <div class="py-[4px] flex justify-between">
+                  <div>操作人</div>
+                  <div class="text-align-end">
+                    {{ info?.operator?.nickname }}
+                  </div>
+                </div>
+                <div class="py-[4px] flex justify-between">
+                  <div>入库时间</div>
+                  <div class="text-align-end">
+                    {{ formatTimestampToDateTime(info?.created_at) }}
+                  </div>
                 </div>
               </div>
-              <div class="py-[4px] flex justify-between">
-                <div>备注</div>
-                <div class="text-align-end">
-                  {{ info?.remark }}
-                </div>
+            </template>
+            <template #bottom="{ info }">
+              <div class="flex-end text-size-[14px]">
+                <common-button-irregular text="详情" @click="jump('/product/warehouse/info', { id: info.id })" />
               </div>
-              <div class="py-[4px] flex justify-between">
-                <div>所属门店</div>
-                <div class="text-align-end">
-                  {{ info.store?.name }}
-                </div>
-              </div>
-              <div class="py-[4px] flex justify-between">
-                <div>入库数量</div>
-                <div class="text-align-end">
-                  {{ info.product_count }}
-                </div>
-              </div>
-              <div class="py-[4px] flex justify-between">
-                <div>入网费合计</div>
-                <div class="text-align-end">
-                  {{ info.product_total_access_fee }}
-                </div>
-              </div>
-              <div class="py-[4px] flex justify-between">
-                <div>标签价合计</div>
-                <div class="text-align-end">
-                  {{ info.product_total_label_price }}
-                </div>
-              </div>
-              <div class="py-[4px] flex justify-between">
-                <div>金重合计</div>
-                <div class="text-align-end">
-                  {{ info.product_total_weight_metal }}
-                </div>
-              </div>
-              <div class="py-[4px] flex justify-between">
-                <div>操作人</div>
-                <div class="text-align-end">
-                  {{ info?.operator?.nickname }}
-                </div>
-              </div>
-              <div class="py-[4px] flex justify-between">
-                <div>入库时间</div>
-                <div class="text-align-end">
-                  {{ formatTimestampToDateTime(info?.created_at) }}
-                </div>
-              </div>
-            </div>
-          </template>
-          <template #bottom="{ info }">
-            <div class="flex-end text-size-[14px]">
-              <common-button-irregular text="详情" @click="jump('/product/warehouse/info', { id: info.id })" />
-            </div>
-          </template>
-        </product-manage-card>
-        <common-page
-          v-model:page="pages" :total="EnterListTotal" :limit="10" @update:page="() => {
-            pull()
-          }
-          " />
+            </template>
+          </product-manage-card>
+          <common-page
+            v-model:page="searchPage" :total="EnterListTotal" :limit="limits" @update:page="pull
+            " />
+        </template>
+        <template v-else>
+          <common-datatable :columns="cols" :list="EnterList" :page-option="pageOption" :loading="tableLoading" />
+        </template>
       </template>
       <template v-else>
         <common-empty width="100px" />
       </template>
     </div>
+
     <template v-if="myStore.id">
       <common-create @click="create" />
     </template>
