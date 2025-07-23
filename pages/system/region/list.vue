@@ -221,17 +221,21 @@ const cols = [
 
 <template>
   <div>
-    <div class="grid-12 sticky top-0 bg-gradient-linear-[180deg,#3875C5,#467EC9]  z-1">
+    <!-- <div class="grid-12 sticky top-0 bg-gradient-linear-[180deg,#3875C5,#467EC9]  z-1">
       <div id="header" class="px-[16px] py-[12px] w-full   col-12" uno-lg="col-8 offset-2">
         <common-tool-list v-model="showtype" :total="total" @height="heightSearchFn" />
       </div>
-    </div>
+    </div> -->
+    <product-filter
+      v-model:showtype="showtype" :product-list-total="total" placeholder="搜索条码" :show-input="false" @filter="heightSearchFn()" />
 
     <template v-if="showtype === 'list'">
-      <div class="p-[16px]">
-        <region-card @get-detail="getStoreInfo" @edit-region="edit" @delete-region="deleteStoreFn" />
-        <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
-      </div>
+      <common-layout-center>
+        <div class="p-[16px]">
+          <region-card @get-detail="getStoreInfo" @edit-region="edit" @delete-region="deleteStoreFn" />
+          <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
+        </div>
+      </common-layout-center>
     </template>
     <template v-else>
       <common-datatable :columns="cols" :list="regionList" :page-option="pageOption" :loading="tableLoading" />
