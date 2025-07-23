@@ -9,6 +9,7 @@ const props = withDefaults(defineProps<{
   showInput?: boolean
 }>(), {
   showCompany: true,
+  showInput: true,
 })
 
 const emits = defineEmits<{
