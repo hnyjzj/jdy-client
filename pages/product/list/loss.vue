@@ -179,7 +179,6 @@ async function changeStore() {
         <common-empty width="100px" />
       </template>
     </div>
-    <product-manage-bottom />
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['status']" :filter="lossFilterListToArray" @submit="submitWhere" />
   </div>
 </template>

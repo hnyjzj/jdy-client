@@ -218,7 +218,6 @@ async function changemyStore() {
         <common-empty width="100px" />
       </template>
     </div>
-    <product-manage-bottom />
     <template v-if="myStore.id">
       <common-create @click="create" />
     </template>

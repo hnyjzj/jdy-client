@@ -217,3 +217,15 @@ interface UpdateProductFinishedImages {
    */
   images: string[]
 }
+
+/** 成品统计 */
+interface FinisheStatistics {
+  /** 总入网费 */
+  access_fee: string
+  /** 总标签价 */
+  label_price: string
+  /** 总数 */
+  total: string
+  /** 总金重 */
+  weight_metal: string
+}

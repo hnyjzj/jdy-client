@@ -176,7 +176,6 @@ async function changeMyStore() {
         <common-empty width="100px" />
       </template>
     </div>
-    <product-manage-bottom />
     <common-create @click="jump('/product/allocate/add')" />
 
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="allocateFilterListToArray" @submit="submitWhere" @reset="filterData = {}">
