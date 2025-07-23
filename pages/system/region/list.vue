@@ -221,11 +221,6 @@ const cols = [
 
 <template>
   <div>
-    <!-- <div class="grid-12 sticky top-0 bg-gradient-linear-[180deg,#3875C5,#467EC9]  z-1">
-      <div id="header" class="px-[16px] py-[12px] w-full   col-12" uno-lg="col-8 offset-2">
-        <common-tool-list v-model="showtype" :total="total" @height="heightSearchFn" />
-      </div>
-    </div> -->
     <product-filter
       v-model:showtype="showtype" :product-list-total="total" placeholder="搜索条码" :show-input="false" @filter="heightSearchFn()" />
 
