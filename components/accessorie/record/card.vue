@@ -32,7 +32,7 @@ const props = withDefaults(defineProps<{
           </div>
           <template v-if="item.input === 'select'">
             <div class="text-align-end">
-              {{ item.preset[props.accessories.category[item.name]] }}
+              {{ item.preset[props.accessories.category[item.name] as number] }}
             </div>
           </template>
           <template v-else>

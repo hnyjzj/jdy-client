@@ -3,13 +3,13 @@ import { NButton } from 'naive-ui'
 
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
-const { getFinishedList, getFinishedWhere } = useFinished()
-const { finishedList, finishedFilterList, finishedFilterListToArray, finishedListTotal, showtype } = storeToRefs(useFinished())
-const { searchPage } = storeToRefs(usePages())
-const complate = ref(0)
+const { getFinishedList, getFinishedWhere, getFinishedListAll } = useFinished()
+const { finishedList, finishedFilterList, finishedFilterListToArray, finishedListTotal, finisheStatistics, finishedListAll } = storeToRefs(useFinished())
+const { searchPage, showtype } = storeToRefs(usePages())
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const isModel = ref(false)
+const isLoading = ref(false)
 const isBatchImportModel = ref(false)
 const type = ref(1 as ProductFinisheds['type'])
 const filterData = ref({} as Partial<ProductFinisheds>)
@@ -38,7 +38,6 @@ async function getList(where = {} as Partial<ProductFinisheds>) {
   params.where = where
   const res = await getFinishedList(params)
   tableLoading.value = false
-
   return res as any
 }
 
@@ -144,21 +143,50 @@ const cols = [
   {
     title: '操作',
     key: 'action',
+    fixed: 'right', // 固定到右侧
     render: (rowData: ProductFinisheds) => {
       return h(
-        NButton,
-        {
-          type: 'info',
-          size: 'small',
-          onClick: () => {
-            goInfo(rowData)
-          },
-        },
-        { default: () => '查看详情' },
+        'div',
+        { style: 'display: flex; gap: 8px;' },
+        [
+          h(
+            NButton,
+            {
+              type: 'primary',
+              size: 'small',
+              onClick: () => {
+                edit(rowData.code)
+              },
+            },
+            { default: () => '编辑' },
+          ),
+          h(
+            NButton,
+            {
+              type: 'info',
+              size: 'small',
+              onClick: () => {
+                goInfo(rowData)
+              },
+            },
+            { default: () => '详情' },
+          ),
+        ],
       )
     },
   },
 ]
+/**
+ * 货品列表导出excel表格
+ */
+async function downloadLocalFile() {
+  isLoading.value = true
+  const res = await getFinishedListAll({ all: true, where: filterData.value })
+  if (res?.code === HttpCode.SUCCESS) {
+    await exportProductListToXlsx(finishedListAll.value, finishedFilterListToArray.value)
+    isLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -166,32 +194,39 @@ const cols = [
     <!-- 筛选 -->
     <product-filter
       v-model:showtype="showtype"
-      v-model:id="complate" :product-list-total="finishedListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      :product-list-total="finishedListTotal"
+      placeholder="搜索条码"
+      @filter="openFilter"
+      @search="search"
+      @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changeStore" />
       </template>
     </product-filter>
 
     <!-- 列表 -->
-    <template v-if="showtype === 'list'">
-      <div class="px-[16px] pb-20">
-        <template v-if="finishedList?.length">
+    <div class="px-[16px] pb-20">
+      <template v-if="finishedList?.length">
+        <template v-if="showtype === 'list'">
           <product-list-main :is-finished="true" :product-list="finishedList" :filter-list="finishedFilterList" @edit="edit" @go-info="goInfo" />
           <common-page
-            v-model:page="searchPage" :total="finishedListTotal" :limit="limits" @update:page="pull
-            " />
+            v-model:page="searchPage" :total="finishedListTotal" :limit="limits" @update:page="pull" />
         </template>
         <template v-else>
-          <common-empty width="100px" />
+          <common-datatable :columns="cols" :list="finishedList" :page-option="pageOption" :loading="tableLoading" />
         </template>
-      </div>
-    </template>
-
-    <template v-else>
-      <common-datatable :columns="cols" :list="finishedList" :page-option="pageOption" :loading="tableLoading" />
-    </template>
-
-    <product-manage-bottom />
+      </template>
+      <template v-else>
+        <common-empty width="100px" />
+      </template>
+    </div>
+    <common-create @click="downloadLocalFile">
+      <template #content>
+        <icon name="i-icon:download" :size="24" color="#FFF" />
+      </template>
+    </common-create>
+    <common-loading v-model="isLoading" />
+    <product-manage-bottom :statistics="finisheStatistics" />
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="finishedFilterListToArray" @submit="submitWhere" />
   </div>
