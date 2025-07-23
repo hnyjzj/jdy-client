@@ -93,19 +93,15 @@ async function submitGoods(req: ProductFinisheds[]) {
   isImportModel.value = false
   loading.value = true
   const res = await addFinishedEnter({ products: req, enter_id: enterInfo.value.id })
+  uploadRef.value.clearData()
   if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
-    uploadRef.value.clearData()
     loading.value = false
     return $toast.success('批量导入成功')
   }
   else if (res?.code === HttpCode.ERROR) {
     loading.value = false
-    let msg = res?.message
-    Object.keys(res?.data).forEach((key) => {
-      msg += `\n条码【${key}】：${res?.data[key]}`
-    })
-    return $toast.error(msg)
+    return $toast.error(res?.message ?? '批量导入失败')
   }
 
   loading.value = false
