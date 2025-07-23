@@ -31,6 +31,7 @@ for (let i = 0; i < props.title.length; ++i) {
         :columns="props.title"
         :data="props.stockList"
         :scroll-x="scrollX"
+        :max-height="650"
         :bordered="true"
       />
     </div>

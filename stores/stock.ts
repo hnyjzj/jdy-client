@@ -7,6 +7,10 @@ export const useStock = defineStore('Stock', {
     oldfilterList: {} as Where<{ type: number }>,
     oldtitle: [] as StockTitle[],
     oldstockList: [] as any[],
+
+    RevenueWhere: {} as Where<Revenue>,
+    RevenueTitle: [] as Revenue[],
+    RevenueList: [] as any[],
   }),
   getters: {
 
@@ -50,6 +54,28 @@ export const useStock = defineStore('Stock', {
       const { data } = await https.post<any, { type: number }>('/statistic/product_inventory_old/data', params)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.oldstockList = data.value?.data
+      }
+    },
+
+    // 收支统计
+
+    async getRevenueWhere() {
+      const { data } = await https.get<Where<Revenue>>('/statistic/order_payment/where')
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.RevenueWhere = data.value?.data
+      }
+    },
+    async getRevenueList(params: Revenue) {
+      const { data } = await https.post<any, Revenue>('/statistic/order_payment/data', params)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.RevenueList = data.value?.data
+      }
+    },
+    // 获取库存title
+    async getRevenueTitle() {
+      const { data } = await https.get<Revenue[]>('/statistic/order_payment/title')
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.RevenueTitle = data.value?.data
       }
     },
   },

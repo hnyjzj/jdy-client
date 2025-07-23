@@ -6,3 +6,10 @@ interface StockTitle {
   className?: string
   align: 'right' | 'left' | undefined
 }
+
+interface Revenue {
+  type: number
+  duration: number
+  endTime?: string
+  startTime?: string
+}
