@@ -54,7 +54,7 @@ const cofirmTime = async () => {
     <common-layout-center>
       <div class="p-[16px]">
         <div class="grid-12 mb-[12px] gap-[6px]">
-          <div class="col-4">
+          <div class="col-4" uno-sm="col-4">
             <n-select
               v-model:value="duration"
               placeholder="请选择时间范围"
@@ -63,14 +63,16 @@ const cofirmTime = async () => {
               :options="optonsToSelect(RevenueWhere.duration?.preset)"
               @update:value="selectDuration" />
           </div>
-          <div class="col-8 ">
+          <div class="col-12" uno-sm="col-8">
             <template v-if="duration === 11">
-              <div class=" flex justify-end gap-[6px]">
-                <n-date-picker
-                  v-model:formatted-value="startTime"
-                  value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" placeholder="选择开始时间" round clearable />
-                <n-date-picker v-model:formatted-value="endTime" value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" placeholder="选择结束时间" round clearable />
-                <div class="px-[12px] py-[6px] bg-[#fff] rounded-[20px] color-[#0068FF]" @click="cofirmTime">
+              <div class="grid-12 gap-[6px]">
+                <div class="col-10 flex gap-[12px]">
+                  <n-date-picker
+                    v-model:formatted-value="startTime"
+                    value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" placeholder="选择开始时间" round clearable />
+                  <n-date-picker v-model:formatted-value="endTime" value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" placeholder="选择结束时间" round clearable />
+                </div>
+                <div class="px-[8px] py-[6px] bg-[#fff] rounded-[20px] color-[#0068FF] col-2  text-center" @click="cofirmTime">
                   搜索
                 </div>
               </div>
