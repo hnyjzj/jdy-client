@@ -12,6 +12,7 @@ const { staffGetStoreList } = useStores()
 const { userinfo } = storeToRefs(useUser())
 const { myStore } = storeToRefs(useStores())
 const limits = ref(50)
+const tableLoading = ref(false)
 const show = ref<boolean>(false)
 // 是否有更多数据
 const nomore = ref<boolean>(false)
@@ -21,18 +22,19 @@ const filterData = ref({} as StaffWhere)
 const getList = async (where = {} as StaffWhere) => {
   if (nomore.value)
     return
+  tableLoading.value = true
   const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<Staff>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
   const res = await getStaffList(params)
+  tableLoading.value = false
   res ? nomore.value = false : nomore.value = true
 }
 
 // 筛选列表
 const submitWhere = async (f: StaffWhere) => {
   filterData.value = f
-  staffList.value = []
   nomore.value = false
   searchPage.value = 1
   await getList(filterData.value)
@@ -77,7 +79,6 @@ const handleSearch = (query: string) => {
 }
 const updatePage = async (page: number) => {
   searchPage.value = page
-  staffList.value = []
   nomore.value = false
   await getList(filterData.value)
 }
@@ -89,7 +90,6 @@ const retrieve = async () => {
 
 const searchKeyFn = async (data: string) => {
   filterData.value = { nickname: data }
-  staffList.value = []
   nomore.value = false
   searchPage.value = 1
   await getList(filterData.value)
@@ -192,7 +192,7 @@ const cols = [
       </div>
     </template>
     <template v-else>
-      <common-datatable :columns="cols" :list="staffList" :page-option="pageOption" />
+      <common-datatable :columns="cols" :list="staffList" :page-option="pageOption" :loading="tableLoading" />
     </template>
     <common-create @create="newAdd()" />
     <common-filter-where

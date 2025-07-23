@@ -19,14 +19,16 @@ const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
 const limit = ref(50)
+const tableLoading = ref(false)
 // 获取列表
 const getList = async (where = {} as Partial<OrderInfo>) => {
-  OrdersList.value = []
+  tableLoading.value = true
   const params = { page: searchPage.value, limit: limit.value, where: { store_id: myStore.value.id } } as ReqList<OrderInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
   await getOrderList(params)
+  tableLoading.value = false
 }
 
 // 打开高级筛选
@@ -232,7 +234,7 @@ const cols = [
       </div>
     </template>
     <template v-else>
-      <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" />
+      <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" :loading="tableLoading" />
     </template>
 
     <!-- filter -->

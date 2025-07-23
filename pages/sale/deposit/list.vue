@@ -15,15 +15,17 @@ const filterShow = ref(false)
 const limits = ref(12)
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
+const tableLoading = ref(false)
 const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
-
 // 获取列表
 const getList = async (where = {} as Partial<DepositOrderInfo>) => {
+  tableLoading.value = true
   const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<DepositOrderInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
   await getDepositList(params)
+  tableLoading.value = false
 }
 const handleClick = async (id: string) => {
   navigateTo(`/sale/sales/order?id=${id}`)
@@ -39,7 +41,6 @@ const isStaff = async () => {
 
 const submitWhere = async (f: DepositOrderWhere) => {
   filterData.value = { ...filterData.value, ...f }
-  OrdersList.value = []
   searchPage.value = 1
   await getList(filterData.value as any)
   filterShow.value = false
@@ -62,7 +63,6 @@ const searchOrder = async (id: string) => {
 }
 const clearFn = async () => {
   filterData.value = {}
-  OrdersList.value = []
   searchPage.value = 1
   await getList()
 }
@@ -200,7 +200,7 @@ const cols = [
       </div>
     </template>
     <template v-else>
-      <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" />
+      <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" :loading="tableLoading" />
     </template>
     <!-- filter -->
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere">
