@@ -10,6 +10,7 @@ export const useFinished = defineStore('Finished', {
     finishedFilterListToArray: FilterWhere<ProductFinisheds>[]
     searchPage: number
     finisheStatistics: FinisheStatistics
+    finishedListAll: ProductFinisheds[]
   } => ({
     finishedFilterList: {} as Where<ProductFinisheds>,
     finishedList: [],
@@ -18,6 +19,7 @@ export const useFinished = defineStore('Finished', {
     finishedFilterListToArray: [] as FilterWhere<ProductFinisheds>[],
     searchPage: 1,
     finisheStatistics: {} as FinisheStatistics,
+    finishedListAll: [],
   }),
 
   actions: {
@@ -33,6 +35,20 @@ export const useFinished = defineStore('Finished', {
           this.finisheStatistics.label_price = data.value.data.label_price
           this.finisheStatistics.total = data.value.data.total
           this.finisheStatistics.weight_metal = data.value.data.weight_metal
+        }
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
+      }
+    },
+    /** 成品列表不分页 */
+    async getFinishedListAll(pamars: AllFinished<ProductFinisheds>) {
+      try {
+        pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
+        const { data } = await https.post<ResList<ProductFinisheds>, AllFinished<ProductFinisheds>>('/product/finished/list', pamars)
+        if (data.value?.code === HttpCode.SUCCESS) {
+          this.finishedListAll = data.value.data.list
         }
         return data.value
       }

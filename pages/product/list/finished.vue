@@ -3,12 +3,13 @@ import { NButton } from 'naive-ui'
 
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
-const { getFinishedList, getFinishedWhere } = useFinished()
-const { finishedList, finishedFilterList, finishedFilterListToArray, finishedListTotal, finisheStatistics } = storeToRefs(useFinished())
+const { getFinishedList, getFinishedWhere, getFinishedListAll } = useFinished()
+const { finishedList, finishedFilterList, finishedFilterListToArray, finishedListTotal, finisheStatistics, finishedListAll } = storeToRefs(useFinished())
 const { searchPage, showtype } = storeToRefs(usePages())
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const isModel = ref(false)
+const isLoading = ref(false)
 const isBatchImportModel = ref(false)
 const type = ref(1 as ProductFinisheds['type'])
 const filterData = ref({} as Partial<ProductFinisheds>)
@@ -175,6 +176,17 @@ const cols = [
     },
   },
 ]
+/**
+ * 货品列表导出excel表格
+ */
+async function downloadLocalFile() {
+  isLoading.value = true
+  const res = await getFinishedListAll({ all: true, where: filterData.value })
+  if (res?.code === HttpCode.SUCCESS) {
+    await exportProductListToXlsx(finishedListAll.value, finishedFilterListToArray.value)
+    isLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -208,7 +220,12 @@ const cols = [
         <common-empty width="100px" />
       </template>
     </div>
-
+    <common-create @click="downloadLocalFile">
+      <template #content>
+        <icon name="i-icon:download" :size="24" color="#FFF" />
+      </template>
+    </common-create>
+    <common-loading v-model="isLoading" />
     <product-manage-bottom :statistics="finisheStatistics" />
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="finishedFilterListToArray" @submit="submitWhere" />

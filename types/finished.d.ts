@@ -229,3 +229,8 @@ interface FinisheStatistics {
   /** 总金重 */
   weight_metal: string
 }
+
+interface AllFinished<T = undefined> {
+  all: boolean
+  where?: Partial<T>
+}
