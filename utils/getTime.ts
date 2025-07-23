@@ -82,7 +82,7 @@ export const getDaysFromToday = (targetDate: Date | string) => {
 /**
  * 日期转换为Excel日期序列号
  * @param dateStr 日期字符串
- * @returns
+ * @returns 序列号
  */
 export function dateStringToExcelSerial(dateStr: string): number {
   const date = new Date(dateStr.replace(' ', 'T'))

@@ -64,36 +64,23 @@ const changeStores = async () => {
 
 <template>
   <div>
-    <div class="grid-12 sticky top-0 bg-gradient-linear-[180deg,#3875C5,#467EC9]  z-1">
-      <div id="header" class="px-[16px] py-[12px] w-full   col-12" uno-lg="col-8 offset-2">
-        <div class="flex flex-row gap-2">
-          <product-manage-company class="color-[#fff]" @change="changeStores" />
-          <product-filter-search
-            placeholder="搜索退货单编号" class="color-[#fff] flex-1" @submit="searchOrder" @clear="clearFn" />
-        </div>
-        <div class="flex-center-between gap-2 py-[16px]">
-          <div class="text-size-[14px] color-[#fff]">
-            共{{ statementRetrunListTotal }}条数据
-          </div>
-          <div @click="openFilter()">
-            <product-filter-senior class="color-[#fff]" />
-          </div>
-        </div>
+    <product-filter
+      :product-list-total="statementRetrunListTotal" placeholder="搜索退货单编号" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
+      <template #company>
+        <product-manage-company @change="changeStores" />
+      </template>
+    </product-filter>
+    <common-layout-center>
+      <div class="p-[16px]">
+        <template v-if="statementReturnList.length">
+          <sale-statement-return :info="statementReturnList" :where="ReturnfilterList" />
+          <common-page v-model:page="searchPage" :total="statementRetrunListTotal" :limit="12" @update:page="updatePage" />
+        </template>
+        <template v-else>
+          <common-emptys text="暂无数据" />
+        </template>
       </div>
-    </div>
-    <div class="grid-12">
-      <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-        <div class="p-[16px]">
-          <template v-if="statementReturnList.length">
-            <sale-statement-return :info="statementReturnList" :where="ReturnfilterList" />
-            <common-page v-model:page="searchPage" :total="statementRetrunListTotal" :limit="12" @update:page="updatePage" />
-          </template>
-          <template v-else>
-            <common-emptys text="暂无数据" />
-          </template>
-        </div>
-      </div>
-    </div>
+    </common-layout-center>
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="ReturnfilterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #order_id>
         <n-input v-model:value="filterData.order_id" placeholder="请输入订单号" clearable size="large" />

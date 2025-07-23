@@ -164,32 +164,26 @@ const cols = [
 
 <template>
   <div>
-    <div class="grid-12 sticky top-0 bg-gradient-linear-[180deg,#3875C5,#467EC9]  z-1">
-      <div id="header" class="px-[16px] py-[12px] w-full   col-12" uno-lg="col-8 offset-2">
-        <div class="flex flex-row gap-2">
-          <product-manage-company class="color-[#fff]" @change="retrieve" />
-          <product-filter-search
-            placeholder="搜索员工" class="color-[#fff] flex-1" @submit="searchKeyFn" @clear="retrieve" />
-        </div>
-        <common-tool-list v-model="showtype" :total="total" @height="heightSearchFn" />
-      </div>
-    </div>
-
+    <product-filter
+      v-model:showtype="showtype"
+      :product-list-total="total" placeholder="搜索员工" @filter="heightSearchFn" @search="searchKeyFn" @clear-search="retrieve">
+      <template #company>
+        <product-manage-company @change="retrieve" />
+      </template>
+    </product-filter>
     <template v-if="showtype === 'list'">
-      <div class="grid-12">
-        <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-          <div class="p-[16px]">
-            <template v-if="staffList.length">
-              <staff-manage-card :list="staffList" :myidentity="userinfo.identity" :filter-data="staffWhereList" />
-              <common-page
-                v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
-            </template>
-            <template v-else>
-              <common-emptys text="暂无数据" />
-            </template>
-          </div>
+      <common-layout-center>
+        <div class="p-[16px]">
+          <template v-if="staffList.length">
+            <staff-manage-card :list="staffList" :myidentity="userinfo.identity" :filter-data="staffWhereList" />
+            <common-page
+              v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
+          </template>
+          <template v-else>
+            <common-emptys text="暂无数据" />
+          </template>
         </div>
-      </div>
+      </common-layout-center>
     </template>
     <template v-else>
       <common-datatable :columns="cols" :list="staffList" :page-option="pageOption" :loading="tableLoading" />
