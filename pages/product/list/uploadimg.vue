@@ -7,7 +7,7 @@ const { uploadProductImg } = useProductManage()
 
 const { $toast } = useNuxtApp()
 const { useWxWork } = useWxworkStore()
-
+const loading = ref(false)
 const productName = ref('')
 // 成品列表详情
 useSeoMeta({
@@ -65,62 +65,63 @@ const beforeUpload = (data: any) => {
   }
 }
 
-/**
- * 上传详情图
- */
-const customRequest = useDebounceFn(async ({ file }: UploadCustomRequestOptions) => {
-  if (!file?.file)
-    return
-
-  const params = {
-    image: file.file,
-    product_id: finishedInfo.value.code,
-  }
-
-  try {
-    const res = await uploadProductImg(params)
-
-    if (res?.code === HttpCode.SUCCESS) {
-      // 将图片添加到照片墙
-      previewFileList.value.push({
-        id: `${previewFileList.value.length}`,
-        name: '图片',
-        status: 'finished',
-        url: ImageUrl(res?.data.url),
-      })
-    }
-    else {
-      $toast.error(res?.message || '图片上传失败')
-    }
-  }
-  catch (error) {
-    throw new Error(`图片上传失败: ${error || '未知错误'}`)
-  }
-}, 300)
 /** 删除照片墙图片 */
 function removeImg(data: { index: number }) {
   const tempList = JSON.parse(JSON.stringify(previewFileList.value))
   tempList.splice(data.index, 1)
-  previewFileList.value = tempList
 }
 
-/** 更新图片 */
+// 文件变更：更新预览列表
+const handleFileChange = ({ fileList }: { fileList: UploadFileInfo[] }) => {
+  previewFileList.value = fileList
+}
+
+// 上传按钮触发
 async function uploadImg() {
   if (!previewFileList.value.length) {
     $toast.error('请上传图片')
     return
   }
-  const params = {
-    images: previewFileList.value.map(item => item.url),
-    id: finishedInfo.value.id,
+
+  loading.value = true
+  const uploadUrls: string[] = []
+
+  try {
+    for (const file of previewFileList.value) {
+      if (file.url) {
+        uploadUrls.push(file.url)
+        continue
+      }
+
+      const res = await uploadProductImg({
+        image: file.file as File,
+        product_id: finishedInfo.value.code,
+      })
+
+      if (res?.code === HttpCode.SUCCESS) {
+        uploadUrls.push(res.data.url)
+      }
+      else {
+        $toast.error(res?.message || '图片上传失败')
+        return
+      }
+    }
+
+    const res = await uploadFinishedImg({
+      id: finishedInfo.value.id,
+      images: uploadUrls,
+    } as UpdateProductFinishedImages)
+
+    if (res?.code === HttpCode.SUCCESS) {
+      $toast.success('上传成功')
+      await getInfo(productCode.value)
+    }
+    else {
+      $toast.error(res?.message || '上传失败')
+    }
   }
-  const res = await uploadFinishedImg(params as UpdateProductFinishedImages)
-  if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('上传成功')
-    getInfo(productCode.value)
-  }
-  else {
-    $toast.error(res?.message || '上传失败')
+  finally {
+    loading.value = false
   }
 }
 </script>
@@ -147,10 +148,13 @@ async function uploadImg() {
               <div class="flex items-center">
                 <n-upload
                   action="#"
+                  :default-upload="false"
                   list-type="image-card"
-                  :default-file-list="previewFileList"
-                  :custom-request="customRequest"
-                  @before-upload="beforeUpload"
+                  :file-list="previewFileList"
+                  :before-upload="beforeUpload"
+                  :on-change="handleFileChange"
+                  show-download-button
+                  :show-progress="true"
                   @remove="(file) => removeImg(file)"
                 />
               </div>
@@ -166,6 +170,7 @@ async function uploadImg() {
         </template>
       </div>
     </common-layout-center>
+    <common-loading v-model="loading" />
   </div>
 </template>
 
