@@ -44,6 +44,8 @@ export const formatTimestampToDateTime = (timestamp: string | Date) => {
  */
 export function formatISODate(isoString: string) {
   // 将ISO字符串转换为Date对象
+  if (!isoString)
+    return '--'
   const date = new Date(isoString)
 
   // 提取各时间组件（自动处理时区转换）
@@ -78,13 +80,29 @@ export const getDaysFromToday = (targetDate: Date | string) => {
 }
 
 /**
+ * 日期转换为Excel日期序列号
+ * @param dateStr 日期字符串
+ * @returns 序列号
+ */
+export function dateStringToExcelSerial(dateStr: string): number {
+  const date = new Date(dateStr.replace(' ', 'T'))
+  const excelEpoch = new Date('1899-12-30T00:00:00Z') // Excel day 1 is 1900-01-01
+  const diffMs = date.getTime() - excelEpoch.getTime()
+  return diffMs / (1000 * 60 * 60 * 24)
+}
+/**
  * 将excel日期序列号转换为日期
  * @param serial excel日期序列号
  * @returns 日期
  */
-export const excelSerialToDate = (serial: number): string => {
+export const excelSerialToDate = (serial: number | string): string => {
   if (!serial || Number.isNaN(serial))
     return ''
+
+  // 如果 serial 是字符串，则尝试将其转换为excel日期
+  if (typeof serial === 'string') {
+    serial = dateStringToExcelSerial(serial)
+  }
 
   const utc_days = Math.floor(serial) - 25569
   const daySeconds = utc_days * 86400

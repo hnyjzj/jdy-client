@@ -1,18 +1,20 @@
 <script setup lang="ts">
+import { NButton } from 'naive-ui'
+
 useSeoMeta({
   title: '会员列表',
 })
 const { $toast } = useNuxtApp()
 
 const { getMemberList, getMemberInfo, getMemberWhere, updateIntegral } = useMemberManage()
-const { memberList, memberInfo, filterListToArray, memberListTotal, searchPage } = storeToRefs(useMemberManage())
-
+const { memberList, memberInfo, filterListToArray, memberListTotal, showtype } = storeToRefs(useMemberManage())
+const { searchPage } = storeToRefs(usePages())
 // 获取当前员工的store信息
 const { myStore } = storeToRefs(useStores())
 const { getMyStore } = useStores()
 
 await getMyStore({ page: 1, limit: 20 })
-
+const tableLoading = ref(false)
 const actions = ref([
   { key: 1, label: '增加' },
   { key: 2, label: '减少' },
@@ -27,14 +29,16 @@ const items = ref([{
 
 const isFilter = ref(false)
 const filterData = ref({} as Partial<Member>)
-const limit = 12
+const limit = ref(50)
 
 async function getList(where = {} as Partial<Member>) {
-  const params = { page: searchPage.value, limit, where: { store_id: myStore.value.id } } as ReqList<Member>
+  tableLoading.value = true
+  const params = { page: searchPage.value, limit: limit.value, where: { store_id: myStore.value.id } } as ReqList<Member>
   if (JSON.stringify(where) !== '{}') {
     params.where = where
   }
   await getMemberList(params)
+  tableLoading.value = false
 }
 
 await getList()
@@ -84,6 +88,15 @@ const disposeNumerical = () => {
   }
 }
 
+// const searchMember = async () => {
+//   if (searchKey.value) {
+//     await getMemberList({ page: searchPage.value, limit: limit.value, where: { phone: searchKey.value, store_id: myStore.value.id } })
+//   }
+//   else if (searchKey.value === '') {
+//     await getList()
+//   }
+// }
+
 const adjustIntegral = async () => {
   if (adjustWay.value !== 0 && fluctuant.value !== 0 && fluctuant.value !== undefined && integralParams.value.remark) {
     disposeNumerical()
@@ -101,12 +114,12 @@ async function submitWhere(f: Partial<Member>) {
   filterData.value = { ...f }
   searchPage.value = 1
   memberList.value = []
-  await getMemberList({ page: 1, limit, where: filterData.value })
+  await getMemberList({ page: 1, limit: limit.value, where: filterData.value })
 }
 
 const searchMember = async (phone: string) => {
 //   filterData.value = { phone, store_id: myStore.value.id }
-  await getMemberList({ page: 1, limit, where: { phone, store_id: myStore.value.id } })
+  await getMemberList({ page: 1, limit: limit.value, where: { phone, store_id: myStore.value.id } })
 }
 
 // 清空选项
@@ -139,10 +152,89 @@ const userJump = (id: string) => {
 const userCancel = () => {
   initPopup()
 }
+
+const showInfo = filterListToArray.value
+const getTarget = (arrs: Member, keyword: string, type: 'level' | 'status') => {
+  const targetOption = showInfo?.find(p => p.name === keyword)
+  const targetPreset = targetOption?.preset
+  return targetPreset[arrs[type]]
+}
+
+const pageOption = ref({
+  page: searchPage,
+  pageSize: 50,
+  itemCount: memberListTotal,
+  showSizePicker: true,
+  pageSizes: [50, 100, 150, 200],
+  onUpdatePageSize: (pageSize: number) => {
+    pageOption.value.pageSize = pageSize
+    limit.value = pageSize
+    updatePage(1)
+  },
+  onChange: (page: number) => {
+    updatePage(page)
+  },
+})
+
+const cols = [
+  {
+    title: '姓名',
+    key: 'name',
+  },
+  { title: '手机号', key: 'phone' },
+  { title: '专属顾问', key: 'consultant.nickname' },
+  { title: '等级', key: 'gender', render: (rowData: Member) => {
+    return getTarget(rowData, 'level', 'level')
+  } },
+  { title: '状态', key: 'gender', render: (rowData: Member) => {
+    return getTarget(rowData, 'status', 'status')
+  } },
+  { title: '入会门店', key: 'store.name' },
+  {
+    title: '操作',
+    width: 300,
+    key: 'action',
+    render: (rowData: Member) => {
+      return [h(
+        NButton,
+        {
+          type: 'primary',
+          size: 'small',
+          class: 'mr-[4px]',
+          onClick: () => {
+            userJump(rowData.id)
+          },
+        },
+        { default: () => '查看详情' },
+      ), h(
+        NButton,
+        {
+          type: 'info',
+          size: 'small',
+          class: 'mr-[4px]',
+          onClick: () => {
+            goIntegral(rowData.id)
+          },
+        },
+        { default: () => '查看积分' },
+      ), h(
+        NButton,
+        {
+          type: 'info',
+          size: 'small',
+          onClick: () => {
+            adjustment(rowData.id)
+          },
+        },
+        { default: () => '调整积分' },
+      )]
+    },
+  },
+]
 </script>
 
 <template>
-  <div class="pb-[80px] grid-12">
+  <div class="">
     <common-model
       v-model:model-value="show"
       :show-ok="true"
@@ -229,33 +321,30 @@ const userCancel = () => {
       </div>
     </common-model>
 
-    <div id="header" class="px-[16px] py-[12px] w-full col-12" uno-lg="col-8 offset-2">
-      <div class="flex flex-row gap-2">
-        <product-manage-company class="color-[#fff]" @change="changeStores" />
-        <product-filter-search
-          placeholder="搜索手机号"
-          class="color-[#fff] flex-1"
-          @submit="searchMember"
-          @clear="clearFn"
-        />
-      </div>
-      <div class="flex-center-between gap-2 py-[16px]">
-        <div class="text-size-[14px] color-[#fff]">
-          共{{ memberListTotal }}条数据
+    <product-filter
+      v-model:showtype="showtype"
+      :product-list-total="memberListTotal" placeholder="搜索手机号" @filter="openFilter" @search="searchMember" @clear-search="clearFn">
+      <template #company>
+        <product-manage-company @change="changeStores" />
+      </template>
+    </product-filter>
+    <template v-if="showtype === 'list'">
+      <common-layout-center>
+        <div class="p-[16px]">
+          <template v-if="memberList.length">
+            <member-lists-list :info="memberList" @go-info="userJump" @view-integral="goIntegral" @change-integral="adjustment" />
+            <common-page v-model:page="searchPage" :total="memberListTotal" :limit="limit" @update:page="updatePage" />
+          </template>
+          <template v-else>
+            <common-emptys text="暂无数据" />
+          </template>
         </div>
-        <div @click="openFilter()">
-          <product-filter-senior class="color-[#fff]" />
-        </div>
-      </div>
-
-      <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
-
-      <div class="flex flex-col pb-[16px]">
-        <member-lists-list :info="memberList" @go-info="userJump" @view-integral="goIntegral" @change-integral="adjustment" />
-      </div>
-
-      <common-page v-model:page="searchPage" :total="memberListTotal" :limit="limit" @update:page="updatePage" />
-    </div>
+      </common-layout-center>
+    </template>
+    <template v-else>
+      <common-datatable :columns="cols" :list="memberList" :page-option="pageOption" :loading="tableLoading" />
+    </template>
+    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
   </div>
 </template>
 

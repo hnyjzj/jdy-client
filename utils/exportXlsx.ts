@@ -84,12 +84,10 @@ function convertDataWithChineseHeaders(
  * 导出 Excel
  * @param data 需要导出的数据
  * @param fields 字段定义（带 name 和 preset）
- * @param filename 文件名（默认：商品导出.xlsx）
  */
 export function exportProductListToXlsx(
   data: Record<string, any>[],
   fields: { name: string, preset?: Record<any, string> }[],
-  filename = '商品导出.xlsx',
 ) {
   const enumMap = extractPresets(fields)
   const mappedData = data.map(row => mapEnumValues(row, enumMap))
@@ -97,5 +95,13 @@ export function exportProductListToXlsx(
   const worksheet = XLSX.utils.aoa_to_sheet(aoaData)
   const workbook = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
-  XLSX.writeFile(workbook, filename)
+  // 添加时间戳
+  const now = new Date()
+  const pad = (n: number) => n.toString().padStart(2, '0')
+  const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())})}`
+
+  // 拼接文件名
+  const finalFilename = `货品列表_${timestamp}.xlsx`
+
+  XLSX.writeFile(workbook, finalFilename)
 }

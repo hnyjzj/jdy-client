@@ -8,22 +8,47 @@ export const useFinished = defineStore('Finished', {
      * 排序后的筛选条件列表
      */
     finishedFilterListToArray: FilterWhere<ProductFinisheds>[]
+    searchPage: number
+    finisheStatistics: FinisheStatistics
+    finishedListAll: ProductFinisheds[]
   } => ({
     finishedFilterList: {} as Where<ProductFinisheds>,
     finishedList: [],
     finishedInfo: {} as ProductFinisheds,
     finishedListTotal: 0,
     finishedFilterListToArray: [] as FilterWhere<ProductFinisheds>[],
+    searchPage: 1,
+    finisheStatistics: {} as FinisheStatistics,
+    finishedListAll: [],
   }),
+
   actions: {
     // 成品列表
     async getFinishedList(pamars: ReqList<ProductFinisheds>) {
       try {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
-        const { data } = await https.post<ResList<ProductFinisheds>, ReqList<ProductFinisheds>>('/product/finished/list', pamars)
+        const { data } = await https.post<ResList<ProductFinisheds> & FinisheStatistics, ReqList<ProductFinisheds>>('/product/finished/list', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.finishedListTotal = data.value.data.total
           this.finishedList = data.value.data.list
+          this.finisheStatistics.access_fee = data.value.data.access_fee
+          this.finisheStatistics.label_price = data.value.data.label_price
+          this.finisheStatistics.total = data.value.data.total
+          this.finisheStatistics.weight_metal = data.value.data.weight_metal
+        }
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
+      }
+    },
+    /** 成品列表不分页 */
+    async getFinishedListAll(pamars: AllFinished<ProductFinisheds>) {
+      try {
+        pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
+        const { data } = await https.post<ResList<ProductFinisheds>, AllFinished<ProductFinisheds>>('/product/finished/list', pamars)
+        if (data.value?.code === HttpCode.SUCCESS) {
+          this.finishedListAll = data.value.data.list
         }
         return data.value
       }

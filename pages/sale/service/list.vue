@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useCascaderAreaData } from '@vant/area-data'
+import { NButton } from 'naive-ui'
 // 维修单列表
 useSeoMeta({
   title: '维修单列表',
@@ -8,10 +9,11 @@ const areaoptions = useCascaderAreaData()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 const { getRepairOrderWhere, getRepairOrderList, cancelRepairOrder, payRepairOrder } = useRepair()
-const { repairOrderList, Total, repairFilterList, searchPage, repairFilterListToArray } = storeToRefs(useRepair())
+const { repairOrderList, total, repairFilterList, repairFilterListToArray, showtype } = storeToRefs(useRepair())
+const { searchPage } = storeToRefs(usePages())
 const filterData = ref({} as Partial<service>)
 const filterShow = ref(false)
-
+const tableLoading = ref(false)
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
 const getMember = async (val: string) => {
@@ -29,11 +31,13 @@ const payOrder = async (id: string) => {
 const limits = ref(12)
 // 获取列表
 const getList = async (where = {} as Partial<OrderInfo>) => {
+  tableLoading.value = true
   const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<OrderInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
   await getRepairOrderList(params)
+  tableLoading.value = false
 }
 const handleClick = async (id: string) => {
   navigateTo(`/sale/sales/order?id=${id}`)
@@ -106,29 +110,108 @@ const getSaleman = async () => {
     $toast.error(res?.data.value?.message || '请求失败')
   }
 }
+
+const pageOption = ref({
+  page: searchPage,
+  pageSize: 50,
+  itemCount: total,
+  showSizePicker: true,
+  pageSizes: [50, 100, 150, 200],
+  onUpdatePageSize: (pageSize: number) => {
+    pageOption.value.pageSize = pageSize
+    limits.value = pageSize
+    updatePage(1)
+  },
+  onChange: (page: number) => {
+    updatePage(page)
+  },
+})
+
+const cols = [
+  {
+    title: '所属门店',
+    key: 'store.name',
+  },
+  {
+    title: '会员',
+    key: 'member.nickname',
+    render: (rowData: ServiceOrderInfo) => {
+      return rowData.member?.nickname || '--'
+    },
+  },
+  {
+    title: '会员手机号',
+    key: 'member.phone',
+  },
+  {
+    title: '维修项目',
+    key: 'name',
+  },
+  {
+    title: '货品名称',
+    key: '',
+    render: (rowData: ServiceOrderInfo) => {
+      return rowData?.products?.length ? rowData?.products[0]?.name : '--'
+    },
+  },
+  {
+    title: '维修费',
+    key: 'expense',
+  },
+  {
+    title: '取货方式',
+    render: (rowData: ServiceOrderInfo) => {
+      return rowData?.delivery_method === 1 ? '自提' : '邮寄'
+    },
+  },
+
+  {
+    title: '创建时间',
+    key: 'age',
+    render: (rowData: ServiceOrderInfo) => {
+      return formatISODate(rowData.created_at as string)
+    },
+  },
+  {
+    title: '更新时间',
+    key: 'age',
+    render: (rowData: ServiceOrderInfo) => {
+      return formatISODate(rowData.updated_at as string)
+    },
+  },
+  {
+    title: '操作',
+    key: 'action',
+    render: (rowData: ServiceOrderInfo) => {
+      return h(
+        NButton,
+        {
+          type: 'info',
+          size: 'small',
+          onClick: () => {
+            if (!rowData.id)
+              return
+            navigateTo(`/sale/service/info?id=${rowData.id}`)
+          },
+        },
+        { default: () => '查看详情' },
+      )
+    },
+  },
+]
 </script>
 
 <template>
   <div>
-    <div class="grid-12 sticky top-0 bg-gradient-linear-[180deg,#3875C5,#467EC9]  z-1">
-      <div id="header" class="px-[16px] py-[12px] w-full   col-12" uno-lg="col-8 offset-2">
-        <div class="flex flex-row gap-2">
-          <product-manage-company class="color-[#fff]" @change="changeStores()" />
-          <product-filter-search
-            placeholder="搜索订单号" class="color-[#fff] flex-1" @submit="searchOrder" @clear="clearFn" />
-        </div>
-        <div class="flex-center-between gap-2 py-[16px]">
-          <div class="text-size-[14px] color-[#fff]">
-            共{{ Total }}条数据
-          </div>
-          <div @click="openFilter()">
-            <product-filter-senior class="color-[#fff]" />
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="grid-12">
-      <div class="flex flex-col  col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
+    <product-filter
+      v-model:showtype="showtype"
+      :product-list-total="total" placeholder="搜索订单号" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
+      <template #company>
+        <product-manage-company @change="changeStores" />
+      </template>
+    </product-filter>
+    <template v-if="showtype === 'list'">
+      <common-layout-center>
         <div class="p-[16px]">
           <template v-if="repairOrderList.length">
             <sale-service-list
@@ -139,14 +222,17 @@ const getSaleman = async () => {
               :get-list="getList"
               @user-click="handleClick"
             />
-            <common-page v-model:page="searchPage" :total="Total" :limit="limits" @update:page="updatePage" />
+            <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
           </template>
           <template v-else>
             <common-emptys text="暂无数据" />
           </template>
         </div>
-      </div>
-    </div>
+      </common-layout-center>
+    </template>
+    <template v-else>
+      <common-datatable :columns="cols" :list="repairOrderList" :page-option="pageOption" :loading="tableLoading" />
+    </template>
     <!-- filter -->
     <div>
       <common-filter-where v-model:show="filterShow" :data="filterData" :filter="repairFilterListToArray" @submit="submitWhere" @reset="resetWhere">
