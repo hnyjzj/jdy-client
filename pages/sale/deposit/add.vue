@@ -14,6 +14,7 @@ const { getMemberList } = useMemberManage()
 const { $toast } = useNuxtApp()
 const { getPhraseList } = usePhrase()
 const Key = ref()
+const layoutLoading = ref(false)
 const getSearchPhrase = async (value: string) => {
   const res = await getPhraseList({ page: 1, limit: 10, where: { store_id: myStore.value.id, content: value || '' } })
   return res || [] as Phrase[]
@@ -74,6 +75,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
       // 成功的操作
+
       formData.value.products = [...showProductList.value]
       formData.value.store_id = myStore.value.id
       // 添加备注
@@ -84,13 +86,24 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
           formData.value.remarks?.push(trimmedRemark)
         }
       }
-      const res = await submitDepositOrder(formData.value)
-      if (res?.code === HttpCode.SUCCESS) {
-        $toast.success('下单成功')
-        navigateTo('/sale/deposit/list', { external: true, replace: true, redirectCode: 200 })
-        formData.value = { ...initForm.value }
-        showProductList.value = []
-        Key.value = Date.now().toString()
+      layoutLoading.value = true
+      try {
+        const res = await submitDepositOrder(formData.value)
+        if (res?.code === HttpCode.SUCCESS) {
+          $toast.success('下单成功')
+          navigateTo('/sale/deposit/list', { external: true, replace: true, redirectCode: 200 })
+          formData.value = { ...initForm.value }
+          showProductList.value = []
+          Key.value = Date.now().toString()
+        }
+        else {
+          $toast.error('创建订单失败')
+        }
+        layoutLoading.value = false
+      }
+      catch (error: any) {
+        layoutLoading.value = false
+        throw new Error(error)
       }
     }
     else {
@@ -152,6 +165,7 @@ const changeStore = () => {
         </n-form>
       </div>
     </div>
+    <common-loading v-model="layoutLoading" />
   </div>
 </template>
 

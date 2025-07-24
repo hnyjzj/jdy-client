@@ -15,6 +15,7 @@ const { memberList } = storeToRefs(useMemberManage())
 const { createMember } = useMemberManage()
 const { getSaleWhere } = useDepositOrder()
 const { filterList: salewhere } = storeToRefs(useDepositOrder())
+const layoutLoading = ref(false)
 // 回去员工 列表
 const getStaff = async () => await getStoreStaffList({ id: myStore.value.id })
 await otherOrderWhere()
@@ -96,24 +97,41 @@ const handleValidateButtonClick = (e: any) => {
         $toast.error('当前门店与操作门店不匹配,无法操作')
         return
       }
-
       // 成功的操作
       formData.value.store_id = myStore.value.id
+      layoutLoading.value = true
       if (!route.query.id) {
         // 新增
-        const res = await addOtherOrder(formData.value)
-        if (res?.value?.code === HttpCode.SUCCESS) {
-          $toast.success('下单成功')
-          navigateTo('/sale/other/list', { external: true, replace: true, redirectCode: 200 })
-          formData.value = { ...initForm.value }
-          Key.value = Date.now().toString()
+        try {
+          const res = await addOtherOrder(formData.value)
+          if (res?.value?.code === HttpCode.SUCCESS) {
+            $toast.success('下单成功')
+            navigateTo('/sale/other/list', { external: true, replace: true, redirectCode: 200 })
+            formData.value = { ...initForm.value }
+            Key.value = Date.now().toString()
+          }
+          else {
+            $toast.error('创建订单失败')
+          }
+          layoutLoading.value = false
+        }
+        catch (error: any) {
+          layoutLoading.value = false
+          throw new Error(error)
         }
       }
       else {
         // 修改
-        const res = await updateOtherOrder(formData.value)
-        if (res?.value?.code === HttpCode.SUCCESS) {
-          $toast.success('更新成功')
+        try {
+          const res = await updateOtherOrder(formData.value)
+          if (res?.value?.code === HttpCode.SUCCESS) {
+            $toast.success('更新成功')
+          }
+          layoutLoading.value = false
+        }
+        catch (error: any) {
+          layoutLoading.value = false
+          throw new Error(error)
         }
       }
     }
@@ -169,6 +187,7 @@ const handleValidateButtonClick = (e: any) => {
     <template v-if="otherOrderDetail.store_id && otherOrderDetail.store_id !== '' && route.query.id">
       <correspond-store :correspond-ids="[otherOrderDetail.store_id]" />
     </template>
+    <common-loading v-model="layoutLoading" />
   </div>
 </template>
 
