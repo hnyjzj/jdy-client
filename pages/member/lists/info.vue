@@ -55,7 +55,11 @@ const exhibition = (id: string) => {
         />
       </n-card>
     </n-modal>
-    <member-lists-info :data="memberInfo" :consumes="memberConsume" @go-edit="relyOnId" @show-detail="exhibition" />
+    <common-layout-center>
+      <div class="pt-[20px]">
+        <member-lists-info :data="memberInfo" :consumes="memberConsume" @go-edit="relyOnId" @show-detail="exhibition" />
+      </div>
+    </common-layout-center>
   </div>
 </template>
 

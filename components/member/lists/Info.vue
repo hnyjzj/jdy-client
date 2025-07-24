@@ -1,8 +1,13 @@
 <script setup lang="ts">
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   data: Member
   consumes: orderInfoProducts[]
-}>()
+  showbottom?: boolean
+  showDetail?: boolean
+}>(), {
+  showbottom: true,
+  showDetail: true,
+})
 
 const emits = defineEmits<{
   goEdit: [id: string]
@@ -295,9 +300,11 @@ const processDate = (date: string) => {
               <template v-for="(item, index) in props.consumes" :key="index">
                 <common-gradient :title="`订单号：${item.order_id}`" theme="solid" :foldable="true" font-size="14px">
                   <template #right>
-                    <div class="butt" @click="emits('showDetail', item.order_id)">
-                      查看详情
-                    </div>
+                    <template v-if="props.showDetail">
+                      <div class="butt" @click="emits('showDetail', item.order_id)">
+                        查看详情
+                      </div>
+                    </template>
                   </template>
                   <template #body>
                     <div class="grid grid-cols-1 gap-[8px]" uno-md="grid-cols-2" uno-lg="grid-cols-2">
@@ -357,13 +364,14 @@ const processDate = (date: string) => {
       <common-emptys text="该会员信息有缺失！请前往编辑完善" />
     </div>
   </template>
-
-  <common-button-bottom
-    confirm-text="编辑"
-    cancel-text="返回"
-    @confirm="() => emits('goEdit', props.data.id)"
-    @cancel="backtrack"
-  />
+  <template v-if="props.showbottom">
+    <common-button-bottom
+      confirm-text="编辑"
+      cancel-text="返回"
+      @confirm="() => emits('goEdit', props.data.id)"
+      @cancel="backtrack"
+    />
+  </template>
 </template>
 
 <style scoped lang="scss">

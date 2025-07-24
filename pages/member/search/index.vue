@@ -1,12 +1,10 @@
 <script setup lang="ts">
-// const { $toast } = useNuxtApp()
-
 useSeoMeta({
   title: '会员检索',
 })
-const { getMemberList } = useMemberManage()
+const { getMemberList, getMemberConsume } = useMemberManage()
 const { memberList, memberConsume } = storeToRefs(useMemberManage())
-// const { myStore } = storeToRefs(useStores())
+
 async function getList(where = {} as Partial<Member>) {
   const params = { page: 1, limit: 1, where: { } } as ReqList<Member>
   if (JSON.stringify(where) !== '{}') {
@@ -14,23 +12,16 @@ async function getList(where = {} as Partial<Member>) {
   }
   await getMemberList(params)
 }
-const show = ref(false)
-const targetId = ref('')
-type MemberParams = Pick<Member, 'id' | 'external_user_id'>
-const memberParams = ref<MemberParams>({} as MemberParams)
-getList({ phone: '15038218863' })
+
 const getInfo = async (val: string) => {
-  getList({ phone: val })
-//   await getMemberConsume({ id: memberParams.value.id })
-}
-const relyOnId = () => {
-  if (memberParams.value.id) {
-    jump('/member/lists/edit', { id: memberParams.value.id })
+  await getList({ phone: val })
+  if (memberList.value.length) {
+    await getMemberConsume({ id: memberList.value[0].id })
   }
 }
-const exhibition = (id: string) => {
-  targetId.value = id
-  show.value = true
+const clearFn = () => {
+  memberList.value = []
+  memberConsume.value = []
 }
 </script>
 
@@ -39,15 +30,17 @@ const exhibition = (id: string) => {
     <common-layout-center>
       <div class="p-4">
         <div class="color-[#fff] py-[12px] flex justify-between">
-          <product-manage-company />
           <div class="flex-1 px-2 sm:px-4">
-            <product-filter-search placeholder="搜索会员手机号" @submit="getInfo" />
+            <product-filter-search placeholder="搜索会员手机号进行检索" @submit="getInfo" @clear="clearFn" />
           </div>
         </div>
 
         <div>
           <template v-if="memberList.length !== 0">
-            <member-lists-info :data="memberList[0]" :consumes="memberConsume" @go-edit="relyOnId" @show-detail="exhibition" />
+            <member-lists-info :data="memberList[0]" :consumes="memberConsume" :showbottom="false" :show-detail="false" />
+          </template>
+          <template v-else>
+            <common-emptys />
           </template>
         </div>
       </div>
