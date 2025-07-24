@@ -64,6 +64,16 @@ export const useCheck = defineStore('check', {
         throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
       }
     },
+    /** 盘点单详情 */
+    async getCheckInfoAll(params: CheckInfoParamsAll) {
+      try {
+        const { data } = await https.post<CheckInfo, CheckInfoParamsAll>('/product/inventory/info', params)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
+      }
+    },
     /** 更改盘点单状态 */
     async changeCheckStatus(id: Check['id'], status: Check['status']) {
       try {

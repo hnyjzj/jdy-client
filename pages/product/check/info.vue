@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { checkInfo, checkFilterList } = storeToRefs(useCheck())
-const { getCheckInfo, getCheckWhere, changeCheckStatus, addCheckProduct, remove } = useCheck()
+const { getCheckInfo, getCheckWhere, changeCheckStatus, addCheckProduct, remove, getCheckInfoAll } = useCheck()
 const { userinfo } = useUser()
 const { $toast } = useNuxtApp()
 const { useWxWork } = useWxworkStore()
@@ -250,6 +250,42 @@ const removeDict = useDebounceFn(async (product_id) => {
     $toast.error(res?.message || '删除失败')
   }
 }, 1000)
+
+/**
+ * 列表导出excel表格
+ */
+async function downloadLocalFile() {
+  loading.value = true
+  const res = await getCheckInfoAll({ all: true, id: checkInfo.value.id })
+  if (res?.code === HttpCode.SUCCESS) {
+    if (!res.data.loss_products?.length) {
+      loading.value = false
+      return $toast.error('盘亏列表是空的')
+    }
+    const data = res.data
+    const summary: [string, string | number][] = [
+      ['盘点人', data.inventory_persons.map(v => v.nickname).join('、')],
+      ['监盘人', data?.inspector?.nickname || ''],
+      ['盘点单号', data.id],
+      ['盘点时间', data.created_at || ''],
+      ['盘点品牌', getMultipleVal('brand', res.data.brand) || ''],
+      ['盘点仓库', data.type === GoodsType.ProductFinish ? '成品' : data.type === GoodsType.ProductOld ? '旧料' : ''],
+      ['备注', data.remark || ''],
+      ['状态', getRadioVal('status', data.status)],
+      ['盘点范围', getRadioVal('range', data.range)],
+      ['大类', data.category.map(v => getRadioVal('category', v)).join('、') ?? ''],
+      ['品类', data.category.map(v => getRadioVal('category', v)).join('、') ?? ''],
+      ['工艺', data.craft.map(v => getRadioVal('craft', v)).join('、') ?? ''],
+      ['总件数', data.count_quantity],
+      ['总金重', data.count_weight_metal],
+      ['总标签价', data.count_price],
+      ['盘亏', data.loss_count],
+    ]
+    const arr = res.data.loss_products.map(item => item.product_finished)
+    await exportProductListToXlsx(arr, finishedFilterListToArray.value, '盘亏列表', summary)
+    loading.value = false
+  }
+}
 </script>
 
 <template>
@@ -433,6 +469,10 @@ const removeDict = useDebounceFn(async (product_id) => {
           </common-gradient>
         </div>
         <div class="info flex flex-col gap-4 rounded-6 blur-bga w-auto px-4 py-4 mb-6">
+          <div class="text-[rgba(57,113,243,1)] flex" @click="downloadLocalFile">
+            <icon name="i-svg:download" :size="16" color="#666" />
+            导出数据
+          </div>
           <div class="flex flex-col gap-3">
             <common-tab-secondary :current-selected="product_status" :options="inventoryOptions" :info="checkInfo" @change-status="changeStatus" />
             <common-step :description="step" :active-index="checkInfo.status" />
@@ -504,7 +544,8 @@ const removeDict = useDebounceFn(async (product_id) => {
       @submit="ConfirmUse"
       @cancel="confirmShow = false"
     />
-    <common-loading v-show="loading" text="正在处理中" />
+    <common-loading v-model="loading" text="正在处理中" />
+
     <product-check-warehouse ref="uploadRef" v-model="importModel" @upload="bulkupload" />
     <correspond-store :correspond-ids="[checkInfo.store_id]" />
   </div>

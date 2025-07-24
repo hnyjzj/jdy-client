@@ -55,6 +55,16 @@ export const useAllocate = defineStore('Allocate', {
         throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
       }
     },
+    /** 调拨单详情 */
+    async getAllocateInfoAll(param: AllocateInfoParamsAll) {
+      try {
+        const { data } = await https.post<Allocate, AllocateInfoParamsAll>('/product/allocate/info', param)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
+      }
+    },
     /** 确认调拨 */
     async confirmAllcate(id: Allocate['id']) {
       try {

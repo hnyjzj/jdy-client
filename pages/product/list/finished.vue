@@ -176,6 +176,7 @@ const cols = [
     },
   },
 ]
+
 /**
  * 货品列表导出excel表格
  */
@@ -183,8 +184,14 @@ async function downloadLocalFile() {
   isLoading.value = true
   const res = await getFinishedListAll({ all: true, where: filterData.value })
   if (res?.code === HttpCode.SUCCESS) {
-    await exportProductListToXlsx(finishedListAll.value, finishedFilterListToArray.value)
-    isLoading.value = false
+    if (!res?.data?.list.length) {
+      isLoading.value = false
+      return $toast.error('列表是空的')
+    }
+    else {
+      await exportProductListToXlsx(finishedListAll.value, finishedFilterListToArray.value)
+      isLoading.value = false
+    }
   }
 }
 </script>

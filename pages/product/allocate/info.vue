@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { getAllocateInfo, getAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove, add } = useAllocate()
+const { getAllocateInfo, getAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove, add, getAllocateInfoAll } = useAllocate()
 const { allocateInfo, allocateFilterList, allocateFilterListToArray } = storeToRefs(useAllocate())
 const { useWxWork } = useWxworkStore()
 const { getFinishedWhere, getFinishedList } = useFinished()
@@ -15,7 +15,7 @@ useSeoMeta({
 const route = useRoute()
 const router = useRouter()
 const type = ref<GoodsTypePure>()
-
+const loading = ref(false)
 const { $toast } = useNuxtApp()
 /** 添加货品弹窗显隐 */
 const isAddModel = ref(false)
@@ -238,6 +238,36 @@ async function getOldids() {
     .filter(id => oldMap.has(id))
     .map(id => id) // 直接返回 id 值，不需要深拷贝
 }
+
+/**
+ * 列表导出excel表格
+ */
+async function downloadLocalFile() {
+  loading.value = true
+  const res = await getAllocateInfoAll({ all: true, id: allocateInfo.value.id })
+  if (res?.code === HttpCode.SUCCESS) {
+    if (!res.data.product_finisheds?.length && !res.data.product_olds?.length) {
+      loading.value = false
+      return $toast.error('空列表')
+    }
+    const summary: [string, string | number][] = [
+      ['调拨单号', res.data.id],
+      ['调拨数量', res.data.product_count],
+      ['入网费合计', res.data.product_total_access_fee],
+      ['标签价合计', res.data.product_total_label_price],
+      ['金重合计', res.data.product_total_weight_metal],
+    ]
+
+    if (type.value === GoodsTypePure.ProductFinish) {
+      await exportProductListToXlsx(res.data.product_finisheds, finishedFilterListToArray.value, '调拨单详情商品列表', summary)
+      loading.value = false
+    }
+    if (type.value === GoodsTypePure.ProductOld) {
+      await exportProductListToXlsx(res.data.product_olds, oldFilterListToArray.value, '调拨单详情商品列表', summary)
+      loading.value = false
+    }
+  }
+}
 </script>
 
 <template>
@@ -253,6 +283,10 @@ async function getOldids() {
 
         <template v-if="productList?.length">
           <div class="p-4 blur-bgc rounded-6">
+            <div class="text-[rgba(57,113,243,1)] flex mb-4" @click="downloadLocalFile">
+              <icon name="i-svg:download" :size="16" color="#666" />
+              导出数据
+            </div>
             <template v-if="type === GoodsTypePure.ProductFinish">
               <template v-for="(item, index) in allocateInfo.product_finisheds" :key="index">
                 <div class="mb-2">
@@ -414,6 +448,7 @@ async function getOldids() {
       <common-create @click="create" />
     </template>
     <correspond-store :correspond-ids="[allocateInfo.from_store_id, allocateInfo.to_store_id]" />
+    <common-loading v-model="loading" title="正在处理中" />
   </div>
 </template>
 

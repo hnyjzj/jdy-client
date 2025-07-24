@@ -88,20 +88,32 @@ function convertDataWithChineseHeaders(
 export function exportProductListToXlsx(
   data: Record<string, any>[],
   fields: { name: string, preset?: Record<any, string> }[],
+  name: string = '货品列表',
+  summary?: [string, string | number][],
 ) {
   const enumMap = extractPresets(fields)
   const mappedData = data.map(row => mapEnumValues(row, enumMap))
   const aoaData = convertDataWithChineseHeaders(mappedData, fieldMap)
-  const worksheet = XLSX.utils.aoa_to_sheet(aoaData)
+
+  // 👉 构造统计信息区域
+  let finalData: any[][] = []
+
+  if (summary && summary.length > 0) {
+    const summaryRows = [['', '合计'], ...summary, []] // 空行隔开
+    finalData = [...summaryRows, ...aoaData]
+  }
+  else {
+    finalData = aoaData
+  }
+
+  const worksheet = XLSX.utils.aoa_to_sheet(finalData)
   const workbook = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
-  // 添加时间戳
+
   const now = new Date()
   const pad = (n: number) => n.toString().padStart(2, '0')
-  const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())})}`
-
-  // 拼接文件名
-  const finalFilename = `货品列表_${timestamp}.xlsx`
+  const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}`
+  const finalFilename = `${name}_${timestamp}.xlsx`
 
   XLSX.writeFile(workbook, finalFilename)
 }

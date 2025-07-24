@@ -219,3 +219,8 @@ interface CheckInfoParams {
   page: number
   limit: number
 }
+
+interface CheckInfoParamsAll {
+  id: string
+  all: boolean
+}
