@@ -74,7 +74,7 @@ const themeProcess = () => {
 
 <template>
   <div
-    class="info"
+    class="info mb-[12px]"
     :style="{ boxShadow: props.hasShadow ? '0px 8px 16px rgba(0, 0, 0, 0.1)' : 'none' }"
   >
     <div
