@@ -172,13 +172,19 @@ judgeType()
                         {{ item.finished.product?.name || '' }}
                       </td>
                       <td class="table-body">
-                        {{ item.finished.product?.weight_metal || '' }}
+                        <template v-if="item.finished.product?.retail_type !== 1">
+                          {{ item.finished.product?.weight_metal || '' }}
+                        </template>
                       </td>
                       <td class="table-body">
-                        {{ formartMoney(item.finished.price_gold) || '' }}
+                        <template v-if="item.finished.product?.retail_type !== 1">
+                          {{ formartMoney(item.finished.price_gold) || '' }}
+                        </template>
                       </td>
                       <td class="table-body">
-                        {{ formartMoney(item.finished.labor_fee) || '' }}
+                        <template v-if="item.finished.product?.retail_type !== 1">
+                          {{ formartMoney(item.finished.labor_fee) || '' }}
+                        </template>
                       </td>
                       <td class="table-body">
                         {{ item.finished.product?.certificate?.[0] || '' }}
