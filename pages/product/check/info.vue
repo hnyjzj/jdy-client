@@ -135,18 +135,32 @@ function handleClick(item: funBtn) {
   submitChange(item.status)
 }
 
+/** 扫码 */
+const scanCode = async () => {
+  const wx = await useWxWork()
+  const code = await wx?.scanQRCode()
+  if (code) {
+    goodCode.value = code
+    await submitGoods(true)
+  }
+}
+
 /**
  * 添加货品
  * @params params: AddCheckProduct
  * @params isClose: boolean 是否关闭添加弹窗
+ * @params isScan: boolean 是否是扫码添加
  */
-async function addCheckGood(params: AddCheckProduct, isClose = true) {
+async function addCheckGood(params: AddCheckProduct, isClose = true, isScan = false) {
   try {
     const res = await addCheckProduct(params)
     if (res?.code === HttpCode.SUCCESS) {
       await getInfo()
       $toast.success('添加成功', 1000)
       goodCode.value = ''
+      if (isScan) {
+        await scanCode()
+      }
     }
     else {
       $toast.error(res?.message || '添加失败', 1000)
@@ -154,18 +168,19 @@ async function addCheckGood(params: AddCheckProduct, isClose = true) {
   }
   finally {
     loading.value = false
-    importModel.value = isClose
+    inputModel.value = isClose
+    importModel.value = false
     uploadRef.value?.clearData()
   }
 }
 
-async function submitGoods() {
+async function submitGoods(isScan = false) {
   const params: AddCheckProduct = {
     id: checkInfo.value.id,
     codes: [goodCode.value],
   }
   loading.value = true
-  await addCheckGood(params)
+  return await addCheckGood(params, true, isScan)
 }
 /** 批量上传盘点货品 */
 async function bulkupload(data: string[]) {
@@ -236,15 +251,6 @@ async function pull() {
   await getInfo()
 }
 
-/** 扫码 */
-const scanCode = async () => {
-  const wx = await useWxWork()
-  const code = await wx?.scanQRCode()
-  if (code) {
-    goodCode.value = code
-  }
-}
-
 const removeDict = useDebounceFn(async (product_id) => {
   const res = await remove(checkInfo.value.id, product_id)
   if (res?.code === HttpCode.SUCCESS) {
@@ -254,7 +260,7 @@ const removeDict = useDebounceFn(async (product_id) => {
   else {
     $toast.error(res?.message || '删除失败')
   }
-}, 1000)
+}, 500)
 
 /**
  * 列表导出excel表格
@@ -541,7 +547,7 @@ async function downloadLocalFile() {
       </div>
     </template>
     <product-upload-choose v-model:is-model="uploadModel" title="正在盘点" @go-add="uploadModel = false;inputModel = true" @batch="importModel = true" />
-    <common-model v-model="inputModel" title="正在盘点" :show-ok="true" @confirm="submitGoods">
+    <common-model v-model="inputModel" title="正在盘点" :show-ok="true" @confirm="submitGoods" @cancel="goodCode = ''">
       <div class="mb-8 relative min-h-[200px]">
         <div class="uploadInp cursor-pointer flex">
           <n-input v-model:value="goodCode" placeholder="请输入条码" />
