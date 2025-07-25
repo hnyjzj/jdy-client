@@ -18,7 +18,7 @@ if (route.query.id) {
 }
 /** 单条添加搜索配件参数 */
 const searchParams = ref({
-  label: 'code',
+  label: 'name',
   val: '',
 } as
 {
@@ -26,8 +26,8 @@ const searchParams = ref({
   val: any
 })
 const options = ref([
-  { label: '配件条目', value: 'code' },
   { label: '配件名称', value: 'name' },
+  { label: '配件条码', value: 'code' },
 ])
 const isAddSingle = ref(false)
 const selectProduct = ref([] as ProductAccessories[])
