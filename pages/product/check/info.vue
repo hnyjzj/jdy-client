@@ -549,13 +549,13 @@ async function downloadLocalFile() {
     <product-upload-choose v-model:is-model="uploadModel" title="正在盘点" @go-add="uploadModel = false;inputModel = true" @batch="importModel = true" />
     <common-model v-model="inputModel" title="正在盘点" :show-ok="true" @confirm="submitGoods" @cancel="goodCode = ''">
       <div class="mb-8 relative min-h-[200px]">
-        <div class="uploadInp cursor-pointer flex">
-          <n-input v-model:value="goodCode" placeholder="请输入条码" />
+        <div class="uploadInp cursor-pointer">
           <div
-            class="flex items-center justify-end cursor-pointer"
+            class="flex items-center justify-center cursor-pointer p-10"
             @click="scanCode()">
-            <icon class="ml-2" name="i-icon:scanit" :size="20" />
+            <icon class="ml-2" name="i-icon:scanit" :size="36" />
           </div>
+          <n-input v-model:value="goodCode" placeholder="请输入条码" />
         </div>
       </div>
     </common-model>
