@@ -194,20 +194,24 @@ onMounted(() => {
       </template>
     </div>
 
-    <template v-if="(!isMobile && OrderDetail?.status === 3) && !route.query.embedded || (!isMobile && OrderDetail?.status === 4) && !route.query.embedded">
-      <common-button-bottom
-        confirm-text="打印"
-        cancel-text="返回"
-        @confirm="() => {
-          if (myStore.id === OrderDetail.store_id){
-            jumpPre()
-          }
-          else {
-            $toast.error('当前门店与操作门店不匹配,无法操作')
-          }
-        }"
-        @cancel="router.back()"
-      />
+    <template v-if="OrderDetail?.status === 3 || OrderDetail?.status === 4">
+      <template v-if="!route.query.embedded">
+        <template v-if="!isMobile">
+          <common-button-bottom
+            confirm-text="打印"
+            cancel-text="返回"
+            @confirm="() => {
+              if (myStore.id === OrderDetail.store_id){
+                jumpPre()
+              }
+              else {
+                $toast.error('当前门店与操作门店不匹配,无法操作')
+              }
+            }"
+            @cancel="router.back()"
+          />
+        </template>
+      </template>
     </template>
     <correspond-store :correspond-ids="[OrderDetail.store_id]" />
   </div>
