@@ -4,10 +4,14 @@ const props = defineProps<{
 }>()
 
 const { myStore } = storeToRefs(useStores())
-const { switchStore } = useStores()
+const { switchStore, getMyStore } = useStores()
 const isGoChangestore = ref(false)
 
-if (props.correspondIds?.length && myStore.value && myStore.value.id) {
+if (!myStore.value?.name) {
+  await getMyStore({ page: 1, limit: 10 })
+}
+
+if (props.correspondIds?.length && myStore.value.id) {
   if (!props.correspondIds.filter(Boolean).includes(myStore.value.id))
     isGoChangestore.value = true
 }
