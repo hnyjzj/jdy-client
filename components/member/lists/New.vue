@@ -62,6 +62,7 @@ const handleDateBlur = (memberKey: 'birthday' | 'anniversary') => {
 const formRef = ref()
 const rules = ref<FormRules>({
   name: {
+    required: true,
     trigger: ['blur', 'input', 'change'],
     message: '请输入会员姓名',
     type: 'string',
@@ -69,7 +70,7 @@ const rules = ref<FormRules>({
   phone: {
     required: true,
     trigger: ['blur', 'input', 'change'],
-    message: '请输入11位的会员联系方式',
+    message: '请输入会员手机号',
     type: 'string',
   },
   nickname: {
@@ -78,6 +79,7 @@ const rules = ref<FormRules>({
     type: 'string',
   },
   gender: {
+    required: true,
     trigger: ['blur', 'input', 'change'],
     message: '请选择会员性别',
     type: 'number',
@@ -106,41 +108,6 @@ const rules = ref<FormRules>({
   <div class="flex flex-col gap-[12px]">
     <div>
       <n-form ref="formRef" :rules="rules" :model="newParams" label-placement="top">
-        <n-form-item path="name" label="会员姓名">
-          <n-input
-            v-model:value="newParams.name"
-            placeholder="请输入会员姓名"
-            @keydown.enter.prevent
-          />
-        </n-form-item>
-
-        <n-form-item path="phone" label="会员联系方式">
-          <n-input
-            v-model:value="newParams.phone"
-            placeholder="请输入会员联系方式"
-            @keydown.enter.prevent
-          />
-        </n-form-item>
-
-        <n-form-item path="nickname" label="会员昵称">
-          <n-input
-            v-model:value="newParams.nickname"
-            placeholder="请输入会员昵称"
-            @keydown.enter.prevent
-          />
-        </n-form-item>
-
-        <n-form-item path="gender" label="会员性别">
-          <n-select
-            v-model:value="showToUser"
-            placeholder="请选择会员性别"
-            :options="selectOptions"
-            @blur="() => {
-              newParams.gender = showToUser as any
-            }"
-          />
-        </n-form-item>
-
         <n-form-item path="consultant_id" label="专属顾问">
           <n-select
             v-model:value="newParams.consultant_id"
@@ -154,7 +121,37 @@ const rules = ref<FormRules>({
             @focus="emit('getStaffList')"
           />
         </n-form-item>
-
+        <n-form-item path="phone" label="会员联系方式">
+          <n-input
+            v-model:value="newParams.phone"
+            placeholder="请输入会员联系方式"
+            @keydown.enter.prevent
+          />
+        </n-form-item>
+        <n-form-item path="name" label="会员姓名">
+          <n-input
+            v-model:value="newParams.name"
+            placeholder="请输入会员姓名"
+            @keydown.enter.prevent
+          />
+        </n-form-item>
+        <n-form-item path="nickname" label="会员昵称">
+          <n-input
+            v-model:value="newParams.nickname"
+            placeholder="请输入会员昵称"
+            @keydown.enter.prevent
+          />
+        </n-form-item>
+        <n-form-item path="gender" label="会员性别">
+          <n-select
+            v-model:value="showToUser"
+            placeholder="请选择会员性别"
+            :options="selectOptions"
+            @blur="() => {
+              newParams.gender = showToUser as any
+            }"
+          />
+        </n-form-item>
         <n-form-item path="birthday" label="生日">
           <n-date-picker
             v-model:value="birthday"
@@ -164,7 +161,6 @@ const rules = ref<FormRules>({
             @blur="handleDateBlur('birthday')"
           />
         </n-form-item>
-
         <n-form-item path="anniversary" label="纪念日">
           <n-date-picker
             v-model:value="anniversary"
