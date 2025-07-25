@@ -317,16 +317,19 @@ const clearFun = useThrottleFn(async () => {
     return $toast.error('列表为空')
   }
   loading.value = true
-  const res = await clear(allocateInfo.value?.id)
-  if (res?.code === HttpCode.SUCCESS) {
-    await getInfo()
+  try {
+    const res = await clear(allocateInfo.value?.id)
+    if (res?.code === HttpCode.SUCCESS) {
+      await getInfo()
+      $toast.success('清空成功')
+    }
+    else {
+      $toast.error(res?.message ?? '清空失败')
+    }
+  }
+  finally {
     loading.value = false
-    $toast.success('清空成功')
   }
-  else {
-    $toast.error(res?.message ?? '清空失败')
-  }
-  loading.value = false
 }, 1000)
 </script>
 

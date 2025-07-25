@@ -186,12 +186,10 @@ async function downloadLocalFile() {
     const res = await getFinishedListAll({ all: true, where: filterData.value })
     if (res?.code === HttpCode.SUCCESS) {
       if (!res?.data.list || !res?.data?.list.length) {
-        isLoading.value = false
         return $toast.error('列表是空的')
       }
       else {
         await exportProductListToXlsx(finishedListAll.value, finishedFilterListToArray.value, '货品列表')
-        isLoading.value = false
       }
     }
   }

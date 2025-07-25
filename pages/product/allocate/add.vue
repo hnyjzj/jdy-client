@@ -52,17 +52,20 @@ await changeStoer()
 /** 创建调拨单 */
 async function submit() {
   loading.value = true
-  const res = await createAllocate(params.value as AllocateReq)
-  if (res?.code === HttpCode.SUCCESS) {
+  try {
+    const res = await createAllocate(params.value as AllocateReq)
+    if (res?.code === HttpCode.SUCCESS) {
+      $toast.success('创建成功')
+      params.value = {} as AllocateReq
+      jump('/product/allocate')
+    }
+    else {
+      $toast.error(res?.message ?? '创建失败')
+    }
+  }
+  finally {
     loading.value = false
-    $toast.success('创建成功')
-    params.value = {} as AllocateReq
-    jump('/product/allocate')
   }
-  else {
-    $toast.error(res?.message ?? '创建失败')
-  }
-  loading.value = false
 }
 
 const presetToSelect = (key: keyof AllocateReq): { label: string, value: any }[] => {
