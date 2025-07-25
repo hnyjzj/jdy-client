@@ -141,17 +141,22 @@ function handleClick(item: funBtn) {
  * @params isClose: boolean 是否关闭添加弹窗
  */
 async function addCheckGood(params: AddCheckProduct, isClose = true) {
-  const res = await addCheckProduct(params)
-  if (res?.code === HttpCode.SUCCESS) {
-    await getInfo()
-    $toast.success('添加成功', 1000)
-    goodCode.value = ''
+  try {
+    const res = await addCheckProduct(params)
+    if (res?.code === HttpCode.SUCCESS) {
+      await getInfo()
+      $toast.success('添加成功', 1000)
+      goodCode.value = ''
+    }
+    else {
+      $toast.error(res?.message || '添加失败', 1000)
+    }
   }
-  else {
-    $toast.error(res?.message || '添加失败', 1000)
+  finally {
+    loading.value = false
+    importModel.value = isClose
+    uploadRef.value?.clearData()
   }
-  loading.value = false
-  inputModel.value = isClose
 }
 
 async function submitGoods() {

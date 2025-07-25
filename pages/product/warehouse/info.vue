@@ -91,20 +91,22 @@ async function submitGoods(req: ProductFinisheds[]) {
   isChooseModel.value = false
   isImportModel.value = false
   loading.value = true
-  const res = await addFinishedEnter({ products: req, enter_id: enterInfo.value.id })
-  uploadRef.value.clearData()
-  if (res?.code === HttpCode.SUCCESS) {
-    await getInfo()
-    loading.value = false
-    return $toast.success('批量导入成功')
+  try {
+    const res = await addFinishedEnter({ products: req, enter_id: enterInfo.value.id })
+    uploadRef.value.clearData()
+    if (res?.code === HttpCode.SUCCESS) {
+      await getInfo()
+      return $toast.success('批量导入成功')
+    }
+    else if (res?.code === HttpCode.ERROR) {
+      return $toast.error(res?.message ?? '批量导入失败')
+    }
+    $toast.error(res?.message ?? '上传失败')
   }
-  else if (res?.code === HttpCode.ERROR) {
+  finally {
     loading.value = false
-    return $toast.error(res?.message ?? '批量导入失败')
+    uploadRef.value.clearData()
   }
-
-  loading.value = false
-  $toast.error(res?.message ?? '上传失败')
 }
 
 /** 撤销入库 */

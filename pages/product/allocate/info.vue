@@ -298,17 +298,15 @@ async function submitGoods(data: ExcelData[]) {
     if (res?.code === HttpCode.SUCCESS) {
       await getInfo()
       $toast.success('添加成功')
-      pCode.value = ''
-      uploadRef.value?.clearData()
-      loading.value = false
       isImportModel.value = false
     }
     else {
-      loading.value = false
       $toast.error(res?.message ?? '添加失败')
     }
   }
   finally {
+    pCode.value = ''
+    uploadRef.value?.clearData()
     loading.value = false
   }
 }
