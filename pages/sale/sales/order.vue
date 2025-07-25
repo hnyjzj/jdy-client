@@ -189,25 +189,51 @@ onMounted(() => {
         :return-goods="returnGoods"
         :store="myStore.id"
       />
-      <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === OrderDetail.status && OrderDetail.cashier_id === userinfo.id && myStore.id === OrderDetail.store_id">
-        <common-confirm-pay @pay="payOrderConfirm" @cancle="cancelOrder" />
+      <template v-if="!route?.query?.embedded">
+        <template v-if=" OrderDetail.status === OrderStatusText.OrderSalesProductStatusWaitPay">
+          <template v-if="OrderDetail.cashier_id === userinfo.id ">
+            <template v-if=" OrderDetail.store_id === myStore.id">
+              <common-button-bottom
+                confirm-text="支付"
+                cancel-text="撤销"
+                @confirm="payOrderConfirm"
+                @cancel="cancelOrder"
+              >
+                <template #cancel>
+                  <div class="color-[rgba(255,47,47,1)]">
+                    <span>撤销</span>
+                  </div>
+                </template>
+                <template #confirm>
+                  <span>
+                    支付
+                  </span>
+                </template>
+              </common-button-bottom>
+            </template>
+          </template>
+        </template>
       </template>
     </div>
 
-    <template v-if="(!isMobile && OrderDetail?.status === 3) || (!isMobile && OrderDetail?.status === 4)">
-      <common-button-bottom
-        confirm-text="打印"
-        cancel-text="返回"
-        @confirm="() => {
-          if (myStore.id === OrderDetail.store_id){
-            jumpPre()
-          }
-          else {
-            $toast.error('当前门店与操作门店不匹配,无法操作')
-          }
-        }"
-        @cancel="router.back()"
-      />
+    <template v-if="!route?.query?.embedded">
+      <template v-if="OrderDetail?.status === 3 || OrderDetail?.status === 4">
+        <template v-if="!isMobile">
+          <common-button-bottom
+            confirm-text="打印"
+            cancel-text="返回"
+            @confirm="() => {
+              if (myStore.id === OrderDetail.store_id){
+                jumpPre()
+              }
+              else {
+                $toast.error('当前门店与操作门店不匹配,无法操作')
+              }
+            }"
+            @cancel="router.back()"
+          />
+        </template>
+      </template>
     </template>
     <correspond-store :correspond-ids="[OrderDetail.store_id]" />
   </div>
