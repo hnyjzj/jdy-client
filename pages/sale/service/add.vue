@@ -9,14 +9,12 @@ const { getStoreStaffList } = useStores()
 const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
 const { createMember } = useMemberManage()
-
 const { OldMaterialsWhere } = useOrder()
 const { getAddRepairOrderWhere, createRepairOrder, getRepairOrderWhere, uploadRepairOrderImg } = useRepair()
 const { repairGoodsFilterListToArray, repairFilterList } = storeToRefs(useRepair())
-// const { OldObj } = storeToRefs(useOrder())
 const { getFinishedList } = useFinished()
 const { finishedList } = storeToRefs(useFinished())
-
+const layoutLoading = ref(false)
 await OldMaterialsWhere()
 await getAddRepairOrderWhere()
 await getRepairOrderWhere()
@@ -114,23 +112,31 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
         formData.value.city = undefined
         formData.value.area = undefined
       }
+
       formData.value.products = [...showServiceGoods.value]
       formData.value.images = []
       previewFileList.value.forEach((item: UploadFileInfo) => {
         formData.value.images?.push(item.name as string)
       })
-
-      const res = await createRepairOrder(formData.value)
-      if (res) {
-        $toast.success('创建维修单成功')
-        navigateTo('/sale/service/list', { external: true, replace: true, redirectCode: 200 })
-        showServiceGoods.value = []
-        previewFileList.value = []
-        formData.value = { ...initform.value }
-        Key.value = Date.now().toString()
+      layoutLoading.value = true
+      try {
+        const res = await createRepairOrder(formData.value)
+        if (res) {
+          $toast.success('创建维修单成功')
+          navigateTo('/sale/service/list', { external: true, replace: true, redirectCode: 200 })
+          showServiceGoods.value = []
+          previewFileList.value = []
+          formData.value = { ...initform.value }
+          Key.value = Date.now().toString()
+        }
+        else {
+          $toast.error('创建维修单失败')
+        }
+        layoutLoading.value = false
       }
-      else {
-        $toast.error('创建维修单失败')
+      catch (error: any) {
+        layoutLoading.value = false
+        throw new Error(error)
       }
     }
     else {
@@ -223,6 +229,7 @@ const changeStore = () => {
         </n-form>
       </div>
     </div>
+    <common-loading v-model="layoutLoading" />
   </div>
 </template>
 

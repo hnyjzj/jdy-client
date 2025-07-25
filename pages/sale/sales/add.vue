@@ -27,7 +27,7 @@ const { getOrderDetail, getDepositList } = useDepositOrder()
 const { OrderDetail, OrdersList } = storeToRefs(useDepositOrder())
 const { getPhraseList } = usePhrase()
 const showSubmitBtn = ref(true)
-
+const layoutLoading = ref(false)
 const getSearchPhrase = async (value: string) => {
   const res = await getPhraseList({ page: 1, limit: 10, where: { store_id: myStore.value.id, content: value || '' } })
   return res || [] as Phrase[]
@@ -340,7 +340,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-    // 成功的操作
+      // 成功的操作
       formData.value.product_finisheds = showProductList.value
       formData.value.store_id = myStore.value.id
       formData.value.product_olds = showMasterialsList.value
@@ -375,18 +375,26 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
         $toast.error('业绩比例总合必须等于100%')
         return
       }
-      const res = await submitOrder(formData.value)
-      if (res?.code === HttpCode.SUCCESS) {
-        $toast.success('开单成功')
-        navigateTo('/sale/sales/list', { external: true, replace: true, redirectCode: 200 })
-        formData.value = { ...initFormData.value }
-        showProductList.value = []
-        showMasterialsList.value = []
-        showPartsList.value = []
-        Key.value = Date.now().toString()
+      layoutLoading.value = true
+      try {
+        const res = await submitOrder(formData.value)
+        if (res?.code === HttpCode.SUCCESS) {
+          $toast.success('开单成功')
+          navigateTo('/sale/sales/list', { external: true, replace: true, redirectCode: 200 })
+          formData.value = { ...initFormData.value }
+          showProductList.value = []
+          showMasterialsList.value = []
+          showPartsList.value = []
+          Key.value = Date.now().toString()
+        }
+        else {
+          $toast.error(res?.message ?? '开单失败')
+        }
+        layoutLoading.value = false
       }
-      else {
-        $toast.error(res?.message ?? '开单失败')
+      catch (error: any) {
+        layoutLoading.value = false
+        throw new Error(error)
       }
     }
     else {
@@ -512,6 +520,7 @@ const changeStore = () => {
         </template>
       </n-form>
     </div>
+    <common-loading v-model="layoutLoading" />
   </div>
 </template>
 
