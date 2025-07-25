@@ -189,13 +189,37 @@ onMounted(() => {
         :return-goods="returnGoods"
         :store="myStore.id"
       />
-      <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === OrderDetail.status && OrderDetail.cashier_id === userinfo.id && myStore.id === OrderDetail.store_id && !route.query.embedded">
-        <common-confirm-pay @pay="payOrderConfirm" @cancle="cancelOrder" />
+      <template v-if="!route?.query?.embedded">
+        <template v-if=" OrderDetail.status === OrderStatusText.OrderSalesProductStatusWaitPay">
+          <template v-if="OrderDetail.cashier_id === userinfo.id ">
+            <template v-if=" OrderDetail.store_id === myStore.id">
+              <common-button-bottom
+                confirm-text="支付"
+                cancel-text="撤销"
+                @confirm="payOrderConfirm"
+                @cancel="cancelOrder"
+              >
+                <template #cancel>
+                  <div class="color-[rgba(255,47,47,1)]">
+                    <icon name="i-svg:cancelpay" :size="16" class="mr-[4px]" />
+                    <span>撤销</span>
+                  </div>
+                </template>
+                <template #confirm>
+                  <icon name="i-svg:confirmpay" :size="16" class="mr-[4px]" />
+                  <span>
+                    支付
+                  </span>
+                </template>
+              </common-button-bottom>
+            </template>
+          </template>
+        </template>
       </template>
     </div>
 
-    <template v-if="OrderDetail?.status === 3 || OrderDetail?.status === 4">
-      <template v-if="!route.query.embedded">
+    <template v-if="!route?.query?.embedded">
+      <template v-if="OrderDetail?.status === 3 || OrderDetail?.status === 4">
         <template v-if="!isMobile">
           <common-button-bottom
             confirm-text="打印"

@@ -4,19 +4,13 @@ const props = defineProps<{
 }>()
 
 const { myStore } = storeToRefs(useStores())
-const { switchStore, getMyStore } = useStores()
+const { switchStore } = useStores()
 const isGoChangestore = ref(false)
 
-if (!myStore.value?.name) {
-  getMyStore({ page: 1, limit: 10 })
+if (props.correspondIds?.length) {
+  if (!props.correspondIds.filter(Boolean).includes(myStore?.value?.id))
+    isGoChangestore.value = true
 }
-
-watchEffect(() => {
-  if (props.correspondIds?.length && myStore.value.id) {
-    if (!props.correspondIds.filter(Boolean).includes(myStore.value.id))
-      isGoChangestore.value = true
-  }
-})
 
 const changeStore = ref()
 
