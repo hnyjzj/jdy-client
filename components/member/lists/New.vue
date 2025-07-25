@@ -79,7 +79,6 @@ const rules = ref<FormRules>({
     type: 'string',
   },
   gender: {
-    required: true,
     trigger: ['blur', 'input', 'change'],
     message: '请选择会员性别',
     type: 'number',
