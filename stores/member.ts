@@ -83,6 +83,7 @@ export const useMemberManage = defineStore('Member', {
         const { data } = await https.post<Member, T>('/member/info', params)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.memberInfo = data.value.data
+          return data.value.data
         }
       }
       catch (error) {
