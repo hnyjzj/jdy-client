@@ -140,3 +140,7 @@ interface AllocateInfoParamsAll {
   id: Allocate['id']
   all: boolean
 }
+
+interface ExcelData {
+  code: string
+}

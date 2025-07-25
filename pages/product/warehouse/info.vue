@@ -195,20 +195,25 @@ function pull() {
  */
 async function downloadLocalFile() {
   loading.value = true
-  const res = await getFinishedEnterInfoAll({ all: true, id: enterInfo.value.id })
-  if (res?.code === HttpCode.SUCCESS) {
-    if (!res.data.products?.length) {
+  try {
+    const res = await getFinishedEnterInfoAll({ all: true, id: enterInfo.value.id })
+    if (res?.code === HttpCode.SUCCESS) {
+      if (!res.data.products || !res.data.products?.length) {
+        loading.value = false
+        return $toast.error('列表是空的')
+      }
+      const summary: [string, string | number][] = [
+        ['调拨单号', res.data.id],
+        ['调拨数量', res.data.product_count],
+        ['入网费合计', res.data.product_total_access_fee],
+        ['标签价合计', res.data.product_total_label_price],
+        ['金重合计', res.data.product_total_weight_metal],
+      ]
+      await exportProductListToXlsx(res.data.products, finishedFilterListToArray.value, '入库单货品列表', summary)
       loading.value = false
-      return $toast.error('列表是空的')
     }
-    const summary: [string, string | number][] = [
-      ['调拨单号', res.data.id],
-      ['调拨数量', res.data.product_count],
-      ['入网费合计', res.data.product_total_access_fee],
-      ['标签价合计', res.data.product_total_label_price],
-      ['金重合计', res.data.product_total_weight_metal],
-    ]
-    await exportProductListToXlsx(res.data.products, finishedFilterListToArray.value, '调拨单详情列表', summary)
+  }
+  finally {
     loading.value = false
   }
 }
