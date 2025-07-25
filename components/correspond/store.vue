@@ -8,13 +8,15 @@ const { switchStore, getMyStore } = useStores()
 const isGoChangestore = ref(false)
 
 if (!myStore.value?.name) {
-  await getMyStore({ page: 1, limit: 10 })
+  getMyStore({ page: 1, limit: 10 })
 }
 
-if (props.correspondIds?.length && myStore.value.id) {
-  if (!props.correspondIds.filter(Boolean).includes(myStore.value.id))
-    isGoChangestore.value = true
-}
+watchEffect(() => {
+  if (props.correspondIds?.length && myStore.value.id) {
+    if (!props.correspondIds.filter(Boolean).includes(myStore.value.id))
+      isGoChangestore.value = true
+  }
+})
 
 const changeStore = ref()
 
