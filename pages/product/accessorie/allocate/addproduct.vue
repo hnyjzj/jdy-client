@@ -211,6 +211,9 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
                 <th class="sticky-left table-color px-2">
                   <input type="checkbox" :disabled="accessorieList?.length === 0" @change="toggleSelectAll" @focus="focus">
                 </th>
+                <th class="whitespace-nowrap px-2 py-1">
+                  库存
+                </th>
                 <template v-for="(filter, i) in categoryFilterListToArray" :key="i">
                   <template v-if="filter.create">
                     <th class="whitespace-nowrap px-2 py-1">
@@ -227,6 +230,9 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
                   <tr class="table-color">
                     <td class="sticky-left table-color py-1 px-2">
                       <input v-model="selectedCategories" type="checkbox" :value="category.id" @focus="focus">
+                    </td>
+                    <td class="whitespace-nowrap px-2 py-1">
+                      {{ category.stock || '--' }}
                     </td>
                     <template v-for="(filter, filterIndex) in categoryFilterListToArray" :key="filterIndex">
                       <template v-if="filter.create">

@@ -330,6 +330,14 @@ async function downloadLocalFile() {
                       {{ checkInfo.id }}
                     </div>
                   </div>
+                  <div class="part">
+                    <div class="left">
+                      门店
+                    </div>
+                    <div class="right">
+                      {{ checkInfo.store?.name }}
+                    </div>
+                  </div>
                 </div>
                 <div class="h-0.5 bg-[#E6E6E8]" />
                 <div class="other-information flex flex-col gap-1">
