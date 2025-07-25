@@ -62,11 +62,15 @@ function handleSelect(id: Stores['id']) {
     emits('change')
   }
 }
+
+const renderLabel = (option: any) => {
+  return h('span', { style: 'color: #000' }, option.label)
+}
 </script>
 
 <template>
   <div>
-    <n-dropdown trigger="click" placement="bottom-start" :options="columns" :style="{ maxHeight: props.maxHeight, overflowY: 'auto' }" @select="handleSelect">
+    <n-dropdown trigger="click" placement="bottom-start" :render-label="renderLabel" :options="columns" :style="{ maxHeight: props.maxHeight, overflowY: 'auto' }" @select="handleSelect">
       <div
         class="py-[6px] px-[12px] bg-[#FFFFFF66] border-rd-full h-full flex-center-row shadow-lg cursor-pointer  "
         @click="changeStoer">

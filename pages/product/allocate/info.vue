@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { getAllocateInfo, getAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove, add } = useAllocate()
+const { getAllocateInfo, getAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove, add, getAllocateInfoAll, clear } = useAllocate()
 const { allocateInfo, allocateFilterList, allocateFilterListToArray } = storeToRefs(useAllocate())
 const { useWxWork } = useWxworkStore()
 const { getFinishedWhere, getFinishedList } = useFinished()
@@ -15,10 +15,14 @@ useSeoMeta({
 const route = useRoute()
 const router = useRouter()
 const type = ref<GoodsTypePure>()
+const loading = ref(false)
+const uploadRef = ref()
 
 const { $toast } = useNuxtApp()
 /** 添加货品弹窗显隐 */
 const isAddModel = ref(false)
+const isImportModel = ref(false)
+const isChooseModel = ref(false)
 /** 添加货品条码 */
 const pCode = ref()
 /** 成品条码添加还是成品条码搜索添加 */
@@ -57,9 +61,11 @@ if (route.query.id) {
 }
 
 async function cancel() {
+  loading.value = true
   const res = await cancelAllcate(allocateInfo.value?.id)
   if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
+    loading.value = false
     $toast.success('取消调拨成功', 1000)
     setTimeout(() => {
       router.back()
@@ -68,6 +74,7 @@ async function cancel() {
   else {
     $toast.error(res?.message ?? '取消调拨失败')
   }
+  loading.value = false
 }
 
 async function confirm() {
@@ -79,42 +86,46 @@ async function confirm() {
     if (!allocateInfo.value?.product_olds?.length)
       return $toast.warning('请先添加调拨产品')
   }
-
+  loading.value = true
   const res = await confirmAllcate(allocateInfo.value?.id)
   if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
+    loading.value = false
     $toast.success('确认调拨成功')
   }
   else {
+    loading.value = false
     $toast.error(res?.message ?? '确认调拨失败')
   }
 }
 /** 完成调拨 */
 async function finish() {
+  loading.value = true
   const res = await finishAllcate(allocateInfo.value?.id)
   if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
+    loading.value = false
     $toast.success('完成调拨成功')
   }
   else {
+    loading.value = false
     $toast.error(res?.message ?? '完成调拨失败')
   }
 }
 
 const delProduct = useThrottleFn(async (code: ProductFinisheds['code'] | ProductOlds['code']) => {
+  loading.value = true
   const res = await remove(allocateInfo.value?.id, code)
   if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
     $toast.success('删除成功')
+    loading.value = false
   }
   else {
     $toast.error(res?.message ?? '删除失败')
   }
+  loading.value = false
 }, 200)
-
-function create() {
-  isAddModel.value = true
-}
 
 /** 产品code获取产品id */
 async function getProductId() {
@@ -155,14 +166,17 @@ async function addProduct() {
     $toast.warning('没有找到相关货品')
     return
   }
+  loading.value = true
   const res = await add(allocateInfo.value?.id, ids)
   if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
     $toast.success('添加成功')
     pCode.value = ''
+    loading.value = false
     isAddModel.value = false
   }
   else {
+    loading.value = false
     $toast.error(res?.message ?? '添加失败')
   }
 }
@@ -238,6 +252,85 @@ async function getOldids() {
     .filter(id => oldMap.has(id))
     .map(id => id) // 直接返回 id 值，不需要深拷贝
 }
+
+/**
+ * 列表导出excel表格
+ */
+async function downloadLocalFile() {
+  loading.value = true
+  try {
+    const res = await getAllocateInfoAll({ all: true, id: allocateInfo.value.id })
+    if (res?.code === HttpCode.SUCCESS) {
+      if (!res.data.product_finisheds?.length && !res.data.product_olds?.length) {
+        loading.value = false
+        return $toast.error('空列表')
+      }
+      const summary: [string, string | number][] = [
+        ['调拨单号', res.data.id],
+        ['调拨数量', res.data.product_count],
+        ['入网费合计', res.data.product_total_access_fee],
+        ['标签价合计', res.data.product_total_label_price],
+        ['金重合计', res.data.product_total_weight_metal],
+      ]
+
+      if (type.value === GoodsTypePure.ProductFinish) {
+        await exportProductListToXlsx(res.data.product_finisheds, finishedFilterListToArray.value, '调拨单详情货品列表', summary)
+        loading.value = false
+      }
+      if (type.value === GoodsTypePure.ProductOld) {
+        await exportProductListToXlsx(res.data.product_olds, oldFilterListToArray.value, '调拨单详情货品列表', summary)
+        loading.value = false
+      }
+    }
+  }
+  finally {
+    loading.value = false
+  }
+}
+
+async function submitGoods(data: ExcelData[]) {
+  const codes = data.map(item => String(item.code).trim())
+  if (!codes.length)
+    return $toast.error('批量导入的数据为空')
+  loading.value = true
+  try {
+    const res = await add(allocateInfo.value?.id, codes, true)
+    if (res?.code === HttpCode.SUCCESS) {
+      await getInfo()
+      $toast.success('添加成功')
+      isImportModel.value = false
+    }
+    else {
+      $toast.error(res?.message ?? '添加失败')
+    }
+  }
+  finally {
+    pCode.value = ''
+    uploadRef.value?.clearData()
+    loading.value = false
+  }
+}
+
+/** 清空列表 */
+const clearFun = useThrottleFn(async () => {
+  if (!allocateInfo.value?.product_count) {
+    return $toast.error('列表为空')
+  }
+  loading.value = true
+  try {
+    const res = await clear(allocateInfo.value?.id)
+    if (res?.code === HttpCode.SUCCESS) {
+      await getInfo()
+      $toast.success('清空成功')
+    }
+    else {
+      $toast.error(res?.message ?? '清空失败')
+    }
+  }
+  finally {
+    loading.value = false
+  }
+}, 1000)
 </script>
 
 <template>
@@ -253,6 +346,10 @@ async function getOldids() {
 
         <template v-if="productList?.length">
           <div class="p-4 blur-bgc rounded-6">
+            <div class="text-[rgba(57,113,243,1)] flex mb-4" @click="downloadLocalFile">
+              <icon name="i-svg:download" :size="16" color="#666" />
+              导出数据
+            </div>
             <template v-if="type === GoodsTypePure.ProductFinish">
               <template v-for="(item, index) in allocateInfo.product_finisheds" :key="index">
                 <div class="mb-2">
@@ -398,7 +495,23 @@ async function getOldids() {
     </common-model>
     <!-- 调出门店者操作 -->
     <template v-if="allocateInfo.status === AllocateStatus.Draft && myStore.id === allocateInfo.from_store_id">
-      <common-button-bottom cancel-text="取消调拨" confirm-text="开始调拨" @cancel="cancel" @confirm="confirm" />
+      <common-button-bottom>
+        <template #content>
+          <div class="w-[100%]">
+            <div class="bottom-fun grid grid-cols-[26%_26%_auto] gap-2">
+              <div class="cursor-pointer cancel-btn" @click="clearFun">
+                清空列表
+              </div>
+              <div class="cursor-pointer cancel-btn" @click="cancel">
+                撤销
+              </div>
+              <div class="cursor-pointer confirm-btn" @click="confirm">
+                开始调拨
+              </div>
+            </div>
+          </div>
+        </template>
+      </common-button-bottom>
     </template>
     <!-- 调入门店者操作 调拨方式未调拨入库是没有权限设置 -->
     <template v-if="allocateInfo.status === AllocateStatus.InTransit">
@@ -411,9 +524,12 @@ async function getOldids() {
     </template>
     <!-- 状态为草稿中 增加产品 -->
     <template v-if="allocateInfo.status === AllocateStatus.Draft && myStore.id && myStore.id === allocateInfo.from_store_id">
-      <common-create @click="create" />
+      <common-create @click="isChooseModel = true" />
     </template>
+    <product-upload-choose v-model:is-model="isChooseModel" title="调拨" @go-add="isChooseModel = false; isAddModel = true" @batch="isImportModel = true" />
+    <product-allocate-force ref="uploadRef" v-model="isImportModel" @upload="submitGoods" />
     <correspond-store :correspond-ids="[allocateInfo.from_store_id, allocateInfo.to_store_id]" />
+    <common-loading v-model="loading" title="正在处理中" />
   </div>
 </template>
 
@@ -450,5 +566,15 @@ async function getOldids() {
   .nav {
     --uno: 'text-color';
   }
+}
+.confirm-btn {
+  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#fff] font-bold ';
+  background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
+  box-shadow: rgba(57, 113, 243, 0.24) 0px 8px 8px 0;
+}
+.cancel-btn {
+  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#1a6beb] font-bold';
+  background: #fff;
+  box-shadow: rgba(82, 130, 241, 0.24) 0px 8px 8px 0;
 }
 </style>

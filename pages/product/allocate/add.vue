@@ -8,7 +8,7 @@ const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const { getFinishedEnterInfo } = useFinishedEnter()
 const { enterInfo } = storeToRefs(useFinishedEnter())
-
+const loading = ref(false)
 const params = ref({} as AllocateReq)
 const route = useRoute()
 const type = ref()
@@ -51,14 +51,20 @@ await changeStoer()
 
 /** 创建调拨单 */
 async function submit() {
-  const res = await createAllocate(params.value as AllocateReq)
-  if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('创建成功')
-    params.value = {} as AllocateReq
-    jump('/product/allocate')
+  loading.value = true
+  try {
+    const res = await createAllocate(params.value as AllocateReq)
+    if (res?.code === HttpCode.SUCCESS) {
+      $toast.success('创建成功')
+      params.value = {} as AllocateReq
+      jump('/product/allocate')
+    }
+    else {
+      $toast.error(res?.message ?? '创建失败')
+    }
   }
-  else {
-    $toast.error(res?.message ?? '创建失败')
+  finally {
+    loading.value = false
   }
 }
 
@@ -195,6 +201,7 @@ function handleValidateButtonClick() {
         </div>
       </div>
     </common-layout-center>
+    <common-loading v-model="loading" />
     <div class="fixed bottom-0 left-0 w-full py-4 blur-bgc px-8" uno-sm="px-0">
       <common-layout-center>
         <common-button-rounded content="添加调拨单" @button-click="handleValidateButtonClick" />

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { checkInfo, checkFilterList } = storeToRefs(useCheck())
-const { getCheckInfo, getCheckWhere, changeCheckStatus, addCheckProduct, remove } = useCheck()
+const { getCheckInfo, getCheckWhere, changeCheckStatus, addCheckProduct, remove, getCheckInfoAll } = useCheck()
 const { userinfo } = useUser()
 const { $toast } = useNuxtApp()
 const { useWxWork } = useWxworkStore()
@@ -135,32 +135,52 @@ function handleClick(item: funBtn) {
   submitChange(item.status)
 }
 
+/** 扫码 */
+const scanCode = async () => {
+  const wx = await useWxWork()
+  const code = await wx?.scanQRCode()
+  if (code) {
+    goodCode.value = code
+    await submitGoods(true)
+  }
+}
+
 /**
  * 添加货品
  * @params params: AddCheckProduct
  * @params isClose: boolean 是否关闭添加弹窗
+ * @params isScan: boolean 是否是扫码添加
  */
-async function addCheckGood(params: AddCheckProduct, isClose = true) {
-  const res = await addCheckProduct(params)
-  if (res?.code === HttpCode.SUCCESS) {
-    await getInfo()
-    $toast.success('添加成功', 1000)
-    goodCode.value = ''
+async function addCheckGood(params: AddCheckProduct, isClose = true, isScan = false) {
+  try {
+    const res = await addCheckProduct(params)
+    if (res?.code === HttpCode.SUCCESS) {
+      await getInfo()
+      $toast.success('添加成功', 1000)
+      goodCode.value = ''
+      if (isScan) {
+        await scanCode()
+      }
+    }
+    else {
+      $toast.error(res?.message || '添加失败', 1000)
+    }
   }
-  else {
-    $toast.error(res?.message || '添加失败', 1000)
+  finally {
+    loading.value = false
+    inputModel.value = isClose
+    importModel.value = false
+    uploadRef.value?.clearData()
   }
-  loading.value = false
-  inputModel.value = isClose
 }
 
-async function submitGoods() {
+async function submitGoods(isScan = false) {
   const params: AddCheckProduct = {
     id: checkInfo.value.id,
     codes: [goodCode.value],
   }
   loading.value = true
-  await addCheckGood(params)
+  return await addCheckGood(params, true, isScan)
 }
 /** 批量上传盘点货品 */
 async function bulkupload(data: string[]) {
@@ -231,15 +251,6 @@ async function pull() {
   await getInfo()
 }
 
-/** 扫码 */
-const scanCode = async () => {
-  const wx = await useWxWork()
-  const code = await wx?.scanQRCode()
-  if (code) {
-    goodCode.value = code
-  }
-}
-
 const removeDict = useDebounceFn(async (product_id) => {
   const res = await remove(checkInfo.value.id, product_id)
   if (res?.code === HttpCode.SUCCESS) {
@@ -249,7 +260,47 @@ const removeDict = useDebounceFn(async (product_id) => {
   else {
     $toast.error(res?.message || '删除失败')
   }
-}, 1000)
+}, 500)
+
+/**
+ * 列表导出excel表格
+ */
+async function downloadLocalFile() {
+  loading.value = true
+  try {
+    const res = await getCheckInfoAll({ all: true, id: checkInfo.value.id })
+    if (res?.code === HttpCode.SUCCESS) {
+      if (!res.data.loss_products || !res.data.loss_products?.length) {
+        loading.value = false
+        return $toast.error('盘亏列表是空的')
+      }
+      const data = res.data
+      const summary: [string, string | number][] = [
+        ['盘点人', data.inventory_persons.map(v => v.nickname).join('、')],
+        ['监盘人', data?.inspector?.nickname || ''],
+        ['盘点单号', data.id],
+        ['盘点时间', data.created_at || ''],
+        ['盘点品牌', getMultipleVal('brand', res.data.brand) || ''],
+        ['盘点仓库', data.type === GoodsType.ProductFinish ? '成品' : data.type === GoodsType.ProductOld ? '旧料' : ''],
+        ['备注', data.remark || ''],
+        ['状态', getRadioVal('status', data.status)],
+        ['盘点范围', getRadioVal('range', data.range)],
+        ['大类', data.category.map(v => getRadioVal('category', v)).join('、') ?? ''],
+        ['品类', data.category.map(v => getRadioVal('category', v)).join('、') ?? ''],
+        ['总件数', data.count_quantity],
+        ['总金重', data.count_weight_metal],
+        ['总标签价', data.count_price],
+        ['盘亏', data.loss_count],
+      ]
+      const arr = res.data.loss_products.map(item => item.product_finished)
+      await exportProductListToXlsx(arr, finishedFilterListToArray.value, '盘亏列表', summary)
+      loading.value = false
+    }
+  }
+  finally {
+    loading.value = false
+  }
+}
 </script>
 
 <template>
@@ -283,6 +334,14 @@ const removeDict = useDebounceFn(async (product_id) => {
                     </div>
                     <div class="right">
                       {{ checkInfo.id }}
+                    </div>
+                  </div>
+                  <div class="part">
+                    <div class="left">
+                      门店
+                    </div>
+                    <div class="right">
+                      {{ checkInfo.store?.name }}
                     </div>
                   </div>
                 </div>
@@ -433,6 +492,10 @@ const removeDict = useDebounceFn(async (product_id) => {
           </common-gradient>
         </div>
         <div class="info flex flex-col gap-4 rounded-6 blur-bga w-auto px-4 py-4 mb-6">
+          <div class="text-[rgba(57,113,243,1)] flex" @click="downloadLocalFile">
+            <icon name="i-svg:download" :size="16" color="#666" />
+            导出数据
+          </div>
           <div class="flex flex-col gap-3">
             <common-tab-secondary :current-selected="product_status" :options="inventoryOptions" :info="checkInfo" @change-status="changeStatus" />
             <common-step :description="step" :active-index="checkInfo.status" />
@@ -484,15 +547,15 @@ const removeDict = useDebounceFn(async (product_id) => {
       </div>
     </template>
     <product-upload-choose v-model:is-model="uploadModel" title="正在盘点" @go-add="uploadModel = false;inputModel = true" @batch="importModel = true" />
-    <common-model v-model="inputModel" title="正在盘点" :show-ok="true" @confirm="submitGoods">
+    <common-model v-model="inputModel" title="正在盘点" :show-ok="true" @confirm="submitGoods" @cancel="goodCode = ''">
       <div class="mb-8 relative min-h-[200px]">
-        <div class="uploadInp cursor-pointer flex">
-          <n-input v-model:value="goodCode" placeholder="请输入条码" />
+        <div class="uploadInp cursor-pointer">
           <div
-            class="flex items-center justify-end cursor-pointer"
+            class="flex items-center justify-center cursor-pointer p-10"
             @click="scanCode()">
-            <icon class="ml-2" name="i-icon:scanit" :size="20" />
+            <icon class="ml-2" name="i-icon:scanit" :size="36" />
           </div>
+          <n-input v-model:value="goodCode" placeholder="请输入条码" />
         </div>
       </div>
     </common-model>
@@ -504,7 +567,8 @@ const removeDict = useDebounceFn(async (product_id) => {
       @submit="ConfirmUse"
       @cancel="confirmShow = false"
     />
-    <common-loading v-show="loading" text="正在处理中" />
+    <common-loading v-model="loading" text="正在处理中" />
+
     <product-check-warehouse ref="uploadRef" v-model="importModel" @upload="bulkupload" />
     <correspond-store :correspond-ids="[checkInfo.store_id]" />
   </div>
