@@ -49,28 +49,31 @@ function toggleSelectAll(event: any) {
 
 /** 搜索要入库的配件 */
 async function searchAccessorie() {
-  selectProduct.value = []
-  accessorieList.value = []
+//   selectProduct.value = []
+//   accessorieList.value = []
 
   const obj = {} as Partial<ProductAccessories>
   obj[searchParams.value.label] = searchParams.value.val
   obj.store_id = myStore.value.id
-  await getAccessorieList({ page: 1, limit: 20, where: { ...obj } })
+  await getAccessorieList({ page: 1, limit: 60, where: { ...obj } })
 }
 
 /** 选择需要添加的配件 */
 async function addCategory() {
   if (!selectedCategories.value?.length)
     return $toast.error('请选择配件礼品')
-  const product = [] as ProductAccessories[]
+
+  const productMap = new Map(selectProduct.value.map(p => [p.id, p])) // 先保留原有选择
+
+  // 遍历新选中的 ID，加入到 Map 中（去重）
   selectedCategories.value.forEach((id: ProductAccessories['id']) => {
-    accessorieList.value?.forEach((cat) => {
-      if (cat.id === id) {
-        product.push(JSON.parse(JSON.stringify(cat)))
-      }
-    })
+    const found = accessorieList.value.find(cat => cat.id === id)
+    if (found) {
+      productMap.set(id, JSON.parse(JSON.stringify(found)))
+    }
   })
-  selectProduct.value = product
+
+  selectProduct.value = Array.from(productMap.values())
   isAddSingle.value = false
 }
 
