@@ -38,6 +38,7 @@ const props = withDefaults(defineProps<{
    * 默认展开或折叠
    */
   isFolds?: boolean
+  fontSize?: string
 }>(), {
   alignDesc: 'space-between',
   theme: 'theme',
@@ -47,6 +48,7 @@ const props = withDefaults(defineProps<{
   textColor: '#333',
   hasShadow: false,
   isFolds: true,
+  fontSize: '16px',
 })
 
 const isFold = ref(props.isFolds)
@@ -72,11 +74,11 @@ const themeProcess = () => {
 
 <template>
   <div
-    class="info"
+    class="info mb-[12px]"
     :style="{ boxShadow: props.hasShadow ? '0px 8px 16px rgba(0, 0, 0, 0.1)' : 'none' }"
   >
     <div
-      class="flex flex-row items-center justify-between h-[44px] px-4 py-2 bg-gradient-linear-[90deg,#8CADF8,#D8E7FD]"
+      class="flex flex-row items-center justify-between h-[44px] px-4 py-2 bg-gradient-linear-[90deg,#8CADF8,#D8E7FD] gap-[12px]"
       :style="{ background: themeProcess() }"
     >
       <div class="flex flex-row gap-[8px]" :style="{ justifyContent: props.alignDesc }">
@@ -87,6 +89,7 @@ const themeProcess = () => {
           :style="{
             fontStyle: props.italic ? 'italic' : 'normal',
             fontWeight: props.bold ? 'bold' : 'normal',
+            fontSize: props.fontSize ?? '14px',
           }"
         >
           {{ props.title }}

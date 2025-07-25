@@ -215,6 +215,7 @@ const rules = ref<FormRules>({
                       <n-form-item path="phone" label="联系方式">
                         <n-input
                           v-model:value="memberParams.phone"
+                          :disabled="!!memberInfo.phone"
                           placeholder="请输入会员联系方式"
                           @keydown.enter.prevent
                         />
@@ -260,6 +261,7 @@ const rules = ref<FormRules>({
                           filterable
                           menu-size="large"
                           clearable
+                          :disabled="!!memberInfo.store_id "
                           remote
                           @update:value="() => {
                             changeClear()
@@ -277,6 +279,7 @@ const rules = ref<FormRules>({
                       <n-form-item path="consultant_id" label="专属顾问">
                         <n-select
                           v-model:value="memberParams.consultant_id"
+                          :disabled="!!memberInfo.consultant_id"
                           placeholder="请选择专属顾问"
                           :options="targerStaffList.map(v => ({
                             label: v.nickname,
