@@ -201,12 +201,10 @@ onMounted(() => {
               >
                 <template #cancel>
                   <div class="color-[rgba(255,47,47,1)]">
-                    <icon name="i-svg:cancelpay" :size="16" class="mr-[4px]" />
                     <span>撤销</span>
                   </div>
                 </template>
                 <template #confirm>
-                  <icon name="i-svg:confirmpay" :size="16" class="mr-[4px]" />
                   <span>
                     支付
                   </span>
