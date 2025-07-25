@@ -31,7 +31,7 @@ interface Check {
   /**
    * 盘点人ID
    */
-  inventory_person_ids: string
+  inventory_person_ids: string[]
   inventory_persons: Staff[]
   /**
    * 产品材质
@@ -218,4 +218,9 @@ interface CheckInfoParams {
   id: string
   page: number
   limit: number
+}
+
+interface CheckInfoParamsAll {
+  id: string
+  all: boolean
 }

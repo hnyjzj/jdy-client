@@ -425,7 +425,7 @@ const cols = [
             }))"
             clearable
             remote
-
+            multiple
             @focus="(e) => {
               focus(e)
               getStoreStaffListFun()

@@ -27,7 +27,6 @@ const items = ref([{
   selected: '',
 }])
 
-const searchKey = ref('')
 const isFilter = ref(false)
 const filterData = ref({} as Partial<Member>)
 const limit = ref(50)
@@ -89,14 +88,14 @@ const disposeNumerical = () => {
   }
 }
 
-const searchMember = async () => {
-  if (searchKey.value) {
-    await getMemberList({ page: searchPage.value, limit: limit.value, where: { phone: searchKey.value, store_id: myStore.value.id } })
-  }
-  else if (searchKey.value === '') {
-    await getList()
-  }
-}
+// const searchMember = async () => {
+//   if (searchKey.value) {
+//     await getMemberList({ page: searchPage.value, limit: limit.value, where: { phone: searchKey.value, store_id: myStore.value.id } })
+//   }
+//   else if (searchKey.value === '') {
+//     await getList()
+//   }
+// }
 
 const adjustIntegral = async () => {
   if (adjustWay.value !== 0 && fluctuant.value !== 0 && fluctuant.value !== undefined && integralParams.value.remark) {
@@ -113,23 +112,33 @@ const adjustIntegral = async () => {
 // 筛选列表
 async function submitWhere(f: Partial<Member>) {
   filterData.value = { ...f }
+  searchPage.value = 1
   memberList.value = []
-  await getList(filterData.value)
+  await getMemberList({ page: 1, limit: limit.value, where: filterData.value })
 }
 
+const searchMember = async (phone: string) => {
+//   filterData.value = { phone, store_id: myStore.value.id }
+  await getMemberList({ page: 1, limit: limit.value, where: { phone, store_id: myStore.value.id } })
+}
+
+// 清空选项
 const clearFn = async () => {
   memberList.value = []
   searchPage.value = 1
   await getList()
 }
 
-const changeStores = async () => {
+const filterRef = ref()
+async function changeStores() {
+  searchPage.value = 1
+  filterRef.value?.reset()
   await getList()
 }
 
 const updatePage = async (page: number) => {
   searchPage.value = page
-  await getList()
+  await getList(filterData.value)
 }
 
 const goIntegral = (id: string) => {

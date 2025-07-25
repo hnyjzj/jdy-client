@@ -136,22 +136,25 @@ async function bulkupload(data: any) {
     return $toast.error('数据格式不正确，请添加配件信息')
   }
   loading.value = true
-  const res = await addAccessorieEnter({
-    enter_id: enterInfo.value.id,
-    products: data,
-  })
+  try {
+    const res = await addAccessorieEnter({
+      enter_id: enterInfo.value.id,
+      products: data,
+    })
 
-  if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('添加成功')
-    await fetchEnterInfo()
+    if (res?.code === HttpCode.SUCCESS) {
+      $toast.success('添加成功')
+      await fetchEnterInfo()
+    }
+    else {
+      $toast.error(res?.message ?? '添加失败')
+    }
   }
-  else {
-    $toast.error(res?.message ?? '添加失败')
+  finally {
+    loading.value = false
+    isChooseModel.value = false
+    isImportModel.value = false
   }
-  // 关闭弹窗
-  loading.value = false
-  isChooseModel.value = false
-  isImportModel.value = false
 }
 </script>
 

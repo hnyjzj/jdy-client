@@ -18,6 +18,8 @@ const payMethods = (val: number) => {
   return data?.label || '未知'
 }
 
+const route = useRoute()
+
 // 计算成品列表加的积分
 const productListScore = computed(() => {
   const total = ref(0)
@@ -78,6 +80,7 @@ const onReturnProduct = async (index: number) => {
         <template #info>
           <div class="info">
             <common-cell label="订单编号" :value="props.orders.id" rcol="col-8" lcol="col-4" />
+            <common-cell label="门店" :value="props.orders?.store?.name" rcol="col-8" lcol="col-4" />
             <common-cell label="订单状态" :value="props.orderWhere.status?.preset[props.orders.status]" val-color="#FF9900" />
             <common-cell label="订单来源" :value="props.orderWhere.source?.preset[props.orders.source]" />
             <common-cell label="销售时间" :value="formatISODate(props.orders.created_at)" />
@@ -142,7 +145,7 @@ const onReturnProduct = async (index: number) => {
                   <common-cell label="成品状态" value="已退货" val-color="#FF9900" />
                 </template>
                 <div class="flex-end">
-                  <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > 1 && props.store === orders.store_id">
+                  <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > 1 && props.store === orders.store_id && !route.query.embedded">
                     <common-button-rounded content="退货" @button-click="onReturnProduct(i)" />
                   </template>
                 </div>
@@ -181,7 +184,7 @@ const onReturnProduct = async (index: number) => {
                   <common-cell label="状态" value="已退货" val-color="#FF9900" />
                 </template>
                 <div class="flex-end">
-                  <template v-if="obj?.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > 1 && props.store === orders.store_id">
+                  <template v-if="obj?.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > 1 && props.store === orders.store_id && !route.query.embedded">
                     <common-button-rounded content="退货" @button-click="onReturnProduct(i)" />
                   </template>
                 </div>
@@ -206,7 +209,7 @@ const onReturnProduct = async (index: number) => {
                     <common-cell label="状态" value="已退货" val-color="#FF9900" />
                   </template>
                   <div class="flex-end">
-                    <template v-if="obj?.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > 1 && props.store === orders.store_id">
+                    <template v-if="obj?.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > 1 && props.store === orders.store_id && !route.query.embedded">
                       <common-button-rounded content="退货" @button-click="onReturnProduct(i)" />
                     </template>
                   </div>

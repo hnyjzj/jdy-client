@@ -55,6 +55,16 @@ export const useAllocate = defineStore('Allocate', {
         throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
       }
     },
+    /** 调拨单详情 */
+    async getAllocateInfoAll(param: AllocateInfoParamsAll) {
+      try {
+        const { data } = await https.post<Allocate, AllocateInfoParamsAll>('/product/allocate/info', param)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
+      }
+    },
     /** 确认调拨 */
     async confirmAllcate(id: Allocate['id']) {
       try {
@@ -88,17 +98,42 @@ export const useAllocate = defineStore('Allocate', {
     /** 删除调拨产品 */
     async remove(id: Allocate['id'], product_id: ProductFinisheds['id']) {
       try {
-        const { data } = await https.put<{ id: string, code: string }, any >('/product/allocate/remove', { id, product_id })
+        const { data } = await https.delete<{ id: string, code: string }, any >('/product/allocate/remove', { id, product_id })
         return data.value
       }
       catch (error) {
         throw new Error(`删除失败: ${error || '未知错误'}`)
       }
     },
-    /** 添加调拨产品 */
-    async add(id: Allocate['id'], product_id: ProductFinisheds['id'][]) {
+    /** 清空调拨产品 */
+    async clear(id: Allocate['id']) {
       try {
-        const { data } = await https.put<{ id: string, product_id: ProductFinisheds['id'][] }, any >('/product/allocate/add', { id, product_id })
+        const { data } = await https.delete<{ id: string }, any >('/product/allocate/clear', { id })
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`清空失败: ${error || '未知错误'}`)
+      }
+    },
+    /** 添加调拨产品 */
+    async add(id: Allocate['id'], ids: ProductFinisheds['id'][], isCode = false) {
+      try {
+        let params
+        if (isCode) {
+          params = {
+            id,
+            codes: ids,
+            product_ids: [],
+          }
+        }
+        else {
+          params = {
+            id,
+            codes: [],
+            product_ids: ids,
+          }
+        }
+        const { data } = await https.put<{ id: string, product_id: ProductFinisheds['id'][] }, any >('/product/allocate/add', params)
         return data.value
       }
       catch (error) {

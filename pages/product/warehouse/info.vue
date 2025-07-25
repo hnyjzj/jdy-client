@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { getFinishedEnterInfo, delFinishedEnter, cancelFinishedEnter, successFinishedEnter, addFinishedEnter, editFinishedEnter, clearFinishedEnter } = useFinishedEnter()
+const { getFinishedEnterInfo, delFinishedEnter, cancelFinishedEnter, successFinishedEnter, addFinishedEnter, editFinishedEnter, clearFinishedEnter, getFinishedEnterInfoAll } = useFinishedEnter()
 const { enterInfo } = storeToRefs(useFinishedEnter())
 const { finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
 const { getFinishedWhere } = useFinished()
@@ -27,7 +27,6 @@ const cancelDialog = ref(false)
 const finishDialog = ref(false)
 const loading = ref(false)
 const productParams = ref({} as Partial<ProductFinisheds>)
-
 /** 要删除的产品code */
 const deleteId = ref('')
 const enterId = ref('')
@@ -68,14 +67,11 @@ async function delProduct() {
 async function clearProduct() {
   if (!enterInfo.value.id)
     return
-  loading.value = true
   const res = await clearFinishedEnter(enterInfo.value.id)
   if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
-    loading.value = false
     return $toast.success('清空成功')
   }
-  loading.value = false
   $toast.error(res?.message ?? '清空失败')
 }
 function goAdd() {
@@ -92,20 +88,22 @@ async function submitGoods(req: ProductFinisheds[]) {
   isChooseModel.value = false
   isImportModel.value = false
   loading.value = true
-  const res = await addFinishedEnter({ products: req, enter_id: enterInfo.value.id })
-  uploadRef.value.clearData()
-  if (res?.code === HttpCode.SUCCESS) {
-    await getInfo()
-    loading.value = false
-    return $toast.success('批量导入成功')
+  try {
+    const res = await addFinishedEnter({ products: req, enter_id: enterInfo.value.id })
+    uploadRef.value.clearData()
+    if (res?.code === HttpCode.SUCCESS) {
+      await getInfo()
+      return $toast.success('批量导入成功')
+    }
+    else if (res?.code === HttpCode.ERROR) {
+      return $toast.error(res?.message ?? '批量导入失败')
+    }
+    $toast.error(res?.message ?? '上传失败')
   }
-  else if (res?.code === HttpCode.ERROR) {
+  finally {
     loading.value = false
-    return $toast.error(res?.message ?? '批量导入失败')
+    uploadRef.value.clearData()
   }
-
-  loading.value = false
-  $toast.error(res?.message ?? '上传失败')
 }
 
 /** 撤销入库 */
@@ -189,6 +187,32 @@ function filteredOptions(preset: any, val: number) {
 }
 function pull() {
   getInfo()
+}
+
+/**
+ * 列表导出excel表格
+ */
+async function downloadLocalFile() {
+  loading.value = true
+  try {
+    const res = await getFinishedEnterInfoAll({ all: true, id: enterInfo.value.id })
+    if (res?.code === HttpCode.SUCCESS) {
+      if (!res.data.products || !res.data.products?.length) {
+        return $toast.error('列表是空的')
+      }
+      const summary: [string, string | number][] = [
+        ['入库单号', res.data.id],
+        ['入库数量', res.data.product_count],
+        ['入网费合计', res.data.product_total_access_fee],
+        ['标签价合计', res.data.product_total_label_price],
+        ['金重合计', res.data.product_total_weight_metal],
+      ]
+      await exportProductListToXlsx(res.data.products, finishedFilterListToArray.value, '入库单货品列表', summary)
+    }
+  }
+  finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -295,6 +319,11 @@ function pull() {
                       <div class="info-val">
                         {{ enterInfo.product_total_weight_metal }}
                       </div>
+                    </div>
+
+                    <div class="text-[rgba(57,113,243,1)] flex" @click="downloadLocalFile">
+                      <icon name="i-svg:download" :size="16" color="#666" />
+                      导出数据
                     </div>
                   </div>
                 </div>

@@ -8,12 +8,14 @@ export const useFinishedEnter = defineStore('finishedEnter', {
      */
     EnterToArray: FilterWhere<FinishedEnter>[]
     enterInfo: FinishedEnter
+    enterInfoAll: FinishedEnter
   } => ({
     enterFilterList: {} as Where<FinishedEnter>,
     EnterList: [],
     EnterListTotal: 0,
     EnterToArray: [] as FilterWhere<FinishedEnter>[],
     enterInfo: {} as FinishedEnter,
+    enterInfoAll: {} as FinishedEnter,
   }),
   actions: {
     // 获取入库单列表
@@ -81,6 +83,16 @@ export const useFinishedEnter = defineStore('finishedEnter', {
         if (data.value?.code === HttpCode.SUCCESS) {
           this.enterInfo = data.value.data
         }
+      }
+      catch (error) {
+        throw new Error(`获取入库单详情失败: ${error || '未知错误'}`)
+      }
+    },
+    // 获取入库单详情 全部列表
+    async getFinishedEnterInfoAll(params: EnterInfoParamsAll) {
+      try {
+        const { data } = await https.post<FinishedEnter, EnterInfoParamsAll>('/product/finished/enter/info', params)
+        return data.value
       }
       catch (error) {
         throw new Error(`获取入库单详情失败: ${error || '未知错误'}`)

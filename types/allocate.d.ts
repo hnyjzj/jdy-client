@@ -135,3 +135,12 @@ interface AllocateInfoParams {
   page: number
   limit: number
 }
+
+interface AllocateInfoParamsAll {
+  id: Allocate['id']
+  all: boolean
+}
+
+interface ExcelData {
+  code: string
+}

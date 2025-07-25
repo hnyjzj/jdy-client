@@ -115,3 +115,8 @@ interface EnterInfoParams {
   page: number
   limit: number
 }
+
+interface EnterInfoParamsAll {
+  id: FinishedEnter['id']
+  all: boolean
+}

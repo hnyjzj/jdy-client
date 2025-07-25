@@ -3,6 +3,7 @@ import { darkTheme, dateZhCN, type GlobalThemeOverrides, zhCN } from 'naive-ui'
 
 const { wx } = storeToRefs(useWxworkStore())
 const { useWxWork } = useWxworkStore()
+const { isLoading } = storeToRefs(useLoading())
 
 onMounted(async () => {
   await nextTick()
@@ -92,6 +93,7 @@ const themeOverrides: GlobalThemeOverrides = {
 
 <template>
   <div>
+    <common-loading v-model="isLoading" />
     <n-config-provider
       :theme-overrides="themeOverrides"
       :theme="$colorMode.value === 'light' ? null : darkTheme"

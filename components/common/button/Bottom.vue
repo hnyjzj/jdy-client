@@ -25,10 +25,14 @@ const confirm = () => {
       <slot name="content">
         <div class="flex flex-row gap-2">
           <button class="btn-left cursor-pointer" @click="cancel">
-            {{ props.cancelText }}
+            <slot name="cancel">
+              {{ props.cancelText }}
+            </slot>
           </button>
           <button class="btn-right cursor-pointer" @click="confirm">
-            {{ props.confirmText }}
+            <slot name="confirm">
+              {{ props.confirmText }}
+            </slot>
           </button>
         </div>
       </slot>
