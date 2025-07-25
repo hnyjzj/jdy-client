@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
+import type { UploadFileInfo } from 'naive-ui'
 
 const { getFinishedRetrieval, getFinishedWhere, uploadFinishedImg } = useFinished()
 const { finishedInfo, finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
