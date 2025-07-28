@@ -62,14 +62,19 @@ async function searchAccessorie() {
 async function addCategory() {
   if (!selectedCategories.value?.length)
     return $toast.error('请选择配件礼品')
+  // 保留已有选择
+  const productMap = new Map(selectProduct.value.map(p => [p.id, p]))
 
-  const productMap = new Map(selectProduct.value.map(p => [p.id, p])) // 先保留原有选择
-
-  // 遍历新选中的 ID，加入到 Map 中（去重）
   selectedCategories.value.forEach((id: ProductAccessories['id']) => {
-    const found = accessorieList.value.find(cat => cat.id === id)
+    const found: any = accessorieList.value.find(cat => cat.id === id)
     if (found) {
-      productMap.set(id, JSON.parse(JSON.stringify(found)))
+      const existing = productMap.get(id)
+      const newItem = JSON.parse(JSON.stringify(found))
+      if (existing?.quantity) {
+        // 保留原有填写的 quantity
+        newItem.quantity = existing.quantity
+      }
+      productMap.set(id, newItem)
     }
   })
 
@@ -121,6 +126,16 @@ async function submitProduct() {
 const debouncedDelProduct = useThrottleFn((index: number) => {
   selectProduct.value.splice(index, 1)
 }, 200)
+
+function toggleCategory(id: string) {
+  const index = selectedCategories.value.indexOf(id)
+  if (index > -1) {
+    selectedCategories.value.splice(index, 1)
+  }
+  else {
+    selectedCategories.value.push(id)
+  }
+}
 </script>
 
 <template>
@@ -230,7 +245,7 @@ const debouncedDelProduct = useThrottleFn((index: number) => {
             <template v-if="accessorieList?.length">
               <tbody class="pt-2">
                 <template v-for="(category, i) in accessorieList" :key="i">
-                  <tr class="table-color">
+                  <tr class="table-color" @click="toggleCategory(category.id)">
                     <td class="sticky-left table-color py-1 px-2">
                       <input v-model="selectedCategories" type="checkbox" :value="category.id" @focus="focus">
                     </td>
