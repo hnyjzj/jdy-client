@@ -7,6 +7,7 @@ const { getFinishedWhere } = useFinished()
 const { historyFilterList, historyListTotal, productRocordList, HistoryFilterListToArray } = storeToRefs(useProductManage())
 const { finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
 const { oldFilterListToArray } = storeToRefs(useOld())
+const { getOldWhere } = useOld()
 
 const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList, getMyStore } = useStores()
@@ -55,6 +56,7 @@ try {
   await getList()
   await getHistoryWhere()
   await getFinishedWhere()
+  await getOldWhere()
   await changeStore()
   await getStoreList({ page: 1, limit: 20 })
   await getMyStore({ page: 1, limit: 20 })
@@ -232,12 +234,11 @@ async function downloadLocalFile() {
         return $toast.error('列表是空的')
       }
 
-      // 把 new_value 字段展开到每个数据项的外层，合并成一个新的对象数组 如果冲突，以 外层 为准
+      // 把 new_value 字段展开到每个数据项的外层，合并成一个新的对象数组，如果冲突，以外层为准
       const transformed = res.data.list.map(({ new_value: newObj, ...rest }) => ({
         ...newObj,
         ...rest,
       }))
-
       // 合并多个筛选字段数组：
       // 1. 原始筛选字段列表（保留原样）
       // 2. 成品筛选字段列表：将 name 为 'class' 的改成 'finish_class'
@@ -269,7 +270,7 @@ async function downloadLocalFile() {
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:showtype="showtype" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜素关联产品编号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:showtype="showtype" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜索编号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changeMyStore" />
       </template>

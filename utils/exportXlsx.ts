@@ -65,6 +65,9 @@ function mapEnumValues(
       const rawValue = row[key]
       newRow[key] = enumMap[key][rawValue] ?? rawValue
     }
+    else if (key === 'is_special_offer') {
+      newRow[key] = row[key] ? '是' : '否'
+    }
   }
   return newRow
 }

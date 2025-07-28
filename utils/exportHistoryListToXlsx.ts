@@ -3,7 +3,7 @@ import * as XLSX from 'xlsx'
 /** 中文 => 英文字段映射 */
 const headerMap: Record<string, string> = {
   '操作': 'action',
-  '关联单号': 'id',
+  '关联单号': 'source_id',
   '产品类型': 'type',
   '所属门店': 'store_id',
   '操作时间': 'updated_at',
@@ -74,6 +74,9 @@ function mapEnumValues(
     if (enumMap[key]) {
       const rawValue = row[key]
       newRow[key] = enumMap[key][rawValue] ?? rawValue
+    }
+    else if (key === 'is_special_offer') {
+      newRow[key] = row[key] ? '是' : '否'
     }
   }
   return newRow
