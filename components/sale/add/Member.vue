@@ -79,7 +79,7 @@ const submitNewMember = async () => {
   }
 }
 const setMbid = async (id: string, phone: string) => {
-  memberId.value = id
+//   memberId.value = id
   await searchMember(phone)
   await handleUpdateValue('')
 }
