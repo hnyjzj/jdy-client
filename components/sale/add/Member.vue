@@ -9,28 +9,27 @@ const props = defineProps<{
   store: Stores
   staffs: StoresStaff[]
 }>()
-
 const emit = defineEmits<{
   setMemberId: [val: string]
   setShowSubmit: [val: boolean]
 }>()
-
+const { $toast } = useNuxtApp()
 const showmenu = ref(false)
 const searchList = ref<Member[]>([])
 const memberParams = ref<Member>({
   // 初始化store_id为当前门店id
   store_id: props.store.id,
 } as Member)
-
+const memberId = ref()
 // 搜索会员 防抖
 const searchMember = async (val: string) => {
-  if (val.length === 11) {
-    searchList.value = await props.getMember(val)
-    showmenu.value = true
+  searchList.value = await props.getMember(val)
+  if (searchList.value.length === 0) {
+    $toast.error('暂无该会员,请点击添加')
   }
+  showmenu.value = true
 }
 
-const memberId = ref()
 const canUseScore = ref()
 // 仅用于展示的会员信息
 const userInfo = ref({} as Member)
@@ -62,10 +61,10 @@ const handleUpdateValue = async (value: string) => {
 }
 const showModel = ref(false)
 // 新增会员
-const handleAddMember = () => {
-  showModel.value = true
-}
-const { $toast } = useNuxtApp()
+// const handleAddMember = () => {
+//   showModel.value = true
+// }
+
 // 提交新用户
 const submitNewMember = async () => {
   const res = await props.addNewMember(memberParams.value)
@@ -93,9 +92,9 @@ defineExpose({
   <div class="pb-[16px]">
     <common-fold title="会员信息" :is-collapse="false">
       <div :key="Key" class="p-[16px] pb-0">
-        <n-grid :cols="24" :x-gap="8">
+        <n-grid :cols="24" :x-gap="12">
           <n-form-item-gi
-            :span="12" label="选择会员" class=""
+            :span="18" label="选择会员" class=""
             path="member_id"
             :rule="{
               required: true,
@@ -114,14 +113,13 @@ defineExpose({
               clearable
               remote
               :show="showmenu"
-              @search="searchMember"
               @blur="showmenu = false"
               @update:value="handleUpdateValue"
             />
           </n-form-item-gi>
-          <n-form-item-gi :span="12">
+          <n-form-item-gi :span="6">
             <div class="w-full">
-              <common-button-rounded content="新增会员" @button-click="handleAddMember" />
+              <common-button-rounded content="搜索" @button-click="searchMember(memberId)" />
             </div>
           </n-form-item-gi>
           <template v-if="userInfo?.id">
