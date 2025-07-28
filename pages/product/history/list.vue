@@ -2,17 +2,18 @@
 import { NButton } from 'naive-ui'
 
 const { $toast } = useNuxtApp()
-const { getProductHistory, getHistoryWhere } = useProductManage()
+const { getProductHistory, getHistoryWhere, getProductHistoryAll } = useProductManage()
 const { getFinishedWhere } = useFinished()
 const { historyFilterList, historyListTotal, productRocordList, HistoryFilterListToArray } = storeToRefs(useProductManage())
-const { finishedFilterList } = storeToRefs(useFinished())
+const { finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
+const { oldFilterListToArray } = storeToRefs(useOld())
 
 const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList, getMyStore } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
 const limits = ref(50)
 const tableLoading = ref(false)
-
+const isLoading = ref(false)
 const searchKey = ref('')
 // 筛选框显示隐藏
 const isFilter = ref(false)
@@ -214,6 +215,54 @@ const cols = [
     },
   },
 ]
+
+/**
+ * 记录列表导出excel表格
+ */
+async function downloadLocalFile() {
+  isLoading.value = true
+
+  try {
+    const res = await getProductHistoryAll({
+      all: true,
+      where: filterData.value,
+    })
+    if (res?.code === HttpCode.SUCCESS) {
+      if (!res?.data.list || !res?.data?.list.length) {
+        return $toast.error('列表是空的')
+      }
+
+      // 把 new_value 字段展开到每个数据项的外层，合并成一个新的对象数组 如果冲突，以 外层 为准
+      const transformed = res.data.list.map(({ new_value: newObj, ...rest }) => ({
+        ...newObj,
+        ...rest,
+      }))
+
+      // 合并多个筛选字段数组：
+      // 1. 原始筛选字段列表（保留原样）
+      // 2. 成品筛选字段列表：将 name 为 'class' 的改成 'finish_class'
+      // 3. 旧料筛选字段列表：将 name 为 'class' 的改成 'old_class'
+      const listToArray = [
+        ...HistoryFilterListToArray.value,
+        ...finishedFilterListToArray.value.map(item => ({
+          ...item,
+          name: item.name === 'class' ? 'finish_class' : item.name,
+        })),
+        ...oldFilterListToArray.value.map(item => ({
+          ...item,
+          name: item.name === 'class' ? 'old_class' : item.name,
+        })),
+      ]
+
+      // 调用导出函数，把数据导出为 Excel
+      exportHistoryListToXlsx(transformed, listToArray)
+    }
+  }
+  finally {
+    // 无论成功或失败，最后关闭加载状态
+    isLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -226,7 +275,7 @@ const cols = [
       </template>
     </product-filter>
     <!-- 列表 -->
-    <div class="px-[16px] pb-10">
+    <div class="pb-10">
       <template v-if="productRocordList?.length">
         <template v-if="showtype === 'list'">
           <product-manage-card :list="productRocordList">
@@ -344,5 +393,11 @@ const cols = [
 
       <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="HistoryFilterListToArray" @submit="submitWhere" />
     </div>
+    <common-create @click="downloadLocalFile">
+      <template #content>
+        <icon name="i-icon:download" :size="24" color="#FFF" />
+      </template>
+    </common-create>
+    <common-loading v-model="isLoading" />
   </div>
 </template>

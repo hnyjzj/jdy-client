@@ -2,6 +2,11 @@ import * as XLSX from 'xlsx'
 
 /** 中文 => 英文字段映射 */
 const headerMap: Record<string, string> = {
+  '操作': 'action',
+  '关联单号': 'id',
+  '产品类型': 'type',
+  '所属门店': 'store_id',
+  '操作时间': 'updated_at',
   '条码*': 'code',
   '货品名称*': 'name',
   '入网费*': 'access_fee',
@@ -11,7 +16,8 @@ const headerMap: Record<string, string> = {
   '款号': 'style',
   '供应商*': 'supplier',
   '品牌': 'brand',
-  '大类': 'class',
+  '成品大类': 'finish_class',
+  '旧料大类': 'old_class',
   '材质(贵金属成分)*': 'material',
   '成色*': 'quality',
   '主石(宝玉石种类)*': 'gem',
@@ -27,11 +33,15 @@ const headerMap: Record<string, string> = {
   '副石1数量': 'num_other',
   '颜色': 'color_gem',
   '净度': 'clarity',
-  '证书1编号': 'certificate1',
-  '证书2编号': 'certificate2',
   '系列': 'series',
   '备注': 'remark',
   '是否特价': 'is_special_offer',
+  '回收方式': 'recycle_method',
+  '回收金额': 'recycle_price',
+  '回收金价': 'recycle_price_gold',
+  '回收工费': 'recycle_price_labor',
+  '回收工费方式': 'recycle_price_labor_method',
+  '回收类型': 'recycle_type',
 }
 
 /** 生成英文 => 中文字段映射 */
@@ -86,21 +96,33 @@ function convertDataWithChineseHeaders(
  * @param data 需要导出的数据
  * @param fields 字段定义（带 name 和 preset）
  */
-export function exportProductListToXlsx(
+export function exportHistoryListToXlsx(
   data: Record<string, any>[],
   fields: { name: string, preset?: Record<any, string> }[],
   name: string = '货品列表',
   summary?: [string, string | number][],
 ) {
   const enumMap = extractPresets(fields)
-  const mappedData = data.map(row => mapEnumValues(row, enumMap))
+
+  // 👉 根据 type 字段重命名 class 字段为 finish_class 或 old_class
+  const normalizedData = data.map((row) => {
+    const { class: classValue, ...rest } = row
+    if (row.type === 1) {
+      return { ...rest, finish_class: classValue }
+    }
+    else if (row.type === 2) {
+      return { ...rest, old_class: classValue }
+    }
+    return row
+  })
+
+  const mappedData = normalizedData.map(row => mapEnumValues(row, enumMap))
   const aoaData = convertDataWithChineseHeaders(mappedData, fieldMap)
 
-  // 👉 构造统计信息区域
   let finalData: any[][] = []
 
   if (summary && summary.length > 0) {
-    const summaryRows = [['', '合计'], ...summary, []] // 空行隔开
+    const summaryRows = [['', '合计'], ...summary, []]
     finalData = [...summaryRows, ...aoaData]
   }
   else {
