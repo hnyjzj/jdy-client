@@ -49,7 +49,7 @@ function getFunBtn() {
   }
   if (checkInfo.value.inventory_person_ids?.indexOf(userinfo.id) !== -1 && checkInfo.value.status === CheckStatus.Checking) {
     funbtns.value.push({ status: CheckStatus.ToBeVerified, text: '结束盘点', finish: true })
-    funbtns.value.push({ status: CheckStatus.ToBeVerified, text: '开始盘点', add: true })
+    funbtns.value.push({ status: CheckStatus.ToBeVerified, text: '添加产品', add: true })
   }
   if (checkInfo.value.inventory_person_ids?.indexOf(userinfo.id) !== -1 && checkInfo.value.status === CheckStatus.ToBeVerified) {
     funbtns.value.push({ status: CheckStatus.Abnormal, text: '异常' })

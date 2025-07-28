@@ -30,8 +30,8 @@ class Https {
   //   middleware
   async fetchApi<T>(url: string, opt: any) {
     const nuxapp = useNuxtApp()
-    const auth = useLoading()
-    auth.isLoading = true // 开始 loading
+    const loading = useLoading()
+    loading.isLoading = true // 开始 loading
 
     try {
       const res = await useFetch(this.BASE_URL + url, {
@@ -63,7 +63,7 @@ class Https {
       throw error
     }
     finally {
-      auth.isLoading = false // 结束 loading，无论成功失败
+      loading.isLoading = false // 结束 loading，无论成功失败
     }
   }
 
