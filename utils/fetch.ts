@@ -28,10 +28,10 @@ class Https {
   }
 
   //   middleware
-  async fetchApi<T>(url: string, opt: any) {
+  async fetchApi<T>(url: string, opt: any, withLoading: boolean = true) {
     const nuxapp = useNuxtApp()
     const auth = useLoading()
-    auth.isLoading = true // 开始 loading
+    auth.isLoading = withLoading // 开始 loading
 
     try {
       const res = await useFetch(this.BASE_URL + url, {
@@ -93,7 +93,7 @@ class Https {
     return headers
   }
 
-  get = async <T, R = undefined>(url: string, body?: R, isToken: boolean = true) => {
+  get = async <T, R = undefined>(url: string, body?: R, isToken: boolean = true, withLoading: boolean = true) => {
     const options: any = {
       method: 'GET',
       headers: this.createHeaders(isToken),
@@ -102,26 +102,26 @@ class Https {
       options.query = body
     }
 
-    return this.fetchApi<T>(url, options)
+    return this.fetchApi<T>(url, options, withLoading)
   }
 
-  post = async <T, R = undefined>(url: string, body?: R, isToken: boolean = true) => {
+  post = async <T, R = undefined>(url: string, body?: R, isToken: boolean = true, withLoading: boolean = true) => {
     return this.fetchApi<T>(url, {
       method: 'POST',
       headers: this.createHeaders(isToken),
       body: JSON.stringify(body),
-    })
+    }, withLoading)
   }
 
-  put = async <T, R = undefined>(url: string, body?: R, isToken: boolean = true) => {
+  put = async <T, R = undefined>(url: string, body?: R, isToken: boolean = true, withLoading: boolean = true) => {
     return this.fetchApi<T>(url, {
       method: 'PUT',
       headers: this.createHeaders(isToken),
       body: JSON.stringify(body),
-    })
+    }, withLoading)
   }
 
-  upload = async <T, R = undefined>(url: string, body?: R, isToken: boolean = true) => {
+  upload = async <T, R = undefined>(url: string, body?: R, isToken: boolean = true, withLoading: boolean = true) => {
     // 创建一个新的 FormData 对象
     const formData = new FormData()
 
@@ -133,15 +133,15 @@ class Https {
       method: 'POST',
       headers: this.createHeaders(isToken, false),
       body: formData,
-    })
+    }, withLoading)
   }
 
-  delete = async <T, R = undefined>(url: string, options?: R, isToken: boolean = true) => {
+  delete = async <T, R = undefined>(url: string, options?: R, isToken: boolean = true, withLoading: boolean = true) => {
     return this.fetchApi<T>(url, {
       method: 'DELETE',
       headers: this.createHeaders(isToken),
       body: JSON.stringify(options),
-    })
+    }, withLoading)
   }
 }
 export const https = new Https()
