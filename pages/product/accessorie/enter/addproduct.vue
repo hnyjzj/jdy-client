@@ -52,15 +52,24 @@ function searchAccessorie() {
 async function addCategory() {
   if (!selectedCategories.value?.length)
     return $toast.error('请选择条目')
-  const product = [] as AccessorieCategory[]
+
+  const productMap = new Map(selectProduct.value.map(p => [p.id, p]))
+
   selectedCategories.value.forEach((id: AccessorieCategory['id']) => {
-    categoryList.value?.forEach((cat) => {
-      if (cat.id === id) {
-        product.push(JSON.parse(JSON.stringify(cat)))
-      }
-    })
+    const found = categoryList.value?.find(cat => cat.id === id)
+    if (found) {
+      const existing = productMap.get(id)
+      const newItem = JSON.parse(JSON.stringify(found))
+      if (existing?.in_stock)
+        newItem.in_stock = existing.in_stock
+      if (existing?.in_access_fee)
+        newItem.in_access_fee = existing.in_access_fee
+
+      productMap.set(id, newItem)
+    }
   })
-  selectProduct.value = product
+
+  selectProduct.value = Array.from(productMap.values())
   isAddSingle.value = false
 }
 
