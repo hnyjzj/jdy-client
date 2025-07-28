@@ -101,7 +101,7 @@ const jumpInfo = (info: T) => {
               工艺
             </div>
             <div class="text-align-end val">
-              {{ info.craft }}
+              {{ filterList.craft?.preset[info.craft] || '' }}
             </div>
           </div>
           <template v-if="isFinished">

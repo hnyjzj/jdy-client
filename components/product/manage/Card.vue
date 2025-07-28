@@ -6,7 +6,7 @@ const props = defineProps<{
 
 <template>
   <common-layout-center>
-    <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+    <div class="px-4" uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
       <template v-for="(item, index) in props.list" :key="index">
         <div
           class="mb-4 rounded-[24px] blur-bgc p-[1px]">

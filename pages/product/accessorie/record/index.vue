@@ -191,7 +191,7 @@ const cols = [
       </template>
     </product-filter>
     <!-- 列表 -->
-    <div class="px-[16px] pb-10">
+    <div class="pb-10">
       <template v-if="productRocordList?.length">
         <template v-if="showtype === 'list'">
           <product-manage-card :list="productRocordList">
