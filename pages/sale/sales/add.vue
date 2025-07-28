@@ -26,7 +26,7 @@ const { createMember } = useMemberManage()
 const { getOrderDetail, getDepositList } = useDepositOrder()
 const { OrderDetail, OrdersList } = storeToRefs(useDepositOrder())
 const { getPhraseList } = usePhrase()
-const showSubmitBtn = ref(true)
+
 const layoutLoading = ref(false)
 const getSearchPhrase = async (value: string) => {
   const res = await getPhraseList({ page: 1, limit: 10, where: { store_id: myStore.value.id, content: value || '' } })
@@ -136,7 +136,7 @@ const searchDepositOrders = async (val?: string) => {
 
 // 获取会员列表
 const getMember = async (val: string) => {
-  await getMemberList({ page: 1, limit: 5, where: { phone: val } })
+  await getMemberList({ page: 1, limit: 1, where: { phone: val } })
   return memberList.value || []
 }
 // 获取门店员工列表
@@ -435,7 +435,6 @@ const changeStore = () => {
             :store-staff="StoreStaffList"
             :get-staff="getStaff"
             :set-score="handleIsInterChange"
-            @set-show-submit="showSubmitBtn = $event"
           />
         </div>
         <sale-add-member
@@ -446,7 +445,6 @@ const changeStore = () => {
           :get-staffs="getStaff"
           :add-new-member="addNewMember"
           @set-member-id="formData.member_id = $event"
-          @set-show-submit="showSubmitBtn = $event"
         />
         <div class="pb-[16px]">
           <sale-add-product
@@ -509,15 +507,13 @@ const changeStore = () => {
           <template #score />
         </sale-add-settlement>
 
-        <template v-if="showSubmitBtn">
-          <div class="h-[80px] bg-[#fff] fixed z-1">
-            <div class="btn grid-12 px-[16px]">
-              <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
-                <common-button-rounded content="开单" />
-              </div>
+        <div class="h-[80px] bg-[#fff] fixed z-1">
+          <div class="btn grid-12 px-[16px]">
+            <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
+              <common-button-rounded content="开单" />
             </div>
           </div>
-        </template>
+        </div>
       </n-form>
     </div>
     <common-loading v-model="layoutLoading" />

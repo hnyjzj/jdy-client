@@ -4,6 +4,8 @@ import type { FormRules } from 'naive-ui'
 const props = defineProps<{
   rely: Member
   staffList: StoresStaff[]
+  getStaffList: () => void
+
 }>()
 
 const emit = defineEmits<{
@@ -117,7 +119,7 @@ const rules = ref<FormRules>({
             }))"
             clearable
             remote
-            @focus="emit('getStaffList')"
+            @focus="() => { props.getStaffList() }"
           />
         </n-form-item>
         <n-form-item path="phone" label="会员联系方式">
@@ -127,7 +129,7 @@ const rules = ref<FormRules>({
             @keydown.enter.prevent
           />
         </n-form-item>
-        <n-form-item path="name" label="会员姓名">
+        <n-form-item label="会员姓名">
           <n-input
             v-model:value="newParams.name"
             placeholder="请输入会员姓名"

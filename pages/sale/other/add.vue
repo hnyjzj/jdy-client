@@ -173,6 +173,7 @@ const handleValidateButtonClick = (e: any) => {
             :add-new-member="addNewMember"
             @set-member-id="formData.member_id = $event"
           />
+
           <sale-other-balance v-model:form="formData" :filter-list="salewhere" />
           <div class="h-[80px] bg-[#fff] fixed z-1">
             <div class="btn grid-12 px-[16px]">
