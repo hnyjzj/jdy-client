@@ -23,7 +23,7 @@ const handleSelectFn = async (id: Stores['id']) => {
 
 await myStoreTodayInventory({ store_id: myStore.value.id })
 await myStoreTodaySale({ store_id: myStore.value.id })
-await StorePerformance({ duration: 'today' })
+await StorePerformance({ duration: Duration.today })
 </script>
 
 <template>
