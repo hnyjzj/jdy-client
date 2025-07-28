@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const { StorePerformance } = homeDataStore()
 const { StorePerformanceList } = storeToRefs(homeDataStore())
-await StorePerformance({ duration: 'today' })
+await StorePerformance({ duration: Duration.today })
 </script>
 
 <template>

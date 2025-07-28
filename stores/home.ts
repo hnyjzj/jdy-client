@@ -14,9 +14,9 @@ export const homeDataStore = defineStore('homeDataStore', {
   },
   actions: {
     // 获取店铺列表销售数据
-    async StorePerformance(req: { duration: string }) {
+    async StorePerformance(req: { duration: number }) {
       this.StorePerformanceList = undefined
-      const { data } = await https.post<StorePerformance[], { duration: string }>('/statistic/store_sales_total', req)
+      const { data } = await https.post<StorePerformance[], { duration: number }>('/statistic/store_sales_total', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.StorePerformanceList = data.value.data
       }
