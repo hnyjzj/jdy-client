@@ -62,6 +62,7 @@ interface Check {
   start_time: string
   status: number
   created_at: Data
+  store: Store
 }
 
 interface CheckInfo {
