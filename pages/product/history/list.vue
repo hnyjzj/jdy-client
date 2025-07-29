@@ -373,6 +373,70 @@ async function downloadLocalFile() {
                     {{ finishedFilterList.supplier?.preset[info?.new_value?.supplier] }}
                   </div>
                 </div>
+                <div class="flex-between">
+                  <div>
+                    品牌
+                  </div>
+                  <div class="text-align-end">
+                    {{ finishedFilterList.brand?.preset[info?.new_value?.brand] }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    材质
+                  </div>
+                  <div class="text-align-end">
+                    {{ finishedFilterList.material?.preset[info?.new_value?.material] }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    成色
+                  </div>
+                  <div class="text-align-end">
+                    {{ finishedFilterList.quality?.preset[info?.new_value?.quality] }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    主石
+                  </div>
+                  <div class="text-align-end">
+                    {{ finishedFilterList.category?.preset[info?.new_value?.category] }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    品类
+                  </div>
+                  <div class="text-align-end">
+                    {{ finishedFilterList.gem?.preset[info?.new_value?.gem] }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    工艺
+                  </div>
+                  <div class="text-align-end">
+                    {{ finishedFilterList.craft?.preset[info?.new_value?.craft] }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    金重
+                  </div>
+                  <div class="text-align-end">
+                    {{ info?.new_value.weight_metal }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    总重
+                  </div>
+                  <div class="text-align-end">
+                    {{ info?.new_value.weight_total }}
+                  </div>
+                </div>
               </div>
             </template>
             <template #bottom="{ info }">
