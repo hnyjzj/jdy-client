@@ -258,7 +258,7 @@ const onReturnProduct = async (index: number) => {
         </template>
       </sale-cards>
     </div>
-    <sale-order-return-goods ref="returnGoodsRef" v-model:show="showModel" :where="props.orderWhere" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
+    <sale-order-return-goods ref="returnGoodsRef" v-model:show="showModel" :where="props.orderWhere" :product-filter="productFilter" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
   </div>
 </template>
 
