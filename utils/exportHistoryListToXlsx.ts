@@ -105,6 +105,13 @@ export function exportHistoryListToXlsx(
   name: string = '货品列表',
   summary?: [string, string | number][],
 ) {
+  if (!Array.isArray(data) || !Array.isArray(fields)) {
+    throw new TypeError('data 和 fields 参数必须是数组')
+  }
+
+  if (data.length === 0) {
+    throw new Error('导出数据不能为空')
+  }
   const enumMap = extractPresets(fields)
 
   // 👉 根据 type 字段重命名 class 字段为 finish_class 或 old_class
@@ -141,5 +148,10 @@ export function exportHistoryListToXlsx(
   const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}`
   const finalFilename = `${name}_${timestamp}.xlsx`
 
-  XLSX.writeFile(workbook, finalFilename)
+  try {
+    XLSX.writeFile(workbook, finalFilename)
+  }
+  catch (error) {
+    throw new Error(`导出失败: ${error instanceof Error ? error.message : '未知错误'}`)
+  }
 }
