@@ -30,7 +30,7 @@ const returnType = (number: number) => {
         <template #info>
           <div class="info">
             <common-cell label="关联销售单" :value="item.order_id || '--'" />
-            <common-cell label="所属门店" :value="item.store.name || '--'" />
+            <common-cell label="门店" :value="item.store.name || '--'" />
             <common-cell label="产品类型" :value="returnType(item.type) || '--'" />
             <common-cell label="产品条码" :value="item.code || '--'" />
             <common-cell label="顾客" :value="item.member?.name || '--'" />
