@@ -43,6 +43,7 @@ async function getInfo(code: string) {
   productCode.value = code
   const data = await getFinishedRetrieval(code, myStore.value.id)
   if (data?.code !== 200) {
+    statusCode.value = data?.code || 500
     $toast.error(data?.message || '获取成品信息失败')
     return
   }
