@@ -53,6 +53,7 @@ await changeStoer()
 async function submit() {
   loading.value = true
   try {
+    params.value.from_store_id = myStore.value.id
     const res = await createAllocate(params.value as AllocateReq)
     if (res?.code === HttpCode.SUCCESS) {
       $toast.success('创建成功')
