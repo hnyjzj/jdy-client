@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 const props = withDefaults(defineProps<{
   filterList: Where<ProductFinisheds>
-  type: number
+  title?: string
 }>(), {
-  type: 1,
+  title: '批量入库',
 })
 const emits = defineEmits<{
   /**
@@ -189,14 +189,16 @@ defineExpose({
 
 <template>
   <div>
-    <common-model v-model="isModel" title="批量入库" :show-ok="true" confirm-text="导入货品" @confirm="submitGoods" @cancel="clearData">
+    <common-model v-model="isModel" :title="title" :show-ok="true" confirm-text="导入货品" @confirm="submitGoods" @cancel="clearData">
       <div class="mb-8 relative min-h-[60px]">
         <div class="text-[14px] text-color flex pb-4">
-          1、请按照模板整理数据信息
-          <div class="text-[rgba(57,113,243,1)] flex ml-4" @click="downloadLocalFile">
-            <icon name="i-svg:download" :size="16" color="#666" />
-            下载模板
-          </div>
+          <slot name="content">
+            1、请按照模板整理数据信息
+            <div class="text-[rgba(57,113,243,1)] flex ml-4" @click="downloadLocalFile">
+              <icon name="i-svg:download" :size="16" color="#666" />
+              下载模板
+            </div>
+          </slot>
         </div>
         <input class="h-[40px] absolute bottom-0 w-full opacity-0" type="file" @change="FileUpload">
         <div class="uploadInp cursor-pointer">
