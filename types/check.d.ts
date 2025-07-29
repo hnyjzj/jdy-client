@@ -210,6 +210,11 @@ interface CheckProduct {
   id: string
 }
 
+interface AddCheckProductOne {
+  id: Check['id']
+  code: string
+}
+
 interface AddCheckProduct {
   id: Check['id']
   codes: string[]
