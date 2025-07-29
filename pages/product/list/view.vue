@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const { getFinishedRetrieval, getFinishedWhere } = useFinished()
 const { finishedInfo, finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
+const { myStore } = storeToRefs(useStores())
 
 const { $toast } = useNuxtApp()
 const { useWxWork } = useWxworkStore()
@@ -15,7 +16,10 @@ productName.value = finishedInfo.value?.name || ''
 await getFinishedWhere()
 
 async function getInfo(code: string) {
-  const data = await getFinishedRetrieval(code)
+  if (!Object.keys(myStore.value).length) {
+    return $toast.error('请先选择门店')
+  }
+  const data = await getFinishedRetrieval(code, myStore.value.id)
   if (data?.code !== 200) {
     $toast.error(data?.message || '获取成品信息失败')
     return

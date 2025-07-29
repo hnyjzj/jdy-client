@@ -4,6 +4,7 @@ import type { UploadFileInfo } from 'naive-ui'
 const { getFinishedRetrieval, getFinishedWhere, uploadFinishedImg } = useFinished()
 const { finishedInfo, finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
 const { uploadProductImg } = useProductManage()
+const { myStore } = storeToRefs(useStores())
 
 const { $toast } = useNuxtApp()
 const { useWxWork } = useWxworkStore()
@@ -40,7 +41,7 @@ function initImgWall() {
 
 async function getInfo(code: string) {
   productCode.value = code
-  const data = await getFinishedRetrieval(code)
+  const data = await getFinishedRetrieval(code, myStore.value.id)
   if (data?.code !== 200) {
     $toast.error(data?.message || '获取成品信息失败')
     return
