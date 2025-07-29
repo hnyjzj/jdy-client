@@ -9,12 +9,13 @@ const { searchPage, showtype } = storeToRefs(usePages())
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const isModel = ref(false)
+const isUploadModel = ref(false)
+const isCodeModel = ref(false)
 const isLoading = ref(false)
-const isBatchImportModel = ref(false)
-const type = ref(1 as ProductFinisheds['type'])
 const filterData = ref({} as Partial<ProductFinisheds>)
 const limits = ref(50)
 const tableLoading = ref(false)
+const uploadRef = ref()
 useSeoMeta({
   title: '成品列表',
 })
@@ -78,11 +79,6 @@ async function submitWhere(f: Partial<ProductFinisheds>, isSearch: boolean = fal
 /** 编辑 */
 function edit(code: string) {
   jump('/product/manage/edit', { code })
-}
-
-function goAdd() {
-  isModel.value = false
-  jump('/product/warehouse/add', { type: type.value })
 }
 
 function goInfo(info: ProductFinisheds) {
@@ -197,6 +193,31 @@ async function downloadLocalFile() {
     isLoading.value = false
   }
 }
+
+/**
+ * 货品更新
+ */
+async function submitGoods(req: ProductFinisheds[]) {
+  if (!req?.length) {
+    return
+  }
+  isUploadModel.value = false
+  isLoading.value = true
+
+  isLoading.value = false
+}
+
+/** 条码更新 */
+async function submitCode(code: BatchCode[]) {
+  if (!code?.length) {
+    return
+  }
+
+  isCodeModel.value = false
+  isLoading.value = true
+
+  isLoading.value = false
+}
 </script>
 
 <template>
@@ -213,9 +234,11 @@ async function downloadLocalFile() {
         <product-manage-company @change="changeStore" />
       </template>
     </product-filter>
-
     <!-- 列表 -->
     <div class="px-[16px] pb-20">
+      <div class="text-[#FFF] pb-4" @click="isModel = true">
+        货品更新
+      </div>
       <template v-if="finishedList?.length">
         <template v-if="showtype === 'list'">
           <product-list-main :is-finished="true" :product-list="finishedList" :filter-list="finishedFilterList" @edit="edit" @go-info="goInfo" />
@@ -237,7 +260,27 @@ async function downloadLocalFile() {
     </common-create>
     <common-loading v-model="isLoading" />
     <product-manage-bottom :statistics="finisheStatistics" />
-    <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
+    <product-upload-choose v-model:is-model="isModel" first-text="数据更新" second-text="条码更新" @go-add="isCodeModel = true" @batch="isUploadModel = true" />
+    <product-upload-warehouse ref="uploadRef" v-model="isUploadModel" title="数据更新" :filter-list="finishedFilterList" :type="1" @upload="submitGoods">
+      <template #content>
+        <div>
+          <div class="pb-2">
+            1. 成品列表、入库记录里面导出需要更新的货品；
+          </div>
+          <div class="pb-2">
+            2. 修改需要更新的地方；
+          </div>
+          <div class="pb-2">
+            3. 删除不在入库模板中的列；
+          </div>
+          <div class="pb-2">
+            4. 上传更新后的货品，不要修改表格式。
+          </div>
+        </div>
+      </template>
+    </product-upload-warehouse>
+
+    <product-upload-code v-model="isCodeModel" @upload="submitCode" />
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="finishedFilterListToArray" @submit="submitWhere" />
   </div>
 </template>
