@@ -87,20 +87,36 @@ async function transformData(data: any[][]) {
         // 数据类型转换 + 默认值处理
         switch (type) {
           case 'number':
-            row[index] = Number.isNaN(Number(row[index])) ? 0 : Number(row[index])
+            if (row[index] !== null && row[index] !== undefined && String(row[index]).trim() !== '') {
+              row[index] = Number(row[index])
+            }
+            else {
+              row[index] = undefined
+            }
             break
           case 'float':
-            row[index] = Number.isNaN(Number.parseFloat(row[index])) ? 0 : Number.parseFloat(row[index])
+            if (row[index] !== null && row[index] !== undefined && String(row[index]).trim() !== '') {
+              row[index] = Number.parseFloat(row[index])
+            }
+            else {
+              row[index] = undefined
+            }
             break
           case 'string':
-            row[index] = row[index] ?? '' // 将 undefined 转为空字符串
-            row[index] = String(row[index])
-            break
-          case 'bool':
-            row[index] = typeof row[index] === 'boolean' ? row[index] : Boolean(row[index])
+            if (row[index] !== null && row[index] !== undefined && String(row[index]).trim() !== '') {
+              row[index] = String(row[index])
+            }
+            else {
+              row[index] = undefined
+            }
             break
           case 'string[]':
-            row[index] = Array.isArray(row[index]) ? row[index] : [String(row[index] ?? '')]
+            if (row[index] === null || row[index] === undefined || String(row[index]).trim() === '') {
+              row[index] = undefined
+            }
+            else if (!Array.isArray(row[index])) {
+              row[index] = [String(row[index])]
+            }
             break
           case 'boolean':
             if (row[index] === '是') {
@@ -109,15 +125,25 @@ async function transformData(data: any[][]) {
             else if (row[index] === '否') {
               row[index] = false
             }
-            else if (!row[index]) {
-              row[index] = false
+            else if (row[index] === null || row[index] === undefined || String(row[index]).trim() === '') {
+              row[index] = undefined
             }
             break
           case 'time':
-            row[index] = row[index] ? toFixedChinaISOString(excelSerialToDate(row[index])) : undefined
+            if (row[index] !== null && row[index] !== undefined && String(row[index]).trim() !== '') {
+              row[index] = toFixedChinaISOString(excelSerialToDate(row[index]))
+            }
+            else {
+              row[index] = undefined
+            }
             break
           default:
-            row[index] = row[index] ?? ''
+            if (row[index] !== null && row[index] !== undefined && String(row[index]).trim() !== '') {
+              //
+            }
+            else {
+              row[index] = undefined
+            }
             break
         }
         obj[header] = row[index]
