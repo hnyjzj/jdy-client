@@ -25,6 +25,7 @@ export const useStaff = defineStore('staffStore', {
           return true
         }
         else {
+          this.staffList = []
           // 当前页没有数据，则不进行下一页
           return false
         }
