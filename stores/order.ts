@@ -39,10 +39,10 @@ export const useOrder = defineStore('Order', {
     // 从成品列表中拿 成品列表
     async getOldList(pamars: ReqList<ProductFinisheds>) {
       try {
-        pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
+        pamars = { ...pamars, where: { ...pamars.where } }
         const { data } = await https.post<ResList<ProductFinisheds>, ReqList<ProductFinisheds>>('/product/finished/list', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {
-          if (data.value.data.list.length > 0) {
+          if (data.value.data.list !== null && data.value.data.list?.length > 0) {
             const params = data.value.data.list[0]
             // 设置OldObj对象的is_our属性为true，表示该对象属于我们
             this.OldObj.is_our = true
