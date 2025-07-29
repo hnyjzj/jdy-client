@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { checkInfo, checkFilterList } = storeToRefs(useCheck())
-const { getCheckInfo, getCheckWhere, changeCheckStatus, addCheckProduct, remove, getCheckInfoAll } = useCheck()
+const { getCheckInfo, getCheckWhere, changeCheckStatus, addCheckProduct, batchCheckProduct, remove, getCheckInfoAll } = useCheck()
 const { userinfo } = useUser()
 const { $toast } = useNuxtApp()
 const { useWxWork } = useWxworkStore()
@@ -193,7 +193,21 @@ async function bulkupload(data: string[]) {
     id: checkInfo.value.id,
     codes: data,
   }
-  await addCheckGood(params, false)
+  try {
+    const res = await batchCheckProduct(params)
+    if (res?.code === HttpCode.SUCCESS) {
+      await getInfo()
+      $toast.success('添加成功')
+    }
+    else {
+      $toast.error(res?.message || '添加失败', 5000)
+    }
+  }
+  finally {
+    loading.value = false
+    importModel.value = false
+    uploadRef.value?.clearData()
+  }
 }
 
 async function ConfirmUse() {
@@ -547,10 +561,7 @@ async function downloadLocalFile() {
       </div>
     </template>
     <product-upload-choose
-      v-model:is-model="uploadModel" title="正在盘点" @go-add="uploadModel = false;inputModel = true" @batch="() => {
-        // importModel = true
-        $toast.error('暂无权限')
-      }" />
+      v-model:is-model="uploadModel" title="正在盘点" @go-add="uploadModel = false;inputModel = true" @batch="importModel = true" />
     <common-model v-model="inputModel" title="正在盘点" :show-ok="true" @confirm="submitGoods" @cancel="goodCode = ''">
       <div class="mb-8 relative min-h-[200px]">
         <div class="uploadInp cursor-pointer">
