@@ -83,8 +83,29 @@ const payOrder = async () => {
         :refund="refund"
         :store="myStore.id"
       />
-      <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === repairOrderDetail.status && repairOrderDetail.cashier_id === userinfo.id && myStore.id === repairOrderDetail.store_id">
-        <common-confirm-pay @pay="payOrder" @cancle="cancelOrder" />
+
+      <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === repairOrderDetail.status ">
+        <template v-if="repairOrderDetail.cashier_id === userinfo.id">
+          <template v-if="myStore.id === repairOrderDetail.store_id">
+            <common-button-bottom
+              confirm-text="支付"
+              cancel-text="撤销"
+              @confirm="payOrder"
+              @cancel="cancelOrder"
+            >
+              <template #cancel>
+                <div class="color-[rgba(255,47,47,1)]">
+                  <span>撤销</span>
+                </div>
+              </template>
+              <template #confirm>
+                <span>
+                  支付
+                </span>
+              </template>
+            </common-button-bottom>
+          </template>
+        </template>
       </template>
     </div>
     <correspond-store :correspond-ids="[repairOrderDetail.store_id]" />

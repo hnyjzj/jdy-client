@@ -243,7 +243,7 @@ const cols = [
       </template>
     </product-filter>
     <!-- 小卡片组件 -->
-    <div class="px-[16px] pb-20">
+    <div class="pb-20">
       <template v-if="EnterList?.length">
         <template v-if="showtype === 'list'">
           <product-manage-card :list="EnterList" @edit="edit">

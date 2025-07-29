@@ -177,7 +177,7 @@ const cols = [
         <product-manage-company @change="changeStore" />
       </template>
     </product-filter>
-    <div class="px-[16px] pb-20">
+    <div class="pb-20">
       <template v-if="accessorieAllocateList?.length">
         <template v-if="showtype === 'list'">
           <product-manage-card :list="accessorieAllocateList">

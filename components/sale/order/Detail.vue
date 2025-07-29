@@ -79,8 +79,8 @@ const onReturnProduct = async (index: number) => {
       <sale-cards title="基本信息">
         <template #info>
           <div class="info">
-            <common-cell label="订单编号" :value="props.orders.id" rcol="col-8" lcol="col-4" />
             <common-cell label="门店" :value="props.orders?.store?.name" rcol="col-8" lcol="col-4" />
+            <common-cell label="订单编号" :value="props.orders.id" rcol="col-8" lcol="col-4" />
             <common-cell label="订单状态" :value="props.orderWhere.status?.preset[props.orders.status]" val-color="#FF9900" />
             <common-cell label="订单来源" :value="props.orderWhere.source?.preset[props.orders.source]" />
             <common-cell label="销售时间" :value="formatISODate(props.orders.created_at)" />
@@ -258,7 +258,7 @@ const onReturnProduct = async (index: number) => {
         </template>
       </sale-cards>
     </div>
-    <sale-order-return-goods ref="returnGoodsRef" v-model:show="showModel" :where="props.orderWhere" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
+    <sale-order-return-goods ref="returnGoodsRef" v-model:show="showModel" :where="props.orderWhere" :product-filter="productFilter" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
   </div>
 </template>
 

@@ -229,6 +229,14 @@ async function downloadLocalFile() {
                   <div class="operation-information flex flex-col gap-1">
                     <div class="flex-start gap-3 text-sm font-normal">
                       <div class="info-title">
+                        所属门店
+                      </div>
+                      <div class="info-val">
+                        {{ enterInfo?.store?.name }}
+                      </div>
+                    </div>
+                    <div class="flex-start gap-3 text-sm font-normal">
+                      <div class="info-title">
                         操作人
                       </div>
                       <div class="info-val">
@@ -257,14 +265,6 @@ async function downloadLocalFile() {
                       </div>
                       <div class="info-val">
                         {{ enterInfo.remark }}
-                      </div>
-                    </div>
-                    <div class="flex-start gap-3 text-sm font-normal">
-                      <div class="info-title">
-                        门店
-                      </div>
-                      <div class="info-val">
-                        {{ enterInfo?.store?.name }}
                       </div>
                     </div>
                     <div class="other-information flex flex-col gap-1">

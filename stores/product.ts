@@ -32,6 +32,18 @@ export const useProductManage = defineStore('ProductManage', {
         throw new Error(`获取货品记录失败: ${error || '未知错误'}`)
       }
     },
+    /** 货品记录 */
+    async getProductHistoryAll(params: Allhistory<HistoryWhere>) {
+      try {
+        params = { ...params, where: { ...params.where, store_id: useStores().myStore.id } }
+
+        const { data } = await https.post<ResList<ProductHistories>, Allhistory<HistoryWhere>>('/product/history/list', params)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`获取货品记录失败: ${error || '未知错误'}`)
+      }
+    },
     // 货品记录详情
     async getProductHistoryInfo(id: ProductHistories['id']) {
       try {

@@ -32,6 +32,7 @@ const returnGoods = (val: number) => {
       <sale-cards title="订单信息">
         <template #info>
           <div class="info">
+            <common-cell label="门店" :value="props.orders.store?.name" />
             <common-cell label="订单编号" :value="props.orders.id" />
             <common-cell label="订单状态" :value="where.status?.preset[(props.orders.status as number)]" val-color="#FF9900" />
             <common-cell label="销售时间" :value="formatISODate(props.orders.created_at)" />
@@ -121,7 +122,7 @@ const returnGoods = (val: number) => {
       </div>
     </template>
 
-    <sale-deposit-return-goods v-model:show="showModel" :where="props.where" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
+    <sale-deposit-return-goods v-model:show="showModel" :where="props.where" :product-filter="props.productFilter" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
   </div>
 </template>
 

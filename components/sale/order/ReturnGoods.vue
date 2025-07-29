@@ -2,6 +2,7 @@
 import type { FormRules } from 'naive-ui'
 
 const props = defineProps<{
+  productFilter: Where<ProductFinisheds>
   where: Where<OrderWhere>
   showReturnGoods?: {
     goods?: orderInfoProducts
@@ -100,7 +101,7 @@ defineExpose({
       <div>
         <template v-if="props.showReturnGoods?.goods?.type === 1">
           <common-cell label="成品名称" :value="props.showReturnGoods?.goods?.finished.product?.name" />
-          <common-cell label="销售方式" :value="props.showReturnGoods?.goods?.finished?.product?.retail_type" />
+          <common-cell label="零售方式" :value="props.productFilter?.retail_type?.preset[props.showReturnGoods?.goods?.finished?.product?.retail_type!]" />
           <common-cell :label="`条码:${props.showReturnGoods?.goods?.finished?.product?.code}`" :value="`应付金额:${props.showReturnGoods?.goods?.finished?.price}`" />
         </template>
         <template v-if="props.showReturnGoods?.goods?.type === 2">

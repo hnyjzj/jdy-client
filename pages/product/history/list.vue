@@ -2,17 +2,19 @@
 import { NButton } from 'naive-ui'
 
 const { $toast } = useNuxtApp()
-const { getProductHistory, getHistoryWhere } = useProductManage()
+const { getProductHistory, getHistoryWhere, getProductHistoryAll } = useProductManage()
 const { getFinishedWhere } = useFinished()
 const { historyFilterList, historyListTotal, productRocordList, HistoryFilterListToArray } = storeToRefs(useProductManage())
-const { finishedFilterList } = storeToRefs(useFinished())
+const { finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
+const { oldFilterListToArray } = storeToRefs(useOld())
+const { getOldWhere } = useOld()
 
 const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList, getMyStore } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
 const limits = ref(50)
 const tableLoading = ref(false)
-
+const isLoading = ref(false)
 const searchKey = ref('')
 // 筛选框显示隐藏
 const isFilter = ref(false)
@@ -54,6 +56,7 @@ try {
   await getList()
   await getHistoryWhere()
   await getFinishedWhere()
+  await getOldWhere()
   await changeStore()
   await getStoreList({ page: 1, limit: 20 })
   await getMyStore({ page: 1, limit: 20 })
@@ -214,19 +217,66 @@ const cols = [
     },
   },
 ]
+
+/**
+ * 记录列表导出excel表格
+ */
+async function downloadLocalFile() {
+  isLoading.value = true
+
+  try {
+    const res = await getProductHistoryAll({
+      all: true,
+      where: filterData.value,
+    })
+    if (res?.code === HttpCode.SUCCESS) {
+      if (!res?.data.list || !res?.data?.list.length) {
+        return $toast.error('列表是空的')
+      }
+
+      // 把 new_value 字段展开到每个数据项的外层，合并成一个新的对象数组，如果冲突，以外层为准
+      const transformed = res.data.list.map(({ new_value: newObj, ...rest }) => ({
+        ...newObj,
+        ...rest,
+      }))
+      // 合并多个筛选字段数组：
+      // 1. 原始筛选字段列表（保留原样）
+      // 2. 成品筛选字段列表：将 name 为 'class' 的改成 'finish_class'
+      // 3. 旧料筛选字段列表：将 name 为 'class' 的改成 'old_class'
+      const listToArray = [
+        ...HistoryFilterListToArray.value,
+        ...finishedFilterListToArray.value.map(item => ({
+          ...item,
+          name: item.name === 'class' ? 'finish_class' : item.name,
+        })),
+        ...oldFilterListToArray.value.map(item => ({
+          ...item,
+          name: item.name === 'class' ? 'old_class' : item.name,
+        })),
+      ]
+
+      // 调用导出函数，把数据导出为 Excel
+      exportHistoryListToXlsx(transformed, listToArray)
+    }
+  }
+  finally {
+    // 无论成功或失败，最后关闭加载状态
+    isLoading.value = false
+  }
+}
 </script>
 
 <template>
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:showtype="showtype" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜素关联产品编号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:showtype="showtype" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜索编号" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changeMyStore" />
       </template>
     </product-filter>
     <!-- 列表 -->
-    <div class="px-[16px] pb-10">
+    <div class="pb-10">
       <template v-if="productRocordList?.length">
         <template v-if="showtype === 'list'">
           <product-manage-card :list="productRocordList">
@@ -323,6 +373,70 @@ const cols = [
                     {{ finishedFilterList.supplier?.preset[info?.new_value?.supplier] }}
                   </div>
                 </div>
+                <div class="flex-between">
+                  <div>
+                    品牌
+                  </div>
+                  <div class="text-align-end">
+                    {{ finishedFilterList.brand?.preset[info?.new_value?.brand] }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    材质
+                  </div>
+                  <div class="text-align-end">
+                    {{ finishedFilterList.material?.preset[info?.new_value?.material] }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    成色
+                  </div>
+                  <div class="text-align-end">
+                    {{ finishedFilterList.quality?.preset[info?.new_value?.quality] }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    主石
+                  </div>
+                  <div class="text-align-end">
+                    {{ finishedFilterList.category?.preset[info?.new_value?.category] }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    品类
+                  </div>
+                  <div class="text-align-end">
+                    {{ finishedFilterList.gem?.preset[info?.new_value?.gem] }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    工艺
+                  </div>
+                  <div class="text-align-end">
+                    {{ finishedFilterList.craft?.preset[info?.new_value?.craft] }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    金重
+                  </div>
+                  <div class="text-align-end">
+                    {{ info?.new_value.weight_metal }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    总重
+                  </div>
+                  <div class="text-align-end">
+                    {{ info?.new_value.weight_total }}
+                  </div>
+                </div>
               </div>
             </template>
             <template #bottom="{ info }">
@@ -344,5 +458,11 @@ const cols = [
 
       <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="HistoryFilterListToArray" @submit="submitWhere" />
     </div>
+    <common-create @click="downloadLocalFile">
+      <template #content>
+        <icon name="i-icon:download" :size="24" color="#FFF" />
+      </template>
+    </common-create>
+    <common-loading v-model="isLoading" />
   </div>
 </template>

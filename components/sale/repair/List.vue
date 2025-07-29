@@ -25,7 +25,7 @@ const handleClick = () => {
             <div class="grid grid-cols-1 gap-[12px]">
               <div class="info">
                 <div class="part">
-                  <span class="part-left">所属门店</span>
+                  <span class="part-left">门店</span>
                   <span class="part-right">{{ result.store.name || '--' }}</span>
                 </div>
                 <div class="part">

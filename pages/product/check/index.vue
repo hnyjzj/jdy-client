@@ -275,7 +275,7 @@ const cols = [
       </product-filter>
     </div>
     <!-- 小卡片组件 -->
-    <div class="px-[16px] pb-20">
+    <div class="pb-20">
       <template v-if="checkList?.length">
         <template v-if="showtype === 'list'">
           <product-manage-card :list="checkList">
@@ -286,6 +286,14 @@ const cols = [
             </template>
             <template #info="{ info }">
               <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                <div class="flex py-[4px] justify-between">
+                  <div class="label">
+                    盘点门店
+                  </div>
+                  <div class="text-align-end">
+                    {{ info?.store?.name || '' }}
+                  </div>
+                </div>
                 <template v-for="(item, index) in checkFilterListToArray" :key="index">
                   <template v-if="item.find">
                     <template v-if="item.name === 'class_finished' || item.name === 'class_old'">

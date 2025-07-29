@@ -97,3 +97,8 @@ interface UploadProductImg {
   image: File
   product_id: string
 }
+
+interface Allhistory<T = undefined> {
+  all: boolean
+  where?: Partial<T>
+}

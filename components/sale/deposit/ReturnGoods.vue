@@ -4,6 +4,7 @@ import type { FormRules } from 'naive-ui'
  *  订金单退货
  */
 const props = defineProps<{
+  productFilter: Where<ProductFinisheds>
   where: Where<DepositOrderWhere>
   showReturnGoods?: {
     Finished: DepositOrderInfoProducts
@@ -81,7 +82,7 @@ const submit = async () => {
         <template v-if="props.showReturnGoods?.Finished?.is_our">
           <common-cell label="货品名称" :value="props.showReturnGoods?.Finished?.product_finished?.name" />
           <common-cell label="货品条码" :value="props.showReturnGoods?.Finished?.product_finished?.code" />
-          <common-cell label="销售方式" :value="props.showReturnGoods?.Finished?.product_finished?.retail_type" />
+          <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[props.showReturnGoods?.Finished?.product_finished?.retail_type]" />
           <common-cell :label="`订金金额:${props.showReturnGoods?.Finished?.price}`" :value="`退款金额:${props.showReturnGoods?.Finished?.price}`" />
         </template>
         <template v-else>

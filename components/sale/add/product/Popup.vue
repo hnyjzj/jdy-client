@@ -23,21 +23,16 @@ const setAddProduct = (product: ProductFinisheds) => {
 }
 const productList = ref<ProductFinisheds[]>([])
 const searchProduct = ref('')
-// 搜索商品时候选择名称搜索还是条码搜索
-// const changeType = (type: 'name' | 'code') => {
-//   productList.value = []
-//   searchType.value = type
-//   searchProduct.value = ''
-// }
 
 const search = async () => {
-//
   const res = await Props.searchProductList({ val: searchProduct.value, type: searchType.value })
-  const index = readyAddproduct.value.findIndex(p => p.id === res[0].id)
-  if (index !== -1)
-    return
-  productList.value.push(...res)
-  setAddProduct(res[0])
+  if (res.length > 0) {
+    const index = readyAddproduct.value.findIndex(p => p.id === res[0].id)
+    if (index !== -1)
+      return
+    productList.value.push(...res)
+    setAddProduct(res[0])
+  }
 }
 const confirm = () => {
   emits('addProduct', readyAddproduct.value)
@@ -88,14 +83,6 @@ const realtype = (val?: number) => {
                 </div>
                 <div class="w-[32px] h-[4px] rounded" :style="{ background: searchType === 'code' ? '#2080F0' : '' }" />
               </div>
-              <!-- <div
-                class="flex-center-col"
-                @click="changeType('name')">
-                <div class="text-[16px] pb-[2px] font-semibold line-height-[24px]" :style="{ color: searchType === 'name' ? '#333' : '#53565C' }">
-                  名称搜索
-                </div>
-                <div class="w-[32px] h-[4px] rounded " :style="{ background: searchType === 'name' ? '#2080F0' : '' }" />
-              </div> -->
             </div>
           </div>
           <div class="flex items-center pb-[16px]">
