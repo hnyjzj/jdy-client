@@ -94,7 +94,6 @@ const rules = ref<FormRules>({
     trigger: ['blur', 'change'],
     message: '请选择订单来源',
   },
-
 })
 const route = useRoute()
 const billingSet = ref({
@@ -340,6 +339,10 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
     if (!errors) {
+      if (!formData.value.member_id) {
+        $toast.error('请先添加会员')
+        return
+      }
       // 成功的操作
       formData.value.product_finisheds = showProductList.value
       formData.value.store_id = myStore.value.id
