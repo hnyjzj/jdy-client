@@ -290,7 +290,7 @@ async function downloadLocalFile() {
                     操作时间
                   </div>
                   <div class="text-align-end">
-                    {{ formatTimestampToDateTime(info?.updated_at) }}
+                    {{ formatTimestampToDateTime(info.updated_at) }}
                   </div>
                 </div>
                 <div class="flex-between">
@@ -298,7 +298,7 @@ async function downloadLocalFile() {
                     关联单号
                   </div>
                   <div class="text-align-end">
-                    {{ info?.source_id }}
+                    {{ info.source_id }}
                   </div>
                 </div>
                 <div class="flex-between">
@@ -346,7 +346,7 @@ async function downloadLocalFile() {
                     零售方式
                   </div>
                   <div class="text-align-end">
-                    {{ finishedFilterList?.retail_type?.preset[info?.new_value?.retail_type] }}
+                    {{ finishedFilterList.retail_type?.preset[info?.new_value?.retail_type] }}
                   </div>
                 </div>
                 <div class="flex-between">
@@ -426,7 +426,7 @@ async function downloadLocalFile() {
                     金重
                   </div>
                   <div class="text-align-end">
-                    {{ info?.new_value?.weight_metal }}
+                    {{ info?.new_value.weight_metal }}
                   </div>
                 </div>
                 <div class="flex-between">
@@ -434,7 +434,7 @@ async function downloadLocalFile() {
                     总重
                   </div>
                   <div class="text-align-end">
-                    {{ info?.new_value?.weight_total }}
+                    {{ info?.new_value.weight_total }}
                   </div>
                 </div>
               </div>
