@@ -146,12 +146,12 @@ const scanCode = async () => {
 }
 
 /**
- * 添加货品
+ * 手动添加货品
  * @params params: AddCheckProduct
  * @params isClose: boolean 是否关闭添加弹窗
  * @params isScan: boolean 是否是扫码添加
  */
-async function addCheckGood(params: AddCheckProduct, isClose = true, isScan = false) {
+async function addCheckGood(params: AddCheckProductOne, isClose = true, isScan = false) {
   try {
     const res = await addCheckProduct(params)
     if (res?.code === HttpCode.SUCCESS) {
@@ -175,9 +175,9 @@ async function addCheckGood(params: AddCheckProduct, isClose = true, isScan = fa
 }
 
 async function submitGoods(isScan = false) {
-  const params: AddCheckProduct = {
+  const params: AddCheckProductOne = {
     id: checkInfo.value.id,
-    codes: [goodCode.value],
+    code: goodCode.value,
   }
   loading.value = true
   return await addCheckGood(params, true, isScan)
