@@ -175,7 +175,7 @@ const cols = [
       </template>
     </product-filter>
     <!-- 列表 -->
-    <div class="px-[16px] pb-20">
+    <div class="pb-20">
       <template v-if="accessorieList?.length">
         <template v-if="showtype === 'list'">
           <product-manage-card :list="accessorieList">

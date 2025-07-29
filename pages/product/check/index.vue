@@ -275,7 +275,7 @@ const cols = [
       </product-filter>
     </div>
     <!-- 小卡片组件 -->
-    <div class="px-[16px] pb-20">
+    <div class="pb-20">
       <template v-if="checkList?.length">
         <template v-if="showtype === 'list'">
           <product-manage-card :list="checkList">
