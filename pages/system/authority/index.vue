@@ -83,7 +83,7 @@ async function getInfo() {
 
 const roleParams = ref({} as RolesParams)
 
-const navItems = ref(['功能', '权限'])
+const navItems = ref(['工作台入口', '权限'])
 const setActive = (index: number) => {
   activeIndex.value = index
 }

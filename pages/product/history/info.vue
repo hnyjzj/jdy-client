@@ -56,7 +56,14 @@ function isUpdate(key: ProductKey) {
                   {{ formatTimestampToDateTime(historyInfo.updated_at) }}
                 </div>
               </div>
-
+              <div class="info-row">
+                <div class="info-title">
+                  所属门店
+                </div>
+                <div class="info-val">
+                  {{ historyInfo.new_value?.store.name || '' }}
+                </div>
+              </div>
               <div class="h-0.5 bg-[#E6E6E8]" />
               <div v-if="historyInfo?.new_value" class="other-information flex flex-col" uno-sm="grid grid-cols-[1fr_1fr] gap-x-10">
                 <template v-for="(item, index) in finishedFilterListToArray" :key="index">
