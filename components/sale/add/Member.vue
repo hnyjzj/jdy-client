@@ -13,6 +13,7 @@ const emit = defineEmits<{
   setMemberId: [val: string]
   setShowSubmit: [val: boolean]
 }>()
+const { myStore } = storeToRefs(useStores())
 const { userinfo } = storeToRefs(useUser())
 const Key = ref()
 const { $toast } = useNuxtApp()
@@ -58,7 +59,12 @@ const searchMember = async (val: string) => {
   userInfo.value = {} as Member
   searchList.value = await props.getMember(val)
   if (searchList.value.length === 0) {
+    if (!myStore.value.id) {
+      $toast.error('请先切换门店')
+      return
+    }
     await props.getStaffs()
+
     memberParams.value.consultant_id = userinfo.value.id
     memberParams.value.phone = val
     tipAdd.value = true
@@ -107,6 +113,9 @@ defineExpose({
             label="搜索会员手机号"
             path="searchPhone"
           >
+            <template #label>
+              <span> 搜索会员手机号</span> <span class="color-[#DE5750]">*</span>
+            </template>
             <n-input v-model:value="searchPhone" maxlength="11" clearable />
           </n-form-item-gi>
           <n-form-item-gi :span="6">

@@ -26,7 +26,7 @@ function goLoss() {
   <div>
     <common-layout-center>
       <div class="pt-6 pb-18 px-4">
-        <product-manage-info :info="accessorieInfo.category" :filter-list="categoryFilterList" :filter-list-to-array="categoryFilterListToArray" @go-loss="goLoss" />
+        <product-manage-info :store="accessorieInfo?.store?.name" :info="accessorieInfo.category" :filter-list="categoryFilterList" :filter-list-to-array="categoryFilterListToArray" @go-loss="goLoss" />
       </div>
     </common-layout-center>
   </div>

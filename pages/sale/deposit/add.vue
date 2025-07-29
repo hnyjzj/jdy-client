@@ -75,7 +75,10 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
       // 成功的操作
-
+      if (!formData.value.member_id) {
+        $toast.error('请先添加会员')
+        return
+      }
       formData.value.products = [...showProductList.value]
       formData.value.store_id = myStore.value.id
       // 添加备注

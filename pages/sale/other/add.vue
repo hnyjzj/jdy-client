@@ -97,6 +97,10 @@ const handleValidateButtonClick = (e: any) => {
         $toast.error('当前门店与操作门店不匹配,无法操作')
         return
       }
+      if (!formData.value.member_id) {
+        $toast.error('请先添加会员')
+        return
+      }
       // 成功的操作
       formData.value.store_id = myStore.value.id
       layoutLoading.value = true

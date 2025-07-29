@@ -62,8 +62,29 @@ const submitCancel = async () => {
         :where="filterList"
         :orders="OrderDetail"
         :return-goods="returnGoods" />
-      <template v-if="OrderDetail.status === DepositOrderStatus.PendingPayment && OrderDetail.cashier_id === userinfo.id && myStore.id === OrderDetail.store_id">
-        <common-confirm-pay @pay="submitPay" @cancle="submitCancel" />
+
+      <template v-if=" OrderDetail.status === DepositOrderStatus.PendingPayment">
+        <template v-if="OrderDetail.cashier_id === userinfo.id ">
+          <template v-if=" OrderDetail.store_id === myStore.id">
+            <common-button-bottom
+              confirm-text="支付"
+              cancel-text="撤销"
+              @confirm="submitPay"
+              @cancel="submitCancel"
+            >
+              <template #cancel>
+                <div class="color-[rgba(255,47,47,1)]">
+                  <span>撤销</span>
+                </div>
+              </template>
+              <template #confirm>
+                <span>
+                  支付
+                </span>
+              </template>
+            </common-button-bottom>
+          </template>
+        </template>
       </template>
     </div>
     <correspond-store :correspond-ids="[OrderDetail.store_id]" />

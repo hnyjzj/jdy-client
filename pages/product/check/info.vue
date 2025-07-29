@@ -314,6 +314,14 @@ async function downloadLocalFile() {
                 <div class="operation-information flex flex-col gap-1">
                   <div class="part">
                     <div class="left">
+                      盘点门店
+                    </div>
+                    <div class="right">
+                      {{ checkInfo.store?.name }}
+                    </div>
+                  </div>
+                  <div class="part">
+                    <div class="left">
                       盘点人
                     </div>
                     <div class="right">
@@ -334,14 +342,6 @@ async function downloadLocalFile() {
                     </div>
                     <div class="right">
                       {{ checkInfo.id }}
-                    </div>
-                  </div>
-                  <div class="part">
-                    <div class="left">
-                      门店
-                    </div>
-                    <div class="right">
-                      {{ checkInfo.store?.name }}
                     </div>
                   </div>
                 </div>

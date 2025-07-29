@@ -107,6 +107,11 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
           return false
         }
       }
+      if (!formData.value.member_id) {
+        $toast.error('请先添加会员')
+        return
+      }
+
       else {
         formData.value.province = undefined
         formData.value.city = undefined

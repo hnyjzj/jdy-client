@@ -49,6 +49,14 @@ if (route.query.id) {
               </div>
               <div class="info-row">
                 <div class="info-title">
+                  所属门店
+                </div>
+                <div class="info-val">
+                  {{ historyInfo?.new_value?.store?.name || '' }}
+                </div>
+              </div>
+              <div class="info-row">
+                <div class="info-title">
                   操作时间
                 </div>
                 <div class="info-val">
