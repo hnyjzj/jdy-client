@@ -121,7 +121,7 @@ const returnGoods = (val: number) => {
       </div>
     </template>
 
-    <sale-deposit-return-goods v-model:show="showModel" :where="props.where" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
+    <sale-deposit-return-goods v-model:show="showModel" :where="props.where" :product-filter="props.productFilter" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
   </div>
 </template>
 
