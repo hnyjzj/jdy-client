@@ -38,7 +38,7 @@ const jumpSaleOreder = (id: string) => {
       <sale-cards :title="`订金单:${item.id}`" :tag-text="props.where.status?.preset[item.status!]">
         <template #info>
           <div class="info">
-            <common-cell label="所属门店" :value="item.store?.name || '--'" />
+            <common-cell label="门店" :value="item.store?.name || '--'" />
             <common-cell label="会员" :value="item.member?.name || '--'" />
             <common-cell label="会员手机" :value="item.member?.phone || '--'" />
             <common-cell label="主销" :value="item.clerk?.nickname || '--'" />
