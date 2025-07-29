@@ -156,14 +156,14 @@ async function addCheckGood(params: AddCheckProduct, isClose = true, isScan = fa
     const res = await addCheckProduct(params)
     if (res?.code === HttpCode.SUCCESS) {
       await getInfo()
-      $toast.success('添加成功', 1000)
+      $toast.success('添加成功')
       goodCode.value = ''
       if (isScan) {
         await scanCode()
       }
     }
     else {
-      $toast.error(res?.message || '添加失败', 1000)
+      $toast.error(res?.message || '添加失败', 5000)
     }
   }
   finally {
@@ -546,7 +546,11 @@ async function downloadLocalFile() {
         </template>
       </div>
     </template>
-    <product-upload-choose v-model:is-model="uploadModel" title="正在盘点" @go-add="uploadModel = false;inputModel = true" @batch="importModel = true" />
+    <product-upload-choose
+      v-model:is-model="uploadModel" title="正在盘点" @go-add="uploadModel = false;inputModel = true" @batch="() => {
+        // importModel = true
+        $toast.error('暂无权限')
+      }" />
     <common-model v-model="inputModel" title="正在盘点" :show-ok="true" @confirm="submitGoods" @cancel="goodCode = ''">
       <div class="mb-8 relative min-h-[200px]">
         <div class="uploadInp cursor-pointer">
