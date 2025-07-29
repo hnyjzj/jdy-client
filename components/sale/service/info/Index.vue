@@ -165,14 +165,14 @@ const confirmChange = async () => {
     <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
       <common-fold title="基础信息" :is-collapse="false">
         <div class="info">
-          <common-cell label="维修单状态" :value="props.orderWhere.status?.preset[props.detail.status] " rcol="col-8" lcol="col-4" val-color="#0B57D0" />
+          <common-cell label="门店" :value="props.detail.store?.name!" rcol="col-8" lcol="col-4" />
+          <common-cell label="门店地址" :value="props.detail.store?.address" rcol="col-8" lcol="col-4" />
+          <common-cell label="门店电话" :value="props.detail.store?.contact" rcol="col-8" lcol="col-4" />
           <common-cell label="维修单编号" :value="props.detail.id" rcol="col-8" lcol="col-4" />
+          <common-cell label="维修单状态" :value="props.orderWhere.status?.preset[props.detail.status] " rcol="col-8" lcol="col-4" val-color="#0B57D0" />
           <common-cell label="接待人" :value="props.detail.operator?.nickname" rcol="col-8" lcol="col-4" />
           <common-cell label="会员昵称" :value="props.detail.member?.nickname" rcol="col-8" lcol="col-4" />
           <common-cell label="会员信息" :value="props.detail.member?.phone" rcol="col-8" lcol="col-4" />
-          <common-cell label="门店名称" :value="props.detail.store?.name!" rcol="col-8" lcol="col-4" />
-          <common-cell label="门店地址" :value="props.detail.store?.address" rcol="col-8" lcol="col-4" />
-          <common-cell label="门店电话" :value="props.detail.store?.contact" rcol="col-8" lcol="col-4" />
           <common-cell label="维修费" :value="props.detail.expense" rcol="col-8" lcol="col-4" />
           <common-cell label="维修成本" :value="props.detail.cost" rcol="col-8" lcol="col-4" />
           <n-grid x-gap="12" :cols="2" :y-gap="12">

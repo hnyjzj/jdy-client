@@ -45,7 +45,7 @@ const returnColor = (number: number) => {
         <template #info>
           <div class="info">
             <common-cell label="关联销售单" :value="item.order_id || '--'" />
-            <common-cell label="所属门店" :value="item.store.name || '--'" />
+            <common-cell label="门店" :value="item.store.name || '--'" />
             <common-cell label="产品条码" :value="item.code || '--'" />
             <common-cell label="会员" :value="item.member?.name || '--'" />
             <common-cell label="会员手机号" :value="item.member?.phone || '--'" />
