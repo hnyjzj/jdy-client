@@ -175,6 +175,7 @@ async function submitEdit() {
     await getInfo()
     return $toast.success('编辑成功')
   }
+  $toast.error(res?.message ?? '编辑失败')
 }
 
 /** 值为0时 找不到匹配项 显示未选择不 */

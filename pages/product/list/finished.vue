@@ -215,7 +215,7 @@ async function downloadLocalFile() {
     </product-filter>
 
     <!-- 列表 -->
-    <div class="px-[16px] pb-20">
+    <div class="pb-20">
       <template v-if="finishedList?.length">
         <template v-if="showtype === 'list'">
           <product-list-main :is-finished="true" :product-list="finishedList" :filter-list="finishedFilterList" @edit="edit" @go-info="goInfo" />

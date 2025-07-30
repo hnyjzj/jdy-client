@@ -110,10 +110,11 @@ function changeStatus(val: number) {
 /** 提交盘点更改状态 */
 async function submitChange(status: CheckInfo['status']) {
   const res = await changeCheckStatus(checkInfo.value.id, status)
-  if (res?.code === 200) {
-    $toast.success('变更成功')
+  if (res?.code === HttpCode.SUCCESS) {
     getInfo()
+    return $toast.success('变更成功')
   }
+  $toast.error(res?.message || '变更失败', 5000)
 }
 // 如果路由中有 id，则获取详情
 if (route.query.id) {
