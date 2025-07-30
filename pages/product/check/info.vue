@@ -299,11 +299,17 @@ async function downloadLocalFile(status: 'extra' | 'loss') {
       return $toast.error('列表是空的')
 
     let classText = ''
+    let filterList
+    let goodlist
     if (checkInfo.value.type === GoodsTypePure.ProductFinish) {
       classText = getMultipleVal('class_finished', checkInfo.value.class_finished)
+      filterList = finishedFilterListToArray.value
+      goodlist = products.map(item => item.product_finished)
     }
-    else if (checkInfo.value.type === GoodsTypePure.ProductOld) {
+    else {
       classText = getMultipleVal('class_old', checkInfo.value.class_old)
+      filterList = oldFilterListToArray.value
+      goodlist = products.map(item => item.product_old)
     }
 
     const summary: [string, string | number][] = [
@@ -326,8 +332,7 @@ async function downloadLocalFile(status: 'extra' | 'loss') {
       ['盘盈', data.extra_count],
     ]
 
-    const arr = products.map(item => item.product_finished)
-    await exportProductListToXlsx(arr, finishedFilterListToArray.value, excelName, summary)
+    await exportProductListToXlsx(goodlist, filterList, excelName, summary, checkInfo.value.type)
     loading.value = false
   }
   catch (err) {
