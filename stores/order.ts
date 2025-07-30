@@ -89,6 +89,7 @@ export const useOrder = defineStore('Order', {
           return true
         }
         else {
+          this.OrdersList = []
           // 当前页没有数据，则不进行下一页
           return false
         }

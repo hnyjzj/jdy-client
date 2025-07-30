@@ -23,10 +23,12 @@ const tableLoading = ref(false)
 // 获取列表
 const getList = async (where = {} as Partial<OrderInfo>) => {
   tableLoading.value = true
+
   const params = { page: searchPage.value, limit: limit.value, where: { store_id: myStore.value.id } } as ReqList<OrderInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
+
   await getOrderList(params)
   tableLoading.value = false
 }
@@ -37,19 +39,37 @@ const openFilter = () => {
   filterShow.value = true
 }
 
+const route = useRoute()
+// 获取where 条件
+await getSaleWhere()
+// 读取url参数,获取列表
+const handleQueryParams = async () => {
+  filterData.value = {}
+  const f = getQueryParams<OrderWhere>(route.fullPath, filterList.value)
+  filterData.value = { ...f }
+  await getList(filterData.value as Partial<OrderInfo>)
+}
+// 默认请求列表
+await handleQueryParams()
+// 监听url变化
+watch(
+  () => route.fullPath,
+  async () => {
+    await handleQueryParams()
+  },
+)
+
 const submitWhere = async (f: OrderWhere) => {
   filterData.value = { ...filterData.value, ...f }
   searchPage.value = 1
-
-  await getList(filterData.value as any)
-  filterShow.value = false
+  const url = UrlAndParams('/sale/sales/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
 const resetWhere = async () => {
   filterData.value = {}
+  const url = UrlAndParams('/sale/sales/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
-await getList()
-await getSaleWhere()
-// 获取头部高度
 
 const searchProduct = async (e: string) => {
   if (e.length > 0) {
@@ -96,7 +116,7 @@ const payOrderConfirm = async (id: string) => {
   }
 }
 const changeStores = async () => {
-  await getList()
+  await getList(filterData.value)
 }
 const router = useRouter()
 const newAdd = async () => {
