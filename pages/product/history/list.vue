@@ -41,9 +41,9 @@ async function clearSearch() {
   await submitWhere({ }, true)
 }
 // 获取货品列表
-async function getList(where = {} as Partial<HistoryWhere>) {
+async function getList(where = {} as Partial<ProductHistoryWhere>) {
   tableLoading.value = true
-  const params = { page: searchPage.value, limit: limits.value } as ReqList<HistoryWhere>
+  const params = { page: searchPage.value, limit: limits.value } as ReqList<ProductHistoryWhere>
   params.where = where
   if (myStore.value.id) {
     where.store_id = myStore.value.id
@@ -74,7 +74,7 @@ const pull = async (page: number) => {
 }
 
 // 筛选列表
-async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) {
+async function submitWhere(f: Partial<ProductHistoryWhere>, isSearch: boolean = false) {
   filterData.value = { ...f }
   searchPage.value = 1
   productRocordList.value = []
@@ -299,6 +299,14 @@ async function downloadLocalFile() {
                   </div>
                   <div class="text-align-end">
                     {{ info?.source_id }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    类型
+                  </div>
+                  <div class="text-align-end">
+                    {{ typePreset[info?.type] || '' }}
                   </div>
                 </div>
                 <div class="flex-between">

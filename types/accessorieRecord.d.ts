@@ -25,6 +25,7 @@ interface HistoryWhere {
    * 门店 ID
    */
   store_id: string
+  code: string
   /**  */
   type: GoodsType[]
 }
