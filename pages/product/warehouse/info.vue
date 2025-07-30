@@ -211,6 +211,10 @@ async function downloadLocalFile() {
       await exportProductListToXlsx(res.data.products, finishedFilterListToArray.value, '入库单货品列表', summary)
     }
   }
+  catch (err) {
+    $toast.error('导出失败')
+    throw new Error(`${err}`)
+  }
   finally {
     loading.value = false
   }

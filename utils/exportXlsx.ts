@@ -1,44 +1,5 @@
 import * as XLSX from 'xlsx'
 
-/** 中文 => 英文字段映射 */
-const headerMap: Record<string, string> = {
-  '条码*': 'code',
-  '货品名称*': 'name',
-  '入网费*': 'access_fee',
-  '零售方式*': 'retail_type',
-  '标签价*': 'label_price',
-  '零售工费*': 'labor_fee',
-  '款号': 'style',
-  '供应商*': 'supplier',
-  '品牌': 'brand',
-  '大类': 'class',
-  '材质(贵金属成分)*': 'material',
-  '成色*': 'quality',
-  '主石(宝玉石种类)*': 'gem',
-  '品类*': 'category',
-  '工艺': 'craft',
-  '金重(g)*': 'weight_metal',
-  '总重(g)': 'weight_total',
-  '手寸': 'size',
-  '贵金属颜色': 'color_metal',
-  '主石重': 'weight_gem',
-  '主石数量': 'num_gem',
-  '副石1重': 'weight_other',
-  '副石1数量': 'num_other',
-  '颜色': 'color_gem',
-  '净度': 'clarity',
-  '证书1编号': 'certificate1',
-  '证书2编号': 'certificate2',
-  '系列': 'series',
-  '备注': 'remark',
-  '是否特价': 'is_special_offer',
-}
-
-/** 生成英文 => 中文字段映射 */
-const fieldMap: Record<string, string> = Object.fromEntries(
-  Object.entries(headerMap).map(([zh, en]) => [en, zh]),
-)
-
 /** 提取字段中的 preset 枚举 */
 function extractPresets<T extends { name: string, preset?: Record<any, string> }>(
   fields: T[],
@@ -63,16 +24,23 @@ function mapEnumValues(
   for (const key in row) {
     if (enumMap[key]) {
       const rawValue = row[key]
-      newRow[key] = enumMap[key][rawValue] ?? rawValue
+      // ✅ 如果值匹配到 preset 映射，则用映射值；否则置空
+      newRow[key] = rawValue in enumMap[key] ? enumMap[key][rawValue] : ''
     }
     else if (key === 'is_special_offer') {
       newRow[key] = row[key] ? '是' : '否'
+    }
+    else if (key === 'is_our') {
+      newRow[key] = row[key] ? '是' : '否'
+    }
+    else if (key === 'store' || key === 'recycle_store') {
+      newRow[key] = row[key]?.name ?? ''
     }
   }
   return newRow
 }
 
-/** 将数据转换为 AOA 格式（二维数组）用于 Excel */
+/** 转换为 AOA 格式（用于 Excel 导出） */
 function convertDataWithChineseHeaders(
   data: Record<string, any>[],
   fieldMap: Record<string, string>,
@@ -80,26 +48,35 @@ function convertDataWithChineseHeaders(
   const fields = Object.keys(fieldMap)
   const headers = fields.map(field => fieldMap[field] || field)
   const rows = data.map(row => fields.map(field => row[field] ?? ''))
-
   return [headers, ...rows]
 }
 
 /**
  * 导出 Excel
- * @param data 需要导出的数据
+ * @param data 导出的数据数组
  * @param fields 字段定义（带 name 和 preset）
+ * @param name 导出文件名
+ * @param summary 统计信息区域
+ * @param type 类型：1 为成品，2 为旧料（默认 1）
  */
 export function exportProductListToXlsx(
   data: Record<string, any>[],
   fields: { name: string, preset?: Record<any, string> }[],
   name: string = '货品列表',
   summary?: [string, string | number][],
+  type: 1 | 2 = 1,
 ) {
+  const headerMap = type === 1 ? finishedHeaderMap : oldHeaderMap
+
+  // 👇 生成 英文字段 => 中文标题 映射
+  const fieldMap: Record<string, string> = Object.fromEntries(
+    Object.entries(headerMap).map(([zh, en]) => [en, zh]),
+  )
+
   const enumMap = extractPresets(fields)
   const mappedData = data.map(row => mapEnumValues(row, enumMap))
   const aoaData = convertDataWithChineseHeaders(mappedData, fieldMap)
 
-  // 👉 构造统计信息区域
   let finalData: any[][] = []
 
   if (summary && summary.length > 0) {
