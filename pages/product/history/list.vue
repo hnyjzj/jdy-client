@@ -259,6 +259,10 @@ async function downloadLocalFile() {
       exportHistoryListToXlsx(transformed, listToArray)
     }
   }
+  catch (err) {
+    $toast.error('导出失败')
+    throw new Error(`${err}`)
+  }
   finally {
     // 无论成功或失败，最后关闭加载状态
     isLoading.value = false

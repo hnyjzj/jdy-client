@@ -193,6 +193,10 @@ async function downloadLocalFile() {
       }
     }
   }
+  catch (err) {
+    $toast.error('导出失败')
+    throw new Error(`${err}`)
+  }
   finally {
     isLoading.value = false
   }
