@@ -77,7 +77,8 @@ async function getInfo() {
 function getMultipleVal(key: keyof Where<Check>, val: any) {
   if (!val || !key || !checkFilterList.value[key])
     return ''
-  return val.map((item: number) => checkFilterList.value[key]?.preset[item] || '').join('、')
+
+  return val?.map((item: number) => checkFilterList.value[key]?.preset[item] || '').join('、')
 }
 
 /** 单选值 */
@@ -176,6 +177,8 @@ async function addCheckGood(params: AddCheckProductOne, isClose = true, isScan =
 }
 
 async function submitGoods(isScan = false) {
+  if (!goodCode.value)
+    return $toast.error('请添加正确条码')
   const params: AddCheckProductOne = {
     id: checkInfo.value.id,
     code: goodCode.value,
@@ -295,6 +298,14 @@ async function downloadLocalFile(status: 'extra' | 'loss') {
     if (!products?.length)
       return $toast.error('列表是空的')
 
+    let classText = ''
+    if (checkInfo.value.type === GoodsTypePure.ProductFinish) {
+      classText = getMultipleVal('class_finished', checkInfo.value.class_finished)
+    }
+    else if (checkInfo.value.type === GoodsTypePure.ProductOld) {
+      classText = getMultipleVal('class_old', checkInfo.value.class_old)
+    }
+
     const summary: [string, string | number][] = [
       ['盘点人', data.inventory_persons.map(v => v.nickname).join('、')],
       ['监盘人', data?.inspector?.nickname || ''],
@@ -305,8 +316,9 @@ async function downloadLocalFile(status: 'extra' | 'loss') {
       ['备注', data.remark || ''],
       ['状态', getRadioVal('status', data.status)],
       ['盘点范围', getRadioVal('range', data.range)],
-      ['大类', data.category?.map(v => getRadioVal('category', v)).join('、') ?? ''],
-      ['品类', data.category?.map(v => getRadioVal('category', v)).join('、') ?? ''],
+      ['大类', classText],
+      ['品类', getMultipleVal('category', checkInfo.value.category) || '--'],
+      ['工艺', getMultipleVal('craft', checkInfo.value.craft) || '--'],
       ['总件数', data.count_quantity],
       ['总金重', data.count_weight_metal],
       ['总标签价', data.count_price],
