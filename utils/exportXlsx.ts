@@ -63,7 +63,8 @@ function mapEnumValues(
   for (const key in row) {
     if (enumMap[key]) {
       const rawValue = row[key]
-      newRow[key] = enumMap[key][rawValue] ?? rawValue
+      // ✅ 如果值匹配到 preset 映射，则用映射值；否则置空
+      newRow[key] = rawValue in enumMap[key] ? enumMap[key][rawValue] : ''
     }
     else if (key === 'is_special_offer') {
       newRow[key] = row[key] ? '是' : '否'
