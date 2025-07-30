@@ -4,7 +4,7 @@ import { NButton } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 
-const { getOldList, getOldWhere } = useOld()
+const { getOldList, getOldListAll, getOldWhere } = useOld()
 const { oldList, oldFilterList, oldFilterListToArray, oldListTotal } = storeToRefs(useOld())
 const { searchPage, showtype } = storeToRefs(usePages())
 
@@ -15,6 +15,7 @@ const isBatchImportModel = ref(false)
 const type = ref(2 as ProductOlds['type'])
 const limits = ref(50)
 const tableLoading = ref(false)
+const loading = ref(false)
 
 useSeoMeta({
   title: '旧料列表',
@@ -174,6 +175,31 @@ const cols = [
     },
   },
 ]
+
+/**
+ * 货品列表导出excel表格
+ */
+async function downloadLocalFile() {
+  loading.value = true
+  try {
+    const res = await getOldListAll({ all: true, where: filterData.value })
+    if (res?.code === HttpCode.SUCCESS) {
+      if (!res?.data?.list || !res?.data?.list.length) {
+        return $toast.error('列表是空的')
+      }
+      else {
+        await exportProductListToXlsx(res.data.list, oldFilterListToArray.value, '旧料列表', [], 2)
+      }
+    }
+  }
+  catch (err) {
+    $toast.error('导出失败')
+    throw new Error(`${err}`)
+  }
+  finally {
+    loading.value = false
+  }
+}
 </script>
 
 <template>
@@ -200,6 +226,13 @@ const cols = [
         <common-empty width="100px" />
       </template>
     </div>
+    <common-loading v-model="loading" text="正在处理中" />
+
+    <common-create @click="downloadLocalFile">
+      <template #content>
+        <icon name="i-icon:download" :size="24" color="#FFF" />
+      </template>
+    </common-create>
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="oldFilterListToArray" @submit="submitWhere" />
   </div>
