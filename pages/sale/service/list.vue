@@ -27,7 +27,7 @@ const payOrder = async (id: string) => {
 }
 
 // 获取列表
-const getList = async (where = {} as Partial<ServiceOrderInfo>) => {
+const getList = async (where = {} as Partial<service>) => {
   tableLoading.value = true
   const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<ServiceOrderInfo>
   if (JSON.stringify(where) !== '{}') {
@@ -65,7 +65,7 @@ const handleQueryParams = async () => {
   if (f.limits) {
     limits.value = Number(f.limits)
   }
-  await getList(filterData.value as Partial<ServiceOrderInfo>)
+  await getList(filterData.value as Partial<service>)
 }
 // 默认请求列表
 await handleQueryParams()

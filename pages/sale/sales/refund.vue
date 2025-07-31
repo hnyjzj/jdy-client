@@ -6,16 +6,12 @@ useSeoMeta({
 const { myStore } = storeToRefs(useStores())
 // 获取销售明细列表
 const { getReturnList, getReturnWhere } = useStatement()
-const { statementReturnList, statementRetrunListTotal, ReturnfilterListToArray, ReturnfilterList } = storeToRefs(useStatement())
+const { statementReturnList, statementRetrunListTotal, ReturnfilterListToArray, ReturnfilterList, showtype } = storeToRefs(useStatement())
 const { searchPage } = storeToRefs(usePages())
 
 const filterData = ref({} as Partial<StatementRefundWhere>)
 const filterShow = ref(false)
-
-const { getMemberList } = useMemberManage()
-const { memberList } = storeToRefs(useMemberManage())
-const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
-
+const limits = ref(50)
 // 获取列表
 const getList = async (where = {} as Partial<StatementRefundWhere>) => {
   const params = { page: searchPage.value, limit: 12, where: { store_id: myStore.value.id } } as ReqList<StatementRefundInfo>
@@ -29,43 +25,80 @@ const openFilter = () => {
   // 打开筛选
   filterShow.value = true
 }
+const searchKey = ref('')
+const route = useRoute()
+await getReturnWhere()
+// 读取url参数,获取列表
+const handleQueryParams = async () => {
+  filterData.value = {}
+  const f = getQueryParams<StatementRefundWhere>(route.fullPath, ReturnfilterList.value)
+  filterData.value = f
+  if (filterData.value.code) {
+    searchKey.value = filterData.value.code
+  }
+  if (f.showtype) {
+    showtype.value = f.showtype
+  }
+  if (f.searchPage) {
+    searchPage.value = Number(f.searchPage)
+  }
+  if (f.limits) {
+    limits.value = Number(f.limits)
+  }
+
+  await getList(filterData.value as Partial<StatementRefundWhere>)
+}
+// 默认请求列表
+await handleQueryParams()
+
+const listJump = () => {
+  const url = UrlAndParams('/sale/sales/refund', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+}
+
 const submitWhere = async (f: StatementRefundWhere) => {
-  filterData.value = { ...filterData.value, ...f }
-  statementReturnList.value = []
-  searchPage.value = 1
-  await getList(filterData.value as any)
+  filterData.value = { ...f, showtype: showtype.value, searchPage: 1, limits: limits.value }
+  listJump()
 }
 const resetWhere = async () => {
   filterData.value = {}
+  listJump()
 }
-await getList()
-await getReturnWhere()
-// 获取头部高度
-const height = ref<number | undefined>(0)
-onMounted(async () => {
-  height.value = getHeight('header')
-})
-const searchOrder = async (id: string) => {
-  await getReturnList({ page: 1, limit: 5, where: { id, store_id: myStore.value.id } })
+
+const searchOrder = async (code: string) => {
+  filterData.value.code = code
+  filterData.value.searchPage = 1
+  listJump()
 }
 const clearFn = async () => {
-  statementReturnList.value = []
-  searchPage.value = 1
-  await getList()
+  delete filterData.value.code
+  filterData.value.searchPage = 1
+  listJump()
 }
 const updatePage = async (page: number) => {
-  searchPage.value = page
-  await getList()
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 切换卡片
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
 }
 const changeStores = async () => {
-  await getList()
+  await getList(filterData.value)
 }
 </script>
 
 <template>
   <div>
     <product-filter
-      :product-list-total="statementRetrunListTotal" placeholder="搜索退货单编号" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
+      v-model:search-key="searchKey"
+      :product-list-total="statementRetrunListTotal"
+      placeholder="搜索退货单编号" @change-card="changeCard" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
       <template #company>
         <product-manage-company @change="changeStores" />
       </template>
@@ -74,7 +107,7 @@ const changeStores = async () => {
       <div class="p-[16px]">
         <template v-if="statementReturnList.length">
           <sale-statement-return :info="statementReturnList" :where="ReturnfilterList" />
-          <common-page v-model:page="searchPage" :total="statementRetrunListTotal" :limit="12" @update:page="updatePage" />
+          <common-page v-model:page="searchPage" :total="statementRetrunListTotal" :limit="limits" @update:page="updatePage" />
         </template>
         <template v-else>
           <common-emptys text="暂无数据" />
@@ -84,21 +117,6 @@ const changeStores = async () => {
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="ReturnfilterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #order_id>
         <n-input v-model:value="filterData.order_id" placeholder="请输入订单号" clearable size="large" />
-      </template>
-      <template #member_id>
-        <n-select
-          v-model:value="filterData.member_id"
-          filterable
-          placeholder="请选择会员"
-          :options="memberList.map(v => ({
-            label: `${v.phone} (${v.nickname ? v.nickname : v.name})`,
-            value: v.id,
-          }))"
-          clearable
-          remote
-          @search="getMember"
-          @focus="focus"
-        />
       </template>
     </common-filter-where>
   </div>

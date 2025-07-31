@@ -15,7 +15,7 @@ await otherOrderWhere()
 // 获取列表
 const limits = ref(50)
 
-const getList = async (where = {} as Partial<otherOrderInfo>) => {
+const getList = async (where = {} as Partial<otherOrderWhere>) => {
   tableLoading.value = true
   const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<otherOrderInfo>
   if (JSON.stringify(where) !== '{}') {
@@ -48,7 +48,7 @@ const handleQueryParams = async () => {
     limits.value = Number(f.limits)
   }
 
-  await getList(filterData.value as Partial<otherOrderInfo>)
+  await getList(filterData.value as Partial<otherOrderWhere>)
 }
 // 默认请求列表
 await handleQueryParams()
