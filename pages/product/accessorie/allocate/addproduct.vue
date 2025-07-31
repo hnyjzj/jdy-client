@@ -3,8 +3,7 @@ const { addAccessorieAllocate } = useAccessorieAllocate()
 
 const { accessorieList } = storeToRefs(useAccessorie())
 const { getAccessorieList, getAccessorieWhere } = useAccessorie()
-const { categoryFilterList, categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
-const { getAccessorieCategoryWhere } = useAccessorieCategory()
+const { accessorieFilterList, accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { myStore } = storeToRefs(useStores())
 const { $toast } = useNuxtApp()
 const route = useRoute()
@@ -15,6 +14,7 @@ useSeoMeta({
 const allcateId = ref()
 if (route.query.id) {
   allcateId.value = route.query.id
+  await getAccessorieWhere()
 }
 /** 单条添加搜索配件参数 */
 const searchParams = ref({
@@ -25,14 +25,8 @@ const searchParams = ref({
   label: keyof ProductAccessories
   val: any
 })
-const options = ref([
-  { label: '配件名称', value: 'name' },
-  { label: '配件条码', value: 'code' },
-])
 const isAddSingle = ref(false)
 const selectProduct = ref([] as ProductAccessories[])
-await getAccessorieCategoryWhere()
-await getAccessorieWhere()
 /** 选中入库的条目 */
 const selectedCategories = ref([] as ProductAccessories['id'][])
 /** 全选/全不选 */
@@ -97,7 +91,9 @@ async function submitProduct() {
 
   // 验证通过后，收集所有产品信息
   selectProduct.value.forEach((item: ProductAccessories) => {
-    products.push({ product_id: item.id, quantity: item.quantity })
+    if (item.quantity) {
+      products.push({ product_id: item.id, quantity: item.quantity })
+    }
   })
 
   if (products.length === 0) {
@@ -150,14 +146,14 @@ function toggleCategory(id: string) {
               </div>
               <template v-for="(item, index) in selectProduct" :key="index">
                 <div class="grid mb-3">
-                  <sale-order-nesting :title="item.category.name" :info="item">
+                  <sale-order-nesting :title="item.name" :info="item">
                     <template #left>
                       <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="debouncedDelProduct(index)" />
                     </template>
                     <template #info>
                       <div class="px-[16px]">
                         <div class="grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-3 gap-4">
-                          <template v-for="(filter, findex) in categoryFilterListToArray" :key="findex">
+                          <template v-for="(filter, findex) in accessorieFilterListToArray" :key="findex">
                             <template v-if="filter.create">
                               <div class="flex">
                                 <div class="key">
@@ -165,32 +161,23 @@ function toggleCategory(id: string) {
                                 </div>
                                 <template v-if="filter.input === 'select'">
                                   <div class="value">
-                                    {{ filter.preset[item.category[filter.name] as number] || '--' }}
+                                    {{ filter.preset[item[filter.name] as number] || '--' }}
                                   </div>
                                 </template>
                                 <template v-else>
                                   <div class="value">
-                                    {{ item.category[filter.name] || '--' }}
+                                    {{ item[filter.name] || '--' }}
                                   </div>
                                 </template>
                               </div>
                             </template>
                           </template>
-                          <div class="flex">
-                            <div class="key">
-                              库存
-                            </div>
-                            <div class="value">
-                              {{ item.stock }}
-                            </div>
-                            <div class="value" />
-                          </div>
                         </div>
                         <div class="flex items-center mb-2 mt-2 ">
                           <div class="key w-[80px]">
                             调拨数量
                           </div>
-                          <n-input-number v-model:value="item.quantity" placeholder="请输入调拨数量" min-0 :max="item.stock" :show-button="false" @focus="focus" />
+                          <n-input-number v-model:value="item.quantity" placeholder="请输入调拨数量" min-1 :max="item.stock" :show-button="false" @focus="focus" />
                         </div>
                       </div>
                     </template>
@@ -205,18 +192,11 @@ function toggleCategory(id: string) {
         </common-gradient>
       </div>
     </common-layout-center>
-    <common-model v-model="isAddSingle" title="选择配件" :show-ok="true" @confirm="addCategory">
+    <common-model v-model="isAddSingle" title="添加配件" :show-ok="true" @confirm="addCategory">
       <div>
-        <div class="grid grid-cols-[30%_60%_10%] items-center gap-2">
-          <div class="">
-            <n-select
-              v-model:value="searchParams.label"
-
-              :options="options" @focus="focus"
-              @change="searchParams.val = ''" />
-          </div>
-          <div>
-            <n-input v-model:value="searchParams.val" placeholder="请搜索" @focus="focus" @keydown.enter="searchAccessorie" />
+        <div class="flex items-center gap-4">
+          <div class="flex-1">
+            <n-input v-model:value="searchParams.val" placeholder="请搜索配件名称" @focus="focus" @keydown.enter="searchAccessorie" />
           </div>
           <div @click="searchAccessorie">
             搜索
@@ -229,10 +209,7 @@ function toggleCategory(id: string) {
                 <th class="sticky-left table-color px-2">
                   <input type="checkbox" :disabled="accessorieList?.length === 0" @change="toggleSelectAll" @focus="focus">
                 </th>
-                <th class="whitespace-nowrap px-2 py-1">
-                  库存
-                </th>
-                <template v-for="(filter, i) in categoryFilterListToArray" :key="i">
+                <template v-for="(filter, i) in accessorieFilterListToArray" :key="i">
                   <template v-if="filter.create">
                     <th class="whitespace-nowrap px-2 py-1">
                       {{ filter.label }}
@@ -244,24 +221,21 @@ function toggleCategory(id: string) {
 
             <template v-if="accessorieList?.length">
               <tbody class="pt-2">
-                <template v-for="(category, i) in accessorieList" :key="i">
-                  <tr class="table-color" @click="toggleCategory(category.id)">
+                <template v-for="(accessorie, i) in accessorieList" :key="i">
+                  <tr class="table-color" @click="toggleCategory(accessorie.id)">
                     <td class="sticky-left table-color py-1 px-2">
-                      <input v-model="selectedCategories" type="checkbox" :value="category.id" @focus="focus">
+                      <input v-model="selectedCategories" type="checkbox" :value="accessorie.id" @focus="focus">
                     </td>
-                    <td class="whitespace-nowrap px-2 py-1">
-                      {{ category.stock || '--' }}
-                    </td>
-                    <template v-for="(filter, filterIndex) in categoryFilterListToArray" :key="filterIndex">
+                    <template v-for="(filter, filterIndex) in accessorieFilterListToArray" :key="filterIndex">
                       <template v-if="filter.create">
                         <template v-if="filter.input === 'select'">
                           <td class="whitespace-nowrap px-2 py-1">
-                            {{ categoryFilterList[filter.name]?.preset[category.category[filter.name] as number] || '--' }}
+                            {{ accessorieFilterList[filter.name]?.preset[accessorie[filter.name] as number] || '--' }}
                           </td>
                         </template>
                         <template v-else>
                           <td class="whitespace-nowrap px-2 py-1">
-                            {{ category.category[filter.name] || '--' }}
+                            {{ accessorie[filter.name] || '--' }}
                           </td>
                         </template>
                       </template>

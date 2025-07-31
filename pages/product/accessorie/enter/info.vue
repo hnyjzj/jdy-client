@@ -5,10 +5,8 @@ const router = useRouter()
 
 const { getAccessorieEnterInfo, cancelAccessorieEnter, successAccessorieEnter, addAccessorieEnter, delAccessorieEnter } = useAccessorieEnter()
 const { enterInfo } = storeToRefs(useAccessorieEnter())
-const { accessorieFilterList } = storeToRefs(useAccessorie())
+const { accessorieFilterList, accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
-const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
-const { getAccessorieCategoryWhere } = useAccessorieCategory()
 const { myStore } = storeToRefs(useStores())
 useSeoMeta({ title: '入库单详情' })
 
@@ -27,9 +25,8 @@ const clearDialog = ref(false)
 const cancelDialog = ref(false)
 const finishDialog = ref(false)
 const loading = ref(false)
+const page = ref(1)
 
-/** 页面加载时，初始化数据 */
-await getAccessorieCategoryWhere()
 if (route.query.id) {
   enterId.value = route.query.id as string
   await fetchEnterInfo()
@@ -39,7 +36,12 @@ if (route.query.id) {
 /** 获取入库单详细信息 */
 async function fetchEnterInfo() {
   if (enterId.value) {
-    await getAccessorieEnterInfo(enterId.value)
+    const params = {
+      id: enterId.value,
+      page: page.value,
+      limit: 20,
+    }
+    await getAccessorieEnterInfo(params)
   }
 }
 
@@ -67,7 +69,7 @@ async function cancel() {
 /** 点击清空时调用，触发确认弹窗 */
 function clearFun() {
   if (!enterInfo.value?.products?.length) {
-    $toast.error('货品为空')
+    $toast.error('配件为空')
     return
   }
   clearDialog.value = true
@@ -76,7 +78,7 @@ function clearFun() {
 /** 点击完成按钮时调用，触发确认弹窗 */
 function finishFun() {
   if (!enterInfo.value?.products?.length) {
-    $toast.error('货品为空')
+    $toast.error('配件为空')
     return
   }
   finishDialog.value = true
@@ -116,7 +118,7 @@ async function delProduct() {
 async function clearProduct() {
   const ids = enterInfo.value?.products?.map(item => item.id) ?? []
   if (!ids.length)
-    return $toast.warning('货品为空')
+    return $toast.warning('配件为空')
 
   const res = await delAccessorieEnter({
     enter_id: enterInfo.value.id,
@@ -164,7 +166,7 @@ async function bulkupload(data: any) {
       <div class="pt-4">
         <div class="flex flex-col gap-4">
           <accessorie-enter-base :enter-info="enterInfo" />
-          <accessorie-enter-info :info="enterInfo" :filter-list="categoryFilterListToArray" @del="(e) => { deleteDialog = true;deleteId = e }" />
+          <accessorie-enter-info :info="enterInfo" :filter-list="accessorieFilterListToArray" @del="(e) => { deleteDialog = true;deleteId = e }" />
         </div>
       </div>
     </common-layout-center>

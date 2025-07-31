@@ -58,7 +58,7 @@ interface AccessorieEnter {
  */
 interface AccessorieEnterReq {
   /** 成品入库参数 */
-  products: AccessorieEnterProductReq[]
+  products: ProductAccessories[]
   enter_id: string
 }
 
@@ -104,4 +104,13 @@ interface DelAccessorieEnter {
    * 商品ID列表
    */
   product_ids: string[]
+}
+
+/**
+ * 入库单详情请求参数
+ */
+interface AccessorieEnterInfoReq {
+  id: AccessorieEnter['id']
+  page: number
+  limit: number
 }

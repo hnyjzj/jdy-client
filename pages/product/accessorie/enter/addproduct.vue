@@ -1,333 +1,165 @@
 <script lang="ts" setup>
-const { categoryFilterListToArray, categoryFilterList, categoryList } = storeToRefs(useAccessorieCategory())
-const { getAccessorieCategoryWhere, getAccessorieCategoryList } = useAccessorieCategory()
-const { addAccessorieEnter } = useAccessorieEnter()
+import type { FormInst, FormRules } from 'naive-ui'
+
 const { $toast } = useNuxtApp()
-// const { myStore } = storeToRefs(useStores())
+const { addAccessorieEnter, getAccessorieEnterAddProductWhere } = useAccessorieEnter()
+const { addProductEnterFilterList, addProductEnterToArray } = storeToRefs(useAccessorieEnter())
 const route = useRoute()
 const router = useRouter()
 useSeoMeta({
-  title: '配件入库添加配件',
+  title: '新增入库单',
 })
+
+const params = ref({
+
+} as ProductAccessories)
 const enterId = ref()
-if (route.query.id) {
+if (route.query?.id) {
   enterId.value = route.query.id
+  await getAccessorieEnterAddProductWhere()
 }
-/** 单条添加搜索配件参数 */
-const searchParams = ref({
-  label: 'name',
-  val: '',
-} as
-{
-  label: keyof AccessorieCategory
-  val: any
-})
-const isAddSingle = ref(false)
-const selectProduct = ref([] as AccessorieCategory[])
-await getAccessorieCategoryWhere()
-/** 选中入库的条目 */
-const selectedCategories = ref([] as AccessorieCategory['id'][])
-/** 全选/全不选 */
-function toggleSelectAll(event: any) {
-  if (!categoryList.value?.length)
-    return
-  if (event.target.checked) {
-    selectedCategories.value = categoryList.value.map(cat => cat.id)
-  }
-  else {
-    selectedCategories.value = []
-  }
-}
-const searchWhere = computed(() => {
-  return categoryFilterList.value[searchParams.value.label]
-})
-/** 搜索要入库的配件 */
-function searchAccessorie() {
-  const obj = {} as Partial<AccessorieCategory>
-  obj[searchParams.value.label] = searchParams.value.val
-  //   obj.store_id = myStore.value?.id
-  getAccessorieCategoryList({ page: 1, limit: 20, where: { ...obj } })
-}
+const formRef = ref<FormInst | null>(null)
+const rules = ref<FormRules>({})
 
-async function addCategory() {
-  if (!selectedCategories.value?.length)
-    return $toast.error('请选择条目')
-
-  const productMap = new Map(selectProduct.value.map(p => [p.id, p]))
-
-  selectedCategories.value.forEach((id: AccessorieCategory['id']) => {
-    const found = categoryList.value?.find(cat => cat.id === id)
-    if (found) {
-      const existing = productMap.get(id)
-      const newItem = JSON.parse(JSON.stringify(found))
-      if (existing?.in_stock)
-        newItem.in_stock = existing.in_stock
-      if (existing?.in_access_fee)
-        newItem.in_access_fee = existing.in_access_fee
-
-      productMap.set(id, newItem)
+function forRules() {
+  addProductEnterToArray.value.forEach((item) => {
+    if (item.required) {
+      if (item.input === 'text') {
+        rules.value[item.name] = {
+          required: true,
+          trigger: ['blur', 'input', 'change'],
+          message: `请输入${item.label}`,
+        }
+      }
+      if (item.input === 'number') {
+        rules.value[item.name] = {
+          required: true,
+          trigger: ['blur', 'input', 'change'],
+          message: `请输入${item.label}`,
+          type: 'number',
+        }
+      }
+      if (item.input === 'select') {
+        rules.value[item.name] = {
+          required: true,
+          trigger: ['blur', 'input', 'change'],
+          message: `请选择${item.label}`,
+          type: 'number',
+        }
+      }
     }
   })
-
-  selectProduct.value = Array.from(productMap.values())
-  isAddSingle.value = false
 }
 
-/** 添加单条入库配件 */
-async function submitProduct() {
-  const products = [] as AccessorieEnterProductReq[]
-  const params = {} as AccessorieEnterReq
-
-  // 先进行验证，如果有任何产品不符合条件，则不进行提交
-  for (const item of selectProduct.value) {
-    if (!item.in_stock) {
-      $toast.error('请填写入库数量')
-      return
+function handleValidateButtonClick() {
+  formRef.value?.validate((error) => {
+    if (!error) {
+      submit()
     }
-  }
-
-  // 验证通过后，收集所有产品信息
-  selectProduct.value.forEach((item: AccessorieCategory) => {
-    products.push({ code: item.id, stock: item.in_stock, access_fee: item.in_access_fee })
+    else {
+      $toast.error('请完善信息')
+    }
   })
+}
+forRules()
+async function submit() {
+  if (!enterId.value)
+    return $toast.error('入库单ID不存在，无法继续操作')
 
-  if (products.length === 0) {
-    $toast.error('请添加配件礼品')
-    return
+  const impParams = {
+    products: [params.value],
+    enter_id: enterId.value,
   }
-
-  params.enter_id = enterId.value
-  params.products = products
-  const res = await addAccessorieEnter(params)
+  const res = await addAccessorieEnter(impParams)
   if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('添加成功', 1000)
+    $toast.success('创建成功')
+    params.value = {} as ProductAccessories
     setTimeout(() => {
       router.back()
     }, 1000)
   }
   else {
-    $toast.error(res?.message ?? '添加失败')
+    $toast.error(res?.message ?? '创建失败')
   }
 }
 
-/**
- * 删除选中配件
- */
-const debouncedDelProduct = useThrottleFn((index: number) => {
-  selectProduct.value.splice(index, 1)
-}, 200)
-
-function sumStock(category: CategoryHasProduct) {
-  let total = 0
-  if (category?.products?.length) {
-    category.products.forEach((item) => {
-      total += item.stock
-    })
-    return total
+const presetToSelect = (key: keyof ProductAccessories) => {
+  if (!key)
+    return []
+  const filter = addProductEnterFilterList.value[key]
+  if (!filter)
+    return []
+  if (!filter.preset) {
+    return []
   }
-  return 0
-}
-
-function toggleCategory(id: string) {
-  const index = selectedCategories.value.indexOf(id)
-  if (index > -1) {
-    selectedCategories.value.splice(index, 1)
-  }
-  else {
-    selectedCategories.value.push(id)
-  }
+  return optonsToSelect(filter.preset)
 }
 </script>
 
 <template>
   <div>
     <common-layout-center>
-      <div class="pt-6 pb-18 px-4">
-        <common-gradient title="添加入库配件" theme="gradient">
-          <template #body>
-            <template v-if="selectProduct?.length">
-              <div class="text-[14px] pb-4 text-color">
-                共 {{ selectProduct.length }}
-              </div>
-              <template v-for="(item, index) in selectProduct" :key="index">
-                <div class="grid mb-3">
-                  <sale-order-nesting :title="item.name" :info="item">
-                    <template #left>
-                      <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="debouncedDelProduct(index)" />
-                    </template>
-                    <template #info>
-                      <div class="px-[16px]">
-                        <div class="grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
-                          <template v-for="(filter, findex) in categoryFilterListToArray" :key="findex">
-                            <template v-if="filter.find && filter.name !== 'store_id'">
-                              <div class="flex">
-                                <div class="key">
-                                  {{ filter.label }}
-                                </div>
-                                <template v-if="filter.input === 'select'">
-                                  <div class="value">
-                                    {{ filter.preset[item[filter.name] as number] }}
-                                  </div>
-                                </template>
-                                <template v-else-if="filter.input === 'switch'">
-                                  <div class="value">
-                                    {{ item[filter.name] ? '是' : '否' }}
-                                  </div>
-                                </template>
-                                <template v-else>
-                                  <div class="value">
-                                    {{ item[filter.name] ? item[filter.name] : '' }}
-                                  </div>
-                                </template>
-                              </div>
-                            </template>
+      <div class="pt-4 pb-22">
+        <div class="flex flex-col gap-4">
+          <div class="rounded-6 bg-white w-auto blur-bga">
+            <common-gradient title="新增入库">
+              <template #body>
+                <n-form ref="formRef" :model="params" :rules="rules">
+                  <n-grid :cols="24" :x-gap="8">
+                    <template v-for="(item, index) in addProductEnterToArray" :key="index">
+                      <template v-if="item.create">
+                        <n-form-item-gi :span="12" :path="item.name" :required="item.required" :label="item.label">
+                          <template v-if="item.input === 'select'">
+                            <n-select
+                              v-model:value="params[item.name]"
+                              menu-size="large"
+                              :placeholder="`选择${item.label}`"
+                              :options="presetToSelect(item.name)"
+                              clearable
+                              @focus="focus"
+                            />
                           </template>
-                        </div>
-                        <div class="flex items-center mb-2 mt-2 ">
-                          <div class="key w-[80px]">
-                            入库数量
-                          </div>
-                          <n-input-number v-model:value="item.in_stock" placeholder="请输入入库数量" min-0 :show-button="false" @focus="focus" />
-                        </div>
-                        <div class="flex items-center mb-2">
-                          <div class="key w-[80px]">
-                            入库入网费
-                          </div>
-                          <n-input-number v-model:value="item.in_access_fee" placeholder="请输入入库入网费" min-0 :show-button="false" @focus="focus" />
-                        </div>
-                      </div>
+                          <template v-if="item.input === 'text' ">
+                            <n-input v-model:value="(params[item.name] as string)" round :placeholder="`输入${item.label}`" @focus="focus" />
+                          </template>
+                          <template v-if="item.input === 'number'">
+                            <div class="w-[100%]">
+                              <n-input-number v-model:value="(params[item.name] as number)" round :placeholder="`输入${item.label}`" @focus="focus" />
+                            </div>
+                          </template>
+                          <template v-if="item.input === 'textarea'">
+                            <n-input v-model:value="(params[item.name] as string)" :placeholder="`输入${item.label}`" type="textarea" maxlength="255" round :autosize="{ minRows: 2, maxRows: 3 }" @focus="focus" />
+                          </template>
+                        </n-form-item-gi>
+                      </template>
                     </template>
-                  </sale-order-nesting>
-                </div>
+                  </n-grid>
+                </n-form>
               </template>
-            </template>
-            <template v-else>
-              <common-empty size="100" />
-            </template>
-          </template>
-        </common-gradient>
+            </common-gradient>
+          </div>
+        </div>
       </div>
     </common-layout-center>
-    <common-model v-model="isAddSingle" title="选择配件" :show-ok="true" @confirm="addCategory">
-      <div>
-        <div class="grid grid-cols-[40%_40%_10%] items-center gap-2">
-          <n-select
-            v-model:value="searchParams.label" :options="categoryFilterListToArray.map(v => ({
-              label: v.label,
-              value: v.name,
-            }))"
-            @focus="focus"
-            @change="searchParams.val = ''" />
-
-          <div>
-            <template v-if="searchWhere?.input === 'text' || searchWhere?.input === 'textarea'">
-              <n-input v-model:value="searchParams.val" placeholder="请搜索" @keydown.enter="searchAccessorie" @focus="focus" />
-            </template>
-            <template v-if="searchWhere?.input === 'number'">
-              <n-input-number v-model:value="searchParams.val" placeholder="请搜索" @keydown.enter="searchAccessorie" @focus="focus" />
-            </template>
-            <template v-else-if="searchWhere?.input === 'select'">
-              <n-select v-model:value="searchParams.val" :options="optonsToSelect(searchWhere.preset)" @focus="focus" />
-            </template>
-          </div>
-          <div @click="searchAccessorie">
-            搜索
-          </div>
-        </div>
-        <div class="m-4 category-list max-h-[400px] min-h-[200px] overflow-y-auto">
-          <table>
-            <thead>
-              <tr class="table-color">
-                <th class="sticky-left table-color px-2">
-                  <input type="checkbox" :disabled="categoryList?.length === 0" @change="toggleSelectAll" @focus="focus">
-                </th>
-                <th class="whitespace-nowrap px-2 py-1">
-                  库存
-                </th>
-                <template v-for="(item, index) in categoryFilterListToArray" :key="index">
-                  <template v-if="item.find && item.name !== 'store_id'">
-                    <th class="whitespace-nowrap px-2 py-1">
-                      {{ item.label }}
-                    </th>
-                  </template>
-                </template>
-              </tr>
-            </thead>
-
-            <template v-if="categoryList?.length">
-              <tbody class="pt-2">
-                <template v-for="(category, i) in categoryList" :key="i">
-                  <tr class="table-color" @click="toggleCategory(category.id)">
-                    <td class="sticky-left table-color py-1 px-2">
-                      <input v-model="selectedCategories" type="checkbox" :value="category.id" @focus="focus">
-                    </td>
-                    <td>
-                      {{ sumStock(category as CategoryHasProduct) }}
-                    </td>
-                    <template v-for="(item, index) in categoryFilterListToArray" :key="index">
-                      <template v-if="item.input === 'text' || item.input === 'textarea' || item.input === 'number'">
-                        <td>
-                          {{ category[item.name] }}
-                        </td>
-                      </template>
-                      <template v-if="item.input === 'select'">
-                        <td class="border-collapse">
-                          {{ item.preset[category[item.name] as number] }}
-                        </td>
-                      </template>
-                    </template>
-                  </tr>
-                </template>
-              </tbody>
-            </template>
-          </table>
-          <template v-if="!categoryList?.length">
-            <div class="flex justify-center items-center">
-              <common-empty size="100" text="暂无数据" />
-            </div>
-          </template>
-        </div>
-      </div>
-    </common-model>
-    <common-create @create="isAddSingle = true;categoryList = []">
-      <template #content>
-        <div class="flex justify-center items-center">
-          <icon name="i-icon:search" color="#fff" :size="18" />
-        </div>
-      </template>
-    </common-create>
-    <common-button-one text="添加入库" @confirm="submitProduct" />
+    <div class="fixed bottom-0 left-0 w-full py-4 blur-bgc px-8" uno-sm="px-0">
+      <common-layout-center>
+        <common-button-rounded content="新增入库" @button-click="handleValidateButtonClick" />
+      </common-layout-center>
+    </div>
   </div>
 </template>
 
+<style>
+.n-base-selection {
+  border-radius: 20px;
+}
+.n-base-selection-label {
+  height: 40px !important;
+}
+.n-input-wrapper {
+  border-radius: 20px !important;
+}
+</style>
+
 <style lang="scss" scoped>
-.key {
-  --uno: 'text-size-[14px] whitespace-nowrap color-[#666] dark:color-[#CBCDD1] mr-2';
-}
-.value {
-  --uno: 'text-size-[14px] color-[#333] dark:color-[#fff] w-[60%]';
-  text-overflow: ellipsis; /* 超出显示省略号 */
-  white-space: nowrap; /* 禁止换行 */
-  overflow: hidden;
-}
-.category-list {
-  overflow: auto;
-}
-.category-list table {
-  border-collapse: collapse;
-}
-.category-list th,
-.category-list td {
-  text-align: center; /* 水平居中 */
-  vertical-align: middle; /* 垂直居中（可选） */
-}
-.sticky-left {
-  --uno: 'sticky left-0 z-10';
-}
-.table-color {
-  --uno: 'dark:bg-[rgba(0,0,0,0.8)] bg-[#F1F5FE]';
-  td {
-    --uno: 'whitespace-nowrap px-2';
-  }
-}
 </style>

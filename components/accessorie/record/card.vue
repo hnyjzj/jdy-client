@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const props = withDefaults(defineProps<{
-  accessories: ProductAccessories
-  filterList: FilterWhere<AccessorieCategory>[]
+  accessories: ProductAccessoriesInfo
+  filterList: FilterWhere<ProductAccessories>[]
 }>(), {
 })
 </script>
@@ -32,12 +32,12 @@ const props = withDefaults(defineProps<{
           </div>
           <template v-if="item.input === 'select'">
             <div class="text-align-end">
-              {{ item.preset[props.accessories.category[item.name] as number] }}
+              {{ item.preset[props.accessories[item.name] as number] }}
             </div>
           </template>
           <template v-else>
             <div class="text-align-end">
-              {{ props.accessories.category[item.name] }}
+              {{ props.accessories[item.name] }}
             </div>
           </template>
         </div>

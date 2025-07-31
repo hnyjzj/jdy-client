@@ -6,8 +6,8 @@ const { getProductHistory, getHistoryWhere } = useAcessorieRecord()
 const { historyFilterList, historyListTotal, productRocordList, HistoryFilterListToArray } = storeToRefs(useAcessorieRecord())
 const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList, getMyStore } = useStores()
-const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
-const { getAccessorieCategoryWhere } = useAccessorieCategory()
+const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
+const { getAccessorieWhere } = useAccessorie()
 const { searchPage, showtype } = storeToRefs(usePages())
 const limits = ref(50)
 const tableLoading = ref(false)
@@ -51,7 +51,7 @@ async function getList(where = {} as Partial<HistoryWhere>) {
 try {
   await getList()
   await getHistoryWhere()
-  await getAccessorieCategoryWhere()
+  await getAccessorieWhere()
   await changeStore()
   await getStoreList({ page: 1, limit: 20 })
   await getMyStore({ page: 1, limit: 20 })
@@ -145,7 +145,7 @@ const cols = [
     },
   },
   // 动态字段
-  ...categoryFilterListToArray.value
+  ...accessorieFilterListToArray.value
     .filter(item => item.create)
     .map(item => ({
       title: item.label,
@@ -217,7 +217,7 @@ const cols = [
                   </div>
                 </div>
 
-                <accessorie-record-card :filter-list="categoryFilterListToArray" :accessories="info.new_value?.product ? info.new_value?.product : info.new_value" />
+                <accessorie-record-card :filter-list="accessorieFilterListToArray" :accessories="info.new_value?.product ? info.new_value?.product : info.new_value" />
               </div>
             </template>
             <template #bottom="{ info }">

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const props = defineProps<{
   info: AccessorieEnter
-  filterList: FilterWhere<AccessorieCategory>[]
+  filterList: FilterWhere<ProductAccessories>[]
 }>()
 
 const emits = defineEmits<{
@@ -21,7 +21,7 @@ function del(id: string) {
       </div>
       <template v-for="(item, index) in props.info.products" :key="index">
         <div class="grid mb-3">
-          <sale-order-nesting :title="item.category.name" :info="props.info">
+          <sale-order-nesting :title="item.name" :info="props.info">
             <template #left>
               <template v-if="props.info.status === 1">
                 <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="del(item.id)" />
@@ -37,17 +37,12 @@ function del(id: string) {
                       </div>
                       <template v-if="filter.input === 'select'">
                         <div class="value">
-                          {{ filter.preset[item.category[filter.name]] }}
-                        </div>
-                      </template>
-                      <template v-else-if="filter.input === 'switch'">
-                        <div class="value">
-                          {{ item.category[filter.name] ? '是' : '否' }}
+                          {{ filter.preset[item[filter.name]] }}
                         </div>
                       </template>
                       <template v-else>
                         <div class="value">
-                          {{ item.category[filter.name] }}
+                          {{ item[filter.name] }}
                         </div>
                       </template>
                     </div>
@@ -59,14 +54,6 @@ function del(id: string) {
                   </div>
                   <div class="value">
                     {{ item.stock }}
-                  </div>
-                </div>
-                <div class="flex">
-                  <div class="key">
-                    入库入网费
-                  </div>
-                  <div class="value">
-                    {{ item.access_fee }}
                   </div>
                 </div>
               </div>
