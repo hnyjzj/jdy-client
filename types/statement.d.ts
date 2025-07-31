@@ -11,6 +11,9 @@ interface StatementWhere {
   status?: number
   store_id?: string
   type?: number
+  showtype?: 'list' | 'table'
+  searchPage?: number
+  limits?: number
 }
 
 /*

@@ -13,8 +13,8 @@ const filterData = ref({} as Partial<otherOrderWhere>)
 const tableLoading = ref(false)
 await otherOrderWhere()
 // 获取列表
-const limits = ref(2)
-const pageSizes = ref(50)
+const limits = ref(50)
+
 const getList = async (where = {} as Partial<otherOrderInfo>) => {
   tableLoading.value = true
   const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<otherOrderInfo>
@@ -24,7 +24,10 @@ const getList = async (where = {} as Partial<otherOrderInfo>) => {
   await getOtherOrderList(params)
   tableLoading.value = false
 }
-
+// 打开高级筛选
+const openFilter = () => {
+  filterShow.value = true
+}
 const searchKey = ref('')
 const route = useRoute()
 // 读取url参数,获取列表
@@ -33,65 +36,59 @@ const handleQueryParams = async () => {
   const f = getQueryParams<otherOrderWhere>(route.fullPath, filterList.value)
   filterData.value = f
   if (filterData.value.id) {
-    searchKey.value = filterData.value.id || ''
+    searchKey.value = filterData.value.id
   }
   if (f.showtype) {
-    showtype.value = f.showtype || 'list'
+    showtype.value = f.showtype
   }
   if (f.searchPage) {
-    searchPage.value = Number(f.searchPage) || 1
+    searchPage.value = Number(f.searchPage)
   }
   if (f.limits) {
-    limits.value = Number(f.limits) || 50
+    limits.value = Number(f.limits)
   }
 
   await getList(filterData.value as Partial<otherOrderInfo>)
 }
 // 默认请求列表
 await handleQueryParams()
-
-const updatePage = async (page: number) => {
-  filterData.value.searchPage = page
-  filterData.value.limits = limits.value
+const listJump = () => {
   const url = UrlAndParams('/sale/other/list', filterData.value)
   navigateTo(url, { external: true, replace: true, redirectCode: 200 })
-}
-// 打开高级筛选
-const openFilter = () => {
-  filterShow.value = true
 }
 /**
  高级筛选
  */
 const submitWhere = async (f: otherOrderWhere) => {
   filterData.value = { ...f, showtype: showtype.value, searchPage: 1, limits: limits.value }
-  const url = UrlAndParams('/sale/other/list', filterData.value)
-  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+  listJump()
 }
 
 const resetWhere = async () => {
   filterData.value = {}
-  const url = UrlAndParams('/sale/other/list', filterData.value)
-  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+  listJump()
 }
 const searchOrder = async (id: string) => {
   filterData.value.id = id
   filterData.value.searchPage = 1
-  const url = UrlAndParams('/sale/other/list', filterData.value)
-  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+  listJump()
 }
 const clearFn = async () => {
-  filterData.value = {}
+  delete filterData.value.id
   searchPage.value = 1
-  await getList()
+  listJump()
+}
+const updatePage = async (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
 }
 // 切换卡片
 const changeCard = () => {
   filterData.value.showtype = showtype.value
   filterData.value.searchPage = searchPage.value
   filterData.value.limits = limits.value
-  const url = UrlAndParams('/sale/other/list', filterData.value)
-  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+  listJump()
 }
 
 const changeStores = async () => {
@@ -104,12 +101,11 @@ const newAdd = async () => {
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: pageSizes,
+  pageSize: limits,
   itemCount: total,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
-    pageOption.value.pageSize = pageSize
     limits.value = pageSize
     updatePage(1)
   },

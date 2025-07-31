@@ -23,25 +23,31 @@ const route = useRoute()
 // 计算成品列表加的积分
 const productListScore = computed(() => {
   const total = ref(0)
-  total.value = props.orders.products.reduce((total, item) => {
-    return calc('(t + i) | <=0,!n', { t: total, i: item.type === 1 ? item.finished.integral : 0 || 0 })
-  }, 0)
+  if (props.orders.products?.length) {
+    total.value = props.orders.products.reduce((total, item) => {
+      return calc('(t + i) | <=0,!n', { t: total, i: item.type === 1 ? item.finished.integral : 0 || 0 })
+    }, 0)
+  }
   return total.value
 })
 // 计算旧料列表 减的积分
 const masterListScore = computed(() => {
   const total = ref(0)
-  total.value = props.orders.products.reduce((total, item) => {
-    return calc('(t + i) | <=0,!n', { t: total, i: item.type === 2 ? item.old.integral : 0 || 0 })
-  }, 0)
+  if (props.orders.products?.length) {
+    total.value = props.orders.products.reduce((total, item) => {
+      return calc('(t + i) | <=0,!n', { t: total, i: item.type === 2 ? item.old.integral : 0 || 0 })
+    }, 0)
+  }
   return total.value
 })
 // 配件积分
 const PartsListScore = computed(() => {
   const total = ref(0)
-  total.value = props.orders.products.reduce((total, item) => {
-    return calc('(t + i ) | <=0,!n', { t: total, i: item.type === 3 ? item.accessorie?.integral : 0 || 0 })
-  }, 0)
+  if (props.orders.products?.length) {
+    total.value = props.orders.products.reduce((total, item) => {
+      return calc('(t + i ) | <=0,!n', { t: total, i: item.type === 3 ? item.accessorie?.integral : 0 || 0 })
+    }, 0)
+  }
   return total.value
 })
 // 总积分计算
@@ -89,7 +95,7 @@ const onReturnProduct = async (index: number) => {
             <common-cell label="会员昵称" :value="props.orders.member?.nickname || ''" />
             <common-cell label="手机号" :value="props.orders.member?.phone" />
             <common-cell label="会员等级" :value="props.orders.member?.level" />
-            <template v-if="props.orders.order_deposits.length">
+            <template v-if="props.orders?.order_deposits?.length">
               <div class="line" />
               <common-cell label="关联订金单" value="" label-color="#4C8DF6" />
               <template v-for="(deposit, ix) in props.orders.order_deposits" :key="ix">

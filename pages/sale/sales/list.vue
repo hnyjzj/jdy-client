@@ -25,7 +25,7 @@ const getSaleman = async () => {
 const limits = ref(50)
 const tableLoading = ref(false)
 // 获取列表
-const getList = async (where = {} as Partial<OrderInfo>) => {
+const getList = async (where = {} as Partial<OrderWhere>) => {
   tableLoading.value = true
 
   const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<OrderInfo>
@@ -54,33 +54,35 @@ const handleQueryParams = async () => {
   const f = getQueryParams<OrderWhere>(route.fullPath, filterList.value)
   filterData.value = f
   if (filterData.value.id) {
-    searchKey.value = filterData.value.id || ''
+    searchKey.value = filterData.value.id
   }
   if (f.showtype) {
-    showtype.value = f.showtype || 'list'
+    showtype.value = f.showtype
   }
   if (f.searchPage) {
-    searchPage.value = Number(f.searchPage) || 1
+    searchPage.value = Number(f.searchPage)
   }
   if (f.limits) {
-    limits.value = Number(f.limits) || 50
+    limits.value = Number(f.limits)
   }
 
   await getList(filterData.value as Partial<OrderInfo>)
 }
 
 await handleQueryParams()
+const listJump = () => {
+  const url = UrlAndParams('/sale/sales/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+}
 // 高级筛选确定
 const submitWhere = async (f: OrderWhere) => {
   filterData.value = { ...f, showtype: showtype.value, searchPage: 1, limits: limits.value }
-  const url = UrlAndParams('/sale/sales/list', filterData.value)
-  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+  listJump()
 }
 // 重置高级筛选
 const resetWhere = async () => {
   filterData.value = {}
-  const url = UrlAndParams('/sale/sales/list', filterData.value)
-  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+  listJump()
 }
 
 // 切换卡片
@@ -88,9 +90,7 @@ const changeCard = () => {
   filterData.value.showtype = showtype.value
   filterData.value.searchPage = searchPage.value
   filterData.value.limits = limits.value
-
-  const url = UrlAndParams('/sale/sales/list', filterData.value)
-  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+  listJump()
 }
 
 const searchProduct = async (e: string) => {
@@ -102,21 +102,18 @@ const searchProduct = async (e: string) => {
 const searchOrder = async (id: string) => {
   filterData.value.id = id
   filterData.value.searchPage = 1
-  const url = UrlAndParams('/sale/sales/list', filterData.value)
-  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+  listJump()
 }
 const clearFn = async () => {
   delete filterData.value.id
   filterData.value.searchPage = 1
-  const url = UrlAndParams('/sale/sales/list', filterData.value)
-  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+  listJump()
 }
 
 const updatePage = async (page: number) => {
   filterData.value.searchPage = page
   filterData.value.limits = limits.value
-  const url = UrlAndParams('/sale/sales/list', filterData.value)
-  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+  listJump()
 }
 
 // 撤销订单

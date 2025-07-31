@@ -54,60 +54,57 @@ const handleQueryParams = async () => {
   const f = getQueryParams<service>(route.fullPath, repairFilterList.value)
   filterData.value = f
   if (filterData.value.id) {
-    searchKey.value = filterData.value.id || ''
+    searchKey.value = filterData.value.id
   }
   if (f.showtype) {
-    showtype.value = f.showtype || 'list'
+    showtype.value = f.showtype
   }
   if (f.searchPage) {
-    searchPage.value = Number(f.searchPage) || 1
+    searchPage.value = Number(f.searchPage)
   }
   if (f.limits) {
-    limits.value = Number(f.limits) || 50
+    limits.value = Number(f.limits)
   }
   await getList(filterData.value as Partial<ServiceOrderInfo>)
 }
 // 默认请求列表
 await handleQueryParams()
-
-const submitWhere = async (f: service) => {
-  filterData.value = { ...f, showtype: showtype.value, searchPage: 1, limits: limits.value }
+const listJump = () => {
   const url = UrlAndParams('/sale/service/list', filterData.value)
   navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
+const submitWhere = async (f: service) => {
+  filterData.value = { ...f, showtype: showtype.value, searchPage: 1, limits: limits.value }
+  listJump()
+}
 const resetWhere = async () => {
   filterData.value = {}
-  const url = UrlAndParams('/sale/service/list', filterData.value)
-  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+  listJump()
 }
 // 切换卡片
 const changeCard = () => {
   filterData.value.showtype = showtype.value
   filterData.value.searchPage = searchPage.value
   filterData.value.limits = limits.value
-  const url = UrlAndParams('/sale/service/list', filterData.value)
-  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+  listJump()
 }
 // 顶部搜索订单
 const searchOrder = async (id: string) => {
   filterData.value.id = id
   filterData.value.searchPage = 1
-  const url = UrlAndParams('/sale/service/list', filterData.value)
-  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+  listJump()
 }
 // 清空顶部搜索
 const clearFn = async () => {
   delete filterData.value.id
   filterData.value.searchPage = 1
-  const url = UrlAndParams('/sale/service/list', filterData.value)
-  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+  listJump()
 }
 
 const updatePage = async (page: number) => {
   filterData.value.searchPage = page
   filterData.value.limits = limits.value
-  const url = UrlAndParams('/sale/service/list', filterData.value)
-  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+  listJump()
 }
 
 const changeStores = async () => {
