@@ -38,12 +38,7 @@ const showFilter = defineModel<boolean>('show', { default: false, required: true
 /**
  * 筛选结果
  */
-const datas = ref<T>({ ...props.data })
-
-/**
- * 初始化数据
- */
-const Init = ref<T>({ ...props.data })
+const datas = ref<T>(props.data)
 
 /**
  * 提交
@@ -61,7 +56,7 @@ const Key = ref(useId())
  * 重置
  */
 function reset() {
-  datas.value = { ...Init.value }
+  datas.value = {} as T
   Key.value = Date.now().toString()
 
   emits('reset')
@@ -154,6 +149,10 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                       :placeholder="`请选择${label}`"
                       :options="presetToSelect(props.filter[i]) "
                       :disabled="disabled?.includes(name)"
+                      @clear="() => {
+                        console.log(datas);
+
+                      }"
                       @focus="focus"
                     />
                   </template>

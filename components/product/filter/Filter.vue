@@ -16,8 +16,9 @@ const emits = defineEmits<{
   clear: []
   filter: []
   clearSearch: []
+  changeCard: []
 }>()
-const showtype = defineModel<'table' | 'list'>('showtype')
+const showtype = defineModel<'table' | 'list'>('showtype', { default: 'list' })
 const search = (e: string) => {
   emits('search', e)
 }
@@ -27,6 +28,7 @@ const filter = () => {
 const clearSearch = () => {
   emits('clearSearch')
 }
+const searchKey = defineModel<string>('searchKey', { required: false, default: '' })
 </script>
 
 <template>
@@ -39,11 +41,11 @@ const clearSearch = () => {
           </template>
           <template v-if="showInput">
             <div class="flex-1">
-              <product-filter-search :placeholder="placeholder" @submit="search" @clear="clearSearch" />
+              <product-filter-search v-model:search-key="searchKey" :placeholder="placeholder" @submit="search" @clear="clearSearch" />
             </div>
           </template>
         </div>
-        <common-tool-list v-model="showtype" :total="props.productListTotal" @height="filter" />
+        <common-tool-list v-model:showtype="showtype" :total="props.productListTotal" @height="filter" @change-card="emits('changeCard')" />
       </div>
     </common-layout-center>
   </div>

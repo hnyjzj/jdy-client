@@ -6,17 +6,21 @@ useSeoMeta({
 })
 const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
-
 const { filterListToArray, OrdersList, total, filterList, showtype } = storeToRefs(useDepositOrder())
 const { searchPage } = storeToRefs(usePages())
 const { getSaleWhere, getDepositList, isStoreStaff } = useDepositOrder()
 const filterData = ref({} as Partial<DepositOrderWhere>)
 const filterShow = ref(false)
-const limits = ref(12)
-const { getMemberList } = useMemberManage()
-const { memberList } = storeToRefs(useMemberManage())
+const limits = ref(50)
+
 const tableLoading = ref(false)
-const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
+const { $toast } = useNuxtApp()
+const getSaleman = async () => {
+  if (!myStore.value.id)
+    return
+  await getStoreStaffList({ id: myStore.value.id })
+}
+
 // 获取列表
 const getList = async (where = {} as Partial<DepositOrderInfo>) => {
   tableLoading.value = true
@@ -27,11 +31,10 @@ const getList = async (where = {} as Partial<DepositOrderInfo>) => {
   await getDepositList(params)
   tableLoading.value = false
 }
-const handleClick = async (id: string) => {
-  navigateTo(`/sale/sales/order?id=${id}`)
-}
+
 // 打开高级筛选
 const openFilter = () => {
+  getSaleman()
   // 打开筛选
   filterShow.value = true
 }
@@ -39,41 +42,74 @@ const isStaff = async () => {
   return await isStoreStaff({ id: myStore.value.id }) || false
 }
 
+const searchKey = ref('')
+const route = useRoute()
+// 获取where 条件
+await getSaleWhere()
+// 读取url参数,获取列表
+const handleQueryParams = async () => {
+  filterData.value = {}
+  const f = getQueryParams<DepositOrderWhere>(route.fullPath, filterList.value)
+  filterData.value = f
+  if (filterData.value.id) {
+    searchKey.value = filterData.value.id || ''
+  }
+  if (f.showtype) {
+    showtype.value = f.showtype || 'list'
+  }
+  if (f.searchPage) {
+    searchPage.value = Number(f.searchPage) || 1
+  }
+  if (f.limits) {
+    limits.value = Number(f.limits) || 50
+  }
+
+  await getList(filterData.value as Partial<DepositOrderInfo>)
+}
+// 默认请求列表
+await handleQueryParams()
+
 const submitWhere = async (f: DepositOrderWhere) => {
-  filterData.value = { ...filterData.value, ...f }
-  searchPage.value = 1
-  await getList(filterData.value as any)
-  filterShow.value = false
+  filterData.value = { ...f, showtype: showtype.value, searchPage: 1, limits: limits.value }
+  const url = UrlAndParams('/sale/deposit/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
 const resetWhere = async () => {
   filterData.value = {}
+  const url = UrlAndParams('/sale/deposit/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
-await getList()
-await getSaleWhere()
-// 获取头部高度
-const height = ref<number | undefined>(0)
-onMounted(async () => {
-  height.value = getHeight('header')
-})
+// 切换卡片
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  const url = UrlAndParams('/sale/deposit/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+}
 
 const searchOrder = async (id: string) => {
-  filterData.value = { id, store_id: myStore.value.id }
-  searchPage.value = 1
-  await getList(filterData.value)
+  filterData.value.id = id
+  filterData.value.searchPage = 1
+  const url = UrlAndParams('/sale/deposit/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
 const clearFn = async () => {
-  filterData.value = {}
-  searchPage.value = 1
-  await getList()
+  delete filterData.value.id
+  filterData.value.searchPage = 1
+  const url = UrlAndParams('/sale/deposit/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
 
 const updatePage = async (page: number) => {
-  searchPage.value = page
-  await getList(filterData.value)
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  const url = UrlAndParams('/sale/deposit/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
 
 const changeStores = async () => {
-  await getList()
+  await getList(filterData.value)
 }
 const router = useRouter()
 const newAdd = async () => {
@@ -82,12 +118,11 @@ const newAdd = async () => {
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: total,
   showSizePicker: true,
-  pageSizes: [50, 100, 150, 200],
+  pageSizes: [50, 100, 200, 300],
   onUpdatePageSize: (pageSize: number) => {
-    pageOption.value.pageSize = pageSize
     limits.value = pageSize
     updatePage(1)
   },
@@ -98,16 +133,21 @@ const pageOption = ref({
 
 const cols = [
   {
+    title: '订单编号',
+    key: 'id',
+  },
+  {
+    title: '订单状态',
+    key: 'member.nickname',
+    render: (rowData: DepositOrderInfo) => {
+      return filterList.value.status?.preset[rowData.status] || '--'
+    },
+  },
+  {
     title: '所属门店',
     key: 'store.name',
   },
-  {
-    title: '会员',
-    key: 'member.nickname',
-    render: (rowData: DepositOrderInfo) => {
-      return rowData.member?.nickname || '--'
-    },
-  },
+
   {
     title: '会员手机号',
     key: 'member.phone',
@@ -140,25 +180,14 @@ const cols = [
   {
     title: '操作',
     key: 'action',
+    width: 220,
     render: (rowData: DepositOrderInfo) => {
-      return [h(
-        NButton,
-        {
-          type: 'primary',
-          size: 'small',
-          class: 'mr-[4px]',
-          onClick: () => {
-            if (!rowData.id)
-              return
-            navigateTo(`/sale/sales/order?id=${rowData.order_sales[0].id}`)
-          },
-        },
-        { default: () => '销售单' },
-      ), h(
+      const result = [h(
         NButton,
         {
           type: 'info',
           size: 'small',
+          class: 'mr-[4px]',
           onClick: () => {
             if (!rowData.id)
               return
@@ -167,6 +196,45 @@ const cols = [
         },
         { default: () => '查看详情' },
       )]
+      if (rowData.status === DepositOrderStatus.Booking) {
+        result.push(h(
+          NButton,
+          {
+            type: 'info',
+            size: 'small',
+            class: 'mr-[4px]',
+            onClick: async () => {
+              if (!rowData.id) {
+                return
+              }
+              const res = await isStaff()
+              if (!res) {
+                $toast.error('未入职门店无法操作')
+                return
+              }
+              navigateTo(`/sale/sales/add?id=${rowData.id}`)
+            },
+          },
+          { default: () => '开单' },
+        ))
+      }
+      if (rowData?.order_sales?.length) {
+        result.push(h(
+          NButton,
+          {
+            type: 'primary',
+            size: 'small',
+            class: 'mr-[4px]',
+            onClick: () => {
+              if (!rowData.id)
+                return
+              navigateTo(`/sale/sales/order?id=${rowData.order_sales[0].id}`)
+            },
+          },
+          { default: () => '销售单' },
+        ))
+      }
+      return result
     },
   },
 ]
@@ -176,7 +244,8 @@ const cols = [
   <div>
     <product-filter
       v-model:showtype="showtype"
-      :product-list-total="total" placeholder="搜索订单号" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
+      v-model:search-key="searchKey" :product-list-total="total"
+      placeholder="搜索订单号" @change-card="changeCard" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
       <template #company>
         <product-manage-company @change="changeStores" />
       </template>
@@ -184,9 +253,9 @@ const cols = [
 
     <template v-if="showtype === 'list'">
       <common-layout-center>
-        <div class="p-[16px]">
+        <div class="p-[16px] ">
           <template v-if="OrdersList.length">
-            <sale-deposit-list :info="OrdersList" :where="filterList" :is-store-staff="isStaff" @user-click="handleClick" />
+            <sale-deposit-list :info="OrdersList" :where="filterList" :is-store-staff="isStaff" />
             <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
           </template>
           <template v-else>
@@ -210,11 +279,8 @@ const cols = [
           }))"
           clearable
           remote
-
-          @focus="(e) => {
-            focus(e)
-            getStoreStaffList({ id: myStore.id })
-          }"
+          size="large"
+          @focus="getSaleman"
         />
       </template>
       <template #clerk_id>
@@ -227,26 +293,8 @@ const cols = [
           }))"
           clearable
           remote
-
-          @focus="(e) => {
-            focus(e)
-            getStoreStaffList({ id: myStore.id })
-          }"
-        />
-      </template>
-      <template #member_id>
-        <n-select
-          v-model:value="filterData.member_id"
-          filterable
-          placeholder="请选择会员"
-          :options="memberList.map(v => ({
-            label: `${v.phone} (${v.nickname ? v.nickname : v.name})`,
-            value: v.id,
-          }))"
-          clearable
-          remote
-          @search="getMember"
-          @focus="focus"
+          size="large"
+          @focus="getSaleman"
         />
       </template>
     </common-filter-where>

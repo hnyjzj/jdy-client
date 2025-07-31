@@ -8,8 +8,9 @@ const props = withDefaults(defineProps<{
 })
 const emits = defineEmits<{
   height: []
+  changeCard: []
 }>()
-const showtype = defineModel<'table' | 'list'>()
+const showtype = defineModel<'table' | 'list'>('showtype', { default: 'list' })
 const railStyle = ({
   checked,
 }: {
@@ -41,9 +42,10 @@ const railStyle = ({
       <template v-if="showtype">
         <n-switch
           v-model:value="showtype"
-          :rail-style="railStyle" size="medium"
-          checked-value="table"
-          unchecked-value="list">
+          :rail-style="railStyle"
+          size="medium" checked-value="table"
+          unchecked-value="list"
+          @update:value="emits('changeCard')">
           <template #checked-icon>
             <icon name="i-icon:data" :size="14" color="#666" />
           </template>

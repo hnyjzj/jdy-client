@@ -14,73 +14,104 @@ const { searchPage } = storeToRefs(usePages())
 const filterData = ref({} as Partial<service>)
 const filterShow = ref(false)
 const tableLoading = ref(false)
-const { getMemberList } = useMemberManage()
-const { memberList } = storeToRefs(useMemberManage())
-const getMember = async (val: string) => {
-  if (val.length === 11) {
-    await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
-  }
-}
+const limits = ref(50)
 
+const getSaleman = async () => {
+  await getStoreStaffList({ id: myStore.value.id })
+}
 const cancelOrder = async (id: string) => {
   return await cancelRepairOrder({ id })
 }
 const payOrder = async (id: string) => {
   return await payRepairOrder({ id })
 }
-const limits = ref(12)
+
 // 获取列表
-const getList = async (where = {} as Partial<OrderInfo>) => {
+const getList = async (where = {} as Partial<ServiceOrderInfo>) => {
   tableLoading.value = true
-  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<OrderInfo>
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<ServiceOrderInfo>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
   await getRepairOrderList(params)
   tableLoading.value = false
 }
-const handleClick = async (id: string) => {
-  navigateTo(`/sale/sales/order?id=${id}`)
-}
+
 // 打开高级筛选
 const openFilter = () => {
+  getSaleman()
   // 打开筛选
   filterShow.value = true
 }
+const route = useRoute()
+// 获取where 条件
+
+await getRepairOrderWhere()
+const searchKey = ref('')
+// 读取url参数,获取列表
+const handleQueryParams = async () => {
+  filterData.value = {}
+  const f = getQueryParams<service>(route.fullPath, repairFilterList.value)
+  filterData.value = f
+  if (filterData.value.id) {
+    searchKey.value = filterData.value.id || ''
+  }
+  if (f.showtype) {
+    showtype.value = f.showtype || 'list'
+  }
+  if (f.searchPage) {
+    searchPage.value = Number(f.searchPage) || 1
+  }
+  if (f.limits) {
+    limits.value = Number(f.limits) || 50
+  }
+  await getList(filterData.value as Partial<ServiceOrderInfo>)
+}
+// 默认请求列表
+await handleQueryParams()
 
 const submitWhere = async (f: service) => {
-  filterData.value = { ...filterData.value, ...f }
-  repairOrderList.value = []
-  searchPage.value = 1
-  await getList(filterData.value as any)
-  filterShow.value = false
+  filterData.value = { ...f, showtype: showtype.value, searchPage: 1, limits: limits.value }
+  const url = UrlAndParams('/sale/service/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
 const resetWhere = async () => {
   filterData.value = {}
+  const url = UrlAndParams('/sale/service/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
-await getList()
-
-await getRepairOrderWhere()
-
+// 切换卡片
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  const url = UrlAndParams('/sale/service/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+}
+// 顶部搜索订单
 const searchOrder = async (id: string) => {
-  filterData.value = { id, store_id: myStore.value.id }
-  searchPage.value = 1
-  await getList(filterData.value as any)
+  filterData.value.id = id
+  filterData.value.searchPage = 1
+  const url = UrlAndParams('/sale/service/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
+// 清空顶部搜索
 const clearFn = async () => {
-  filterData.value = {}
-  repairOrderList.value = []
-  searchPage.value = 1
-  await getList()
+  delete filterData.value.id
+  filterData.value.searchPage = 1
+  const url = UrlAndParams('/sale/service/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
 
 const updatePage = async (page: number) => {
-  searchPage.value = page
-  await getList(filterData.value as any)
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  const url = UrlAndParams('/sale/service/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
 
 const changeStores = async () => {
-  await getList()
+  await getList(filterData.value as Partial<service>)
 }
 const Key = ref()
 const cityOptions = ref<any>([])
@@ -103,22 +134,14 @@ const router = useRouter()
 const newAdd = async () => {
   await router.push('/sale/service/add')
 }
-const { $toast } = useNuxtApp()
-const getSaleman = async () => {
-  const res = await getStoreStaffList({ id: myStore.value.id })
-  if (res?.data.value?.code === HttpCode.ERROR) {
-    $toast.error(res?.data.value?.message || '请求失败')
-  }
-}
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: total,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
-    pageOption.value.pageSize = pageSize
     limits.value = pageSize
     updatePage(1)
   },
@@ -129,16 +152,21 @@ const pageOption = ref({
 
 const cols = [
   {
+    title: '订单编号',
+    key: 'id',
+  },
+  {
+    title: '订单状态',
+    key: 'member.nickname',
+    render: (rowData: DepositOrderInfo) => {
+      return repairFilterList.value.status?.preset[rowData.status] || '--'
+    },
+  },
+  {
     title: '所属门店',
     key: 'store.name',
   },
-  {
-    title: '会员',
-    key: 'member.nickname',
-    render: (rowData: ServiceOrderInfo) => {
-      return rowData.member?.nickname || '--'
-    },
-  },
+
   {
     title: '会员手机号',
     key: 'member.phone',
@@ -151,7 +179,7 @@ const cols = [
     title: '货品名称',
     key: '',
     render: (rowData: ServiceOrderInfo) => {
-      return rowData?.products?.length ? rowData?.products[0]?.name : '--'
+      return rowData?.products?.length ? rowData?.products[0]?.name || '--' : '--'
     },
   },
   {
@@ -205,7 +233,9 @@ const cols = [
   <div>
     <product-filter
       v-model:showtype="showtype"
-      :product-list-total="total" placeholder="搜索订单号" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
+      v-model:search-key="searchKey"
+      :product-list-total="total"
+      placeholder="搜索订单号" @change-card="changeCard" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
       <template #company>
         <product-manage-company @change="changeStores" />
       </template>
@@ -220,7 +250,6 @@ const cols = [
               :pay-order="payOrder"
               :where="repairFilterList"
               :get-list="getList"
-              @user-click="handleClick"
             />
             <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
           </template>
@@ -246,6 +275,7 @@ const cols = [
             }))"
             clearable
             remote
+            size="large"
             @focus="getSaleman"
           />
         </template>
@@ -257,26 +287,13 @@ const cols = [
               label: v.nickname,
               value: v.id,
             }))"
+            size="large"
             clearable
             remote
             @focus="getSaleman"
           />
         </template>
-        <template #member_id>
-          <n-select
-            v-model:value="filterData.member_id"
-            filterable
-            placeholder="请选择会员"
-            :options="memberList.map(v => ({
-              label: `${v.phone} (${v.nickname ? v.nickname : v.name})`,
-              value: v.id,
-            }))"
-            clearable
-            remote
-            @search="getMember"
-            @focus="focus"
-          />
-        </template>
+
         <template #province>
           <n-select
             v-model:value="filterData.province"
@@ -288,6 +305,7 @@ const cols = [
             }))"
             clearable
             remote
+            size="large"
             @update:value="setNowProvince"
             @focus="focus"
           />
@@ -304,6 +322,7 @@ const cols = [
               }))"
               clearable
               remote
+              size="large"
               @update:value="setNowcity"
               @focus="focus"
             />
@@ -315,12 +334,14 @@ const cols = [
               v-model:value="filterData.area"
               filterable
               placeholder="请选择省份"
+
               :options="areaOptions.map((v:any) => ({
                 label: v.text,
                 value: v.value,
               }))"
               clearable
               remote
+              size="large"
               @focus="focus"
             />
           </div>

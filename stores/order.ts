@@ -75,9 +75,7 @@ export const useOrder = defineStore('Order', {
     },
     // 获取订单列表
     async getOrderList(req: ReqList<OrderInfo>) {
-      if (req.page === 1) {
-        this.OrdersList = []
-      }
+      this.OrdersList = []
       const { data } = await https.post<ResList<OrderInfo>, ReqList<OrderInfo>>('/order/sales/list', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.total = data.value.data.total

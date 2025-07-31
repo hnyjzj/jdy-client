@@ -55,6 +55,9 @@ interface otherOrderWhere {
   start_date?: string
   store_id?: Stores['id']
   type?: number
+  showtype?: 'list' | 'table'
+  searchPage?: number
+  limits?: number
 }
 
 /**
