@@ -1,100 +1,108 @@
 <script lang="ts" setup>
-import type { SelectOption } from 'naive-ui'
 import { NButton } from 'naive-ui'
 
 useSeoMeta({
   title: '员工列表',
 })
-const { staffList, filterListToArray, total, filterList: staffWhereList, showtype } = storeToRefs(useStaff())
+const { staffList, filterListToArray, total, filterList, showtype } = storeToRefs(useStaff())
 const { searchPage } = storeToRefs(usePages())
 const { getStaffWhere, getStaffList } = useStaff()
-const { staffGetStoreList } = useStores()
 const { userinfo } = storeToRefs(useUser())
 const { myStore } = storeToRefs(useStores())
 const limits = ref(50)
 const tableLoading = ref(false)
 const show = ref<boolean>(false)
-// 是否有更多数据
-const nomore = ref<boolean>(false)
+
 // 筛选请求数据
 const filterData = ref({} as StaffWhere)
 // 获取列表
 const getList = async (where = {} as StaffWhere) => {
-  if (nomore.value)
-    return
   tableLoading.value = true
   const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<Staff>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
-  const res = await getStaffList(params)
+  await getStaffList(params)
   tableLoading.value = false
-  res ? nomore.value = false : nomore.value = true
 }
 
-// 筛选列表
-const submitWhere = async (f: StaffWhere) => {
-  filterData.value = f
-  nomore.value = false
-  searchPage.value = 1
-  await getList(filterData.value)
-  show.value = false
-}
 // 获取筛选条件
 await getStaffWhere()
-// 获取列表数据
-await getList()
+const searchKey = ref('')
+const route = useRoute()
+// 获取where 条件
 
+// 读取url参数,获取列表
+const handleQueryParams = async () => {
+  filterData.value = {}
+  const f = getQueryParams<StaffWhere>(route.fullPath, filterList.value)
+  filterData.value = f
+
+  if (filterData.value.nickname) {
+    searchKey.value = filterData.value.nickname
+  }
+  if (f.showtype) {
+    showtype.value = f.showtype
+  }
+  if (f.searchPage) {
+    searchPage.value = Number(f.searchPage)
+  }
+  if (f.limits) {
+    limits.value = Number(f.limits)
+  }
+
+  await getList(filterData.value as StaffWhere)
+}
+await handleQueryParams()
+const listJump = () => {
+  const url = UrlAndParams('/manage/staffs/staff/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+}
+// 筛选列表
+const submitWhere = async (f: StaffWhere) => {
+  filterData.value = { ...f, showtype: showtype.value, searchPage: 1, limits: limits.value }
+  listJump()
+}
+
+// 重置高级筛选
+const resetWhere = async () => {
+  filterData.value = {}
+  listJump()
+}
 const heightSearchFn = () => {
   show.value = !show.value
 }
-
-// 获取头部高度
-const height = ref<number | undefined>(0)
-onMounted(() => {
-  height.value = getHeight('header')
-})
 
 const newAdd = () => {
   navigateTo('/manage/staffs/staff/add')
 }
 
-const storeList = ref<SelectOption[]>([])
-//
-const loading = ref(false)
-const getStore = useDebounceFn(async (query) => {
-  const res = await staffGetStoreList({ page: 1, limit: 10, where: { name: query } })
-  loading.value = false
-  if (res.length) {
-    storeList.value = res.map(item => ({
-      label: item.name,
-      value: item.id,
-    }))
-  }
-}, 500)
-
-const handleSearch = (query: string) => {
-  loading.value = true
-  getStore(query)
-}
 const updatePage = async (page: number) => {
-  searchPage.value = page
-  nomore.value = false
-  await getList(filterData.value)
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
 }
-const retrieve = async () => {
-  searchPage.value = 1
-  nomore.value = false
-  await getList()
+const clearFn = async () => {
+  delete filterData.value.nickname
+  filterData.value.searchPage = 1
+  listJump()
 }
-
+// 切换卡片
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
 const searchKeyFn = async (data: string) => {
-  filterData.value = { nickname: data }
-  nomore.value = false
-  searchPage.value = 1
-  await getList(filterData.value)
+  filterData.value.nickname = data
+  filterData.value.searchPage = 1
+  listJump()
 }
 
+const changeStores = async () => {
+  await getList(filterData.value)
+}
 const pageOption = ref({
   page: searchPage,
   pageSize: 50,
@@ -112,17 +120,26 @@ const pageOption = ref({
 })
 
 const cols = [
+
   {
     title: '姓名',
     key: 'nickname',
   },
-  { title: '手机号', key: 'phone' },
-  { title: '性别', key: 'gender', render: (rowData: Staff) => {
-    return staffWhereList.value.gender?.preset[rowData.gender as number] || '--'
-  } },
+  { title: '手机号', key: 'phone', width: 150 },
   { title: '身份', key: 'gender', render: (rowData: Staff) => {
-    return staffWhereList.value.identity?.preset[rowData.identity as number] || '--'
+    return filterList.value.identity?.preset[rowData.identity as number] || '--'
   } },
+  {
+    title: '状态',
+    render: (rowData: Staff) => {
+      return rowData.is_disabled ? '禁用' : '启用'
+    },
+  },
+
+  { title: '性别', key: 'gender', render: (rowData: Staff) => {
+    return filterList.value.gender?.preset[rowData.gender as number] || '--'
+  } },
+
   { title: '用户名', key: 'username' },
   { title: '最后登录时间', key: '', render: (rowData: Staff) => {
     return formatISODate(rowData.last_login_at!)
@@ -165,17 +182,19 @@ const cols = [
 <template>
   <div>
     <product-filter
+      v-model:search-key="searchKey"
       v-model:showtype="showtype"
-      :product-list-total="total" placeholder="搜索员工" @filter="heightSearchFn" @search="searchKeyFn" @clear-search="retrieve">
+      :product-list-total="total"
+      placeholder="搜索员工姓名" @change-card="changeCard" @filter="heightSearchFn" @search="searchKeyFn" @clear-search="clearFn">
       <template #company>
-        <product-manage-company @change="retrieve" />
+        <product-manage-company @change="changeStores" />
       </template>
     </product-filter>
     <template v-if="showtype === 'list'">
       <common-layout-center>
         <div class="p-[16px]">
           <template v-if="staffList.length">
-            <staff-manage-card :list="staffList" :myidentity="userinfo.identity" :filter-data="staffWhereList" />
+            <staff-manage-card :list="staffList" :myidentity="userinfo.identity" :filter-data="filterList" />
             <common-page
               v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
           </template>
@@ -190,23 +209,7 @@ const cols = [
     </template>
     <common-create @create="newAdd()" />
     <common-filter-where
-      v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="() => {
-        filterData.store_id = undefined
-      }">
-      <template #store_id>
-        <n-select
-          v-model:value="filterData.store_id"
-          filterable
-          placeholder="搜索"
-          :options="storeList"
-          :loading="loading"
-          clearable
-          remote
-          @search="handleSearch"
-          @focus="focus"
-        />
-      </template>
-    </common-filter-where>
+      v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere" />
   </div>
 </template>
 

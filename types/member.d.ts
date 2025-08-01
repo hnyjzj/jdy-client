@@ -88,6 +88,10 @@ interface Member {
    * 头像
    */
   avatar?: string
+
+  showtype?: 'list' | 'table'
+  searchPage?: number
+  limits?: number
 }
 
 /**

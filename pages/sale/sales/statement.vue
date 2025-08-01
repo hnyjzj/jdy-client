@@ -113,15 +113,6 @@ const pageOption = ref({
   },
 })
 
-const returnType = (number: number) => {
-  if (number === 1) {
-    return '成品'
-  }
-  if (number === 2) {
-    return '旧料'
-  }
-  return '配件'
-}
 const cols = [
   { title: '订单编号', key: 'id' },
   { title: '订单状态', key: 'id', render: (rowData: orderInfoProducts) => {

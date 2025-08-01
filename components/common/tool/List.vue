@@ -10,7 +10,7 @@ const emits = defineEmits<{
   height: []
   changeCard: []
 }>()
-const showtype = defineModel<'table' | 'list'>('showtype', { default: 'list' })
+const showtype = defineModel<'table' | 'list'>('showtype')
 const railStyle = ({
   checked,
 }: {

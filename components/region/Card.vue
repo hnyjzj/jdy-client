@@ -110,9 +110,10 @@ const { regionList } = storeToRefs(useRegion())
           </div>
           <div class="bg-[#F3F5FE] dark:bg-[#F3F5FE1A] rounded-b-[24px] ">
             <div class="flex justify-between">
-              <div class="py-[8px] px-[16px] col-2 flex-center-row cursor-pointer" @click="emits('deleteRegion', item.id)">
+              <!-- <div class="py-[8px] px-[16px] col-2 flex-center-row cursor-pointer" @click="emits('deleteRegion', item.id)">
                 <icon name="i-svg:delete" :size="16" />
-              </div>
+              </div> -->
+              <div />
               <div class="flex-between text-size-[14px] ">
                 <div class="px-[20px] h-full flex items-center color-[#3971F3] text-[14px] font-semibold cursor-pointer" @click="emits('getDetail', item.id)">
                   详情

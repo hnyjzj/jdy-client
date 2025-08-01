@@ -12,15 +12,6 @@ const handleClick = (id?: string) => {
   navigateTo(`/sale/sales/order?id=${id}`)
 }
 
-const returnType = (number: number) => {
-  if (number === 1) {
-    return '成品'
-  }
-  if (number === 2) {
-    return '旧料'
-  }
-  return '配件'
-}
 const returnColor = (number: number) => {
   if (number === 1) {
     return 'greyblue'

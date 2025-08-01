@@ -47,7 +47,6 @@ const searchKey = ref('')
 const route = useRoute()
 // 获取where 条件
 await getSaleWhere()
-
 // 读取url参数,获取列表
 const handleQueryParams = async () => {
   filterData.value = {}
@@ -68,7 +67,6 @@ const handleQueryParams = async () => {
 
   await getList(filterData.value as Partial<OrderInfo>)
 }
-
 await handleQueryParams()
 const listJump = () => {
   const url = UrlAndParams('/sale/sales/list', filterData.value)

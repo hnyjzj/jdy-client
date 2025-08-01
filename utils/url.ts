@@ -49,18 +49,6 @@ export function getQueryParams<V extends Partial<Record<string, any>>, K extends
       case 'number':
         (queryParams as Record<string, any>)[key] = Number(value)
         break
-      case 'boolean':
-        (queryParams as Record<string, any>)[key] = value === 'true'
-        break
-      default:
-        (queryParams as Record<string, any>)[key] = decodeURIComponent(value)
-        break
-    }
-
-    switch (where?.type) {
-      case 'number':
-        (queryParams as Record<string, any>)[key] = Number(value)
-        break
       case 'float':
         (queryParams as Record<string, any>)[key] = Number.parseFloat(value)
         break
@@ -69,6 +57,9 @@ export function getQueryParams<V extends Partial<Record<string, any>>, K extends
         break
       case 'bool':
         (queryParams as Record<string, any>)[key] = !!value
+        break
+      case 'boolean':
+        (queryParams as Record<string, any>)[key] = value === 'true'
         break
       case 'string[]':
         (queryParams as Record<string, any>)[key] = value.split(',').map(item => decodeURIComponent(item))

@@ -18,7 +18,7 @@ const emits = defineEmits<{
   clearSearch: []
   changeCard: []
 }>()
-const showtype = defineModel<'table' | 'list'>('showtype', { default: 'list' })
+const showtype = defineModel<'table' | 'list'>('showtype')
 const search = (e: string) => {
   emits('search', e)
 }
