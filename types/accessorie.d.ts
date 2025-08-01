@@ -23,6 +23,7 @@ interface ProductAccessories {
    * 门店ID
    */
   store_id: string
+  store: Stores
   /**
    * 产品类型
    */

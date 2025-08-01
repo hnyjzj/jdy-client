@@ -181,19 +181,26 @@ const cols = [
                       <div>
                         {{ item.label }}
                       </div>
-                      <template v-if="item.type === 'date'">
+                      <template v-if="item.name === 'store'">
                         <div class="text-align-end val">
-                          {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
+                          {{ info[item.name].name }}
                         </div>
                       </template>
                       <template v-else>
-                        <template v-if="item.input === 'select'">
+                        <template v-if="item.type === 'date'">
                           <div class="text-align-end val">
-                            {{ item.preset[info[item.name] || 0] || '' }}
+                            {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
                           </div>
                         </template>
                         <template v-else>
-                          {{ info[item.name] }}
+                          <template v-if="item.input === 'select'">
+                            <div class="text-align-end val">
+                              {{ item.preset[info[item.name] || 0] || '' }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            {{ info[item.name] }}
+                          </template>
                         </template>
                       </template>
                     </div>

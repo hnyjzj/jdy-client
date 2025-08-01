@@ -107,7 +107,7 @@ const presetToSelect = (key: keyof ProductAccessories) => {
                 <n-form ref="formRef" :model="params" :rules="rules">
                   <n-grid :cols="24" :x-gap="8">
                     <template v-for="(item, index) in addProductEnterToArray" :key="index">
-                      <template v-if="item.create">
+                      <template v-if="item.create && item.name !== 'store'">
                         <n-form-item-gi :span="12" :path="item.name" :required="item.required" :label="item.label">
                           <template v-if="item.input === 'select'">
                             <n-select
