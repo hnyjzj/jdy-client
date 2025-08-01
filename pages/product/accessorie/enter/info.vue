@@ -152,9 +152,11 @@ async function bulkupload(data: any) {
 
     if (res?.code === HttpCode.SUCCESS) {
       $toast.success('添加成功')
+      uploadRef.value.clearData()
       await fetchEnterInfo(true)
     }
     else {
+      uploadRef.value.clearData()
       $toast.error(res?.message ?? '添加失败')
     }
   }

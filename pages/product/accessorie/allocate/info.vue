@@ -1,10 +1,11 @@
 <script setup lang="ts">
-const { getAccessorieAllocateInfo, getAccessorieAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove, clear } = useAccessorieAllocate()
+const { getAccessorieAllocateInfo, getAccessorieAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove, clear, addAccessorieAllocate } = useAccessorieAllocate()
 const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
 const { accessorieAllocateInfo, accessorieAllocateFilterList, accessorieAllocateFilterListToArray } = storeToRefs(useAccessorieAllocate())
 const { myStore, storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
+
 useSeoMeta({
   title: '调拨单详情',
 })
@@ -13,6 +14,9 @@ const router = useRouter()
 const { $toast } = useNuxtApp()
 const allocateId = ref()
 const clearDialog = ref(false)
+const isChooseModel = ref(false)
+const isImportModel = ref(false)
+const uploadRef = ref()
 const page = ref(1)
 if (route.query.id) {
   allocateId.value = route.query.id
@@ -131,6 +135,23 @@ const updatePage = async (e: number) => {
   page.value = e
   await getInfo()
 }
+
+async function submitGoods(e: AddAccessorieAllocateProduct[]) {
+  const params = {
+    id: accessorieAllocateInfo.value?.id,
+    products: e,
+  }
+  const res = await addAccessorieAllocate(params)
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('添加成功')
+    uploadRef.value.clearData()
+    await getInfo()
+  }
+  else {
+    uploadRef.value.clearData()
+    $toast.error(res?.message ?? '添加失败')
+  }
+}
 </script>
 
 <template>
@@ -161,34 +182,35 @@ const updatePage = async (e: number) => {
                   <div class="h-0.5 bg-[#E6E6E8]" />
                   <div class="other-information flex flex-col gap-1">
                     <template v-for="(item, index) in accessorieAllocateFilterListToArray" :key="index">
-                      <div class="info-row">
-                        <div class="info-title">
-                          {{ item.label }}
+                      <template v-if="item.info">
+                        <div class="info-row">
+                          <div class="info-title">
+                            {{ item.label }}
+                          </div>
+                          <template v-if="item.type === 'date'">
+                            <div class="val">
+                              {{ accessorieAllocateInfo[item.name] ? formatTimestampToDateTime(accessorieAllocateInfo[item.name] as string || '') : '' }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            <template v-if="item.input === 'text'">
+                              <div class="info-val">
+                                {{ accessorieAllocateInfo[item.name] }}
+                              </div>
+                            </template>
+                            <template v-else-if="item.input === 'select'">
+                              <div class="info-val">
+                                {{ accessorieAllocateFilterList[item.name]?.preset[accessorieAllocateInfo[item.name] as number] }}
+                              </div>
+                            </template>
+                            <template v-else-if="item.input === 'search'">
+                              <div class="info-val">
+                                {{ getStoreName(accessorieAllocateInfo[item.name] as Stores['id']) }}
+                              </div>
+                            </template>
+                          </template>
                         </div>
-                        <template v-if="item.input === 'text'">
-                          <div class="info-val">
-                            {{ accessorieAllocateInfo[item.name] }}
-                          </div>
-                        </template>
-                        <template v-else-if="item.input === 'select'">
-                          <div class="info-val">
-                            {{ accessorieAllocateFilterList[item.name]?.preset[accessorieAllocateInfo[item.name] as number] }}
-                          </div>
-                        </template>
-                        <template v-else-if="item.input === 'date'">
-                          <div v-if="item.name === 'updated_at'" class="info-val">
-                            {{ formatTimestampToDateTime(accessorieAllocateInfo.updated_at) }}
-                          </div>
-                          <div v-if="item.name === 'created_at'" class="info-val">
-                            {{ formatTimestampToDateTime(accessorieAllocateInfo.created_at) }}
-                          </div>
-                        </template>
-                        <template v-else-if="item.input === 'search'">
-                          <div class="info-val">
-                            {{ getStoreName(accessorieAllocateInfo[item.name] as Stores['id']) }}
-                          </div>
-                        </template>
-                      </div>
+                      </template>
                     </template>
                   </div>
                 </div>
@@ -232,7 +254,7 @@ const updatePage = async (e: number) => {
                   <template #info>
                     <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
                       <template v-for="(filter, findex) in accessorieFilterListToArray" :key="findex">
-                        <template v-if="filter.info && (filter.name as string) !== 'create_time'">
+                        <template v-if="filter.info && (filter.name as string) !== 'created_at'">
                           <div class="flex">
                             <div class="key">
                               {{ filter.label }}
@@ -290,8 +312,10 @@ const updatePage = async (e: number) => {
     <common-confirm v-model:show="clearDialog" icon="error" title="清空列表" text="确认要清空所有调拨的产品吗?" @submit="clearProduct" />
     <!-- 状态为草稿中 增加产品 -->
     <template v-if="accessorieAllocateInfo.status === AllocateStatus.Draft && myStore?.id === accessorieAllocateInfo.from_store_id">
-      <common-create @create="jump('/product/accessorie/allocate/addproduct', { id: accessorieAllocateInfo.id })" />
+      <common-create @create="isChooseModel = true" />
     </template>
+    <product-upload-choose v-model:is-model="isChooseModel" title="调拨" @go-add="jump('/product/accessorie/allocate/addproduct', { id: accessorieAllocateInfo.id })" @batch="isImportModel = true" />
+    <accessorie-warehouse-force ref="uploadRef" v-model="isImportModel" @upload="submitGoods" />
     <template v-if="accessorieAllocateInfo.id">
       <correspond-store :correspond-ids="[accessorieAllocateInfo.from_store_id, accessorieAllocateInfo.to_store_id]" />
     </template>
