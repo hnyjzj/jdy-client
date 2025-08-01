@@ -8,12 +8,16 @@ export const useAccessorieEnter = defineStore('accessorieEnter', {
      */
     EnterToArray: FilterWhere<AccessorieEnter>[]
     enterInfo: AccessorieEnter
+    addProductEnterToArray: FilterWhere<ProductAccessories>[]
+    addProductEnterFilterList: Where<ProductAccessories>
   } => ({
     enterFilterList: {} as Where<AccessorieEnter>,
     EnterList: [],
     EnterListTotal: 0,
     EnterToArray: [] as FilterWhere<AccessorieEnter>[],
     enterInfo: {} as AccessorieEnter,
+    addProductEnterToArray: [] as FilterWhere<ProductAccessories>[],
+    addProductEnterFilterList: {} as Where<ProductAccessories>,
   }),
   actions: {
     // 获取配件入库单列表
@@ -38,6 +42,19 @@ export const useAccessorieEnter = defineStore('accessorieEnter', {
         if (data.value?.code === HttpCode.SUCCESS) {
           this.enterFilterList = data.value.data
           this.EnterToArray = sortArr(this.enterFilterList)
+        }
+      }
+      catch (error) {
+        throw new Error(`筛选失败: ${error || '未知错误'}`)
+      }
+    },
+    // 获取配件入库单筛选列表
+    async getAccessorieEnterAddProductWhere() {
+      try {
+        const { data } = await https.get<Where<ProductAccessories>>('/product/accessorie/enter/where_add_product')
+        if (data.value?.code === HttpCode.SUCCESS) {
+          this.addProductEnterFilterList = data.value.data
+          this.addProductEnterToArray = sortArr(this.addProductEnterFilterList)
         }
       }
       catch (error) {
@@ -75,9 +92,9 @@ export const useAccessorieEnter = defineStore('accessorieEnter', {
       }
     },
     // 获取配件入库单详情
-    async getAccessorieEnterInfo(id: AccessorieEnter['id']) {
+    async getAccessorieEnterInfo(params: AccessorieEnterInfoReq) {
       try {
-        const { data } = await https.post<AccessorieEnter, { id: AccessorieEnter['id'] }>('/product/accessorie/enter/info', { id })
+        const { data } = await https.post<AccessorieEnter, AccessorieEnterInfoReq>('/product/accessorie/enter/info', params)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.enterInfo = data.value.data
         }
@@ -90,6 +107,17 @@ export const useAccessorieEnter = defineStore('accessorieEnter', {
     async delAccessorieEnter(params: DelAccessorieEnter) {
       try {
         const { data } = await https.delete<any, DelAccessorieEnter>('/product/accessorie/enter/del_product', params)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`删除配件入库单产品失败: ${error || '未知错误'}`)
+      }
+    },
+
+    // 清空配件入库单产品
+    async clearAccessorieEnter(id: string) {
+      try {
+        const { data } = await https.delete<any, { enter_id: string }>('/product/accessorie/enter/clear_product', { enter_id: id })
         return data.value
       }
       catch (error) {

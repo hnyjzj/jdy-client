@@ -48,9 +48,9 @@ interface AccessorieEnter {
   updated_at: Date
   type: ProductAccessories['type']
   /** 入库数量 */
-  product_count?: number
+  product_count: number
   /** 入库总件数 */
-  product_total?: number
+  product_total: number
 }
 
 /**
@@ -58,7 +58,7 @@ interface AccessorieEnter {
  */
 interface AccessorieEnterReq {
   /** 成品入库参数 */
-  products: AccessorieEnterProductReq[]
+  products: ProductAccessories[]
   enter_id: string
 }
 
@@ -103,5 +103,14 @@ interface DelAccessorieEnter {
   /**
    * 商品ID列表
    */
-  product_ids: string[]
+  product_id: string
+}
+
+/**
+ * 入库单详情请求参数
+ */
+interface AccessorieEnterInfoReq {
+  id: AccessorieEnter['id']
+  page: number
+  limit: number
 }

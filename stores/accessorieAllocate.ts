@@ -6,13 +6,13 @@ export const useAccessorieAllocate = defineStore('AccessorieAllocate', {
     accessorieAllocateTotal: number
     accessorieAllocateFilterListToArray: FilterWhere<AccessorieAllocate>[]
     accessorieAllocateFilterList: Where<AccessorieAllocate>
-    accessorieAllocateInfo: AccessorieAllocate
+    accessorieAllocateInfo: AccessorieAllocateInfo
   } => ({
     accessorieAllocateList: [],
     accessorieAllocateTotal: 0,
     accessorieAllocateFilterListToArray: [] as FilterWhere<AccessorieAllocate>[],
     accessorieAllocateFilterList: {} as Where<AccessorieAllocate>,
-    accessorieAllocateInfo: {} as AccessorieAllocate,
+    accessorieAllocateInfo: {} as AccessorieAllocateInfo,
   }),
   actions: {
     // 调拨列表
@@ -44,9 +44,9 @@ export const useAccessorieAllocate = defineStore('AccessorieAllocate', {
       }
     },
     /** 调拨详情 */
-    async getAccessorieAllocateInfo(id: AccessorieAllocate['id']) {
+    async getAccessorieAllocateInfo(params: AccessorieAllocateInfoParams) {
       try {
-        const { data } = await https.post<AccessorieAllocate, { id: AccessorieAllocate['id'] }>('/product/accessorie/allocate/info', { id })
+        const { data } = await https.post<AccessorieAllocateInfo, AccessorieAllocateInfoParams>('/product/accessorie/allocate/info', params)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.accessorieAllocateInfo = data.value.data
         }
@@ -59,7 +59,7 @@ export const useAccessorieAllocate = defineStore('AccessorieAllocate', {
     /** 确认调拨 */
     async confirmAllcate(id: AccessorieAllocate['id']) {
       try {
-        const { data } = await https.put<{ id: string }, any >('/product/accessorie/allocate/confirm', { id })
+        const { data } = await https.put<{ id: string }, any>('/product/accessorie/allocate/confirm', { id })
         return data.value
       }
       catch (error) {
@@ -69,17 +69,17 @@ export const useAccessorieAllocate = defineStore('AccessorieAllocate', {
     /** 取消调拨 */
     async cancelAllcate(id: AccessorieAllocate['id']) {
       try {
-        const { data } = await https.put<{ id: string }, any >('/product/accessorie/allocate/cancel', { id })
+        const { data } = await https.put<{ id: string }, any>('/product/accessorie/allocate/cancel', { id })
         return data.value
       }
       catch (error) {
         throw new Error(`取消失败: ${error || '未知错误'}`)
       }
     },
-    /** 完成调拨 */
+    // /** 完成调拨 */
     async finishAllcate(id: AccessorieAllocate['id']) {
       try {
-        const { data } = await https.put<{ id: string }, any >('/product/accessorie/allocate/complete', { id })
+        const { data } = await https.put<{ id: AccessorieAllocate['id'] }, any>('/product/accessorie/allocate/complete', { id })
         return data.value
       }
       catch (error) {
@@ -87,9 +87,19 @@ export const useAccessorieAllocate = defineStore('AccessorieAllocate', {
       }
     },
     /** 删除调拨产品 */
-    async remove(id: AccessorieAllocate['id'], product_id: ProductFinisheds['code']) {
+    async remove(params: AddAccessorieAllocateDel) {
       try {
-        const { data } = await https.put<{ id: string, product_id: string }, any >('/product/accessorie/allocate/remove', { id, product_id })
+        const { data } = await https.put<AddAccessorieAllocateDel, any>('/product/accessorie/allocate/remove', params)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`删除失败: ${error || '未知错误'}`)
+      }
+    },
+    /** 删除调拨产品 */
+    async clear(id: AccessorieAllocate['id']) {
+      try {
+        const { data } = await https.put<AddAccessorieAllocateDel, any>('/product/accessorie/allocate/clear', { id })
         return data.value
       }
       catch (error) {
@@ -99,7 +109,7 @@ export const useAccessorieAllocate = defineStore('AccessorieAllocate', {
     /** 添加调拨产品 */
     async addAccessorieAllocate(params: AddAccessorieAllocateReq) {
       try {
-        const { data } = await https.put<AddAccessorieAllocateReq, any >('/product/accessorie/allocate/add', params)
+        const { data } = await https.put<AddAccessorieAllocateReq, any>('/product/accessorie/allocate/add', params)
         return data.value
       }
       catch (error) {
@@ -110,7 +120,7 @@ export const useAccessorieAllocate = defineStore('AccessorieAllocate', {
     async createAccessorieAllocate(params: AccessorieAllocateReq) {
       try {
         params = { ...params, store_id: useStores().myStore.id }
-        const { data } = await https.post<AccessorieAllocateReq, any >('/product/accessorie/allocate/create', params)
+        const { data } = await https.post<AccessorieAllocateReq, any>('/product/accessorie/allocate/create', params)
         return data.value
       }
       catch (error) {
