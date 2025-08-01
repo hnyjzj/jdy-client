@@ -11,16 +11,6 @@ const handleClick = (id?: string) => {
   }
   navigateTo(`/sale/sales/order?id=${id}`)
 }
-
-const returnType = (number: number) => {
-  if (number === 1) {
-    return '成品'
-  }
-  if (number === 2) {
-    return '旧料'
-  }
-  return '配件'
-}
 </script>
 
 <template>
@@ -33,8 +23,8 @@ const returnType = (number: number) => {
             <common-cell label="门店" :value="item.store.name || '--'" />
             <common-cell label="产品类型" :value="returnType(item.type) || '--'" />
             <common-cell label="产品条码" :value="item.code || '--'" />
-            <common-cell label="顾客" :value="item.member?.name || '--'" />
-            <common-cell label="顾客手机号" :value="item.member?.phone || '--'" />
+            <common-cell label="会员" :value="item.member?.name || '--'" />
+            <common-cell label="会员手机号" :value="item.member?.phone || '--'" />
             <common-cell label="货品名称" :value="item.name || '--'" />
             <common-cell label="退货备注" :value="item.remark || '--'" />
             <common-cell label="数量" :value="item.quantity || '--'" />

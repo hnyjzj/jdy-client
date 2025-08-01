@@ -57,7 +57,13 @@ export const useRepair = defineStore('Repair', {
     async getRepairOrderList(params: any) {
       const { data } = await https.post<ResList<ServiceOrderInfo>, null>('/order/repair/list', params)
       if (data.value?.code === HttpCode.SUCCESS) {
-        this.repairOrderList = data.value.data.list
+        if (data.value.data.list !== null && data.value.data.list.length > 0) {
+          this.repairOrderList = data.value.data.list
+        }
+        else {
+          this.repairOrderList = []
+        }
+
         this.total = data.value.data.total
       }
     },

@@ -126,3 +126,18 @@ export enum ProductFinishedsStatus {
    */
   OutOfStock = 8,
 }
+
+export enum OrderProductType {
+  /**
+   * 成品
+   */
+  Finished = 1,
+  /**
+   * 旧料
+   */
+  OldMaterial = 2,
+  /**
+   * 配件
+   */
+  Parts = 3,
+}

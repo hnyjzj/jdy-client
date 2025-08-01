@@ -21,6 +21,9 @@ interface Staff {
   role_id?: string
   updated_at?: string
   last_login_at?: string
+  showtype?: 'list' | 'table'
+  searchPage?: number
+  limits?: number
 }
 /**
  * 添加员工请求参数

@@ -41,11 +41,14 @@ interface DepositOrderWhere {
   clerk_id?: string
   end_date?: string
   id?: string
-  member_id?: Member['id']
+  phone?: Member['phone']
   payment_method?: Payment
   start_date?: string
   status?: number
   store_id?: Stores['id']
+  showtype?: 'list' | 'table'
+  searchPage?: number
+  limits?: number
 }
 
 interface DepositOrderPayment {

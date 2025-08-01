@@ -21,6 +21,9 @@ interface Stores {
     city?: string
     district?: string
   }
+  showtype?: 'list' | 'table'
+  searchPage?: number
+  limits?: number
 }
 
 interface StoresStaff {

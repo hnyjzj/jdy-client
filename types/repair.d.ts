@@ -76,9 +76,12 @@ interface service {
   province?: string
   receptionist_id?: string
   start_date?: string
-  status?: string
+  status?: number
   store_id?: string
   cashier_id?: string
+  showtype?: 'list' | 'table'
+  searchPage?: number
+  limits?: number
 }
 
 interface serviceGoods {

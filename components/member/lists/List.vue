@@ -11,9 +11,6 @@ const emits = defineEmits<{
 
 const PERCH = '-- --'
 
-const { getMemberWhere } = useMemberManage()
-await getMemberWhere()
-
 const { filterListToArray } = storeToRefs(useMemberManage())
 
 const showInfo = filterListToArray.value

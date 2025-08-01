@@ -349,6 +349,9 @@ interface OrderWhere {
   product_id?: string
   type?: number
   payment_method?: any[]
+  showtype?: 'list' | 'table'
+  searchPage?: number
+  limits?: number
 }
 interface ReturnGoods {
   /**

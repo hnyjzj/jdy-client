@@ -3,7 +3,6 @@
 const props = defineProps<{
   info: otherOrderInfo[]
   where: Where<otherOrderWhere>
-  del: (id: string) => void
 }>()
 
 const handleClick = (id?: string) => {
@@ -32,9 +31,7 @@ const handleClick = (id?: string) => {
         </template>
         <template #footer>
           <div class="flex-between pl-[8px] bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
-            <div @click="props.del(item.id)">
-              <icon name="i-svg:delete" :size="16" />
-            </div>
+            <div />
             <common-button-irregular text="查看详情" @click="handleClick(item.id)" />
           </div>
         </template>

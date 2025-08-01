@@ -15,6 +15,9 @@ interface Region {
   superiors: Staff[]
   stores: Stores[]
   region_id?: string
+  limits?: number
+  searchPage?: number
+  showtype?: 'list' | 'table'
 }
 
 interface RegionStaff {

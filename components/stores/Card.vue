@@ -56,9 +56,10 @@ const addressName = computed(() => {
             </div>
             <div class="bg-[#F3F5FE] dark:bg-[#F3F5FE1A] rounded-b-[24px] ">
               <div class="grid-12">
-                <div class="py-[8px] px-[16px] col-2 flex-center-row cursor-pointer" @click="emits('deleteStore', item.id)">
+                <!-- <div class="py-[8px] px-[16px] col-2 flex-center-row cursor-pointer" @click="emits('deleteStore', item.id)">
                   <icon name="i-svg:delete" :size="16" />
-                </div>
+                </div> -->
+                <div />
                 <div class="flex-between text-size-[14px] col-6 offset-6" uno-sm="col-7 offset-5" uno-xl="col-7 offset-5">
                   <div class="px-[12px] h-full flex items-center color-[#3971F3] text-[14px] font-semibold cursor-pointer" @click="emits('getDetail', item.id)">
                     详情
