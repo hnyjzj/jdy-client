@@ -113,6 +113,17 @@ export const useAccessorieEnter = defineStore('accessorieEnter', {
         throw new Error(`删除配件入库单产品失败: ${error || '未知错误'}`)
       }
     },
+
+    // 清空配件入库单产品
+    async clearAccessorieEnter(id: string) {
+      try {
+        const { data } = await https.delete<any, { enter_id: string }>('/product/accessorie/enter/clear_product', { enter_id: id })
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`删除配件入库单产品失败: ${error || '未知错误'}`)
+      }
+    },
     // 取消入库
     async cancelAccessorieEnter(enter_id: AccessorieEnter['id']) {
       try {

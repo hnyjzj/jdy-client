@@ -44,9 +44,9 @@ export const useAccessorieAllocate = defineStore('AccessorieAllocate', {
       }
     },
     /** 调拨详情 */
-    async getAccessorieAllocateInfo(id: AccessorieAllocate['id']) {
+    async getAccessorieAllocateInfo(params: AccessorieAllocateInfoParams) {
       try {
-        const { data } = await https.post<AccessorieAllocateInfo, { id: AccessorieAllocate['id'] }>('/product/accessorie/allocate/info', { id })
+        const { data } = await https.post<AccessorieAllocateInfo, AccessorieAllocateInfoParams>('/product/accessorie/allocate/info', params)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.accessorieAllocateInfo = data.value.data
         }
@@ -90,6 +90,16 @@ export const useAccessorieAllocate = defineStore('AccessorieAllocate', {
     async remove(params: AddAccessorieAllocateDel) {
       try {
         const { data } = await https.put<AddAccessorieAllocateDel, any>('/product/accessorie/allocate/remove', params)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`删除失败: ${error || '未知错误'}`)
+      }
+    },
+    /** 删除调拨产品 */
+    async clear(id: AccessorieAllocate['id']) {
+      try {
+        const { data } = await https.put<AddAccessorieAllocateDel, any>('/product/accessorie/allocate/clear', { id })
         return data.value
       }
       catch (error) {

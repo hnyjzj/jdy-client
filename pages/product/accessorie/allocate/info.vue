@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { getAccessorieAllocateInfo, getAccessorieAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove } = useAccessorieAllocate()
+const { getAccessorieAllocateInfo, getAccessorieAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove, clear } = useAccessorieAllocate()
 const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
 const { accessorieAllocateInfo, accessorieAllocateFilterList, accessorieAllocateFilterListToArray } = storeToRefs(useAccessorieAllocate())
@@ -13,18 +13,29 @@ const router = useRouter()
 const { $toast } = useNuxtApp()
 const allocateId = ref()
 const clearDialog = ref(false)
+const page = ref(1)
 if (route.query.id) {
   allocateId.value = route.query.id
-  await getAccessorieAllocateInfo(route.query.id as string)
+  await getInfo()
   await getAccessorieAllocateWhere()
   await getAccessorieWhere()
   await getStoreList({ limit: 20, page: 1 })
 }
 
+async function getInfo() {
+  const parmas = {
+    id: route.query?.id,
+    page: page.value,
+    limit: 20,
+  } as AccessorieAllocateInfoParams
+  await getAccessorieAllocateInfo(parmas)
+}
+
 async function cancel() {
   const res = await cancelAllcate(accessorieAllocateInfo.value?.id)
   if (res?.code === HttpCode.SUCCESS) {
-    await getAccessorieAllocateInfo(route.query.id as string)
+    page.value = 1
+    await getInfo()
     $toast.success('取消调拨成功', 1000)
     setTimeout(() => {
       router.back()
@@ -42,7 +53,8 @@ async function confirm() {
   }
   const res = await confirmAllcate(accessorieAllocateInfo.value?.id)
   if (res?.code === HttpCode.SUCCESS) {
-    await getAccessorieAllocateInfo(route.query.id as string)
+    page.value = 1
+    await getInfo()
     $toast.success('确认调拨成功')
   }
   else {
@@ -53,7 +65,8 @@ async function confirm() {
 async function finish() {
   const res = await finishAllcate(accessorieAllocateInfo.value?.id)
   if (res?.code === HttpCode.SUCCESS) {
-    await getAccessorieAllocateInfo(route.query.id as string)
+    page.value = 1
+    await getInfo()
     $toast.success('完成调拨成功')
   }
   else {
@@ -62,15 +75,16 @@ async function finish() {
 }
 
 /** 删除产品 */
-async function delProduct(ids: string[]) {
+async function delProduct(id: string) {
   const params = {
     id: accessorieAllocateInfo.value?.id,
-    product_ids: ids,
+    product_id: id,
   } as AddAccessorieAllocateDel
 
   const res = await remove(params)
   if (res?.code === HttpCode.SUCCESS) {
-    await getAccessorieAllocateInfo(route.query.id as string)
+    page.value = 1
+    await getInfo()
     $toast.success('删除成功')
   }
   else {
@@ -78,7 +92,7 @@ async function delProduct(ids: string[]) {
   }
 }
 const debouncedDelProduct = useThrottleFn((id: string) => {
-  delProduct([id])
+  delProduct(id)
 }, 200)
 
 /** id获取门店名称 */
@@ -101,7 +115,21 @@ async function clearProduct() {
   const ids = accessorieAllocateInfo.value?.products?.map(item => item.id) ?? []
   if (!ids.length)
     return $toast.error('配件列表为空')
-  await delProduct(ids)
+  const res = await clear(accessorieAllocateInfo.value?.id)
+
+  if (res?.code === HttpCode.SUCCESS) {
+    page.value = 1
+    await getInfo()
+    $toast.success('清空成功')
+  }
+  else {
+    $toast.error(res?.message ?? '清空调拨单配件失败')
+  }
+}
+
+const updatePage = async (e: number) => {
+  page.value = e
+  await getInfo()
 }
 </script>
 
@@ -149,7 +177,6 @@ async function clearProduct() {
                         </template>
                         <template v-else-if="item.input === 'date'">
                           <div v-if="item.name === 'updated_at'" class="info-val">
-                            {{ accessorieAllocateInfo.updated_at }}
                             {{ formatTimestampToDateTime(accessorieAllocateInfo.updated_at) }}
                           </div>
                           <div v-if="item.name === 'created_at'" class="info-val">
@@ -167,6 +194,14 @@ async function clearProduct() {
                 </div>
                 <div class="h-0.5 bg-[#E6E6E8]" />
                 <div class="product-information flex flex-col gap-1">
+                  <div class="info-row">
+                    <div class="info-title">
+                      总数
+                    </div>
+                    <div class="info-val">
+                      {{ accessorieAllocateInfo.product_count }}
+                    </div>
+                  </div>
                   <div class="info-row">
                     <div class="info-title">
                       总件数
@@ -197,7 +232,7 @@ async function clearProduct() {
                   <template #info>
                     <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
                       <template v-for="(filter, findex) in accessorieFilterListToArray" :key="findex">
-                        <template v-if="filter.find">
+                        <template v-if="filter.info && (filter.name as string) !== 'create_time'">
                           <div class="flex">
                             <div class="key">
                               {{ filter.label }}
@@ -217,6 +252,7 @@ async function clearProduct() {
                       </template>
                     </div>
                   </template>
+                  <common-page v-model:page="page" :total="accessorieAllocateInfo.product_count" :limit="20" @update:page="updatePage" />
                 </sale-order-nesting>
               </div>
             </template>
@@ -251,7 +287,7 @@ async function clearProduct() {
         <common-button-one text="取消调拨" @confirm="cancel" />
       </template>
     </template>
-    <common-confirm v-model:show="clearDialog" icon="error" title="清空列表" text="确认要清空所有入库的产品吗?" @submit="clearProduct" />
+    <common-confirm v-model:show="clearDialog" icon="error" title="清空列表" text="确认要清空所有调拨的产品吗?" @submit="clearProduct" />
     <!-- 状态为草稿中 增加产品 -->
     <template v-if="accessorieAllocateInfo.status === AllocateStatus.Draft && myStore?.id === accessorieAllocateInfo.from_store_id">
       <common-create @create="jump('/product/accessorie/allocate/addproduct', { id: accessorieAllocateInfo.id })" />

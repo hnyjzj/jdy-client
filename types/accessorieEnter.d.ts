@@ -48,9 +48,9 @@ interface AccessorieEnter {
   updated_at: Date
   type: ProductAccessories['type']
   /** 入库数量 */
-  product_count?: number
+  product_count: number
   /** 入库总件数 */
-  product_total?: number
+  product_total: number
 }
 
 /**
@@ -103,7 +103,7 @@ interface DelAccessorieEnter {
   /**
    * 商品ID列表
    */
-  product_ids: string[]
+  product_id: string
 }
 
 /**

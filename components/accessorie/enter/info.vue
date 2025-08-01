@@ -6,10 +6,17 @@ const props = defineProps<{
 
 const emits = defineEmits<{
   del: [id: string]
+  updatePage: [page: number]
 }>()
+
+const page = defineModel({ type: Number, default: 1 })
 
 function del(id: string) {
   emits('del', id)
+}
+
+function updatePage(e: number) {
+  emits('updatePage', e)
 }
 </script>
 
@@ -17,7 +24,7 @@ function del(id: string) {
   <template v-if="props.info.products?.length">
     <div class="p-4 blur-bgc rounded-6">
       <div class="text-[14px] pb-4 text-color">
-        共 {{ props.info.products.length }}
+        共 {{ info.product_count }}
       </div>
       <template v-for="(item, index) in props.info.products" :key="index">
         <div class="grid mb-3">
@@ -61,6 +68,7 @@ function del(id: string) {
           </sale-order-nesting>
         </div>
       </template>
+      <common-page v-model:page="page" :total="info.product_count" :limit="20" @update:page="updatePage" />
     </div>
   </template>
 </template>

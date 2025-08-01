@@ -36,12 +36,11 @@ interface AccessorieAllocate {
 }
 
 interface AccessorieAllocateInfo extends AccessorieAllocate {
-  created_at: string
   from_store: Stores
   operator: Staffs
   operator_id: string
   /** 调拨总数 */
-  product_count?: number
+  product_count: number
   /** 调拨总件数 */
   product_total?: number
   products: AccessorieAllocateProduct[]
@@ -100,9 +99,9 @@ interface AccessorieAllocateReq {
 }
 interface AddAccessorieAllocateProduct {
   /**
-   * 产品id
+   * 产品名称
    */
-  product_id: string
+  name: string
   /**
    * 数量
    */
@@ -125,5 +124,11 @@ interface AddAccessorieAllocateDel {
    * 调拨单id
    */
   id: string
-  product_ids: string[]
+  product_id: string
+}
+
+interface AccessorieAllocateInfoParams {
+  id: string
+  page: number
+  limit: number
 }

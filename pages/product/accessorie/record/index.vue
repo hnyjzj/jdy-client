@@ -152,8 +152,7 @@ const cols = [
       key: item.name,
       render(row: AccessorieRecord) {
         const acc = row.new_value?.product || row.new_value
-        const category = acc?.category ?? {}
-        const value = category?.[item.name]
+        const value = acc[item.name]
 
         if (item.input === 'select') {
           return item.preset?.[value] ?? '-'

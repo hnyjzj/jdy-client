@@ -119,10 +119,10 @@ const cols = [
       key: item.name,
       render(row: any) {
         if (item.input === 'select') {
-          return item.preset?.[row.category?.[item.name]] ?? '-'
+          return item.preset?.[row?.[item.name]] ?? '-'
         }
         else {
-          return row.category?.[item.name] ?? '-'
+          return row?.[item.name] ?? '-'
         }
       },
     })),
@@ -176,18 +176,25 @@ const cols = [
             <template #info="{ info }">
               <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
                 <template v-for="(item, index) in accessorieFilterListToArray" :key="index">
-                  <template v-if="item.find">
+                  <template v-if="item.info">
                     <div class="flex-between">
                       <div>
                         {{ item.label }}
                       </div>
-                      <template v-if="item.input === 'select'">
+                      <template v-if="item.type === 'date'">
                         <div class="text-align-end val">
-                          {{ item.preset[info[item.name] || 0] || '' }}
+                          {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
                         </div>
                       </template>
                       <template v-else>
-                        {{ info[item.name] }}
+                        <template v-if="item.input === 'select'">
+                          <div class="text-align-end val">
+                            {{ item.preset[info[item.name] || 0] || '' }}
+                          </div>
+                        </template>
+                        <template v-else>
+                          {{ info[item.name] }}
+                        </template>
                       </template>
                     </div>
                   </template>

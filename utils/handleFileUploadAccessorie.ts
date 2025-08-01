@@ -7,6 +7,7 @@ export default async function (headers: any) {
   const headerMap: Record<string, string> = {
     '名称*': 'name',
     '零售方式*': 'retail_type',
+    '单价': 'price',
     '类型*': 'type',
     '库存*': 'stock',
     '备注': 'remark',

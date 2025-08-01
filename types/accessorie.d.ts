@@ -35,10 +35,6 @@ interface ProductAccessories {
    * 备注
    */
   remark: string
-  /**
-   * 入库单
-   */
-  enter_id: string
   quantity?: number
 }
 
