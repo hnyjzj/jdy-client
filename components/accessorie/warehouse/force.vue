@@ -58,7 +58,7 @@ async function submitGoods() {
 /** 下载对应入库模板 */
 const downloadLocalFile = () => {
   const url = '/excel/accessAllocateTemplate.xlsx'
-  const name = '调拨模板.xlsx'
+  const name = '配件调拨模板.xlsx'
 
   const link = document.createElement('a')
   link.href = url
