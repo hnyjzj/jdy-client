@@ -302,7 +302,7 @@ async function submitGoods(e: AddAccessorieAllocateProduct[]) {
       </common-button-bottom>
     </template>
     <template v-if="accessorieAllocateInfo.status === AllocateStatus.InTransit">
-      <template v-if="accessorieAllocateInfo.method === 2 || myStore?.id === accessorieAllocateInfo.to_store_id">
+      <template v-if="myStore?.id === accessorieAllocateInfo.to_store_id">
         <common-button-bottom cancel-text="取消调拨" confirm-text="完成调拨" @cancel="cancel" @confirm="finish" />
       </template>
       <template v-if="myStore?.id === accessorieAllocateInfo.from_store_id">

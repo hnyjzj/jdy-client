@@ -91,7 +91,7 @@ async function submitProduct() {
 
   // 验证通过后，收集所有产品信息
   selectProduct.value.forEach((item: ProductAccessories) => {
-    if (item.quantity) {
+    if (item.quantity && item.quantity > 0) {
       products.push({ name: item.name, quantity: item.quantity })
     }
   })
