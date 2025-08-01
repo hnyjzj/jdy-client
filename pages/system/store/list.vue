@@ -15,7 +15,7 @@ const addOrUpdateShow = ref<boolean>(false)
 const show = ref<boolean>(false)
 // 筛选请求数据
 const filterData = ref({} as StoresWhere)
-const limits = ref<number>(2)
+const limits = ref<number>(50)
 // 获取列表
 const getList = async (where = {} as StoresWhere) => {
   if (!Object.keys(myRegion.value).length) {

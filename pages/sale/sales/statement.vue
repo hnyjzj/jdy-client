@@ -85,6 +85,7 @@ const searchOrder = async (code: string) => {
 
 const clearFn = async () => {
   delete filterData.value.code
+  searchKey.value = ''
   filterData.value.searchPage = 1
   listJump()
 }

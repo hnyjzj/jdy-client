@@ -126,7 +126,7 @@ const cols = [
     key: 'nickname',
   },
   { title: '手机号', key: 'phone', width: 150 },
-  { title: '身份', key: 'gender', render: (rowData: Staff) => {
+  { title: '身份', render: (rowData: Staff) => {
     return filterList.value.identity?.preset[rowData.identity as number] || '--'
   } },
   {
