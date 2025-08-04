@@ -137,8 +137,7 @@ const payOrderConfirm = async (id: string) => {
   }
 }
 const changeStores = async () => {
-  filterData.value = {}
-  listJump()
+  await getList(filterData.value)
 }
 const router = useRouter()
 const newAdd = async () => {

@@ -101,8 +101,7 @@ const searchKeyFn = async (data: string) => {
 }
 
 const changeStores = async () => {
-  filterData.value = {}
-  listJump()
+  await getList(filterData.value)
 }
 const pageOption = ref({
   page: searchPage,
@@ -136,11 +135,9 @@ const cols = [
       return rowData.is_disabled ? '禁用' : '启用'
     },
   },
-
   { title: '性别', key: 'gender', render: (rowData: Staff) => {
     return filterList.value.gender?.preset[rowData.gender as number] || '--'
   } },
-
   { title: '用户名', key: 'username' },
   { title: '最后登录时间', key: '', render: (rowData: Staff) => {
     return formatISODate(rowData.last_login_at!)
@@ -157,7 +154,6 @@ const cols = [
   { title: '负责门店', key: '', render: (rowData: Staff) => {
     return rowData.region_superiors?.length ? `${rowData.region_superiors[0].name}${rowData.region_superiors.length - 1 > 0 ? `+${rowData.region_superiors.length - 1}` : ''}` : '--'
   } },
-
   {
     title: '操作',
     key: 'action',

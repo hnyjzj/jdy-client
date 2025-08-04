@@ -108,8 +108,7 @@ const updatePage = async (page: number) => {
 }
 
 const changeStores = async () => {
-  filterData.value = {}
-  listJump()
+  await getList(filterData.value)
 }
 const Key = ref()
 const cityOptions = ref<any>([])
