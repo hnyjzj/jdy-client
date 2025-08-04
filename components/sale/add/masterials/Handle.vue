@@ -7,6 +7,7 @@ const props = defineProps<{
   isIntegral: boolean
   nowEditState?: number
   checkOldClass: (params: Partial<ProductOld>) => any
+  billingSet: BillingSet
 }>()
 const showMasterialsList = defineModel<ProductOld[]>('list', { default: [] })
 const params = defineModel<ProductOld>('params', { default: {
@@ -126,10 +127,13 @@ const changePrice = (name: string) => {
   if (!params.value.recycle_price_labor_method) {
     params.value.recycle_price_labor_method = 1
   }
+  const hold = holdFunction(props.billingSet.decimal_point)
+  // 取整控制函数
+  const rounding = roundFunction(props.billingSet.rounding)
   // 如果回收金额确认了 则反推金价
   if (name === 'recycle_price') {
     if (params.value.weight_metal && params.value.quality_actual && params.value.recycle_price) {
-      params.value.recycle_price_gold = calc('( c + ( e / (a* d))) |=0 ~5', {
+      params.value.recycle_price_gold = calc(`( c + ( e / (a* d))) | =${hold} ~${rounding}`, {
         a: params.value.weight_metal,
         e: params.value.recycle_price,
         c: params.value.recycle_price_labor || 0,
@@ -137,7 +141,7 @@ const changePrice = (name: string) => {
       })
     }
     if (params.value.weight_metal && params.value.quality_actual && params.value.recycle_price && params.value.recycle_price_labor_method === 2) {
-      params.value.recycle_price_gold = calc('((c+e)/(a*d)) |=0 ~5', {
+      params.value.recycle_price_gold = calc(`((c+e)/(a*d)) | =${hold} ~${rounding}`, {
         a: params.value.weight_metal,
         e: params.value.recycle_price,
         c: params.value.recycle_price_labor || 0,
@@ -148,7 +152,7 @@ const changePrice = (name: string) => {
   }
   // 如果回收工费方式按克 (回收金价-回收工费)*金重*实际成色
   if (params.value.recycle_price_labor_method === 1) {
-    params.value.recycle_price = calc('((b - c) * a * d)| =0 ~5', {
+    params.value.recycle_price = calc(`((b - c) * a * d)| =${hold} ~${rounding}`, {
       a: params.value.weight_metal || 0,
       b: params.value.recycle_price_gold || 0,
       c: params.value.recycle_price_labor || 0,
@@ -157,7 +161,7 @@ const changePrice = (name: string) => {
   }
   else if (params.value.recycle_price_labor_method === 2) {
     // 如果回收工费方式按件 (金重* 回收金价 * 实际成色) - 回收工费
-    params.value.recycle_price = calc('((a*b*d) - c)| =0 ~5', {
+    params.value.recycle_price = calc(`((a*b*d) - c)| =${hold} ~${rounding}`, {
       a: params.value.weight_metal || 0,
       b: params.value.recycle_price_gold || 0,
       c: params.value.recycle_price_labor || 0,

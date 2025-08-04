@@ -470,6 +470,7 @@ const changeStore = () => {
             :check-old-class="CheckOldClass"
             :old-filter-list-to-array="oldFilterListToArray"
             :is-integral="formData.has_integral"
+            :billing-set="billingSet"
           />
         </div>
         <div class="pb-[16px]">
