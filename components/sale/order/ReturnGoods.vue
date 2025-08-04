@@ -110,7 +110,7 @@ defineExpose({
           <common-cell :label="`条码:${props.showReturnGoods?.goods?.old?.product?.code}`" :value="`应付金额:${props.showReturnGoods?.goods?.old?.recycle_price}`" />
         </template>
         <template v-if="props.showReturnGoods?.goods?.type === 3">
-          <common-cell label="配件名称" :value="props.showReturnGoods?.goods?.accessorie.product?.category.name" />
+          <common-cell label="配件名称" :value="props.showReturnGoods?.goods?.accessorie.product?.name" />
           <common-cell label="数量" :value="props.showReturnGoods?.goods?.accessorie?.quantity" />
           <common-cell :label="`编号:${props.showReturnGoods?.goods?.accessorie?.id}`" :value="`应付金额:${props.showReturnGoods?.goods?.accessorie?.price}`" />
         </template>

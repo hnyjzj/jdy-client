@@ -3,7 +3,7 @@ const Props = defineProps<{
   title: string
   isIntegral: boolean
   billingSet: BillingSet
-  checkAccessoriesScore: (params: { classes: AccessorieCategory['type_part'][] }) => any
+  checkAccessoriesScore: (params: { classes: ProductAccessories['type'][] }) => any
   searchParts: (val: string, type: string) => Promise<ProductAccessories[]>
 }>()
 const emits = defineEmits<{

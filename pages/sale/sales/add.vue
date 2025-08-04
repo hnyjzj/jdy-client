@@ -10,7 +10,6 @@ const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getFinishedList, getFinishedWhere, getFinishedsClass } = useFinished()
 const { getStoreStaffList } = useStores()
-//  getOrderDetail,
 const { getOldList, getSaleWhere, submitOrder, OldMaterialsWhere } = useOrder()
 const { getGoldPrice } = useGoldPrice()
 const { goldList } = storeToRefs(useGoldPrice())
@@ -110,8 +109,8 @@ const billingSet = ref({
 const disScore = ref(false)
 // 展示商品列表
 const showProductList = ref<ProductFinished[]>([])
-const showPartsList = ref<ProductAccessories[]>([])
 const showMasterialsList = ref<ProductOld[]>([])
+const showPartsList = ref<ProductAccessories[]>([])
 
 // 定金单列表
 const showDepositList = ref<DepositOrderInfo[]>([])
@@ -308,9 +307,6 @@ const searchParts = async (val: string, type: string) => {
   if (type === 'number') {
     await getAccessorieList({ page: 1, limit: 10, where: { id: val, store_id: myStore.value.id } })
   }
-  if (type === 'code') {
-    await getAccessorieList({ page: 1, limit: 10, where: { code: val, store_id: myStore.value.id } })
-  }
   if (type === 'name') {
     await getAccessorieList({ page: 1, limit: 10, where: { name: val, store_id: myStore.value.id } })
   }
@@ -321,7 +317,7 @@ const searchParts = async (val: string, type: string) => {
 }
 
 // 获取旧料大类，并获取旧料积分比例
-const CheckOldClass = async (params: Partial<ProductOlds>) => {
+const CheckOldClass = async (params: Partial<ProductOld>) => {
   const res = await getOldClass(params)
   if (res?.value) {
     const data = await getOldScoreProportion({ class: res?.value })
@@ -332,7 +328,7 @@ const CheckOldClass = async (params: Partial<ProductOlds>) => {
   }
 }
 // 获取配件积分比例
-const checkAccessoriesScore = async (params: { classes: AccessorieCategory['type_part'][] }) => await getAccessorieScoreRate(params)
+const checkAccessoriesScore = async (params: { classes: ProductAccessories['type'][] }) => await getAccessorieScoreRate(params)
 
 // 开单
 const handleValidateButtonClick = async (e: MouseEvent) => {
@@ -343,6 +339,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
         $toast.error('请先添加会员')
         return
       }
+      formData.value.product_accessories = []
       // 成功的操作
       formData.value.product_finisheds = showProductList.value
       formData.value.store_id = myStore.value.id

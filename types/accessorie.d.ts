@@ -37,6 +37,11 @@ interface ProductAccessories {
    */
   remark: string
   quantity?: number
+  price?: string
+
+  amount?: number
+  integral?: number
+  rate?: number
 }
 
 /**
