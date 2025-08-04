@@ -54,21 +54,23 @@ const totalScore = computed(() => {
 })
 
 const showModel = defineModel('dialog', { default: false })
-const showReturnGoods = ref({} as {
-  goods?: orderInfoProducts
-  id: string
-})
+// const showReturnGoods = ref({} as {
+//   goods?: orderInfoProducts
+//   id: string
+// })
 // 成品退货
 const returnGoodsRef = ref()
 const onReturnProduct = async (index: number) => {
-  const data = {
-    goods: props.orders.products[index],
-    id: props.orders.id,
-  }
-  showReturnGoods.value = data
-  if (props.orders.products[index].type === 3) {
-    await returnGoodsRef.value?.setPrice()
-  }
+//   const data = {
+//     goods: props.orders.products[index],
+//     id: props.orders.id,
+//   }
+//   showReturnGoods.value = data
+//   console.log(data)
+  await returnGoodsRef.value?.setPrice(index)
+  //   if (props.orders.products[index].type === 3) {
+
+  //   }
   showModel.value = true
 }
 </script>
@@ -258,7 +260,7 @@ const onReturnProduct = async (index: number) => {
         </template>
       </sale-cards>
     </div>
-    <sale-order-return-goods ref="returnGoodsRef" v-model:show="showModel" :where="props.orderWhere" :product-filter="productFilter" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
+    <sale-order-return-goods ref="returnGoodsRef" v-model:show="showModel" :where="props.orderWhere" :product-filter="productFilter" :orders="props.orders" :return-goods="props.returnGoods" />
   </div>
 </template>
 

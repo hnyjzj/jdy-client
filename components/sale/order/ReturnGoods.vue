@@ -4,13 +4,13 @@ import type { FormRules } from 'naive-ui'
 const props = defineProps<{
   productFilter: Where<ProductFinisheds>
   where: Where<OrderWhere>
-  showReturnGoods?: {
-    goods?: orderInfoProducts
-    id: string
-  }
   returnGoods: (req: ReturnGoods) => void
+  orders: OrderInfo
 }>()
-
+const showReturnGoods = ref({} as {
+  goods?: orderInfoProducts
+  id: string
+})
 const showModel = defineModel('show', { default: false })
 const formRef = ref()
 const model = ref<ReturnGoods>({
@@ -55,9 +55,9 @@ const submit = async () => {
       $toast.error(errors[0][0].message)
     }
     else {
-      model.value.id = props.showReturnGoods?.id || ''
-      model.value.product_id = props.showReturnGoods?.goods?.id || ''
-      model.value.product_type = props.showReturnGoods?.goods?.type || 0
+      model.value.id = showReturnGoods.value?.id || ''
+      model.value.product_id = showReturnGoods.value?.goods?.id || ''
+      model.value.product_type = showReturnGoods.value?.goods?.type || 0
 
       await props.returnGoods(model.value)
       model.value = {
@@ -73,11 +73,16 @@ const submit = async () => {
   })
 }
 const titleText = computed(() => {
-  return props.showReturnGoods?.goods?.type === 1 ? '成品退货' : props.showReturnGoods?.goods?.type === 2 ? '旧料退货' : '配给退货'
+  return showReturnGoods.value?.goods?.type === 1 ? '成品退货' : showReturnGoods.value?.goods?.type === 2 ? '旧料退货' : '配给退货'
 })
-const setPrice = () => {
-  model.value.price = Number(props.showReturnGoods?.goods?.accessorie.price) || 0
+const setPrice = (index: number) => {
+  console.log(props.orders)
+  showReturnGoods.value.goods = props.orders.products[index]
+  model.value.price = Number(props.orders.products[index].accessorie.price) || 0
 }
+onMounted(() => {
+  console.log(props.orders)
+})
 defineExpose({
   setPrice,
 })
@@ -99,20 +104,20 @@ defineExpose({
         }
       }">
       <div>
-        <template v-if="props.showReturnGoods?.goods?.type === 1">
-          <common-cell label="成品名称" :value="props.showReturnGoods?.goods?.finished.product?.name" />
-          <common-cell label="零售方式" :value="props.productFilter?.retail_type?.preset[props.showReturnGoods?.goods?.finished?.product?.retail_type!]" />
-          <common-cell :label="`条码:${props.showReturnGoods?.goods?.finished?.product?.code}`" :value="`应付金额:${props.showReturnGoods?.goods?.finished?.price}`" />
+        <template v-if="showReturnGoods?.goods?.type === 1">
+          <common-cell label="成品名称" :value="showReturnGoods?.goods?.finished.product?.name" />
+          <common-cell label="零售方式" :value="productFilter?.retail_type?.preset[showReturnGoods?.goods?.finished?.product?.retail_type!]" />
+          <common-cell :label="`条码:${showReturnGoods?.goods?.finished?.product?.code}`" :value="`应付金额:${showReturnGoods?.goods?.finished?.price}`" />
         </template>
-        <template v-if="props.showReturnGoods?.goods?.type === 2">
-          <common-cell label="旧料编号" :value="props.showReturnGoods?.goods?.old?.product?.id" />
-          <common-cell label="金重(g)" :value="props.showReturnGoods?.goods?.old?.weight_metal" />
-          <common-cell :label="`条码:${props.showReturnGoods?.goods?.old?.product?.code}`" :value="`应付金额:${props.showReturnGoods?.goods?.old?.recycle_price}`" />
+        <template v-if="showReturnGoods?.goods?.type === 2">
+          <common-cell label="旧料编号" :value="showReturnGoods?.goods?.old?.product?.id" />
+          <common-cell label="金重(g)" :value="showReturnGoods?.goods?.old?.weight_metal" />
+          <common-cell :label="`条码:${showReturnGoods?.goods?.old?.product?.code}`" :value="`应付金额:${showReturnGoods?.goods?.old?.recycle_price}`" />
         </template>
-        <template v-if="props.showReturnGoods?.goods?.type === 3">
-          <common-cell label="配件名称" :value="props.showReturnGoods?.goods?.accessorie.product?.name" />
-          <common-cell label="数量" :value="props.showReturnGoods?.goods?.accessorie?.quantity" />
-          <common-cell :label="`编号:${props.showReturnGoods?.goods?.accessorie?.id}`" :value="`应付金额:${props.showReturnGoods?.goods?.accessorie?.price}`" />
+        <template v-if="showReturnGoods?.goods?.type === 3">
+          <common-cell label="配件名称" :value="showReturnGoods?.goods?.accessorie.product?.name" />
+          <common-cell label="数量" :value="showReturnGoods?.goods?.accessorie?.quantity" />
+          <common-cell :label="`编号:${showReturnGoods?.goods?.accessorie?.id}`" :value="`应付金额:${showReturnGoods?.goods?.accessorie?.price}`" />
         </template>
         <n-form
           ref="formRef"
@@ -121,7 +126,7 @@ defineExpose({
           label-placement="top"
         >
           <n-grid :cols="12" :x-gap="24">
-            <template v-if="props.showReturnGoods?.goods?.type === 1">
+            <template v-if="showReturnGoods?.goods?.type === 1">
               <n-form-item-gi :span="6" label="退货入库方式" path="method">
                 <n-select
                   v-model:value="model.method"
@@ -132,7 +137,7 @@ defineExpose({
               </n-form-item-gi>
             </template>
             <n-form-item-gi :span="6" label="退款金额" path="price">
-              <n-input-number v-model:value="model.price" min="0" :disabled="props.showReturnGoods?.goods?.type === 3" @focus="focus" />
+              <n-input-number v-model:value="model.price" min="0" :disabled="showReturnGoods?.goods?.type === 3" @focus="focus" />
             </n-form-item-gi>
             <n-form-item-gi :span="12" label="备注" path="remark">
               <n-input v-model:value="model.remark" type="textarea" rows="2" placeholder="请输入退款说明" @focus="focus" />
