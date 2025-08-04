@@ -97,8 +97,8 @@ export const useOld = defineStore('Old', {
       }
     },
     // 获取旧料大类
-    async getOldClass(params: Partial<ProductOlds>) {
-      const { data } = await https.post<{ label: string, value: number }, Partial<ProductOlds>>('/product/old/get_class', params)
+    async getOldClass(params: Partial<ProductOld>) {
+      const { data } = await https.post<{ label: string, value: number }, Partial<ProductOld>>('/product/old/get_class', params)
       if (data.value?.code === HttpCode.SUCCESS) {
         return data.value.data
       }

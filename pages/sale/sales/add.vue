@@ -321,7 +321,7 @@ const searchParts = async (val: string, type: string) => {
 }
 
 // 获取旧料大类，并获取旧料积分比例
-const CheckOldClass = async (params: Partial<ProductOlds>) => {
+const CheckOldClass = async (params: Partial<ProductOld>) => {
   const res = await getOldClass(params)
   if (res?.value) {
     const data = await getOldScoreProportion({ class: res?.value })
@@ -470,6 +470,7 @@ const changeStore = () => {
             :check-old-class="CheckOldClass"
             :old-filter-list-to-array="oldFilterListToArray"
             :is-integral="formData.has_integral"
+            :billing-set="billingSet"
           />
         </div>
         <div class="pb-[16px]">
