@@ -506,6 +506,7 @@ const changeStore = () => {
           :filter-list="filterList"
           :dis-score="disScore"
           :get-search-phrase="getSearchPhrase"
+          :billing-set="billingSet"
         >
           <template #score />
         </sale-add-settlement>
