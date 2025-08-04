@@ -63,7 +63,7 @@ const submitMasterialsForm = async () => {
     if (!errors) {
       if (props.nowEditState !== undefined) {
         // 编辑时
-        if (params.value.recycle_price < 0) {
+        if (Number(params.value.recycle_price) < 0) {
           $toast.error('回收金额不能小于0')
           return
         }
@@ -90,7 +90,7 @@ const submitMasterialsForm = async () => {
       }
       else {
         params.value.is_our = false
-        if (params.value.recycle_price < 0) {
+        if (Number(params.value.recycle_price) < 0) {
           $toast.error('回收金额不能小于0')
           return
         }
@@ -129,7 +129,7 @@ const changePrice = (name: string) => {
   // 如果回收金额确认了 则反推金价
   if (name === 'recycle_price') {
     if (params.value.weight_metal && params.value.quality_actual && params.value.recycle_price) {
-      params.value.recycle_price_gold = calc('( c + ( e / (a* d))) |=0 ~5,!n', {
+      params.value.recycle_price_gold = calc('( c + ( e / (a* d))) |=0 ~5', {
         a: params.value.weight_metal,
         e: params.value.recycle_price,
         c: params.value.recycle_price_labor || 0,
@@ -137,7 +137,7 @@ const changePrice = (name: string) => {
       })
     }
     if (params.value.weight_metal && params.value.quality_actual && params.value.recycle_price && params.value.recycle_price_labor_method === 2) {
-      params.value.recycle_price_gold = calc('((c+e)/(a*d)) |=0 ~5,!n', {
+      params.value.recycle_price_gold = calc('((c+e)/(a*d)) |=0 ~5', {
         a: params.value.weight_metal,
         e: params.value.recycle_price,
         c: params.value.recycle_price_labor || 0,
@@ -148,7 +148,7 @@ const changePrice = (name: string) => {
   }
   // 如果回收工费方式按克 (回收金价-回收工费)*金重*实际成色
   if (params.value.recycle_price_labor_method === 1) {
-    params.value.recycle_price = calc('((b - c) * a * d)| =0 ~5,!n', {
+    params.value.recycle_price = calc('((b - c) * a * d)| =0 ~5', {
       a: params.value.weight_metal || 0,
       b: params.value.recycle_price_gold || 0,
       c: params.value.recycle_price_labor || 0,
@@ -157,7 +157,7 @@ const changePrice = (name: string) => {
   }
   else if (params.value.recycle_price_labor_method === 2) {
     // 如果回收工费方式按件 (金重* 回收金价 * 实际成色) - 回收工费
-    params.value.recycle_price = calc('((a*b*d) - c)| =0 ~5,!n', {
+    params.value.recycle_price = calc('((a*b*d) - c)| =0 ~5', {
       a: params.value.weight_metal || 0,
       b: params.value.recycle_price_gold || 0,
       c: params.value.recycle_price_labor || 0,
@@ -209,30 +209,32 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                       />
                     </template>
                     <template v-if="item.input === 'text'">
-                      <n-input
-                        v-model:value="(params[item.name] as string)"
-                        size="large" round :placeholder="`输入${item.label}`"
-                        @focus="focus"
-                      />
+                      <template
+                        v-if="item.name === 'weight_metal'
+                          || item.name === 'recycle_price_gold' || item.name === 'recycle_price_labor' || item.name === 'quality_actual'">
+                        <n-input
+                          v-model:value="(params[item.name] as string)"
+                          size="large"
+                          round :placeholder="`输入${item.label}`" :max="item.name === 'quality_actual' ? 1 : undefined"
+                          :show-button="false"
+                          @focus="focus" @blur="changePrice(item.name)" />
+                      </template>
+                      <template v-else-if="item.name === 'recycle_price'">
+                        <n-input
+                          v-model:value="(params[item.name] as string)"
+                          size="large"
+                          round :placeholder="`输入${item.label}`" :show-button="false"
+                          @focus="focus" @blur="changePrice(item.name)" />
+                      </template>
+                      <template v-else>
+                        <n-input
+                          v-model:value="(params[item.name] as string)"
+                          size="large" round :placeholder="`输入${item.label}`"
+                          @focus="focus"
+                        />
+                      </template>
                     </template>
-                    <template
-                      v-if="item.input === 'number' && (item.name === 'weight_metal'
-                        || item.name === 'recycle_price_gold' || item.name === 'recycle_price_labor' || item.name === 'quality_actual')">
-                      <n-input-number
-                        v-model:value="(params[item.name] as number)"
-                        size="large"
-                        round :placeholder="`输入${item.label}`" :max="item.name === 'quality_actual' ? 1 : undefined"
-                        :show-button="false"
-                        @focus="focus" @blur="changePrice(item.name)" />
-                    </template>
-                    <template
-                      v-if="item.input === 'number' && (item.name === 'recycle_price')">
-                      <n-input-number
-                        v-model:value="(params[item.name] as number)"
-                        size="large"
-                        round :placeholder="`输入${item.label}`" :show-button="false"
-                        @focus="focus" @blur="changePrice(item.name)" />
-                    </template>
+
                     <template
                       v-if="item.input === 'number' && (item.name !== 'weight_metal'
                         && item.name !== 'recycle_price_gold' && item.name !== 'recycle_price_labor' && item.name !== 'quality_actual' && item.name !== 'recycle_price')">
