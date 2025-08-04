@@ -208,9 +208,16 @@ const cols = [
                           </div>
                         </template>
                         <template v-else-if="item.input === 'search'">
-                          <div class="val">
-                            {{ getStoreName(info[item.name] as Stores['id']) }}
-                          </div>
+                          <template v-if="item.name === 'to_region_id'">
+                            <div class="val">
+                              {{ info?.to_region?.name || '' }}
+                            </div>
+                          </template>
+                          <template v-if="item.name === 'to_store_id'">
+                            <div class="val">
+                              {{ info?.to_store?.name || '' }}
+                            </div>
+                          </template>
                         </template>
                       </template>
                     </div>

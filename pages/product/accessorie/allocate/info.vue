@@ -204,9 +204,16 @@ async function submitGoods(e: AddAccessorieAllocateProduct[]) {
                               </div>
                             </template>
                             <template v-else-if="item.input === 'search'">
-                              <div class="info-val">
-                                {{ getStoreName(accessorieAllocateInfo[item.name] as Stores['id']) }}
-                              </div>
+                              <template v-if="item.name === 'to_region_id'">
+                                <div class="val">
+                                  {{ accessorieAllocateInfo?.to_region?.name || '' }}
+                                </div>
+                              </template>
+                              <template v-if="item.name === 'to_store_id'">
+                                <div class="val">
+                                  {{ accessorieAllocateInfo?.to_store?.name || '' }}
+                                </div>
+                              </template>
                             </template>
                           </template>
                         </div>

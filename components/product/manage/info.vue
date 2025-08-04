@@ -45,7 +45,7 @@ const props = defineProps<{
                   </span>
                 </template>
                 <template v-else-if="item.input === 'text' || item.input === 'textarea'">
-                  <template v-if="item.label === '门店'">
+                  <template v-if="item.label === '门店名称'">
                     <span>
                       {{ props.info.store?.name ?? '' }}
                     </span>

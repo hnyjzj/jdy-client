@@ -19,6 +19,11 @@ interface AccessorieAllocate {
    */
   store_id?: string
   /**
+   * 区域门店
+   */
+  to_region_id?: string
+  to_region: Region
+  /**
    * 调拨状态
    * 1:草稿 2:在途 3:已完成 4:已取消
    */
@@ -31,6 +36,7 @@ interface AccessorieAllocate {
    * 调入门店id
    */
   to_store_id?: string
+  to_store: Stores
   updated_at: string
   created_at: string
 }
@@ -96,6 +102,8 @@ interface AccessorieAllocateReq {
    * 入库单id
    */
   enter_id?: Enter['id']
+  /** 区域id */
+  to_region_id: string
 }
 interface AddAccessorieAllocateProduct {
   /**
