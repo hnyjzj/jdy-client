@@ -225,7 +225,7 @@ const getbillingSet = async () => {
     }
   }
 }
-getbillingSet()
+await getbillingSet()
 
 // 新增会员
 const addNewMember = async (val: Member) => await createMember(val)
