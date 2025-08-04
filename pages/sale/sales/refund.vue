@@ -93,7 +93,8 @@ const changeCard = () => {
   listJump()
 }
 const changeStores = async () => {
-  await getList(filterData.value)
+  filterData.value = {}
+  listJump()
 }
 
 const pageOption = ref({

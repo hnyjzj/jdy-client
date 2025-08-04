@@ -101,7 +101,8 @@ const searchKeyFn = async (data: string) => {
 }
 
 const changeStores = async () => {
-  await getList(filterData.value)
+  filterData.value = {}
+  listJump()
 }
 const pageOption = ref({
   page: searchPage,

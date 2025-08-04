@@ -92,7 +92,8 @@ const changeCard = () => {
 }
 
 const changeStores = async () => {
-  await getList(filterData.value)
+  filterData.value = {}
+  listJump()
 }
 const router = useRouter()
 const newAdd = async () => {

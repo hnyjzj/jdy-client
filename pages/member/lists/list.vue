@@ -154,7 +154,8 @@ const clearFn = async () => {
 }
 
 const changeStores = async () => {
-  await getList(filterData.value)
+  filterData.value = {}
+  listJump()
 }
 // 切换卡片
 const changeCard = () => {
