@@ -63,7 +63,7 @@ const submitMasterialsForm = async () => {
     if (!errors) {
       if (props.nowEditState !== undefined) {
         // 编辑时
-        if (Number(params.value.recycle_price) < 0) {
+        if (Number(params.value?.recycle_price || 0) < 0) {
           $toast.error('回收金额不能小于0')
           return
         }
