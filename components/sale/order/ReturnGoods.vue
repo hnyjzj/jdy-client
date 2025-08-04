@@ -11,7 +11,7 @@ const showReturnGoods = ref({} as {
   goods?: orderInfoProducts
   id: string
 })
-const showModel = defineModel('show', { default: false })
+const showModel = ref(false)
 const formRef = ref()
 const model = ref<ReturnGoods>({
   id: '',
@@ -76,13 +76,11 @@ const titleText = computed(() => {
   return showReturnGoods.value?.goods?.type === 1 ? '成品退货' : showReturnGoods.value?.goods?.type === 2 ? '旧料退货' : '配给退货'
 })
 const setPrice = (index: number) => {
-  console.log(props.orders)
+  showModel.value = true
   showReturnGoods.value.goods = props.orders.products[index]
+  showReturnGoods.value.id = props.orders.id
   model.value.price = Number(props.orders.products[index].accessorie.price) || 0
 }
-onMounted(() => {
-  console.log(props.orders)
-})
 defineExpose({
   setPrice,
 })
