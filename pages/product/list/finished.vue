@@ -6,45 +6,130 @@ const { myStore } = storeToRefs(useStores())
 const { getFinishedList, getFinishedWhere, getFinishedListAll } = useFinished()
 const { finishedList, finishedFilterList, finishedFilterListToArray, finishedListTotal, finisheStatistics, finishedListAll } = storeToRefs(useFinished())
 const { searchPage, showtype } = storeToRefs(usePages())
-// 筛选框显示隐藏
+
+const route = useRoute()
+
 const isFilter = ref(false)
 const isModel = ref(false)
 const isLoading = ref(false)
 const isBatchImportModel = ref(false)
 const type = ref(1 as ProductFinisheds['type'])
-const filterData = ref({} as Partial<ProductFinisheds>)
+const filterData = ref({} as Partial<ExpandPage<ProductFinisheds>>)
 const limits = ref(50)
 const tableLoading = ref(false)
 useSeoMeta({
   title: '成品列表',
 })
-/** 打开高级筛选 */
+const filterRef = ref()
+/** 跳转并刷新列表 */
+const listJump = () => {
+  const url = UrlAndParams('/product/list/finished', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+}
+/** 获取成品列表 */
+const getList = async (where = {} as Partial<ProductFinisheds>) => {
+  tableLoading.value = true
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<ProductFinisheds>
+  if (JSON.stringify(where) !== '{}') {
+    params.where = { ...params.where, ...where }
+  }
+
+  const res = await getFinishedList(params)
+  tableLoading.value = false
+  return res
+}
+/** 读取参数并初始化列表 */
+const handleQueryParams = async () => {
+  const f = getQueryParams<ExpandPage<ProductFinisheds>>(route.fullPath, finishedFilterList.value)
+  filterData.value = f
+  if (f.searchPage)
+    searchPage.value = Number(f.searchPage)
+  if (f.limits)
+    limits.value = Number(f.limits)
+  await getList(filterData.value)
+}
+
+/** 提交筛选 */
+const submitWhere = async (f: Partial<ExpandPage<ProductFinisheds>>) => {
+  filterData.value = {
+    ...f,
+    searchPage: 1,
+    limits: limits.value,
+  }
+  listJump()
+}
+
+/** 修改页码 */
+const updatePage = (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+/** 改变每页数量 */
+const pageOption = ref({
+  page: searchPage,
+  pageSize: limits,
+  itemCount: finishedListTotal,
+  showSizePicker: true,
+  pageSizes: [50, 100, 150, 200],
+  onUpdatePageSize: (pageSize: number) => {
+    limits.value = pageSize
+    updatePage(1)
+  },
+  onChange: (page: number) => {
+    updatePage(page)
+  },
+})
+
+/** 高级筛选显示 */
 const openFilter = () => {
   isFilter.value = true
 }
-/** 搜索 */
-async function search(e: string) {
-  searchPage.value = 1
-  await submitWhere({ code: e }, true)
-}
-/** 关闭搜索 */
-async function clearSearch() {
-  await submitWhere({ }, true)
-}
-// 获取成品列表
-async function getList(where = {} as Partial<ProductFinisheds>) {
-  tableLoading.value = true
-  const params = { page: searchPage.value, limit: limits.value } as ReqList<ProductFinisheds>
-  params.where = where
-  const res = await getFinishedList(params)
-  tableLoading.value = false
-  return res as any
+
+/** 搜索条码 */
+const search = async (e: string) => {
+  filterRef.value?.reset?.()
+  filterData.value.code = e
+  filterData.value.searchPage = 1
+  listJump()
 }
 
+/** 清空搜索 */
+const clearSearch = async () => {
+  delete filterData.value.code
+  filterData.value.searchPage = 1
+  listJump()
+}
+
+/** 编辑 */
+const edit = (code: string) => {
+  jump('/product/manage/edit', { code })
+}
+
+/** 添加新成品 */
+const goAdd = () => {
+  isModel.value = false
+  jump('/product/warehouse/add', { type: type.value })
+}
+
+/** 查看详情 */
+const goInfo = (info: ProductFinisheds) => {
+  jump('/product/manage/finished/info', { code: info.code })
+}
+
+/** 门店切换刷新 */
+const changeStore = async () => {
+  searchPage.value = 1
+  filterRef.value?.reset?.()
+  await getList()
+}
+
+// 页面初始化逻辑
 try {
   if (myStore.value.id || myStore.value.id === '') {
-    await getList()
     await getFinishedWhere()
+    await handleQueryParams()
   }
   else {
     $toast.error('您尚未分配任何门店，请先添加门店')
@@ -54,64 +139,7 @@ catch (error) {
   throw new Error(`初始化失败: ${error || '未知错误'}`)
 }
 
-const pull = async (page: number) => {
-  searchPage.value = page
-  await getList(filterData.value)
-}
-
-// 筛选列表
-async function submitWhere(f: Partial<ProductFinisheds>, isSearch: boolean = false) {
-  filterData.value = { ...f }
-  searchPage.value = 1
-  finishedList.value = []
-  const res = await getList(filterData.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    isFilter.value = false
-    if (!isSearch) {
-      $toast.success('筛选成功')
-    }
-    return
-  }
-  $toast.error(res?.message ?? '失败')
-}
-
-/** 编辑 */
-function edit(code: string) {
-  jump('/product/manage/edit', { code })
-}
-
-function goAdd() {
-  isModel.value = false
-  jump('/product/warehouse/add', { type: type.value })
-}
-
-function goInfo(info: ProductFinisheds) {
-  jump('/product/manage/finished/info', { code: info.code })
-}
-
-const filterRef = ref()
-async function changeStore() {
-  searchPage.value = 1
-  filterRef.value.reset()
-  await getList()
-}
-
-const pageOption = ref({
-  page: searchPage,
-  pageSize: 50,
-  itemCount: finishedListTotal,
-  showSizePicker: true,
-  pageSizes: [50, 100, 150, 200],
-  onUpdatePageSize: (pageSize: number) => {
-    pageOption.value.pageSize = pageSize
-    limits.value = pageSize
-    pull(1)
-  },
-  onChange: (page: number) => {
-    pull(page)
-  },
-})
-
+/** 表格列定义 */
 const cols = [
   { title: '条码', key: 'code' },
   { title: '所属大类', key: '', render: (row: ProductFinisheds) => {
@@ -220,7 +248,7 @@ async function downloadLocalFile() {
         <template v-if="showtype === 'list'">
           <product-list-main :is-finished="true" :product-list="finishedList" :filter-list="finishedFilterList" @edit="edit" @go-info="goInfo" />
           <common-page
-            v-model:page="searchPage" :total="finishedListTotal" :limit="limits" @update:page="pull" />
+            v-model:page="searchPage" :total="finishedListTotal" :limit="limits" @update:page="updatePage" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="finishedList" :page-option="pageOption" :loading="tableLoading" />

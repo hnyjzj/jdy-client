@@ -5,8 +5,10 @@ const { $toast } = useNuxtApp()
 const { myStoreList, myStore } = storeToRefs(useStores())
 const { getMyStore } = useStores()
 const { getFinishedEnterList, getFinishedEnterWhere, createFinishedEnter } = useFinishedEnter()
-const { EnterList, EnterToArray, EnterListTotal } = storeToRefs(useFinishedEnter())
+const { EnterList, EnterToArray, enterFilterList, EnterListTotal } = storeToRefs(useFinishedEnter())
 const { searchPage, showtype } = storeToRefs(usePages())
+
+const route = useRoute()
 
 // 筛选框显示隐藏
 const isFilter = ref(false)
@@ -14,6 +16,7 @@ const isModel = ref(false)
 const isCreateModel = ref(false)
 const isBatchImportModel = ref(false)
 const enterParams = ref({} as CreateProductFinishedEnter)
+const filterData = ref({} as Partial<ExpandPage<FinishedEnter>>)
 const enterStatus = {
   1: '草稿',
   2: '已完成',
@@ -21,6 +24,65 @@ const enterStatus = {
 }
 const limits = ref(50)
 const tableLoading = ref(false)
+
+const filterRef = ref()
+/** 跳转并刷新列表 */
+const listJump = () => {
+  const url = UrlAndParams('/product/warehouse', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+}
+/** 获取成品列表 */
+const getList = async (where = {} as Partial<FinishedEnter>) => {
+  tableLoading.value = true
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<FinishedEnter>
+  if (JSON.stringify(where) !== '{}') {
+    params.where = { ...params.where, ...where }
+  }
+  const res = await getFinishedEnterList(params)
+  tableLoading.value = false
+  return res
+}
+/** 读取参数并初始化列表 */
+const handleQueryParams = async () => {
+  const f = getQueryParams<ExpandPage<FinishedEnter>>(route.fullPath, enterFilterList.value)
+  filterData.value = f
+  if (f.searchPage)
+    searchPage.value = Number(f.searchPage)
+  if (f.limits)
+    limits.value = Number(f.limits)
+  await getList(filterData.value)
+}
+
+/** 提交筛选 */
+const submitWhere = async (f: Partial<ExpandPage<FinishedEnter>>) => {
+  filterData.value = {
+    ...f,
+    searchPage: 1,
+    limits: limits.value,
+  }
+  listJump()
+}
+
+/** 修改页码 */
+const updatePage = (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 页面初始化逻辑
+try {
+  if (myStore.value.id || myStore.value.id === '') {
+    await getFinishedEnterWhere()
+    await handleQueryParams()
+  }
+  else {
+    $toast.error('您尚未分配任何门店，请先添加门店')
+  }
+}
+catch (error) {
+  throw new Error(`初始化失败: ${error || '未知错误'}`)
+}
 
 /** 门店选择列表 */
 const storeCol = ref()
@@ -49,36 +111,16 @@ const openFilter = () => {
 }
 /** 搜索 */
 async function search(e: string) {
-  await submitWhere({ id: e }, true)
+  filterRef.value?.reset?.()
+  filterData.value.id = e
+  filterData.value.searchPage = 1
+  listJump()
 }
 /** 关闭搜索 */
 async function clearSearch() {
-  await submitWhere({ }, true)
-}
-// 获取货品列表
-async function getList(where = {} as Partial<FinishedEnter>) {
-  tableLoading.value = true
-  try {
-    const params = { page: searchPage.value, limit: limits.value } as ReqList<FinishedEnter>
-    if (JSON.stringify(where) !== '{}') {
-      params.where = where
-    }
-    const res = await getFinishedEnterList(params)
-    return res
-  }
-  finally {
-    tableLoading.value = false
-  }
-}
-
-await getList()
-await getFinishedEnterWhere()
-
-const filterData = ref({} as Partial<FinishedEnter>)
-
-const pull = async (page: number) => {
-  searchPage.value = page
-  await getList(filterData.value)
+  filterRef.value?.reset()
+  filterData.value.searchPage = 1
+  listJump()
 }
 
 /** 创建入库单 */
@@ -96,22 +138,6 @@ async function createEnter() {
   $toast.error(res?.message ?? '添加入库单失败')
 }
 
-// 筛选列表
-async function submitWhere(f: Partial<FinishedEnter>, isSearch: boolean = false) {
-  filterData.value = { ...f }
-  searchPage.value = 1
-  EnterList.value = []
-  const res = await getList(filterData.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    isFilter.value = false
-    if (!isSearch) {
-      $toast.success('筛选成功')
-    }
-    return
-  }
-  $toast.error(res?.message ?? '筛选失败')
-}
-
 /** 编辑 */
 function edit(id: string) {
   jump('/product/warehouse/info', { id })
@@ -125,8 +151,6 @@ function goAdd() {
   isModel.value = false
   jump('/product/warehouse/add')
 }
-
-const filterRef = ref()
 
 async function changemyStore() {
   searchPage.value = 1
@@ -144,13 +168,12 @@ const pageOption = ref({
   onUpdatePageSize: (pageSize: number) => {
     pageOption.value.pageSize = pageSize
     limits.value = pageSize
-    pull(1)
+    updatePage(1)
   },
   onChange: (page: number) => {
-    pull(page)
+    updatePage(page)
   },
 })
-
 const cols = [
   {
     title: '入库状态',
@@ -287,7 +310,7 @@ const cols = [
             </template>
           </product-manage-card>
           <common-page
-            v-model:page="searchPage" :total="EnterListTotal" :limit="limits" @update:page="pull" />
+            v-model:page="searchPage" :total="EnterListTotal" :limit="limits" @update:page="updatePage" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="EnterList" :page-option="pageOption" :loading="tableLoading" />

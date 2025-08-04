@@ -7,76 +7,93 @@ const { accessorieAllocateList, accessorieAllocateFilterListToArray, accessorieA
 const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
+
+const route = useRoute()
+
 const limits = ref(50)
 const tableLoading = ref(false)
 const storeCol = ref()
+const filterData = ref({} as Partial<ExpandPage<AccessorieAllocate>>)
+
 function changeStoer() {
   storeCol.value = []
   storesList.value.forEach((item: Stores) => {
     storeCol.value.push({ label: item.name, value: item.id })
   })
 }
-await getStoreList({ page: 1, limit: 20 })
-await changeStoer()
-await getAccessorieAllocateWhere()
 // 筛选框显示隐藏
 const isFilter = ref(false)
 useSeoMeta({
   title: '配件调拨',
 })
+
 /** 打开高级筛选 */
 const openFilter = () => {
   isFilter.value = true
 }
-/** 搜索 */
-async function search(e: string) {
-  await submitWhere({ id: e }, true)
+/** 跳转并刷新列表 */
+const listJump = () => {
+  const url = UrlAndParams('/product/list/finished', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
-/** 关闭搜索 */
-async function clearSearch() {
-  await submitWhere({ }, true)
-}
-// 获取货品列表
-async function getList(where = {} as Partial<AccessorieAllocate>) {
+/** 获取成品列表 */
+const getList = async (where = {} as Partial<AccessorieAllocate>) => {
   tableLoading.value = true
-  try {
-    const params = { page: searchPage.value, limit: limits.value } as ReqList<AccessorieAllocate>
-    if (JSON.stringify(where) !== '{}') {
-      params.where = where
-    }
-    const res = await getAccessorieAllocate(params)
-    return res as any
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<AccessorieAllocate>
+  if (JSON.stringify(where) !== '{}') {
+    params.where = { ...params.where, ...where }
   }
-  finally {
-    tableLoading.value = false
-  }
+
+  const res = await getAccessorieAllocate(params)
+  tableLoading.value = false
+  return res
 }
-
-await getList()
-
-const filterData = ref({} as Partial<AccessorieAllocate>)
-
-const pull = async (page: number) => {
-  searchPage.value = page
-  await getList(filterData.value)
-}
-// 筛选列表
-async function submitWhere(f: Partial<AccessorieAllocate>, isSearch: boolean = false) {
-  filterData.value = { ...filterData.value, ...f }
-  searchPage.value = 1
-  accessorieAllocateList.value = []
+/** 读取参数并初始化列表 */
+const handleQueryParams = async () => {
+  const f = getQueryParams<ExpandPage<AccessorieAllocate>>(route.fullPath, accessorieAllocateFilterList.value)
+  filterData.value = f
+  if (f.searchPage)
+    searchPage.value = Number(f.searchPage)
+  if (f.limits)
+    limits.value = Number(f.limits)
   const res = await getList(filterData.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    isFilter.value = false
-    if (!isSearch) {
-      $toast.success('筛选成功')
-    }
-    return
+  if (filterData.value.id && res?.code !== HttpCode.SUCCESS) {
+    $toast.error(res?.message || '搜索失败')
   }
-  $toast.error(res?.message ?? '筛选失败')
 }
 
+/** 提交筛选 */
+const submitWhere = async (f: Partial<ExpandPage<AccessorieAllocate>>) => {
+  filterData.value = {
+    ...f,
+    searchPage: 1,
+    limits: limits.value,
+  }
+  listJump()
+}
+
+/** 修改页码 */
+const updatePage = (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
+}
+/** 搜索条码 */
 const filterRef = ref()
+const search = async (e: string) => {
+  filterRef.value?.reset()
+  filterData.value.id = e
+  filterData.value.searchPage = 1
+  listJump()
+}
+
+/** 清空搜索 */
+const clearSearch = async () => {
+  filterRef.value?.reset()
+  filterData.value.searchPage = 1
+  listJump()
+}
+
 async function changeStore() {
   searchPage.value = 1
   filterRef.value.reset()
@@ -98,13 +115,21 @@ const pageOption = ref({
   onUpdatePageSize: (pageSize: number) => {
     pageOption.value.pageSize = pageSize
     limits.value = pageSize
-    pull(1)
+    updatePage(1)
   },
   onChange: (page: number) => {
-    pull(page)
+    updatePage(page)
   },
 })
-
+try {
+  await getStoreList({ page: 1, limit: 20 })
+  await changeStoer()
+  await getAccessorieAllocateWhere()
+  await handleQueryParams()
+}
+catch (error) {
+  throw new Error(`初始化失败: ${error || '未知错误'}`)
+}
 const cols = [
   {
     title: '状态',
@@ -229,7 +254,7 @@ const cols = [
             </template>
           </product-manage-card>
           <common-page
-            v-model:page="searchPage" :total="accessorieAllocateTotal" :limit="limits" @update:page="pull" />
+            v-model:page="searchPage" :total="accessorieAllocateTotal" :limit="limits" @update:page="updatePage" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="accessorieAllocateList" :page-option="pageOption" :loading="tableLoading" />

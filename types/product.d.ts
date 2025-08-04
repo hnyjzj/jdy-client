@@ -88,6 +88,8 @@ interface ProductHistories {
    * 值
    */
   value: any[] | boolean | number | { [key: string]: any } | null | string
+  code: string
+
 }
 
 /**

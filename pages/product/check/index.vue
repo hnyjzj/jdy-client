@@ -9,9 +9,11 @@ const { checkList, checkFilterList, checkFilterListToArray, checkTotal } = store
 const { storesList } = storeToRefs(useStores())
 const { getStoreList, getMyStore } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
+const route = useRoute()
+
+const filterData = ref({} as Partial<ExpandPage<Check>>)
 const limits = ref(50)
 const tableLoading = ref(false)
-
 const storeCol = ref()
 async function changeStore() {
   storeCol.value = []
@@ -32,53 +34,73 @@ useSeoMeta({
 const openFilter = () => {
   isFilter.value = true
 }
-/** 搜索 */
-async function search(e: string) {
-  await submitWhere({ id: e }, true)
+
+const filterRef = ref()
+/** 跳转并刷新列表 */
+const listJump = () => {
+  const url = UrlAndParams('/product/warehouse', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
-/** 关闭搜索 */
-async function clearSearch() {
-  await submitWhere({ }, true)
-}
-// 获取货品列表
-async function getList(where = {} as Partial<Check>) {
+/** 获取成品列表 */
+const getList = async (where = {} as Partial<Check>) => {
   tableLoading.value = true
-  const params = { page: searchPage.value, limit: limits.value } as ReqList<Check>
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<Check>
   if (JSON.stringify(where) !== '{}') {
-    params.where = where
+    params.where = { ...params.where, ...where }
   }
   const res = await getCheckList(params)
   tableLoading.value = false
-  return res as any
+  return res
 }
-
-await getList()
-
-const filterData = ref({} as Partial<Check>)
-
-const pull = async (page: number) => {
-  searchPage.value = page
+/** 读取参数并初始化列表 */
+const handleQueryParams = async () => {
+  const f = getQueryParams<ExpandPage<Check>>(route.fullPath, checkFilterList.value)
+  filterData.value = f
+  if (f.searchPage)
+    searchPage.value = Number(f.searchPage)
+  if (f.limits)
+    limits.value = Number(f.limits)
   await getList(filterData.value)
 }
 
-const store_id = ref()
-// 筛选列表
-async function submitWhere(f: Partial<Check>, isSearch = false) {
-  if (store_id.value) {
-    f.store_id = store_id.value
+/** 提交筛选 */
+const submitWhere = async (f: Partial<ExpandPage<Check>>) => {
+  filterData.value = {
+    ...f,
+    searchPage: 1,
+    limits: limits.value,
   }
-  filterData.value = { ...filterData.value, ...f }
-  searchPage.value = 1
-  checkList.value = []
-  const res = await getList(filterData.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    isFilter.value = false
-    if (!isSearch) {
-      $toast.success('筛选成功')
-    }
-    return
+  listJump()
+}
+
+/** 修改页码 */
+const updatePage = (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+/** 搜索 */
+async function search(e: string) {
+  await submitWhere({ id: e })
+}
+/** 关闭搜索 */
+async function clearSearch() {
+  await submitWhere({ })
+}
+
+// 页面初始化逻辑
+try {
+  if (myStore.value.id || myStore.value.id === '') {
+    await getCheckWhere()
+    await handleQueryParams()
   }
-  $toast.error(res?.message ?? '筛选失败')
+  else {
+    $toast.error('您尚未分配任何门店，请先添加门店')
+  }
+}
+catch (error) {
+  throw new Error(`初始化失败: ${error || '未知错误'}`)
 }
 
 /** 多选值 */
@@ -110,6 +132,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
 async function changeMyStore() {
   searchPage.value = 1
   reset()
+  filterRef.value.reset()
   await getList()
 }
 
@@ -142,10 +165,10 @@ const pageOption = ref({
   onUpdatePageSize: (pageSize: number) => {
     pageOption.value.pageSize = pageSize
     limits.value = pageSize
-    pull(1)
+    updatePage(1)
   },
   onChange: (page: number) => {
-    pull(page)
+    updatePage(page)
   },
 })
 
@@ -389,7 +412,7 @@ const cols = [
             </template>
           </product-manage-card>
           <common-page
-            v-model:page="searchPage" :total="checkTotal" :limit="limits" @update:page="pull" />
+            v-model:page="searchPage" :total="checkTotal" :limit="limits" @update:page="updatePage" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="checkList" :page-option="pageOption" :loading="tableLoading" />

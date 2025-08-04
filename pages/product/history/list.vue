@@ -12,13 +12,77 @@ const { getOldWhere } = useOld()
 const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList, getMyStore } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
+
+const route = useRoute()
+
 const limits = ref(50)
 const tableLoading = ref(false)
 const isLoading = ref(false)
 const searchKey = ref('')
+const filterData = ref({} as Partial<ExpandPage<ProductHistories>>)
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const storeCol = ref()
+
+const filterRef = ref()
+/** 跳转并刷新列表 */
+const listJump = () => {
+  const url = UrlAndParams('/product/history/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+}
+/** 获取成品列表 */
+const getList = async (where = {} as Partial<ProductHistories>) => {
+  tableLoading.value = true
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<ProductHistories>
+  if (JSON.stringify(where) !== '{}') {
+    params.where = { ...params.where, ...where }
+  }
+  const res = await getProductHistory(params)
+  tableLoading.value = false
+  return res
+}
+/** 读取参数并初始化列表 */
+const handleQueryParams = async () => {
+  const f = getQueryParams<ExpandPage<ProductHistories>>(route.fullPath, historyFilterList.value)
+  filterData.value = f
+  if (f.searchPage)
+    searchPage.value = Number(f.searchPage)
+  if (f.limits)
+    limits.value = Number(f.limits)
+  await getList(filterData.value)
+}
+
+/** 提交筛选 */
+const submitWhere = async (f: Partial<ExpandPage<ProductHistories>>) => {
+  filterData.value = {
+    ...f,
+    searchPage: 1,
+    limits: limits.value,
+  }
+  listJump()
+}
+
+/** 修改页码 */
+const updatePage = (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 页面初始化逻辑
+try {
+  await getHistoryWhere()
+  await handleQueryParams()
+  await getFinishedWhere()
+  await getOldWhere()
+  await changeStore()
+  await getStoreList({ page: 1, limit: 20 })
+  await getMyStore({ page: 1, limit: 20 })
+}
+catch (error) {
+  throw new Error(`初始化失败: ${error || '未知错误'}`)
+}
+
 function changeStore() {
   storeCol.value = []
   storesList.value.forEach((item: Stores) => {
@@ -32,64 +96,21 @@ useSeoMeta({
 const openFilter = () => {
   isFilter.value = true
 }
+
 /** 搜索 */
 async function search(e: string) {
-  await submitWhere({ code: e }, true)
+  filterRef.value?.reset()
+  filterData.value.code = e
+  filterData.value.searchPage = 1
+  listJump()
 }
 /** 关闭搜索 */
 async function clearSearch() {
-  await submitWhere({ }, true)
-}
-// 获取货品列表
-async function getList(where = {} as Partial<HistoryWhere>) {
-  tableLoading.value = true
-  const params = { page: searchPage.value, limit: limits.value } as ReqList<HistoryWhere>
-  params.where = where
-  if (myStore.value.id) {
-    where.store_id = myStore.value.id
-  }
-  const res = await getProductHistory(params)
-  tableLoading.value = false
-  return res as any
-}
-try {
-  await getList()
-  await getHistoryWhere()
-  await getFinishedWhere()
-  await getOldWhere()
-  await changeStore()
-  await getStoreList({ page: 1, limit: 20 })
-  await getMyStore({ page: 1, limit: 20 })
-}
-catch (error) {
-  $toast.error('初始化数据失败')
-  console.error('初始化数据失败:', error)
+  filterRef.value?.reset()
+  filterData.value.searchPage = 1
+  listJump()
 }
 
-const filterData = ref({} as Partial<ProductHistories>)
-
-const pull = async (page: number) => {
-  searchPage.value = page
-  await getList(filterData.value)
-}
-
-// 筛选列表
-async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) {
-  filterData.value = { ...f }
-  searchPage.value = 1
-  productRocordList.value = []
-  const res = await getList(filterData.value)
-  if (res.code === HttpCode.SUCCESS) {
-    isFilter.value = false
-    if (!isSearch) {
-      $toast.success('筛选成功')
-    }
-    return
-  }
-  $toast.error(res.message ?? '筛选失败')
-}
-
-const filterRef = ref()
 async function changeMyStore() {
   searchPage.value = 1
   filterRef.value.reset()
@@ -105,10 +126,10 @@ const pageOption = ref({
   onUpdatePageSize: (pageSize: number) => {
     pageOption.value.pageSize = pageSize
     limits.value = pageSize
-    pull(1)
+    updatePage(1)
   },
   onChange: (page: number) => {
-    pull(page)
+    updatePage(page)
   },
 })
 
@@ -446,7 +467,7 @@ async function downloadLocalFile() {
             </template>
           </product-manage-card>
           <common-page
-            v-model:page="searchPage" :total="historyListTotal" :limit="limits" @update:page="pull" />
+            v-model:page="searchPage" :total="historyListTotal" :limit="limits" @update:page="updatePage" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="productRocordList" :page-option="pageOption" :loading="tableLoading" />
