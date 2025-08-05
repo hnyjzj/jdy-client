@@ -50,10 +50,10 @@ const handleQueryParams = async () => {
     showtype.value = f.showtype
   }
   if (f.searchPage) {
-    searchPage.value = Number(f.searchPage)
+    searchPage.value = Number(f.searchPage) || 1
   }
   if (f.limits) {
-    limits.value = Number(f.limits)
+    limits.value = Number(f.limits) || 50
   }
 
   await getList(filterData.value as Partial<StatementWhere>)
@@ -96,7 +96,8 @@ const updatePage = async (page: number) => {
 }
 
 const changeStores = async () => {
-  await getList(filterData.value)
+  filterData.value.searchPage = 1
+  listJump()
 }
 
 const pageOption = ref({

@@ -32,7 +32,7 @@ const railStyle = ({
   <div class="flex-center-between gap-2 py-[16px]">
     <div class="flex items-center gap-[12px]">
       <div class="text-size-[14px] color-[#fff]">
-        共{{ props.total }}条数据
+        共 {{ props.total }} 条
       </div>
     </div>
     <div class="flex items-center gap-[12px]">

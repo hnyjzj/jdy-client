@@ -38,10 +38,10 @@ const handleQueryParams = async () => {
   filterData.value = f
 
   if (f.searchPage) {
-    searchPage.value = Number(f.searchPage)
+    searchPage.value = Number(f.searchPage) || 1
   }
   if (f.limits) {
-    limits.value = Number(f.limits)
+    limits.value = Number(f.limits) || 50
   }
 
   await getList(filterData.value as StoresWhere)

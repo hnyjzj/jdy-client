@@ -108,7 +108,8 @@ const updatePage = async (page: number) => {
 }
 
 const changeStores = async () => {
-  await getList(filterData.value as Partial<service>)
+  filterData.value.searchPage = 1
+  await getList(filterData.value)
 }
 const Key = ref()
 const cityOptions = ref<any>([])
