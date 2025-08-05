@@ -51,6 +51,9 @@ const handleQueryParams = async () => {
   filterData.value = f
   if (f.searchPage)
     searchPage.value = Number(f.searchPage)
+  if (f.showtype) {
+    showtype.value = f.showtype
+  }
   if (f.limits)
     limits.value = Number(f.limits)
   await getList(filterData.value)
@@ -223,7 +226,7 @@ const openFilter = () => {
       </template>
     </product-filter>
     <!-- 列表 -->
-    <div class="px-[16px] pb-20">
+    <div class="pb-20">
       <template v-if="oldList?.length">
         <template v-if="showtype === 'list'">
           <product-list-main :product-list="oldList" :filter-list="oldFilterList" @edit="edit" @go-info="goInfo" />

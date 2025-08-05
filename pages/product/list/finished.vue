@@ -176,7 +176,13 @@ const cols = [
     render: (rowData: ProductFinisheds) => {
       return h(
         'div',
-        { style: 'display: flex; gap: 8px;' },
+        {
+          style: {
+            display: 'flex',
+            gap: '8px',
+            backgroundColor: '#fff',
+          },
+        },
         [
           h(
             NButton,
@@ -258,7 +264,7 @@ async function downloadLocalFile() {
     </product-filter>
 
     <!-- 列表 -->
-    <div class="px-[16px] pb-20">
+    <div class="pb-20">
       <template v-if="finishedList?.length">
         <template v-if="showtype === 'list'">
           <product-list-main :is-finished="true" :product-list="finishedList" :filter-list="finishedFilterList" @edit="edit" @go-info="goInfo" />
@@ -266,7 +272,9 @@ async function downloadLocalFile() {
             v-model:page="searchPage" :total="finishedListTotal" :limit="limits" @update:page="updatePage" />
         </template>
         <template v-else>
-          <common-datatable :columns="cols" :list="finishedList" :page-option="pageOption" :loading="tableLoading" />
+          <div class="max-[100px]">
+            <common-datatable :columns="cols" :list="finishedList" :page-option="pageOption" :loading="tableLoading" />
+          </div>
         </template>
       </template>
       <template v-else>
@@ -279,7 +287,9 @@ async function downloadLocalFile() {
       </template>
     </common-create>
     <common-loading v-model="isLoading" />
-    <product-manage-bottom :statistics="finisheStatistics" />
+    <div class="z-9">
+      <product-manage-bottom :statistics="finisheStatistics" />
+    </div>
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="finishedFilterListToArray" @submit="submitWhere" @reset="resetWhere" />
   </div>

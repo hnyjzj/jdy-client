@@ -38,6 +38,9 @@ const handleQueryParams = async () => {
   filterData.value = f
   if (f.searchPage)
     searchPage.value = Number(f.searchPage)
+  if (f.showtype) {
+    showtype.value = f.showtype
+  }
   if (f.limits)
     limits.value = Number(f.limits)
   await getList(filterData.value)
@@ -95,7 +98,7 @@ async function clearSearch() {
 
 async function changeMyStore() {
   filterData.value.searchPage = 1
-  await getList()
+  listJump()
 }
 
 const pageOption = ref({
