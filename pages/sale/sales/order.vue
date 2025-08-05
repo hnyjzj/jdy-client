@@ -153,6 +153,21 @@ const payOrderConfirm = async () => {
   }
 }
 
+const getselectStyle = (item: orderInfoProducts) => {
+  const res = ref(false)
+  if (selectModel.value.findIndex(p => p.id === item.id) !== -1) {
+    res.value = true
+  }
+  else {
+    res.value = false
+  }
+  return {
+    'background-color': res.value ? '#fff' : '',
+    'color': res.value ? '#2774EE' : '#666',
+    'border': res.value ? '1px solid #fff' : '1px solid #E5E5E7',
+  }
+}
+
 // 判断当前环境
 const isMobile = ref(false)
 onMounted(() => {
@@ -223,10 +238,7 @@ onMounted(() => {
             <template v-if="item.type === 1">
               <div
                 class="py-[6px] px-[12px] cursor-pointer mb-[8px] rounded-[6px] border border-[#E5E5E7] border-solid"
-                :style="{
-                  'background-color': selectModel.findIndex(p => p.id === item.id) !== -1 ? '#fff' : '',
-                  'color': selectModel.findIndex(p => p.id === item.id) !== -1 ? '#2774EE' : '#666',
-                }"
+                :style="getselectStyle(item)"
                 @click="selectSome(item)">
                 成品-{{ item.finished.product?.name || '暂无名称' }}
               </div>
@@ -234,10 +246,7 @@ onMounted(() => {
             <template v-if="item.type === 2">
               <div
                 class="py-[6px] px-[12px] cursor-pointer mb-[8px] rounded-[6px] border border-[#E5E5E7] border-solid"
-                :style="{
-                  'background-color': selectModel.findIndex(p => p.id === item.id) !== -1 ? '#fff' : '',
-                  'color': selectModel.findIndex(p => p.id === item.id) !== -1 ? '#2774EE' : '#666',
-                }"
+                :style="getselectStyle(item)"
                 @click="selectSome(item)">
                 旧料-{{ item.old.product?.name || '暂无名称' }}
               </div>
@@ -245,11 +254,7 @@ onMounted(() => {
             <template v-if="item.type === 3">
               <div
                 class="py-[6px] px-[12px] cursor-pointer mb-[8px] rounded-[6px] border border-[#E5E5E7] border-solid"
-                :style="{
-                  'background-color': selectModel.findIndex(p => p.id === item.id) !== -1 ? '#fff' : '',
-                  'color': selectModel.findIndex(p => p.id === item.id) !== -1 ? '#2774EE' : '#666',
-                  'border': selectModel.findIndex(p => p.id === item.id) !== -1 ? '1px solid #fff' : '1px solid #E5E5E7',
-                }"
+                :style="getselectStyle(item)"
                 @click="selectSome(item)">
                 配件-{{ item.accessorie.product?.name || '暂无名称' }}
               </div>
