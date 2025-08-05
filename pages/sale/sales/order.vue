@@ -33,6 +33,18 @@ if (route.query.id) {
   await getOldWhere()
 }
 const showModel = ref(false)
+const isSelectModel = ref(false)
+const selectModel = ref<orderInfoProducts[]>([])
+
+const selectSome = (item: orderInfoProducts) => {
+  if (selectModel.value.findIndex(p => p.id === item.id) !== -1) {
+    selectModel.value.splice(selectModel.value.findIndex(p => p.id === item.id), 1)
+  }
+  else {
+    selectModel.value.push(item)
+  }
+}
+
 const returnGoods = async (req: ReturnGoods) => {
   const res = await returnOrderGoods(req)
   if (res) {
@@ -41,8 +53,6 @@ const returnGoods = async (req: ReturnGoods) => {
     await getOrderDetail({ id: route.query.id as string })
   }
 }
-
-const router = useRouter()
 
 const gather = ref('')
 
@@ -83,9 +93,12 @@ const getSpecificInfo = async () => {
 }
 
 const printPre = () => {
+  const printDetail = ref<OrderInfo>({} as OrderInfo)
+  printDetail.value = JSON.parse(JSON.stringify(OrderDetail.value))
+  printDetail.value.products = selectModel.value
   const PrintComponent = defineComponent({
     render() {
-      return h(PrintTemp, { details: OrderDetail.value, type: 1, payMethod: gather.value, numerical: tempInfo.value })
+      return h(PrintTemp, { details: printDetail.value, type: 1, payMethod: gather.value, numerical: tempInfo.value })
     },
   })
   getMethod()
@@ -142,7 +155,6 @@ const payOrderConfirm = async () => {
 
 // 判断当前环境
 const isMobile = ref(false)
-
 onMounted(() => {
   isMobile.value = checkEnv()
 })
@@ -177,6 +189,76 @@ onMounted(() => {
         </div>
       </div>
     </common-model>
+    <common-model
+      v-model="isSelectModel"
+      :show-ok="true"
+      title="批量打印设置"
+      @confirm="modelConfirm"
+      @cancel="() => {
+        clear()
+      }"
+    >
+      <div class="flex flex-col gap-[16px] px-[12px]">
+        <div class="describe font-size-[16px] text-color-[#333]">
+          请先选择打印模板。
+        </div>
+        <div class="">
+          <n-space vertical>
+            <n-select
+              v-model:value="chosen"
+              :options="tempList"
+              @blur="() => {
+                const loc = tempList.findIndex(item => item.value === chosen)
+                sign = loc === -1 ? false : true
+              }"
+            />
+          </n-space>
+        </div>
+        <div class="flex flex-col">
+          <div class="font-size-[16px] pb-[6px]">
+            选择要打印的货品
+          </div>
+          <template
+            v-for="(item, index) in OrderDetail.products" :key="index">
+            <template v-if="item.type === 1">
+              <div
+                class="py-[6px] px-[12px] cursor-pointer mb-[8px] rounded-[6px] border border-[#E5E5E7] border-solid"
+                :style="{
+                  'background-color': selectModel.findIndex(p => p.id === item.id) !== -1 ? '#fff' : '',
+                  'color': selectModel.findIndex(p => p.id === item.id) !== -1 ? '#2774EE' : '#666',
+                }"
+                @click="selectSome(item)">
+                成品-{{ item.finished.product?.name || '暂无名称' }}
+              </div>
+            </template>
+            <template v-if="item.type === 2">
+              <div
+                class="py-[6px] px-[12px] cursor-pointer mb-[8px] rounded-[6px] border border-[#E5E5E7] border-solid"
+                :style="{
+                  'background-color': selectModel.findIndex(p => p.id === item.id) !== -1 ? '#fff' : '',
+                  'color': selectModel.findIndex(p => p.id === item.id) !== -1 ? '#2774EE' : '#666',
+                }"
+                @click="selectSome(item)">
+                旧料-{{ item.old.product?.name || '暂无名称' }}
+              </div>
+            </template>
+            <template v-if="item.type === 3">
+              <div
+                class="py-[6px] px-[12px] cursor-pointer mb-[8px] rounded-[6px] border border-[#E5E5E7] border-solid"
+                :style="{
+                  'background-color': selectModel.findIndex(p => p.id === item.id) !== -1 ? '#fff' : '',
+                  'color': selectModel.findIndex(p => p.id === item.id) !== -1 ? '#2774EE' : '#666',
+                  'border': selectModel.findIndex(p => p.id === item.id) !== -1 ? '1px solid #fff' : '1px solid #E5E5E7',
+                }"
+                @click="selectSome(item)">
+                配件-{{ item.accessorie.product?.name || '暂无名称' }}
+              </div>
+            </template>
+          </template>
+        </div>
+      </div>
+    </common-model>
+
     <div class="p-[16px] pb-[80px]">
       <sale-order-detail
         v-model:dialog="showModel"
@@ -221,7 +303,7 @@ onMounted(() => {
         <template v-if="!isMobile">
           <common-button-bottom
             confirm-text="打印"
-            cancel-text="返回"
+            cancel-text="批量打印"
             @confirm="() => {
               if (myStore.id === OrderDetail.store_id){
                 jumpPre()
@@ -230,7 +312,14 @@ onMounted(() => {
                 $toast.error('当前门店与操作门店不匹配,无法操作')
               }
             }"
-            @cancel="router.back()"
+            @cancel="() => {
+              if (myStore.id === OrderDetail.store_id){
+                isSelectModel = true
+              }
+              else {
+                $toast.error('当前门店与操作门店不匹配,无法操作')
+              }
+            }"
           />
         </template>
       </template>
