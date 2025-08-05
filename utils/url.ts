@@ -61,9 +61,13 @@ export function getQueryParams<V extends Partial<Record<string, any>>, K extends
       case 'boolean':
         (queryParams as Record<string, any>)[key] = value === 'true'
         break
-      case 'string[]':
-        (queryParams as Record<string, any>)[key] = value.split(',').map(item => decodeURIComponent(item))
+      case 'string[]': {
+        const values = value.split(',').map(item => decodeURIComponent(item)).filter(Boolean)
+        if (values.length > 0) {
+          (queryParams as Record<string, any>)[key] = values
+        }
         break
+      }
       case 'time':
         (queryParams as Record<string, any>)[key] = new Date(value).getTime()
         break
