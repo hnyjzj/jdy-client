@@ -18,7 +18,7 @@ const storeCol = ref()
 const filterRef = ref()
 /** 跳转并刷新列表 */
 const listJump = () => {
-  const url = UrlAndParams('/product/warehouse', filterData.value)
+  const url = UrlAndParams('/product/allocate', filterData.value)
   navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
 /** 获取列表 */
@@ -78,17 +78,23 @@ useSeoMeta({
 const openFilter = () => {
   isFilter.value = true
 }
+
 /** 搜索 */
 async function search(e: string) {
-  await submitWhere({ id: e })
+  filterData.value.id = e
+  searchPage.value = 1
+  listJump()
 }
+
 /** 关闭搜索 */
 async function clearSearch() {
-  await submitWhere({ })
-}
-async function changeMyStore() {
+  delete filterData.value.id
   searchPage.value = 1
-  filterRef.value.reset()
+  listJump()
+}
+
+async function changeMyStore() {
+  filterData.value.searchPage = 1
   await getList()
 }
 
@@ -107,6 +113,20 @@ const pageOption = ref({
     updatePage(page)
   },
 })
+
+/** 切换显示 */
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 重置高级筛选
+const resetWhere = async () => {
+  filterData.value = {}
+  listJump()
+}
 
 // 页面初始化逻辑
 try {
@@ -202,7 +222,7 @@ const cols = [
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:showtype="showtype" :product-list-total="allocateTotal" placeholder="搜索调拨单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:showtype="showtype" :product-list-total="allocateTotal" placeholder="搜索调拨单号" @change-card="changeCard" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changeMyStore" />
       </template>
@@ -304,7 +324,7 @@ const cols = [
     </div>
     <common-create @click="jump('/product/allocate/add')" />
 
-    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="allocateFilterListToArray" @submit="submitWhere" @reset="filterData = {}">
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="allocateFilterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #from_store_id>
         <n-select
           v-model:value="filterData.from_store_id"

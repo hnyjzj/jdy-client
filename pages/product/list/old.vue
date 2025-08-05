@@ -31,7 +31,7 @@ const listJump = () => {
   const url = UrlAndParams('/product/list/old', filterData.value)
   navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
-/** 获取旧品列表 */
+/** 获取列表 */
 const getList = async (where = {} as Partial<ProductOlds>) => {
   tableLoading.value = true
   const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<ProductOlds>
@@ -101,8 +101,7 @@ function goInfo(info: ProductOlds) {
 
 /** 门店切换刷新 */
 async function changeStore() {
-  searchPage.value = 1
-  filterRef.value.reset()
+  filterData.value.searchPage = 1
   await getList()
 }
 
@@ -132,6 +131,20 @@ try {
 }
 catch (error) {
   throw new Error(`初始化失败: ${error || '未知错误'}`)
+}
+
+/** 切换显示 */
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 重置高级筛选
+const resetWhere = async () => {
+  filterData.value = {}
+  listJump()
 }
 
 const cols = [
@@ -204,7 +217,7 @@ const openFilter = () => {
 <template>
   <div>
     <!-- 筛选 -->
-    <product-filter v-model:showtype="showtype" :product-list-total="oldListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
+    <product-filter v-model:showtype="showtype" :product-list-total="oldListTotal" placeholder="搜索条码" @change-card="changeCard" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changeStore" />
       </template>
@@ -226,6 +239,6 @@ const openFilter = () => {
       </template>
     </div>
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
-    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="oldFilterListToArray" @submit="submitWhere" />
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="oldFilterListToArray" @submit="submitWhere" @reset="resetWhere" />
   </div>
 </template>

@@ -111,15 +111,28 @@ const openFilter = () => {
 }
 /** 搜索 */
 async function search(e: string) {
-  filterRef.value?.reset?.()
   filterData.value.id = e
-  filterData.value.searchPage = 1
+  searchPage.value = 1
   listJump()
 }
 /** 关闭搜索 */
 async function clearSearch() {
-  filterRef.value?.reset()
-  filterData.value.searchPage = 1
+  delete filterData.value.id
+  searchPage.value = 1
+  listJump()
+}
+
+/** 切换显示 */
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 重置高级筛选
+const resetWhere = async () => {
+  filterData.value = {}
   listJump()
 }
 
@@ -153,10 +166,8 @@ function goAdd() {
 }
 
 async function changemyStore() {
-  searchPage.value = 1
-  await changeStore()
-  filterRef.value.reset()
-  await getList()
+  filterData.value.searchPage = 1
+  listJump()
 }
 
 const pageOption = ref({
@@ -174,6 +185,7 @@ const pageOption = ref({
     updatePage(page)
   },
 })
+
 const cols = [
   {
     title: '入库状态',
@@ -230,7 +242,7 @@ const cols = [
 <template>
   <div>
     <!-- 筛选 -->
-    <product-filter v-model:showtype="showtype" :product-list-total="EnterListTotal" placeholder="搜索入库单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+    <product-filter v-model:showtype="showtype" :product-list-total="EnterListTotal" placeholder="搜索入库单号" @change-card="changeCard" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changemyStore" />
       </template>
@@ -325,7 +337,7 @@ const cols = [
       <common-create @click="create" />
     </template>
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
-    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" />
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @reset="resetWhere" @submit="submitWhere" />
     <common-model v-model="isCreateModel" title="添加入库单" :show-ok="true" @confirm="createEnter">
       <div class="mb-8 min-h-[60px]">
         <div class="flex items-center mb-4">

@@ -99,22 +99,34 @@ const openFilter = () => {
 
 /** 搜索 */
 async function search(e: string) {
-  filterRef.value?.reset()
   filterData.value.code = e
   filterData.value.searchPage = 1
   listJump()
 }
 /** 关闭搜索 */
 async function clearSearch() {
-  filterRef.value?.reset()
+  delete filterData.value.code
   filterData.value.searchPage = 1
   listJump()
 }
 
 async function changeMyStore() {
-  searchPage.value = 1
-  filterRef.value.reset()
+  filterData.value.searchPage = 1
   await getList()
+}
+
+/** 切换显示 */
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 重置高级筛选
+const resetWhere = async () => {
+  filterData.value = {}
+  listJump()
 }
 
 const pageOption = ref({
@@ -291,7 +303,7 @@ async function downloadLocalFile() {
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:showtype="showtype" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜索编号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:showtype="showtype" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜索编号" @change-card="changeCard" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changeMyStore" />
       </template>
@@ -477,7 +489,7 @@ async function downloadLocalFile() {
         <common-empty width="100px" />
       </template>
 
-      <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="HistoryFilterListToArray" @submit="submitWhere" />
+      <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="HistoryFilterListToArray" @reset="resetWhere" @submit="submitWhere" />
     </div>
     <common-create @click="downloadLocalFile">
       <template #content>

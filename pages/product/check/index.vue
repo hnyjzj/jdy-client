@@ -38,7 +38,7 @@ const openFilter = () => {
 const filterRef = ref()
 /** 跳转并刷新列表 */
 const listJump = () => {
-  const url = UrlAndParams('/product/warehouse', filterData.value)
+  const url = UrlAndParams('/product/check', filterData.value)
   navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
 /** 获取成品列表 */
@@ -130,8 +130,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
 }
 
 async function changeMyStore() {
-  searchPage.value = 1
-  reset()
+  filterData.value.searchPage = 1
   filterRef.value.reset()
   await getList()
 }
@@ -147,6 +146,7 @@ const Key = ref(useId())
 function reset() {
   filterData.value = { }
   Key.value = Date.now().toString()
+  listJump()
 }
 
 async function getStoreStaffListFun() {
@@ -154,6 +154,14 @@ async function getStoreStaffListFun() {
   if (res) {
     $toast.error(res?.data.value?.message || '获取员工列表失败')
   }
+}
+
+/** 切换显示 */
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
 }
 
 const pageOption = ref({
@@ -291,7 +299,7 @@ const cols = [
     <!-- 筛选 -->
     <div id="header" class="sticky top-0 bg-[#3875C5] z-1">
       <product-filter
-        v-model:showtype="showtype" :product-list-total="checkTotal" placeholder="搜索盘点单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+        v-model:showtype="showtype" :product-list-total="checkTotal" placeholder="搜索盘点单号" @filter="openFilter" @change-card="changeCard" @search="search" @clear-search="clearSearch">
         <template #company>
           <product-manage-company @change="changeMyStore" />
         </template>

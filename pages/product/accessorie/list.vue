@@ -27,7 +27,7 @@ const openFilter = () => {
 const filterRef = ref()
 /** 跳转并刷新列表 */
 const listJump = () => {
-  const url = UrlAndParams('/product/list/finished', filterData.value)
+  const url = UrlAndParams('/product/accessorie/list', filterData.value)
   navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
 /** 获取列表 */
@@ -71,7 +71,6 @@ const updatePage = (page: number) => {
 }
 /** 搜索条码 */
 const search = async (e: string) => {
-  filterRef.value?.reset()
   filterData.value.code = e
   filterData.value.searchPage = 1
   listJump()
@@ -99,9 +98,8 @@ catch (error) {
 }
 
 async function changeStore() {
-  searchPage.value = 1
-  filterRef.value.reset()
-  await getList()
+  filterData.value.searchPage = 1
+  listJump()
 }
 
 const pageOption = ref({
@@ -119,6 +117,20 @@ const pageOption = ref({
     updatePage(page)
   },
 })
+
+/** 切换显示 */
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 重置高级筛选
+const resetWhere = async () => {
+  filterData.value = {}
+  listJump()
+}
 
 const cols = [
   // 动态生成：来自 categoryFilterListToArray 的字段
@@ -176,7 +188,7 @@ const cols = [
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:showtype="showtype" :product-list-total="accessorieListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:showtype="showtype" :product-list-total="accessorieListTotal" placeholder="搜索条码" @change-card="changeCard" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changeStore" />
       </template>
@@ -239,6 +251,6 @@ const cols = [
         <common-empty width="100px" />
       </template>
     </div>
-    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="accessorieFilterListToArray" @submit="submitWhere" />
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="accessorieFilterListToArray" @reset="resetWhere" @submit="submitWhere" />
   </div>
 </template>

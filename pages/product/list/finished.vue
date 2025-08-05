@@ -44,6 +44,9 @@ const handleQueryParams = async () => {
   filterData.value = f
   if (f.searchPage)
     searchPage.value = Number(f.searchPage)
+  if (f.showtype) {
+    showtype.value = f.showtype
+  }
   if (f.limits)
     limits.value = Number(f.limits)
   await getList(filterData.value)
@@ -89,7 +92,6 @@ const openFilter = () => {
 
 /** 搜索条码 */
 const search = async (e: string) => {
-  filterRef.value?.reset?.()
   filterData.value.code = e
   filterData.value.searchPage = 1
   listJump()
@@ -120,9 +122,8 @@ const goInfo = (info: ProductFinisheds) => {
 
 /** 门店切换刷新 */
 const changeStore = async () => {
-  searchPage.value = 1
-  filterRef.value?.reset?.()
-  await getList()
+  filterData.value.searchPage = 1
+  listJump()
 }
 
 // 页面初始化逻辑
@@ -205,6 +206,19 @@ const cols = [
   },
 ]
 
+/** 切换显示 */
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 重置高级筛选
+const resetWhere = async () => {
+  filterData.value = {}
+  listJump()
+}
 /**
  * 货品列表导出excel表格
  */
@@ -234,6 +248,7 @@ async function downloadLocalFile() {
       v-model:showtype="showtype"
       :product-list-total="finishedListTotal"
       placeholder="搜索条码"
+      @change-card="changeCard"
       @filter="openFilter"
       @search="search"
       @clear-search="clearSearch">
@@ -266,6 +281,6 @@ async function downloadLocalFile() {
     <common-loading v-model="isLoading" />
     <product-manage-bottom :statistics="finisheStatistics" />
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
-    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="finishedFilterListToArray" @submit="submitWhere" />
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="finishedFilterListToArray" @submit="submitWhere" @reset="resetWhere" />
   </div>
 </template>

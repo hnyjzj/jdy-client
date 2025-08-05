@@ -33,7 +33,7 @@ const openFilter = () => {
 }
 /** 跳转并刷新列表 */
 const listJump = () => {
-  const url = UrlAndParams('/product/list/finished', filterData.value)
+  const url = UrlAndParams('/product/accessorie/allocate', filterData.value)
   navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
 /** 获取成品列表 */
@@ -81,7 +81,6 @@ const updatePage = (page: number) => {
 /** 搜索条码 */
 const filterRef = ref()
 const search = async (e: string) => {
-  filterRef.value?.reset()
   filterData.value.id = e
   filterData.value.searchPage = 1
   listJump()
@@ -89,15 +88,14 @@ const search = async (e: string) => {
 
 /** 清空搜索 */
 const clearSearch = async () => {
-  filterRef.value?.reset()
+  delete filterData.value.id
   filterData.value.searchPage = 1
   listJump()
 }
 
 async function changeStore() {
-  searchPage.value = 1
-  filterRef.value.reset()
-  await getList()
+  filterData.value.searchPage = 1
+  listJump()
 }
 
 /** id获取门店名称 */
@@ -130,6 +128,21 @@ try {
 catch (error) {
   throw new Error(`初始化失败: ${error || '未知错误'}`)
 }
+
+/** 切换显示 */
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 重置高级筛选
+const resetWhere = async () => {
+  filterData.value = {}
+  listJump()
+}
+
 const cols = [
   {
     title: '状态',
@@ -197,7 +210,7 @@ const cols = [
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:showtype="showtype" :product-list-total="accessorieAllocateTotal" placeholder="搜索调拨单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:showtype="showtype" :product-list-total="accessorieAllocateTotal" placeholder="搜索调拨单号" @change-card="changeCard" @filter="openFilter" @search="search" @clear-search="clearSearch">
       <template #company>
         <product-manage-company @change="changeStore" />
       </template>
@@ -269,7 +282,7 @@ const cols = [
       <common-create @click="jump('/product/accessorie/allocate/add')" />
     </template>
 
-    <common-filter-where ref="filterRef" v-model:show="isFilter" :is-only-show="true" :data="filterData" :filter="accessorieAllocateFilterListToArray" @submit="submitWhere" @reset="filterData = {}">
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :is-only-show="true" :data="filterData" :filter="accessorieAllocateFilterListToArray" @reset="resetWhere" @submit="submitWhere">
       <template #from_store_id>
         <n-select
           v-model:value="filterData.from_store_id"
