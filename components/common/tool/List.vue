@@ -3,12 +3,15 @@ import type { CSSProperties } from 'vue'
 
 const props = withDefaults(defineProps<{
   total?: number
+  isExport?: boolean
 }>(), {
   total: 0,
+  isExport: false,
 })
 const emits = defineEmits<{
   height: []
   changeCard: []
+  export: []
 }>()
 const showtype = defineModel<'table' | 'list'>('showtype')
 const railStyle = ({
@@ -34,6 +37,16 @@ const railStyle = ({
       <div class="text-size-[14px] color-[#fff]">
         共 {{ props.total }} 条
       </div>
+      <template v-if="isExport">
+        <div class="flex items-center cursor-pointer" @click="emits('export')">
+          <span class="underline">
+            <icon name="i-icon:download" :size="14" color="#FFF" />
+          </span>
+          <span>
+            导出
+          </span>
+        </div>
+      </template>
     </div>
     <div class="flex items-center gap-[12px]">
       <div @click="emits('height')">

@@ -306,7 +306,17 @@ async function downloadLocalFile() {
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:showtype="showtype" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜索编号" @change-card="changeCard" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:showtype="showtype"
+      v-model:search="searchKey"
+      :product-list-total="historyListTotal"
+      placeholder="搜索编号"
+      :is-export="true"
+      @change-card="changeCard"
+      @filter="openFilter"
+      @search="search"
+      @clear-search="clearSearch"
+      @export="downloadLocalFile"
+    >
       <template #company>
         <product-manage-company @change="changeMyStore" />
       </template>
@@ -494,11 +504,6 @@ async function downloadLocalFile() {
 
       <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="HistoryFilterListToArray" @reset="resetWhere" @submit="submitWhere" />
     </div>
-    <common-create @click="downloadLocalFile">
-      <template #content>
-        <icon name="i-icon:download" :size="24" color="#FFF" />
-      </template>
-    </common-create>
     <common-loading v-model="isLoading" />
   </div>
 </template>

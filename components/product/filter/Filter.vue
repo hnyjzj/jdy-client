@@ -7,9 +7,11 @@ const props = withDefaults(defineProps<{
   showCompany?: boolean
   /** 是否显示输入搜索框 */
   showInput?: boolean
+  isExport?: boolean
 }>(), {
   showCompany: true,
   showInput: true,
+  isExport: false,
 })
 const emits = defineEmits<{
   search: [e: string]
@@ -17,6 +19,7 @@ const emits = defineEmits<{
   filter: []
   clearSearch: []
   changeCard: []
+  export: []
 }>()
 const showtype = defineModel<'table' | 'list'>('showtype')
 const search = (e: string) => {
@@ -45,7 +48,7 @@ const searchKey = defineModel<string>('searchKey', { required: false, default: '
             </div>
           </template>
         </div>
-        <common-tool-list v-model:showtype="showtype" :total="props.productListTotal" @height="filter" @change-card="emits('changeCard')" />
+        <common-tool-list v-model:showtype="showtype" :is-export="isExport" :total="props.productListTotal" @export="emits('export')" @height="filter" @change-card="emits('changeCard')" />
       </div>
     </common-layout-center>
   </div>
