@@ -93,7 +93,7 @@ const changeCard = () => {
   listJump()
 }
 const changeStores = async () => {
-  filterData.value = {}
+  filterData.value.searchPage = 1
   listJump()
 }
 

@@ -137,6 +137,7 @@ const payOrderConfirm = async (id: string) => {
   }
 }
 const changeStores = async () => {
+  filterData.value.searchPage = 1
   await getList(filterData.value)
 }
 const router = useRouter()

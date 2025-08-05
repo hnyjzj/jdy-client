@@ -154,6 +154,7 @@ const clearFn = async () => {
 }
 
 const changeStores = async () => {
+  filterData.value.searchPage = 1
   await getList(filterData.value)
 }
 // 切换卡片
