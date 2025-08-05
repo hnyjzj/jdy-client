@@ -9,6 +9,7 @@ const { checkList, checkFilterList, checkFilterListToArray, checkTotal } = store
 const { storesList } = storeToRefs(useStores())
 const { getStoreList, getMyStore } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
+const searchKey = ref('')
 const route = useRoute()
 
 const filterData = ref({} as Partial<ExpandPage<Check>>)
@@ -31,11 +32,11 @@ useSeoMeta({
   title: '货品盘点',
 })
 /** 打开高级筛选 */
-const openFilter = () => {
+const openFilter = async () => {
   isFilter.value = true
+  await getMyStore({ page: 1, limit: 20 })
 }
 
-const filterRef = ref()
 /** 跳转并刷新列表 */
 const listJump = () => {
   const url = UrlAndParams('/product/check', filterData.value)
@@ -56,6 +57,9 @@ const getList = async (where = {} as Partial<Check>) => {
 const handleQueryParams = async () => {
   const f = getQueryParams<ExpandPage<Check>>(route.fullPath, checkFilterList.value)
   filterData.value = f
+  if (filterData.value?.id) {
+    searchKey.value = filterData.value.id
+  }
   if (f.searchPage)
     searchPage.value = Number(f.searchPage)
   if (f.showtype) {
@@ -134,8 +138,7 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
 
 async function changeMyStore() {
   filterData.value.searchPage = 1
-  filterRef.value.reset()
-  await getList()
+  listJump()
 }
 
 /**
@@ -302,7 +305,15 @@ const cols = [
     <!-- 筛选 -->
     <div id="header" class="sticky top-0 bg-[#3875C5] z-1">
       <product-filter
-        v-model:showtype="showtype" :product-list-total="checkTotal" placeholder="搜索盘点单号" @filter="openFilter" @change-card="changeCard" @search="search" @clear-search="clearSearch">
+        v-model:search-key="searchKey"
+        v-model:showtype="showtype"
+        :product-list-total="checkTotal"
+        placeholder="搜索盘点单号"
+        @filter="openFilter"
+        @change-card="changeCard"
+        @search="search"
+        @clear-search="clearSearch"
+      >
         <template #company>
           <product-manage-company @change="changeMyStore" />
         </template>

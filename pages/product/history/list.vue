@@ -45,6 +45,9 @@ const getList = async (where = {} as Partial<ProductHistories>) => {
 const handleQueryParams = async () => {
   const f = getQueryParams<ExpandPage<ProductHistories>>(route.fullPath, historyFilterList.value)
   filterData.value = f
+  if (filterData.value.code) {
+    searchKey.value = filterData.value.code
+  }
   if (f.searchPage)
     searchPage.value = Number(f.searchPage)
   if (f.showtype) {

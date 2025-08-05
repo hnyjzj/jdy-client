@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { NButton } from 'naive-ui'
+import { render } from 'vue'
 
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
@@ -8,6 +9,7 @@ const { finishedList, finishedFilterList, finishedFilterListToArray, finishedLis
 const { searchPage, showtype } = storeToRefs(usePages())
 
 const route = useRoute()
+const searchKey = ref('')
 
 const isFilter = ref(false)
 const isModel = ref(false)
@@ -42,6 +44,9 @@ const getList = async (where = {} as Partial<ProductFinisheds>) => {
 const handleQueryParams = async () => {
   const f = getQueryParams<ExpandPage<ProductFinisheds>>(route.fullPath, finishedFilterList.value)
   filterData.value = f
+  if (filterData.value.code) {
+    searchKey.value = filterData.value.code
+  }
   if (f.searchPage)
     searchPage.value = Number(f.searchPage)
   if (f.showtype) {
@@ -143,6 +148,9 @@ catch (error) {
 /** 表格列定义 */
 const cols = [
   { title: '条码', key: 'code' },
+  { title: '状态', render: (row: ProductFinisheds) => {
+    return finishedFilterList.value.status?.preset[row.status]
+  } },
   { title: '所属大类', key: '', render: (row: ProductFinisheds) => {
     return finishedFilterList.value.class?.preset[row.class]
   } },
@@ -252,6 +260,7 @@ async function downloadLocalFile() {
     <!-- 筛选 -->
     <product-filter
       v-model:showtype="showtype"
+      v-model:search-key="searchKey"
       :product-list-total="finishedListTotal"
       placeholder="搜索条码"
       :is-export="true"

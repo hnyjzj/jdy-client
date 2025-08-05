@@ -10,6 +10,7 @@ const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
 const { searchPage, showtype } = storeToRefs(usePages())
 
 const route = useRoute()
+const searchKey = ref('')
 
 const limits = ref(50)
 const tableLoading = ref(false)
@@ -46,6 +47,9 @@ const getList = async (where = {} as Partial<ProductAccessories>) => {
 const handleQueryParams = async () => {
   const f = getQueryParams<ExpandPage<ProductAccessories>>(route.fullPath, accessorieFilterList.value)
   filterData.value = f
+  if (filterData.value.code) {
+    searchKey.value = filterData.value.code
+  }
   if (f.searchPage)
     searchPage.value = Number(f.searchPage)
   if (f.showtype) {
@@ -191,7 +195,15 @@ const cols = [
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:showtype="showtype" :product-list-total="accessorieListTotal" placeholder="搜索条码" @change-card="changeCard" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:search-key="searchKey"
+      v-model:showtype="showtype"
+      :product-list-total="accessorieListTotal"
+      placeholder="搜索条码"
+      @change-card="changeCard"
+      @filter="openFilter"
+      @search="search"
+      @clear-search="clearSearch"
+    >
       <template #company>
         <product-manage-company @change="changeStore" />
       </template>

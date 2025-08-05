@@ -8,6 +8,7 @@ const { getOldList, getOldWhere } = useOld()
 const { oldList, oldFilterList, oldFilterListToArray, oldListTotal } = storeToRefs(useOld())
 const { searchPage, showtype } = storeToRefs(usePages())
 
+const searchKey = ref('')
 const route = useRoute()
 
 // 筛选框显示隐藏
@@ -49,6 +50,9 @@ const handleQueryParams = async () => {
   // getQueryParams 需要定义或从工具导入，解析URL带的筛选和分页参数
   const f = getQueryParams<Partial<ExpandPage<ProductOlds>>>(route.fullPath, oldFilterList.value)
   filterData.value = f
+  if (filterData.value?.code) {
+    searchKey.value = filterData.value.code
+  }
   if (f.searchPage)
     searchPage.value = Number(f.searchPage)
   if (f.showtype) {
@@ -105,7 +109,7 @@ function goInfo(info: ProductOlds) {
 /** 门店切换刷新 */
 async function changeStore() {
   filterData.value.searchPage = 1
-  await getList()
+  listJump()
 }
 
 const pageOption = ref({
@@ -220,7 +224,16 @@ const openFilter = () => {
 <template>
   <div>
     <!-- 筛选 -->
-    <product-filter v-model:showtype="showtype" :product-list-total="oldListTotal" placeholder="搜索条码" @change-card="changeCard" @filter="openFilter" @search="search" @clear-search="clearSearch">
+    <product-filter
+      v-model:showtype="showtype"
+      v-model:search-key="searchKey"
+      :product-list-total="oldListTotal"
+      placeholder="搜索条码"
+      @change-card="changeCard"
+      @filter="openFilter"
+      @search="search"
+      @clear-search="clearSearch"
+    >
       <template #company>
         <product-manage-company @change="changeStore" />
       </template>

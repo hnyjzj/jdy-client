@@ -8,10 +8,11 @@ const { myStoreList, myStore } = storeToRefs(useStores())
 const { getMyStore } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
 
+const searchKey = ref('')
 const route = useRoute()
 
 const filterData = ref({} as Partial<ExpandPage<Allocate>>)
-const limits = ref(10)
+const limits = ref(50)
 const tableLoading = ref(false)
 const storeCol = ref()
 
@@ -36,6 +37,9 @@ const getList = async (where = {} as Partial<Allocate>) => {
 const handleQueryParams = async () => {
   const f = getQueryParams<ExpandPage<Allocate>>(route.fullPath, allocateFilterList.value)
   filterData.value = f
+  if (filterData.value?.id) {
+    searchKey.value = filterData.value.id
+  }
   if (f.searchPage)
     searchPage.value = Number(f.searchPage)
   if (f.showtype) {
@@ -225,7 +229,15 @@ const cols = [
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:showtype="showtype" :product-list-total="allocateTotal" placeholder="搜索调拨单号" @change-card="changeCard" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:search-key="searchKey"
+      v-model:showtype="showtype"
+      :product-list-total="allocateTotal"
+      placeholder="搜索调拨单号"
+      @change-card="changeCard"
+      @filter="openFilter"
+      @search="search"
+      @clear-search="clearSearch"
+    >
       <template #company>
         <product-manage-company @change="changeMyStore" />
       </template>
