@@ -212,7 +212,7 @@ interface ProductOld {
   /**
    * 品牌
    */
-  brand?: number
+  brand: number
   /**
    * 品类
    */
@@ -276,7 +276,7 @@ interface ProductOld {
   /**
    * 成色
    */
-  quality?: number
+  quality: number
   /**
    * 实际成色
    */

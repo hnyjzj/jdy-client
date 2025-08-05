@@ -466,6 +466,7 @@ const changeStore = () => {
             v-model:list="showMasterialsList"
             v-model:now-old-master="OldObj"
             title="旧料"
+            :price="goldList"
             :search-olds="searchOlds"
             :check-old-class="CheckOldClass"
             :old-filter-list-to-array="oldFilterListToArray"

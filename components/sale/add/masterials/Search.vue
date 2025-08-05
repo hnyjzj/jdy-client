@@ -7,6 +7,7 @@ const props = defineProps<{
   checkOldClass: (params: Partial<ProductOld>) => any
   isIntegral: boolean
   nowEditState?: number
+  price: GoldPrices[]
 }>()
 const oldRules = ref<FormRules>({
   weight_metal: {
@@ -140,6 +141,25 @@ const searchConfirm = async () => {
     }
   })
 }
+// 调用旧料列表接口
+const searchOldFn = async () => {
+  await props.searchOlds(searchOld.value)
+  if (nowOldMaster.value?.product_id) {
+    // 匹配金价
+    const filtered = props.price.filter(item => item.product_type === 2)
+    const exists = props.price.some(item =>
+      item.product_material === nowOldMaster.value.material
+      && item.product_quality.includes(nowOldMaster.value.quality)
+      && item.product_brand?.includes(nowOldMaster.value.brand),
+    )
+    if (exists) {
+      nowOldMaster.value.recycle_price_gold = filtered[0]?.price
+    }
+    else {
+      nowOldMaster.value.recycle_price_gold = undefined
+    }
+  }
+}
 </script>
 
 <template>
@@ -169,7 +189,7 @@ const searchConfirm = async () => {
                 @focus="focus" />
             </div>
             <div class="pl-[16px] flex">
-              <n-button type="info" round @click="props.searchOlds(searchOld)">
+              <n-button type="info" round @click="searchOldFn()">
                 搜索
               </n-button>
               <div class="pl-[8px]">

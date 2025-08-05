@@ -46,10 +46,9 @@ const addProduct = async (products: ProductFinisheds[]) => {
       }
       data.labor_fee = Number(product.labor_fee)
       // 匹配金价
-      const filtered = Props.price.filter(item => item.product_type === product.retail_type)
-      const exists = filtered.some(item =>
-        item.product_type === product.retail_type
-        && item.product_material === product.material
+      const filtered = Props.price.filter(item => item.product_type === 1)
+      const exists = Props.price.some(item =>
+        item.product_material === product.material
         && item.product_quality.includes(product.quality)
         && item.product_brand?.includes(product.brand),
       )
