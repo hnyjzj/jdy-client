@@ -171,6 +171,9 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                       :placeholder="`请选择${label}`"
                       :options="presetToSelect(props.filter[i]) "
                       @focus="focus"
+                      @clear="() => {
+                        delete datas[name as string]
+                      }"
                     />
                   </template>
                 </slot>

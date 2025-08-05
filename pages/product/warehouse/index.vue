@@ -9,6 +9,7 @@ const { EnterList, EnterToArray, enterFilterList, EnterListTotal } = storeToRefs
 const { searchPage, showtype } = storeToRefs(usePages())
 
 const route = useRoute()
+const searchKey = ref('')
 
 // 筛选框显示隐藏
 const isFilter = ref(false)
@@ -46,6 +47,9 @@ const getList = async (where = {} as Partial<FinishedEnter>) => {
 const handleQueryParams = async () => {
   const f = getQueryParams<ExpandPage<FinishedEnter>>(route.fullPath, enterFilterList.value)
   filterData.value = f
+  if (filterData.value.id) {
+    searchKey.value = filterData.value.id
+  }
   if (f.searchPage)
     searchPage.value = Number(f.searchPage)
   if (f.showtype) {
@@ -245,7 +249,16 @@ const cols = [
 <template>
   <div>
     <!-- 筛选 -->
-    <product-filter v-model:showtype="showtype" :product-list-total="EnterListTotal" placeholder="搜索入库单号" @change-card="changeCard" @filter="openFilter" @search="search" @clear-search="clearSearch">
+    <product-filter
+      v-model:showtype="showtype"
+      v-model:search-key="searchKey"
+      :product-list-total="EnterListTotal"
+      placeholder="搜索入库单号"
+      @change-card="changeCard"
+      @filter="openFilter"
+      @search="search"
+      @clear-search="clearSearch"
+    >
       <template #company>
         <product-manage-company @change="changemyStore" />
       </template>

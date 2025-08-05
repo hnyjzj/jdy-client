@@ -34,7 +34,7 @@ useSeoMeta({
 /** 打开高级筛选 */
 const openFilter = async () => {
   isFilter.value = true
-  await getMyStore({ page: 1, limit: 20 })
+  await getStoreStaffListFun()
 }
 
 /** 跳转并刷新列表 */

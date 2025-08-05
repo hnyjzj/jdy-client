@@ -37,6 +37,7 @@ const getList = async (where = {} as Partial<ProductHistories>) => {
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
+
   const res = await getProductHistory(params)
   tableLoading.value = false
   return res
@@ -103,8 +104,8 @@ const openFilter = () => {
   isFilter.value = true
 }
 
-/** 搜索 */
-async function search(e: string) {
+/** 搜索条码 */
+const search = async (e: string) => {
   filterData.value.code = e
   filterData.value.searchPage = 1
   listJump()
@@ -118,7 +119,7 @@ async function clearSearch() {
 
 async function changeMyStore() {
   filterData.value.searchPage = 1
-  await getList()
+  listJump()
 }
 
 /** 切换显示 */
@@ -310,7 +311,7 @@ async function downloadLocalFile() {
     <!-- 筛选 -->
     <product-filter
       v-model:showtype="showtype"
-      v-model:search="searchKey"
+      v-model:search-key="searchKey"
       :product-list-total="historyListTotal"
       placeholder="搜索编号"
       :is-export="true"

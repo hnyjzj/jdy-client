@@ -18,6 +18,8 @@ export const useLoss = defineStore('Loss', {
   actions: {
     // 报损列表
     async getLossList(pamars: ReqList<ProductFinisheds>) {
+      console.log(pamars)
+
       try {
         pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
         const { data } = await https.post<ResList<ProductFinisheds>, ReqList<ProductFinisheds>>('/product/finished/damage/list', pamars)
