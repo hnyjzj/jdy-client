@@ -149,10 +149,6 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                       :placeholder="`请选择${label}`"
                       :options="presetToSelect(props.filter[i]) "
                       :disabled="disabled?.includes(name)"
-                      @clear="() => {
-                        console.log(datas);
-
-                      }"
                       @focus="focus"
                     />
                   </template>
