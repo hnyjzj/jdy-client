@@ -172,7 +172,7 @@ const changeCard = () => {
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: checkTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],

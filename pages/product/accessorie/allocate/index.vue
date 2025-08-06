@@ -7,6 +7,8 @@ const { accessorieAllocateList, accessorieAllocateFilterListToArray, accessorieA
 const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
+const { getRegionList } = useRegion()
+const { regionList } = storeToRefs(useRegion())
 
 const route = useRoute()
 const searchKey = ref('')
@@ -15,6 +17,14 @@ const limits = ref(50)
 const tableLoading = ref(false)
 const storeCol = ref()
 const filterData = ref({} as Partial<ExpandPage<AccessorieAllocate>>)
+const regionCol = ref()
+
+function changeRegion() {
+  regionCol.value = []
+  regionList.value.forEach((item: Region) => {
+    regionCol.value.push({ label: item.name, value: item.id })
+  })
+}
 
 function changeStoer() {
   storeCol.value = []
@@ -113,7 +123,7 @@ function getStoreName(id: Stores['id']) {
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: accessorieAllocateTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
@@ -129,6 +139,8 @@ const pageOption = ref({
 try {
   await getStoreList({ page: 1, limit: 20 })
   await changeStoer()
+  await getRegionList({ page: 1, limit: 20 })
+  await changeRegion()
   await getAccessorieAllocateWhere()
   await handleQueryParams()
 }
@@ -313,8 +325,8 @@ const cols = [
           filterable
           placeholder="选择调出门店"
           :options="storeCol"
+          clearable
           @focus="focus"
-
         />
       </template>
       <template #to_store_id>
@@ -324,6 +336,18 @@ const cols = [
           filterable
           placeholder="选择调入门店"
           :options="storeCol"
+          clearable
+          @focus="focus"
+        />
+      </template>
+      <template #to_region_id>
+        <n-select
+          v-model:value="filterData.to_region_id"
+          menu-size="large"
+          filterable
+          placeholder="选择调入区域"
+          :options="regionCol"
+          clearable
           @focus="focus"
         />
       </template>

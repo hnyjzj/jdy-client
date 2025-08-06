@@ -191,7 +191,7 @@ const getTarget = (arrs: Member, keyword: string, type: 'level' | 'status') => {
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: memberListTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],

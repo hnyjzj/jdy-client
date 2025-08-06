@@ -179,7 +179,7 @@ async function changemyStore() {
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: EnterListTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],

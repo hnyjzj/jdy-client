@@ -138,7 +138,7 @@ const resetWhere = async () => {
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: historyListTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],

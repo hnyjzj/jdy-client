@@ -120,7 +120,7 @@ catch (error) {
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: lossListTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],

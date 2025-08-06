@@ -159,7 +159,7 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: total,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],

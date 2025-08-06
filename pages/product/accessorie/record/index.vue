@@ -6,7 +6,7 @@ const { getProductHistory, getHistoryWhere } = useAcessorieRecord()
 const { historyFilterList, historyListTotal, productRocordList, HistoryFilterListToArray } = storeToRefs(useAcessorieRecord())
 const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList, getMyStore } = useStores()
-const { accessorieFilterListToArray, accessorieFilterList } = storeToRefs(useAccessorie())
+const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
 const { searchPage, showtype } = storeToRefs(usePages())
 
@@ -29,7 +29,7 @@ useSeoMeta({
   title: '配件记录',
 })
 
-const openFilter = () => {
+const openFilter = async () => {
   isFilter.value = true
 }
 
@@ -38,7 +38,7 @@ const listJump = () => {
   const url = UrlAndParams('/product/accessorie/record', filterData.value)
   navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
-/** 获取成品列表 */
+/** 获取列表 */
 const getList = async (where = {} as Partial<AccessorieRecord>) => {
   tableLoading.value = true
   const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<AccessorieRecord>
@@ -52,7 +52,7 @@ const getList = async (where = {} as Partial<AccessorieRecord>) => {
 }
 /** 读取参数并初始化列表 */
 const handleQueryParams = async () => {
-  const f = getQueryParams<ExpandPage<AccessorieRecord>>(route.fullPath, accessorieFilterList.value)
+  const f = getQueryParams<ExpandPage<AccessorieRecord>>(route.fullPath, historyFilterList.value)
   filterData.value = f
   if (filterData.value.name) {
     searchKey.value = filterData.value.name
@@ -84,27 +84,15 @@ const updatePage = (page: number) => {
   listJump()
 }
 
-try {
-  await getList()
-  await getHistoryWhere()
-  await getAccessorieWhere()
-  await changeStore()
-  await getStoreList({ page: 1, limit: 20 })
-  await getMyStore({ page: 1, limit: 20 })
-}
-catch (error) {
-  $toast.error('初始化数据失败')
-  console.error('初始化数据失败:', error)
-}
+await changeStore()
+await getStoreList({ page: 1, limit: 20 })
+await getMyStore({ page: 1, limit: 20 })
 // 页面初始化逻辑
 try {
   if (myStore.value.id || myStore.value.id === '') {
+    await getAccessorieWhere()
     await getHistoryWhere()
     await handleQueryParams()
-    await getAccessorieWhere()
-    await changeStore()
-    await getStoreList({ page: 1, limit: 20 })
-    await getMyStore({ page: 1, limit: 20 })
   }
   else {
     $toast.error('您尚未分配任何门店，请先添加门店')
@@ -150,7 +138,7 @@ const clearSearch = async () => {
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: historyListTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],

@@ -108,7 +108,7 @@ async function changeStore() {
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: accessorieListTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
@@ -137,6 +137,14 @@ const resetWhere = async () => {
 }
 
 const cols = [
+  {
+    title: '状态',
+    key: 'status',
+    render(row: any) {
+      const val = row.status
+      return accessorieFilterList.value.status?.preset?.[val] ?? '-'
+    },
+  },
   // 动态生成：来自 categoryFilterListToArray 的字段
   ...accessorieFilterListToArray.value
     .filter(item => item.create)
@@ -152,7 +160,6 @@ const cols = [
         }
       },
     })),
-
   // 静态字段：库存
   {
     title: '库存',
