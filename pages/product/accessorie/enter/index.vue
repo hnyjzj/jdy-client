@@ -185,6 +185,22 @@ const cols = [
       return formatTimestampToDateTime(row?.created_at)
     },
   },
+  {
+    title: '操作',
+    key: 'action',
+    fixed: 'right',
+    render(row: any) {
+      return h(
+        NButton,
+        {
+          type: 'info',
+          size: 'small',
+          onClick: () => jump('/product/accessorie/enter/info', { id: row.id }),
+        },
+        { default: () => '详情' },
+      )
+    },
+  },
 ]
 </script>
 
