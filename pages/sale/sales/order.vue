@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import PrintTemp from '@/components/print/Board.vue'
-
 import usePrint from 'vue3-use-print'
 // 销售单详情
 useSeoMeta({
@@ -35,16 +34,7 @@ if (route.query.id) {
 const showModel = ref(false)
 const isSelectModel = ref(false)
 const selectModel = ref<orderInfoProducts[]>([])
-
-const selectSome = (item: orderInfoProducts) => {
-  const index = selectModel.value.findIndex(p => p.id === item.id)
-  if (index !== -1) {
-    selectModel.value.splice(index, 1)
-  }
-  else {
-    selectModel.value.push(item)
-  }
-}
+const mustSelect = ref<any[]>([])
 
 const returnGoods = async (req: ReturnGoods) => {
   const res = await returnOrderGoods(req)
@@ -96,9 +86,13 @@ const getSpecificInfo = async () => {
 const printPre = () => {
   const printDetail = ref<OrderInfo>({} as OrderInfo)
   printDetail.value = JSON.parse(JSON.stringify(OrderDetail.value))
-  if (selectModel.value && selectModel.value.length > 0) {
-    printDetail.value.products = selectModel.value
-  }
+  printDetail.value.products = []
+  OrderDetail.value.products.forEach((item: any) => {
+    if (mustSelect.value.find(i => i === item.id)) {
+      printDetail.value.products.push(item)
+    }
+  })
+
   const PrintComponent = defineComponent({
     render() {
       return h(PrintTemp, { details: printDetail.value, type: 1, payMethod: gather.value, numerical: tempInfo.value })
@@ -157,21 +151,18 @@ const payOrderConfirm = async () => {
   }
 }
 
-const getselectStyle = (item: orderInfoProducts) => {
-  const res = ref(false)
-  if (selectModel.value.findIndex(p => p.id === item.id) !== -1) {
-    res.value = true
+const laberComputed = (item: orderInfoProducts) => {
+  if (item.type === GoodsType.ProductFinish) {
+    return `成品-${item.finished.product?.name || '暂无名称'}`
   }
-  else {
-    res.value = false
+  if (item.type === GoodsType.ProductOld) {
+    return `旧料-${item.old.product?.name || '暂无名称'}`
   }
-  return {
-    'background-color': res.value ? '#fff' : '',
-    'color': res.value ? '#2774EE' : '#666',
-    'border': res.value ? '1px solid #fff' : '1px solid #E5E5E7',
+  if (item.type === GoodsType.ProductAccessories) {
+    return `配件-${item.accessorie.product?.name || '暂无名称'}`
   }
+  return '123'
 }
-
 // 判断当前环境
 const isMobile = ref(false)
 onMounted(() => {
@@ -237,33 +228,13 @@ onMounted(() => {
           <div class="font-size-[16px] pb-[6px]">
             选择要打印的货品
           </div>
-          <template
-            v-for="(item, index) in OrderDetail.products" :key="index">
-            <template v-if="item.type === 1">
-              <div
-                class="py-[6px] px-[12px] cursor-pointer mb-[8px] rounded-[6px] border border-[#E5E5E7] border-solid"
-                :style="getselectStyle(item)"
-                @click="selectSome(item)">
-                成品-{{ item.finished.product?.name || '暂无名称' }}
-              </div>
-            </template>
-            <template v-if="item.type === 2">
-              <div
-                class="py-[6px] px-[12px] cursor-pointer mb-[8px] rounded-[6px] border border-[#E5E5E7] border-solid"
-                :style="getselectStyle(item)"
-                @click="selectSome(item)">
-                旧料-{{ item.old.product?.name || '暂无名称' }}
-              </div>
-            </template>
-            <template v-if="item.type === 3">
-              <div
-                class="py-[6px] px-[12px] cursor-pointer mb-[8px] rounded-[6px] border border-[#E5E5E7] border-solid"
-                :style="getselectStyle(item)"
-                @click="selectSome(item)">
-                配件-{{ item.accessorie.product?.name || '暂无名称' }}
-              </div>
-            </template>
-          </template>
+          <div>
+            <n-select
+              v-model:value="mustSelect" multiple :options="OrderDetail.products.map(v => ({
+                label: laberComputed(v),
+                value: v.id,
+              }))" />
+          </div>
         </div>
       </div>
     </common-model>
@@ -336,6 +307,12 @@ onMounted(() => {
     <correspond-store :correspond-ids="[OrderDetail.store_id]" />
   </div>
 </template>
+
+<style>
+.n-base-selection {
+  border-radius: 8px;
+}
+</style>
 
 <style lang="scss" scoped>
 .footer {

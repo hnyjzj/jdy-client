@@ -263,12 +263,14 @@ judgeType()
           <template v-if="hasAccessorie || !props.details">
             <div>
               <template v-for="(item, index) in props.details?.products" :key="index">
-                <span class="table-body">
-                  {{ item.accessorie.product?.name || '' }}
-                </span>
-                <span class="table-body">
-                  x{{ item.accessorie.quantity || '' }};
-                </span>
+                <template v-if="item.type === GoodsType.ProductAccessories">
+                  <span class="table-body">
+                    {{ item.accessorie.product?.name || '' }}
+                  </span>
+                  <span class="table-body">
+                    x{{ item.accessorie.quantity || '' }};
+                  </span>
+                </template>
               </template>
             </div>
           </template>
