@@ -287,9 +287,7 @@ async function downloadLocalFile() {
             v-model:page="searchPage" :total="finishedListTotal" :limit="limits" @update:page="updatePage" />
         </template>
         <template v-else>
-          <div class="max-[100px]">
-            <common-datatable :columns="cols" :list="finishedList" :page-option="pageOption" :loading="tableLoading" />
-          </div>
+          <common-datatable :columns="cols" :list="finishedList" :page-option="pageOption" :loading="tableLoading" />
         </template>
       </template>
       <template v-else>
