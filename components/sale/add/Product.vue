@@ -46,15 +46,16 @@ const addProduct = async (products: ProductFinisheds[]) => {
       }
       data.labor_fee = Number(product.labor_fee)
       // 匹配金价
-      const filtered = Props.price.filter(item => item.product_type === 1)
-      const exists = Props.price.some(item =>
-        item.product_material === product.material
+
+      const exists = Props.price.filter(item =>
+        item.product_type === GoodsType.ProductFinish
+        && item.product_material === product.material
         && item.product_quality.includes(product.quality)
         && item.product_brand?.includes(product.brand),
       )
 
-      if (exists) {
-        data.price_gold = Number(filtered[0].price)
+      if (exists && exists.length > 0) {
+        data.price_gold = Number(exists[0].price)
       }
       else {
         data.price_gold = 0

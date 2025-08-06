@@ -146,14 +146,15 @@ const searchOldFn = async () => {
   await props.searchOlds(searchOld.value)
   if (nowOldMaster.value?.product_id) {
     // 匹配金价
-    const filtered = props.price.filter(item => item.product_type === 2)
-    const exists = props.price.some(item =>
-      item.product_material === nowOldMaster.value.material
+
+    const exists = props.price.filter(item =>
+      item.product_type === GoodsType.ProductOld
+      && item.product_material === nowOldMaster.value.material
       && item.product_quality.includes(nowOldMaster.value.quality)
       && item.product_brand?.includes(nowOldMaster.value.brand),
     )
-    if (exists) {
-      nowOldMaster.value.recycle_price_gold = filtered[0]?.price
+    if (exists && exists.length > 0) {
+      nowOldMaster.value.recycle_price_gold = Number(exists[0]?.price)
     }
     else {
       nowOldMaster.value.recycle_price_gold = undefined
