@@ -93,6 +93,7 @@ const realtype = (val?: number) => {
                 clearable
                 :placeholder="searchType === 'name' ? '请输入商品名称' : '请输入商品条码'"
                 size="large"
+                @keydown.enter="search"
                 @focus="focus"
               />
             </div>
