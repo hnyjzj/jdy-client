@@ -6,6 +6,8 @@ const { createAccessorieAllocate, getAccessorieAllocateWhere } = useAccessorieAl
 const { accessorieAllocateFilterListToArray } = storeToRefs(useAccessorieAllocate())
 const { myStore, storesList } = storeToRefs(useStores())
 const { getStoreList } = useStores()
+const { getRegionList } = useRegion()
+const { regionList } = storeToRefs(useRegion())
 const { getFinishedEnterInfo } = useFinishedEnter()
 const { enterInfo } = storeToRefs(useFinishedEnter())
 
@@ -49,6 +51,7 @@ function changeStoer() {
 
 await getAccessorieAllocateWhere()
 await getStoreList({ page: 1, limit: 20 })
+await getRegionList({ page: 1, limit: 20 })
 await changeStoer()
 async function submit() {
   const res = await createAccessorieAllocate(params.value as AccessorieAllocateReq)
@@ -167,7 +170,7 @@ const canShowFilter = (item: FilterWhere<AccessorieAllocate>) => {
                             <template v-if="item.name === 'from_store_id' || item.name === 'to_store_id'">
                               <n-select
                                 v-model:value="params[item.name as keyof AccessorieAllocateReq]"
-                                :placeholder="`输入${item.label}`"
+                                :placeholder="`选择${item.label}`"
                                 :options="storesList.map(v => ({
                                   label: v.name,
                                   value: v.id,
@@ -178,6 +181,22 @@ const canShowFilter = (item: FilterWhere<AccessorieAllocate>) => {
                                 @focus="(e) => {
                                   focus(e)
                                   getStoreList({ page: 1, limit: 20 })
+                                }"
+                              />
+                            </template>
+                            <template v-else-if="item.name === 'to_region_id'">
+                              <n-select
+                                v-model:value="params[item.name as keyof AccessorieAllocateReq]"
+                                :placeholder="`选择${item.label}`"
+                                :options="regionList.map(v => ({
+                                  label: v.name,
+                                  value: v.id,
+                                }))"
+                                clearable
+                                size="large"
+                                remote
+                                @focus="(e) => {
+                                  focus(e)
                                 }"
                               />
                             </template>

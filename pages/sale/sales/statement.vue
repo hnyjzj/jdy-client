@@ -117,13 +117,31 @@ const cols = [
   {
     title: '产品名称',
     render: (rowData: orderInfoProducts) => {
-      return rowData.type === 1 ? rowData.finished.product?.name : rowData.type === 2 ? rowData.old?.product?.name : rowData.accessorie?.product?.category?.name
+      if (rowData.type === GoodsType.ProductFinish) {
+        return rowData.finished.product?.name
+      }
+      if (rowData.type === GoodsType.ProductOld) {
+        return rowData.old?.product?.name
+      }
+      if (rowData.type === GoodsType.ProductAccessories) {
+        return rowData.accessorie?.product?.name
+      }
+      return ''
     },
   },
   {
     title: '标签价',
     render: (rowData: orderInfoProducts) => {
-      return rowData.type === 1 ? rowData.finished.product?.label_price : rowData.type === 2 ? rowData.old?.product?.label_price : rowData.accessorie?.product?.category?.label_price
+      if (rowData.type === GoodsType.ProductFinish) {
+        return rowData.finished.product?.label_price
+      }
+      if (rowData.type === GoodsType.ProductOld) {
+        return rowData.old?.product?.label_price
+      }
+      if (rowData.type === GoodsType.ProductAccessories) {
+        return rowData.accessorie?.product?.price
+      }
+      return ''
     },
   },
   {

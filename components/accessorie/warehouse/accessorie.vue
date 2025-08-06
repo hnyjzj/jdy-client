@@ -78,34 +78,21 @@ async function transformData(data: any[][]) {
           const rowValue = String(row[index] ?? '')
 
           // 使用 Object.entries() 查找键，防止 undefined 和类型不一致问题
-          const key = Object.entries(preset).find(([_, v]) => String(v) === rowValue)?.[0] ?? ''
+          const keyStr = Object.entries(preset).find(([_, v]) => String(v) === rowValue)?.[0]
+          const key = keyStr !== undefined ? Number(keyStr) : undefined
           row[index] = key
         }
 
         // 数据类型转换 + 默认值处理
-
         switch (input) {
           case 'number':
-            row[index] = row[index] ?? 0
-            row[index] = Number(row[index])
+            row[index] = row[index] ?? undefined
             break
           case 'text':
-            row[index] = row[index] ?? ''
-            row[index] = String(row[index])
-            break
-          case 'switch':
-            if (row[index] === '是') {
-              row[index] = true
-            }
-            else if (row[index] === '否') {
-              row[index] = false
-            }
-            else if (!row[index]) {
-              row[index] = false
-            }
+            row[index] = String(row[index]) ?? undefined
             break
           default:
-            row[index] = row[index] ?? ''
+            row[index] = row[index] ?? undefined
             break
         }
         obj[header] = row[index]
@@ -154,12 +141,6 @@ defineExpose({
               <icon name="i-svg:download" :size="16" color="#666" />
               下载模板
             </div>
-          </div>
-          <div class="text-[rgb(255,0,0)]">
-            2、本功能用于配件补货，请先在配件条目管理新增配件条目；
-          </div>
-          <div class="text-[rgb(255,0,0)]">
-            3、 修改配件入网费，全公司该条目的入网费会重新计算。
           </div>
         </div>
         <input class="h-[40px] absolute bottom-0 w-full opacity-0" type="file" @change="FileUpload" @focus="focus">

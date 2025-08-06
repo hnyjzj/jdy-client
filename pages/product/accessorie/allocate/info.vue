@@ -1,10 +1,11 @@
 <script setup lang="ts">
-const { getAccessorieAllocateInfo, getAccessorieAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove } = useAccessorieAllocate()
+const { getAccessorieAllocateInfo, getAccessorieAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove, clear, addAccessorieAllocate } = useAccessorieAllocate()
+const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
+const { getAccessorieWhere } = useAccessorie()
 const { accessorieAllocateInfo, accessorieAllocateFilterList, accessorieAllocateFilterListToArray } = storeToRefs(useAccessorieAllocate())
-const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
-const { getAccessorieCategoryWhere } = useAccessorieCategory()
-const { myStore, storesList } = storeToRefs(useStores())
+const { myStore } = storeToRefs(useStores())
 const { getStoreList } = useStores()
+
 useSeoMeta({
   title: '调拨单详情',
 })
@@ -12,18 +13,33 @@ const route = useRoute()
 const router = useRouter()
 const { $toast } = useNuxtApp()
 const allocateId = ref()
+const clearDialog = ref(false)
+const isChooseModel = ref(false)
+const isImportModel = ref(false)
+const uploadRef = ref()
+const page = ref(1)
 if (route.query.id) {
   allocateId.value = route.query.id
-  await getAccessorieAllocateInfo(route.query.id as string)
-  await getAccessorieCategoryWhere()
+  await getInfo()
   await getAccessorieAllocateWhere()
+  await getAccessorieWhere()
   await getStoreList({ limit: 20, page: 1 })
+}
+
+async function getInfo() {
+  const parmas = {
+    id: route.query?.id,
+    page: page.value,
+    limit: 20,
+  } as AccessorieAllocateInfoParams
+  await getAccessorieAllocateInfo(parmas)
 }
 
 async function cancel() {
   const res = await cancelAllcate(accessorieAllocateInfo.value?.id)
   if (res?.code === HttpCode.SUCCESS) {
-    await getAccessorieAllocateInfo(route.query.id as string)
+    page.value = 1
+    await getInfo()
     $toast.success('取消调拨成功', 1000)
     setTimeout(() => {
       router.back()
@@ -41,7 +57,8 @@ async function confirm() {
   }
   const res = await confirmAllcate(accessorieAllocateInfo.value?.id)
   if (res?.code === HttpCode.SUCCESS) {
-    await getAccessorieAllocateInfo(route.query.id as string)
+    page.value = 1
+    await getInfo()
     $toast.success('确认调拨成功')
   }
   else {
@@ -52,7 +69,8 @@ async function confirm() {
 async function finish() {
   const res = await finishAllcate(accessorieAllocateInfo.value?.id)
   if (res?.code === HttpCode.SUCCESS) {
-    await getAccessorieAllocateInfo(route.query.id as string)
+    page.value = 1
+    await getInfo()
     $toast.success('完成调拨成功')
   }
   else {
@@ -62,9 +80,15 @@ async function finish() {
 
 /** 删除产品 */
 async function delProduct(id: string) {
-  const res = await remove(accessorieAllocateInfo.value?.id, id)
+  const params = {
+    id: accessorieAllocateInfo.value?.id,
+    product_id: id,
+  } as AddAccessorieAllocateDel
+
+  const res = await remove(params)
   if (res?.code === HttpCode.SUCCESS) {
-    await getAccessorieAllocateInfo(route.query.id as string)
+    page.value = 1
+    await getInfo()
     $toast.success('删除成功')
   }
   else {
@@ -75,10 +99,52 @@ const debouncedDelProduct = useThrottleFn((id: string) => {
   delProduct(id)
 }, 200)
 
-/** id获取门店名称 */
-function getStoreName(id: Stores['id']) {
-  const store = storesList.value.find((item: Stores) => item.id === id)
-  return store?.name ?? ''
+/** 点击清空时调用，触发确认弹窗 */
+function clearFun() {
+  if (!accessorieAllocateInfo.value?.products?.length) {
+    $toast.error('配件列表为空')
+    return
+  }
+  clearDialog.value = true
+}
+
+/** 清空调拨单中所有产品 */
+async function clearProduct() {
+  const ids = accessorieAllocateInfo.value?.products?.map(item => item.id) ?? []
+  if (!ids.length)
+    return $toast.error('配件列表为空')
+  const res = await clear(accessorieAllocateInfo.value?.id)
+
+  if (res?.code === HttpCode.SUCCESS) {
+    page.value = 1
+    await getInfo()
+    $toast.success('清空成功')
+  }
+  else {
+    $toast.error(res?.message ?? '清空调拨单配件失败')
+  }
+}
+
+const updatePage = async (e: number) => {
+  page.value = e
+  await getInfo()
+}
+
+async function submitGoods(e: AddAccessorieAllocateProduct[]) {
+  const params = {
+    id: accessorieAllocateInfo.value?.id,
+    products: e,
+  }
+  const res = await addAccessorieAllocate(params)
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('添加成功')
+    uploadRef.value.clearData()
+    await getInfo()
+  }
+  else {
+    uploadRef.value.clearData()
+    $toast.error(res?.message ?? '添加失败')
+  }
 }
 </script>
 
@@ -101,14 +167,6 @@ function getStoreName(id: Stores['id']) {
                   </div>
                   <div class="info-row">
                     <div class="info-title">
-                      调拨单号
-                    </div>
-                    <div class="info-val">
-                      {{ accessorieAllocateInfo.id }}
-                    </div>
-                  </div>
-                  <div class="info-row">
-                    <div class="info-title">
                       状态
                     </div>
                     <div class="info-val">
@@ -118,39 +176,60 @@ function getStoreName(id: Stores['id']) {
                   <div class="h-0.5 bg-[#E6E6E8]" />
                   <div class="other-information flex flex-col gap-1">
                     <template v-for="(item, index) in accessorieAllocateFilterListToArray" :key="index">
-                      <div class="info-row">
-                        <div class="info-title">
-                          {{ item.label }}
+                      <template v-if="item.info">
+                        <div class="info-row">
+                          <div class="info-title">
+                            {{ item.label }}
+                          </div>
+                          <template v-if="item.type === 'date'">
+                            <div class="val">
+                              {{ accessorieAllocateInfo[item.name] ? formatTimestampToDateTime(accessorieAllocateInfo[item.name] as string || '') : '' }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            <template v-if="item.input === 'text'">
+                              <div class="info-val">
+                                {{ accessorieAllocateInfo[item.name] }}
+                              </div>
+                            </template>
+                            <template v-else-if="item.input === 'select'">
+                              <div class="info-val">
+                                {{ accessorieAllocateFilterList[item.name]?.preset[accessorieAllocateInfo[item.name] as number] }}
+                              </div>
+                            </template>
+                            <template v-else-if="item.input === 'search'">
+                              <template v-if="item.name === 'to_region_id'">
+                                <div class="val">
+                                  {{ accessorieAllocateInfo?.to_region?.name || '' }}
+                                </div>
+                              </template>
+                              <template v-if="item.name === 'to_store_id'">
+                                <div class="val">
+                                  {{ accessorieAllocateInfo?.to_store?.name || '' }}
+                                </div>
+                              </template>
+                              <template v-if="item.name === 'from_store_id'">
+                                <div class="val">
+                                  {{ accessorieAllocateInfo?.from_store?.name || '' }}
+                                </div>
+                              </template>
+                            </template>
+                          </template>
                         </div>
-                        <template v-if="item.input === 'text'">
-                          <div class="info-val">
-                            {{ accessorieAllocateInfo[item.name] }}
-                          </div>
-                        </template>
-                        <template v-else-if="item.input === 'select'">
-                          <div class="info-val">
-                            {{ accessorieAllocateFilterList[item.name]?.preset[accessorieAllocateInfo[item.name] as number] }}
-                          </div>
-                        </template>
-                        <template v-else-if="item.input === 'date'">
-                          <div v-if="item.name === 'start_time'" class="info-val">
-                            {{ formatTimestampToDateTime(accessorieAllocateInfo.created_at) }}
-                          </div>
-                          <div v-if="item.name === 'end_time'" class="info-val">
-                            {{ formatTimestampToDateTime(accessorieAllocateInfo.updated_at) }}
-                          </div>
-                        </template>
-                        <template v-else-if="item.input === 'search'">
-                          <div class="info-val">
-                            {{ getStoreName(accessorieAllocateInfo[item.name] as Stores['id']) }}
-                          </div>
-                        </template>
-                      </div>
+                      </template>
                     </template>
                   </div>
                 </div>
                 <div class="h-0.5 bg-[#E6E6E8]" />
                 <div class="product-information flex flex-col gap-1">
+                  <div class="info-row">
+                    <div class="info-title">
+                      总数
+                    </div>
+                    <div class="info-val">
+                      {{ accessorieAllocateInfo.product_count }}
+                    </div>
+                  </div>
                   <div class="info-row">
                     <div class="info-title">
                       总件数
@@ -171,38 +250,29 @@ function getStoreName(id: Stores['id']) {
             </div>
             <template v-for="(item, index) in accessorieAllocateInfo.products" :key="index">
               <div class="grid mb-3">
-                <sale-order-nesting :title="item.product.category.name" :index="index" :info="accessorieAllocateInfo">
+                <sale-order-nesting :title="item.name || ''" :index="index" :info="accessorieAllocateInfo">
                   <template #left>
                     <!-- 状态为盘点中时可以删除 -->
                     <template v-if="accessorieAllocateInfo.status === 1">
-                      <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="debouncedDelProduct(item.product?.id)" />
+                      <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="debouncedDelProduct(item.id)" />
                     </template>
                   </template>
                   <template #info>
                     <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
-                      <div class="flex">
-                        <div class="key">
-                          调拨数量
-                        </div>
-                        <div class="value">
-                          {{ item.quantity }}
-                        </div>
-                        <div class="value" />
-                      </div>
-                      <template v-for="(filter, findex) in categoryFilterListToArray" :key="findex">
-                        <template v-if="filter.create">
+                      <template v-for="(filter, findex) in accessorieFilterListToArray" :key="findex">
+                        <template v-if="filter.info && (filter.name as string) !== 'created_at' && item[filter.name]">
                           <div class="flex">
                             <div class="key">
                               {{ filter.label }}
                             </div>
                             <template v-if="filter.input === 'select'">
                               <div class="value">
-                                {{ filter.preset[item.product.category[filter.name] as string] || '--' }}
+                                {{ filter.preset[item[filter.name] as string] || '--' }}
                               </div>
                             </template>
                             <template v-else>
                               <div class="value">
-                                {{ item.product.category[filter.name] || '--' }}
+                                {{ item[filter.name] || '--' }}
                               </div>
                             </template>
                           </div>
@@ -210,6 +280,7 @@ function getStoreName(id: Stores['id']) {
                       </template>
                     </div>
                   </template>
+                  <common-page v-model:page="page" :total="accessorieAllocateInfo.product_count" :limit="20" @update:page="updatePage" />
                 </sale-order-nesting>
               </div>
             </template>
@@ -218,21 +289,42 @@ function getStoreName(id: Stores['id']) {
       </div>
     </div>
     <template v-if="accessorieAllocateInfo.status === AllocateStatus.Draft && myStore?.id === accessorieAllocateInfo.from_store_id">
-      <common-button-bottom cancel-text="取消调拨" text="确认调拨" @cancel="cancel" @confirm="confirm" />
+      <common-button-bottom cancel-text="取消调拨" confirm-text="确认调拨" @cancel="cancel" @confirm="confirm">
+        <template #content>
+          <div class="w-[100%]">
+            <div class="bottom-fun grid grid-cols-[26%_26%_auto] gap-2">
+              <div class="cursor-pointer cancel-btn" @click="clearFun">
+                清空列表
+              </div>
+              <div class="cursor-pointer cancel-btn" @click="cancel">
+                取消调拨
+              </div>
+              <div class="cursor-pointer confirm-btn" @click="confirm">
+                确认调拨
+              </div>
+            </div>
+          </div>
+        </template>
+      </common-button-bottom>
     </template>
     <template v-if="accessorieAllocateInfo.status === AllocateStatus.InTransit">
-      <template v-if="accessorieAllocateInfo.method === 2 || myStore?.id === accessorieAllocateInfo.to_store_id">
+      <template v-if="myStore?.id === accessorieAllocateInfo.to_store_id">
         <common-button-bottom cancel-text="取消调拨" confirm-text="完成调拨" @cancel="cancel" @confirm="finish" />
       </template>
       <template v-if="myStore?.id === accessorieAllocateInfo.from_store_id">
         <common-button-one text="取消调拨" @confirm="cancel" />
       </template>
     </template>
+    <common-confirm v-model:show="clearDialog" icon="error" title="清空列表" text="确认要清空所有调拨的产品吗?" @submit="clearProduct" />
     <!-- 状态为草稿中 增加产品 -->
     <template v-if="accessorieAllocateInfo.status === AllocateStatus.Draft && myStore?.id === accessorieAllocateInfo.from_store_id">
-      <common-create @create="jump('/product/accessorie/allocate/addproduct', { id: accessorieAllocateInfo.id })" />
+      <common-create @create="isChooseModel = true" />
     </template>
-    <correspond-store :correspond-ids="[accessorieAllocateInfo.from_store_id, accessorieAllocateInfo.to_store_id]" />
+    <product-upload-choose v-model:is-model="isChooseModel" title="调拨" @go-add="jump('/product/accessorie/allocate/addproduct', { id: accessorieAllocateInfo.id })" @batch="isImportModel = true" />
+    <accessorie-warehouse-force ref="uploadRef" v-model="isImportModel" @upload="submitGoods" />
+    <template v-if="accessorieAllocateInfo.id">
+      <correspond-store :correspond-ids="[accessorieAllocateInfo.from_store_id, accessorieAllocateInfo.to_store_id]" />
+    </template>
   </div>
 </template>
 
@@ -254,5 +346,18 @@ function getStoreName(id: Stores['id']) {
   .info-val {
     --uno: 'text-color-light w-70% text-right';
   }
+}
+.tabel-text {
+  --uno: 'whitespace-nowrap px-2 py-1 text-center text-color';
+}
+.confirm-btn {
+  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#fff] font-bold ';
+  background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
+  box-shadow: rgba(57, 113, 243, 0.24) 0px 8px 8px 0;
+}
+.cancel-btn {
+  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#1a6beb] font-bold';
+  background: #fff;
+  box-shadow: rgba(82, 130, 241, 0.24) 0px 8px 8px 0;
 }
 </style>

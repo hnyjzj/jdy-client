@@ -28,19 +28,24 @@ const props = defineProps<{
           </div>
         </div>
         <template v-for="(item, index) in props.filterListToArray" :key="index">
-          <template v-if="item.label && item.find">
+          <template v-if="item.label && item.info">
             <div class="flex justify-between text-sm font-normal">
               <div class="text-color-light">
                 {{ item?.label }}
               </div>
               <div class="info-val">
+                <template v-if="item.type === 'date'">
+                  <span>
+                    {{ formatTimestampToDateTime(props.info[item.name]) ?? '' }}
+                  </span>
+                </template>
                 <template v-if="item.input === 'select'">
                   <span>
                     {{ filterList[item.name]?.preset[props.info[item.name]] ?? '' }}
                   </span>
                 </template>
-                <template v-else-if="item.input === 'text'">
-                  <template v-if="item.label === '门店'">
+                <template v-else-if="item.input === 'text' || item.input === 'textarea'">
+                  <template v-if="item.label === '门店名称'">
                     <span>
                       {{ props.info.store?.name ?? '' }}
                     </span>

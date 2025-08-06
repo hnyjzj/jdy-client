@@ -266,16 +266,10 @@ judgeType()
               <thead>
                 <tr>
                   <th class="table-header" style="width:16%;">
-                    配件条码
-                  </th>
-                  <th class="table-header" style="width:16%;">
                     配料名称
                   </th>
                   <th class="table-header" style="width:auto;">
                     数量
-                  </th>
-                  <th class="table-header" style="width:16%;">
-                    单价
                   </th>
                   <th class="table-header" style="width:auto;">
                     总计金额
@@ -290,16 +284,10 @@ judgeType()
                   <tr v-for="(item, index) in props.details.products" :key="index">
                     <template v-if="item.type === 3">
                       <td class="table-body">
-                        {{ item.accessorie.product?.category.code || '' }}
-                      </td>
-                      <td class="table-body">
-                        {{ item.accessorie.product?.category.name || '' }}
+                        {{ item.accessorie.product?.name || '' }}
                       </td>
                       <td class="table-body">
                         {{ item.accessorie.quantity || '' }}
-                      </td>
-                      <td class="table-body">
-                        {{ item.accessorie.product?.category.label_price || '' }}
                       </td>
                       <td class="table-body">
                         {{ item.accessorie.price || '' }}
@@ -439,9 +427,6 @@ judgeType()
                     配料名称
                   </th>
                   <th class="table-header" style="width:auto;">
-                    单价
-                  </th>
-                  <th class="table-header" style="width:auto;">
                     总计金额
                   </th>
                   <th class="table-header" style="width:16%;">
@@ -455,9 +440,6 @@ judgeType()
                     <template v-if="item.type === 3">
                       <td class="table-body">
                         {{ item.accessorie.product?.name || '' }}
-                      </td>
-                      <td class="table-body">
-                        {{ item.accessorie.product?.category.label_price || '' }}
                       </td>
                       <td class="table-body">
                         {{ item.accessorie.price || '' }}
