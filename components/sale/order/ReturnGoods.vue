@@ -102,17 +102,17 @@ defineExpose({
         }
       }">
       <div>
-        <template v-if="showReturnGoods?.goods?.type === 1">
+        <template v-if="showReturnGoods?.goods?.type === GoodsType.ProductFinish">
           <common-cell label="成品名称" :value="showReturnGoods?.goods?.finished.product?.name" />
           <common-cell label="零售方式" :value="productFilter?.retail_type?.preset[showReturnGoods?.goods?.finished?.product?.retail_type!]" />
           <common-cell :label="`条码:${showReturnGoods?.goods?.finished?.product?.code}`" :value="`应付金额:${showReturnGoods?.goods?.finished?.price}`" />
         </template>
-        <template v-if="showReturnGoods?.goods?.type === 2">
+        <template v-if="showReturnGoods?.goods?.type === GoodsType.ProductOld">
           <common-cell label="旧料编号" :value="showReturnGoods?.goods?.old?.product?.id" />
           <common-cell label="金重(g)" :value="showReturnGoods?.goods?.old?.weight_metal" />
           <common-cell :label="`条码:${showReturnGoods?.goods?.old?.product?.code}`" :value="`应付金额:${showReturnGoods?.goods?.old?.recycle_price}`" />
         </template>
-        <template v-if="showReturnGoods?.goods?.type === 3">
+        <template v-if="showReturnGoods?.goods?.type === GoodsType.ProductAccessories">
           <common-cell label="配件名称" :value="showReturnGoods?.goods?.accessorie.product?.name" />
           <common-cell label="数量" :value="showReturnGoods?.goods?.accessorie?.quantity" />
           <common-cell :label="`编号:${showReturnGoods?.goods?.accessorie?.id}`" :value="`应付金额:${showReturnGoods?.goods?.accessorie?.price}`" />
