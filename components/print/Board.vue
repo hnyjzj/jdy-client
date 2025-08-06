@@ -264,7 +264,7 @@ judgeType()
             <div>
               <template v-for="(item, index) in props.details?.products" :key="index">
                 <span class="table-body">
-                  {{ item.accessorie.product?.category.name || '' }}
+                  {{ item.accessorie.product?.name || '' }}
                 </span>
                 <span class="table-body">
                   x{{ item.accessorie.quantity || '' }};
