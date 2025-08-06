@@ -398,9 +398,6 @@ judgeType()
                     配料名称
                   </th>
                   <th class="table-header" style="width:auto;">
-                    单价
-                  </th>
-                  <th class="table-header" style="width:auto;">
                     总计金额
                   </th>
                   <th class="table-header" style="width:16%;">
@@ -414,9 +411,6 @@ judgeType()
                     <template v-if="item.type === 3">
                       <td class="table-body">
                         {{ item.accessorie.product?.name || '' }}
-                      </td>
-                      <td class="table-body">
-                        {{ item.accessorie.product?.category.label_price || '' }}
                       </td>
                       <td class="table-body">
                         {{ item.accessorie.price || '' }}

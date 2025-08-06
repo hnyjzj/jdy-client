@@ -9,23 +9,6 @@ const enterStatus = {
   2: '已完成',
   3: '已撤销',
 } as const
-
-/**
- * 汇总字段总和
- */
-function sum(key: string): number {
-  return props.enterInfo?.products?.reduce((total, item) => {
-    const num = Number(item?.[key])
-    return Number.isFinite(num) ? total + num : total
-  }, 0) ?? 0
-}
-
-function sumCategory(key: string): number {
-  return props.enterInfo?.products?.reduce((total, item) => {
-    const num = Number(item?.category[key])
-    return Number.isFinite(num) ? total + num : total
-  }, 0) ?? 0
-}
 </script>
 
 <template>
@@ -64,7 +47,7 @@ function sumCategory(key: string): number {
                   状态
                 </div>
                 <div class="info-val">
-                  {{ enterStatus[props.enterInfo.status] }}
+                  {{ enterStatus[props.enterInfo?.status] }}
                 </div>
               </div>
               <div class="info-row">
@@ -72,7 +55,7 @@ function sumCategory(key: string): number {
                   备注
                 </div>
                 <div class="info-val">
-                  {{ props.enterInfo.remark }}
+                  {{ props.enterInfo?.remark }}
                 </div>
               </div>
               <div class="other-information flex flex-col gap-1">
@@ -81,7 +64,7 @@ function sumCategory(key: string): number {
                     创建时间
                   </div>
                   <div class="info-val">
-                    {{ formatTimestampToDateTime(props.enterInfo.created_at) }}
+                    {{ formatTimestampToDateTime(props.enterInfo?.created_at) }}
                   </div>
                 </div>
                 <div class="info-row">
@@ -89,7 +72,7 @@ function sumCategory(key: string): number {
                     完成时间
                   </div>
                   <div class="info-val">
-                    {{ formatTimestampToDateTime(props.enterInfo.updated_at) }}
+                    {{ formatTimestampToDateTime(props.enterInfo?.updated_at) }}
                   </div>
                 </div>
               </div>
@@ -106,34 +89,10 @@ function sumCategory(key: string): number {
               </div>
               <div class="info-row">
                 <div class="info-title">
-                  总重量
-                </div>
-                <div class="info-val">
-                  {{ sumCategory('weight') || 0 }}
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-title">
-                  总标签价
-                </div>
-                <div class="info-val">
-                  {{ sumCategory('label_price') || 0 }}
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-title">
                   入库总件数
                 </div>
                 <div class="info-val">
                   {{ props.enterInfo?.product_total }}
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-title">
-                  入库总入网费
-                </div>
-                <div class="info-val">
-                  {{ sum('access_fee') || 0 }}
                 </div>
               </div>
             </div>

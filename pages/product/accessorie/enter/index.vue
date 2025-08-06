@@ -179,35 +179,6 @@ const cols = [
     },
   },
   {
-    title: '入网费合计',
-    key: 'access_fee_total',
-    render(row: AccessorieEnter) {
-      const total = row.products?.reduce(
-        (pre: number, cur: any) => pre + Number(cur?.access_fee || 0),
-        0,
-      )
-      return total || 0
-    },
-  },
-  {
-    title: '重量合计',
-    key: 'weight_total',
-    render(row: AccessorieEnter) {
-      const total = row.products?.reduce(
-        (pre: number, cur: any) => pre + Number(cur?.category?.weight || 0),
-        0,
-      )
-      return total || 0
-    },
-  },
-  {
-    title: '操作人',
-    key: 'operator',
-    render(row: AccessorieEnter) {
-      return row?.operator?.nickname || '-'
-    },
-  },
-  {
     title: '入库时间',
     key: 'created_at',
     render(row: AccessorieEnter) {
@@ -218,7 +189,7 @@ const cols = [
     title: '操作',
     key: 'action',
     fixed: 'right',
-    render(row: AccessorieEnter) {
+    render(row: any) {
       return h(
         NButton,
         {
@@ -276,24 +247,6 @@ const cols = [
                   <div>入库数量</div>
                   <div class="text-align-end">
                     {{ info?.product_total }}
-                  </div>
-                </div>
-                <div class="py-[4px] flex justify-between">
-                  <div>标签价合计</div>
-                  <div class="text-align-end">
-                    {{ info.products?.reduce((pre, cur) => pre + Number(cur?.category?.label_price || 0), 0) || 0 }}
-                  </div>
-                </div>
-                <div class="py-[4px] flex justify-between">
-                  <div>入网费合计</div>
-                  <div class="text-align-end">
-                    {{ info.products?.reduce((pre, cur:ProductFinisheds) => pre + Number(cur?.access_fee || 0), 0) || 0 }}
-                  </div>
-                </div>
-                <div class="py-[4px] flex justify-between">
-                  <div>重量合计</div>
-                  <div class="text-align-end">
-                    {{ info.products?.reduce((pre, cur) => pre + Number(cur?.category.weight || 0), 0) || 0 }}
                   </div>
                 </div>
                 <div class="py-[4px] flex justify-between">

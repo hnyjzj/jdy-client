@@ -23,6 +23,8 @@ interface FilterWhere<T, N = keyof T> {
   find: boolean
   /** 该字段是否可以添加上传 */
   create: boolean
+  /** 是否页面显示 */
+  info: boolean
   /** 是否可以更新 */
   update: boolean
   /** 字段名 */
