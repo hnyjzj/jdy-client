@@ -7,15 +7,19 @@ const props = withDefaults(defineProps<{
   showCompany?: boolean
   /** 是否显示输入搜索框 */
   showInput?: boolean
+  isExport?: boolean
 }>(), {
   showCompany: true,
   showInput: true,
+  isExport: false,
 })
 const emits = defineEmits<{
   search: [e: string]
   clear: []
   filter: []
   clearSearch: []
+  changeCard: []
+  export: []
 }>()
 const showtype = defineModel<'table' | 'list'>('showtype')
 const search = (e: string) => {
@@ -27,10 +31,11 @@ const filter = () => {
 const clearSearch = () => {
   emits('clearSearch')
 }
+const searchKey = defineModel<string>('searchKey', { required: false, default: '' })
 </script>
 
 <template>
-  <div class="bg-[#3875c5] sticky top-0 z-1">
+  <div class="bg-[#3875c5] sticky top-0 z-9">
     <common-layout-center>
       <div class="flex flex-col pt-5 px-[16px] w-full color-[#fff]">
         <div class="flex flex-row gap-2">
@@ -39,11 +44,11 @@ const clearSearch = () => {
           </template>
           <template v-if="showInput">
             <div class="flex-1">
-              <product-filter-search :placeholder="placeholder" @submit="search" @clear="clearSearch" />
+              <product-filter-search v-model:search-key="searchKey" :placeholder="placeholder" @submit="search" @clear="clearSearch" />
             </div>
           </template>
         </div>
-        <common-tool-list v-model="showtype" :total="props.productListTotal" @height="filter" />
+        <common-tool-list v-model:showtype="showtype" :is-export="isExport" :total="props.productListTotal" @export="emits('export')" @height="filter" @change-card="emits('changeCard')" />
       </div>
     </common-layout-center>
   </div>

@@ -27,9 +27,7 @@ export const useStores = defineStore('Store', {
   actions: {
     // 门店列表
     async getStoreList(req: ReqList<Stores>, search?: boolean) {
-      if (req.page === 1) {
-        this.storesList = []
-      }
+      this.storesList = []
       const { data } = await https.post<ResList<Stores>, ReqList<Stores>>('/store/list', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.total = data.value.data.total
@@ -46,6 +44,7 @@ export const useStores = defineStore('Store', {
           return true
         }
         else {
+          this.storesList = []
           // 当前页没有数据，则不进行下一页
           return false
         }

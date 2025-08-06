@@ -40,7 +40,7 @@ export const useDepositOrder = defineStore('depositOrder', {
       const { data } = await https.post<ResList<DepositOrderInfo>, ReqList<DepositOrderInfo>>('/order/deposit/list', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.total = data.value.data.total
-        if (data.value.data.list.length > 0) {
+        if (data.value.data.list !== null && data.value.data.list.length > 0) {
           this.OrdersList = data.value.data.list
           if (this.OrdersList.length === this.total) {
             return false
@@ -48,6 +48,7 @@ export const useDepositOrder = defineStore('depositOrder', {
           return true
         }
         else {
+          this.OrdersList = []
           // 当前页没有数据，则不进行下一页
           return false
         }

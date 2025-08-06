@@ -89,10 +89,8 @@ interface ProductHistories {
    * 值
    */
   value: any[] | boolean | number | { [key: string]: any } | null | string
-  /**
-   * 产品类型
-   */
-  type: GoodsTypePure
+  code: string
+
 }
 
 /**

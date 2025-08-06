@@ -9,9 +9,13 @@ const { getStoreList, getMyStore } = useStores()
 const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
 const { searchPage, showtype } = storeToRefs(usePages())
+
+const route = useRoute()
+
+const filterData = ref({} as Partial<ExpandPage<AccessorieRecord>>)
+const searchKey = ref('')
 const limits = ref(50)
 const tableLoading = ref(false)
-const searchKey = ref('')
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const storeCol = ref()
@@ -25,84 +29,126 @@ useSeoMeta({
   title: '配件记录',
 })
 
-const openFilter = () => {
+const openFilter = async () => {
   isFilter.value = true
 }
-/** 搜索 */
-async function search(e: string) {
-  await submitWhere({ code: e }, true)
+
+/** 跳转并刷新列表 */
+const listJump = () => {
+  const url = UrlAndParams('/product/accessorie/record', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
-/** 关闭搜索 */
-async function clearSearch() {
-  await submitWhere({ }, true)
-}
-// 获取货品列表
-async function getList(where = {} as Partial<HistoryWhere>) {
+/** 获取列表 */
+const getList = async (where = {} as Partial<AccessorieRecord>) => {
   tableLoading.value = true
-  const params = { page: searchPage.value, limit: limits.value } as ReqList<HistoryWhere>
-  params.where = where
-  if (myStore.value?.id) {
-    params.where.store_id = myStore.value.id
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<AccessorieRecord>
+  if (JSON.stringify(where) !== '{}') {
+    params.where = { ...params.where, ...where }
   }
+
   const res = await getProductHistory(params)
   tableLoading.value = false
-  return res as any
+  return res
 }
-try {
-  await getList()
-  await getHistoryWhere()
-  await getAccessorieWhere()
-  await changeStore()
-  await getStoreList({ page: 1, limit: 20 })
-  await getMyStore({ page: 1, limit: 20 })
-}
-catch (error) {
-  $toast.error('初始化数据失败')
-  console.error('初始化数据失败:', error)
-}
-
-const filterData = ref({} as Partial<AccessorieRecord>)
-
-const pull = async (page: number) => {
-  searchPage.value = page
+/** 读取参数并初始化列表 */
+const handleQueryParams = async () => {
+  const f = getQueryParams<ExpandPage<AccessorieRecord>>(route.fullPath, historyFilterList.value)
+  filterData.value = f
+  if (filterData.value.name) {
+    searchKey.value = filterData.value.name
+  }
+  if (f.searchPage)
+    searchPage.value = Number(f.searchPage)
+  if (f.showtype) {
+    showtype.value = f.showtype
+  }
+  if (f.limits)
+    limits.value = Number(f.limits)
   await getList(filterData.value)
 }
 
-// 筛选列表
-async function submitWhere(f: Partial<HistoryWhere>, isSearch: boolean = false) {
-  filterData.value = { ...f }
-  searchPage.value = 1
-  productRocordList.value = []
-  const res = await getList(filterData.value)
-  if (res.code === HttpCode.SUCCESS) {
-    isFilter.value = false
-    if (!isSearch) {
-      $toast.success('筛选成功')
-    }
-    return
+/** 提交筛选 */
+const submitWhere = async (f: Partial<ExpandPage<AccessorieRecord>>) => {
+  filterData.value = {
+    ...f,
+    searchPage: 1,
+    limits: limits.value,
   }
-  $toast.error(res.message ?? '筛选失败')
+  listJump()
+}
+
+/** 修改页码 */
+const updatePage = (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+await changeStore()
+await getStoreList({ page: 1, limit: 20 })
+await getMyStore({ page: 1, limit: 20 })
+// 页面初始化逻辑
+try {
+  if (myStore.value.id || myStore.value.id === '') {
+    await getAccessorieWhere()
+    await getHistoryWhere()
+    await handleQueryParams()
+  }
+  else {
+    $toast.error('您尚未分配任何门店，请先添加门店')
+  }
+}
+catch (error) {
+  throw new Error(`初始化失败: ${error || '未知错误'}`)
 }
 
 const filterRef = ref()
-async function changeMyStore() {
-  searchPage.value = 1
-  filterRef.value.reset()
-  await getList()
+/** 门店切换刷新 */
+const changeMyStore = async () => {
+  filterData.value.searchPage = 1
+  listJump()
 }
+/** 切换显示 */
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 重置高级筛选
+const resetWhere = async () => {
+  filterData.value = {}
+  listJump()
+}
+
+/** 搜索条码 */
+const search = async (e: string) => {
+  filterData.value.name = e
+  filterData.value.searchPage = 1
+  listJump()
+}
+
+/** 清空搜索 */
+const clearSearch = async () => {
+  delete filterData.value.name
+  filterData.value.searchPage = 1
+  listJump()
+}
+
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: historyListTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
     pageOption.value.pageSize = pageSize
     limits.value = pageSize
-    pull(1)
+    updatePage(1)
   },
   onChange: (page: number) => {
-    pull(page)
+    updatePage(page)
   },
 })
 
@@ -184,7 +230,15 @@ const cols = [
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:showtype="showtype" v-model:search="searchKey" :product-list-total="historyListTotal" placeholder="搜素关联产品编号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:showtype="showtype"
+      v-model:search="searchKey"
+      :product-list-total="historyListTotal"
+      placeholder="搜素关联配件名称"
+      @change-card="changeCard"
+      @filter="openFilter"
+      @search="search"
+      @clear-search="clearSearch"
+    >
       <template #company>
         <product-manage-company @change="changeMyStore" />
       </template>
@@ -226,7 +280,7 @@ const cols = [
             </template>
           </product-manage-card>
           <common-page
-            v-model:page="searchPage" :total="historyListTotal" :limit="limits" @update:page="pull" />
+            v-model:page="searchPage" :total="historyListTotal" :limit="limits" @update:page="updatePage" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="productRocordList" :page-option="pageOption" :loading="tableLoading" />
@@ -235,8 +289,7 @@ const cols = [
       <template v-else>
         <common-empty width="100px" />
       </template>
-
-      <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="HistoryFilterListToArray" @submit="submitWhere" />
+      <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="HistoryFilterListToArray" @submit="submitWhere" @reset="resetWhere" />
     </div>
   </div>
 </template>

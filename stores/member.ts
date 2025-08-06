@@ -30,20 +30,18 @@ export const useMemberManage = defineStore('Member', {
   actions: {
     // 获取会员列表
     async getMemberList(params: ReqList<Member>) {
-      if (params.page === 1) {
-        this.memberList = []
-      }
+      this.memberList = []
       const { data } = await https.post<ResList<Member>, ReqList<Member>>('/member/list', params)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.memberListTotal = data.value.data.total
-        if (data.value.data.list.length > 0) {
+        if (data.value.data.list !== null && data.value.data.list.length > 0) {
           this.memberList = data.value.data.list
           if (this.memberList.length === this.memberListTotal) {
             return false
           }
-          return true
         }
         else {
+          this.memberList = []
           return false
         }
       }

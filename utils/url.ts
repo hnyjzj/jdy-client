@@ -22,25 +22,60 @@ export function UrlAndParams(url: string, param: object) {
 /**
  * 获取URL参数
  *
- * @param url 请求地址
+ * @params url 请求地址
+ * @params filter 过滤参数
+ * @params V 泛型 转出的对象
+ * @params K 泛型 过滤参数
  * @returns object
  */
-export function getQueryParams<T extends object>(url: string | undefined): T {
+export function getQueryParams<V extends Partial<Record<string, any>>, K extends Where<any> = Where<any>>(url: string | undefined, filter?: K): V {
   if (!url)
-    return {} as T
+    return {} as V
     // 解码URL的查询部分
   const queryString = decodeURIComponent(url).split('?')[1] || ''
   if (!queryString)
-    return {} as T
+    return {} as V
     // 将查询字符串分割成参数数组
   const params = queryString.split('&')
 
   // 将所有参数转换为对象
-  const queryParams = {} as Record<string, string>
+  const queryParams = {} as V
+
   params.forEach((param) => {
     const [key, value] = param.split('=')
-    queryParams[key] = decodeURIComponent(value)
+
+    const where = filter && filter[key as keyof K]
+    switch (where?.type) {
+      case 'number':
+        (queryParams as Record<string, any>)[key] = Number(value)
+        break
+      case 'float':
+        (queryParams as Record<string, any>)[key] = Number.parseFloat(value)
+        break
+      case 'string':
+        (queryParams as Record<string, any>)[key] = decodeURIComponent(value)
+        break
+      case 'bool':
+        (queryParams as Record<string, any>)[key] = !!value
+        break
+      case 'boolean':
+        (queryParams as Record<string, any>)[key] = value === 'true'
+        break
+      case 'string[]': {
+        const values = value.split(',').map(item => decodeURIComponent(item)).filter(Boolean)
+        if (values.length > 0) {
+          (queryParams as Record<string, any>)[key] = values
+        }
+        break
+      }
+      case 'time':
+        (queryParams as Record<string, any>)[key] = new Date(value).getTime()
+        break
+      default:
+        (queryParams as Record<string, any>)[key] = decodeURIComponent(value) || undefined
+        break
+    }
   })
 
-  return queryParams as T
+  return queryParams as V
 }

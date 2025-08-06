@@ -12,11 +12,8 @@ const { statementList, total, filterListToArray, filterList, showtype } = storeT
 const { searchPage } = storeToRefs(usePages())
 const filterData = ref({} as Partial<StatementWhere>)
 const filterShow = ref(false)
-const { getMemberList } = useMemberManage()
-const { memberList } = storeToRefs(useMemberManage())
 const limits = ref(50)
 const tableLoading = ref(false)
-const getMember = async (val: string) => await getMemberList({ page: 1, limit: 5, where: { id: myStore.value.id, phone: val } })
 
 // 获取列表
 const getList = async (where = {} as Partial<StatementWhere>) => {
@@ -33,51 +30,83 @@ const openFilter = () => {
   // 打开筛选
   filterShow.value = true
 }
+const listJump = () => {
+  const url = UrlAndParams('/sale/sales/statement', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+}
+const searchKey = ref('')
+const route = useRoute()
+// 获取where 条件
+await getStatementWhere()
+// 读取url参数,获取列表
+const handleQueryParams = async () => {
+  filterData.value = {}
+  const f = getQueryParams<StatementWhere>(route.fullPath, filterList.value)
+  filterData.value = f
+  if (filterData.value.code) {
+    searchKey.value = filterData.value.code
+  }
+  if (f.showtype) {
+    showtype.value = f.showtype
+  }
+  if (f.searchPage) {
+    searchPage.value = Number(f.searchPage) || 1
+  }
+  if (f.limits) {
+    limits.value = Number(f.limits) || 50
+  }
+
+  await getList(filterData.value as Partial<StatementWhere>)
+}
+// 默认请求列表
+await handleQueryParams()
+
 const submitWhere = async (f: StatementWhere) => {
-  filterData.value = { ...filterData.value, ...f }
-  statementList.value = []
-  searchPage.value = 1
-  await getList(filterData.value as any)
-  filterShow.value = false
+  filterData.value = { ...f, showtype: showtype.value, searchPage: 1, limits: limits.value }
+  listJump()
 }
 const resetWhere = async () => {
   filterData.value = {}
+  listJump()
 }
-await getList()
-await getStatementWhere()
-// 获取头部高度
-const height = ref<number | undefined>(0)
-onMounted(async () => {
-  height.value = getHeight('header')
-})
-const searchOrder = async (val: string) => {
-  filterData.value = { code: val, store_id: myStore.value.id }
-  searchPage.value = 1
-  await getList(filterData.value)
+// 切换卡片
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+const searchOrder = async (code: string) => {
+  filterData.value.code = code
+  filterData.value.searchPage = 1
+  listJump()
 }
 
 const clearFn = async () => {
-  filterData.value = {}
-  statementList.value = []
-  searchPage.value = 1
-  await getList()
+  delete filterData.value.code
+  searchKey.value = ''
+  filterData.value.searchPage = 1
+  listJump()
 }
 const updatePage = async (page: number) => {
-  searchPage.value = page
-  await getList(filterData.value as otherOrderWhere)
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
 }
+
 const changeStores = async () => {
-  await getList()
+  filterData.value.searchPage = 1
+  listJump()
 }
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: total,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
-    pageOption.value.pageSize = pageSize
     limits.value = pageSize
     updatePage(1)
   },
@@ -86,26 +115,19 @@ const pageOption = ref({
   },
 })
 
-const returnType = (number: number) => {
-  if (number === 1) {
-    return '成品'
-  }
-  if (number === 2) {
-    return '旧料'
-  }
-  return '配件'
-}
 const cols = [
-  { title: '编号', key: 'id' },
+  { title: '订单编号', key: 'id' },
+  { title: '订单状态', key: 'id', render: (rowData: orderInfoProducts) => {
+    return filterList.value.status?.preset[rowData.status] || '--'
+  } },
   { title: '关联销售单', key: 'order_id' },
   {
     title: '所属门店',
     key: 'store.name',
   },
-  { title: '会员', key: 'member.name' },
   { title: '会员手机', key: 'member.phone' },
   { title: '导购', key: '', render: (rowData: orderInfoProducts) => {
-    return rowData.order?.clerks[0].salesman?.nickname
+    return rowData.order?.clerks[0].salesman?.nickname || '--'
   } },
 
   {
@@ -167,9 +189,9 @@ const cols = [
           type: 'info',
           size: 'small',
           onClick: () => {
-            if (!rowData.id)
+            if (!rowData.order_id)
               return
-            navigateTo(`/sale/sales/order?id=${rowData.id}`)
+            navigateTo(`/sale/sales/order?id=${rowData.order_id}`)
           },
         },
         { default: () => '查看详情' },
@@ -183,7 +205,9 @@ const cols = [
   <div>
     <product-filter
       v-model:showtype="showtype"
-      :product-list-total="total" placeholder="搜索编号" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
+      v-model:search-key="searchKey"
+      :product-list-total="total"
+      placeholder="搜索产品条码" @change-card="changeCard" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
       <template #company>
         <product-manage-company @change="changeStores" />
       </template>
@@ -207,22 +231,7 @@ const cols = [
 
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #order_id>
-        <n-input v-model:value="filterData.order_id" placeholder="请输入订单号" clearable size="large" />
-      </template>
-      <template #member_id>
-        <n-select
-          v-model:value="filterData.member_id"
-          filterable
-          placeholder="请选择会员"
-          :options="memberList.map(v => ({
-            label: `${v.phone} (${v.nickname ? v.nickname : v.name})`,
-            value: v.id,
-          }))"
-          clearable
-          remote
-          @search="getMember"
-          @focus="focus"
-        />
+        <n-input v-model:value="filterData.order_id" placeholder="请输入销售单订单号" clearable size="large" />
       </template>
     </common-filter-where>
   </div>

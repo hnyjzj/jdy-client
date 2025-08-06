@@ -9,9 +9,12 @@ const { checkList, checkFilterList, checkFilterListToArray, checkTotal } = store
 const { storesList } = storeToRefs(useStores())
 const { getStoreList, getMyStore } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
+const searchKey = ref('')
+const route = useRoute()
+
+const filterData = ref({} as Partial<ExpandPage<Check>>)
 const limits = ref(50)
 const tableLoading = ref(false)
-
 const storeCol = ref()
 async function changeStore() {
   storeCol.value = []
@@ -29,56 +32,82 @@ useSeoMeta({
   title: '货品盘点',
 })
 /** 打开高级筛选 */
-const openFilter = () => {
+const openFilter = async () => {
   isFilter.value = true
+  await getStoreStaffListFun()
 }
-/** 搜索 */
-async function search(e: string) {
-  await submitWhere({ id: e }, true)
+
+/** 跳转并刷新列表 */
+const listJump = () => {
+  const url = UrlAndParams('/product/check', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
-/** 关闭搜索 */
-async function clearSearch() {
-  await submitWhere({ }, true)
-}
-// 获取货品列表
-async function getList(where = {} as Partial<Check>) {
+/** 获取成品列表 */
+const getList = async (where = {} as Partial<Check>) => {
   tableLoading.value = true
-  const params = { page: searchPage.value, limit: limits.value } as ReqList<Check>
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<Check>
   if (JSON.stringify(where) !== '{}') {
-    params.where = where
+    params.where = { ...params.where, ...where }
   }
   const res = await getCheckList(params)
   tableLoading.value = false
-  return res as any
+  return res
 }
-
-await getList()
-
-const filterData = ref({} as Partial<Check>)
-
-const pull = async (page: number) => {
-  searchPage.value = page
+/** 读取参数并初始化列表 */
+const handleQueryParams = async () => {
+  const f = getQueryParams<ExpandPage<Check>>(route.fullPath, checkFilterList.value)
+  filterData.value = f
+  if (filterData.value?.id) {
+    searchKey.value = filterData.value.id
+  }
+  if (f.searchPage)
+    searchPage.value = Number(f.searchPage)
+  if (f.showtype) {
+    showtype.value = f.showtype
+  }
+  if (f.limits)
+    limits.value = Number(f.limits)
   await getList(filterData.value)
 }
 
-const store_id = ref()
-// 筛选列表
-async function submitWhere(f: Partial<Check>, isSearch = false) {
-  if (store_id.value) {
-    f.store_id = store_id.value
+/** 提交筛选 */
+const submitWhere = async (f: Partial<ExpandPage<Check>>) => {
+  filterData.value = {
+    ...f,
+    searchPage: 1,
+    limits: limits.value,
   }
-  filterData.value = { ...filterData.value, ...f }
-  searchPage.value = 1
-  checkList.value = []
-  const res = await getList(filterData.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    isFilter.value = false
-    if (!isSearch) {
-      $toast.success('筛选成功')
-    }
-    return
+  listJump()
+}
+
+/** 修改页码 */
+const updatePage = (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+/** 搜索 */
+async function search(e: string) {
+  await submitWhere({ id: e })
+}
+/** 关闭搜索 */
+async function clearSearch() {
+  await submitWhere({ })
+}
+
+// 页面初始化逻辑
+try {
+  if (myStore.value.id || myStore.value.id === '') {
+    await getCheckWhere()
+    await handleQueryParams()
   }
-  $toast.error(res?.message ?? '筛选失败')
+  else {
+    $toast.error('您尚未分配任何门店，请先添加门店')
+  }
+}
+catch (error) {
+  throw new Error(`初始化失败: ${error || '未知错误'}`)
 }
 
 /** 多选值 */
@@ -108,9 +137,8 @@ function getRadioVal(preset: FilterWhere<Check>['preset'], val: any) {
 }
 
 async function changeMyStore() {
-  searchPage.value = 1
-  reset()
-  await getList()
+  filterData.value.searchPage = 1
+  listJump()
 }
 
 /**
@@ -124,6 +152,7 @@ const Key = ref(useId())
 function reset() {
   filterData.value = { }
   Key.value = Date.now().toString()
+  listJump()
 }
 
 async function getStoreStaffListFun() {
@@ -133,19 +162,27 @@ async function getStoreStaffListFun() {
   }
 }
 
+/** 切换显示 */
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: checkTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
     pageOption.value.pageSize = pageSize
     limits.value = pageSize
-    pull(1)
+    updatePage(1)
   },
   onChange: (page: number) => {
-    pull(page)
+    updatePage(page)
   },
 })
 
@@ -268,7 +305,15 @@ const cols = [
     <!-- 筛选 -->
     <div id="header" class="sticky top-0 bg-[#3875C5] z-1">
       <product-filter
-        v-model:showtype="showtype" :product-list-total="checkTotal" placeholder="搜索盘点单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+        v-model:search-key="searchKey"
+        v-model:showtype="showtype"
+        :product-list-total="checkTotal"
+        placeholder="搜索盘点单号"
+        @filter="openFilter"
+        @change-card="changeCard"
+        @search="search"
+        @clear-search="clearSearch"
+      >
         <template #company>
           <product-manage-company @change="changeMyStore" />
         </template>
@@ -389,7 +434,7 @@ const cols = [
             </template>
           </product-manage-card>
           <common-page
-            v-model:page="searchPage" :total="checkTotal" :limit="limits" @update:page="pull" />
+            v-model:page="searchPage" :total="checkTotal" :limit="limits" @update:page="updatePage" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="checkList" :page-option="pageOption" :loading="tableLoading" />

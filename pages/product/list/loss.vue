@@ -1,89 +1,136 @@
 <script setup lang="ts">
 import { NButton } from 'naive-ui'
 
-const { $toast } = useNuxtApp()
+const { myStore } = storeToRefs(useStores())
 const { getLossList, getLossWhere } = useLoss()
 const { lossList, lossFilterList, lossFilterListToArray, lossListTotal } = storeToRefs(useLoss())
 const { searchPage, showtype } = storeToRefs(usePages())
-const limits = ref(50)
-const tableLoading = ref(false)
-// 筛选框显示隐藏
-const isFilter = ref(false)
 useSeoMeta({
   title: '报损列表',
 })
-/** 打开高级筛选 */
+// 筛选框显示隐藏
+const isFilter = ref(false)
+
+const route = useRoute()
+const searchKey = ref('')
+const filterData = ref({} as Partial<ExpandPage<ProductFinisheds>>)
+const limits = ref(50)
+const tableLoading = ref(false)
+useSeoMeta({
+  title: '报损列表',
+})
+const filterRef = ref()
+/** 跳转并刷新列表 */
+const listJump = () => {
+  const url = UrlAndParams('/product/list/loss', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+}
+/** 获取成品列表 */
+const getList = async (where = {} as Partial<ProductFinisheds>) => {
+  tableLoading.value = true
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<ProductFinisheds>
+  if (JSON.stringify(where) !== '{}') {
+    params.where = { ...params.where, ...where }
+  }
+
+  const res = await getLossList(params)
+  tableLoading.value = false
+  return res
+}
+/** 读取参数并初始化列表 */
+const handleQueryParams = async () => {
+  const f = getQueryParams<ExpandPage<ProductFinisheds>>(route.fullPath, lossFilterList.value)
+  filterData.value = f
+  if (filterData.value.code) {
+    searchKey.value = filterData.value.code
+  }
+  if (f.searchPage)
+    searchPage.value = Number(f.searchPage)
+  if (f.showtype) {
+    showtype.value = f.showtype
+  }
+  if (f.limits)
+    limits.value = Number(f.limits)
+  await getList(filterData.value)
+}
+
+/** 提交筛选 */
+const submitWhere = async (f: Partial<ExpandPage<ProductFinisheds>>) => {
+  filterData.value = {
+    ...f,
+    searchPage: 1,
+    limits: limits.value,
+  }
+  listJump()
+}
+
+/** 修改页码 */
+const updatePage = (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+/** 高级筛选显示 */
 const openFilter = () => {
   isFilter.value = true
 }
-/** 搜索 */
-async function search(e: string) {
-  await submitWhere({ code: e }, true)
+
+/** 搜索条码 */
+const search = async (e: string) => {
+  filterData.value.code = e
+  filterData.value.searchPage = 1
+  listJump()
 }
-/** 关闭搜索 */
-async function clearSearch() {
-  await submitWhere({ }, true)
+
+/** 清空搜索 */
+const clearSearch = async () => {
+  delete filterData.value.code
+  filterData.value.searchPage = 1
+  listJump()
 }
-// 获取货品列表
-async function getList(where = {} as Partial<ProductFinisheds>) {
-  tableLoading.value = true
-  const params = { page: searchPage.value, limit: limits.value } as ReqList<ProductFinisheds>
-  params.where = where
-  const res = await getLossList(params)
-  tableLoading.value = false
-  return res as any
+
+/** 门店切换刷新 */
+const changeStore = async () => {
+  filterData.value.searchPage = 1
+  listJump()
+}
+
+/** 切换显示 */
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 重置高级筛选
+const resetWhere = async () => {
+  filterData.value = {}
+  listJump()
 }
 
 try {
-  await getList()
   await getLossWhere()
+  await handleQueryParams()
 }
 catch (error) {
   throw new Error(`初始化失败: ${error || '未知错误'}`)
 }
 
-const filterData = ref({} as Partial<ProductFinisheds>)
-const pull = async (page: number) => {
-  searchPage.value = page
-  await getList(filterData.value)
-}
-
-// 筛选列表
-async function submitWhere(f: Partial<ProductFinisheds>, isSearch: boolean = false) {
-  filterData.value = { ...f }
-  searchPage.value = 1
-  lossList.value = []
-  const res = await getList(filterData.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    isFilter.value = false
-    if (!isSearch) {
-      $toast.success('筛选成功')
-    }
-    return
-  }
-  $toast.error(res?.message ?? '筛选失败')
-}
-
-const filterRef = ref()
-async function changeStore() {
-  searchPage.value = 1
-  filterRef.value.reset()
-  await getList()
-}
-
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: lossListTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
     pageOption.value.pageSize = pageSize
     limits.value = pageSize
-    pull(1)
+    updatePage(1)
   },
   onChange: (page: number) => {
-    pull(page)
+    updatePage(page)
   },
 })
 
@@ -179,11 +226,15 @@ const cols = [
     <!-- 筛选 -->
     <product-filter
       v-model:showtype="showtype"
+      v-model:search-key="searchKey"
       :product-list-total="lossListTotal"
       placeholder="搜索条码"
+      :is-export="true"
+      @change-card="changeCard"
       @filter="openFilter"
       @search="search"
-      @clear-search="clearSearch">
+      @clear-search="clearSearch"
+    >
       <template #company>
         <product-manage-company @change="changeStore" />
       </template>
@@ -284,7 +335,7 @@ const cols = [
             </template>
           </product-manage-card>
           <common-page
-            v-model:page="searchPage" :total="lossListTotal" :limit="limits" @update:page="pull" />
+            v-model:page="searchPage" :total="lossListTotal" :limit="limits" @update:page="updatePage" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="lossList" :page-option="pageOption" :loading="tableLoading" />
@@ -294,7 +345,7 @@ const cols = [
         <common-empty width="100px" />
       </template>
     </div>
-    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['status']" :filter="lossFilterListToArray" @submit="submitWhere" />
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['status']" :filter="lossFilterListToArray" @reset="resetWhere" @submit="submitWhere" />
   </div>
 </template>
 

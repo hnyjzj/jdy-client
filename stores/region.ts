@@ -21,25 +21,22 @@ export const useRegion = defineStore('Region', {
   actions: {
     // 区域列表
     async getRegionList(req: ReqList<Region>, search?: boolean) {
-      if (req.page === 1) {
-        this.regionList = []
-      }
+      this.regionList = []
       const { data } = await https.post<ResList<Region>, ReqList<Region>>('/region/list', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.total = data.value.data.total
         if (data.value.data.list.length > 0) {
-          this.regionList = [...this.regionList, ...data.value.data.list]
-
+          this.regionList = data.value.data.list
           if (search) {
             return this.regionList
           }
-
           if (this.regionList.length === this.total) {
             return false
           }
           return true
         }
         else {
+          this.regionList = []
           // 当前页没有数据，则不进行下一页
           return false
         }
