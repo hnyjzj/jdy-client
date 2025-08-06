@@ -1,32 +1,12 @@
 interface ProductAccessories {
   /**
-   * 配件条目
+   * 名称 唯一字段
    */
-  category: AccessorieCategory
-  /**
-   * 配件条目ID
-   */
-  code: string
-  /**
-   * 创建时间
-   */
-  created_at?: Date | null
-  /**
-   * 删除时间
-   */
-  deleted_at?: Date | null
-  /**
-   * 入库单
-   */
-  enter?: null | ProductAccessorieEnters
+  name: string
   /**
    * 产品入库单ID
    */
   enter_id?: string
-  /**
-   * 入库时间
-   */
-  enter_time?: Date
   /**
    * ID
    */
@@ -34,63 +14,39 @@ interface ProductAccessories {
   /**
    * 状态
    */
-  status?: number
+  status: number
   /**
    * 库存
    */
-  stock?: number
-  /**
-   * 门店
-   */
-  store?: null | Stores
+  stock: number
   /**
    * 门店ID
    */
-  store_id?: string
+  store_id: string
+  store: Stores
   /**
    * 产品类型
    */
-  type?: number
-  /**
-   * 更新时间
-   */
-  updated_at?: Date | null
-
+  type: number
   /**
    * 零售方式
    */
   retail_type: number
   /**
-   * 标签价
+   * 备注
    */
-  label_price: number
-  /**
-   * 重量
-   */
-  weight: number
-  /**
-   * quantity 数量
-   */
-  quantity: number
-  /**
-   * 应付金额
-   */
-  amount?: number
-  /**
-   * 积分
-   */
-  integral?: number
-  /**
-   * 积分比例
-   */
-  rate?: number
-  /**
-   * 名称
-   */
-  name?: string
-  /**
-   * 入库入网费
-   */
-  assess_fee: number
+  remark: string
+  quantity?: number
+  price?: string
 
+  amount?: number
+  integral?: number
+  rate?: number
+}
+
+/**
+ * 配件详情
+ */
+interface ProductAccessoriesInfo extends ProductAccessories {
+  store: Stores
 }

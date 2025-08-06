@@ -34,7 +34,12 @@ interface Orders {
   /**
    * 配件
    */
-  product_accessories?: ProductAccessorie[]
+  product_accessories?: {
+    product_id: string
+    quantity?: number
+    price?: number
+    integral?: number
+  }[]
   /**
    * 成品
    */

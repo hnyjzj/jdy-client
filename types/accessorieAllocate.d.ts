@@ -3,37 +3,13 @@
  */
 interface AccessorieAllocate {
   /**
-   * 创建时间
-   */
-  created_at: Date
-  /**
-   * 删除时间
-   */
-  deleted_at?: Date
-  /**
    * ID
    */
   id: string
   /**
-   * IP
-   */
-  ip: string
-  /**
    * 调拨方式
    */
   method: number
-  /**
-   * 操作人ID
-   */
-  operator_id: string
-  /**
-   * 操作人信息
-   */
-  operator: Staff
-  /**
-   * 调拨原因
-   */
-  reason: number
   /**
    * 备注
    */
@@ -43,17 +19,10 @@ interface AccessorieAllocate {
    */
   store_id?: string
   /**
-   * 产品类型
+   * 区域门店
    */
-  type: number
-  /**
-   * 更新时间
-   */
-  updated_at: Date
-  /**
-   * 调拨商品
-   */
-  products?: allocateProduct[]
+  to_region_id?: string
+  to_region: Region
   /**
    * 调拨状态
    * 1:草稿 2:在途 3:已完成 4:已取消
@@ -63,31 +32,38 @@ interface AccessorieAllocate {
    * 调出门店id
    */
   from_store_id?: string
-  /**
-   * 调出门店信息
-   */
   from_store: Stores
   /**
    * 调入门店id
    */
   to_store_id?: string
-  /**
-   * 调入门店信息
-   */
   to_store: Stores
-  start_time: Date
-  end_time: Date
-  /** 调拨总数 */
-  product_count?: number
-  /** 调拨总件数 */
-  product_total?: number
+  updated_at: string
+  created_at: string
 }
 
-interface allocateProduct {
+interface AccessorieAllocateInfo extends AccessorieAllocate {
+  from_store: Stores
+  operator: Staffs
+  operator_id: string
+  /** 调拨总数 */
+  product_count: number
+  /** 调拨总件数 */
+  product_total?: number
+  products: AccessorieAllocateProduct[]
+}
+/**
+ * 配件调拨产品
+ */
+interface AccessorieAllocateProduct extends ProductAccessories {
+  methood: number
+  allocate: AccessorieAllocate
   allocate_id: string
-  product_id: string
-  quantity: number
-  product: ProductAccessories
+  created_at: string
+  id: string
+  stock: number
+  store: Stores
+  updated_at: string
 }
 
 interface AccessorieAllocateReq {
@@ -127,12 +103,14 @@ interface AccessorieAllocateReq {
    * 入库单id
    */
   enter_id?: Enter['id']
+  /** 区域id */
+  to_region_id: string
 }
 interface AddAccessorieAllocateProduct {
   /**
-   * 产品id
+   * 产品名称
    */
-  product_id: string
+  name: string
   /**
    * 数量
    */
@@ -147,4 +125,19 @@ interface AddAccessorieAllocateReq {
    */
   id: string
   products: AddAccessorieAllocateProduct[]
+}
+
+/** 删除调拨配件参数 */
+interface AddAccessorieAllocateDel {
+  /**
+   * 调拨单id
+   */
+  id: string
+  product_id: string
+}
+
+interface AccessorieAllocateInfoParams {
+  id: string
+  page: number
+  limit: number
 }

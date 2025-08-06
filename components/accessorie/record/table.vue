@@ -1,19 +1,19 @@
 <script lang="ts" setup>
 const props = withDefaults(defineProps<{
-  oldAccessories: ProductAccessories
-  newAccessories: ProductAccessories
-  filterList: FilterWhere<AccessorieCategory>[]
+  oldAccessories: ProductAccessoriesInfo
+  newAccessories: ProductAccessoriesInfo
+  filterList: FilterWhere<ProductAccessories>[]
 }>(), {
 })
 
-type ProductKey = keyof AccessorieCategory
+type ProductKey = keyof ProductAccessories
 /** 字段是否更新 */
 function isUpdate(key: ProductKey) {
-  if (!props.newAccessories?.category || !props.oldAccessories?.category)
+  if (!props.newAccessories || !props.oldAccessories)
     return false
 
   try {
-    return JSON.stringify(props.oldAccessories.category[key]) !== JSON.stringify(props.newAccessories.category[key])
+    return JSON.stringify(props.oldAccessories[key]) !== JSON.stringify(props.newAccessories[key])
   }
   catch {
     return false
@@ -51,21 +51,28 @@ function isUpdate(key: ProductKey) {
     </template>
     <template v-if="props.newAccessories">
       <template v-for="(item, index) in filterList" :key="index">
-        <template v-if="item.create">
+        <template v-if="item.info && item.name !== 'store'">
           <div class="info-row">
             <div class="info-title">
               {{ item.label }}
             </div>
             <div class="text-color-light" :style="isUpdate(item.name) ? 'color: #FF6B6C' : ''">
-              <template v-if="item.input === 'select'">
-                <div class="info-val">
-                  {{ item.preset[props.newAccessories.category[item.name] as number] }}
+              <template v-if="item.type === 'date'">
+                <div v-if="props.newAccessories[item.name]">
+                  {{ formatTimestampToDateTime(props.newAccessories[item.name] as string) || '' }}
                 </div>
               </template>
               <template v-else>
-                <div class="info-val">
-                  {{ props.newAccessories.category[item.name] }}
-                </div>
+                <template v-if="item.input === 'select'">
+                  <div class="text-align-end">
+                    {{ item.preset[props.newAccessories[item.name] as number] }}
+                  </div>
+                </template>
+                <template v-else>
+                  <div class="text-align-end">
+                    {{ props.newAccessories[item.name] }}
+                  </div>
+                </template>
               </template>
             </div>
           </div>

@@ -156,6 +156,7 @@ const rules = ref<FormRules>({
         <n-form-item path="birthday" label="生日">
           <n-date-picker
             v-model:value="birthday"
+            input-readonly
             clearable
             format="yyyy-MM-dd"
             type="date"
@@ -165,6 +166,7 @@ const rules = ref<FormRules>({
         <n-form-item path="anniversary" label="纪念日">
           <n-date-picker
             v-model:value="anniversary"
+            input-readonly
             clearable
             format="yyyy-MM-dd"
             type="date"

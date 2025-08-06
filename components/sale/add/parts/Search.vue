@@ -5,13 +5,13 @@ const Props = defineProps<{
   billingSet: BillingSet
   isIntegral: boolean
   searchParts: (val: string, type: string) => Promise<ProductAccessories[]>
-  checkAccessoriesScore: (params: { classes: AccessorieCategory['type_part'][] }) => any
+  checkAccessoriesScore: (params: { classes: ProductAccessories['type'][] }) => any
 }>()
 const showModal = defineModel('show', { default: false })
 // 搜索商品 名称name 和 条码code   编号number
 const searchType = ref('number')
 const searchPartsVal = ref('')
-const changeType = (type: 'name' | 'code' | 'number') => {
+const changeType = (type: 'name' | 'number') => {
   searchType.value = type
   searchPartsVal.value = ''
 }
@@ -19,8 +19,6 @@ const placeholderText = computed(() => {
   switch (searchType.value) {
     case 'number':
       return '请输入配件编号'
-    case 'code':
-      return '请输入配件条码'
     default:
       return '请输入配件名称'
   }
@@ -31,7 +29,6 @@ const countIntegral = (amount: number, rate: number | string) => {
     b: rate,
   })
 }
-const hold = defineModel<number>('hold', { default: 0 })
 // 预设选中状态的配置列表
 const prePartsList = ref<ProductAccessories[]>([])
 const showPartsList = defineModel<ProductAccessories[]>('list', { default: [] })
@@ -50,12 +47,13 @@ const searchPartsList = async () => {
   const data = await Props.searchParts(searchPartsVal.value, searchType.value)
   partslist.value = data
 }
-// 计算积分 如果积分比例存在并且 应付金额大于0 才能计算
-const calculateIntegral = (amount: number, rate?: number) =>
-  rate && amount > 0 ? countIntegral(amount, rate) : 0
+// 计算积分 如果积分比例存在 并且 应付金额大于0 才能计算
+const calculateIntegral = (amount: number, rate?: number) => {
+  return rate && amount > 0 ? countIntegral(amount, rate) : 0
+}
+
 // 确认配件 ，将选中的配件添加到 展示列表中, 调用接口获取积分比例
 const confirmParts = async () => {
-  hold.value = holdFunction(Props.billingSet.decimal_point)
   // 判断 showPartsList 是否存在 prePartsList 中的元素 ，如果存在则不添加
   const existingCache = {} as { [key: string]: ProductAccessories }
   //  先缓存原始数据
@@ -64,29 +62,30 @@ const confirmParts = async () => {
       existingCache[part.id] = part
     }
   })
+
   prePartsList.value.forEach((item) => {
     if (!item.id)
       return
+
     const existingItem = existingCache[item.id]
-    if (existingItem) { // 如果当前存在了此配件 数量加1，应付金额累加
+
+    if (existingItem?.quantity) { // 如果当前存在了此配件 数量加1，应付金额累加
       existingItem.quantity += 1
-      existingItem.amount = Number(existingItem.category?.label_price || 0) * existingItem.quantity
+      existingItem.amount = Number(existingItem?.price || 0) * existingItem.quantity
     }
     else {
       // 添加配件到展示列表中
-      const newItem = { ...item, quantity: 1, amount: Number(item.category?.label_price || 0) }
+      const newItem = { ...item, quantity: 1, amount: Number(item?.price || 0) }
       existingCache[item.id] = newItem
       showPartsList.value.push(newItem)
     }
   })
   // 筛选大类
-  const arr = ref<AccessorieCategory['type_part'][]>([])
-  arr.value = showPartsList.value.map(item => item.category?.type_part as number)
+  const arr = ref<ProductAccessories['type'][]>([])
+  arr.value = showPartsList.value.map(item => item?.type as number)
   // 获取大类的比例
   const classArray = await Props.checkAccessoriesScore({ classes: arr.value })
   if (!classArray?.length) {
-    // $toast.error('获取配件比例失败')
-    // return
     arr.value.forEach(() => {
       classArray.push(0)
     })
@@ -97,9 +96,9 @@ const confirmParts = async () => {
   // 遍历 列表
   showPartsList.value.forEach((item) => {
     //  匹配配件大类
-    if (classRateMap.has(item?.category?.type_part)) {
+    if (classRateMap.has(item?.type)) {
       // 设置当前配件的积分比例
-      item.rate = Number(classRateMap.get(item?.category?.type_part))
+      item.rate = Number(classRateMap.get(item?.type))
       // 设置当前配件的积分
       item.integral = Props.isIntegral ? calculateIntegral(Number(item?.amount || 0), item.rate) : 0
     }
@@ -110,12 +109,17 @@ const confirmParts = async () => {
   prePartsList.value = []
   partslist.value = []
   showModal.value = false
+  searchPartsVal.value = ''
 }
 </script>
 
 <template>
   <div>
-    <common-model v-model="showModal" title="选择配件" :show-ok="true" :show-cancel="true" @confirm="confirmParts" @cancel="partslist = []">
+    <common-model
+      v-model="showModal" title="选择配件" :show-ok="true" :show-cancel="true" @confirm="confirmParts" @cancel=" () => {
+        searchPartsVal = ''
+        partslist = []
+      }">
       <div class="grid-12 h-[300px] overflow-y-scroll">
         <div class="col-12">
           <div>
@@ -127,16 +131,6 @@ const confirmParts = async () => {
                 <div
                   class="w-[32px] h-[4px] rounded "
                   :style="{ background: searchType === 'name' ? '#2080F0' : '' }" />
-              </div>
-              <div class="flex-center-col" @click="changeType('code')">
-                <div
-                  class="text-[16px] pb-[2px] font-semibold line-height-[24px]"
-                  :style="{ color: searchType === 'code' ? '#333' : '#53565C' }">
-                  条码搜索
-                </div>
-                <div
-                  class="w-[32px] h-[4px] rounded"
-                  :style="{ background: searchType === 'code' ? '#2080F0' : '' }" />
               </div>
               <div class="flex-center-col" @click="changeType('number')">
                 <div
@@ -168,14 +162,11 @@ const confirmParts = async () => {
               <div class="w-[100px] flex-shrink-0">
                 名称
               </div>
-              <div class="w-[180px] flex-shrink-0">
-                条码
-              </div>
               <div class="w-[40px] flex-shrink-0">
                 类型
               </div>
               <div class="w-[50px] flex-shrink-0">
-                标价
+                单价
               </div>
               <div class="w-[40px] flex-shrink-0">
                 库存
@@ -192,19 +183,16 @@ const confirmParts = async () => {
                     {{ item.id }}
                   </div>
                   <div class="w-[100px] flex-shrink-0">
-                    {{ item.category?.name }}
-                  </div>
-                  <div class="w-[180px] flex-shrink-0">
-                    {{ item.code }}
+                    {{ item?.name }}
                   </div>
                   <div class="w-[40px] flex-shrink-0">
-                    {{ item.category?.type_part }}
+                    {{ item?.type }}
                   </div>
                   <div class="w-[50px] flex-shrink-0">
-                    {{ item.category?.label_price }}
+                    {{ item?.price }}
                   </div>
                   <div class="w-[40px] flex-shrink-0">
-                    {{ item.category?.product.stock }}
+                    {{ item.stock }}
                   </div>
                 </div>
               </template>
