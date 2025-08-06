@@ -3,12 +3,10 @@ const { $toast } = useNuxtApp()
 const route = useRoute()
 const router = useRouter()
 
-const { getAccessorieEnterInfo, cancelAccessorieEnter, successAccessorieEnter, addAccessorieEnter, delAccessorieEnter } = useAccessorieEnter()
-const { enterInfo } = storeToRefs(useAccessorieEnter())
-const { accessorieFilterList } = storeToRefs(useAccessorie())
+const { getAccessorieEnterInfo, cancelAccessorieEnter, successAccessorieEnter, addAccessorieEnter, delAccessorieEnter, clearAccessorieEnter, getAccessorieEnterAddProductWhere } = useAccessorieEnter()
+const { enterInfo, addProductEnterFilterList } = storeToRefs(useAccessorieEnter())
+const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
-const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
-const { getAccessorieCategoryWhere } = useAccessorieCategory()
 const { myStore } = storeToRefs(useStores())
 useSeoMeta({ title: '入库单详情' })
 
@@ -27,19 +25,26 @@ const clearDialog = ref(false)
 const cancelDialog = ref(false)
 const finishDialog = ref(false)
 const loading = ref(false)
+const page = ref(1)
 
-/** 页面加载时，初始化数据 */
-await getAccessorieCategoryWhere()
 if (route.query.id) {
   enterId.value = route.query.id as string
-  await fetchEnterInfo()
+  await fetchEnterInfo(true)
   await getAccessorieWhere()
+  await getAccessorieEnterAddProductWhere()
 }
 
 /** 获取入库单详细信息 */
-async function fetchEnterInfo() {
+async function fetchEnterInfo(reset = false) {
+  if (reset)
+    page.value = 1
   if (enterId.value) {
-    await getAccessorieEnterInfo(enterId.value)
+    const params = {
+      id: enterId.value,
+      page: page.value,
+      limit: 20,
+    }
+    await getAccessorieEnterInfo(params)
   }
 }
 
@@ -53,7 +58,7 @@ function goAdd() {
 async function cancel() {
   const res = await cancelAccessorieEnter(enterInfo.value.id)
   if (res?.code === HttpCode.SUCCESS) {
-    await fetchEnterInfo()
+    await fetchEnterInfo(true)
     setTimeout(() => {
       router.back()
     }, 1000)
@@ -67,7 +72,7 @@ async function cancel() {
 /** 点击清空时调用，触发确认弹窗 */
 function clearFun() {
   if (!enterInfo.value?.products?.length) {
-    $toast.error('货品为空')
+    $toast.error('配件为空')
     return
   }
   clearDialog.value = true
@@ -76,7 +81,7 @@ function clearFun() {
 /** 点击完成按钮时调用，触发确认弹窗 */
 function finishFun() {
   if (!enterInfo.value?.products?.length) {
-    $toast.error('货品为空')
+    $toast.error('配件为空')
     return
   }
   finishDialog.value = true
@@ -100,11 +105,11 @@ async function finish() {
 async function delProduct() {
   const res = await delAccessorieEnter({
     enter_id: enterInfo.value.id,
-    product_ids: [deleteId.value],
+    product_id: deleteId.value,
   })
 
   if (res?.code === HttpCode.SUCCESS) {
-    await fetchEnterInfo()
+    await fetchEnterInfo(true)
     $toast.success('删除成功')
   }
   else {
@@ -116,14 +121,15 @@ async function delProduct() {
 async function clearProduct() {
   const ids = enterInfo.value?.products?.map(item => item.id) ?? []
   if (!ids.length)
-    return $toast.warning('货品为空')
+    return $toast.warning('配件为空')
 
-  const res = await delAccessorieEnter({
-    enter_id: enterInfo.value.id,
-    product_ids: ids,
-  })
+  const res = await clearAccessorieEnter(enterInfo.value.id)
   if (res?.code === HttpCode.SUCCESS) {
-    await fetchEnterInfo()
+    await fetchEnterInfo(true)
+    $toast.success('删除成功')
+  }
+  else {
+    $toast.error(res?.message ?? '删除失败')
   }
 }
 
@@ -144,9 +150,11 @@ async function bulkupload(data: any) {
 
     if (res?.code === HttpCode.SUCCESS) {
       $toast.success('添加成功')
-      await fetchEnterInfo()
+      uploadRef.value.clearData()
+      await fetchEnterInfo(true)
     }
     else {
+      uploadRef.value.clearData()
       $toast.error(res?.message ?? '添加失败')
     }
   }
@@ -156,6 +164,11 @@ async function bulkupload(data: any) {
     isImportModel.value = false
   }
 }
+
+const updatePage = async (e: number) => {
+  page.value = e
+  await fetchEnterInfo(false)
+}
 </script>
 
 <template>
@@ -164,12 +177,12 @@ async function bulkupload(data: any) {
       <div class="pt-4">
         <div class="flex flex-col gap-4">
           <accessorie-enter-base :enter-info="enterInfo" />
-          <accessorie-enter-info :info="enterInfo" :filter-list="categoryFilterListToArray" @del="(e) => { deleteDialog = true;deleteId = e }" />
+          <accessorie-enter-info v-model:page="page" :info="enterInfo" :filter-list="accessorieFilterListToArray" @update-page="updatePage" @del="(e) => { deleteDialog = true;deleteId = e }" />
         </div>
       </div>
     </common-layout-center>
     <product-upload-choose v-model:is-model="isChooseModel" @go-add="goAdd" @batch="isImportModel = true" />
-    <accessorie-warehouse-accessorie ref="uploadRef" v-model="isImportModel" :filter-list="accessorieFilterList" :type="1" @upload="bulkupload" />
+    <accessorie-warehouse-accessorie ref="uploadRef" v-model="isImportModel" :filter-list="addProductEnterFilterList" :type="1" @upload="bulkupload" />
     <!-- 状态为草稿时 功能操作 -->
     <template v-if="enterInfo.status === EnterStatus.Draft && myStore.id === enterInfo.store_id">
       <common-create @create="isChooseModel = true" />

@@ -19,7 +19,9 @@ const props = defineProps<{
                 </div>
                 <template v-if="item?.status">
                   <div class="enter-title" :class="item.status === 1 ? 'draft' : item.status === 2 ? 'finish' : 'cancel'">
-                    {{ GoodsStatusMap[item.status as GoodsStatus] }}
+                    <slot name="status" :info="item.status">
+                      {{ GoodsStatusMap[item.status as GoodsStatus] }}
+                    </slot>
                   </div>
                 </template>
                 <div class="font-semibold line-height-[20px] text-size-[14px]">
