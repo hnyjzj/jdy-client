@@ -95,7 +95,9 @@ const getSpecificInfo = async () => {
 const printPre = () => {
   const printDetail = ref<OrderInfo>({} as OrderInfo)
   printDetail.value = JSON.parse(JSON.stringify(OrderDetail.value))
-  printDetail.value.products = selectModel.value
+  if (selectModel.value && selectModel.value.length > 0) {
+    printDetail.value.products = selectModel.value
+  }
   const PrintComponent = defineComponent({
     render() {
       return h(PrintTemp, { details: printDetail.value, type: 1, payMethod: gather.value, numerical: tempInfo.value })
@@ -114,6 +116,7 @@ const jumpPre = () => {
 const clear = () => {
   chosen.value = null
   sign.value = false
+  selectModel.value = []
   tempInfo.value = {} as PrintTemplate
   isModel.value = false
 }
