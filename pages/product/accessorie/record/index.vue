@@ -175,14 +175,6 @@ const cols = [
     },
   },
   {
-    title: '库存',
-    key: 'stock',
-    render(row: AccessorieRecord) {
-      const acc = row.new_value?.product || row.new_value
-      return acc?.stock ?? '-'
-    },
-  },
-  {
     title: '所属门店',
     key: 'store.name',
     render(row: AccessorieRecord) {

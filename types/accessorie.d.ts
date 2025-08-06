@@ -49,4 +49,6 @@ interface ProductAccessories {
  */
 interface ProductAccessoriesInfo extends ProductAccessories {
   store: Stores
+
+  category?: ProductAccessories
 }
