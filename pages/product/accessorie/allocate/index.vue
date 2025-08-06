@@ -218,6 +218,11 @@ const cols = [
                               {{ info?.to_store?.name || '' }}
                             </div>
                           </template>
+                          <template v-if="item.name === 'from_store_id'">
+                            <div class="val">
+                              {{ info?.from_store?.name || '' }}
+                            </div>
+                          </template>
                         </template>
                       </template>
                     </div>

@@ -3,7 +3,7 @@ const { getAccessorieAllocateInfo, getAccessorieAllocateWhere, confirmAllcate, c
 const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
 const { accessorieAllocateInfo, accessorieAllocateFilterList, accessorieAllocateFilterListToArray } = storeToRefs(useAccessorieAllocate())
-const { myStore, storesList } = storeToRefs(useStores())
+const { myStore } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 
 useSeoMeta({
@@ -98,12 +98,6 @@ async function delProduct(id: string) {
 const debouncedDelProduct = useThrottleFn((id: string) => {
   delProduct(id)
 }, 200)
-
-/** id获取门店名称 */
-function getStoreName(id: Stores['id']) {
-  const store = storesList.value.find((item: Stores) => item.id === id)
-  return store?.name ?? ''
-}
 
 /** 点击清空时调用，触发确认弹窗 */
 function clearFun() {
@@ -214,6 +208,11 @@ async function submitGoods(e: AddAccessorieAllocateProduct[]) {
                                   {{ accessorieAllocateInfo?.to_store?.name || '' }}
                                 </div>
                               </template>
+                              <template v-if="item.name === 'from_store_id'">
+                                <div class="val">
+                                  {{ accessorieAllocateInfo?.from_store?.name || '' }}
+                                </div>
+                              </template>
                             </template>
                           </template>
                         </div>
@@ -261,7 +260,7 @@ async function submitGoods(e: AddAccessorieAllocateProduct[]) {
                   <template #info>
                     <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
                       <template v-for="(filter, findex) in accessorieFilterListToArray" :key="findex">
-                        <template v-if="filter.info && (filter.name as string) !== 'created_at'">
+                        <template v-if="filter.info && (filter.name as string) !== 'created_at' && item[filter.name]">
                           <div class="flex">
                             <div class="key">
                               {{ filter.label }}
