@@ -117,13 +117,13 @@ const cols = [
   {
     title: '产品名称',
     render: (rowData: orderInfoProducts) => {
-      if (rowData.type === 1) {
+      if (rowData.type === GoodsType.ProductFinish) {
         return rowData.finished.product?.name
       }
-      if (rowData.type === 2) {
+      if (rowData.type === GoodsType.ProductOld) {
         return rowData.old?.product?.name
       }
-      if (rowData.type === 3) {
+      if (rowData.type === GoodsType.ProductAccessories) {
         return rowData.accessorie?.product?.name
       }
       return ''
@@ -132,13 +132,13 @@ const cols = [
   {
     title: '标签价',
     render: (rowData: orderInfoProducts) => {
-      if (rowData.type === 1) {
+      if (rowData.type === GoodsType.ProductFinish) {
         return rowData.finished.product?.label_price
       }
-      if (rowData.type === 2) {
+      if (rowData.type === GoodsType.ProductOld) {
         return rowData.old?.product?.label_price
       }
-      if (rowData.type === 3) {
+      if (rowData.type === GoodsType.ProductAccessories) {
         return rowData.accessorie?.product?.price
       }
       return ''
