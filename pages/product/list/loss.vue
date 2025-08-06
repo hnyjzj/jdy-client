@@ -111,8 +111,8 @@ const resetWhere = async () => {
 }
 
 try {
-  await handleQueryParams()
   await getLossWhere()
+  await handleQueryParams()
 }
 catch (error) {
   throw new Error(`初始化失败: ${error || '未知错误'}`)

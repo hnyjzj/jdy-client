@@ -148,7 +148,6 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                       menu-size="large"
                       :placeholder="`请选择${label}`"
                       :options="presetToSelect(props.filter[i]) "
-                      :disabled="disabled?.includes(name)"
                       @focus="focus"
                     />
                   </template>

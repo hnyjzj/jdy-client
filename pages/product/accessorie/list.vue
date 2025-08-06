@@ -90,8 +90,8 @@ const clearSearch = async () => {
 
 try {
   if (myStore.value.id || myStore.value.id === '') {
-    await handleQueryParams()
     await getAccessorieWhere()
+    await handleQueryParams()
   }
   else {
     $toast.error('您尚未分配任何门店，请先添加门店')
