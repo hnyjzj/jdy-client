@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import Info from '../info.vue'
-
 const { $toast } = useNuxtApp()
 const route = useRoute()
 const router = useRouter()

@@ -293,11 +293,11 @@ interface ProductOld {
   /**
    * 回收金额
    */
-  recycle_price: number
+  recycle_price: string
   /**
    * 回收金价
    */
-  recycle_price_gold?: number
+  recycle_price_gold?: string
   /**
    * 回收工费
    */
@@ -313,7 +313,7 @@ interface ProductOld {
   /**
    * 主石重
    */
-  weight_gem?: number
+  weight_gem?: string
   /**
    * 金重
    */

@@ -51,25 +51,25 @@ function isUpdate(key: ProductKey) {
     </template>
     <template v-if="props.newAccessories">
       <template v-for="(item, index) in filterList" :key="index">
-        <template v-if="item.info">
+        <template v-if="item.info && item.name !== 'store'">
           <div class="info-row">
             <div class="info-title">
               {{ item.label }}
             </div>
             <div class="text-color-light" :style="isUpdate(item.name) ? 'color: #FF6B6C' : ''">
               <template v-if="item.type === 'date'">
-                <div class="info-val">
-                  {{ props.newAccessories[item.name] }}
+                <div v-if="props.newAccessories[item.name]">
+                  {{ formatTimestampToDateTime(props.newAccessories[item.name] as string) || '' }}
                 </div>
               </template>
               <template v-else>
                 <template v-if="item.input === 'select'">
-                  <div class="info-val">
+                  <div class="text-align-end">
                     {{ item.preset[props.newAccessories[item.name] as number] }}
                   </div>
                 </template>
                 <template v-else>
-                  <div class="info-val">
+                  <div class="text-align-end">
                     {{ props.newAccessories[item.name] }}
                   </div>
                 </template>

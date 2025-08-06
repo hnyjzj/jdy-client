@@ -4,7 +4,7 @@ import { NButton } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 const { getAccessorieList, getAccessorieWhere } = useAccessorie()
-const { accessorieList, accessorieFilterListToArray, accessorieListTotal } = storeToRefs(useAccessorie())
+const { accessorieList, accessorieFilterListToArray, accessorieFilterList, accessorieListTotal } = storeToRefs(useAccessorie())
 const { searchPage, showtype } = storeToRefs(usePages())
 const limits = ref(50)
 const tableLoading = ref(false)
@@ -173,6 +173,9 @@ const cols = [
       <template v-if="accessorieList?.length">
         <template v-if="showtype === 'list'">
           <product-manage-card :list="accessorieList">
+            <template #status="info">
+              <span>{{ accessorieFilterList.status?.preset[info.info] }}</span>
+            </template>
             <template #info="{ info }">
               <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
                 <template v-for="(item, index) in accessorieFilterListToArray" :key="index">

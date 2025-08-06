@@ -32,6 +32,7 @@ interface AccessorieAllocate {
    * 调出门店id
    */
   from_store_id?: string
+  from_store: Stores
   /**
    * 调入门店id
    */

@@ -84,15 +84,12 @@ async function transformData(data: any[][]) {
         }
 
         // 数据类型转换 + 默认值处理
-
         switch (input) {
           case 'number':
             row[index] = row[index] ?? undefined
-            row[index] = Number(row[index])
             break
           case 'text':
-            row[index] = row[index] ?? undefined
-            row[index] = String(row[index])
+            row[index] = String(row[index]) ?? undefined
             break
           default:
             row[index] = row[index] ?? undefined
