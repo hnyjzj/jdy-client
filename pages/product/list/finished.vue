@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { NButton } from 'naive-ui'
-import { render } from 'vue'
 
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
