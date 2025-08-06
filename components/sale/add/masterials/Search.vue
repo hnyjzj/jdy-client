@@ -60,7 +60,7 @@ const scanCode = async () => {
 }
 const ourChangePrice = () => {
   if (nowOldMaster.value.recycle_price_labor_method === 1) {
-    nowOldMaster.value.recycle_price = calc('((b - c) * a * d)| =0 ~5', {
+    nowOldMaster.value.recycle_price = calc('((b - c) * a * d)| =0 ~5,!n', {
       a: nowOldMaster.value.weight_metal || 0,
       b: nowOldMaster.value.recycle_price_gold || 0,
       c: nowOldMaster.value.recycle_price_labor || 0,
@@ -68,7 +68,7 @@ const ourChangePrice = () => {
     })
   }
   else if (nowOldMaster.value.recycle_price_labor_method === 2) {
-    nowOldMaster.value.recycle_price = calc('((a*b*d) - c)| =0 ~5', {
+    nowOldMaster.value.recycle_price = calc('((a*b*d) - c)| =0 ~5,!n', {
       a: nowOldMaster.value.weight_metal || 0,
       b: nowOldMaster.value.recycle_price_gold || 0,
       c: nowOldMaster.value.recycle_price_labor || 0,
@@ -300,7 +300,7 @@ const searchOldFn = async () => {
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收金价">
-                      <n-input
+                      <n-input-number
                         v-model:value="nowOldMaster.recycle_price_gold"
                         :show-button="false"
                         placeholder="请输入回收金价"
@@ -313,10 +313,10 @@ const searchOldFn = async () => {
                         <template #suffix>
                           元/克
                         </template>
-                      </n-input>
+                      </n-input-number>
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收金额">
-                      <n-input
+                      <n-input-number
                         v-model:value="nowOldMaster.recycle_price"
                         :show-button="false"
                         placeholder="请输入回收金额"
