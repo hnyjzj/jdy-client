@@ -33,7 +33,6 @@ if (route.query.id) {
 }
 const showModel = ref(false)
 const isSelectModel = ref(false)
-const selectModel = ref<orderInfoProducts[]>([])
 const mustSelect = ref<any[]>([])
 
 const returnGoods = async (req: ReturnGoods) => {
@@ -111,7 +110,6 @@ const jumpPre = () => {
 const clear = () => {
   chosen.value = null
   sign.value = false
-  selectModel.value = []
   tempInfo.value = {} as PrintTemplate
   isModel.value = false
 }
