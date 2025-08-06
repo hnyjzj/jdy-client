@@ -159,7 +159,7 @@ const laberComputed = (item: orderInfoProducts) => {
   if (item.type === GoodsType.ProductAccessories) {
     return `配件-${item.accessorie.product?.name || '暂无名称'}`
   }
-  return '123'
+  return ''
 }
 // 判断当前环境
 const isMobile = ref(false)
