@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import PrintTemp from '@/components/print/Board.vue'
-
 import usePrint from 'vue3-use-print'
 // 销售单详情
 useSeoMeta({
@@ -33,6 +32,9 @@ if (route.query.id) {
   await getOldWhere()
 }
 const showModel = ref(false)
+const isSelectModel = ref(false)
+const mustSelect = ref<any[]>([])
+
 const returnGoods = async (req: ReturnGoods) => {
   const res = await returnOrderGoods(req)
   if (res) {
@@ -41,8 +43,6 @@ const returnGoods = async (req: ReturnGoods) => {
     await getOrderDetail({ id: route.query.id as string })
   }
 }
-
-const router = useRouter()
 
 const gather = ref('')
 
@@ -83,9 +83,18 @@ const getSpecificInfo = async () => {
 }
 
 const printPre = () => {
+  const printDetail = ref<OrderInfo>({} as OrderInfo)
+  printDetail.value = JSON.parse(JSON.stringify(OrderDetail.value))
+  printDetail.value.products = []
+  OrderDetail.value.products.forEach((item: any) => {
+    if (mustSelect.value.find(i => i === item.id)) {
+      printDetail.value.products.push(item)
+    }
+  })
+
   const PrintComponent = defineComponent({
     render() {
-      return h(PrintTemp, { details: OrderDetail.value, type: 1, payMethod: gather.value, numerical: tempInfo.value })
+      return h(PrintTemp, { details: printDetail.value, type: 1, payMethod: gather.value, numerical: tempInfo.value })
     },
   })
   getMethod()
@@ -140,9 +149,20 @@ const payOrderConfirm = async () => {
   }
 }
 
+const laberComputed = (item: orderInfoProducts) => {
+  if (item.type === GoodsType.ProductFinish) {
+    return `成品-${item.finished.product?.name || '暂无名称'}`
+  }
+  if (item.type === GoodsType.ProductOld) {
+    return `旧料-${item.old.product?.name || '暂无名称'}`
+  }
+  if (item.type === GoodsType.ProductAccessories) {
+    return `配件-${item.accessorie.product?.name || '暂无名称'}`
+  }
+  return ''
+}
 // 判断当前环境
 const isMobile = ref(false)
-
 onMounted(() => {
   isMobile.value = checkEnv()
 })
@@ -177,6 +197,46 @@ onMounted(() => {
         </div>
       </div>
     </common-model>
+    <common-model
+      v-model="isSelectModel"
+      :show-ok="true"
+      title="批量打印设置"
+      @confirm="modelConfirm"
+      @cancel="() => {
+        clear()
+      }"
+    >
+      <div class="flex flex-col gap-[16px] px-[12px]">
+        <div class="describe font-size-[16px] text-color-[#333]">
+          请先选择打印模板。
+        </div>
+        <div class="">
+          <n-space vertical>
+            <n-select
+              v-model:value="chosen"
+              :options="tempList"
+              @blur="() => {
+                const loc = tempList.findIndex(item => item.value === chosen)
+                sign = loc === -1 ? false : true
+              }"
+            />
+          </n-space>
+        </div>
+        <div class="flex flex-col">
+          <div class="font-size-[16px] pb-[6px]">
+            选择要打印的货品
+          </div>
+          <div>
+            <n-select
+              v-model:value="mustSelect" multiple :options="OrderDetail.products.map(v => ({
+                label: laberComputed(v),
+                value: v.id,
+              }))" />
+          </div>
+        </div>
+      </div>
+    </common-model>
+
     <div class="p-[16px] pb-[80px]">
       <sale-order-detail
         v-model:dialog="showModel"
@@ -221,7 +281,7 @@ onMounted(() => {
         <template v-if="!isMobile">
           <common-button-bottom
             confirm-text="打印"
-            cancel-text="返回"
+            cancel-text="批量打印"
             @confirm="() => {
               if (myStore.id === OrderDetail.store_id){
                 jumpPre()
@@ -230,7 +290,14 @@ onMounted(() => {
                 $toast.error('当前门店与操作门店不匹配,无法操作')
               }
             }"
-            @cancel="router.back()"
+            @cancel="() => {
+              if (myStore.id === OrderDetail.store_id){
+                isSelectModel = true
+              }
+              else {
+                $toast.error('当前门店与操作门店不匹配,无法操作')
+              }
+            }"
           />
         </template>
       </template>
@@ -238,6 +305,12 @@ onMounted(() => {
     <correspond-store :correspond-ids="[OrderDetail.store_id]" />
   </div>
 </template>
+
+<style>
+.n-base-selection {
+  border-radius: 8px;
+}
+</style>
 
 <style lang="scss" scoped>
 .footer {
