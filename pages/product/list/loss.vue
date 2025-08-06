@@ -17,7 +17,7 @@ const filterData = ref({} as Partial<ExpandPage<ProductFinisheds>>)
 const limits = ref(50)
 const tableLoading = ref(false)
 useSeoMeta({
-  title: '成品列表',
+  title: '报损列表',
 })
 const filterRef = ref()
 /** 跳转并刷新列表 */
