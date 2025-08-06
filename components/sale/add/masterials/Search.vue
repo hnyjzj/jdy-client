@@ -59,7 +59,7 @@ const scanCode = async () => {
 }
 const ourChangePrice = () => {
   if (nowOldMaster.value.recycle_price_labor_method === 1) {
-    nowOldMaster.value.recycle_price = calc('((b - c) * a * d)| =0 ~5,!n', {
+    nowOldMaster.value.recycle_price = calc('((b - c) * a * d)| =0 ~5', {
       a: nowOldMaster.value.weight_metal || 0,
       b: nowOldMaster.value.recycle_price_gold || 0,
       c: nowOldMaster.value.recycle_price_labor || 0,
@@ -67,7 +67,7 @@ const ourChangePrice = () => {
     })
   }
   else if (nowOldMaster.value.recycle_price_labor_method === 2) {
-    nowOldMaster.value.recycle_price = calc('((a*b*d) - c)| =0 ~5,!n', {
+    nowOldMaster.value.recycle_price = calc('((a*b*d) - c)| =0 ~5', {
       a: nowOldMaster.value.weight_metal || 0,
       b: nowOldMaster.value.recycle_price_gold || 0,
       c: nowOldMaster.value.recycle_price_labor || 0,
@@ -102,7 +102,7 @@ const searchConfirm = async () => {
       else {
         if (props.nowEditState !== undefined) {
           // 这里是编辑状态 确认时，需要把当前编辑的值替换掉
-          if (nowOldMaster.value.recycle_price < 0) {
+          if (Number(nowOldMaster.value.recycle_price) < 0) {
             $toast.error('回收金额不能小于0')
             return
           }
@@ -119,7 +119,7 @@ const searchConfirm = async () => {
         else {
           nowOldMaster.value.is_our = true
           // 这里是新增时
-          if (nowOldMaster.value.recycle_price < 0) {
+          if (Number(nowOldMaster.value.recycle_price) < 0) {
             $toast.error('回收金额不能小于0')
             return
           }
@@ -280,7 +280,7 @@ const searchConfirm = async () => {
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收金价">
-                      <n-input-number
+                      <n-input
                         v-model:value="nowOldMaster.recycle_price_gold"
                         :show-button="false"
                         placeholder="请输入回收金价"
@@ -293,10 +293,10 @@ const searchConfirm = async () => {
                         <template #suffix>
                           元/克
                         </template>
-                      </n-input-number>
+                      </n-input>
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收金额">
-                      <n-input-number
+                      <n-input
                         v-model:value="nowOldMaster.recycle_price"
                         :show-button="false"
                         placeholder="请输入回收金额"
