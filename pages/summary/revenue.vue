@@ -69,8 +69,9 @@ const cofirmTime = async () => {
                 <div class="col-10 flex gap-[12px]">
                   <n-date-picker
                     v-model:formatted-value="startTime"
+                    input-readonly
                     value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" placeholder="选择开始时间" round clearable />
-                  <n-date-picker v-model:formatted-value="endTime" value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" placeholder="选择结束时间" round clearable />
+                  <n-date-picker v-model:formatted-value="endTime" input-readonly value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" placeholder="选择结束时间" round clearable />
                 </div>
                 <div class="px-[8px] py-[6px] bg-[#fff] rounded-[20px] color-[#0068FF] col-2  text-center" @click="cofirmTime">
                   搜索
