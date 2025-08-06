@@ -224,7 +224,7 @@ const getbillingSet = async () => {
     }
   }
 }
-getbillingSet()
+await getbillingSet()
 
 // 新增会员
 const addNewMember = async (val: Member) => await createMember(val)
@@ -467,6 +467,7 @@ const changeStore = () => {
             :check-old-class="CheckOldClass"
             :old-filter-list-to-array="oldFilterListToArray"
             :is-integral="formData.has_integral"
+            :billing-set="billingSet"
           />
         </div>
         <div class="pb-[16px]">
@@ -503,6 +504,7 @@ const changeStore = () => {
           :filter-list="filterList"
           :dis-score="disScore"
           :get-search-phrase="getSearchPhrase"
+          :billing-set="billingSet"
         >
           <template #score />
         </sale-add-settlement>
