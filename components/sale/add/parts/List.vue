@@ -5,7 +5,6 @@ const Props = defineProps<{
   isIntegral: boolean
 }>()
 const showPartsList = defineModel<ProductAccessories[]>('list', { default: [] })
-// const hold = defineModel<number>('hold', { default: 0 })
 const hasCheck = ref(false)
 
 // 改变配件数量

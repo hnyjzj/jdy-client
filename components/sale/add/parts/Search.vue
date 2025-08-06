@@ -29,7 +29,6 @@ const countIntegral = (amount: number, rate: number | string) => {
     b: rate,
   })
 }
-// const hold = defineModel<number>('hold', { default: 0 })
 // 预设选中状态的配置列表
 const prePartsList = ref<ProductAccessories[]>([])
 const showPartsList = defineModel<ProductAccessories[]>('list', { default: [] })
@@ -55,7 +54,6 @@ const calculateIntegral = (amount: number, rate?: number) => {
 
 // 确认配件 ，将选中的配件添加到 展示列表中, 调用接口获取积分比例
 const confirmParts = async () => {
-//   hold.value = holdFunction(Props.billingSet.decimal_point)
   // 判断 showPartsList 是否存在 prePartsList 中的元素 ，如果存在则不添加
   const existingCache = {} as { [key: string]: ProductAccessories }
   //  先缓存原始数据
@@ -88,8 +86,6 @@ const confirmParts = async () => {
   // 获取大类的比例
   const classArray = await Props.checkAccessoriesScore({ classes: arr.value })
   if (!classArray?.length) {
-    // $toast.error('获取配件比例失败')
-    // return
     arr.value.forEach(() => {
       classArray.push(0)
     })
