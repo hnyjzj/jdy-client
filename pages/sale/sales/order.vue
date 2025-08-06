@@ -37,8 +37,9 @@ const isSelectModel = ref(false)
 const selectModel = ref<orderInfoProducts[]>([])
 
 const selectSome = (item: orderInfoProducts) => {
-  if (selectModel.value.findIndex(p => p.id === item.id) !== -1) {
-    selectModel.value.splice(selectModel.value.findIndex(p => p.id === item.id), 1)
+  const index = selectModel.value.findIndex(p => p.id === item.id)
+  if (index !== -1) {
+    selectModel.value.splice(index, 1)
   }
   else {
     selectModel.value.push(item)
