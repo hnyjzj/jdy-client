@@ -166,6 +166,7 @@ const searchConfirm = async () => {
                 type="text"
                 clearable
                 placeholder="请输入商品条码"
+                @keydown.enter="props.searchOlds(searchOld)"
                 @focus="focus" />
             </div>
             <div class="pl-[16px] flex">

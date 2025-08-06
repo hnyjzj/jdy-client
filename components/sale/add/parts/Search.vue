@@ -146,7 +146,7 @@ const confirmParts = async () => {
           </div>
           <div class="flex items-center pb-[16px]">
             <div class="flex-1">
-              <n-input v-model:value="searchPartsVal" type="text" clearable :placeholder="placeholderText" size="large" @focus="focus" />
+              <n-input v-model:value="searchPartsVal" type="text" clearable :placeholder="placeholderText" size="large" @keydown.enter="searchPartsList" @focus="focus" />
             </div>
             <div class="pl-[16px] flex">
               <n-button type="info" round @click="searchPartsList">
