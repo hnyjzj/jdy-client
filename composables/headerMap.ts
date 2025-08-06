@@ -70,3 +70,15 @@ export const oldHeaderMap: Record<string, string> = {
   '副石数': 'num_other',
   '颜色': 'color_gem',
 }
+
+export const statementHeaderMap: Record<string, string> = {
+  编号: 'id',
+  关联销售单: 'order_id',
+  订单状态: 'status',
+  门店: 'store',
+  产品条码: 'code',
+  会员: 'member.name',
+  会员手机号: 'member.phone',
+  类型: 'type',
+  订单来源: 'source',
+}

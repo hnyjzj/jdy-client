@@ -9,6 +9,8 @@ const { myStore } = storeToRefs(useStores())
 // 获取销售明细列表
 const { getStatementList, getStatementWhere } = useStatement()
 const { statementList, total, filterListToArray, filterList, showtype } = storeToRefs(useStatement())
+const { getSaleWhere } = useOrder()
+const { filterListToArray: salesFilterListToArray } = storeToRefs(useOrder())
 const { searchPage } = storeToRefs(usePages())
 const filterData = ref({} as Partial<StatementWhere>)
 const filterShow = ref(false)
@@ -33,6 +35,7 @@ const openFilter = () => {
   // 打开筛选
   filterShow.value = true
 }
+await getSaleWhere()
 const submitWhere = async (f: StatementWhere) => {
   filterData.value = { ...filterData.value, ...f }
   statementList.value = []
@@ -159,6 +162,9 @@ const cols = [
     },
   },
 ]
+const exportExcel = () => {
+  exportStatementListToXlsx(statementList.value, [...filterListToArray.value, ...salesFilterListToArray.value], '销售报表', [], 3)
+}
 </script>
 
 <template>
@@ -170,6 +176,9 @@ const cols = [
         <product-manage-company @change="changeStores" />
       </template>
     </product-filter>
+    <div @click="exportExcel">
+      导出
+    </div>
     <template v-if="showtype === 'list'">
       <common-layout-center>
         <div class="p-[16px]">
