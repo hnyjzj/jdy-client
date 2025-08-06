@@ -177,11 +177,8 @@ const cols = [
           }
 
           if (item.input === 'date') {
-            if (item.name === 'start_time') {
-              return formatTimestampToDateTime(row.created_at)
-            }
-            if (item.name === 'end_time') {
-              return formatTimestampToDateTime(row.updated_at)
+            if (value) {
+              return formatTimestampToDateTime(value)
             }
             return '-'
           }
@@ -242,33 +239,44 @@ const cols = [
             <template #info="{ info }">
               <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
                 <template v-for="(item, index) in accessorieAllocateFilterListToArray" :key="index">
-                  <template v-if="item.find">
+                  <template v-if="item.info">
                     <div class="flex py-[4px] justify-between">
                       <div>
                         {{ item.label }}
                       </div>
-                      <template v-if="item.input === 'text'">
+                      <template v-if="item.type === 'date'">
                         <div class="val">
-                          {{ info[item.name] }}
+                          {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
                         </div>
                       </template>
-                      <template v-else-if="item.input === 'select'">
-                        <div class="val">
-                          {{ accessorieAllocateFilterList[item.name]?.preset[info[item.name] as number] }}
-                        </div>
-                      </template>
-                      <template v-else-if="item.input === 'date'">
-                        <div v-if="item.name === 'start_time'" class="val">
-                          {{ formatTimestampToDateTime(info.created_at) }}
-                        </div>
-                        <div v-if="item.name === 'end_time'" class="val">
-                          {{ formatTimestampToDateTime(info.updated_at) }}
-                        </div>
-                      </template>
-                      <template v-else-if="item.input === 'search'">
-                        <div class="val">
-                          {{ getStoreName(info[item.name] as Stores['id']) }}
-                        </div>
+                      <template v-else>
+                        <template v-if="item.input === 'text'">
+                          <div class="val">
+                            {{ info[item.name] }}
+                          </div>
+                        </template>
+                        <template v-else-if="item.input === 'select'">
+                          <div class="val">
+                            {{ accessorieAllocateFilterList[item.name]?.preset[info[item.name] as number] }}
+                          </div>
+                        </template>
+                        <template v-else-if="item.input === 'search'">
+                          <template v-if="item.name === 'to_region_id'">
+                            <div class="val">
+                              {{ info?.to_region?.name || '' }}
+                            </div>
+                          </template>
+                          <template v-if="item.name === 'to_store_id'">
+                            <div class="val">
+                              {{ info?.to_store?.name || '' }}
+                            </div>
+                          </template>
+                          <template v-if="item.name === 'from_store_id'">
+                            <div class="val">
+                              {{ info?.from_store?.name || '' }}
+                            </div>
+                          </template>
+                        </template>
                       </template>
                     </div>
                   </template>

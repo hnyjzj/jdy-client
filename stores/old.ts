@@ -33,6 +33,21 @@ export const useOld = defineStore('Old', {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
       }
     },
+    // 旧料列表全部
+    async getOldListAll(pamars: AllFinished<ProductOlds>) {
+      try {
+        pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
+        const { data } = await https.post<ResList<ProductOlds>, AllFinished<ProductOlds>>('/product/old/list', pamars)
+        if (data.value?.code === HttpCode.SUCCESS) {
+          this.oldListTotal = data.value.data.total
+          this.oldList = data.value.data.list
+        }
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
+      }
+    },
     /**
      * 获取旧料筛选列表
      * @returns oldFilterList
@@ -82,8 +97,8 @@ export const useOld = defineStore('Old', {
       }
     },
     // 获取旧料大类
-    async getOldClass(params: Partial<ProductOlds>) {
-      const { data } = await https.post<{ label: string, value: number }, Partial<ProductOlds>>('/product/old/get_class', params)
+    async getOldClass(params: Partial<ProductOld>) {
+      const { data } = await https.post<{ label: string, value: number }, Partial<ProductOld>>('/product/old/get_class', params)
       if (data.value?.code === HttpCode.SUCCESS) {
         return data.value.data
       }

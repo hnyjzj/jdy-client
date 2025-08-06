@@ -53,8 +53,8 @@ const returnColor = (number: number) => {
               <common-cell label="旧料编号" :value="item.old.product?.code || '--'" />
             </template>
             <template v-if="item.type === 3">
-              <common-cell label="货品名称" :value="item.accessorie?.product?.category?.name || '--'" />
-              <common-cell label="标签价" :value="item.accessorie?.product?.category?.label_price || '--'" />
+              <common-cell label="货品名称" :value="item.accessorie?.product?.name || '--'" />
+              <common-cell label="标签价" :value="item.accessorie?.product?.price || '--'" />
             </template>
             <common-cell label="应付金额" :value="item.order.price || '--'" />
             <common-cell label="折扣" :value="item.order.price_discount || '--'" />

@@ -156,7 +156,7 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                     <n-input v-model:value="datas[name as string]" :placeholder="`输入${label}`" type="textarea" maxlength="255" size="large" round :autosize="{ minRows: 1, maxRows: 2 }" :disabled="disabled?.includes(name)" @focus="focus" />
                   </template>
                   <template v-if="input === 'date'">
-                    <n-date-picker v-model:formatted-value="datas[name as string]" value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" size="large" :placeholder="`选择${label}`" round clearable :disabled="disabled?.includes(name)" />
+                    <n-date-picker v-model:formatted-value="datas[name as string]" input-readonly value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" size="large" :placeholder="`选择${label}`" round clearable :disabled="disabled?.includes(name)" />
                   </template>
                   <template v-if="input === 'multiple'">
                     <n-select

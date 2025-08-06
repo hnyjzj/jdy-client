@@ -12,7 +12,7 @@ interface ProductTransfer {
 /**
  * 货品记录参数
  */
-interface HistoryWhere {
+interface ProductHistoryWhere {
   /**
    * 操作
    */
@@ -25,6 +25,7 @@ interface HistoryWhere {
    * 门店 ID
    */
   store_id: string
+  type: GoodsTypePure
 }
 
 /**

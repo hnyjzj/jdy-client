@@ -9,19 +9,21 @@ export const useProductManage = defineStore('ProductManage', {
     /** 操作记录列表总数 */
     historyListTotal: number
     historyInfo: ProductHistories
+    filterData: Partial<ProductHistories>
   } => ({
     productRocordList: [],
     historyFilterList: {} as Where<ProductHistories>,
     HistoryFilterListToArray: [] as FilterWhere<ProductHistories>[],
     historyListTotal: 0,
     historyInfo: {} as ProductHistories,
+    filterData: {} as Partial<ProductHistories>,
   }),
   actions: {
     /** 货品记录 */
-    async getProductHistory(params: ReqList<HistoryWhere>) {
+    async getProductHistory(params: ReqList<ProductHistoryWhere>) {
       try {
         params = { ...params, where: { ...params.where } }
-        const { data } = await https.post<ResList<ProductHistories>, ReqList<HistoryWhere>>('/product/history/list', params)
+        const { data } = await https.post<ResList<ProductHistories>, ReqList<ProductHistoryWhere>>('/product/history/list', params)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.historyListTotal = data.value.data.total
           this.productRocordList = data.value.data.list
@@ -33,11 +35,11 @@ export const useProductManage = defineStore('ProductManage', {
       }
     },
     /** 货品记录 */
-    async getProductHistoryAll(params: Allhistory<HistoryWhere>) {
+    async getProductHistoryAll(params: Allhistory<ProductHistoryWhere>) {
       try {
         params = { ...params, where: { ...params.where, store_id: useStores().myStore.id } }
 
-        const { data } = await https.post<ResList<ProductHistories>, Allhistory<HistoryWhere>>('/product/history/list', params)
+        const { data } = await https.post<ResList<ProductHistories>, Allhistory<ProductHistoryWhere>>('/product/history/list', params)
         return data.value
       }
       catch (error) {

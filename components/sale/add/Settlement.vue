@@ -6,6 +6,7 @@ const props = defineProps<{
   disScore: boolean
   filterList: Where<OrderWhere>
   getSearchPhrase: (val: string) => Promise<Phrase[]>
+  billingSet: BillingSet
 }>()
 
 const formData = defineModel<Orders>('form', { default: {} })
@@ -27,21 +28,23 @@ const addNewMethod = () => {
 const deleteMethod = (index: number) => {
   formData.value.payments.splice(index, 1)
 }
-
+const hold = holdFunction(props.billingSet.decimal_point)
+// 取整控制函数
+const rounding = roundFunction(props.billingSet.rounding)
 // 计算成品列表金额
 const depositMoney = computed(() => {
   const total = ref(0)
   total.value = deposit.value.reduce((total, item) => {
-    return calc('(t + i) | <=0,!n', { t: total, i: item.price || 0 })
+    return calc(`(t + i) | =${hold} ~${rounding},!n`, { t: total, i: item.price || 0 })
   }, 0)
   return total.value
 })
-
+//
 // 计算成品列表金额
 const productMoney = computed(() => {
   const total = ref(0)
   total.value = showProductList.value.reduce((total, item) => {
-    return calc('(t + i) | <=0,!n', { t: total, i: item.price || 0 })
+    return calc(`(t + i) | =${hold} ~${rounding},!n`, { t: total, i: item.price || 0 })
   }, 0)
   return total.value
 })
@@ -49,7 +52,7 @@ const productMoney = computed(() => {
 const masterMoney = computed(() => {
   const total = ref(0)
   total.value = masterList.value.reduce((total, item) => {
-    return calc('(t + i) | <=0,!n', { t: total, i: item.recycle_price || 0 })
+    return calc(`(t + i) | =${hold} ~${rounding},!n`, { t: total, i: item.recycle_price || 0 })
   }, 0)
   return total.value
 })
@@ -57,7 +60,7 @@ const masterMoney = computed(() => {
 const PartsListMoney = computed(() => {
   const total = ref(0)
   total.value = PartsList.value.reduce((total, item) => {
-    return calc('(t + i) | <=0,!n', { t: total, i: item.amount || 0 })
+    return calc(`(t + i) | =${hold} ~${rounding},!n`, { t: total, i: item.amount || 0 })
   }, 0)
   return total.value
 })
@@ -66,7 +69,7 @@ const PartsListMoney = computed(() => {
 const productListScore = computed(() => {
   const total = ref(0)
   total.value = showProductList.value.reduce((total, item) => {
-    return calc('(t + i) | <=0,!n', { t: total, i: item.integral || 0 })
+    return calc(`(t + i) | =${hold} ~${rounding},!n`, { t: total, i: item.integral || 0 })
   }, 0)
   return total.value
 })
@@ -74,7 +77,7 @@ const productListScore = computed(() => {
 const masterListScore = computed(() => {
   const total = ref(0)
   total.value = masterList.value.reduce((total, item) => {
-    return calc('(t + i) | <=0,!n', { t: total, i: item.integral || 0 })
+    return calc(`(t + i) | =${hold} ~${rounding},!n`, { t: total, i: item.integral || 0 })
   }, 0)
   return total.value
 })
@@ -82,13 +85,13 @@ const masterListScore = computed(() => {
 const PartsListScore = computed(() => {
   const total = ref(0)
   total.value = PartsList.value.reduce((total, item) => {
-    return calc('(t + i ) | <=0,!n', { t: total, i: item.integral || 0 })
+    return calc(`(t + i) | =${hold} ~${rounding},!n`, { t: total, i: item.integral || 0 })
   }, 0)
   return total.value
 })
 // 总积分计算
 const totalScore = computed(() => {
-  return calc('(a - b + c) | =0,!n', {
+  return calc(`(a - b + c) | =${hold} ~${rounding},!n`, {
     a: productListScore.value,
     b: masterListScore.value,
     c: PartsListScore.value,
@@ -98,7 +101,7 @@ const totalScore = computed(() => {
 // 实际需要支付的金额
 const payMoney = computed(() => {
   const total = ref(0) // 成品总金额
-  total.value = calc('(a + b - c) - d | =0,!n', {
+  total.value = calc(`(a + b - c) - d | =${hold} ~${rounding},!n`, {
     a: productMoney.value,
     b: PartsListMoney.value,
     c: masterMoney.value,
@@ -118,7 +121,7 @@ const payMethodsTotal = computed(() => {
 // 未支付的金额
 const unPayMoney = computed(() => {
   const total = ref(0)
-  total.value = calc('(a - b)  | =2,!n', {
+  total.value = calc(`(a - b)  |  =${hold} ~${rounding},!n`, {
     a: payMoney.value,
     b: payMethodsTotal.value,
   })

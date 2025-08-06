@@ -5,8 +5,6 @@ const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 const { getAccessorieList, getAccessorieWhere } = useAccessorie()
 const { accessorieList, accessorieFilterListToArray, accessorieFilterList, accessorieListTotal } = storeToRefs(useAccessorie())
-const { getAccessorieCategoryWhere } = useAccessorieCategory()
-const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
 const { searchPage, showtype } = storeToRefs(usePages())
 
 const route = useRoute()
@@ -47,8 +45,8 @@ const getList = async (where = {} as Partial<ProductAccessories>) => {
 const handleQueryParams = async () => {
   const f = getQueryParams<ExpandPage<ProductAccessories>>(route.fullPath, accessorieFilterList.value)
   filterData.value = f
-  if (filterData.value.code) {
-    searchKey.value = filterData.value.code
+  if (filterData.value.name) {
+    searchKey.value = filterData.value.name
   }
   if (f.searchPage)
     searchPage.value = Number(f.searchPage)
@@ -76,23 +74,22 @@ const updatePage = (page: number) => {
   filterData.value.limits = limits.value
   listJump()
 }
-/** 搜索条码 */
+/** 搜索名称 */
 const search = async (e: string) => {
-  filterData.value.code = e
+  filterData.value.name = e
   filterData.value.searchPage = 1
   listJump()
 }
 
 /** 清空搜索 */
 const clearSearch = async () => {
-  delete filterData.value.code
+  delete filterData.value.name
   filterData.value.searchPage = 1
   listJump()
 }
 
 try {
   if (myStore.value.id || myStore.value.id === '') {
-    await getAccessorieCategoryWhere()
     await handleQueryParams()
     await getAccessorieWhere()
   }
@@ -141,20 +138,17 @@ const resetWhere = async () => {
 
 const cols = [
   // 动态生成：来自 categoryFilterListToArray 的字段
-  ...categoryFilterListToArray.value
+  ...accessorieFilterListToArray.value
     .filter(item => item.create)
     .map(item => ({
       title: item.label,
       key: item.name,
       render(row: any) {
         if (item.input === 'select') {
-          return item.preset?.[row.category?.[item.name]] ?? '-'
-        }
-        else if (item.name === 'code') {
-          return row.code ?? '-'
+          return item.preset?.[row?.[item.name]] ?? '-'
         }
         else {
-          return row.category?.[item.name] ?? '-'
+          return row?.[item.name] ?? '-'
         }
       },
     })),
@@ -198,7 +192,7 @@ const cols = [
       v-model:search-key="searchKey"
       v-model:showtype="showtype"
       :product-list-total="accessorieListTotal"
-      placeholder="搜索条码"
+      placeholder="搜索名称"
       @change-card="changeCard"
       @filter="openFilter"
       @search="search"
@@ -213,40 +207,42 @@ const cols = [
       <template v-if="accessorieList?.length">
         <template v-if="showtype === 'list'">
           <product-manage-card :list="accessorieList">
+            <template #status="info">
+              <span>{{ accessorieFilterList.status?.preset[info.info] }}</span>
+            </template>
             <template #info="{ info }">
               <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                <template v-for="(item, index) in categoryFilterListToArray" :key="index">
-                  <template v-if="item.create">
+                <template v-for="(item, index) in accessorieFilterListToArray" :key="index">
+                  <template v-if="item.info">
                     <div class="flex-between">
                       <div>
                         {{ item.label }}
                       </div>
-                      <template v-if="item.input === 'select'">
+                      <template v-if="item.name === 'store'">
                         <div class="text-align-end val">
-                          {{ item.preset[info.category[item.name] as number] }}
-                        </div>
-                      </template>
-                      <template v-else-if="item.name === 'code'">
-                        <div class="text-align-end val">
-                          {{ info.code }}
+                          {{ info[item.name].name }}
                         </div>
                       </template>
                       <template v-else>
-                        <div class="text-align-end val">
-                          {{ info.category[item.name] }}
-                        </div>
+                        <template v-if="item.type === 'date'">
+                          <div class="text-align-end val">
+                            {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
+                          </div>
+                        </template>
+                        <template v-else>
+                          <template v-if="item.input === 'select'">
+                            <div class="text-align-end val">
+                              {{ item.preset[info[item.name] || 0] || '' }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            {{ info[item.name] }}
+                          </template>
+                        </template>
                       </template>
                     </div>
                   </template>
                 </template>
-                <div class="flex-between">
-                  <div>
-                    库存
-                  </div>
-                  <div class="text-align-end val">
-                    {{ info.stock }}
-                  </div>
-                </div>
               </div>
             </template>
             <template #bottom="{ info }">
