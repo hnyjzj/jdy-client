@@ -57,21 +57,35 @@ function isUpdate(key: ProductKey) {
               {{ item.label }}
             </div>
             <div class="text-color-light" :style="isUpdate(item.name) ? 'color: #FF6B6C' : ''">
-              <template v-if="item.type === 'date'">
-                <div v-if="props.newAccessories[item.name]">
-                  {{ formatTimestampToDateTime(props.newAccessories[item.name] as string) || '' }}
-                </div>
-              </template>
-              <template v-else>
-                <template v-if="item.input === 'select'">
-                  <div class="text-align-end">
-                    {{ item.preset[props.newAccessories[item.name] as number] }}
+              <template v-if="item.name === 'name'">
+                <template v-if="props.newAccessories?.category">
+                  <div>
+                    {{ props.newAccessories?.category.name }}
                   </div>
                 </template>
                 <template v-else>
-                  <div class="text-align-end">
-                    {{ props.newAccessories[item.name] }}
+                  <div>
+                    {{ props.newAccessories?.name }}
                   </div>
+                </template>
+              </template>
+              <template v-else>
+                <template v-if="item.type === 'date'">
+                  <div v-if="props.newAccessories[item.name]">
+                    {{ formatTimestampToDateTime(props.newAccessories[item.name] as string) || '' }}
+                  </div>
+                </template>
+                <template v-else>
+                  <template v-if="item.input === 'select'">
+                    <div class="text-align-end">
+                      {{ item.preset[props.newAccessories[item.name] as number] }}
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div class="text-align-end">
+                      {{ props.newAccessories[item.name] }}
+                    </div>
+                  </template>
                 </template>
               </template>
             </div>

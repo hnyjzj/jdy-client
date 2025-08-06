@@ -19,6 +19,18 @@ const props = withDefaults(defineProps<{
               {{ props.accessories?.store.name }}
             </div>
           </template>
+          <template v-else-if="item.name === 'name'">
+            <template v-if="props.accessories?.category">
+              <div>
+                {{ props.accessories?.category.name }}
+              </div>
+            </template>
+            <template v-else>
+              <div>
+                {{ props.accessories?.name }}
+              </div>
+            </template>
+          </template>
           <template v-else-if="item.type === 'date'">
             <div v-if="props.accessories[item.name]">
               {{ formatTimestampToDateTime(props.accessories[item.name] as string) || '' }}
