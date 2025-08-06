@@ -91,6 +91,7 @@ interface AccessorieRecord<T = any> {
    * 值
    */
   value: any[] | boolean | number | { [key: string]: any } | null | string
+  name?: string
 }
 
 /**
