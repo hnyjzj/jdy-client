@@ -31,7 +31,8 @@ const props = defineProps<{
           </div>
         </template>
         <template v-for="(item, index) in props.filterListToArray" :key="index">
-          <template v-if="item.label && item.find">
+          <!-- 配件是使用 info 控制显示 -->
+          <template v-if="item.label && (productType === GoodsType.ProductAccessories ? item.info : item.find)">
             <div class="flex justify-between text-sm font-normal">
               <div class="text-color-light">
                 {{ item?.label }}
@@ -48,7 +49,7 @@ const props = defineProps<{
                   </span>
                 </template>
                 <template v-else-if="item.input === 'text' || item.input === 'textarea'">
-                  <template v-if="item.label === '门店'">
+                  <template v-if="item.name === 'store'">
                     <span>
                       {{ props.info.store?.name ?? '' }}
                     </span>

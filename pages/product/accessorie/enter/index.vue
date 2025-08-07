@@ -15,9 +15,7 @@ const isFilter = ref(false)
 
 const limits = ref(50)
 const tableLoading = ref(false)
-const isModel = ref(false)
 const isCreateModel = ref(false)
-const isBatchImportModel = ref(false)
 const enterParams = ref({} as CreateProductFinishedEnter)
 const filterData = ref({} as Partial<ExpandPage<AccessorieEnter>>)
 const enterStatus = {
@@ -136,11 +134,6 @@ const resetWhere = async () => {
 /** 编辑 */
 function edit(id: string) {
   jump('/product/accessorie/enter/info', { id })
-}
-
-function goAdd() {
-  isModel.value = false
-  jump('/product/warehouse/add')
 }
 
 /** 创建入库单 */
@@ -330,7 +323,6 @@ const cols = [
         <common-empty width="100px" />
       </template>
     </div>
-    <accessorie-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" @reset="resetWhere" />
 
     <template v-if="myStore.id">
