@@ -21,7 +21,7 @@ export const useSystemPrint = defineStore('SystemPrint', {
       if (params.page === 1) {
         this.printList = []
       }
-      const { data } = await https.post<ResList<PrintTemplate>, ReqList<PrintTemplate>>('/setting/print/list', params)
+      const { data } = await https.post<ResList<PrintTemplate>, ReqList<PrintTemplate>>('/setting/print/list', params, true, false)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.printListTotal = data.value.data.total
         if (data.value.data.list.length > 0) {
