@@ -89,10 +89,10 @@ async function transformData(data: any[][]) {
             row[index] = row[index] ?? undefined
             break
           case 'text':
-            row[index] = String(row[index]) ?? undefined
+            row[index] = String(row[index]) ?? ''
             break
           default:
-            row[index] = row[index] ?? undefined
+            row[index] = row[index] ?? ''
             break
         }
         obj[header] = row[index]
