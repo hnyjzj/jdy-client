@@ -18,7 +18,8 @@ const { finishedFilterList } = storeToRefs(useFinished())
 const { getOldWhere } = useOld()
 const { oldFilterList } = storeToRefs(useOld())
 const { myStore } = storeToRefs(useStores())
-
+const { getAccessorieWhere } = useAccessorie()
+const { accessorieFilterList } = storeToRefs(useAccessorie())
 const { userinfo } = storeToRefs(useUser())
 const { getUserInfo } = useUser()
 await getUserInfo()
@@ -30,6 +31,7 @@ if (route.query.id) {
   await getSaleWhere()
   await getFinishedWhere()
   await getOldWhere()
+  await getAccessorieWhere()
 }
 const showModel = ref(false)
 const isSelectModel = ref(false)
@@ -252,6 +254,7 @@ onMounted(() => {
         :orders="OrderDetail"
         :return-goods="returnGoods"
         :store="myStore.id"
+        :part-filter="accessorieFilterList"
       />
       <template v-if="!route?.query?.embedded">
         <template v-if=" OrderDetail.status === OrderStatusText.OrderSalesProductStatusWaitPay">

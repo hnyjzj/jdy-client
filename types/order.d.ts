@@ -142,7 +142,7 @@ interface ProductAccessorie {
    */
   quantity: number
 
-  product?: ProductAccessories
+  product: ProductAccessories
   status?: number
   id?: string
 }
