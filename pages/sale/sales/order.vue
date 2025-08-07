@@ -81,16 +81,19 @@ const getSpecificInfo = async () => {
     tempInfo.value = JSON.parse(JSON.stringify(printList.value[0]))
   }
 }
-
+// 是否批量打印  false整单打印  true 批量打印
+const printPile = ref(false)
 const printPre = () => {
   const printDetail = ref<OrderInfo>({} as OrderInfo)
   printDetail.value = JSON.parse(JSON.stringify(OrderDetail.value))
-  printDetail.value.products = []
-  OrderDetail.value.products.forEach((item: any) => {
-    if (mustSelect.value.find(i => i === item.id)) {
-      printDetail.value.products.push(item)
-    }
-  })
+  if (printPile.value) {
+    printDetail.value.products = []
+    OrderDetail.value.products.forEach((item: any) => {
+      if (mustSelect.value.find(i => i === item.id)) {
+        printDetail.value.products.push(item)
+      }
+    })
+  }
 
   const PrintComponent = defineComponent({
     render() {
@@ -285,6 +288,7 @@ onMounted(() => {
             @confirm="() => {
               if (myStore.id === OrderDetail.store_id){
                 jumpPre()
+                printPile = false
               }
               else {
                 $toast.error('当前门店与操作门店不匹配,无法操作')
@@ -293,6 +297,7 @@ onMounted(() => {
             @cancel="() => {
               if (myStore.id === OrderDetail.store_id){
                 isSelectModel = true
+                printPile = true
               }
               else {
                 $toast.error('当前门店与操作门店不匹配,无法操作')
