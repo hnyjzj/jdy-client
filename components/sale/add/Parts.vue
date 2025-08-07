@@ -3,8 +3,10 @@ const Props = defineProps<{
   title: string
   isIntegral: boolean
   billingSet: BillingSet
+  partFilter: Where<ProductAccessories>
   checkAccessoriesScore: (params: { classes: ProductAccessories['type'][] }) => any
-  searchParts: (val: string, type: string) => Promise<ProductAccessories[]>
+  searchParts: (val: string,) => Promise<ProductAccessories[]>
+
 }>()
 const emits = defineEmits<{
   clearList: []
@@ -47,6 +49,7 @@ const hold = ref(0)
       :billing-set="Props.billingSet"
       :check-accessories-score="Props.checkAccessoriesScore"
       :search-parts="Props.searchParts"
+      :part-filter="Props.partFilter"
     />
   </common-fold>
 </template>
