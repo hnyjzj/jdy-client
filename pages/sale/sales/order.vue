@@ -54,7 +54,7 @@ const getMethod = () => {
 }
 
 const limit = 12
-
+const tempList = ref<{ label: string, value: string }[]>([])
 // 获取类别1(销售单)的打印模板
 async function getList(where = {} as Partial<PrintTemplate>) {
   const params = { page: searchPage.value, limit, where: { store_id: myStore.value.id, type: 1 } } as ReqList<Member>
@@ -62,6 +62,7 @@ async function getList(where = {} as Partial<PrintTemplate>) {
     params.where = where
   }
   await getPrintTempList(params)
+  tempList.value = printList.value.map(item => ({ label: item.name, value: item.id as string }))
 }
 
 await getList()
@@ -69,8 +70,6 @@ await getList()
 const chosen = ref(null)
 const sign = ref(false)
 const tempInfo = ref<PrintTemplate>({} as PrintTemplate)
-
-const tempList = printList.value.map(item => ({ label: item.name, value: item.id }))
 
 const getSpecificInfo = async () => {
   if (chosen.value) {
@@ -191,6 +190,7 @@ onMounted(() => {
             <n-select
               v-model:value="chosen"
               :options="tempList"
+              @focus="getList()"
               @blur="() => {
                 const loc = tempList.findIndex(item => item.value === chosen)
                 sign = loc === -1 ? false : true
@@ -218,6 +218,7 @@ onMounted(() => {
             <n-select
               v-model:value="chosen"
               :options="tempList"
+              @focus="getList()"
               @blur="() => {
                 const loc = tempList.findIndex(item => item.value === chosen)
                 sign = loc === -1 ? false : true
@@ -286,7 +287,7 @@ onMounted(() => {
             confirm-text="打印"
             cancel-text="批量打印"
             @confirm="() => {
-              if (myStore.id === OrderDetail.store_id){
+              if (myStore?.id === OrderDetail.store_id){
                 jumpPre()
                 printPile = false
               }
@@ -295,7 +296,7 @@ onMounted(() => {
               }
             }"
             @cancel="() => {
-              if (myStore.id === OrderDetail.store_id){
+              if (myStore?.id === OrderDetail.store_id){
                 isSelectModel = true
                 printPile = true
               }
