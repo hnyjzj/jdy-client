@@ -87,13 +87,13 @@ async function transformData(data: any[][]) {
         // 数据类型转换 + 默认值处理
         switch (type) {
           case 'number':
-            row[index] = Number(row[index]) ?? undefined
+            row[index] = Number.isNaN(Number(row[index])) ? 0 : Number(row[index])
             break
           case 'float':
-            row[index] = Number.parseFloat(row[index]) ?? undefined
+            row[index] = Number.isNaN(Number.parseFloat(row[index])) ? 0 : Number.parseFloat(row[index])
             break
           case 'string':
-            row[index] = String(row[index]) ?? undefined
+            row[index] = row[index] ?? ''
             break
           case 'bool':
             row[index] = typeof row[index] === 'boolean' ? row[index] : Boolean(row[index])
@@ -116,7 +116,7 @@ async function transformData(data: any[][]) {
             row[index] = row[index] ? toFixedChinaISOString(excelSerialToDate(row[index])) : undefined
             break
           default:
-            row[index] = row[index] ?? undefined
+            row[index] = row[index] ?? ''
             break
         }
         obj[header] = row[index]

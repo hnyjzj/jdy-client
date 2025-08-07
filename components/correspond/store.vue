@@ -19,7 +19,9 @@ async function change(store: Stores) {
 }
 
 async function confirm() {
-  await switchStore(changeStore.value)
+  if (changeStore.value) {
+    await switchStore(changeStore.value)
+  }
   isGoChangestore.value = false
 }
 </script>
