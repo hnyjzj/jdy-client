@@ -93,7 +93,7 @@ async function transformData(data: any[][]) {
             row[index] = Number.isNaN(Number.parseFloat(row[index])) ? 0 : Number.parseFloat(row[index])
             break
           case 'string':
-            row[index] = row[index] ?? ''
+            row[index] = row[index] ? String(row[index]) : ''
             break
           case 'bool':
             row[index] = typeof row[index] === 'boolean' ? row[index] : Boolean(row[index])
@@ -113,6 +113,9 @@ async function transformData(data: any[][]) {
             }
             break
           case 'time':
+            row[index] = row[index] ? toFixedChinaISOString(excelSerialToDate(row[index])) : undefined
+            break
+          case 'data':
             row[index] = row[index] ? toFixedChinaISOString(excelSerialToDate(row[index])) : undefined
             break
           default:
