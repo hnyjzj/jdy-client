@@ -194,10 +194,12 @@ const onReturnProduct = async (index: number) => {
               <div class="grid grid-cols-1 gap-[12px]">
                 <div class="info">
                   <common-cell label="配件名称" :value="obj.accessorie?.product?.name" val-color="#4C8DF6" />
-                  <common-cell label="配件id" :value="obj.accessorie?.product?.id" />
+                  <common-cell label="配件编号" :value="obj.accessorie?.product?.id" />
+                  <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[obj.accessorie?.product?.retail_type!]" />
                   <common-cell label="积分" :value="obj.accessorie?.integral" />
-                  <common-cell label="应付金额" format="￥" :value="obj.accessorie.price" />
+                  <common-cell label="单价" format="￥" :value="obj.accessorie.product?.price" />
                   <common-cell label="数量" :value="obj.accessorie.quantity" />
+                  <common-cell label="应付金额" format="￥" :value="obj.accessorie.price" />
                   <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusReturn">
                     <common-cell label="状态" value="已退货" val-color="#FF9900" />
                   </template>
