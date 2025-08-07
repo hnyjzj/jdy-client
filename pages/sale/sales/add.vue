@@ -19,7 +19,7 @@ const { getOldClass, getOldScoreProportion } = useOld()
 const { getSetInfo } = useBillingSetStore()
 const { memberList } = storeToRefs(useMemberManage())
 const { getAccessorieList, getAccessorieWhere, getAccessorieScoreRate } = useAccessorie()
-const { accessorieList } = storeToRefs(useAccessorie())
+const { accessorieList, accessorieFilterList } = storeToRefs(useAccessorie())
 const { finishedList } = storeToRefs(useFinished())
 const { createMember } = useMemberManage()
 const { getOrderDetail, getDepositList } = useDepositOrder()
@@ -303,13 +303,8 @@ const searchOlds = async (val: string) => {
   return OldObj.value || {}
 }
 // 搜索配件
-const searchParts = async (val: string, type: string) => {
-  if (type === 'number') {
-    await getAccessorieList({ page: 1, limit: 10, where: { id: val, store_id: myStore.value.id } })
-  }
-  if (type === 'name') {
-    await getAccessorieList({ page: 1, limit: 10, where: { name: val, store_id: myStore.value.id } })
-  }
+const searchParts = async (val: string) => {
+  await getAccessorieList({ page: 1, limit: 10, where: { name: val, store_id: myStore.value.id } })
   if (!accessorieList.value.length) {
     $toast.error('搜索货品不存在')
   }
@@ -479,6 +474,7 @@ const changeStore = () => {
             :is-integral="formData.has_integral"
             :billing-set="billingSet"
             :search-parts="searchParts"
+            :part-filter="accessorieFilterList"
             @clear-list="() => accessorieList = [] "
           />
         </div>

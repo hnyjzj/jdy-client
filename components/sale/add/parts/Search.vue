@@ -4,25 +4,13 @@ import { calc } from 'a-calc'
 const Props = defineProps<{
   billingSet: BillingSet
   isIntegral: boolean
-  searchParts: (val: string, type: string) => Promise<ProductAccessories[]>
+  partFilter: Where<ProductAccessories>
+  searchParts: (val: string,) => Promise<ProductAccessories[]>
   checkAccessoriesScore: (params: { classes: ProductAccessories['type'][] }) => any
 }>()
 const showModal = defineModel('show', { default: false })
-// 搜索商品 名称name 和 条码code   编号number
-const searchType = ref('number')
 const searchPartsVal = ref('')
-const changeType = (type: 'name' | 'number') => {
-  searchType.value = type
-  searchPartsVal.value = ''
-}
-const placeholderText = computed(() => {
-  switch (searchType.value) {
-    case 'number':
-      return '请输入配件编号'
-    default:
-      return '请输入配件名称'
-  }
-})
+
 const countIntegral = (amount: number, rate: number | string) => {
   return calc('(a / b)| =0 ~5, !n', {
     a: amount,
@@ -44,8 +32,9 @@ const selectPart = (part: ProductAccessories) => {
 }
 const partslist = ref<ProductAccessories[]>([])
 const searchPartsList = async () => {
-  const data = await Props.searchParts(searchPartsVal.value, searchType.value)
+  const data = await Props.searchParts(searchPartsVal.value)
   partslist.value = data
+  document.body.style.overflow = 'hidden'
 }
 // 计算积分 如果积分比例存在 并且 应付金额大于0 才能计算
 const calculateIntegral = (amount: number, rate?: number) => {
@@ -120,93 +109,87 @@ const confirmParts = async () => {
         searchPartsVal = ''
         partslist = []
       }">
-      <div class="grid-12 h-[300px] overflow-y-scroll">
-        <div class="col-12">
-          <div>
-            <div class="flex justify-around py-[12px]">
-              <div class="flex-center-col" @click="changeType('name')">
-                <div class="text-[16px] pb-[2px] font-semibold line-height-[24px]" :style="{ color: searchType === 'name' ? '#333' : '#53565C' }">
-                  名称搜索
-                </div>
-                <div
-                  class="w-[32px] h-[4px] rounded "
-                  :style="{ background: searchType === 'name' ? '#2080F0' : '' }" />
-              </div>
-              <div class="flex-center-col" @click="changeType('number')">
-                <div
-                  class="text-[16px] pb-[2px] font-semibold line-height-[24px]"
-                  :style="{ color: searchType === 'number' ? '#333' : '#53565C' }">
-                  编号搜索
-                </div>
-                <div
-                  class="w-[32px] h-[4px] rounded "
-                  :style="{ background: searchType === 'number' ? '#2080F0' : '' }" />
-              </div>
-            </div>
-          </div>
-          <div class="flex items-center pb-[16px]">
-            <div class="flex-1">
-              <n-input v-model:value="searchPartsVal" type="text" clearable :placeholder="placeholderText" size="large" @keydown.enter="searchPartsList" @focus="focus" />
-            </div>
-            <div class="pl-[16px] flex">
-              <n-button type="info" round @click="searchPartsList">
-                搜索
-              </n-button>
-            </div>
-          </div>
-          <div class="overflow-x-auto max-w-[400px]">
-            <div class=" color-[#333] font-semibold !text-[16px] flex">
-              <div class="w-[180px] pl-[8px] flex-shrink-0">
-                编号
-              </div>
-              <div class="w-[100px] flex-shrink-0">
-                名称
-              </div>
-              <div class="w-[40px] flex-shrink-0">
-                类型
-              </div>
-              <div class="w-[50px] flex-shrink-0">
-                单价
-              </div>
-              <div class="w-[40px] flex-shrink-0">
-                库存
-              </div>
-            </div>
-            <div class="py-[16px]">
-              <template v-for="(item, index) in partslist" :key="index">
-                <div
-                  class="py-[12px]  rounded-2xl mb-[8px] flex w-[fit-content]" :style="{
-                    'background-color': prePartsList.includes(item) ? 'white' : '',
-                    'color': prePartsList.includes(item) ? '#328AF1' : '#000',
-                  }" @click="selectPart(item)">
-                  <div class="w-[180px] pl-[8px] flex-shrink-0">
-                    {{ item.id }}
-                  </div>
-                  <div class="w-[100px] flex-shrink-0">
-                    {{ item?.name }}
-                  </div>
-                  <div class="w-[40px] flex-shrink-0">
-                    {{ item?.type }}
-                  </div>
-                  <div class="w-[50px] flex-shrink-0">
-                    {{ item?.price }}
-                  </div>
-                  <div class="w-[40px] flex-shrink-0">
-                    {{ item.stock }}
-                  </div>
-                </div>
-              </template>
-              <template v-if="partslist.length === 0">
-                <common-emptys text="暂无数据" />
-              </template>
-            </div>
-          </div>
+      <div class="flex items-center pb-[16px]">
+        <div class="flex-1">
+          <n-input v-model:value="searchPartsVal" type="text" clearable placeholder="搜索配件名称" size="large" @keydown.enter="searchPartsList" @focus="focus" />
         </div>
+        <div class="pl-[16px] flex">
+          <n-button type="info" round @click="searchPartsList">
+            搜索
+          </n-button>
+        </div>
+      </div>
+      <div class="category-list max-h-[300px]">
+        <table class="w-full">
+          <thead>
+            <tr>
+              <th class="px-2 py-1 min-w-[80px]">
+                名称
+              </th>
+              <th class="px-2 py-1 min-w-[60px]">
+                库存
+              </th>
+              <th class="px-2 py-1 min-w-[60px]">
+                单价
+              </th>
+              <th class="px-2 py-1 min-w-[60px]">
+                类型
+              </th>
+              <th class="px-2 py-1 min-w-[90px]">
+                销售方式
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="(item, index) in partslist" :key="index">
+              <tr
+                class="px-2 py-2 h-[36px] rounded-[12px]" :style="{
+                  'background-color': prePartsList.includes(item) ? 'white' : '',
+                  'color': prePartsList.includes(item) ? '#328AF1' : '#000',
+                }" @click="selectPart(item)">
+                <td
+                  class=" classRows max-w-[120px] ">
+                  {{ item?.name }}
+                </td>
+                <td class=" classRows max-w-[120px] ">
+                  {{ item.stock }}
+                </td>
+                <td class=" classRows max-w-[120px] ">
+                  {{ item?.price }}
+                </td>
+                <td class=" classRows max-w-[120px] ">
+                  {{ Props.partFilter.type?.preset[item?.type] }}
+                </td>
+                <td class=" classRows max-w-[120px] ">
+                  {{ Props.partFilter.retail_type?.preset[item.retail_type] }}
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+        <template v-if="partslist.length === 0">
+          <div class="py-[12px]">
+            <common-emptys />
+          </div>
+        </template>
       </div>
     </common-model>
   </div>
 </template>
 
 <style lang="scss" scoped>
-
+.category-list {
+  overflow: auto;
+}
+.category-list table {
+  border-collapse: collapse;
+}
+.category-list th,
+.category-list td {
+  text-align: center; /* 水平居中 */
+  vertical-align: middle; /* 垂直居中（可选） */
+}
+.classRows {
+  --uno: 'whitespace-nowrap overflow-hidden text-center px-2 text-ellipsis';
+}
 </style>
