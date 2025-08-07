@@ -194,7 +194,6 @@ const onReturnProduct = async (index: number) => {
               <div class="grid grid-cols-1 gap-[12px]">
                 <div class="info">
                   <common-cell label="配件名称" :value="obj.accessorie?.product?.name" val-color="#4C8DF6" />
-                  <common-cell label="配件编号" :value="obj.accessorie?.product?.id" />
                   <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[obj.accessorie?.product?.retail_type!]" />
                   <common-cell label="积分" :value="obj.accessorie?.integral" />
                   <common-cell label="单价" format="￥" :value="obj.accessorie.product?.price" />
