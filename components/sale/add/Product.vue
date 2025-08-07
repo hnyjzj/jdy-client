@@ -199,43 +199,6 @@ const handleScoreReduceBlur = (scoreDeduct: number) => {
   })
 }
 
-// 设置整单卡券抵扣
-// 定义一个响应式变量couponDeduct，初始值为undefined，用于存储卡券抵扣金额
-// const couponDeduct = ref(undefined)
-// 定义一个函数handleCouponReduceBlur，用于处理卡券抵扣金额失去焦点时的逻辑
-// const handleCouponReduceBlur = () => {
-//   // 初始化result变量，用于累加每项商品的卡券抵扣金额
-//   let result = 0
-//   // 检查couponDeduct的值是否小于0或者为空，如果是，则重置couponDeduct为undefined
-//   if ((couponDeduct?.value && couponDeduct?.value < 0) || !couponDeduct.value) {
-//     couponDeduct.value = undefined
-//     // 遍历showProductList中的每一项商品，将cardDeduction重置为0
-//     showProductList.value.forEach((item) => {
-//       item.cardDeduction = 0
-//     })
-//     return // 结束函数执行
-//   }
-
-//   showProductList.value.forEach((item, index) => {
-//     // 计算当前商品的卡券抵扣金额
-//     item.cardDeduction = calc('(amount / allAmount * couponDeduct) | =0 ~5, !n', {
-//       amount: item.orign, // 应付金额
-//       allAmount: allAmount(), // 总金额
-//       couponDeduct: couponDeduct.value || 0, // 整单设置卡券抵扣
-//     })
-
-//     if (index !== showProductList.value.length - 1) {
-//       result += item.cardDeduction
-//     }
-//     else {
-//       // 最后一行 抹零金额
-//       item.cardDeduction = calc('(a - b) | !n', {
-//         a: couponDeduct.value,
-//         b: result,
-//       })
-//     }
-//   })
-// }
 // 点击搜索按钮 弹出弹窗
 const clickSearchButton = () => {
   showModal.value = true
