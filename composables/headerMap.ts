@@ -70,3 +70,27 @@ export const oldHeaderMap: Record<string, string> = {
   '副石数': 'num_other',
   '颜色': 'color_gem',
 }
+
+export const statementHeaderMap: Record<string, string> = {
+  编号: 'id',
+  关联销售单: 'order_id',
+  订单状态: 'status',
+  订单来源: 'source',
+  门店: 'store',
+  会员: 'member_name',
+  会员手机号: 'member_phone',
+  主销: 'mainSale',
+  类型: 'type',
+  货品名称: 'name',
+  产品条码: 'code',
+  原价: 'price_original',
+  应付金额: 'order_price',
+  标签价: 'laber_price',
+  实付金额: 'price_pay',
+  成品金额: 'price_product',
+  旧料抵扣: 'price_old',
+  配件金额: 'price_accessory',
+  成品工费: 'labor_fee_product',
+  金重: 'weight_metal',
+  零售方式: 'retail_type',
+}
