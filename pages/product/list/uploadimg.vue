@@ -5,11 +5,15 @@ const { getFinishedRetrieval, getFinishedWhere, uploadFinishedImg } = useFinishe
 const { finishedInfo, finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
 const { uploadProductImg } = useProductManage()
 const { myStore } = storeToRefs(useStores())
+const { getMyStore } = useStores()
 
 const { $toast } = useNuxtApp()
 const { useWxWork } = useWxworkStore()
 const loading = ref(false)
 const productName = ref('')
+const route = useRoute()
+const liveCode = ref()
+
 // 成品列表详情
 useSeoMeta({
   title: '上传图片',
@@ -50,14 +54,46 @@ async function getInfo(code: string) {
   initImgWall()
   statusCode.value = 200
 }
+
+const listJump = () => {
+  const url = UrlAndParams('/product/list/uploadimg', { code: liveCode.value })
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+}
+
 /** 扫码 */
 const scanCode = async () => {
   const wx = await useWxWork()
   const code = await wx?.scanQRCode()
   if (code) {
-    getInfo(code)
+    liveCode.value = code
+    previewFileList.value = []
+    listJump()
   }
 }
+
+async function searchFun(code: string) {
+ if(!code)
+    return $toast.error('请正确输入条码')
+  liveCode.value = code
+  previewFileList.value = []
+  listJump()
+}
+
+/** 读取参数并初始化列表 */
+const handleQueryParams = async () => {
+  const code = route.query?.code
+  if (code) {
+    liveCode.value = code
+    await getInfo(liveCode.value)
+  }
+}
+
+
+onMounted(async() => {
+    await getMyStore({page:1, limit: 20})
+    await handleQueryParams()
+})
+
 
 // 校验上传文件
 const beforeUpload = (data: any) => {
@@ -135,7 +171,7 @@ async function uploadImg() {
         <div class="color-[#fff] py-[12px] flex justify-between">
           <product-manage-company />
           <div class="flex-1 px-2 sm:px-4">
-            <product-filter-search placeholder="搜索条码" @submit="getInfo" />
+            <product-filter-search v-model:searchKey="liveCode" placeholder="搜索条码" @submit="searchFun" />
           </div>
           <div
             class="flex items-center justify-end cursor-pointer"
