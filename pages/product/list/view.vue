@@ -32,7 +32,7 @@ async function getInfo(code: string) {
   statusCode.value = 200
 }
 const listJump = () => {
-  const url = UrlAndParams('/product/list/view', { code: liveCode.value })
+  const url = UrlAndParams(route.path, { code: liveCode.value })
   navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
 /** 扫码 */

@@ -56,7 +56,7 @@ async function getInfo(code: string) {
 }
 
 const listJump = () => {
-  const url = UrlAndParams('/product/list/uploadimg', { code: liveCode.value })
+  const url = UrlAndParams(route.path, { code: liveCode.value })
   navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
 
