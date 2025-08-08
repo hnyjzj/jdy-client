@@ -18,6 +18,8 @@ const type = ref(1 as ProductFinisheds['type'])
 const filterData = ref({} as Partial<ExpandPage<ProductFinisheds>>)
 const limits = ref(50)
 const tableLoading = ref(false)
+const isUploadModel = ref(false)
+const uploadRef = ref()
 useSeoMeta({
   title: '成品列表',
 })
@@ -299,6 +301,24 @@ async function downloadLocalFile() {
       <product-manage-bottom :statistics="finisheStatistics" />
     </div>
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
+    <product-upload-warehouse ref="uploadRef" v-model="isUploadModel" title="数据更新" :filter-list="finishedFilterList" :type="1" @upload="submitGoods">
+      <template #content>
+        <div>
+          <div class="pb-2">
+            1. 成品列表、入库记录里面导出需要更新的货品；
+          </div>
+          <div class="pb-2">
+            2. 修改需要更新的地方；
+          </div>
+          <div class="pb-2">
+            3. 删除不在入库模板中的列；
+          </div>
+          <div class="pb-2">
+            4. 上传更新后的货品，不要修改表格式。
+          </div>
+        </div>
+      </template>
+    </product-upload-warehouse>
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="finishedFilterListToArray" @submit="submitWhere" @reset="resetWhere" />
   </div>
 </template>

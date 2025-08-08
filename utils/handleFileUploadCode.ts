@@ -8,7 +8,7 @@ export default async function (headers: any) {
     '旧条码*': 'old_code',
     '新条码*': 'new_code',
   }
-  const cleanedHeaders = headers.map((header: keyof AccessorieCategory) =>
+  const cleanedHeaders = headers.map((header: keyof Record<string, string>) =>
     typeof header === 'string' ? header.replace(/\s/g, '') : header,
   )
 
