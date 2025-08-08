@@ -55,7 +55,7 @@ async function searchFun(phone: string) {
 }
 
 onMounted(async () => {
-  // 确保页面状态稳定，再开始处理
+  // 确保页面状态稳定，再进行处理
   await nextTick()
   await handleQueryParams()
 })
