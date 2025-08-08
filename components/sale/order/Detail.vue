@@ -173,6 +173,7 @@ const onReturnProduct = async (index: number) => {
                 <common-cell label="回收工费" format="￥" :value="obj.old.recycle_price_labor" />
                 <common-cell label="回收金价" format="￥" :value="obj.old.recycle_price_gold" />
                 <common-cell label="回收金额" format="￥" :value="obj.old.recycle_price" />
+                <common-cell label="回收金重(g)" :value="obj.old.weight_metal" />
                 <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusReturn">
                   <common-cell label="状态" value="已退货" val-color="#FF9900" />
                 </template>

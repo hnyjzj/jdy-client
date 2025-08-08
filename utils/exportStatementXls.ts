@@ -36,20 +36,83 @@ function mapEnumValues(
       newRow.member_phone = row[key].phone
     }
     if (key === 'order') {
-      newRow.source = enumMap.source[row[key].source]
-      newRow.price_pay = row[key].price_pay
-      newRow.order_price = row[key].price
-      newRow.price_original = row[key].price_original
-      newRow.mainSale = row[key].clerks[0].salesman?.nickname
-      newRow.price_product = row[key].product_finished_price
-      newRow.price_old = row[key].product_old_price
-      newRow.price_accessory = row[key].product_accessorie_price
+      newRow.source = enumMap.source[row[key].source] || ''
+      newRow.price_pay = row[key].price_pay || ''
+      newRow.order_price = row[key].price || ''
+      newRow.price_original = row[key].price_original || ''
+      newRow.remarks = row[key]?.remarks?.join(',') || ''
+      newRow.mainSale = row[key].clerks[0].salesman?.nickname || ''
+      if (row.type === GoodsType.ProductFinish) {
+        newRow.price_product = row[key].product_finished_price || ''
+      }
+      if (row.type === GoodsType.ProductOld) {
+        newRow.price_old = row[key].product_old_price || ''
+      }
+      if (row.type === GoodsType.ProductAccessories) {
+        newRow.price_accessory = row[key].product_accessorie_price || ''
+      }
     }
-    if (key === 'finished') {
-      newRow.retail_type = enumMap.retail_type[row[key].product.retail_type]
-      newRow.labor_fee_product = row[key].labor_fee
-      newRow.weight_metal = row[key].weight_metal
-      console.log(row[key])
+    if (row.type === GoodsType.ProductFinish && key === 'finished') {
+      newRow.retail_type = enumMap.retail_type[row[key].product.retail_type] || ''
+      newRow.labor_fee_product = row[key].labor_fee || ''
+      newRow.weight_metal = row[key].product.weight_metal || ''
+      newRow.price = row[key].price || ''
+      newRow.product_price_gold = row[key].price_gold || ''
+      newRow.product_price_original = row[key].price_original || ''
+      newRow.discount_member = row[key].discount_member || ''
+      newRow.discount_final = row[key].discount_final || ''
+      newRow.weight_total = row[key].product.weight_total || ''
+      newRow.supplier = enumMap.supplier[row[key].product.supplier] || ''
+      newRow.brand = enumMap.brand[row[key].product.brand] || ''
+      newRow.material = enumMap.material[row[key].product.material] || ''
+      newRow.quality = enumMap.quality[row[key].product.quality] || ''
+      newRow.gem = enumMap.gem[row[key].product.gem] || ''
+      newRow.category = enumMap.category[row[key].product.category] || ''
+      newRow.craft = enumMap.craft[row[key].product.craft] || ''
+      newRow.name = row[key].product.name || ''
+      newRow.code = row[key].product.code || ''
+    }
+    if (row.type === GoodsType.ProductOld && key === 'old') {
+      newRow.recycle_price = row[key].recycle_price || ''
+      newRow.recycle_price_gold = row[key].recycle_price_gold || ''
+      newRow.recycle_price_labor = row[key].recycle_price_labor || ''
+      newRow.quality_actual = row[key].quality_actual || ''
+      newRow.recycle_points = row[key].integral || ''
+      newRow.weight_metal = row[key].weight_metal || ''
+      newRow.recycle_method = enumMap.recycle_method[row[key].product.recycle_method] || ''
+      newRow.recycle_weight_metal = row[key].weight_metal || ''
+      newRow.recycle_price_labor_method = enumMap.recycle_price_labor_method[row[key].recycle_price_labor_method] || ''
+      newRow.supplier = enumMap.supplier[row[key].product.supplier] || ''
+      newRow.brand = enumMap.brand[row[key].product.brand] || ''
+      newRow.material = enumMap.material[row[key].product.material] || ''
+      newRow.quality = enumMap.quality[row[key].product.quality] || ''
+      newRow.gem = enumMap.gem[row[key].product.gem] || ''
+      newRow.category = enumMap.category[row[key].product.category] || ''
+      newRow.craft = enumMap.craft[row[key].product.craft] || ''
+      newRow.name = row[key].product.name || ''
+      newRow.code = row[key].product.code || ''
+    }
+    if (row.type === GoodsType.ProductAccessories && key === 'accessorie') {
+      newRow.accessory_price = row[key].product.price || ''
+      newRow.accessory_retail_type = enumMap.retail_type[row[key].product.retail_type] || ''
+      newRow.accessory_quantity = row[key].quantity || ''
+      newRow.name = row[key].product.name || ''
+      switch (row[key].product.type) {
+        case accessoriesType.part:
+          newRow.accessory_type = '配件'
+          break
+        case accessoriesType.material:
+          newRow.accessory_type = '物料'
+          break
+        case accessoriesType.gift:
+          newRow.accessory_type = '赠品'
+          break
+        case accessoriesType.goods:
+          newRow.accessory_type = '商品'
+          break
+        default:
+          break
+      }
     }
   }
   return newRow
@@ -66,17 +129,6 @@ function convertDataWithChineseHeaders(
     return fields.map((field) => {
       if (field === 'store') {
         return row.store.name ?? ''
-      }
-      if (field === 'laber_price') {
-        if (row.type === '成品') {
-          return row.finished.product?.label_price ?? ''
-        }
-        if (row.type === '旧料') {
-          return row.old.product?.label_price ?? ''
-        }
-        if (row.type === '配件') {
-          return row.accessorie.product?.price ?? ''
-        }
       }
 
       return row[field] ?? ''
@@ -128,7 +180,6 @@ export function exportStatementListToXlsx(
   else {
     finalData = aoaData
   }
-  console.log(finalData)
 
   const worksheet = XLSX.utils.aoa_to_sheet(finalData)
   const workbook = XLSX.utils.book_new()

@@ -55,3 +55,18 @@ export enum GoodsTypePure {
 
 /** 产品类型 */
 export const typePreset = { 1: '成品', 2: '旧料' }
+
+/**
+ * 配件类型
+ */
+export enum accessoriesType {
+//   1: '配件',
+  part = 1,
+  //   2: '物料',
+  material = 2,
+  //   3: '赠品',
+  gift = 3,
+  //   4: '商品',
+  goods = 4,
+
+}
