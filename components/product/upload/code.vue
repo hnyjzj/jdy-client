@@ -6,6 +6,7 @@ const emits = defineEmits<{
    */
   upload: [params: BatchCode[]]
 }>()
+const { $toast } = useNuxtApp()
 
 const isModel = defineModel({ type: Boolean, default: false })
 const fileName = ref()
@@ -41,6 +42,7 @@ function cleanExcelData(data: any) {
  */
 async function transformData(data: any[][]) {
   if (!data || data.length < 2) {
+    $toast.error('数据格式不正确，至少需要表头和一行数据')
     return []
   }
 
@@ -54,7 +56,7 @@ async function transformData(data: any[][]) {
     const obj = {} as Record<ProductKey, any>
 
     headers.forEach((header: ProductKey, index) => {
-      obj[header] = row[index]
+      obj[header] = String(row[index])
     })
 
     return obj
@@ -68,7 +70,7 @@ async function submitGoods() {
 /** 下载对应入库模板 */
 const downloadLocalFile = () => {
   const url = '/excel/codeTemplate.xlsx'
-  const name = '条码跟新模板.xlsx'
+  const name = '条码更新模板.xlsx'
 
   const link = document.createElement('a')
   link.href = url
@@ -90,11 +92,11 @@ defineExpose({
 
 <template>
   <div>
-    <common-model v-model="isModel" title="批量入库" :show-ok="true" confirm-text="导入货品" @confirm="submitGoods" @cancel="clearData">
+    <common-model v-model="isModel" title="更新条码" :show-ok="true" confirm-text="导入货品" @confirm="submitGoods" @cancel="clearData">
       <div class="mb-8 relative min-h-[60px]">
         <div class="pb-4">
           <div class="text-[14px] text-color flex">
-            1、请按照模版整理条码信息
+            1、请按照模版整理条码信息；
             <div class="text-[rgba(57,113,243,1)] flex ml-4" @click="downloadLocalFile">
               <icon name="i-svg:download" :size="16" color="#666" />
               下载模板
@@ -105,9 +107,9 @@ defineExpose({
           2. 在新条码列填写修改后货品条码；
         </div>
         <div class="pb-4">
-          3. 仅可更新货品条码；新条码不能与曾在库货品条码一致（除直接调出、旧料回收后退货条码）。
+          3. 仅可更新货品条码；新条码不能与曾在库货品条码一致（除直接调出、旧料回收后退货条码）；
         </div>
-        <input class="h-[40px] absolute bottom-0 w-full opacity-0" type="file" @change="FileUpload" @focus="focus">
+        <input class="h-[40px] absolute bottom-0 w-full opacity-0" type="file" @change="FileUpload">
         <div class="uploadInp cursor-pointer">
           <div class="text-row-hide w-[60%]">
             {{ fileName || '请添加文件' }}

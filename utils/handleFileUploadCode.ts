@@ -5,10 +5,10 @@
  */
 export default async function (headers: any) {
   const headerMap: Record<string, string> = {
-    '旧条码*': 'old_code',
+    '旧条码*': 'code',
     '新条码*': 'new_code',
   }
-  const cleanedHeaders = headers.map((header: keyof Record<string, string>) =>
+  const cleanedHeaders = headers.map((header: keyof BatchCode) =>
     typeof header === 'string' ? header.replace(/\s/g, '') : header,
   )
 

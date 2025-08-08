@@ -3,7 +3,7 @@ import { NButton } from 'naive-ui'
 
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
-const { getFinishedList, getFinishedWhere, getFinishedListAll } = useFinished()
+const { getFinishedList, getFinishedWhere, getFinishedListAll, updateFinishedCode } = useFinished()
 const { finishedList, finishedFilterList, finishedFilterListToArray, finishedListTotal, finisheStatistics, finishedListAll } = storeToRefs(useFinished())
 const { searchPage, showtype } = storeToRefs(usePages())
 
@@ -13,13 +13,13 @@ const searchKey = ref('')
 const isFilter = ref(false)
 const isModel = ref(false)
 const isLoading = ref(false)
-const isBatchImportModel = ref(false)
-const type = ref(1 as ProductFinisheds['type'])
 const filterData = ref({} as Partial<ExpandPage<ProductFinisheds>>)
 const limits = ref(50)
 const tableLoading = ref(false)
 const isUploadModel = ref(false)
+const isCodeModel = ref(false)
 const uploadRef = ref()
+const uploadCodeRef = ref()
 useSeoMeta({
   title: '成品列表',
 })
@@ -113,12 +113,6 @@ const clearSearch = async () => {
 /** 编辑 */
 const edit = (code: string) => {
   jump('/product/manage/edit', { code })
-}
-
-/** 添加新成品 */
-const goAdd = () => {
-  isModel.value = false
-  jump('/product/warehouse/add', { type: type.value })
 }
 
 /** 查看详情 */
@@ -258,6 +252,42 @@ async function downloadLocalFile() {
     isLoading.value = false
   }
 }
+/**
+ * 货品更新
+ */
+async function submitGoods(req: ProductFinisheds[]) {
+  if (!req?.length) {
+    return
+  }
+  isUploadModel.value = false
+  isLoading.value = true
+  isLoading.value = false
+}
+
+/** 条码更新 */
+async function submitCode(code: BatchCode[]) {
+  if (!code?.length) {
+    return
+  }
+  try {
+    isLoading.value = true
+    const res = await updateFinishedCode(code)
+    if (res?.code === HttpCode.SUCCESS) {
+      $toast.success('条码更新成功')
+      listJump()
+    }
+    else {
+      $toast.error(res?.message ?? '更新条码失败')
+    }
+  }
+  catch (error) {
+    throw new Error(`${error ?? '更新条码失败'}`)
+  }
+  finally {
+    isCodeModel.value = false
+    isLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -300,7 +330,8 @@ async function downloadLocalFile() {
     <div class="z-9">
       <product-manage-bottom :statistics="finisheStatistics" />
     </div>
-    <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
+    <product-upload-choose v-model:is-model="isModel" title="更新" first-text="数据更新" second-text="条码更新" @go-add="isCodeModel = true" @batch="isUploadModel = true" />
+    <product-upload-code ref="uploadCodeRef" v-model="isCodeModel" @cancle="uploadCodeRef.value.clearData()" @upload="submitCode" />
     <product-upload-warehouse ref="uploadRef" v-model="isUploadModel" title="数据更新" :filter-list="finishedFilterList" :type="1" @upload="submitGoods">
       <template #content>
         <div>
@@ -319,6 +350,11 @@ async function downloadLocalFile() {
         </div>
       </template>
     </product-upload-warehouse>
+    <common-create @create="isModel = true">
+      <template #content>
+        <icon name="i-icon:setup" :size="24" color="#FFF" />
+      </template>
+    </common-create>
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="finishedFilterListToArray" @submit="submitWhere" @reset="resetWhere" />
   </div>
 </template>

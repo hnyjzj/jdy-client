@@ -235,8 +235,8 @@ interface AllFinished<T = undefined> {
   where?: Partial<T>
 }
 
-/** 批量修改code */
+/** 批量修改code参数 */
 interface BatchCode {
+  code: string
   new_code: string
-  old_code: string
 }
