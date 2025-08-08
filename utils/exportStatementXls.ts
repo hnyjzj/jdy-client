@@ -144,26 +144,15 @@ function convertDataWithChineseHeaders(
  * @param fields 字段定义（带 name 和 preset）
  * @param name 导出文件名
  * @param summary 统计信息区域
- * @param type 类型：1 为成品，2 为旧料（默认 1）
+ *
  */
 export function exportStatementListToXlsx(
   data: Record<string, any>[],
   fields: { name: string, preset?: Record<any, string> }[],
   name: string = '货品列表',
   summary?: [string, string | number][],
-  type: 1 | 2 | 3 = 1,
 ) {
-  let headerMap = oldHeaderMap
-  if (type === 1) {
-    headerMap = finishedHeaderMap
-  }
-  if (type === 2) {
-    headerMap = oldHeaderMap
-  }
-  if (type === 3) {
-    headerMap = statementHeaderMap
-  }
-
+  const headerMap = statementHeaderMap
   // 👇 生成 英文字段 => 中文标题 映射
   const fieldMap: Record<string, string> = Object.fromEntries(
     Object.entries(headerMap).map(([zh, en]) => [en, zh]),
