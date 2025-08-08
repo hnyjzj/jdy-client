@@ -8,16 +8,29 @@ const route = useRoute()
 const livePhone = ref()
 const { $toast } = useNuxtApp()
 
-async function getInfo() {
-  await getMemberList({ page: 1, limit: 20, where: { phone: livePhone.value } })
-  if (memberList.value.length) {
-    await getMemberConsume({ id: memberList.value[0].id })
-  }
-}
-
 const clearFn = () => {
   memberList.value = []
   memberConsume.value = []
+}
+
+async function getInfo() {
+  const phone = String(livePhone.value ?? '').trim()
+  if (!phone) {
+    clearFn()
+    return
+  }
+  try {
+    await getMemberList({ page: 1, limit: 1, where: { phone } })
+    if (memberList.value.length) {
+      await getMemberConsume({ id: memberList.value[0].id })
+    }
+    else {
+      memberConsume.value = []
+    }
+  }
+  catch (error) {
+    throw new Error(`${error || '未知错误'}`)
+  }
 }
 
 const listJump = () => {

@@ -8,14 +8,12 @@ const { $toast } = useNuxtApp()
 const { useWxWork } = useWxworkStore()
 const route = useRoute()
 
-const productName = ref('')
 // 成品列表详情
 useSeoMeta({
   title: '成品检索',
 })
 const statusCode = ref()
 const liveCode = ref()
-productName.value = finishedInfo.value?.name || ''
 await getFinishedWhere()
 
 async function getInfo(code: string) {
