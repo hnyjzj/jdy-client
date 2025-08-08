@@ -42,7 +42,6 @@ const addProduct = async (products: ProductFinisheds[]) => {
         integral_deduction: 0, // 积分抵扣
         rate: 0, // 积分比例
         class: product.class,
-        //   product,
       }
       data.labor_fee = Number(product.labor_fee)
       // 匹配金价
@@ -85,6 +84,7 @@ const handleDiscountRateBlur = (discount_rate: number) => {
   showProductList.value.forEach((item) => {
     item.discount_fixed = discount_rate
   })
+  formData.value.discount_rate = discount_rate
 }
 
 // 计算选择的成品列表中所有应付金额 不算折扣
@@ -115,7 +115,6 @@ const handleAmountReduceBlur = (amount_reduce: number) => {
     // 退出函数
     return
   }
-  formData.value.round_off = amount_reduce
   showProductList.value.forEach((item, index) => {
     // 计算每个item的 抹零金额
     item.round_off = calc('(amount / allAmount * amountReduce) | 1 ~5, !n , <=0', {
@@ -143,7 +142,7 @@ const updateDedution = (val?: number) => {
     // 如果存在
     formData.value.integral_deduction = calc('(a * b) |!n', {
       a: val,
-      b: Props.billingSet.discount_rate,
+      b: Number(Props.billingSet.discount_rate),
     })
   }
   else {
@@ -168,74 +167,38 @@ const handleScoreReduceBlur = (scoreDeduct: number) => {
   let result = 0
   updateDedution(scoreDeduct)
   // 如果积分抵扣金额小于0或者没有输入值，则清空积分抵扣金额，并重置所有商品积分抵扣为0
-  if ((scoreDeduct && scoreDeduct < 0) || !scoreDeduct) {
-    scoreDeduct = 0
+  if ((formData.value.integral_deduction && formData.value.integral_deduction < 0) || !formData.value.integral_deduction) {
+    formData.value.integral_deduction = 0
     showProductList.value.forEach((item) => {
       item.integral_deduction = 0
     })
     return
   }
-
-  // 遍历商品列表，计算每个商品的积分抵扣金额
-  showProductList.value.forEach((item, index) => {
+  if (formData.value.integral_deduction !== 0) {
+    // 遍历商品列表，计算每个商品的积分抵扣金额
+    showProductList.value.forEach((item, index) => {
     // 计算当前商品的积分抵扣金额
-    item.integral_deduction = calc('(amount / allAmount * scoreDeduct) | =0 ~5, !n', {
-      amount: item.price_original, // 应付金额
-      allAmount: allAmount(), // 总金额
-      scoreDeduct: scoreDeduct || 0, // 整单设置积分抵扣金额
-    })
-
-    // 累加积分抵扣金额，但不包括最后一个商品
-    if (index !== showProductList.value.length - 1) {
-      result += item?.integral_deduction || 0
-    }
-    else {
-      // 最后一行 抹零金额
-      item.integral_deduction = calc('(a - b) | !n', {
-        a: scoreDeduct,
-        b: result,
+      item.integral_deduction = calc('(amount / allAmount * scoreDeduct) | =0 ~5, !n', {
+        amount: item.price_original, // 应付金额
+        allAmount: allAmount(), // 总金额
+        scoreDeduct: scoreDeduct || 0, // 整单设置积分抵扣金额
       })
-    }
-  })
+
+      // 累加积分抵扣金额，但不包括最后一个商品
+      if (index !== showProductList.value.length - 1) {
+        result += item?.integral_deduction || 0
+      }
+      else {
+      // 最后一行 抹零金额
+        item.integral_deduction = calc('(a - b) | !n', {
+          a: scoreDeduct,
+          b: result,
+        })
+      }
+    })
+  }
 }
 
-// 设置整单卡券抵扣
-// 定义一个响应式变量couponDeduct，初始值为undefined，用于存储卡券抵扣金额
-// const couponDeduct = ref(undefined)
-// 定义一个函数handleCouponReduceBlur，用于处理卡券抵扣金额失去焦点时的逻辑
-// const handleCouponReduceBlur = () => {
-//   // 初始化result变量，用于累加每项商品的卡券抵扣金额
-//   let result = 0
-//   // 检查couponDeduct的值是否小于0或者为空，如果是，则重置couponDeduct为undefined
-//   if ((couponDeduct?.value && couponDeduct?.value < 0) || !couponDeduct.value) {
-//     couponDeduct.value = undefined
-//     // 遍历showProductList中的每一项商品，将cardDeduction重置为0
-//     showProductList.value.forEach((item) => {
-//       item.cardDeduction = 0
-//     })
-//     return // 结束函数执行
-//   }
-
-//   showProductList.value.forEach((item, index) => {
-//     // 计算当前商品的卡券抵扣金额
-//     item.cardDeduction = calc('(amount / allAmount * couponDeduct) | =0 ~5, !n', {
-//       amount: item.orign, // 应付金额
-//       allAmount: allAmount(), // 总金额
-//       couponDeduct: couponDeduct.value || 0, // 整单设置卡券抵扣
-//     })
-
-//     if (index !== showProductList.value.length - 1) {
-//       result += item.cardDeduction
-//     }
-//     else {
-//       // 最后一行 抹零金额
-//       item.cardDeduction = calc('(a - b) | !n', {
-//         a: couponDeduct.value,
-//         b: result,
-//       })
-//     }
-//   })
-// }
 // 点击搜索按钮 弹出弹窗
 const clickSearchButton = () => {
   showModal.value = true
@@ -246,11 +209,15 @@ const clickSearchButton = () => {
   <common-fold :title="Props.title" :is-collapse="false">
     <sale-add-product-button @search="clickSearchButton" />
     <!-- 整单折扣设置 -->
-    <sale-add-product-deduction
-      @set-amount-reduce="handleAmountReduceBlur"
-      @set-score-deduct="handleScoreReduceBlur"
-      @set-discount-rate="handleDiscountRateBlur"
-    />
+
+    <template v-if="showProductList.length">
+      <sale-add-product-deduction
+        v-model="formData"
+        @set-amount-reduce="handleAmountReduceBlur"
+        @set-score-deduct="handleScoreReduceBlur"
+        @set-discount-rate="handleDiscountRateBlur"
+      />
+    </template>
     <div class="px-[16px] py-[8px]">
       <!-- 成品列表 -->
       <sale-add-product-list

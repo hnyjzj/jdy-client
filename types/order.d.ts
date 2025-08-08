@@ -51,11 +51,11 @@ interface Orders {
   /**
    * 订单备注
    */
-  remarks?: string[]
+  remarks: string[]
   /**
    * 抹零
    */
-  round_off: number | string
+  round_off: number
   /**
    * 订单来源
    */
@@ -63,7 +63,7 @@ interface Orders {
   /**
    * 门店ID
    */
-  store_id?: string
+  store_id: string
 }
 
 /**

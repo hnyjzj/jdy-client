@@ -10,9 +10,42 @@ export const useOrder = defineStore('Order', {
     oldFilterListToArray: {} as FilterWhere<ProductOld>[],
     showtype: 'list' as 'list' | 'table',
     OldObj: {} as ProductOld,
-    pageNew: 2 as number,
+    orderObject: {
+      formData: {
+        source: 1, // 订单来源
+        remarks: [], // 备注
+        discount_rate: 100, // 整单折扣
+        round_off: 0, // 抹零金额
+        member_id: undefined, // 会员ID
+        store_id: '', // 门店ID
+        cashier_id: undefined, // 收银员ID
+        //   积分抵扣
+        integral_deduction: 0,
+        has_integral: false, // 是否使用积分
+        product_finisheds: [], // 商品列表
+        product_olds: [], // 旧料
+        product_accessories: [], // 配件列表
+        clerks: [{
+          salesman_id: undefined,
+          performance_rate: 100,
+          is_main: true,
+        }],
+        payments: [{ amount: undefined, payment_method: 1 }], // 支付方式
+        order_deposit_ids: [], // 定金单id
+      } as Orders,
+      // 展示商品列表
+      showProductList: [] as ProductFinished[],
+      showMasterialsList: [] as ProductOld[],
+      showPartsList: [] as ProductAccessories[],
+      MemberInfo: {} as Member,
+      scoreDeduct: 0 as number,
+      ProductListSet: {
+        scoreDeduct: 0,
+        amount_reduce: 0,
+        discount_rate: 100,
+      },
+    },
   }),
-
   actions: {
     /**
      * 获取销售单筛选条件
@@ -169,6 +202,49 @@ export const useOrder = defineStore('Order', {
         return true
       }
     },
+    async initObjForm() {
+      this.orderObject = {
+        formData: {
+          source: 1, // 订单来源
+          remarks: [], // 备注
+          discount_rate: 100, // 整单折扣
+          round_off: 0, // 抹零金额
+          member_id: undefined, // 会员ID
+          store_id: '', // 门店ID
+          cashier_id: undefined, // 收银员ID
+          //   积分抵扣
+          integral_deduction: 0,
+          has_integral: false, // 是否使用积分
+          product_finisheds: [], // 商品列表
+          product_olds: [], // 旧料
+          product_accessories: [], // 配件列表
+          clerks: [{
+            salesman_id: undefined,
+            performance_rate: 100,
+            is_main: true,
+          }],
+          payments: [{ amount: undefined, payment_method: 1 }], // 支付方式
+          order_deposit_ids: [], // 定金单id
+        } as Orders,
+        // 展示商品列表
+        showProductList: [] as ProductFinished[],
+        showMasterialsList: [] as ProductOld[],
+        showPartsList: [] as ProductAccessories[],
+        MemberInfo: {} as Member,
+        scoreDeduct: 0 as number,
+        ProductListSet: {
+          scoreDeduct: 0,
+          amount_reduce: 0,
+          discount_rate: 100,
+        },
+      }
+    },
 
   },
+  persist: [
+    {
+      pick: ['orderObject'],
+      storage: typeof window !== 'undefined' ? localStorage : undefined,
+    },
+  ],
 })
