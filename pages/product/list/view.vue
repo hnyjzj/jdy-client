@@ -55,15 +55,15 @@ const handleQueryParams = async () => {
 }
 
 async function searchFun(code: string) {
- if(!code)
+  if (!code)
     return $toast.error('请正确输入条码')
   liveCode.value = code
   listJump()
 }
 
-onMounted(async() => {
-    await getMyStore({page:1, limit: 20})
-    await handleQueryParams()
+onMounted(async () => {
+  await getMyStore({ page: 1, limit: 20 })
+  await handleQueryParams()
 })
 </script>
 
@@ -74,7 +74,7 @@ onMounted(async() => {
         <div class="color-[#fff] py-[12px] flex justify-between">
           <product-manage-company />
           <div class="flex-1 px-2 sm:px-4">
-            <product-filter-search v-model:searchKey="liveCode" placeholder="搜索条码" @submit="searchFun" />
+            <product-filter-search v-model:search-key="liveCode" placeholder="搜索条码" @submit="searchFun" />
           </div>
           <div
             class="flex items-center justify-end cursor-pointer"
