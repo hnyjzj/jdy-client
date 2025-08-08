@@ -5,7 +5,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="fixed bottom-0 left-0 right-0">
+  <div class="fixed bottom-0 left-0 right-0 z-9">
     <div
       class="text-black dark:text-[#FFF] px-[16px] py-[10px] blur-bgc dark:border-[#0000001A] b-t-solid border-color-[#E6E6E8] b-t-[1px]">
       <common-layout-center>

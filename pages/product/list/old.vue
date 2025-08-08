@@ -4,77 +4,96 @@ import { NButton } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 
-const { getOldList, getOldWhere } = useOld()
+const { getOldList, getOldListAll, getOldWhere } = useOld()
 const { oldList, oldFilterList, oldFilterListToArray, oldListTotal } = storeToRefs(useOld())
 const { searchPage, showtype } = storeToRefs(usePages())
+
+const searchKey = ref('')
+const route = useRoute()
 
 // 筛选框显示隐藏
 const isFilter = ref(false)
 const isModel = ref(false)
 const isBatchImportModel = ref(false)
 const type = ref(2 as ProductOlds['type'])
+const filterData = ref({} as Partial<ExpandPage<ProductOlds>>)
+
 const limits = ref(50)
 const tableLoading = ref(false)
+const loading = ref(false)
 
 useSeoMeta({
   title: '旧料列表',
 })
-/** 打开高级筛选 */
+/** 高级筛选显示 */
 const openFilter = () => {
   isFilter.value = true
 }
-/** 搜索 */
-async function search(e: string) {
-  await submitWhere({ code: e }, true)
+const filterRef = ref()
+
+/** 跳转并刷新列表，带参数 */
+const listJump = () => {
+  const url = UrlAndParams('/product/list/old', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
-/** 关闭搜索 */
-async function clearSearch() {
-  await submitWhere({ }, true)
-}
-// 获取货品列表
-async function getList(where = {} as Partial<ProductOlds>) {
+/** 获取列表 */
+const getList = async (where = {} as Partial<ProductOlds>) => {
   tableLoading.value = true
-  const params = { page: searchPage.value, limit: limits.value } as ReqList<ProductOlds>
-  params.where = where
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<ProductOlds>
+  if (JSON.stringify(where) !== '{}') {
+    params.where = { ...params.where, ...where }
+  }
+
   const res = await getOldList(params)
   tableLoading.value = false
-  return res as any
+  return res
 }
 
-try {
-  if (myStore.value.id || myStore.value.id === '') {
-    await getList()
-    await getOldWhere()
+/** 读取 URL 参数并初始化列表 */
+const handleQueryParams = async () => {
+  // getQueryParams 需要定义或从工具导入，解析URL带的筛选和分页参数
+  const f = getQueryParams<Partial<ExpandPage<ProductOlds>>>(route.fullPath, oldFilterList.value)
+  filterData.value = f
+  if (filterData.value?.code) {
+    searchKey.value = filterData.value.code
   }
-  else {
-    $toast.error('您尚未分配任何门店，请先添加门店')
+  if (f.searchPage)
+    searchPage.value = Number(f.searchPage)
+  if (f.showtype) {
+    showtype.value = f.showtype
   }
-}
-catch (error) {
-  throw new Error(`初始化失败: ${error || '未知错误'}`)
-}
-
-const filterData = ref({} as Partial<ProductOlds>)
-
-const pull = async (page: number) => {
-  searchPage.value = page
+  if (f.limits)
+    limits.value = Number(f.limits)
   await getList(filterData.value)
 }
 
-// 筛选列表
-async function submitWhere(f: Partial<ProductOlds>, isSearch: boolean = false) {
+/** 搜索 */
+async function search(e: string) {
+  filterData.value.code = e
+  filterData.value.searchPage = 1
+  listJump()
+}
+
+/** 关闭搜索 */
+async function clearSearch() {
+  delete filterData.value.code
+  filterData.value.searchPage = 1
+  listJump()
+}
+
+/** 筛选列表提交 */
+async function submitWhere(f: Partial<ProductOlds>) {
   filterData.value = { ...f }
-  searchPage.value = 1
+  filterData.value.searchPage = 1
   oldList.value = []
-  const res = await getList(filterData.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    isFilter.value = false
-    if (!isSearch) {
-      $toast.success('筛选成功')
-    }
-    return
-  }
-  $toast.error(res?.message ?? '失败')
+  listJump()
+}
+
+/** 分页修改 */
+const updatePage = (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
 }
 
 /** 编辑 */
@@ -91,27 +110,53 @@ function goInfo(info: ProductOlds) {
   jump('/product/manage/old/info', { id: info.id })
 }
 
-const filterRef = ref()
+/** 门店切换刷新 */
 async function changeStore() {
-  searchPage.value = 1
-  filterRef.value.reset()
-  await getList()
+  filterData.value.searchPage = 1
+  listJump()
 }
+
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: oldListTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
-    pageOption.value.pageSize = pageSize
     limits.value = pageSize
-    pull(1)
+    updatePage(1)
   },
   onChange: (page: number) => {
-    pull(page)
+    updatePage(page)
   },
 })
+
+try {
+  if (myStore.value.id || myStore.value.id === '') {
+    await getOldWhere()
+    await handleQueryParams()
+  }
+  else {
+    $toast.error('您尚未分配任何门店，请先添加门店')
+  }
+}
+catch (error) {
+  throw new Error(`初始化失败: ${error || '未知错误'}`)
+}
+
+/** 切换显示 */
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 重置高级筛选
+const resetWhere = async () => {
+  filterData.value = {}
+  listJump()
+}
 
 const cols = [
   { title: '条码', key: 'code' },
@@ -174,23 +219,59 @@ const cols = [
     },
   },
 ]
+
+/**
+ * 货品列表导出excel表格
+ */
+async function downloadLocalFile() {
+  loading.value = true
+  try {
+    const res = await getOldListAll({ all: true, where: filterData.value })
+    if (res?.code === HttpCode.SUCCESS) {
+      if (!res?.data?.list || !res?.data?.list.length) {
+        return $toast.error('列表是空的')
+      }
+      else {
+        await exportProductListToXlsx(res.data.list, oldFilterListToArray.value, '旧料列表', [], 2)
+      }
+    }
+  }
+  catch (err) {
+    $toast.error('导出失败')
+    throw new Error(`${err}`)
+  }
+  finally {
+    loading.value = false
+  }
+}
 </script>
 
 <template>
   <div>
     <!-- 筛选 -->
-    <product-filter v-model:showtype="showtype" :product-list-total="oldListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
+    <product-filter
+      v-model:showtype="showtype"
+      v-model:search-key="searchKey"
+      :product-list-total="oldListTotal"
+      placeholder="搜索条码"
+      :is-export="true"
+      @change-card="changeCard"
+      @filter="openFilter"
+      @search="search"
+      @clear-search="clearSearch"
+      @export="downloadLocalFile"
+    >
       <template #company>
         <product-manage-company @change="changeStore" />
       </template>
     </product-filter>
     <!-- 列表 -->
-    <div class="px-[16px] pb-20">
+    <div class="pb-20">
       <template v-if="oldList?.length">
         <template v-if="showtype === 'list'">
           <product-list-main :product-list="oldList" :filter-list="oldFilterList" @edit="edit" @go-info="goInfo" />
           <common-page
-            v-model:page="searchPage" :total="oldListTotal" :limit="limits" @update:page="pull" />
+            v-model:page="searchPage" :total="oldListTotal" :limit="limits" @update:page="updatePage" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="oldList" :page-option="pageOption" :loading="tableLoading" />
@@ -200,7 +281,14 @@ const cols = [
         <common-empty width="100px" />
       </template>
     </div>
+    <common-loading v-model="loading" text="正在处理中" />
+
+    <common-create @click="downloadLocalFile">
+      <template #content>
+        <icon name="i-icon:download" :size="24" color="#FFF" />
+      </template>
+    </common-create>
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
-    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="oldFilterListToArray" @submit="submitWhere" />
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="oldFilterListToArray" @submit="submitWhere" @reset="resetWhere" />
   </div>
 </template>

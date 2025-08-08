@@ -3,13 +3,17 @@ import type { CSSProperties } from 'vue'
 
 const props = withDefaults(defineProps<{
   total?: number
+  isExport?: boolean
 }>(), {
   total: 0,
+  isExport: false,
 })
 const emits = defineEmits<{
   height: []
+  changeCard: []
+  export: []
 }>()
-const showtype = defineModel<'table' | 'list'>()
+const showtype = defineModel<'table' | 'list'>('showtype')
 const railStyle = ({
   checked,
 }: {
@@ -31,8 +35,18 @@ const railStyle = ({
   <div class="flex-center-between gap-2 py-[16px]">
     <div class="flex items-center gap-[12px]">
       <div class="text-size-[14px] color-[#fff]">
-        共{{ props.total }}条数据
+        共 {{ props.total }} 条
       </div>
+      <template v-if="isExport">
+        <div class="flex items-center cursor-pointer" @click="emits('export')">
+          <span class="underline">
+            <icon name="i-icon:download" :size="14" color="#FFF" />
+          </span>
+          <span>
+            导出
+          </span>
+        </div>
+      </template>
     </div>
     <div class="flex items-center gap-[12px]">
       <div @click="emits('height')">
@@ -41,9 +55,10 @@ const railStyle = ({
       <template v-if="showtype">
         <n-switch
           v-model:value="showtype"
-          :rail-style="railStyle" size="medium"
-          checked-value="table"
-          unchecked-value="list">
+          :rail-style="railStyle"
+          size="medium" checked-value="table"
+          unchecked-value="list"
+          @update:value="emits('changeCard')">
           <template #checked-icon>
             <icon name="i-icon:data" :size="14" color="#666" />
           </template>

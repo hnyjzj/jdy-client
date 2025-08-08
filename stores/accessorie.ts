@@ -2,7 +2,7 @@ export const useAccessorie = defineStore('Accessorie', {
   state: (): {
     accessorieList: ProductAccessories[]
     accessorieFilterList: Where<ProductAccessories>
-    accessorieInfo: ProductAccessories
+    accessorieInfo: ProductAccessoriesInfo
     accessorieListTotal: number
     /**
      * 排序后的筛选条件列表
@@ -11,7 +11,7 @@ export const useAccessorie = defineStore('Accessorie', {
   } => ({
     accessorieFilterList: {} as Where<ProductAccessories>,
     accessorieList: [],
-    accessorieInfo: {} as ProductAccessories,
+    accessorieInfo: {} as ProductAccessoriesInfo,
     accessorieListTotal: 0,
     accessorieFilterListToArray: [] as FilterWhere<ProductAccessories>[],
   }),
@@ -47,7 +47,7 @@ export const useAccessorie = defineStore('Accessorie', {
     // 配件货品详情
     async getAccessorieInfo(id: string) {
       try {
-        const { data } = await https.post<ProductAccessories, { id: string }>('/product/accessorie/info', { id })
+        const { data } = await https.post<ProductAccessoriesInfo, { id: string }>('/product/accessorie/info', { id })
         if (data.value?.code === HttpCode.SUCCESS) {
           this.accessorieInfo = data.value.data
         }
@@ -57,10 +57,10 @@ export const useAccessorie = defineStore('Accessorie', {
       }
     },
     // 获取配件大类积分比
-    async getAccessorieScoreRate(params: { classes: AccessorieCategory['type_part'][] }) {
+    async getAccessorieScoreRate(params: { classes: ProductAccessories['type'][] }) {
       // 去重
       params.classes = [...new Set(params.classes)]
-      const { data } = await https.post<any, { classes: AccessorieCategory['type_part'][] }>('/member/integral/rule/accessorie', params)
+      const { data } = await https.post<any, { classes: ProductAccessories['type'][] }>('/member/integral/rule/accessorie', params)
       if (data.value?.code === HttpCode.SUCCESS) {
         return data.value.data
       }

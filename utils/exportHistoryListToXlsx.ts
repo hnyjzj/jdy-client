@@ -73,7 +73,7 @@ function mapEnumValues(
   for (const key in row) {
     if (enumMap[key]) {
       const rawValue = row[key]
-      newRow[key] = enumMap[key][rawValue] ?? rawValue
+      newRow[key] = rawValue in enumMap[key] ? enumMap[key][rawValue] : ''
     }
     else if (key === 'is_special_offer') {
       newRow[key] = row[key] ? '是' : '否'
@@ -102,7 +102,7 @@ function convertDataWithChineseHeaders(
 export function exportHistoryListToXlsx(
   data: Record<string, any>[],
   fields: { name: string, preset?: Record<any, string> }[],
-  name: string = '货品列表',
+  name: string = '货品记录列表',
   summary?: [string, string | number][],
 ) {
   if (!Array.isArray(data) || !Array.isArray(fields)) {

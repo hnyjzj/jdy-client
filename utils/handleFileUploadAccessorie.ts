@@ -5,14 +5,14 @@
  */
 export default async function (headers: any) {
   const headerMap: Record<string, string> = {
-    '编号*': 'code',
+    '名称*': 'name',
+    '零售方式*': 'retail_type',
+    '单价': 'price',
+    '类型*': 'type',
     '库存*': 'stock',
-    '入网费*': 'access_fee',
-    '类型': 'type_part',
-    '名称': 'name',
-    '条码': 'id',
+    '备注': 'remark',
   }
-  const cleanedHeaders = headers.map((header: keyof AccessorieCategory) =>
+  const cleanedHeaders = headers.map((header: keyof ProductAccessories) =>
     typeof header === 'string' ? header.replace(/\s/g, '') : header,
   )
 

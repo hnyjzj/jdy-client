@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { checkInfo, checkFilterList } = storeToRefs(useCheck())
-const { getCheckInfo, getCheckWhere, changeCheckStatus, addCheckProduct, remove, getCheckInfoAll } = useCheck()
+const { getCheckInfo, getCheckWhere, changeCheckStatus, addCheckProduct, batchCheckProduct, remove, getCheckInfoAll } = useCheck()
 const { userinfo } = useUser()
 const { $toast } = useNuxtApp()
 const { useWxWork } = useWxworkStore()
@@ -77,7 +77,8 @@ async function getInfo() {
 function getMultipleVal(key: keyof Where<Check>, val: any) {
   if (!val || !key || !checkFilterList.value[key])
     return ''
-  return val.map((item: number) => checkFilterList.value[key]?.preset[item] || '').join('、')
+
+  return val?.map((item: number) => checkFilterList.value[key]?.preset[item] || '').join('、')
 }
 
 /** 单选值 */
@@ -110,10 +111,11 @@ function changeStatus(val: number) {
 /** 提交盘点更改状态 */
 async function submitChange(status: CheckInfo['status']) {
   const res = await changeCheckStatus(checkInfo.value.id, status)
-  if (res?.code === 200) {
-    $toast.success('变更成功')
+  if (res?.code === HttpCode.SUCCESS) {
     getInfo()
+    return $toast.success('变更成功')
   }
+  $toast.error(res?.message || '变更失败', 5000)
 }
 // 如果路由中有 id，则获取详情
 if (route.query.id) {
@@ -146,12 +148,12 @@ const scanCode = async () => {
 }
 
 /**
- * 添加货品
+ * 手动添加货品
  * @params params: AddCheckProduct
  * @params isClose: boolean 是否关闭添加弹窗
  * @params isScan: boolean 是否是扫码添加
  */
-async function addCheckGood(params: AddCheckProduct, isClose = true, isScan = false) {
+async function addCheckGood(params: AddCheckProductOne, isClose = true, isScan = false) {
   try {
     const res = await addCheckProduct(params)
     if (res?.code === HttpCode.SUCCESS) {
@@ -175,9 +177,11 @@ async function addCheckGood(params: AddCheckProduct, isClose = true, isScan = fa
 }
 
 async function submitGoods(isScan = false) {
-  const params: AddCheckProduct = {
+  if (!goodCode.value)
+    return $toast.error('请添加正确条码')
+  const params: AddCheckProductOne = {
     id: checkInfo.value.id,
-    codes: [goodCode.value],
+    code: goodCode.value,
   }
   loading.value = true
   return await addCheckGood(params, true, isScan)
@@ -193,7 +197,21 @@ async function bulkupload(data: string[]) {
     id: checkInfo.value.id,
     codes: data,
   }
-  await addCheckGood(params, false)
+  try {
+    const res = await batchCheckProduct(params)
+    if (res?.code === HttpCode.SUCCESS) {
+      await getInfo()
+      $toast.success('添加成功')
+    }
+    else {
+      $toast.error(res?.message || '添加失败', 5000)
+    }
+  }
+  finally {
+    loading.value = false
+    importModel.value = false
+    uploadRef.value?.clearData()
+  }
 }
 
 async function ConfirmUse() {
@@ -263,39 +281,63 @@ const removeDict = useDebounceFn(async (product_id) => {
 }, 500)
 
 /**
- * 列表导出excel表格
+ * 盘盈、盘亏列表导出excel表格
  */
-async function downloadLocalFile() {
+async function downloadLocalFile(status: 'extra' | 'loss') {
   loading.value = true
   try {
     const res = await getCheckInfoAll({ all: true, id: checkInfo.value.id })
-    if (res?.code === HttpCode.SUCCESS) {
-      if (!res.data.loss_products || !res.data.loss_products?.length) {
-        loading.value = false
-        return $toast.error('盘亏列表是空的')
-      }
-      const data = res.data
-      const summary: [string, string | number][] = [
-        ['盘点人', data.inventory_persons.map(v => v.nickname).join('、')],
-        ['监盘人', data?.inspector?.nickname || ''],
-        ['盘点单号', data.id],
-        ['盘点时间', data.created_at || ''],
-        ['盘点品牌', getMultipleVal('brand', res.data.brand) || ''],
-        ['盘点仓库', data.type === GoodsType.ProductFinish ? '成品' : data.type === GoodsType.ProductOld ? '旧料' : ''],
-        ['备注', data.remark || ''],
-        ['状态', getRadioVal('status', data.status)],
-        ['盘点范围', getRadioVal('range', data.range)],
-        ['大类', data.category.map(v => getRadioVal('category', v)).join('、') ?? ''],
-        ['品类', data.category.map(v => getRadioVal('category', v)).join('、') ?? ''],
-        ['总件数', data.count_quantity],
-        ['总金重', data.count_weight_metal],
-        ['总标签价', data.count_price],
-        ['盘亏', data.loss_count],
-      ]
-      const arr = res.data.loss_products.map(item => item.product_finished)
-      await exportProductListToXlsx(arr, finishedFilterListToArray.value, '盘亏列表', summary)
-      loading.value = false
+
+    if (res?.code !== HttpCode.SUCCESS)
+      return $toast.error(res?.message || '获取盘点详情失败')
+
+    const data = res.data
+
+    const products = status === 'extra' ? data.extra_products : data.loss_products
+    const excelName = status === 'extra' ? '盘盈列表' : '盘亏列表'
+    if (!products?.length)
+      return $toast.error('列表是空的')
+
+    let classText = ''
+    let filterList
+    let goodlist
+    if (checkInfo.value.type === GoodsTypePure.ProductFinish) {
+      classText = getMultipleVal('class_finished', checkInfo.value.class_finished)
+      filterList = finishedFilterListToArray.value
+      goodlist = products.map(item => item.product_finished)
     }
+    else {
+      classText = getMultipleVal('class_old', checkInfo.value.class_old)
+      filterList = oldFilterListToArray.value
+      goodlist = products.map(item => item.product_old)
+    }
+
+    const summary: [string, string | number][] = [
+      ['盘点人', data.inventory_persons.map(v => v.nickname).join('、')],
+      ['监盘人', data?.inspector?.nickname || ''],
+      ['盘点单号', data.id],
+      ['盘点时间', data.created_at || ''],
+      ['盘点品牌', getMultipleVal('brand', res.data.brand) || ''],
+      ['盘点仓库', data.type === GoodsType.ProductFinish ? '成品' : data.type === GoodsType.ProductOld ? '旧料' : ''],
+      ['备注', data.remark || ''],
+      ['状态', getRadioVal('status', data.status)],
+      ['盘点范围', getRadioVal('range', data.range)],
+      ['大类', classText],
+      ['品类', getMultipleVal('category', checkInfo.value.category) || '--'],
+      ['工艺', getMultipleVal('craft', checkInfo.value.craft) || '--'],
+      ['总件数', data.count_quantity],
+      ['总金重', data.count_weight_metal],
+      ['总标签价', data.count_price],
+      ['盘亏', data.loss_count],
+      ['盘盈', data.extra_count],
+    ]
+
+    await exportProductListToXlsx(goodlist, filterList, excelName, summary, checkInfo.value.type)
+    loading.value = false
+  }
+  catch (err) {
+    $toast.error('导出失败')
+    throw new Error(`${err}`)
   }
   finally {
     loading.value = false
@@ -492,10 +534,6 @@ async function downloadLocalFile() {
           </common-gradient>
         </div>
         <div class="info flex flex-col gap-4 rounded-6 blur-bga w-auto px-4 py-4 mb-6">
-          <div class="text-[rgba(57,113,243,1)] flex" @click="downloadLocalFile">
-            <icon name="i-svg:download" :size="16" color="#666" />
-            导出数据
-          </div>
           <div class="flex flex-col gap-3">
             <common-tab-secondary :current-selected="product_status" :options="inventoryOptions" :info="checkInfo" @change-status="changeStatus" />
             <common-step :description="step" :active-index="checkInfo.status" />
@@ -503,36 +541,50 @@ async function downloadLocalFile() {
           <template v-if="!product?.length">
             <common-empty img="/images/empty/bag.png" size="160" text="暂无数据" />
           </template>
-          <template v-for="(item, index) in product" :key="index">
-            <div class="grid mb-3">
-              <sale-order-nesting :title="checkInfo.type === GoodsType.ProductFinish ? item.product_finished?.name : item.product_old?.name" :info="checkInfo">
-                <template #left>
-                  <template v-if="checkInfo.status === CheckStatus.Checking">
-                    <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="removeDict(item.id)" />
-                  </template>
-                  <template v-if="checkInfo.type === GoodsType.ProductFinish">
-                    <common-tags type="pink" :text="GoodsStatusMap[item.product_finished?.status as GoodsStatus]" :is-oval="true" />
-                  </template>
-                </template>
-                <template #info>
-                  <div>
+          <template v-else>
+            <template v-if="product_status === 3">
+              <div class="text-[rgba(57,113,243,1)] flex" @click="downloadLocalFile('extra')">
+                <icon name="i-svg:download" :size="16" color="#666" />
+                导出盘盈
+              </div>
+            </template>
+            <template v-if="product_status === 4">
+              <div class="text-[rgba(57,113,243,1)] flex" @click="downloadLocalFile('loss')">
+                <icon name="i-svg:download" :size="16" color="#666" />
+                导出盘亏
+              </div>
+            </template>
+            <template v-for="(item, index) in product" :key="index">
+              <div class="grid mb-3">
+                <sale-order-nesting :title="checkInfo.type === GoodsType.ProductFinish ? item.product_finished?.name : item.product_old?.name" :info="checkInfo">
+                  <template #left>
+                    <template v-if="checkInfo.status === CheckStatus.Checking">
+                      <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="removeDict(item.id)" />
+                    </template>
                     <template v-if="checkInfo.type === GoodsType.ProductFinish">
-                      <product-base-info :info="item.product_finished" :code="item.product_code" :filter-list="finishedFilterListToArray" />
+                      <common-tags type="pink" :text="GoodsStatusMap[item.product_finished?.status as GoodsStatus]" :is-oval="true" />
                     </template>
-                    <template v-else-if="checkInfo.type === GoodsType.ProductOld">
-                      <product-base-info :info="item.product_old" :code="item.product_code" :filter-list="oldFilterListToArray" />
-                    </template>
-                  </div>
-                </template>
-              </sale-order-nesting>
-            </div>
-          </template>
-          <template v-if="infoTotal && product">
-            <common-page
-              v-model:page="page" :total="infoTotal" :limit="limit" @update:page="() => {
-                pull()
-              }
-              " />
+                  </template>
+                  <template #info>
+                    <div>
+                      <template v-if="checkInfo.type === GoodsType.ProductFinish">
+                        <product-base-info :info="item.product_finished" :code="item.product_code" :filter-list="finishedFilterListToArray" />
+                      </template>
+                      <template v-else-if="checkInfo.type === GoodsType.ProductOld">
+                        <product-base-info :info="item.product_old" :code="item.product_code" :filter-list="oldFilterListToArray" />
+                      </template>
+                    </div>
+                  </template>
+                </sale-order-nesting>
+              </div>
+            </template>
+            <template v-if="infoTotal && product">
+              <common-page
+                v-model:page="page" :total="infoTotal" :limit="limit" @update:page="() => {
+                  pull()
+                }
+                " />
+            </template>
           </template>
         </div>
       </div>
@@ -547,10 +599,7 @@ async function downloadLocalFile() {
       </div>
     </template>
     <product-upload-choose
-      v-model:is-model="uploadModel" title="正在盘点" @go-add="uploadModel = false;inputModel = true" @batch="() => {
-        // importModel = true
-        $toast.error('暂无权限')
-      }" />
+      v-model:is-model="uploadModel" title="正在盘点" @go-add="uploadModel = false;inputModel = true" @batch="importModel = true" />
     <common-model v-model="inputModel" title="正在盘点" :show-ok="true" @confirm="submitGoods" @cancel="goodCode = ''">
       <div class="mb-8 relative min-h-[200px]">
         <div class="uploadInp cursor-pointer">

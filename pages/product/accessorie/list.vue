@@ -4,18 +4,18 @@ import { NButton } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 const { getAccessorieList, getAccessorieWhere } = useAccessorie()
-const { accessorieList, accessorieFilterListToArray, accessorieListTotal } = storeToRefs(useAccessorie())
-const { getAccessorieCategoryWhere } = useAccessorieCategory()
-const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
+const { accessorieList, accessorieFilterListToArray, accessorieFilterList, accessorieListTotal } = storeToRefs(useAccessorie())
 const { searchPage, showtype } = storeToRefs(usePages())
+
+const route = useRoute()
+const searchKey = ref('')
+
 const limits = ref(50)
 const tableLoading = ref(false)
+const filterData = ref({} as Partial<ExpandPage<ProductAccessories>>)
 
 // 筛选框显示隐藏
 const isFilter = ref(false)
-const isModel = ref(false)
-const isBatchImportModel = ref(false)
-const type = ref(2 as ProductAccessories['type'])
 useSeoMeta({
   title: '配件列表',
 })
@@ -23,36 +23,75 @@ useSeoMeta({
 const openFilter = () => {
   isFilter.value = true
 }
-/** 搜索 */
-async function search(e: string) {
-  await submitWhere({ code: e }, true)
+const filterRef = ref()
+/** 跳转并刷新列表 */
+const listJump = () => {
+  const url = UrlAndParams('/product/accessorie/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
-/** 关闭搜索 */
-async function clearSearch() {
-  await submitWhere({ }, true)
-}
-// 获取货品列表
-async function getList(where = {} as Partial<ProductAccessories>) {
+/** 获取列表 */
+const getList = async (where = {} as Partial<ProductAccessories>) => {
   tableLoading.value = true
-  const params = { page: searchPage.value, limit: limits.value } as ReqList<ProductAccessories>
-  where.store_id = myStore.value?.id
-  params.where = where
-  try {
-    const res = await getAccessorieList(params)
-    tableLoading.value = false
-    return res as any
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<ProductAccessories>
+  if (JSON.stringify(where) !== '{}') {
+    params.where = { ...params.where, ...where }
   }
-  catch (error) {
-    tableLoading.value = false
-    $toast.error(error as string)
+
+  const res = await getAccessorieList(params)
+  tableLoading.value = false
+  return res
+}
+/** 读取参数并初始化列表 */
+const handleQueryParams = async () => {
+  const f = getQueryParams<ExpandPage<ProductAccessories>>(route.fullPath, accessorieFilterList.value)
+  filterData.value = f
+  if (filterData.value.name) {
+    searchKey.value = filterData.value.name
   }
+  if (f.searchPage)
+    searchPage.value = Number(f.searchPage)
+  if (f.showtype) {
+    showtype.value = f.showtype
+  }
+  if (f.limits)
+    limits.value = Number(f.limits)
+  await getList(filterData.value)
+}
+
+/** 提交筛选 */
+const submitWhere = async (f: Partial<ExpandPage<ProductAccessories>>) => {
+  filterData.value = {
+    ...f,
+    searchPage: 1,
+    limits: limits.value,
+  }
+  listJump()
+}
+
+/** 修改页码 */
+const updatePage = (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
+}
+/** 搜索名称 */
+const search = async (e: string) => {
+  filterData.value.name = e
+  filterData.value.searchPage = 1
+  listJump()
+}
+
+/** 清空搜索 */
+const clearSearch = async () => {
+  delete filterData.value.name
+  filterData.value.searchPage = 1
+  listJump()
 }
 
 try {
   if (myStore.value.id || myStore.value.id === '') {
-    getAccessorieCategoryWhere()
-    await getList()
     await getAccessorieWhere()
+    await handleQueryParams()
   }
   else {
     $toast.error('您尚未分配任何门店，请先添加门店')
@@ -62,77 +101,65 @@ catch (error) {
   throw new Error(`初始化失败: ${error || '未知错误'}`)
 }
 
-const filterData = ref({} as Partial<ProductAccessories>)
-
-const pull = async (page: number) => {
-  searchPage.value = page
-  await getList(filterData.value)
-}
-
-// 筛选列表
-async function submitWhere(f: Partial<ProductAccessories>, isSearch: boolean = false) {
-  filterData.value = { ...f }
-  searchPage.value = 1
-  accessorieList.value = []
-  const res = await getList(filterData.value)
-  if (res.code === HttpCode.SUCCESS) {
-    isFilter.value = false
-    if (!isSearch) {
-      $toast.success('筛选成功')
-    }
-    return
-  }
-  $toast.error(res.message ?? '失败')
-}
-
-function goAdd() {
-  isModel.value = false
-  jump('/product/warehouse/add', { type: type.value })
-}
-
-const filterRef = ref()
 async function changeStore() {
-  searchPage.value = 1
-  filterRef.value.reset()
-  await getList()
+  filterData.value.searchPage = 1
+  listJump()
 }
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: accessorieListTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
     pageOption.value.pageSize = pageSize
     limits.value = pageSize
-    pull(1)
+    updatePage(1)
   },
   onChange: (page: number) => {
-    pull(page)
+    updatePage(page)
   },
 })
 
+/** 切换显示 */
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 重置高级筛选
+const resetWhere = async () => {
+  filterData.value = {}
+  listJump()
+}
+
 const cols = [
+  {
+    title: '状态',
+    key: 'status',
+    render(row: any) {
+      const val = row.status
+      return accessorieFilterList.value.status?.preset?.[val] ?? '-'
+    },
+  },
   // 动态生成：来自 categoryFilterListToArray 的字段
-  ...categoryFilterListToArray.value
+  ...accessorieFilterListToArray.value
     .filter(item => item.create)
     .map(item => ({
       title: item.label,
       key: item.name,
       render(row: any) {
         if (item.input === 'select') {
-          return item.preset?.[row.category?.[item.name]] ?? '-'
-        }
-        else if (item.name === 'code') {
-          return row.code ?? '-'
+          return item.preset?.[row?.[item.name]] ?? '-'
         }
         else {
-          return row.category?.[item.name] ?? '-'
+          return row?.[item.name] ?? '-'
         }
       },
     })),
-
   // 静态字段：库存
   {
     title: '库存',
@@ -169,7 +196,15 @@ const cols = [
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:showtype="showtype" :product-list-total="accessorieListTotal" placeholder="搜索条码" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:search-key="searchKey"
+      v-model:showtype="showtype"
+      :product-list-total="accessorieListTotal"
+      placeholder="搜索名称"
+      @change-card="changeCard"
+      @filter="openFilter"
+      @search="search"
+      @clear-search="clearSearch"
+    >
       <template #company>
         <product-manage-company @change="changeStore" />
       </template>
@@ -179,40 +214,42 @@ const cols = [
       <template v-if="accessorieList?.length">
         <template v-if="showtype === 'list'">
           <product-manage-card :list="accessorieList">
+            <template #status="info">
+              <span>{{ accessorieFilterList.status?.preset[info.info] }}</span>
+            </template>
             <template #info="{ info }">
               <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                <template v-for="(item, index) in categoryFilterListToArray" :key="index">
-                  <template v-if="item.create">
+                <template v-for="(item, index) in accessorieFilterListToArray" :key="index">
+                  <template v-if="item.info">
                     <div class="flex-between">
                       <div>
                         {{ item.label }}
                       </div>
-                      <template v-if="item.input === 'select'">
+                      <template v-if="item.name === 'store'">
                         <div class="text-align-end val">
-                          {{ item.preset[info.category[item.name] as number] }}
-                        </div>
-                      </template>
-                      <template v-else-if="item.name === 'code'">
-                        <div class="text-align-end val">
-                          {{ info.code }}
+                          {{ info[item.name].name }}
                         </div>
                       </template>
                       <template v-else>
-                        <div class="text-align-end val">
-                          {{ info.category[item.name] }}
-                        </div>
+                        <template v-if="item.type === 'date'">
+                          <div class="text-align-end val">
+                            {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
+                          </div>
+                        </template>
+                        <template v-else>
+                          <template v-if="item.input === 'select'">
+                            <div class="text-align-end val">
+                              {{ item.preset[info[item.name] || 0] || '' }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            {{ info[item.name] }}
+                          </template>
+                        </template>
                       </template>
                     </div>
                   </template>
                 </template>
-                <div class="flex-between">
-                  <div>
-                    库存
-                  </div>
-                  <div class="text-align-end val">
-                    {{ info.stock }}
-                  </div>
-                </div>
               </div>
             </template>
             <template #bottom="{ info }">
@@ -222,7 +259,7 @@ const cols = [
             </template>
           </product-manage-card>
           <common-page
-            v-model:page="searchPage" :total="accessorieListTotal" :limit="limits" @update:page="pull" />
+            v-model:page="searchPage" :total="accessorieListTotal" :limit="limits" @update:page="updatePage" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="accessorieList" :page-option="pageOption" :loading="tableLoading" />
@@ -232,7 +269,6 @@ const cols = [
         <common-empty width="100px" />
       </template>
     </div>
-    <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
-    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="accessorieFilterListToArray" @submit="submitWhere" />
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="accessorieFilterListToArray" @reset="resetWhere" @submit="submitWhere" />
   </div>
 </template>

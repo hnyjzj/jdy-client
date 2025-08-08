@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import PrintTemp from '@/components/print/Board.vue'
-
 import usePrint from 'vue3-use-print'
 // 销售单详情
 useSeoMeta({
@@ -19,7 +18,8 @@ const { finishedFilterList } = storeToRefs(useFinished())
 const { getOldWhere } = useOld()
 const { oldFilterList } = storeToRefs(useOld())
 const { myStore } = storeToRefs(useStores())
-
+const { getAccessorieWhere } = useAccessorie()
+const { accessorieFilterList } = storeToRefs(useAccessorie())
 const { userinfo } = storeToRefs(useUser())
 const { getUserInfo } = useUser()
 await getUserInfo()
@@ -31,8 +31,12 @@ if (route.query.id) {
   await getSaleWhere()
   await getFinishedWhere()
   await getOldWhere()
+  await getAccessorieWhere()
 }
 const showModel = ref(false)
+const isSelectModel = ref(false)
+const mustSelect = ref<any[]>([])
+
 const returnGoods = async (req: ReturnGoods) => {
   const res = await returnOrderGoods(req)
   if (res) {
@@ -41,8 +45,6 @@ const returnGoods = async (req: ReturnGoods) => {
     await getOrderDetail({ id: route.query.id as string })
   }
 }
-
-const router = useRouter()
 
 const gather = ref('')
 
@@ -54,7 +56,7 @@ const getMethod = () => {
 }
 
 const limit = 12
-
+const tempList = ref<{ label: string, value: string }[]>([])
 // 获取类别1(销售单)的打印模板
 async function getList(where = {} as Partial<PrintTemplate>) {
   const params = { page: searchPage.value, limit, where: { store_id: myStore.value.id, type: 1 } } as ReqList<Member>
@@ -62,6 +64,7 @@ async function getList(where = {} as Partial<PrintTemplate>) {
     params.where = where
   }
   await getPrintTempList(params)
+  tempList.value = printList.value.map(item => ({ label: item.name, value: item.id as string }))
 }
 
 await getList()
@@ -69,8 +72,6 @@ await getList()
 const chosen = ref(null)
 const sign = ref(false)
 const tempInfo = ref<PrintTemplate>({} as PrintTemplate)
-
-const tempList = printList.value.map(item => ({ label: item.name, value: item.id }))
 
 const getSpecificInfo = async () => {
   if (chosen.value) {
@@ -81,11 +82,23 @@ const getSpecificInfo = async () => {
     tempInfo.value = JSON.parse(JSON.stringify(printList.value[0]))
   }
 }
-
+// 是否批量打印  false整单打印  true 批量打印
+const printPile = ref(false)
 const printPre = () => {
+  const printDetail = ref<OrderInfo>({} as OrderInfo)
+  printDetail.value = JSON.parse(JSON.stringify(OrderDetail.value))
+  if (printPile.value) {
+    printDetail.value.products = []
+    OrderDetail.value.products.forEach((item: any) => {
+      if (mustSelect.value.find(i => i === item.id)) {
+        printDetail.value.products.push(item)
+      }
+    })
+  }
+
   const PrintComponent = defineComponent({
     render() {
-      return h(PrintTemp, { details: OrderDetail.value, type: 1, payMethod: gather.value, numerical: tempInfo.value })
+      return h(PrintTemp, { details: printDetail.value, type: 1, payMethod: gather.value, numerical: tempInfo.value })
     },
   })
   getMethod()
@@ -140,9 +153,20 @@ const payOrderConfirm = async () => {
   }
 }
 
+const laberComputed = (item: orderInfoProducts) => {
+  if (item.type === GoodsType.ProductFinish) {
+    return `成品-${item.finished.product?.name || '暂无名称'}`
+  }
+  if (item.type === GoodsType.ProductOld) {
+    return `旧料-${item.old.product?.name || '暂无名称'}`
+  }
+  if (item.type === GoodsType.ProductAccessories) {
+    return `配件-${item.accessorie.product?.name || '暂无名称'}`
+  }
+  return ''
+}
 // 判断当前环境
 const isMobile = ref(false)
-
 onMounted(() => {
   isMobile.value = checkEnv()
 })
@@ -168,6 +192,7 @@ onMounted(() => {
             <n-select
               v-model:value="chosen"
               :options="tempList"
+              @focus="getList()"
               @blur="() => {
                 const loc = tempList.findIndex(item => item.value === chosen)
                 sign = loc === -1 ? false : true
@@ -177,6 +202,47 @@ onMounted(() => {
         </div>
       </div>
     </common-model>
+    <common-model
+      v-model="isSelectModel"
+      :show-ok="true"
+      title="批量打印设置"
+      @confirm="modelConfirm"
+      @cancel="() => {
+        clear()
+      }"
+    >
+      <div class="flex flex-col gap-[16px] px-[12px]">
+        <div class="describe font-size-[16px] text-color-[#333]">
+          请先选择打印模板。
+        </div>
+        <div class="">
+          <n-space vertical>
+            <n-select
+              v-model:value="chosen"
+              :options="tempList"
+              @focus="getList()"
+              @blur="() => {
+                const loc = tempList.findIndex(item => item.value === chosen)
+                sign = loc === -1 ? false : true
+              }"
+            />
+          </n-space>
+        </div>
+        <div class="flex flex-col">
+          <div class="font-size-[16px] pb-[6px]">
+            选择要打印的货品
+          </div>
+          <div>
+            <n-select
+              v-model:value="mustSelect" multiple :options="OrderDetail.products.map(v => ({
+                label: laberComputed(v),
+                value: v.id,
+              }))" />
+          </div>
+        </div>
+      </div>
+    </common-model>
+
     <div class="p-[16px] pb-[80px]">
       <sale-order-detail
         v-model:dialog="showModel"
@@ -188,6 +254,7 @@ onMounted(() => {
         :orders="OrderDetail"
         :return-goods="returnGoods"
         :store="myStore.id"
+        :part-filter="accessorieFilterList"
       />
       <template v-if="!route?.query?.embedded">
         <template v-if=" OrderDetail.status === OrderStatusText.OrderSalesProductStatusWaitPay">
@@ -221,16 +288,25 @@ onMounted(() => {
         <template v-if="!isMobile">
           <common-button-bottom
             confirm-text="打印"
-            cancel-text="返回"
+            cancel-text="批量打印"
             @confirm="() => {
-              if (myStore.id === OrderDetail.store_id){
+              if (myStore?.id === OrderDetail.store_id){
                 jumpPre()
+                printPile = false
               }
               else {
                 $toast.error('当前门店与操作门店不匹配,无法操作')
               }
             }"
-            @cancel="router.back()"
+            @cancel="() => {
+              if (myStore?.id === OrderDetail.store_id){
+                isSelectModel = true
+                printPile = true
+              }
+              else {
+                $toast.error('当前门店与操作门店不匹配,无法操作')
+              }
+            }"
           />
         </template>
       </template>
@@ -238,6 +314,12 @@ onMounted(() => {
     <correspond-store :correspond-ids="[OrderDetail.store_id]" />
   </div>
 </template>
+
+<style>
+.n-base-selection {
+  border-radius: 8px;
+}
+</style>
 
 <style lang="scss" scoped>
 .footer {

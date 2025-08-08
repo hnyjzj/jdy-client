@@ -103,12 +103,10 @@ async function transformData(data: any[][]) {
             }
             break
           case 'string':
-            if (row[index] !== null && row[index] !== undefined && String(row[index]).trim() !== '') {
-              row[index] = String(row[index])
-            }
-            else {
-              row[index] = undefined
-            }
+            row[index] = row[index] ? String(row[index]) : ''
+            break
+          case 'bool':
+            row[index] = typeof row[index] === 'boolean' ? row[index] : Boolean(row[index])
             break
           case 'string[]':
             if (row[index] === null || row[index] === undefined || String(row[index]).trim() === '') {
@@ -130,12 +128,10 @@ async function transformData(data: any[][]) {
             }
             break
           case 'time':
-            if (row[index] !== null && row[index] !== undefined && String(row[index]).trim() !== '') {
-              row[index] = toFixedChinaISOString(excelSerialToDate(row[index]))
-            }
-            else {
-              row[index] = undefined
-            }
+            row[index] = row[index] ? toFixedChinaISOString(excelSerialToDate(row[index])) : undefined
+            break
+          case 'data':
+            row[index] = row[index] ? toFixedChinaISOString(excelSerialToDate(row[index])) : undefined
             break
           default:
             if (row[index] !== null && row[index] !== undefined && String(row[index]).trim() !== '') {

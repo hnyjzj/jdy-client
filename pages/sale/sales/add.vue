@@ -10,7 +10,6 @@ const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getFinishedList, getFinishedWhere, getFinishedsClass } = useFinished()
 const { getStoreStaffList } = useStores()
-//  getOrderDetail,
 const { getOldList, getSaleWhere, submitOrder, OldMaterialsWhere } = useOrder()
 const { getGoldPrice } = useGoldPrice()
 const { goldList } = storeToRefs(useGoldPrice())
@@ -20,7 +19,7 @@ const { getOldClass, getOldScoreProportion } = useOld()
 const { getSetInfo } = useBillingSetStore()
 const { memberList } = storeToRefs(useMemberManage())
 const { getAccessorieList, getAccessorieWhere, getAccessorieScoreRate } = useAccessorie()
-const { accessorieList } = storeToRefs(useAccessorie())
+const { accessorieList, accessorieFilterList } = storeToRefs(useAccessorie())
 const { finishedList } = storeToRefs(useFinished())
 const { createMember } = useMemberManage()
 const { getOrderDetail, getDepositList } = useDepositOrder()
@@ -110,8 +109,8 @@ const billingSet = ref({
 const disScore = ref(false)
 // 展示商品列表
 const showProductList = ref<ProductFinished[]>([])
-const showPartsList = ref<ProductAccessories[]>([])
 const showMasterialsList = ref<ProductOld[]>([])
+const showPartsList = ref<ProductAccessories[]>([])
 
 // 定金单列表
 const showDepositList = ref<DepositOrderInfo[]>([])
@@ -225,7 +224,7 @@ const getbillingSet = async () => {
     }
   }
 }
-getbillingSet()
+await getbillingSet()
 
 // 新增会员
 const addNewMember = async (val: Member) => await createMember(val)
@@ -304,16 +303,8 @@ const searchOlds = async (val: string) => {
   return OldObj.value || {}
 }
 // 搜索配件
-const searchParts = async (val: string, type: string) => {
-  if (type === 'number') {
-    await getAccessorieList({ page: 1, limit: 10, where: { id: val, store_id: myStore.value.id } })
-  }
-  if (type === 'code') {
-    await getAccessorieList({ page: 1, limit: 10, where: { code: val, store_id: myStore.value.id } })
-  }
-  if (type === 'name') {
-    await getAccessorieList({ page: 1, limit: 10, where: { name: val, store_id: myStore.value.id } })
-  }
+const searchParts = async (val: string) => {
+  await getAccessorieList({ page: 1, limit: 10, where: { name: val, store_id: myStore.value.id } })
   if (!accessorieList.value.length) {
     $toast.error('搜索货品不存在')
   }
@@ -321,7 +312,7 @@ const searchParts = async (val: string, type: string) => {
 }
 
 // 获取旧料大类，并获取旧料积分比例
-const CheckOldClass = async (params: Partial<ProductOlds>) => {
+const CheckOldClass = async (params: Partial<ProductOld>) => {
   const res = await getOldClass(params)
   if (res?.value) {
     const data = await getOldScoreProportion({ class: res?.value })
@@ -332,7 +323,7 @@ const CheckOldClass = async (params: Partial<ProductOlds>) => {
   }
 }
 // 获取配件积分比例
-const checkAccessoriesScore = async (params: { classes: AccessorieCategory['type_part'][] }) => await getAccessorieScoreRate(params)
+const checkAccessoriesScore = async (params: { classes: ProductAccessories['type'][] }) => await getAccessorieScoreRate(params)
 
 // 开单
 const handleValidateButtonClick = async (e: MouseEvent) => {
@@ -343,6 +334,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
         $toast.error('请先添加会员')
         return
       }
+      formData.value.product_accessories = []
       // 成功的操作
       formData.value.product_finisheds = showProductList.value
       formData.value.store_id = myStore.value.id
@@ -466,10 +458,12 @@ const changeStore = () => {
             v-model:list="showMasterialsList"
             v-model:now-old-master="OldObj"
             title="旧料"
+            :price="goldList"
             :search-olds="searchOlds"
             :check-old-class="CheckOldClass"
             :old-filter-list-to-array="oldFilterListToArray"
             :is-integral="formData.has_integral"
+            :billing-set="billingSet"
           />
         </div>
         <div class="pb-[16px]">
@@ -480,6 +474,7 @@ const changeStore = () => {
             :is-integral="formData.has_integral"
             :billing-set="billingSet"
             :search-parts="searchParts"
+            :part-filter="accessorieFilterList"
             @clear-list="() => accessorieList = [] "
           />
         </div>
@@ -506,6 +501,7 @@ const changeStore = () => {
           :filter-list="filterList"
           :dis-score="disScore"
           :get-search-phrase="getSearchPhrase"
+          :billing-set="billingSet"
         >
           <template #score />
         </sale-add-settlement>

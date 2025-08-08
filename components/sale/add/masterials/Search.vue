@@ -7,6 +7,7 @@ const props = defineProps<{
   checkOldClass: (params: Partial<ProductOld>) => any
   isIntegral: boolean
   nowEditState?: number
+  price: GoldPrices[]
 }>()
 const oldRules = ref<FormRules>({
   weight_metal: {
@@ -102,7 +103,7 @@ const searchConfirm = async () => {
       else {
         if (props.nowEditState !== undefined) {
           // 这里是编辑状态 确认时，需要把当前编辑的值替换掉
-          if (nowOldMaster.value.recycle_price < 0) {
+          if (Number(nowOldMaster.value.recycle_price) < 0) {
             $toast.error('回收金额不能小于0')
             return
           }
@@ -119,7 +120,7 @@ const searchConfirm = async () => {
         else {
           nowOldMaster.value.is_our = true
           // 这里是新增时
-          if (nowOldMaster.value.recycle_price < 0) {
+          if (Number(nowOldMaster.value.recycle_price) < 0) {
             $toast.error('回收金额不能小于0')
             return
           }
@@ -139,6 +140,26 @@ const searchConfirm = async () => {
       $toast.error(errors[0][0].message)
     }
   })
+}
+// 调用旧料列表接口
+const searchOldFn = async () => {
+  await props.searchOlds(searchOld.value)
+  if (nowOldMaster.value?.product_id) {
+    // 匹配金价
+
+    const exists = props.price.filter(item =>
+      item.product_type === GoodsType.ProductOld
+      && item.product_material === nowOldMaster.value.material
+      && item.product_quality.includes(nowOldMaster.value.quality)
+      && item.product_brand?.includes(nowOldMaster.value.brand),
+    )
+    if (exists && exists.length > 0) {
+      nowOldMaster.value.recycle_price_gold = Number(exists[0]?.price)
+    }
+    else {
+      nowOldMaster.value.recycle_price_gold = undefined
+    }
+  }
 }
 </script>
 
@@ -166,10 +187,11 @@ const searchConfirm = async () => {
                 type="text"
                 clearable
                 placeholder="请输入商品条码"
+                @keydown.enter="props.searchOlds(searchOld)"
                 @focus="focus" />
             </div>
             <div class="pl-[16px] flex">
-              <n-button type="info" round @click="props.searchOlds(searchOld)">
+              <n-button type="info" round @click="searchOldFn()">
                 搜索
               </n-button>
               <div class="pl-[8px]">

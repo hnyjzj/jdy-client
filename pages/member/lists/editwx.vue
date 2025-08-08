@@ -313,6 +313,7 @@ const rules = ref<FormRules>({
                       <div class="secondary-bottom">
                         <n-date-picker
                           v-model:value="birthday"
+                          input-readonly
                           clearable
                           format="yyyy-MM-dd"
                           type="date"
@@ -327,6 +328,7 @@ const rules = ref<FormRules>({
                       <div class="secondary-bottom">
                         <n-date-picker
                           v-model:value="anniversary"
+                          input-readonly
                           clearable
                           format="yyyy-MM-dd"
                           type="date"

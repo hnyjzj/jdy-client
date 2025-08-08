@@ -260,58 +260,19 @@ judgeType()
               </template>
             </table>
           </template>
-
           <template v-if="hasAccessorie || !props.details">
-            <table cellspacing="0" class="table-header" style="width:100%;">
-              <thead>
-                <tr>
-                  <th class="table-header" style="width:16%;">
-                    配件条码
-                  </th>
-                  <th class="table-header" style="width:16%;">
-                    配料名称
-                  </th>
-                  <th class="table-header" style="width:auto;">
-                    数量
-                  </th>
-                  <th class="table-header" style="width:16%;">
-                    单价
-                  </th>
-                  <th class="table-header" style="width:auto;">
-                    总计金额
-                  </th>
-                  <th class="table-header" style="width:16%;">
-                    应收金额
-                  </th>
-                </tr>
-              </thead>
-              <template v-if="props.details">
-                <tbody>
-                  <tr v-for="(item, index) in props.details.products" :key="index">
-                    <template v-if="item.type === 3">
-                      <td class="table-body">
-                        {{ item.accessorie.product?.category.code || '' }}
-                      </td>
-                      <td class="table-body">
-                        {{ item.accessorie.product?.category.name || '' }}
-                      </td>
-                      <td class="table-body">
-                        {{ item.accessorie.quantity || '' }}
-                      </td>
-                      <td class="table-body">
-                        {{ item.accessorie.product?.category.label_price || '' }}
-                      </td>
-                      <td class="table-body">
-                        {{ item.accessorie.price || '' }}
-                      </td>
-                      <td class="table-body">
-                        {{ item.accessorie.price || '' }}
-                      </td>
-                    </template>
-                  </tr>
-                </tbody>
+            <div>
+              <template v-for="(item, index) in props.details?.products" :key="index">
+                <template v-if="item.type === GoodsType.ProductAccessories">
+                  <span class="table-body">
+                    {{ item.accessorie.product?.name || '' }}
+                  </span>
+                  <span class="table-body">
+                    x{{ item.accessorie.quantity || '' }};
+                  </span>
+                </template>
               </template>
-            </table>
+            </div>
           </template>
         </div>
       </template>
@@ -439,9 +400,6 @@ judgeType()
                     配料名称
                   </th>
                   <th class="table-header" style="width:auto;">
-                    单价
-                  </th>
-                  <th class="table-header" style="width:auto;">
                     总计金额
                   </th>
                   <th class="table-header" style="width:16%;">
@@ -455,9 +413,6 @@ judgeType()
                     <template v-if="item.type === 3">
                       <td class="table-body">
                         {{ item.accessorie.product?.name || '' }}
-                      </td>
-                      <td class="table-body">
-                        {{ item.accessorie.product?.category.label_price || '' }}
                       </td>
                       <td class="table-body">
                         {{ item.accessorie.price || '' }}

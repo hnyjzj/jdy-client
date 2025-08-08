@@ -175,6 +175,7 @@ async function submitEdit() {
     await getInfo()
     return $toast.success('编辑成功')
   }
+  $toast.error(res?.message ?? '编辑失败')
 }
 
 /** 值为0时 找不到匹配项 显示未选择不 */
@@ -209,6 +210,10 @@ async function downloadLocalFile() {
       ]
       await exportProductListToXlsx(res.data.products, finishedFilterListToArray.value, '入库单货品列表', summary)
     }
+  }
+  catch (err) {
+    $toast.error('导出失败')
+    throw new Error(`${err}`)
   }
   finally {
     loading.value = false

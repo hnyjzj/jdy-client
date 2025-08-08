@@ -34,7 +34,12 @@ interface Orders {
   /**
    * 配件
    */
-  product_accessories?: ProductAccessorie[]
+  product_accessories?: {
+    product_id: string
+    quantity?: number
+    price?: number
+    integral?: number
+  }[]
   /**
    * 成品
    */
@@ -137,7 +142,7 @@ interface ProductAccessorie {
    */
   quantity: number
 
-  product?: ProductAccessories
+  product: ProductAccessories
   status?: number
   id?: string
 }
@@ -212,7 +217,7 @@ interface ProductOld {
   /**
    * 品牌
    */
-  brand?: number
+  brand: number
   /**
    * 品类
    */
@@ -276,7 +281,7 @@ interface ProductOld {
   /**
    * 成色
    */
-  quality?: number
+  quality: number
   /**
    * 实际成色
    */
@@ -349,6 +354,9 @@ interface OrderWhere {
   product_id?: string
   type?: number
   payment_method?: any[]
+  showtype?: 'list' | 'table'
+  searchPage?: number
+  limits?: number
 }
 interface ReturnGoods {
   /**

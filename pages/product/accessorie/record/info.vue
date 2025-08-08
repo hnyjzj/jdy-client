@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 const { getProductHistoryInfo, getHistoryWhere } = useAcessorieRecord()
 const { historyInfo, historyFilterList } = storeToRefs(useAcessorieRecord())
-const { categoryFilterListToArray } = storeToRefs(useAccessorieCategory())
-const { getAccessorieCategoryWhere } = useAccessorieCategory()
+const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
+const { getAccessorieWhere } = useAccessorie()
 useSeoMeta({
   title: '配件记录详情',
 })
@@ -12,7 +12,7 @@ async function getInfo() {
   try {
     await getProductHistoryInfo(recordId.value)
     await getHistoryWhere()
-    await getAccessorieCategoryWhere()
+    await getAccessorieWhere()
   }
   catch (error) {
     throw new Error(`初始化失败: ${error || '未知错误'}`)
@@ -49,14 +49,6 @@ if (route.query.id) {
               </div>
               <div class="info-row">
                 <div class="info-title">
-                  所属门店
-                </div>
-                <div class="info-val">
-                  {{ historyInfo?.new_value?.store?.name || '' }}
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-title">
                   操作时间
                 </div>
                 <div class="info-val">
@@ -65,7 +57,7 @@ if (route.query.id) {
               </div>
               <div class="h-0.5 bg-[#E6E6E8]" />
               <div class="other-information flex flex-col" uno-sm="grid grid-cols-[1fr_1fr] gap-x-10">
-                <accessorie-record-table :filter-list="categoryFilterListToArray" :new-accessories="historyInfo?.new_value?.product ? historyInfo.new_value.product : historyInfo.new_value" :old-accessories="historyInfo?.old_value?.product ? historyInfo.old_value.product : historyInfo.old_value" />
+                <accessorie-record-table :filter-list="accessorieFilterListToArray" :new-accessories="historyInfo?.new_value?.product ? historyInfo.new_value.product : historyInfo.new_value" :old-accessories="historyInfo?.old_value?.product ? historyInfo.old_value.product : historyInfo.old_value" />
               </div>
             </div>
           </div>

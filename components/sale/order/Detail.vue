@@ -10,6 +10,7 @@ const props = defineProps<{
   returnGoods: (req: ReturnGoods) => void
   identity: number
   store: string
+  partFilter: Where<ProductAccessories>
 }>()
 
 const payMethods = (val: number) => {
@@ -23,25 +24,31 @@ const route = useRoute()
 // 计算成品列表加的积分
 const productListScore = computed(() => {
   const total = ref(0)
-  total.value = props.orders.products.reduce((total, item) => {
-    return calc('(t + i) | <=0,!n', { t: total, i: item.type === 1 ? item.finished.integral : 0 || 0 })
-  }, 0)
+  if (props.orders.products?.length) {
+    total.value = props.orders.products.reduce((total, item) => {
+      return calc('(t + i) | <=0,!n', { t: total, i: item.type === 1 ? item.finished.integral : 0 || 0 })
+    }, 0)
+  }
   return total.value
 })
 // 计算旧料列表 减的积分
 const masterListScore = computed(() => {
   const total = ref(0)
-  total.value = props.orders.products.reduce((total, item) => {
-    return calc('(t + i) | <=0,!n', { t: total, i: item.type === 2 ? item.old.integral : 0 || 0 })
-  }, 0)
+  if (props.orders.products?.length) {
+    total.value = props.orders.products.reduce((total, item) => {
+      return calc('(t + i) | <=0,!n', { t: total, i: item.type === 2 ? item.old.integral : 0 || 0 })
+    }, 0)
+  }
   return total.value
 })
 // 配件积分
 const PartsListScore = computed(() => {
   const total = ref(0)
-  total.value = props.orders.products.reduce((total, item) => {
-    return calc('(t + i ) | <=0,!n', { t: total, i: item.type === 3 ? item.accessorie?.integral : 0 || 0 })
-  }, 0)
+  if (props.orders.products?.length) {
+    total.value = props.orders.products.reduce((total, item) => {
+      return calc('(t + i ) | <=0,!n', { t: total, i: item.type === 3 ? item.accessorie?.integral : 0 || 0 })
+    }, 0)
+  }
   return total.value
 })
 // 总积分计算
@@ -53,23 +60,10 @@ const totalScore = computed(() => {
   })
 })
 
-const showModel = defineModel('dialog', { default: false })
-const showReturnGoods = ref({} as {
-  goods?: orderInfoProducts
-  id: string
-})
 // 成品退货
 const returnGoodsRef = ref()
 const onReturnProduct = async (index: number) => {
-  const data = {
-    goods: props.orders.products[index],
-    id: props.orders.id,
-  }
-  showReturnGoods.value = data
-  if (props.orders.products[index].type === 3) {
-    await returnGoodsRef.value?.setPrice()
-  }
-  showModel.value = true
+  await returnGoodsRef.value?.setPrice(index)
 }
 </script>
 
@@ -89,7 +83,7 @@ const onReturnProduct = async (index: number) => {
             <common-cell label="会员昵称" :value="props.orders.member?.nickname || ''" />
             <common-cell label="手机号" :value="props.orders.member?.phone" />
             <common-cell label="会员等级" :value="props.orders.member?.level" />
-            <template v-if="props.orders.order_deposits.length">
+            <template v-if="props.orders?.order_deposits?.length">
               <div class="line" />
               <common-cell label="关联订金单" value="" label-color="#4C8DF6" />
               <template v-for="(deposit, ix) in props.orders.order_deposits" :key="ix">
@@ -200,11 +194,13 @@ const onReturnProduct = async (index: number) => {
             <template #info>
               <div class="grid grid-cols-1 gap-[12px]">
                 <div class="info">
-                  <common-cell label="配件名称" :value="obj.accessorie?.product?.category.name" val-color="#4C8DF6" />
-                  <common-cell label="配件id" :value="obj.accessorie?.product?.category.id" />
+                  <common-cell label="配件名称" :value="obj.accessorie?.product?.name" val-color="#4C8DF6" />
+                  <common-cell label="配件类型" :value="props.partFilter.type?.preset[obj.accessorie.product.type]" val-color="#4C8DF6" />
+                  <common-cell label="零售方式" :value="props.partFilter.retail_type?.preset[obj.accessorie.product.retail_type]" />
                   <common-cell label="积分" :value="obj.accessorie?.integral" />
-                  <common-cell label="应付金额" format="￥" :value="obj.accessorie.price" />
+                  <common-cell label="单价" format="￥" :value="obj.accessorie.product?.price" />
                   <common-cell label="数量" :value="obj.accessorie.quantity" />
+                  <common-cell label="应付金额" format="￥" :value="obj.accessorie.price" />
                   <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusReturn">
                     <common-cell label="状态" value="已退货" val-color="#FF9900" />
                   </template>
@@ -258,7 +254,7 @@ const onReturnProduct = async (index: number) => {
         </template>
       </sale-cards>
     </div>
-    <sale-order-return-goods ref="returnGoodsRef" v-model:show="showModel" :where="props.orderWhere" :product-filter="productFilter" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
+    <sale-order-return-goods ref="returnGoodsRef" :where="props.orderWhere" :product-filter="productFilter" :orders="props.orders" :return-goods="props.returnGoods" />
   </div>
 </template>
 

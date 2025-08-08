@@ -5,14 +5,17 @@ useSeoMeta({
   title: '会员列表',
 })
 const { $toast } = useNuxtApp()
-
 const { getMemberList, getMemberInfo, getMemberWhere, updateIntegral } = useMemberManage()
-const { memberList, memberInfo, filterListToArray, memberListTotal, showtype } = storeToRefs(useMemberManage())
+const { memberList, memberInfo, filterListToArray, memberListTotal, showtype, filterList } = storeToRefs(useMemberManage())
 const { searchPage } = storeToRefs(usePages())
-// 获取当前员工的store信息
-const { myStore } = storeToRefs(useStores())
+const { myStore, StoreStaffList } = storeToRefs(useStores())
+const { getStoreStaffList } = useStores()
 const { getMyStore } = useStores()
-
+const getStaff = async () => {
+  if (!myStore.value.id)
+    return
+  await getStoreStaffList({ id: myStore.value.id })
+}
 await getMyStore({ page: 1, limit: 20 })
 const tableLoading = ref(false)
 const actions = ref([
@@ -29,22 +32,21 @@ const items = ref([{
 
 const isFilter = ref(false)
 const filterData = ref({} as Partial<Member>)
-const limit = ref(50)
+const limits = ref(50)
 
 async function getList(where = {} as Partial<Member>) {
   tableLoading.value = true
-  const params = { page: searchPage.value, limit: limit.value, where: { store_id: myStore.value.id } } as ReqList<Member>
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<Member>
   if (JSON.stringify(where) !== '{}') {
-    params.where = where
+    params.where = { ...params.where, ...where }
   }
+
   await getMemberList(params)
   tableLoading.value = false
 }
 
-await getList()
-await getMemberWhere()
-
 const openFilter = () => {
+  getStaff()
   isFilter.value = true
 }
 
@@ -88,15 +90,6 @@ const disposeNumerical = () => {
   }
 }
 
-// const searchMember = async () => {
-//   if (searchKey.value) {
-//     await getMemberList({ page: searchPage.value, limit: limit.value, where: { phone: searchKey.value, store_id: myStore.value.id } })
-//   }
-//   else if (searchKey.value === '') {
-//     await getList()
-//   }
-// }
-
 const adjustIntegral = async () => {
   if (adjustWay.value !== 0 && fluctuant.value !== 0 && fluctuant.value !== undefined && integralParams.value.remark) {
     disposeNumerical()
@@ -108,37 +101,73 @@ const adjustIntegral = async () => {
     $toast.warning('当前积分调整无效，请检查输入信息')
   }
 }
-
-// 筛选列表
-async function submitWhere(f: Partial<Member>) {
-  filterData.value = { ...f }
-  searchPage.value = 1
-  memberList.value = []
-  await getMemberList({ page: 1, limit: limit.value, where: filterData.value })
+const listJump = () => {
+  const url = UrlAndParams('/member/lists/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
 
+const searchKey = ref('')
+const route = useRoute()
+await getMemberWhere()
+// 读取url参数,获取列表
+const handleQueryParams = async () => {
+  filterData.value = {}
+  const f = getQueryParams<Partial<Member>>(route.fullPath, filterList.value)
+  filterData.value = f
+  if (filterData.value.phone) {
+    searchKey.value = filterData.value.phone
+  }
+  if (f.showtype) {
+    showtype.value = f.showtype
+  }
+  if (f.searchPage) {
+    searchPage.value = Number(f.searchPage)
+  }
+  if (f.limits) {
+    limits.value = Number(f.limits)
+  }
+
+  await getList(filterData.value as Partial<Member>)
+}
+await handleQueryParams()
+
+// 筛选列表
+const submitWhere = (f: Partial<Member>) => {
+  filterData.value = { ...f, showtype: showtype.value, searchPage: 1, limits: limits.value }
+  listJump()
+}
+const resetWhere = () => {
+  filterData.value = {}
+  listJump()
+}
 const searchMember = async (phone: string) => {
-//   filterData.value = { phone, store_id: myStore.value.id }
-  await getMemberList({ page: 1, limit: limit.value, where: { phone, store_id: myStore.value.id } })
+  filterData.value.phone = phone
+  filterData.value.searchPage = 1
+  listJump()
 }
 
 // 清空选项
 const clearFn = async () => {
-  memberList.value = []
-  searchPage.value = 1
-  await getList()
+  delete filterData.value.phone
+  filterData.value.searchPage = 1
+  listJump()
 }
 
-const filterRef = ref()
-async function changeStores() {
-  searchPage.value = 1
-  filterRef.value?.reset()
-  await getList()
-}
-
-const updatePage = async (page: number) => {
-  searchPage.value = page
+const changeStores = async () => {
+  filterData.value.searchPage = 1
   await getList(filterData.value)
+}
+// 切换卡片
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+const updatePage = async (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
 }
 
 const goIntegral = (id: string) => {
@@ -162,13 +191,12 @@ const getTarget = (arrs: Member, keyword: string, type: 'level' | 'status') => {
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: memberListTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
-    pageOption.value.pageSize = pageSize
-    limit.value = pageSize
+    limits.value = pageSize
     updatePage(1)
   },
   onChange: (page: number) => {
@@ -179,17 +207,23 @@ const pageOption = ref({
 const cols = [
   {
     title: '姓名',
-    key: 'name',
+    render: (rowData: Member) => {
+      return rowData.name || '--'
+    },
   },
-  { title: '手机号', key: 'phone' },
+  { title: '手机号', render: (rowData: Member) => {
+    return rowData.phone || '--'
+  } },
   { title: '专属顾问', key: 'consultant.nickname' },
-  { title: '等级', key: 'gender', render: (rowData: Member) => {
-    return getTarget(rowData, 'level', 'level')
+  { title: '等级', render: (rowData: Member) => {
+    return getTarget(rowData, 'level', 'level') || '--'
   } },
-  { title: '状态', key: 'gender', render: (rowData: Member) => {
-    return getTarget(rowData, 'status', 'status')
+  { title: '状态', render: (rowData: Member) => {
+    return getTarget(rowData, 'status', 'status') || '--'
   } },
-  { title: '入会门店', key: 'store.name' },
+  { title: '入会门店', render: (rowData: Member) => {
+    return rowData.store?.name || '--'
+  } },
   {
     title: '操作',
     width: 300,
@@ -322,8 +356,10 @@ const cols = [
     </common-model>
 
     <product-filter
+      v-model:search-key="searchKey"
       v-model:showtype="showtype"
-      :product-list-total="memberListTotal" placeholder="搜索手机号" @filter="openFilter" @search="searchMember" @clear-search="clearFn">
+      :product-list-total="memberListTotal"
+      placeholder="搜索手机号" @change-card="changeCard" @filter="openFilter" @search="searchMember" @clear-search="clearFn">
       <template #company>
         <product-manage-company @change="changeStores" />
       </template>
@@ -333,7 +369,7 @@ const cols = [
         <div class="p-[16px]">
           <template v-if="memberList.length">
             <member-lists-list :info="memberList" @go-info="userJump" @view-integral="goIntegral" @change-integral="adjustment" />
-            <common-page v-model:page="searchPage" :total="memberListTotal" :limit="limit" @update:page="updatePage" />
+            <common-page v-model:page="searchPage" :total="memberListTotal" :limit="limits" @update:page="updatePage" />
           </template>
           <template v-else>
             <common-emptys text="暂无数据" />
@@ -344,7 +380,30 @@ const cols = [
     <template v-else>
       <common-datatable :columns="cols" :list="memberList" :page-option="pageOption" :loading="tableLoading" />
     </template>
-    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" />
+    <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere">
+      <template #consultant_id>
+        <n-select
+          v-model:value="filterData.consultant_id"
+          filterable
+          placeholder="输入顾问名称搜索"
+          :options="StoreStaffList.map(v => ({
+            label: v.nickname,
+            value: v.id,
+          }))"
+          size="large"
+          clearable
+          remote
+          @focus="() => {
+            if (!myStore.id){
+              StoreStaffList = []
+              $toast.error('请先切换门店')
+              return
+            }
+            getStaff()
+          }"
+        />
+      </template>
+    </common-filter-where>
   </div>
 </template>
 

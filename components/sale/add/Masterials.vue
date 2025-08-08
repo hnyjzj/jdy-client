@@ -2,9 +2,11 @@
 const props = defineProps<{
   title: string
   isIntegral: boolean
+  price: GoldPrices[]
   oldFilterListToArray: FilterWhere<ProductOld>[]
   checkOldClass: (params: Partial<ProductOld>) => any
   searchOlds: (val: string) => Promise<ProductOld>
+  billingSet: BillingSet
 }>()
 
 const showModal = ref(false)
@@ -69,6 +71,7 @@ const editOld = (item: ProductOld, index: number) => {
       v-model:list="showMasterialsList"
       v-model:show="searchShow"
       v-model:now-old-master="nowOldMaster"
+      :price="props.price"
       :search-olds="searchOlds"
       :is-integral="props.isIntegral"
       :check-old-class="props.checkOldClass"
@@ -82,6 +85,7 @@ const editOld = (item: ProductOld, index: number) => {
       :is-integral="props.isIntegral"
       :check-old-class="props.checkOldClass"
       :now-edit-state="nowEditState"
+      :billing-set="props.billingSet"
     />
   </common-fold>
 </template>

@@ -5,16 +5,19 @@ const { $toast } = useNuxtApp()
 const { myStoreList, myStore } = storeToRefs(useStores())
 const { getMyStore } = useStores()
 const { getAccessorieEnterList, getAccessorieEnterWhere, createAccessorieEnter } = useAccessorieEnter()
-const { EnterList, EnterToArray, EnterListTotal } = storeToRefs(useAccessorieEnter())
+const { EnterList, enterFilterList, EnterToArray, EnterListTotal } = storeToRefs(useAccessorieEnter())
 const { searchPage, showtype } = storeToRefs(usePages())
+
+const route = useRoute()
+const searchKey = ref('')
+const filterRef = ref()
+const isFilter = ref(false)
+
 const limits = ref(50)
 const tableLoading = ref(false)
-// 筛选框显示隐藏
-const isFilter = ref(false)
-const isModel = ref(false)
 const isCreateModel = ref(false)
-const isBatchImportModel = ref(false)
 const enterParams = ref({} as CreateProductFinishedEnter)
+const filterData = ref({} as Partial<ExpandPage<AccessorieEnter>>)
 const enterStatus = {
   1: '草稿',
   2: '已完成',
@@ -39,34 +42,100 @@ useSeoMeta({
 const openFilter = () => {
   isFilter.value = true
 }
-/** 搜索 */
-async function search(e: string) {
-  await submitWhere({ id: e }, true)
+/** 跳转并刷新列表 */
+const listJump = () => {
+  const url = UrlAndParams('/product/accessorie/enter', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
-/** 关闭搜索 */
-async function clearSearch() {
-  await submitWhere({ }, true)
-}
-// 获取货品列表
-async function getList(where = {} as Partial<AccessorieEnter>) {
-  const params = { page: searchPage.value, limit: limits.value } as ReqList<AccessorieEnter>
+/** 获取成品列表 */
+const getList = async (where = {} as Partial<AccessorieEnter>) => {
+  tableLoading.value = true
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<AccessorieEnter>
   if (JSON.stringify(where) !== '{}') {
-    params.where = where
+    params.where = { ...params.where, ...where }
   }
 
   const res = await getAccessorieEnterList(params)
+  tableLoading.value = false
   return res
+}
+/** 读取参数并初始化列表 */
+const handleQueryParams = async () => {
+  const f = getQueryParams<ExpandPage<AccessorieEnter>>(route.fullPath, enterFilterList.value)
+  filterData.value = f
+  if (filterData.value.id) {
+    searchKey.value = filterData.value.id
+  }
+  if (f.searchPage)
+    searchPage.value = Number(f.searchPage)
+  if (f.showtype) {
+    showtype.value = f.showtype
+  }
+  if (f.limits)
+    limits.value = Number(f.limits)
+  await getList(filterData.value)
+}
+
+/** 提交筛选 */
+const submitWhere = async (f: Partial<ExpandPage<AccessorieEnter>>) => {
+  filterData.value = {
+    ...f,
+    searchPage: 1,
+    limits: limits.value,
+  }
+  listJump()
 }
 
 await getList()
 await getAccessorieEnterWhere()
+await handleQueryParams()
 
-const filterData = ref({} as Partial<AccessorieEnter>)
-
-const pull = async (page: number) => {
-  searchPage.value = page
-  await getList(filterData.value)
+/** 门店切换刷新 */
+const changeStore = async () => {
+  filterData.value.searchPage = 1
+  listJump()
 }
+
+/** 搜索条码 */
+const search = async (e: string) => {
+  filterData.value.id = e
+  filterData.value.searchPage = 1
+  listJump()
+}
+
+/** 切换显示 */
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+/** 清空搜索 */
+const clearSearch = async () => {
+  delete filterData.value.id
+  filterData.value.searchPage = 1
+  listJump()
+}
+
+/** 修改页码 */
+const updatePage = (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 重置高级筛选
+const resetWhere = async () => {
+  filterData.value = {}
+  listJump()
+}
+
+/** 编辑 */
+function edit(id: string) {
+  jump('/product/accessorie/enter/info', { id })
+}
+
 /** 创建入库单 */
 async function createEnter() {
   if (!enterParams.value?.store_id) {
@@ -81,54 +150,19 @@ async function createEnter() {
   }
   $toast.error(res?.message ?? '添加入库单失败')
 }
-
-// 筛选列表
-async function submitWhere(f: Partial<AccessorieEnter>, isSearch: boolean = false) {
-  filterData.value = { ...f }
-  searchPage.value = 1
-  EnterList.value = []
-  const res = await getList(filterData.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    isFilter.value = false
-    if (!isSearch) {
-      $toast.success('筛选成功')
-    }
-    return
-  }
-  $toast.error(res?.message ?? '筛选失败')
-}
-
-/** 编辑 */
-function edit(id: string) {
-  jump('/product/accessorie/enter/info', { id })
-}
-
-function goAdd() {
-  isModel.value = false
-  jump('/product/warehouse/add')
-}
-
-const filterRef = ref()
-async function changeStore() {
-  await changeStoer()
-  searchPage.value = 1
-  filterRef.value.reset()
-  await getList()
-}
-
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: EnterListTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
     pageOption.value.pageSize = pageSize
     limits.value = pageSize
-    pull(1)
+    updatePage(1)
   },
   onChange: (page: number) => {
-    pull(page)
+    updatePage(page)
   },
 })
 const cols = [
@@ -179,35 +213,6 @@ const cols = [
     },
   },
   {
-    title: '入网费合计',
-    key: 'access_fee_total',
-    render(row: AccessorieEnter) {
-      const total = row.products?.reduce(
-        (pre: number, cur: any) => pre + Number(cur?.access_fee || 0),
-        0,
-      )
-      return total || 0
-    },
-  },
-  {
-    title: '重量合计',
-    key: 'weight_total',
-    render(row: AccessorieEnter) {
-      const total = row.products?.reduce(
-        (pre: number, cur: any) => pre + Number(cur?.category?.weight || 0),
-        0,
-      )
-      return total || 0
-    },
-  },
-  {
-    title: '操作人',
-    key: 'operator',
-    render(row: AccessorieEnter) {
-      return row?.operator?.nickname || '-'
-    },
-  },
-  {
     title: '入库时间',
     key: 'created_at',
     render(row: AccessorieEnter) {
@@ -218,7 +223,7 @@ const cols = [
     title: '操作',
     key: 'action',
     fixed: 'right',
-    render(row: AccessorieEnter) {
+    render(row: any) {
       return h(
         NButton,
         {
@@ -237,7 +242,15 @@ const cols = [
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:showtype="showtype" :product-list-total="EnterListTotal" placeholder="搜索入库单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:showtype="showtype"
+      v-model:search-key="searchKey"
+      :product-list-total="EnterListTotal"
+      placeholder="搜索入库单号"
+      @filter="openFilter"
+      @clear-search="clearSearch"
+      @change-card="changeCard"
+      @search="search"
+    >
       <template #company>
         <product-manage-company @change="changeStore" />
       </template>
@@ -279,24 +292,6 @@ const cols = [
                   </div>
                 </div>
                 <div class="py-[4px] flex justify-between">
-                  <div>标签价合计</div>
-                  <div class="text-align-end">
-                    {{ info.products?.reduce((pre, cur) => pre + Number(cur?.category?.label_price || 0), 0) || 0 }}
-                  </div>
-                </div>
-                <div class="py-[4px] flex justify-between">
-                  <div>入网费合计</div>
-                  <div class="text-align-end">
-                    {{ info.products?.reduce((pre, cur:ProductFinisheds) => pre + Number(cur?.access_fee || 0), 0) || 0 }}
-                  </div>
-                </div>
-                <div class="py-[4px] flex justify-between">
-                  <div>重量合计</div>
-                  <div class="text-align-end">
-                    {{ info.products?.reduce((pre, cur) => pre + Number(cur?.category.weight || 0), 0) || 0 }}
-                  </div>
-                </div>
-                <div class="py-[4px] flex justify-between">
                   <div>操作人</div>
                   <div class="text-align-end">
                     {{ info?.operator?.nickname }}
@@ -318,7 +313,7 @@ const cols = [
             </template>
           </product-manage-card>
           <common-page
-            v-model:page="searchPage" :total="EnterListTotal" :limit="limits" @update:page="pull" />
+            v-model:page="searchPage" :total="EnterListTotal" :limit="limits" @update:page="updatePage" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="EnterList" :page-option="pageOption" :loading="tableLoading" />
@@ -328,8 +323,8 @@ const cols = [
         <common-empty width="100px" />
       </template>
     </div>
-    <accessorie-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
-    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" />
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" @reset="resetWhere" />
+
     <template v-if="myStore.id">
       <common-create @create="isCreateModel = true" />
     </template>

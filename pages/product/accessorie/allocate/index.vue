@@ -7,80 +7,112 @@ const { accessorieAllocateList, accessorieAllocateFilterListToArray, accessorieA
 const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
+const { getRegionList } = useRegion()
+const { regionList } = storeToRefs(useRegion())
+
+const route = useRoute()
+const searchKey = ref('')
+
 const limits = ref(50)
 const tableLoading = ref(false)
 const storeCol = ref()
+const filterData = ref({} as Partial<ExpandPage<AccessorieAllocate>>)
+const regionCol = ref()
+
+function changeRegion() {
+  regionCol.value = []
+  regionList.value.forEach((item: Region) => {
+    regionCol.value.push({ label: item.name, value: item.id })
+  })
+}
+
 function changeStoer() {
   storeCol.value = []
   storesList.value.forEach((item: Stores) => {
     storeCol.value.push({ label: item.name, value: item.id })
   })
 }
-await getStoreList({ page: 1, limit: 20 })
-await changeStoer()
-await getAccessorieAllocateWhere()
 // 筛选框显示隐藏
 const isFilter = ref(false)
 useSeoMeta({
   title: '配件调拨',
 })
+
 /** 打开高级筛选 */
 const openFilter = () => {
   isFilter.value = true
 }
-/** 搜索 */
-async function search(e: string) {
-  await submitWhere({ id: e }, true)
+/** 跳转并刷新列表 */
+const listJump = () => {
+  const url = UrlAndParams('/product/accessorie/allocate', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
 }
-/** 关闭搜索 */
-async function clearSearch() {
-  await submitWhere({ }, true)
-}
-// 获取货品列表
-async function getList(where = {} as Partial<AccessorieAllocate>) {
+/** 获取成品列表 */
+const getList = async (where = {} as Partial<AccessorieAllocate>) => {
   tableLoading.value = true
-  try {
-    const params = { page: searchPage.value, limit: limits.value } as ReqList<AccessorieAllocate>
-    if (JSON.stringify(where) !== '{}') {
-      params.where = where
-    }
-    const res = await getAccessorieAllocate(params)
-    return res as any
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<AccessorieAllocate>
+  if (JSON.stringify(where) !== '{}') {
+    params.where = { ...params.where, ...where }
   }
-  finally {
-    tableLoading.value = false
+
+  const res = await getAccessorieAllocate(params)
+  tableLoading.value = false
+  return res
+}
+/** 读取参数并初始化列表 */
+const handleQueryParams = async () => {
+  const f = getQueryParams<ExpandPage<AccessorieAllocate>>(route.fullPath, accessorieAllocateFilterList.value)
+  filterData.value = f
+  if (f.searchPage)
+    searchPage.value = Number(f.searchPage)
+  if (filterData.value.id) {
+    searchKey.value = filterData.value.id
   }
-}
-
-await getList()
-
-const filterData = ref({} as Partial<AccessorieAllocate>)
-
-const pull = async (page: number) => {
-  searchPage.value = page
-  await getList(filterData.value)
-}
-// 筛选列表
-async function submitWhere(f: Partial<AccessorieAllocate>, isSearch: boolean = false) {
-  filterData.value = { ...filterData.value, ...f }
-  searchPage.value = 1
-  accessorieAllocateList.value = []
+  if (f.showtype) {
+    showtype.value = f.showtype
+  }
+  if (f.limits)
+    limits.value = Number(f.limits)
   const res = await getList(filterData.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    isFilter.value = false
-    if (!isSearch) {
-      $toast.success('筛选成功')
-    }
-    return
+  if (filterData.value.id && res?.code !== HttpCode.SUCCESS) {
+    $toast.error(res?.message || '搜索失败')
   }
-  $toast.error(res?.message ?? '筛选失败')
 }
 
+/** 提交筛选 */
+const submitWhere = async (f: Partial<ExpandPage<AccessorieAllocate>>) => {
+  filterData.value = {
+    ...f,
+    searchPage: 1,
+    limits: limits.value,
+  }
+  listJump()
+}
+
+/** 修改页码 */
+const updatePage = (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
+}
+/** 搜索条码 */
 const filterRef = ref()
+const search = async (e: string) => {
+  filterData.value.id = e
+  filterData.value.searchPage = 1
+  listJump()
+}
+
+/** 清空搜索 */
+const clearSearch = async () => {
+  delete filterData.value.id
+  filterData.value.searchPage = 1
+  listJump()
+}
+
 async function changeStore() {
-  searchPage.value = 1
-  filterRef.value.reset()
-  await getList()
+  filterData.value.searchPage = 1
+  listJump()
 }
 
 /** id获取门店名称 */
@@ -91,19 +123,44 @@ function getStoreName(id: Stores['id']) {
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: accessorieAllocateTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
     pageOption.value.pageSize = pageSize
     limits.value = pageSize
-    pull(1)
+    updatePage(1)
   },
   onChange: (page: number) => {
-    pull(page)
+    updatePage(page)
   },
 })
+try {
+  await getStoreList({ page: 1, limit: 20 })
+  await changeStoer()
+  await getRegionList({ page: 1, limit: 20 })
+  await changeRegion()
+  await getAccessorieAllocateWhere()
+  await handleQueryParams()
+}
+catch (error) {
+  throw new Error(`初始化失败: ${error || '未知错误'}`)
+}
+
+/** 切换显示 */
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 重置高级筛选
+const resetWhere = async () => {
+  filterData.value = {}
+  listJump()
+}
 
 const cols = [
   {
@@ -132,11 +189,8 @@ const cols = [
           }
 
           if (item.input === 'date') {
-            if (item.name === 'start_time') {
-              return formatTimestampToDateTime(row.created_at)
-            }
-            if (item.name === 'end_time') {
-              return formatTimestampToDateTime(row.updated_at)
+            if (value) {
+              return formatTimestampToDateTime(value)
             }
             return '-'
           }
@@ -172,7 +226,15 @@ const cols = [
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:showtype="showtype" :product-list-total="accessorieAllocateTotal" placeholder="搜索调拨单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:showtype="showtype"
+      v-model:search-key="searchKey"
+      :product-list-total="accessorieAllocateTotal"
+      placeholder="搜索调拨单号"
+      @change-card="changeCard"
+      @filter="openFilter"
+      @search="search"
+      @clear-search="clearSearch"
+    >
       <template #company>
         <product-manage-company @change="changeStore" />
       </template>
@@ -189,33 +251,44 @@ const cols = [
             <template #info="{ info }">
               <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
                 <template v-for="(item, index) in accessorieAllocateFilterListToArray" :key="index">
-                  <template v-if="item.find">
+                  <template v-if="item.info">
                     <div class="flex py-[4px] justify-between">
                       <div>
                         {{ item.label }}
                       </div>
-                      <template v-if="item.input === 'text'">
+                      <template v-if="item.type === 'date'">
                         <div class="val">
-                          {{ info[item.name] }}
+                          {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
                         </div>
                       </template>
-                      <template v-else-if="item.input === 'select'">
-                        <div class="val">
-                          {{ accessorieAllocateFilterList[item.name]?.preset[info[item.name] as number] }}
-                        </div>
-                      </template>
-                      <template v-else-if="item.input === 'date'">
-                        <div v-if="item.name === 'start_time'" class="val">
-                          {{ formatTimestampToDateTime(info.created_at) }}
-                        </div>
-                        <div v-if="item.name === 'end_time'" class="val">
-                          {{ formatTimestampToDateTime(info.updated_at) }}
-                        </div>
-                      </template>
-                      <template v-else-if="item.input === 'search'">
-                        <div class="val">
-                          {{ getStoreName(info[item.name] as Stores['id']) }}
-                        </div>
+                      <template v-else>
+                        <template v-if="item.input === 'text'">
+                          <div class="val">
+                            {{ info[item.name] }}
+                          </div>
+                        </template>
+                        <template v-else-if="item.input === 'select'">
+                          <div class="val">
+                            {{ accessorieAllocateFilterList[item.name]?.preset[info[item.name] as number] }}
+                          </div>
+                        </template>
+                        <template v-else-if="item.input === 'search'">
+                          <template v-if="item.name === 'to_region_id'">
+                            <div class="val">
+                              {{ info?.to_region?.name || '' }}
+                            </div>
+                          </template>
+                          <template v-if="item.name === 'to_store_id'">
+                            <div class="val">
+                              {{ info?.to_store?.name || '' }}
+                            </div>
+                          </template>
+                          <template v-if="item.name === 'from_store_id'">
+                            <div class="val">
+                              {{ info?.from_store?.name || '' }}
+                            </div>
+                          </template>
+                        </template>
                       </template>
                     </div>
                   </template>
@@ -229,7 +302,7 @@ const cols = [
             </template>
           </product-manage-card>
           <common-page
-            v-model:page="searchPage" :total="accessorieAllocateTotal" :limit="limits" @update:page="pull" />
+            v-model:page="searchPage" :total="accessorieAllocateTotal" :limit="limits" @update:page="updatePage" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="accessorieAllocateList" :page-option="pageOption" :loading="tableLoading" />
@@ -244,7 +317,7 @@ const cols = [
       <common-create @click="jump('/product/accessorie/allocate/add')" />
     </template>
 
-    <common-filter-where ref="filterRef" v-model:show="isFilter" :is-only-show="true" :data="filterData" :filter="accessorieAllocateFilterListToArray" @submit="submitWhere" @reset="filterData = {}">
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :is-only-show="true" :data="filterData" :filter="accessorieAllocateFilterListToArray" @reset="resetWhere" @submit="submitWhere">
       <template #from_store_id>
         <n-select
           v-model:value="filterData.from_store_id"
@@ -252,8 +325,8 @@ const cols = [
           filterable
           placeholder="选择调出门店"
           :options="storeCol"
+          clearable
           @focus="focus"
-
         />
       </template>
       <template #to_store_id>
@@ -263,6 +336,18 @@ const cols = [
           filterable
           placeholder="选择调入门店"
           :options="storeCol"
+          clearable
+          @focus="focus"
+        />
+      </template>
+      <template #to_region_id>
+        <n-select
+          v-model:value="filterData.to_region_id"
+          menu-size="large"
+          filterable
+          placeholder="选择调入区域"
+          :options="regionCol"
+          clearable
           @focus="focus"
         />
       </template>

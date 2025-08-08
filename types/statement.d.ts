@@ -11,6 +11,9 @@ interface StatementWhere {
   status?: number
   store_id?: string
   type?: number
+  showtype?: 'list' | 'table'
+  searchPage?: number
+  limits?: number
 }
 
 /*
@@ -25,6 +28,9 @@ interface StatementRefundWhere {
   order_id?: string
   start_date?: string
   store_id?: string
+  showtype?: 'list' | 'table'
+  searchPage?: number
+  limits?: number
 }
 interface StatementRefundInfo {
   code: string

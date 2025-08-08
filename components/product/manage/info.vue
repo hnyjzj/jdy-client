@@ -4,6 +4,7 @@ const props = defineProps<{
   filterList: Where<T>
   filterListToArray: FilterWhere<T>[]
   store?: string
+  productType?: GoodsType
 }>()
 </script>
 
@@ -19,28 +20,36 @@ const props = defineProps<{
         </template>
       </div>
       <div class="flex flex-col gap-3 px-4 py-3" uno-sm="grid grid-cols-[1fr_1fr] gap-x-8">
-        <div class="flex justify-between text-sm font-normal">
-          <div class="text-color-light">
-            所属门店
+        <template v-if="productType !== GoodsType.ProductAccessories">
+          <div class="flex justify-between text-sm font-normal">
+            <div class="text-color-light">
+              所属门店
+            </div>
+            <div class="info-val">
+              {{ store || info?.store?.name || '' }}
+            </div>
           </div>
-          <div class="info-val">
-            {{ store || info?.store?.name || '' }}
-          </div>
-        </div>
+        </template>
         <template v-for="(item, index) in props.filterListToArray" :key="index">
-          <template v-if="item.label && item.find">
+          <!-- 配件是使用 info 控制显示 -->
+          <template v-if="item.label && (productType === GoodsType.ProductAccessories ? item.info : item.find)">
             <div class="flex justify-between text-sm font-normal">
               <div class="text-color-light">
                 {{ item?.label }}
               </div>
               <div class="info-val">
+                <template v-if="item.type === 'date'">
+                  <span>
+                    {{ formatTimestampToDateTime(props.info[item.name]) ?? '' }}
+                  </span>
+                </template>
                 <template v-if="item.input === 'select'">
                   <span>
                     {{ filterList[item.name]?.preset[props.info[item.name]] ?? '' }}
                   </span>
                 </template>
-                <template v-else-if="item.input === 'text'">
-                  <template v-if="item.label === '门店'">
+                <template v-else-if="item.input === 'text' || item.input === 'textarea'">
+                  <template v-if="item.name === 'store'">
                     <span>
                       {{ props.info.store?.name ?? '' }}
                     </span>

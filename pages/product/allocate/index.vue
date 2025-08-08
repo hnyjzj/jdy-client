@@ -4,19 +4,76 @@ import { NButton } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { getAllocateList, getAllocateWhere } = useAllocate()
 const { allocateList, allocateFilterListToArray, allocateFilterList, allocateTotal } = storeToRefs(useAllocate())
-const { storesList } = storeToRefs(useStores())
-const { getStoreList } = useStores()
+const { myStoreList, myStore } = storeToRefs(useStores())
+const { getMyStore } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
+
+const searchKey = ref('')
+const route = useRoute()
+
+const filterData = ref({} as Partial<ExpandPage<Allocate>>)
 const limits = ref(50)
 const tableLoading = ref(false)
 const storeCol = ref()
+
+const filterRef = ref()
+/** 跳转并刷新列表 */
+const listJump = () => {
+  const url = UrlAndParams('/product/allocate', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+}
+/** 获取列表 */
+const getList = async (where = {} as Partial<Allocate>) => {
+  tableLoading.value = true
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<Allocate>
+  if (JSON.stringify(where) !== '{}') {
+    params.where = { ...params.where, ...where }
+  }
+  const res = await getAllocateList(params)
+  tableLoading.value = false
+  return res
+}
+/** 读取参数并初始化列表 */
+const handleQueryParams = async () => {
+  const f = getQueryParams<ExpandPage<Allocate>>(route.fullPath, allocateFilterList.value)
+  filterData.value = f
+  if (filterData.value?.id) {
+    searchKey.value = filterData.value.id
+  }
+  if (f.searchPage)
+    searchPage.value = Number(f.searchPage)
+  if (f.showtype) {
+    showtype.value = f.showtype
+  }
+  if (f.limits)
+    limits.value = Number(f.limits)
+  await getList(filterData.value)
+}
+
+/** 提交筛选 */
+const submitWhere = async (f: Partial<ExpandPage<Allocate>>) => {
+  filterData.value = {
+    ...f,
+    searchPage: 1,
+    limits: limits.value,
+  }
+  listJump()
+}
+
+/** 修改页码 */
+const updatePage = (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
+}
+
 function changeStore() {
   storeCol.value = []
-  storesList.value.forEach((item: Stores) => {
+  myStoreList.value.forEach((item: Stores) => {
     storeCol.value.push({ label: item.name, value: item.id })
   })
 }
-await getStoreList({ page: 1, limit: 20 })
+await getMyStore({ page: 1, limit: 20 })
 await changeStore()
 await getAllocateWhere()
 // 筛选框显示隐藏
@@ -28,75 +85,70 @@ useSeoMeta({
 const openFilter = () => {
   isFilter.value = true
 }
+
 /** 搜索 */
 async function search(e: string) {
-  await submitWhere({ id: e }, true)
+  filterData.value.id = e
+  searchPage.value = 1
+  listJump()
 }
+
 /** 关闭搜索 */
 async function clearSearch() {
-  await submitWhere({ }, true)
-}
-// 获取货品列表
-async function getList(where = {} as Partial<Allocate>) {
-  tableLoading.value = true
-  try {
-    const params = { page: searchPage.value, limit: limits.value } as ReqList<Allocate>
-    if (JSON.stringify(where) !== '{}') {
-      params.where = where
-    }
-    const res = await getAllocateList(params)
-    return res as any
-  }
-  finally {
-    tableLoading.value = false
-  }
-}
-
-await getList()
-
-const filterData = ref({} as Partial<Allocate>)
-
-const pull = async (page: number) => {
-  searchPage.value = page
-  await getList(filterData.value)
-}
-// 筛选列表
-async function submitWhere(f: Partial<Allocate>, isSearch: boolean = false) {
-  filterData.value = { ...filterData.value, ...f }
+  delete filterData.value.id
   searchPage.value = 1
-  allocateList.value = []
-  const res = await getList(filterData.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    isFilter.value = false
-    if (!isSearch) {
-      $toast.success('筛选成功')
-    }
-    return
-  }
-  $toast.error(res?.message ?? '筛选失败')
+  listJump()
 }
-const filterRef = ref()
+
 async function changeMyStore() {
-  searchPage.value = 1
-  filterRef.value.reset()
-  await getList()
+  filterData.value.searchPage = 1
+  listJump()
 }
 
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: allocateTotal,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
     pageOption.value.pageSize = pageSize
     limits.value = pageSize
-    pull(1)
+    updatePage(1)
   },
   onChange: (page: number) => {
-    pull(page)
+    updatePage(page)
   },
 })
+
+/** 切换显示 */
+const changeCard = () => {
+  filterData.value.showtype = showtype.value
+  filterData.value.searchPage = searchPage.value
+  filterData.value.limits = limits.value
+  listJump()
+}
+
+// 重置高级筛选
+const resetWhere = async () => {
+  filterData.value = {}
+  listJump()
+}
+
+// 页面初始化逻辑
+try {
+  if (myStore.value.id || myStore.value.id === '') {
+    await getAllocateWhere()
+    await handleQueryParams()
+  }
+  else {
+    $toast.error('您尚未分配任何门店，请先添加门店')
+  }
+}
+catch (error) {
+  throw new Error(`初始化失败: ${error || '未知错误'}`)
+}
+
 const cols = [
   {
     title: '调拨状态',
@@ -177,7 +229,15 @@ const cols = [
   <div>
     <!-- 筛选 -->
     <product-filter
-      v-model:showtype="showtype" :product-list-total="allocateTotal" placeholder="搜索调拨单号" @filter="openFilter" @search="search" @clear-search="clearSearch">
+      v-model:search-key="searchKey"
+      v-model:showtype="showtype"
+      :product-list-total="allocateTotal"
+      placeholder="搜索调拨单号"
+      @change-card="changeCard"
+      @filter="openFilter"
+      @search="search"
+      @clear-search="clearSearch"
+    >
       <template #company>
         <product-manage-company @change="changeMyStore" />
       </template>
@@ -267,7 +327,7 @@ const cols = [
             </template>
           </product-manage-card>
           <common-page
-            v-model:page="searchPage" :total="allocateTotal" :limit="limits" @update:page="pull" />
+            v-model:page="searchPage" :total="allocateTotal" :limit="limits" @update:page="updatePage" />
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="allocateList" :page-option="pageOption" :loading="tableLoading" />
@@ -279,7 +339,7 @@ const cols = [
     </div>
     <common-create @click="jump('/product/allocate/add')" />
 
-    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="allocateFilterListToArray" @submit="submitWhere" @reset="filterData = {}">
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="allocateFilterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #from_store_id>
         <n-select
           v-model:value="filterData.from_store_id"

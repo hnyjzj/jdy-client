@@ -3,7 +3,7 @@ useSeoMeta({
   title: '门店列表',
 })
 
-const { storesList, addorUpdateForm, filterListToArray, total } = storeToRefs(useStores())
+const { storesList, addorUpdateForm, filterListToArray, total, filterList } = storeToRefs(useStores())
 const { searchPage } = storeToRefs(usePages())
 const { reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
 const { getMyRegion } = useRegion()
@@ -13,39 +13,55 @@ const { $toast } = useNuxtApp()
 const addOrUpdateShow = ref<boolean>(false)
 // 搜索弹窗显示状态
 const show = ref<boolean>(false)
-
 // 筛选请求数据
-const filterData = ref({} as Partial<Stores>)
-
+const filterData = ref({} as StoresWhere)
+const limits = ref<number>(50)
 // 获取列表
-const getList = async (where = {} as Partial<Stores>) => {
+const getList = async (where = {} as StoresWhere) => {
   if (!Object.keys(myRegion.value).length) {
     return $toast.error('请先选择区域')
   }
-  const params = { page: searchPage.value, limit: 12 } as ReqList<Region>
+  const params = { page: searchPage.value, limit: limits.value } as ReqList<Region>
   params.where = where
   params.where.region_id = myRegion.value.id
-
   await getStoreList(params)
 }
 
+await getMyRegion({ page: 1, limit: 20 })
+const route = useRoute()
+// 获取筛选条件
+await getStoreWhere()
+// 读取url参数,获取列表
+const handleQueryParams = async () => {
+  filterData.value = {}
+  const f = getQueryParams<StoresWhere>(route.fullPath, filterList.value)
+  filterData.value = f
+
+  if (f.searchPage) {
+    searchPage.value = Number(f.searchPage) || 1
+  }
+  if (f.limits) {
+    limits.value = Number(f.limits) || 50
+  }
+
+  await getList(filterData.value as StoresWhere)
+}
+await handleQueryParams()
+const listJump = () => {
+  const url = UrlAndParams('/system/store/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+}
+
 // 筛选列表
-const submitWhere = async (f: Partial<Stores>) => {
-  filterData.value = { ...filterData.value, ...f }
-  storesList.value = []
-  searchPage.value = 1
-  await getList(filterData.value)
-  show.value = false
+const submitWhere = async (f: StoresWhere) => {
+  filterData.value = { ...f, searchPage: 1, limits: limits.value }
+  listJump()
 }
 
 const resetwhere = async () => {
   filterData.value = {}
+  listJump()
 }
-await getMyRegion({ page: 1, limit: 20 })
-// 获取列表数据
-await getList()
-// 获取筛选条件
-await getStoreWhere()
 
 // 展示详情
 const getStoreInfo = async (id: string) => {
@@ -117,10 +133,6 @@ const editStore = async () => {
     reastAddForm()
   }
 }
-// 更新省市区请求参数
-const updateArea = (val: Stores['field']) => {
-  filterData.value.field = val
-}
 
 // 高级搜索按钮
 const heightSearchFn = () => {
@@ -150,8 +162,9 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
 }
 
 const updatePage = async (page: number) => {
-  searchPage.value = page
-  await getList()
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
 }
 
 const complate = ref(0)
@@ -166,10 +179,15 @@ const complate = ref(0)
       </template>
     </product-filter>
 
-    <div class="p-[16px]">
-      <stores-card @get-detail="getStoreInfo" @edit-store="edit" @delete-store="deleteStoreFn" />
-    </div>
-    <common-page v-model:page="searchPage" :total="total" :limit="12" @update:page="updatePage" />
+    <template v-if="storesList.length">
+      <div class="p-[16px]">
+        <stores-card @get-detail="getStoreInfo" @edit-store="edit" @delete-store="deleteStoreFn" />
+      </div>
+    </template>
+    <template v-else>
+      <common-emptys text="暂无数据" />
+    </template>
+    <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
     <!-- 新增或更新门店弹窗 -->
     <common-popup v-model="addOrUpdateShow" :title="addorUpdateForm.id ? '编辑门店' : '新增门店'">
       <stores-add-update
@@ -181,10 +199,6 @@ const complate = ref(0)
 
     <common-create @create="newAdd()" />
 
-    <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetwhere">
-      <template #field>
-        <common-area-select :is-required="false" :showtitle="false" :form="filterData.field" @update="updateArea" />
-      </template>
-    </common-filter-where>
+    <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetwhere" />
   </div>
 </template>

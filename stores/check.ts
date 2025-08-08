@@ -85,9 +85,19 @@ export const useCheck = defineStore('check', {
       }
     },
     /** 添加盘点单产品 */
-    async addCheckProduct(params: AddCheckProduct) {
+    async addCheckProduct(params: AddCheckProductOne) {
       try {
-        const { data } = await https.post<any, AddCheckProduct>('/product/inventory/add', params)
+        const { data } = await https.post<any, AddCheckProductOne>('/product/inventory/add', params)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`添加盘点货品失败: ${error || '未知错误'}`)
+      }
+    },
+    /** 批量添加盘点单产品 */
+    async batchCheckProduct(params: AddCheckProduct) {
+      try {
+        const { data } = await https.post<any, AddCheckProduct>('/product/inventory/add_batch', params)
         return data.value
       }
       catch (error) {

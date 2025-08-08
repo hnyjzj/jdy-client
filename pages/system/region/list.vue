@@ -4,7 +4,7 @@ import { NButton } from 'naive-ui'
 useSeoMeta({
   title: '区域',
 })
-const { regionList, addorUpdateForm, filterListToArray, total, showtype } = storeToRefs(useRegion())
+const { regionList, addorUpdateForm, filterListToArray, total, showtype, filterList } = storeToRefs(useRegion())
 const { searchPage } = storeToRefs(usePages())
 const { reastAddForm, createRegion, getRegionList, deleteRegion, updateRegion, getRegionWhere, uploadImage } = useRegion()
 const { $toast } = useNuxtApp()
@@ -12,12 +12,12 @@ const { $toast } = useNuxtApp()
 const addOrUpdateShow = ref<boolean>(false)
 // 搜索弹窗显示状态
 const show = ref<boolean>(false)
-const limits = ref<number>(50)
+const limits = ref<number>(2)
 // 筛选请求数据
-const filterData = ref({} as Partial<Region>)
+const filterData = ref({} as RegionWhere)
 const tableLoading = ref<boolean>(false)
 // 获取列表
-const getList = async (where = {} as Partial<Region>) => {
+const getList = async (where = {} as RegionWhere) => {
   tableLoading.value = true
   const params = { page: searchPage.value, limit: limits.value } as ReqList<Region>
   if (JSON.stringify(where) !== '{}') {
@@ -27,22 +27,48 @@ const getList = async (where = {} as Partial<Region>) => {
   tableLoading.value = false
 }
 
+// 获取筛选条件
+await getRegionWhere()
+const route = useRoute()
+// 读取url参数,获取列表
+const handleQueryParams = async () => {
+  filterData.value = {}
+  const f = getQueryParams<RegionWhere>(route.fullPath, filterList.value)
+  filterData.value = f
+
+  if (f.showtype) {
+    showtype.value = f.showtype
+  }
+  if (f.searchPage) {
+    searchPage.value = Number(f.searchPage)
+  }
+  if (f.limits) {
+    limits.value = Number(f.limits)
+  }
+
+  await getList(filterData.value as RegionWhere)
+}
+await handleQueryParams()
+const listJump = () => {
+  const url = UrlAndParams('/system/region/list', filterData.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+}
 // 筛选列表
-const submitWhere = async (f: Partial<Region>) => {
-  filterData.value = { ...filterData.value, ...f }
-  regionList.value = []
-  searchPage.value = 1
-  await getList(filterData.value)
-  show.value = false
+const submitWhere = async (f: RegionWhere) => {
+  filterData.value = { ...f, searchPage: 1, showtype: showtype.value, limits: limits.value }
+  listJump()
 }
 
 const resetwhere = async () => {
   filterData.value = {}
+  listJump()
 }
-// 获取列表数据
-await getList()
-// 获取筛选条件
-await getRegionWhere()
+
+const updatePage = async (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
+}
 
 // 展示详情
 const getStoreInfo = async (id: string) => {
@@ -55,15 +81,11 @@ const newAdd = () => {
   addOrUpdateShow.value = true
 }
 
-// 调用新增门店接口
-const newStore = async () => {
+const newRegion = async () => {
   const res = await createRegion(addorUpdateForm.value)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建门店成功')
-    reastAddForm()
-    addOrUpdateShow.value = false
-    regionList.value = []
-    await getRegionList({ page: 1, limit: 12 })
+    listJump()
   }
   else {
     $toast.error(res?.message ?? '创建门店失败')
@@ -84,8 +106,7 @@ const confirmDelete = async () => {
   const res = await deleteRegion(nowDeleteId.value)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('删除成功')
-    regionList.value = []
-    await getRegionList({ page: 1, limit: 12 })
+    listJump()
   }
 }
 
@@ -108,10 +129,7 @@ const editRegion = async () => {
   const res = await updateRegion(addorUpdateForm.value)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('更新成功')
-    addOrUpdateShow.value = false
-    regionList.value = []
-    await getRegionList({ page: 1, limit: 12 })
-    reastAddForm()
+    listJump()
   }
 }
 
@@ -132,9 +150,6 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
       $toast.error(res.data.value?.message || '上传失败')
       return false
     }
-    // const url = res.data.value.data.url
-    //  如果有id 说明是 修改logo ,没有id则是新增
-    // addorUpdateForm.value.logo = url
     onfinish && onfinish()
   }
   catch {
@@ -142,14 +157,9 @@ const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
   }
 }
 
-const updatePage = async (page: number) => {
-  searchPage.value = page
-  await getList()
-}
-
 const pageOption = ref({
   page: searchPage,
-  pageSize: 50,
+  pageSize: limits,
   itemCount: total,
   showSizePicker: true,
   pageSizes: [50, 100, 150, 200],
@@ -240,13 +250,11 @@ const cols = [
     <common-popup v-model="addOrUpdateShow" :title="addorUpdateForm.id ? '编辑区域' : '新增区域'">
       <region-add-update
         @upload="uploadFile"
-        @submit="newStore"
+        @submit="newRegion"
         @edit-submit="editRegion" />
     </common-popup>
     <common-confirm v-model:show="deleteDialog" text="确认删除此区域吗?" @submit="confirmDelete" />
-
     <common-create @create="newAdd()" />
-
     <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetwhere" />
   </div>
 </template>

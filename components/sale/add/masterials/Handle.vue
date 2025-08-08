@@ -7,6 +7,7 @@ const props = defineProps<{
   isIntegral: boolean
   nowEditState?: number
   checkOldClass: (params: Partial<ProductOld>) => any
+  billingSet: BillingSet
 }>()
 const showMasterialsList = defineModel<ProductOld[]>('list', { default: [] })
 const params = defineModel<ProductOld>('params', { default: {
@@ -22,10 +23,20 @@ const forRules = () => {
   props.oldFilterListToArray.forEach((item) => {
     if (item.required) {
       if (item.input === 'text') {
-        rules.value[item.name] = {
-          required: true,
-          trigger: ['blur', 'input', 'change'],
-          message: `请输入${item.label}`,
+        if (item.type === 'string') {
+          rules.value[item.name] = {
+            required: true,
+            trigger: ['blur', 'input', 'change'],
+            message: `请输入${item.label}`,
+          }
+        }
+        else {
+          rules.value[item.name] = {
+            type: 'number',
+            required: true,
+            trigger: ['blur', 'input', 'change'],
+            message: `请输入${item.label}`,
+          }
         }
       }
       if (item.input === 'number') {
@@ -63,7 +74,7 @@ const submitMasterialsForm = async () => {
     if (!errors) {
       if (props.nowEditState !== undefined) {
         // 编辑时
-        if (params.value.recycle_price < 0) {
+        if (Number(params.value?.recycle_price || 0) < 0) {
           $toast.error('回收金额不能小于0')
           return
         }
@@ -90,7 +101,7 @@ const submitMasterialsForm = async () => {
       }
       else {
         params.value.is_our = false
-        if (params.value.recycle_price < 0) {
+        if (Number(params.value.recycle_price) < 0) {
           $toast.error('回收金额不能小于0')
           return
         }
@@ -122,33 +133,16 @@ const submitMasterialsForm = async () => {
   })
 }
 // 手动添加的旧料 如果不是自有旧料
-const changePrice = (name: string) => {
+const changePrice = () => {
   if (!params.value.recycle_price_labor_method) {
     params.value.recycle_price_labor_method = 1
   }
-  // 如果回收金额确认了 则反推金价
-  if (name === 'recycle_price') {
-    if (params.value.weight_metal && params.value.quality_actual && params.value.recycle_price) {
-      params.value.recycle_price_gold = calc('( c + ( e / (a* d))) |=0 ~5,!n', {
-        a: params.value.weight_metal,
-        e: params.value.recycle_price,
-        c: params.value.recycle_price_labor || 0,
-        d: params.value.quality_actual || 1,
-      })
-    }
-    if (params.value.weight_metal && params.value.quality_actual && params.value.recycle_price && params.value.recycle_price_labor_method === 2) {
-      params.value.recycle_price_gold = calc('((c+e)/(a*d)) |=0 ~5,!n', {
-        a: params.value.weight_metal,
-        e: params.value.recycle_price,
-        c: params.value.recycle_price_labor || 0,
-        d: params.value.quality_actual || 1,
-      })
-    }
-    return
-  }
-  // 如果回收工费方式按克 (回收金价-回收工费)*金重*实际成色
+  const hold = holdFunction(props.billingSet.decimal_point)
+  // 取整控制函数
+  const rounding = roundFunction(props.billingSet.rounding)
   if (params.value.recycle_price_labor_method === 1) {
-    params.value.recycle_price = calc('((b - c) * a * d)| =0 ~5,!n', {
+    // 如果回收工费方式按克 (回收金价-回收工费)*金重*实际成色
+    params.value.recycle_price = calc(`((b - c) * a * d)| =${hold} ~${rounding},!n`, {
       a: params.value.weight_metal || 0,
       b: params.value.recycle_price_gold || 0,
       c: params.value.recycle_price_labor || 0,
@@ -157,7 +151,7 @@ const changePrice = (name: string) => {
   }
   else if (params.value.recycle_price_labor_method === 2) {
     // 如果回收工费方式按件 (金重* 回收金价 * 实际成色) - 回收工费
-    params.value.recycle_price = calc('((a*b*d) - c)| =0 ~5,!n', {
+    params.value.recycle_price = calc(`((a*b*d) - c)| =${hold} ~${rounding},!n`, {
       a: params.value.weight_metal || 0,
       b: params.value.recycle_price_gold || 0,
       c: params.value.recycle_price_labor || 0,
@@ -198,44 +192,78 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                 <template v-if="item.input !== 'list' && item.name !== 'is_our' && item.create === true">
                   <n-form-item-gi :span="12" :label="item.label" :path="item.name" :required="item.required">
                     <template v-if="item.input === 'select'">
-                      <n-select
-                        v-model:value="(params[item.name] as number)"
-                        size="large"
-                        :placeholder="`选择${item.label}`"
-                        :options="presetToSelect(item)"
-                        :disabled="props.nowEditState === index && item.name === 'recycle_method'"
-                        clearable
-                        @focus="focus"
-                      />
+                      <template v-if="item.name === 'recycle_price_labor_method'">
+                        <n-select
+                          v-model:value="(params[item.name] as number)"
+                          size="large"
+                          :placeholder="`选择${item.label}`"
+                          :options="presetToSelect(item)"
+                          clearable
+                          @focus="focus"
+                          @update:value="changePrice()"
+                        />
+                      </template>
+                      <template v-else>
+                        <n-select
+                          v-model:value="(params[item.name] as number)"
+                          size="large"
+                          :placeholder="`选择${item.label}`"
+                          :options="presetToSelect(item)"
+                          :disabled="props.nowEditState === index && item.name === 'recycle_method'"
+                          clearable
+                          @focus="focus"
+                        />
+                      </template>
                     </template>
+                    <!-- input 输入框 -->
                     <template v-if="item.input === 'text'">
-                      <n-input
-                        v-model:value="(params[item.name] as string)"
-                        size="large" round :placeholder="`输入${item.label}`"
-                        @focus="focus"
-                      />
+                      <!-- type 字符串输入框 -->
+                      <template v-if="item.type === 'string'">
+                        <n-input
+                          v-model:value="(params[item.name] as string)"
+                          size="large" round :placeholder="`输入${item.label}`"
+                          @focus="focus"
+                        />
+                      </template>
+                      <!-- type number 输入框 -->
+                      <template v-if="item.type === 'number'">
+                        <template
+                          v-if="item.name === 'weight_metal'
+                            || item.name === 'recycle_price_gold' || item.name === 'recycle_price_labor' ">
+                          <n-input-number
+                            v-model:value="(params[item.name] as number)"
+                            size="large"
+                            round :placeholder="`输入${item.label}`"
+                            :show-button="false"
+                            @focus="focus" @blur="changePrice()" />
+                        </template>
+                        <template v-else-if="item.name === 'quality_actual'">
+                          <n-input-number
+                            v-model:value="(params[item.name] as number)"
+                            size="large"
+                            :max="1"
+                            :min="0"
+                            round :placeholder="`输入${item.label}`" :show-button="false"
+                            @focus="focus" @blur="changePrice()" />
+                        </template>
+                        <template v-else-if="item.name === 'recycle_price'">
+                          <n-input-number
+                            v-model:value="(params[item.name] as number)"
+                            size="large"
+                            round :placeholder="`输入${item.label}`" :show-button="false"
+                            @focus="focus" />
+                        </template>
+                        <template v-else>
+                          <n-input-number
+                            v-model:value="(params[item.name] as number)"
+                            size="large"
+                            round :placeholder="`输入${item.label}`" :show-button="false"
+                            @focus="focus" />
+                        </template>
+                      </template>
                     </template>
-                    <template
-                      v-if="item.input === 'number' && (item.name === 'weight_metal'
-                        || item.name === 'recycle_price_gold' || item.name === 'recycle_price_labor' || item.name === 'quality_actual')">
-                      <n-input-number
-                        v-model:value="(params[item.name] as number)"
-                        size="large"
-                        round :placeholder="`输入${item.label}`" :max="item.name === 'quality_actual' ? 1 : undefined"
-                        :show-button="false"
-                        @focus="focus" @blur="changePrice(item.name)" />
-                    </template>
-                    <template
-                      v-if="item.input === 'number' && (item.name === 'recycle_price')">
-                      <n-input-number
-                        v-model:value="(params[item.name] as number)"
-                        size="large"
-                        round :placeholder="`输入${item.label}`" :show-button="false"
-                        @focus="focus" @blur="changePrice(item.name)" />
-                    </template>
-                    <template
-                      v-if="item.input === 'number' && (item.name !== 'weight_metal'
-                        && item.name !== 'recycle_price_gold' && item.name !== 'recycle_price_labor' && item.name !== 'quality_actual' && item.name !== 'recycle_price')">
+                    <!-- input 数字输入框 -->
+                    <template v-if="item.input === 'number'">
                       <n-input-number
                         v-model:value="(params[item.name] as number)"
                         size="large"
