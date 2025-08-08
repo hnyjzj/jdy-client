@@ -7,14 +7,26 @@ useSeoMeta({
 })
 const { myStore } = storeToRefs(useStores())
 // 获取销售明细列表
-const { getStatementList, getStatementWhere } = useStatement()
+const { getStatementList, getStatementWhere, getStatementListAll } = useStatement()
 const { statementList, total, filterListToArray, filterList, showtype } = storeToRefs(useStatement())
 const { searchPage } = storeToRefs(usePages())
+const { getFinishedWhere } = useFinished()
+const { finishedFilterListToArray } = storeToRefs(useFinished())
+const { getSaleWhere } = useOrder()
+const { filterListToArray: salesFilterListToArray } = storeToRefs(useOrder())
+const { getOldWhere } = useOld()
+const { oldFilterListToArray } = storeToRefs(useOld())
+const { getAccessorieWhere } = useAccessorie()
+const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const filterData = ref({} as Partial<StatementWhere>)
 const filterShow = ref(false)
 const limits = ref(50)
 const tableLoading = ref(false)
 
+await getFinishedWhere()
+await getOldWhere()
+await getSaleWhere()
+await getAccessorieWhere()
 // 获取列表
 const getList = async (where = {} as Partial<StatementWhere>) => {
   tableLoading.value = true
@@ -199,6 +211,11 @@ const cols = [
     },
   },
 ]
+
+const exportExcel = async () => {
+  const res = await getStatementListAll({ all: true, where: filterData.value })
+  exportStatementListToXlsx(res, [...accessorieFilterListToArray.value, ...filterListToArray.value, ...salesFilterListToArray.value, ...finishedFilterListToArray.value, ...oldFilterListToArray.value], '销售明细报表', [])
+}
 </script>
 
 <template>
@@ -207,7 +224,9 @@ const cols = [
       v-model:showtype="showtype"
       v-model:search-key="searchKey"
       :product-list-total="total"
-      placeholder="搜索产品条码" @change-card="changeCard" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
+      :is-export="true"
+      placeholder="搜索产品条码"
+      @export="exportExcel" @change-card="changeCard" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
       <template #company>
         <product-manage-company @change="changeStores" />
       </template>

@@ -29,6 +29,19 @@ export const useStatement = defineStore('statement', {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
       }
     },
+    async getStatementListAll(pamars: AllFinished<orderInfoProducts>) {
+      try {
+        pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
+        const { data } = await https.post<ResList<orderInfoProducts>, AllFinished<orderInfoProducts>>('/order/sales/detail/list', pamars)
+        if (data.value?.code === HttpCode.SUCCESS) {
+          return data.value.data.list
+        }
+        return []
+      }
+      catch (error) {
+        throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
+      }
+    },
     /**
      * 获取销售明细筛选条件
      *
