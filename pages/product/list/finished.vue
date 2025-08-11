@@ -3,7 +3,7 @@ import { NButton } from 'naive-ui'
 
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
-const { getFinishedList, getFinishedWhere, getFinishedListAll, updateFinishedCode } = useFinished()
+const { getFinishedList, getFinishedWhere, getFinishedListAll, updateFinishedCode, updateFinishedUpdata } = useFinished()
 const { finishedList, finishedFilterList, finishedFilterListToArray, finishedListTotal, finisheStatistics, finishedListAll } = storeToRefs(useFinished())
 const { searchPage, showtype } = storeToRefs(usePages())
 
@@ -259,9 +259,21 @@ async function submitGoods(req: ProductFinisheds[]) {
   if (!req?.length) {
     return
   }
-  isUploadModel.value = false
   isLoading.value = true
-  isLoading.value = false
+  try {
+    const res = await updateFinishedUpdata(req)
+    if (res?.code === HttpCode.SUCCESS) {
+      $toast.success('货品更新成功')
+      listJump()
+    }
+    else {
+      $toast.error(res?.message ?? '更新货品失败')
+    }
+  }
+  finally {
+    isUploadModel.value = false
+    isLoading.value = false
+  }
 }
 
 /** 条码更新 */
@@ -269,8 +281,8 @@ async function submitCode(code: BatchCode[]) {
   if (!code?.length) {
     return
   }
+  isLoading.value = true
   try {
-    isLoading.value = true
     const res = await updateFinishedCode(code)
     if (res?.code === HttpCode.SUCCESS) {
       $toast.success('条码更新成功')
@@ -331,7 +343,7 @@ async function submitCode(code: BatchCode[]) {
       <product-manage-bottom :statistics="finisheStatistics" />
     </div>
     <product-upload-choose v-model:is-model="isModel" title="更新" first-text="数据更新" second-text="条码更新" @go-add="isCodeModel = true" @batch="isUploadModel = true" />
-    <product-upload-code ref="uploadCodeRef" v-model="isCodeModel" @cancle="uploadCodeRef.value.clearData()" @upload="submitCode" />
+    <product-upload-code ref="uploadCodeRef" v-model="isCodeModel" @upload="submitCode" />
     <product-upload-warehouse ref="uploadRef" v-model="isUploadModel" title="数据更新" :filter-list="finishedFilterList" :type="1" @upload="submitGoods">
       <template #content>
         <div>

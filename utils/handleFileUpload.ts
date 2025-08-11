@@ -36,11 +36,22 @@ export default async function (headers: any) {
     '是否特价': 'is_special_offer',
     '入库时间': 'enter_time',
   }
-  const cleanedHeaders = headers.map((header: keyof ProductFinisheds) =>
+  // 清洗表头（去掉空格）
+  const cleanedHeaders = headers.map((header: string) =>
     typeof header === 'string' ? header.replace(/\s/g, '') : header,
   )
-  const englishHeaders = cleanedHeaders.map((header: any) => {
-    return headerMap[header] || header
+
+  // 匹配时优先找原字段，找不到就尝试去掉*匹配
+  const englishHeaders = cleanedHeaders.map((header: string) => {
+    if (headerMap[header]) {
+      return headerMap[header]
+    }
+    const noStar = header.replace(/\*/g, '')
+    const matchKey = Object.keys(headerMap).find(
+      key => key.replace(/\*/g, '') === noStar,
+    )
+    return matchKey ? headerMap[matchKey] : header
   })
+
   return englishHeaders
 }
