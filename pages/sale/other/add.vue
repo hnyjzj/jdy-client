@@ -144,6 +144,8 @@ const handleValidateButtonClick = (e: any) => {
     }
   })
 }
+
+const orderObject = ref<orderObject>({} as orderObject)
 </script>
 
 <template>
@@ -170,6 +172,7 @@ const handleValidateButtonClick = (e: any) => {
 
           <sale-add-member
             ref="addMemberRef"
+            v-model="orderObject"
             :get-member="getMember"
             :store="myStore"
             :staffs="StoreStaffList"

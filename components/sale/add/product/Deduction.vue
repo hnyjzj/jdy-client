@@ -5,11 +5,7 @@ const emits = defineEmits<{
   setDiscountRate: [val: number]
 }>()
 // 设置整单积分抵扣
-const scoreDeduct = ref<number>(0)
-
-const amount_reduce = ref(0)
-
-const discount_rate = ref<number>(100)
+const formData = defineModel({ default: { } as Orders })
 </script>
 
 <template>
@@ -22,7 +18,7 @@ const discount_rate = ref<number>(100)
             label="整单折扣" label-placement="top"
           >
             <n-input-number
-              v-model:value="discount_rate"
+              v-model:value="formData.discount_rate"
               placeholder="请输入折扣"
               round
               :precision="2"
@@ -30,40 +26,26 @@ const discount_rate = ref<number>(100)
               max="100"
               :show-button="false"
               @focus="focus"
-              @update:value="emits('setDiscountRate', discount_rate)"
+              @update:value="emits('setDiscountRate', formData.discount_rate)"
             >
               <template #suffix>
                 %
               </template>
             </n-input-number>
           </n-form-item-gi>
-          <!-- <n-form-item-gi
-              :span="12"
-              label="卡券抵扣" label-placement="top"
-            >
-              <n-input-number
-                v-model:value="couponDeduct"
-                placeholder="0"
-                round
-                min="0"
-                :precision="2"
-                :show-button="false"
-                @blur="handleCouponReduceBlur"
 
-              />
-            </n-form-item-gi> -->
           <n-form-item-gi
             :span="12"
             label="积分抵扣" label-placement="top"
           >
             <n-input-number
-              v-model:value="scoreDeduct"
+              v-model:value="formData.integral_deduction"
               placeholder="0"
               round
               min="0"
               :precision="2"
               :show-button="false"
-              @blur="emits('setScoreDeduct', scoreDeduct)"
+              @blur="emits('setScoreDeduct', formData.integral_deduction)"
               @focus="focus"
             />
           </n-form-item-gi>
@@ -72,14 +54,14 @@ const discount_rate = ref<number>(100)
             label="抹零金额" label-placement="top"
           >
             <n-input-number
-              v-model:value="amount_reduce"
+              v-model:value="formData.round_off"
               placeholder="0"
               round
               min="0"
               :precision="2"
               :show-button="false"
               @focus="focus"
-              @blur="emits('setAmountReduce', amount_reduce)"
+              @blur="emits('setAmountReduce', formData.round_off)"
 
             />
           </n-form-item-gi>

@@ -68,7 +68,7 @@ const rules = {
     message: '请选择收银员',
   },
 }
-
+const orderObject = ref<orderObject>({} as orderObject)
 // 点击验证表单
 const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
@@ -138,6 +138,7 @@ const changeStore = () => {
           </div>
           <sale-deposit-staff v-model:form-data="formData" :staffs="StoreStaffList" :get-staffs="getStaff" />
           <sale-add-member
+            v-model="orderObject"
             :get-member="getMember"
             :store="myStore"
             :staffs="StoreStaffList"

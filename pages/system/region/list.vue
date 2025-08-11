@@ -12,7 +12,7 @@ const { $toast } = useNuxtApp()
 const addOrUpdateShow = ref<boolean>(false)
 // 搜索弹窗显示状态
 const show = ref<boolean>(false)
-const limits = ref<number>(2)
+const limits = ref<number>(50)
 // 筛选请求数据
 const filterData = ref({} as RegionWhere)
 const tableLoading = ref<boolean>(false)

@@ -13,6 +13,7 @@ const { $toast } = useNuxtApp()
 
 const { getMyStore, switchStore } = useStores()
 const { myStoreList, myStore } = storeToRefs(useStores())
+const { initObjForm } = useOrder()
 const columns = ref()
 const confirmShow = ref(false)
 const getList = async () => await getMyStore({ page: 1, limit: 20 })
@@ -59,6 +60,7 @@ function handleSelect(id: Stores['id']) {
   if (stored) {
     switchStore(stored)
     saveStoreId.value = ''
+    initObjForm()
     emits('change')
   }
 }

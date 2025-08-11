@@ -15,6 +15,10 @@ const emit = defineEmits<{
 }>()
 const { myStore } = storeToRefs(useStores())
 const { userinfo } = storeToRefs(useUser())
+
+const orderObject = defineModel({ default: {
+  MemberInfo: {},
+} as orderObject })
 const Key = ref()
 const { $toast } = useNuxtApp()
 // 提示新增
@@ -22,18 +26,18 @@ const tipAdd = ref(false)
 // 能使用的积分
 const canUseScore = ref()
 // 仅用于展示的会员信息
-const userInfo = ref({} as Member)
+
 // 会员id
 const memberId = ref()
 const setUserInfo = (list: Member[]) => {
-  userInfo.value = list[0]
+  orderObject.value.MemberInfo = list[0]
   memberId.value = list[0].id
   emit('setMemberId', memberId.value)
   if (props.billingSet) {
     // 积分设置
-    if (userInfo.value.integral && props.billingSet.discount_rate !== '0') {
+    if (orderObject.value.MemberInfo.integral && props.billingSet.discount_rate !== '0') {
       canUseScore.value = calc('(a / b )| =0 ~5,!n', {
-        a: userInfo.value.integral,
+        a: orderObject.value.MemberInfo.integral,
         b: props.billingSet.discount_rate,
       })
     }
@@ -56,7 +60,7 @@ const searchMember = async (val: string) => {
   }
   memberId.value = undefined
   Key.value = Date.now().toString()
-  userInfo.value = {} as Member
+  orderObject.value.MemberInfo = {} as Member
   searchList.value = await props.getMember(val)
   if (searchList.value.length === 0) {
     if (!myStore.value.id) {
@@ -123,11 +127,12 @@ defineExpose({
               <common-button-rounded content="搜索" @button-click="searchMember(searchPhone)" />
             </div>
           </n-form-item-gi>
-          <template v-if="userInfo?.id">
+
+          <template v-if="orderObject.MemberInfo?.id">
             <n-form-item-gi :span="24" label="会员信息">
               <div class="mr-[16px]">
-                <template v-if="userInfo?.avatar">
-                  <n-image width="68" :src="userInfo.avatar" />
+                <template v-if=" orderObject.MemberInfo?.avatar">
+                  <n-image width="68" :src=" orderObject.MemberInfo.avatar" />
                 </template>
                 <template v-else>
                   <icon name="i-svg:avatar" :size="68" />
@@ -135,16 +140,16 @@ defineExpose({
               </div>
               <div class="flex-col">
                 <div>
-                  昵称:{{ userInfo?.nickname || '' }}
+                  昵称:{{ orderObject.MemberInfo?.nickname || '' }}
                 </div>
-                <div>姓名:{{ userInfo?.name || '' }}</div>
+                <div>姓名:{{ orderObject.MemberInfo?.name || '' }}</div>
                 <div>
-                  积分:{{ userInfo?.integral || '' }}
+                  积分:{{ orderObject.MemberInfo?.integral || '' }}
                   <template v-if="canUseScore">
                     (可抵扣{{ canUseScore }}元)
                   </template>
                 </div>
-                <div>等级:{{ userInfo?.level || '' }}</div>
+                <div>等级:{{ orderObject.MemberInfo?.level || '' }}</div>
               </div>
             </n-form-item-gi>
           </template>

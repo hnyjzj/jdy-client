@@ -175,6 +175,7 @@ const changeStore = () => {
   formData.value = { ...initform.value }
   Key.value = Date.now().toString()
 }
+const orderObject = ref<orderObject>({} as orderObject)
 </script>
 
 <template>
@@ -201,6 +202,7 @@ const changeStore = () => {
           </div>
 
           <sale-add-member
+            v-model="orderObject"
             :get-member="getMember"
             :store="myStore"
             :staffs="StoreStaffList"

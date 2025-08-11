@@ -10,10 +10,10 @@ const { $toast } = useNuxtApp()
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getFinishedList, getFinishedWhere, getFinishedsClass } = useFinished()
 const { getStoreStaffList } = useStores()
-const { getOldList, getSaleWhere, submitOrder, OldMaterialsWhere } = useOrder()
+const { getOldList, getSaleWhere, submitOrder, OldMaterialsWhere, initObjForm } = useOrder()
 const { getGoldPrice } = useGoldPrice()
 const { goldList } = storeToRefs(useGoldPrice())
-const { OldObj, filterList, oldFilterListToArray } = storeToRefs(useOrder())
+const { OldObj, filterList, oldFilterListToArray, orderObject } = storeToRefs(useOrder())
 const { getMemberList } = useMemberManage()
 const { getOldClass, getOldScoreProportion } = useOld()
 const { getSetInfo } = useBillingSetStore()
@@ -25,7 +25,6 @@ const { createMember } = useMemberManage()
 const { getOrderDetail, getDepositList } = useDepositOrder()
 const { OrderDetail, OrdersList } = storeToRefs(useDepositOrder())
 const { getPhraseList } = usePhrase()
-
 const layoutLoading = ref(false)
 const getSearchPhrase = async (value: string) => {
   const res = await getPhraseList({ page: 1, limit: 10, where: { store_id: myStore.value.id, content: value || '' } })
@@ -34,52 +33,6 @@ const getSearchPhrase = async (value: string) => {
 const addMemberRef = ref()
 const Key = ref()
 const formRef = ref<FormInst | null>(null)
-// 初始化表单数据
-const initFormData = ref<Orders>({
-  source: 1, // 订单来源
-  remarks: [], // 备注
-  discount_rate: 100, // 整单折扣
-  round_off: 0, // 抹零金额
-  member_id: undefined, // 会员ID
-  store_id: '', // 门店ID
-  cashier_id: undefined, // 收银员ID
-  //   积分抵扣
-  integral_deduction: 0,
-  has_integral: true, // 是否使用积分
-  product_finisheds: [], // 商品列表
-  product_olds: [], // 旧料
-  product_accessories: [], // 配件列表
-  clerks: [{
-    salesman_id: undefined,
-    performance_rate: 100,
-    is_main: true,
-  }],
-  payments: [{ amount: undefined, payment_method: 1 }], // 支付方式
-  order_deposit_ids: [], // 定金单id
-})
-const userremark = ref('')
-const formData = ref<Orders>({
-  source: 1, // 订单来源
-  remarks: [], // 备注
-  discount_rate: 100, // 整单折扣
-  round_off: 0, // 抹零金额
-  member_id: undefined, // 会员ID
-  store_id: '', // 门店ID
-  cashier_id: undefined, // 收银员ID
-  //   积分抵扣
-  integral_deduction: 0,
-  has_integral: true, // 是否使用积分
-  product_finisheds: [], // 商品列表
-  product_olds: [], // 旧料
-  product_accessories: [], // 配件列表
-  clerks: [{
-    salesman_id: undefined,
-    performance_rate: 100,
-    is_main: true,
-  }],
-  payments: [{ amount: undefined, payment_method: 1 }], // 支付方式
-  order_deposit_ids: [], // 定金单id
-})
 
 const rules = ref<FormRules>({
   cashier_id: {
@@ -107,10 +60,6 @@ const billingSet = ref({
 } as BillingSet)
 // 是否禁止修改积分抵扣  true:禁止 false:允许
 const disScore = ref(false)
-// 展示商品列表
-const showProductList = ref<ProductFinished[]>([])
-const showMasterialsList = ref<ProductOld[]>([])
-const showPartsList = ref<ProductAccessories[]>([])
 
 // 定金单列表
 const showDepositList = ref<DepositOrderInfo[]>([])
@@ -144,9 +93,34 @@ const getStaff = async () => {
     $toast.error(res?.data.value?.message || '获取员工列表失败')
   }
 }
+const tipForm = ref(false)
+if (myStore.value.id) {
+  await getStaff()
+}
+onMounted(async () => {
+  const formData = orderObject.value.formData
+  const showLists = orderObject.value
+  // 检查是否需要显示表单
+  const shouldShowTipForm
+  = formData.cashier_id
+  || (!formData.cashier_id && formData.clerks[0]?.salesman_id)
+  || formData.has_integral
+  || formData.member_id
+  || formData.discount_rate !== 100
+  || formData.round_off !== 0
+  || formData.integral_deduction !== 0
+  || formData.payments.some(item => item.amount !== undefined)
+  || formData.remarks.length > 0
+  || showLists.showProductList.length > 0
+  || showLists.showMasterialsList.length > 0
+  || showLists.showPartsList.length > 0
+  // 设置表单显示状态
+  tipForm.value = !!shouldShowTipForm
+})
+
 // 添加商品
 const addProduct = async (product: ProductFinisheds) => {
-  const index = showProductList.value.findIndex(item => item.product_id === product?.id)
+  const index = orderObject.value.showProductList.findIndex(item => item.product_id === product?.id)
   //   添加成品到列表中
   if (index === -1) {
     const data = {
@@ -180,7 +154,7 @@ const addProduct = async (product: ProductFinisheds) => {
       data.rate = 0
     }
 
-    showProductList.value.push(data)
+    orderObject.value.showProductList.push(data)
   }
   else {
     $toast.error('该商品已经添加过')
@@ -197,7 +171,7 @@ if (route?.query?.id) {
     }
   })
   await getStaff()
-  formData.value.clerks[0] = {
+  orderObject.value.formData.clerks[0] = {
     salesman_id: OrderDetail.value.clerk_id,
     performance_rate: 100,
     is_main: true,
@@ -232,33 +206,33 @@ const addNewMember = async (val: Member) => await createMember(val)
 
 // 设置积分抵扣值
 const handleIsInterChange = () => {
-  if (!formData.value.has_integral) {
+  if (!orderObject.value.formData.has_integral) {
     // 清空积分
-    showProductList.value.forEach((item) => {
+    orderObject.value.showProductList.forEach((item) => {
       item.integral = 0
     })
-    showMasterialsList.value.forEach((item) => {
+    orderObject.value.showMasterialsList.forEach((item) => {
       item.integral = 0
     })
-    showPartsList.value.forEach((item) => {
+    orderObject.value.showPartsList.forEach((item) => {
       item.integral = 0
     })
   }
   else {
-    showProductList.value.forEach((item) => {
+    orderObject.value.showProductList.forEach((item) => {
       // 计算应得的积分 +
       item.integral = calc('(a / b) | =0 ~5 ,!n', {
         a: item.price,
         b: item.rate,
       })
     })
-    showMasterialsList.value.forEach((item) => {
+    orderObject.value.showMasterialsList.forEach((item) => {
       item.integral = calc('(a / b)| =0 ~5, !n', {
         a: item.recycle_price,
         b: item.rate,
       })
     })
-    showPartsList.value.forEach((item) => {
+    orderObject.value.showPartsList.forEach((item) => {
       item.integral = calc('(a / b) | =0 ~5 ,!n', {
         a: item.amount,
         b: item.rate,
@@ -330,35 +304,35 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()
   formRef.value?.validate(async (errors) => {
     if (!errors) {
-      if (!formData.value.member_id) {
+      if (!orderObject.value.formData.member_id) {
         $toast.error('请先添加会员')
         return
       }
-      formData.value.product_accessories = []
+      orderObject.value.formData.product_accessories = []
       // 成功的操作
-      formData.value.product_finisheds = showProductList.value
-      formData.value.store_id = myStore.value.id
-      formData.value.product_olds = showMasterialsList.value
-      showPartsList.value.forEach((item) => {
+      orderObject.value.formData.product_finisheds = orderObject.value.showProductList
+      orderObject.value.formData.store_id = myStore.value.id
+      orderObject.value.formData.product_olds = orderObject.value.showMasterialsList
+      orderObject.value.showPartsList.forEach((item) => {
         const data = {
           product_id: item.id,
           quantity: item.quantity,
           price: item.amount,
           integral: item.integral,
         }
-        formData.value.product_accessories?.push(data)
+        orderObject.value.formData.product_accessories?.push(data)
       })
       // 添加备注
-      if (userremark.value && userremark.value.trim()) {
-        const trimmedRemark = userremark.value.trim()
-        const exists = formData.value.remarks?.includes(trimmedRemark)
+      if (orderObject.value.userremark && orderObject.value.userremark.trim()) {
+        const trimmedRemark = orderObject.value.userremark.trim()
+        const exists = orderObject.value.formData.remarks?.includes(trimmedRemark)
         if (!exists) {
-          formData.value.remarks?.push(trimmedRemark)
+          orderObject.value.formData.remarks?.push(trimmedRemark)
         }
       }
       // 业绩比例
       const result = ref(0)
-      formData.value.clerks.forEach((item) => {
+      orderObject.value.formData.clerks.forEach((item) => {
         result.value += item.performance_rate || 0
       })
 
@@ -372,14 +346,14 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
       }
       layoutLoading.value = true
       try {
-        const res = await submitOrder(formData.value)
+        const res = await submitOrder(orderObject.value.formData)
         if (res?.code === HttpCode.SUCCESS) {
           $toast.success('开单成功')
           navigateTo('/sale/sales/list', { external: true, replace: true, redirectCode: 200 })
-          formData.value = { ...initFormData.value }
-          showProductList.value = []
-          showMasterialsList.value = []
-          showPartsList.value = []
+          initObjForm()
+          orderObject.value.showProductList = []
+          orderObject.value.showMasterialsList = []
+          orderObject.value.showPartsList = []
           Key.value = Date.now().toString()
         }
         else {
@@ -401,10 +375,10 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
 // 切换门店的操作
 const changeStore = () => {
   getbillingSet()
-  showProductList.value = []
-  showPartsList.value = []
-  showMasterialsList.value = []
-  formData.value = { ...initFormData.value }
+  orderObject.value.showProductList = []
+  orderObject.value.showPartsList = []
+  orderObject.value.showMasterialsList = []
+  initObjForm()
   Key.value = Date.now().toString()
 }
 </script>
@@ -414,7 +388,7 @@ const changeStore = () => {
     <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] pb-[80px] col-12" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3">
       <n-form
         ref="formRef"
-        :model="formData"
+        :model="orderObject.formData"
         :rules="rules"
         label-align="left"
         size="large"
@@ -424,54 +398,57 @@ const changeStore = () => {
         </div>
         <div class="pb-[16px]">
           <sale-add-base
-            v-model="formData"
-            v-model:integral="formData.has_integral"
+            v-model="orderObject.formData"
+            v-model:integral="orderObject.formData.has_integral"
             :filter-list="filterList"
             :store-staff="StoreStaffList"
             :get-staff="getStaff"
             :set-score="handleIsInterChange"
           />
         </div>
+
         <sale-add-member
           ref="addMemberRef"
+          v-model="orderObject"
           :get-member="getMember"
           :store="myStore"
           :staffs="StoreStaffList"
           :get-staffs="getStaff"
           :add-new-member="addNewMember"
-          @set-member-id="formData.member_id = $event"
+          @set-member-id="orderObject.formData.member_id = $event"
         />
         <div class="pb-[16px]">
           <sale-add-product
-            v-model="showProductList"
-            v-model:form-data="formData"
+            v-model="orderObject.showProductList"
+            v-model:form-data="orderObject.formData"
+            v-model:product-set="orderObject.ProductListSet"
             title="成品"
             :search-product-list="searchProductList"
             :price="goldList"
-            :is-integral="formData.has_integral"
+            :is-integral="orderObject.formData.has_integral"
             :check-product-class="checkProductClass"
             :billing-set="billingSet"
           />
         </div>
         <div class="pb-[16px]">
           <sale-add-masterials
-            v-model:list="showMasterialsList"
+            v-model:list="orderObject.showMasterialsList"
             v-model:now-old-master="OldObj"
             title="旧料"
             :price="goldList"
             :search-olds="searchOlds"
             :check-old-class="CheckOldClass"
             :old-filter-list-to-array="oldFilterListToArray"
-            :is-integral="formData.has_integral"
+            :is-integral="orderObject.formData.has_integral"
             :billing-set="billingSet"
           />
         </div>
         <div class="pb-[16px]">
           <sale-add-parts
-            v-model:list="showPartsList"
+            v-model:list="orderObject.showPartsList"
             title="配件礼品"
             :check-accessories-score="checkAccessoriesScore"
-            :is-integral="formData.has_integral"
+            :is-integral="orderObject.formData.has_integral"
             :billing-set="billingSet"
             :search-parts="searchParts"
             :part-filter="accessorieFilterList"
@@ -486,17 +463,17 @@ const changeStore = () => {
               title="订金单"
               :search-deposit-orders="searchDepositOrders"
               :order-detail="OrderDetail"
-              @set-order-ids="formData.order_deposit_ids = $event"
+              @set-order-ids="orderObject.formData.order_deposit_ids = $event"
             />
           </div>
         </template>
 
         <sale-add-settlement
-          v-model:userremark="userremark"
-          v-model:form="formData"
-          v-model:show-list="showProductList"
-          v-model:master="showMasterialsList"
-          v-model:parts="showPartsList"
+          v-model:userremark="orderObject.userremark"
+          v-model:form="orderObject.formData"
+          v-model:show-list="orderObject.showProductList"
+          v-model:master="orderObject.showMasterialsList"
+          v-model:parts="orderObject.showPartsList"
           v-model:deposit="selectDepositList"
           :filter-list="filterList"
           :dis-score="disScore"
@@ -515,7 +492,13 @@ const changeStore = () => {
         </div>
       </n-form>
     </div>
-    <common-loading v-model="layoutLoading" />
+    <common-confirm
+      v-model:show="tipForm" icon="warning" title="提醒" text="检测到有未完成的新增订单,是否继续填写?" @cancel="() => {
+        initObjForm()
+      }"
+      @submit="async () => {
+        await getStaff()
+      }" />
   </div>
 </template>
 

@@ -1,4 +1,23 @@
 /**
+ * 缓存数据
+ */
+interface orderObject {
+  formData: Orders
+  // 展示商品列表
+  showProductList: ProductFinished[]
+  showMasterialsList: ProductOld[]
+  showPartsList: ProductAccessories[]
+  MemberInfo: Member
+  scoreDeduct: number
+  ProductListSet: {
+    scoreDeduct: number
+    amount_reduce: number
+    discount_rate: number
+  }
+  userremark: string
+}
+
+/**
  * 新增销售单
  */
 interface Orders {
@@ -51,11 +70,11 @@ interface Orders {
   /**
    * 订单备注
    */
-  remarks?: string[]
+  remarks: string[]
   /**
    * 抹零
    */
-  round_off: number | string
+  round_off: number
   /**
    * 订单来源
    */
@@ -63,7 +82,7 @@ interface Orders {
   /**
    * 门店ID
    */
-  store_id?: string
+  store_id: string
 }
 
 /**
