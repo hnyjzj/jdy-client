@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { calc } from 'a-calc'
 
-const hold = defineModel<number>('hold', { default: 0 })
+const props = defineProps<{
+  rounding: string
+  hold: number
+}>()
 const showPartsList = defineModel<ProductAccessories[]>('list', { default: [] })
 const hasCheck = ref(false)
 
@@ -16,9 +19,11 @@ const deleteParts = (index: number) => {
 const changeQuantity = (obj: ProductAccessories) => {
   if (obj.quantity && obj.price) {
     // 计算应付金额
-    obj.amount = calc('(a * b)| =0 ~5, !n', {
-      a: obj.quantity || 1,
-      b: Number(obj.price) || 0,
+    const qty = obj.quantity ?? 1
+    const price = Number(obj.price ?? 0)
+    obj.amount = calc(`(a * b)| =${props.hold} ~${props.rounding}, !n`, {
+      a: qty,
+      b: price,
     })
   }
 }
