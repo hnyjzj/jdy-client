@@ -14,9 +14,9 @@ const emits = defineEmits<{
 
 const showPartsList = defineModel<ProductAccessories[]>('list', { default: [] })
 const showModal = ref(false)
-
 // 小数点进位计算函数
-const hold = ref(0)
+const hold = holdFunction(Props.billingSet.decimal_point)
+const rounding = roundFunction(Props.billingSet.rounding)
 </script>
 
 <template>
@@ -38,13 +38,13 @@ const hold = ref(0)
     </div>
 
     <sale-add-parts-list
-      v-model:hold="hold"
       v-model:list="showPartsList"
+      :hold="hold"
+      :rounding="rounding"
       :is-integral="Props.isIntegral" />
     <sale-add-parts-search
       v-model:show="showModal"
       v-model:list="showPartsList"
-      v-model:hold="hold"
       :is-integral="Props.isIntegral"
       :billing-set="Props.billingSet"
       :check-accessories-score="Props.checkAccessoriesScore"
