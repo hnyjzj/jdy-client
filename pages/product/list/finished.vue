@@ -273,6 +273,7 @@ async function submitGoods(req: ProductFinisheds[]) {
   finally {
     isUploadModel.value = false
     isLoading.value = false
+    uploadRef.value.clearData()
   }
 }
 
@@ -298,6 +299,7 @@ async function submitCode(code: BatchCode[]) {
   finally {
     isCodeModel.value = false
     isLoading.value = false
+    uploadCodeRef.value.clearData()
   }
 }
 </script>
