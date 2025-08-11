@@ -1,8 +1,12 @@
 <script lang="ts" setup>
 const props = withDefaults(defineProps<{
   title?: string
+  firstText?: string
+  secondText?: string
 }>(), {
   title: '入库',
+  firstText: '批量导入',
+  secondText: '手动添加',
 })
 const emits = defineEmits<{
   goAdd: []
@@ -24,15 +28,15 @@ function batchFun() {
             <img class="block" src="/images/icon/export.png" width="24" height="24">
           </div>
           <div class="export-text">
-            批量导入
+            {{ firstText }}
           </div>
         </div>
-        <div class="box ml-2" @click="emits('goAdd')">
+        <div class="box ml-2" @click="isModel = false;emits('goAdd')">
           <div class="batch yellow">
             <img class="block" src="/images/icon/export.png" width="24" height="24">
           </div>
           <div class="export-text">
-            手动添加
+            {{ secondText }}
           </div>
         </div>
       </div>

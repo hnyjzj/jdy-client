@@ -113,6 +113,26 @@ export const useFinished = defineStore('Finished', {
         throw new Error(`更新失败: ${error || '未知错误'}`)
       }
     },
+    // 更新条码
+    async updateFinishedCode(pamars: BatchCode[]) {
+      try {
+        const { data } = await https.put<any, { data: BatchCode[] }>('/product/finished/batch/code', { data: pamars })
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`更新失败: ${error || '未知错误'}`)
+      }
+    },
+    // 批量更新数据
+    async updateFinishedUpdata(pamars: ProductFinisheds[]) {
+      try {
+        const { data } = await https.put<any, { data: ProductFinisheds[] }>('/product/finished/batch/update', { data: pamars })
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`更新失败: ${error || '未知错误'}`)
+      }
+    },
     // 成品转换
     async convertFinished(pamars: ProductTransfer) {
       try {

@@ -296,6 +296,14 @@ const cols = [
                 </div>
                 <div class="flex py-[4px] justify-between">
                   <div>
+                    调出门店
+                  </div>
+                  <div class="val">
+                    {{ info?.from_store?.name }}
+                  </div>
+                </div>
+                <div class="flex py-[4px] justify-between">
+                  <div>
                     调入门店
                   </div>
                   <div class="val">
