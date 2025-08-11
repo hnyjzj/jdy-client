@@ -69,7 +69,7 @@ const deleteConfirm = () => {
                       :show-button="false"
                       placeholder="请输入应付金额"
                       round
-                      :precision="hold"
+                      :precision="props.hold"
                       min="0"
                       @focus="focus"
                     >
