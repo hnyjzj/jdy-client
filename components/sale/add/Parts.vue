@@ -45,7 +45,6 @@ const rounding = roundFunction(Props.billingSet.rounding)
     <sale-add-parts-search
       v-model:show="showModal"
       v-model:list="showPartsList"
-      v-model:hold="hold"
       :is-integral="Props.isIntegral"
       :billing-set="Props.billingSet"
       :check-accessories-score="Props.checkAccessoriesScore"
