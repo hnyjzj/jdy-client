@@ -7,7 +7,7 @@ const Props = defineProps<{
 }>()
 const emit = defineEmits<{
   updateScoreDeDeduction: []
-
+  updateAmount: []
 }>()
 const showProductList = defineModel<ProductFinished[]>('list', { default: [] })
 const hasCheck = ref(false)
@@ -27,6 +27,7 @@ const dleId = ref(0)
 const delProduct = () => {
   showProductList.value.splice(dleId.value, 1)
   dleId.value = 0
+  emit('updateAmount')
 }
 // 删除商品
 const deleteProduct = (index: number) => {
@@ -244,22 +245,7 @@ const count = (p: ProductFinished) => {
                       }"
                     />
                   </n-form-item-gi>
-                  <!-- <n-form-item-gi :span="12" label="卡券抵扣">
-                        <n-input-number
-                          v-model:value="obj.cardDeduction"
-                          :show-button="false"
-                          placeholder="卡券抵扣"
-                          :default-value="0"
-                          min="0"
-                          round
-                          :precision="2"
-                          @blur="() => {
-                            if (!obj.cardDeduction?.toString()){
-                              obj.cardDeduction = 0
-                            }
-                          }"
-                        />
-                      </n-form-item-gi> -->
+
                   <n-form-item-gi :span="12" label="积分抵扣">
                     <n-input-number
                       v-model:value="obj.integral_deduction"

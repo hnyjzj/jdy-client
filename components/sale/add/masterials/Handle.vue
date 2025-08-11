@@ -235,6 +235,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                             size="large"
                             round :placeholder="`输入${item.label}`"
                             :show-button="false"
+                            :min="0"
                             @focus="focus" @blur="changePrice()" />
                         </template>
                         <template v-else-if="item.name === 'quality_actual'">
@@ -250,6 +251,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                           <n-input-number
                             v-model:value="(params[item.name] as number)"
                             size="large"
+                            :min="0"
                             round :placeholder="`输入${item.label}`" :show-button="false"
                             @focus="focus" />
                         </template>
@@ -257,6 +259,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                           <n-input-number
                             v-model:value="(params[item.name] as number)"
                             size="large"
+                            :min="0"
                             round :placeholder="`输入${item.label}`" :show-button="false"
                             @focus="focus" />
                         </template>
@@ -267,6 +270,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                       <n-input-number
                         v-model:value="(params[item.name] as number)"
                         size="large"
+                        :min="0"
                         round :placeholder="`输入${item.label}`" :show-button="false"
                         @focus="focus" />
                     </template>

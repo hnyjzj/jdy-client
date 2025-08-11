@@ -15,7 +15,10 @@ const emit = defineEmits<{
 }>()
 const { myStore } = storeToRefs(useStores())
 const { userinfo } = storeToRefs(useUser())
-const { orderObject } = storeToRefs(useOrder())
+
+const orderObject = defineModel({ default: {
+  MemberInfo: {},
+} as orderObject })
 const Key = ref()
 const { $toast } = useNuxtApp()
 // 提示新增
@@ -124,7 +127,8 @@ defineExpose({
               <common-button-rounded content="搜索" @button-click="searchMember(searchPhone)" />
             </div>
           </n-form-item-gi>
-          <template v-if=" orderObject.MemberInfo?.id">
+
+          <template v-if="orderObject.MemberInfo?.id">
             <n-form-item-gi :span="24" label="会员信息">
               <div class="mr-[16px]">
                 <template v-if=" orderObject.MemberInfo?.avatar">

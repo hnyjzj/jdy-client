@@ -9,69 +9,12 @@ const Props = defineProps<{
   searchProductList: (data: { val: string, type: string }) => Promise<ProductFinisheds[]>
   checkProductClass: (val: { class: number }) => any
 }>()
-const { $toast } = useNuxtApp()
+
 // 展示商品列表
 const showProductList = defineModel<ProductFinished[]>({ default: [] })
 const formData = defineModel('formData', { default: {} as Orders })
 // 显示搜索弹窗
 const showModal = ref(false)
-
-// 添加商品
-const addProduct = async (products: ProductFinisheds[]) => {
-  products.forEach(async (product: ProductFinisheds) => {
-    const index = showProductList.value.findIndex(item => item.product_id === product?.id)
-
-    //   添加成品到列表中
-    if (index === -1) {
-      const data = {
-        name: product.name,
-        retail_type: product.retail_type,
-        label_price: product.label_price,
-        weight_metal: product.weight_metal,
-        code: product.code,
-        price_gold: 0, // 金价
-        discount_fixed: 100, // 折扣
-        price: 0, // 应付金额
-        product_id: product?.id as string, // 商品id
-        labor_fee: 0, // 工费
-        round_off: 0, // 抹零
-        discount_final: 0, // 显示折扣
-        price_original: 0, // 原始价格
-        discount_member: 100, // 会员折扣
-        integral: 0, // 积分
-        integral_deduction: 0, // 积分抵扣
-        rate: 0, // 积分比例
-        class: product.class,
-      }
-      data.labor_fee = Number(product.labor_fee)
-      // 匹配金价
-
-      const exists = Props.price.filter(item =>
-        item.product_type === GoodsType.ProductFinish
-        && item.product_material === product.material
-        && item.product_quality.includes(product.quality)
-        && item.product_brand?.includes(product.brand),
-      )
-
-      if (exists && exists.length > 0) {
-        data.price_gold = Number(exists[0].price)
-      }
-      else {
-        data.price_gold = 0
-      }
-      const rate = await Props.checkProductClass({ class: data.class })
-      if (rate && rate !== '0') {
-        data.rate = Number(rate)
-      }
-      else {
-        data.rate = 0
-      }
-
-      showProductList.value.push(data)
-    }
-  })
-  showModal.value = false
-}
 
 // 设置折扣率
 const handleDiscountRateBlur = (discount_rate: number) => {
@@ -84,7 +27,6 @@ const handleDiscountRateBlur = (discount_rate: number) => {
   showProductList.value.forEach((item) => {
     item.discount_fixed = discount_rate
   })
-  formData.value.discount_rate = discount_rate
 }
 
 // 计算选择的成品列表中所有应付金额 不算折扣
@@ -98,10 +40,6 @@ const allAmount = () => {
 
 // 设置整体抹零金额
 const handleAmountReduceBlur = (amount_reduce: number) => {
-  if (showProductList.value.length === 0) {
-    $toast.warning('请先添加商品')
-    return
-  }
   // 初始化结果变量
   let result = 0
   // 检查amount_reduce的值是否小于0或者为空
@@ -117,11 +55,16 @@ const handleAmountReduceBlur = (amount_reduce: number) => {
   }
   showProductList.value.forEach((item, index) => {
     // 计算每个item的 抹零金额
-    item.round_off = calc('(amount / allAmount * amountReduce) | 1 ~5, !n , <=0', {
-      amount: item.price_original,
-      allAmount: allAmount(),
-      amountReduce: amount_reduce || 0, // 整单设置抹零金额
-    })
+    if (Number(item.price_original) === 0 || allAmount() === 0 || amount_reduce === 0) {
+      item.round_off = 0
+    }
+    else {
+      item.round_off = calc('((amount / allAmount ) * amountReduce) | 1 ~5, !n , <=0', {
+        amount: Number(item.price_original),
+        allAmount: allAmount(),
+        amountReduce: amount_reduce || 0, // 整单设置抹零金额
+      })
+    }
     // 如果不是最后一个item，累加notCount到结果变量
     if (index !== showProductList.value.length - 1) {
       result += item?.round_off || 0
@@ -178,6 +121,7 @@ const handleScoreReduceBlur = (scoreDeduct: number) => {
     // 遍历商品列表，计算每个商品的积分抵扣金额
     showProductList.value.forEach((item, index) => {
     // 计算当前商品的积分抵扣金额
+
       item.integral_deduction = calc('(amount / allAmount * scoreDeduct) | =0 ~5, !n', {
         amount: item.price_original, // 应付金额
         allAmount: allAmount(), // 总金额
@@ -198,6 +142,66 @@ const handleScoreReduceBlur = (scoreDeduct: number) => {
     })
   }
 }
+// 添加商品
+const addProduct = async (products: ProductFinisheds[]) => {
+  products.forEach(async (product: ProductFinisheds) => {
+    const index = showProductList.value.findIndex(item => item.product_id === product?.id)
+    //   添加成品到列表中
+    if (index === -1) {
+      const data = {
+        name: product.name,
+        retail_type: product.retail_type,
+        label_price: product.label_price,
+        weight_metal: product.weight_metal,
+        code: product.code,
+        price_gold: 0, // 金价
+        discount_fixed: 100, // 折扣
+        price: 0, // 应付金额
+        product_id: product?.id as string, // 商品id
+        labor_fee: 0, // 工费
+        round_off: 0, // 抹零
+        discount_final: 0, // 显示折扣
+        price_original: 0, // 原始价格
+        discount_member: 100, // 会员折扣
+        integral: 0, // 积分
+        integral_deduction: 0, // 积分抵扣
+        rate: 0, // 积分比例
+        class: product.class,
+      }
+      data.labor_fee = Number(product.labor_fee)
+      // 匹配金价
+      data.discount_fixed = Number(formData.value.discount_rate)
+      const exists = Props.price.filter(item =>
+        item.product_type === GoodsType.ProductFinish
+        && item.product_material === product.material
+        && item.product_quality.includes(product.quality)
+        && item.product_brand?.includes(product.brand),
+      )
+
+      if (exists && exists.length > 0) {
+        data.price_gold = Number(exists[0].price)
+      }
+      else {
+        data.price_gold = 0
+      }
+      const rate = await Props.checkProductClass({ class: data.class })
+      if (rate && rate !== '0') {
+        data.rate = Number(rate)
+      }
+      else {
+        data.rate = 0
+      }
+      data.discount_fixed = formData.value.discount_rate
+      showProductList.value.push(data)
+      nextTick(() => {
+        handleScoreReduceBlur(formData.value.integral_deduction)
+        handleAmountReduceBlur(formData.value.round_off)
+      })
+    }
+  })
+
+  showModal.value = false
+}
 
 // 点击搜索按钮 弹出弹窗
 const clickSearchButton = () => {
@@ -210,6 +214,16 @@ const clickSearchButton = () => {
     <sale-add-product-button @search="clickSearchButton" />
     <!-- 整单折扣设置 -->
 
+    <div class="px-[16px] py-[8px]">
+      <!-- 成品列表 -->
+      <sale-add-product-list
+        v-model:list="showProductList"
+        :billing-set="Props.billingSet"
+        :is-integral="Props.isIntegral"
+        @update-score-de-deduction="updateDedution"
+        @update-amount="handleAmountReduceBlur(formData.round_off)"
+      />
+    </div>
     <template v-if="showProductList.length">
       <sale-add-product-deduction
         v-model="formData"
@@ -218,14 +232,6 @@ const clickSearchButton = () => {
         @set-discount-rate="handleDiscountRateBlur"
       />
     </template>
-    <div class="px-[16px] py-[8px]">
-      <!-- 成品列表 -->
-      <sale-add-product-list
-        v-model:list="showProductList"
-        :billing-set="Props.billingSet"
-        :is-integral="Props.isIntegral"
-        @update-score-de-deduction="updateDedution" />
-    </div>
     <!-- 选择时使用的列表 -->
     <sale-add-product-popup
       v-model:show="showModal"

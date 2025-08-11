@@ -10,7 +10,7 @@ const props = defineProps<{
 }>()
 
 const formData = defineModel<Orders>('form', { default: {} })
-const userremark = defineModel<string>('userremark', { default: {} })
+const userremark = defineModel<string>('userremark', { default: '' })
 // 成品列表数据
 const showProductList = defineModel<ProductFinished[]>('showList', { default: [] })
 // 旧料列表数据

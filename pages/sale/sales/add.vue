@@ -34,8 +34,6 @@ const addMemberRef = ref()
 const Key = ref()
 const formRef = ref<FormInst | null>(null)
 
-const userremark = ref('')
-
 const rules = ref<FormRules>({
   cashier_id: {
     required: true,
@@ -325,8 +323,8 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
         orderObject.value.formData.product_accessories?.push(data)
       })
       // 添加备注
-      if (userremark.value && userremark.value.trim()) {
-        const trimmedRemark = userremark.value.trim()
+      if (orderObject.value.userremark && orderObject.value.userremark.trim()) {
+        const trimmedRemark = orderObject.value.userremark.trim()
         const exists = orderObject.value.formData.remarks?.includes(trimmedRemark)
         if (!exists) {
           orderObject.value.formData.remarks?.push(trimmedRemark)
@@ -411,6 +409,7 @@ const changeStore = () => {
 
         <sale-add-member
           ref="addMemberRef"
+          v-model="orderObject"
           :get-member="getMember"
           :store="myStore"
           :staffs="StoreStaffList"
@@ -470,7 +469,7 @@ const changeStore = () => {
         </template>
 
         <sale-add-settlement
-          v-model:userremark="userremark"
+          v-model:userremark="orderObject.userremark"
           v-model:form="orderObject.formData"
           v-model:show-list="orderObject.showProductList"
           v-model:master="orderObject.showMasterialsList"

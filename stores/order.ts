@@ -44,7 +44,8 @@ export const useOrder = defineStore('Order', {
         amount_reduce: 0,
         discount_rate: 100,
       },
-    },
+      userremark: '',
+    } as orderObject,
   }),
   actions: {
     /**
@@ -237,6 +238,7 @@ export const useOrder = defineStore('Order', {
           amount_reduce: 0,
           discount_rate: 100,
         },
+        userremark: '',
       }
     },
 
