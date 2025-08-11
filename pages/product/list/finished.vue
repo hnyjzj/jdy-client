@@ -356,7 +356,7 @@ async function submitCode(code: BatchCode[]) {
             2. 修改需要更新的地方；
           </div>
           <div class="pb-2">
-            3. 删除不在入库模板中的列；
+            3. 删除不在入库模板中的数据；
           </div>
           <div class="pb-2">
             4. 上传更新后的货品，不要修改表格式。
