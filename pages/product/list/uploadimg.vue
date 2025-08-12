@@ -89,7 +89,7 @@ const handleQueryParams = async () => {
 }
 
 onMounted(async () => {
-  await getMyStore({ page: 1, limit: 20 })
+  await getMyStore()
   await handleQueryParams()
 })
 

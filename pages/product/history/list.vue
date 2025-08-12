@@ -84,7 +84,7 @@ try {
   await getOldWhere()
   await changeStore()
   await getStoreList({ page: 1, limit: 20 })
-  await getMyStore({ page: 1, limit: 20 })
+  await getMyStore()
 }
 catch (error) {
   throw new Error(`初始化失败: ${error || '未知错误'}`)

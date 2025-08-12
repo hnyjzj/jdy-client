@@ -100,7 +100,7 @@ function changeStore() {
     storeCol.value.push({ label: item.name, value: item.id })
   })
 }
-await getMyStore({ page: 1, limit: 20 })
+await getMyStore()
 await changeStore()
 
 if (myStore.value && Object.keys(myStore.value).length) {

@@ -95,7 +95,7 @@ export const useAuth = defineStore('authStore', {
           await userStore.getUserInfo()
           await navigateTo(decodeURIComponent(redirect_url as string), { external: true, replace: true, redirectCode: 200 })
           //   登录成功获取我的门店
-          await useStores().getMyStore({ page: 1, limit: 10 })
+          await useStores().getMyStore()
         }
         return data.value
       }

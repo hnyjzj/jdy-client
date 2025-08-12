@@ -16,7 +16,7 @@ const { myStoreList, myStore } = storeToRefs(useStores())
 const { initObjForm } = useOrder()
 const columns = ref()
 const confirmShow = ref(false)
-const getList = async () => await getMyStore({ page: 1, limit: 20 })
+const getList = async () => await getMyStore()
 
 if (!myStore.value || !Object.keys(myStoreList.value).length) {
   await getList()

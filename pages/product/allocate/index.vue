@@ -73,7 +73,7 @@ function changeStore() {
     storeCol.value.push({ label: item.name, value: item.id })
   })
 }
-await getMyStore({ page: 1, limit: 20 })
+await getMyStore()
 await changeStore()
 await getAllocateWhere()
 // 筛选框显示隐藏

@@ -86,7 +86,7 @@ const updatePage = (page: number) => {
 
 await changeStore()
 await getStoreList({ page: 1, limit: 20 })
-await getMyStore({ page: 1, limit: 20 })
+await getMyStore()
 // 页面初始化逻辑
 try {
   if (myStore.value.id || myStore.value.id === '') {

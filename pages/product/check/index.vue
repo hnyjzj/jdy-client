@@ -23,7 +23,7 @@ async function changeStore() {
   })
 }
 await getStoreList({ page: 1, limit: 20 })
-await getMyStore({ page: 1, limit: 20 })
+await getMyStore()
 await changeStore()
 await getCheckWhere()
 // 筛选框显示隐藏

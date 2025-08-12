@@ -109,9 +109,10 @@ export const useStores = defineStore('Store', {
       }
     },
     // 我的门店
-    async getMyStore(req: ReqList<Stores>) {
+    async getMyStore() {
       try {
-        const { data } = await https.post<Stores[], ReqList<Stores>>('/store/my', req)
+        const params = { }
+        const { data } = await https.post<Stores[], any>('/store/my', params)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.myStoreList = data.value.data
           //   如果选择当前门店，则默认选中第一个

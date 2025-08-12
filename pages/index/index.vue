@@ -8,7 +8,7 @@ const { TodayInventory, todaySaleData, StorePerformanceList } = storeToRefs(home
 const { myStore, myStoreList } = storeToRefs(useStores())
 const { getMyStore, switchStore } = useStores()
 if (!myStore.value.id) {
-  await getMyStore({ page: 1, limit: 20 })
+  await getMyStore()
 }
 
 // 切换门店
@@ -41,7 +41,7 @@ await StorePerformance({ duration: Duration.today })
           :store-list="myStoreList"
           @handle-select="handleSelectFn"
           @get-store-list="() => {
-            getMyStore({ page: 1, limit: 20 })
+            getMyStore()
           }" />
         <template v-if="StorePerformanceList">
           <summary-card-boss :store-performance-list="StorePerformanceList" />

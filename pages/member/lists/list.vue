@@ -16,7 +16,7 @@ const getStaff = async () => {
     return
   await getStoreStaffList({ id: myStore.value.id })
 }
-await getMyStore({ page: 1, limit: 20 })
+await getMyStore()
 const tableLoading = ref(false)
 const actions = ref([
   { key: 1, label: '增加' },
