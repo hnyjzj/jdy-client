@@ -183,6 +183,13 @@ const cols = [
     key: 'product_count',
   },
   {
+    title: '调出门店',
+    key: 'from_store.name',
+    render(row: Allocate) {
+      return row.from_store?.name ?? '-'
+    },
+  },
+  {
     title: '调入门店',
     key: 'to_store.name',
     render(row: Allocate) {
