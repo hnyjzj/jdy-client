@@ -118,7 +118,7 @@ export const useAllocate = defineStore('Allocate', {
     /** 添加调拨产品 */
     async add(params: AllocateBatchAdd) {
       try {
-        const { data } = await https.put<AllocateBatchAdd, any >('/product/allocate/add', params)
+        const { data } = await https.put<any, AllocateBatchAdd>('/product/allocate/add', params)
         return data.value
       }
       catch (error) {
