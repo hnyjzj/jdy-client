@@ -2,8 +2,8 @@
 const { getAllocateInfo, getAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove, add, getAllocateInfoAll, clear } = useAllocate()
 const { allocateInfo, allocateFilterList, allocateFilterListToArray } = storeToRefs(useAllocate())
 const { useWxWork } = useWxworkStore()
-const { getFinishedWhere, getFinishedList } = useFinished()
-const { finishedFilterListToArray, finishedList } = storeToRefs(useFinished())
+const { getFinishedWhere } = useFinished()
+const { finishedFilterListToArray } = storeToRefs(useFinished())
 const { getOldWhere } = useOld()
 const { oldList, oldFilterListToArray } = storeToRefs(useOld())
 
@@ -127,47 +127,13 @@ const delProduct = useThrottleFn(async (code: ProductFinisheds['code'] | Product
   loading.value = false
 }, 200)
 
-/** 产品code获取产品id */
-async function getProductId() {
-  await getFinishedList({ page: 1, limit: 1, where: { store_id: myStore.value.id, code: pCode.value } })
-  if (finishedList.value?.length) {
-    return [finishedList.value[0].id]
-  }
-  return []
-}
-
-/** 产品code获取产品id */
-async function getOldId() {
-  await getOldList({ page: 1, limit: 1, where: { store_id: myStore.value.id, code: pCode.value } })
-  if (oldList.value?.length) {
-    return [oldList.value[0].id]
-  }
-  return []
-}
-
 /** 添加产品 */
 async function addProduct() {
-  let ids
-  if (type.value === GoodsTypePure.ProductFinish) {
-    ids = await getProductId()
+  const params = {
+    id: allocateInfo.value?.id,
+    codes: [pCode.value],
   }
-  else {
-    if (isOldCodeSearch.value) {
-      ids = await getOldids()
-    }
-    else {
-      ids = await getOldId()
-    }
-  }
-  if (!ids) {
-    return
-  }
-  if (!ids.length) {
-    $toast.warning('没有找到相关货品')
-    return
-  }
-  loading.value = true
-  const res = await add(allocateInfo.value?.id, ids)
+  const res = await add(params)
   if (res?.code === HttpCode.SUCCESS) {
     await getInfo()
     $toast.success('添加成功')
@@ -176,7 +142,6 @@ async function addProduct() {
     isAddModel.value = false
   }
   else {
-    loading.value = false
     $toast.error(res?.message ?? '添加失败')
   }
 }
@@ -239,19 +204,6 @@ function toggleSelectAll(event: any) {
     selectedCategories.value = []
   }
 }
-/** 多选 */
-async function getOldids() {
-  if (!oldList.value?.length || !selectedCategories.value.length) {
-    return []
-  }
-
-  // 创建 id 到对象的映射，避免嵌套循环
-  const oldMap = new Map(oldList.value.map(item => [item.id, item]))
-
-  return selectedCategories.value
-    .filter(id => oldMap.has(id))
-    .map(id => id) // 直接返回 id 值，不需要深拷贝
-}
 
 /**
  * 列表导出excel表格
@@ -300,7 +252,11 @@ async function submitGoods(data: ExcelData[]) {
     return $toast.error('批量导入的数据为空')
   loading.value = true
   try {
-    const res = await add(allocateInfo.value?.id, codes, true)
+    const params = {
+      id: allocateInfo.value?.id,
+      codes,
+    }
+    const res = await add(params)
     if (res?.code === HttpCode.SUCCESS) {
       await getInfo()
       $toast.success('添加成功')

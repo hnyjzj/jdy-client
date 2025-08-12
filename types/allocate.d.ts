@@ -144,3 +144,8 @@ interface AllocateInfoParamsAll {
 interface ExcelData {
   code: string
 }
+
+interface AllocateBatchAdd {
+  id: Allocate['id']
+  codes: string[]
+}
