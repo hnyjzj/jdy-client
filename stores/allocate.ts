@@ -116,24 +116,9 @@ export const useAllocate = defineStore('Allocate', {
       }
     },
     /** 添加调拨产品 */
-    async add(id: Allocate['id'], ids: ProductFinisheds['id'][], isCode = false) {
+    async add(params: AllocateBatchAdd) {
       try {
-        let params
-        if (isCode) {
-          params = {
-            id,
-            codes: ids,
-            product_ids: [],
-          }
-        }
-        else {
-          params = {
-            id,
-            codes: [],
-            product_ids: ids,
-          }
-        }
-        const { data } = await https.put<{ id: string, product_id: ProductFinisheds['id'][] }, any >('/product/allocate/add', params)
+        const { data } = await https.put<any, AllocateBatchAdd>('/product/allocate/add', params)
         return data.value
       }
       catch (error) {

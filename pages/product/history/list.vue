@@ -82,9 +82,9 @@ try {
   await handleQueryParams()
   await getFinishedWhere()
   await getOldWhere()
-  await changeStore()
-  await getStoreList({ page: 1, limit: 20 })
   await getMyStore()
+  await getStoreList({ page: 1, limit: 20 })
+  changeStore()
 }
 catch (error) {
   throw new Error(`初始化失败: ${error || '未知错误'}`)
