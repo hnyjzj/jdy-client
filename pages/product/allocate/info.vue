@@ -421,7 +421,6 @@ const clearFun = useThrottleFn(async () => {
 
                 <template v-if="oldList?.length">
                   <tbody class="pt-2">
-                    <div>{{ selectedCategories }}</div>
                     <template v-for="(old, i) in oldList" :key="i">
                       <tr class="table-color">
                         <td class="sticky-left table-color py-1 px-2">
