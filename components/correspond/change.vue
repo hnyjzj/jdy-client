@@ -13,7 +13,7 @@ const { $toast } = useNuxtApp()
 const { getMyStore } = useStores()
 const { myStoreList, myStore } = storeToRefs(useStores())
 const columns = ref()
-const getList = async () => await getMyStore({ page: 1, limit: 20 })
+const getList = async () => await getMyStore()
 
 const saveStoreId = ref('')
 

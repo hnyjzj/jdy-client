@@ -16,7 +16,7 @@ const copyModel = ref(false)
 
 const limit = 12
 
-const getStoreList = async () => await getMyStore({ page: 1, limit: 20 })
+const getStoreList = async () => await getMyStore()
 
 await getStoreList()
 

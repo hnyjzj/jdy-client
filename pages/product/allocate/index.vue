@@ -73,7 +73,7 @@ function changeStore() {
     storeCol.value.push({ label: item.name, value: item.id })
   })
 }
-await getMyStore({ page: 1, limit: 20 })
+await getMyStore()
 await changeStore()
 await getAllocateWhere()
 // 筛选框显示隐藏
@@ -181,6 +181,13 @@ const cols = [
   {
     title: '调拨数量',
     key: 'product_count',
+  },
+  {
+    title: '调出门店',
+    key: 'from_store.name',
+    render(row: Allocate) {
+      return row.from_store?.name ?? '-'
+    },
   },
   {
     title: '调入门店',

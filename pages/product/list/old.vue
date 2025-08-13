@@ -121,6 +121,7 @@ const pageOption = ref({
   pageSize: limits,
   itemCount: oldListTotal,
   showSizePicker: true,
+  pageSlot: 6,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
     limits.value = pageSize
@@ -282,12 +283,6 @@ async function downloadLocalFile() {
       </template>
     </div>
     <common-loading v-model="loading" text="正在处理中" />
-
-    <common-create @click="downloadLocalFile">
-      <template #content>
-        <icon name="i-icon:download" :size="24" color="#FFF" />
-      </template>
-    </common-create>
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="oldFilterListToArray" @submit="submitWhere" @reset="resetWhere" />
   </div>

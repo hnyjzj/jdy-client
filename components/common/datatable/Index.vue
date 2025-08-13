@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import type { PaginationProps } from 'naive-ui'
+
 const props = withDefaults(defineProps<{
   columns: any[]
   list: any[]
-  pageOption: any
+  pageOption?: PaginationProps
   loading?: boolean
 }>(), {
   loading: false,

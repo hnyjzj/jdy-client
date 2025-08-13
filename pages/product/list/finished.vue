@@ -81,6 +81,7 @@ const pageOption = ref({
   pageSize: limits,
   itemCount: finishedListTotal,
   showSizePicker: true,
+  pageSlot: 6,
   pageSizes: [50, 100, 150, 200],
   onUpdatePageSize: (pageSize: number) => {
     limits.value = pageSize

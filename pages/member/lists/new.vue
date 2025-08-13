@@ -16,7 +16,7 @@ const memberParams = ref<Member>({
   store_id: myStore.value.id,
 } as Member)
 
-await getMyStore({ page: 1, limit: 20 })
+await getMyStore()
 const getStaff = async () => {
   const res = await getStoreStaffList({ id: myStore.value.id })
   if (res) {
