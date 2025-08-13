@@ -297,9 +297,8 @@ if (route?.query?.id) {
 
 // 提示是否继续添加的弹窗
 const tipForm = ref(false)
-onMounted(async () => {
-  // 设置表单显示状态
-  tipForm.value = !!(Object.keys(orderObject.value).filter((i) => {
+const tipFormVisible = () => {
+  return !!(Object.keys(orderObject.value).filter((i) => {
     switch (i) {
       case 'has_integral':
         return false
@@ -311,93 +310,104 @@ onMounted(async () => {
         return true
     }
   })?.length > 0)
+}
+const initFinished = ref(false)
+const loading = ref(true)
+onMounted(async () => {
+  // 设置表单显示状态
+  tipForm.value = tipFormVisible()
   initOptions()
+  initFinished.value = true
+  loading.value = false
 })
 </script>
 
 <template>
   <div :key="Key" class="grid-12 pb-[16px]">
-    <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] pb-[80px] col-12" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3">
-      <n-form
-        ref="formRef"
-        :model="orderObject"
-        :rules="rules"
-        label-align="left"
-        size="large"
-      >
-        <div class="w-[120px] color-[#fff] pb-[12px]">
-          <product-manage-company :confirm="true" @change="changeStore" />
-        </div>
-        <sale-add-base
-          v-model="orderObject"
-          :filter-list="filterList"
-          :store-staff="StoreStaffList"
-          :get-staff="getStaff"
-          :set-score="handleIsInterChange"
-        />
-        <sale-add-member
-          ref="addMemberRef"
-          v-model="orderObject"
-          :get-member="getMember"
-          :store="myStore"
-          :staffs="StoreStaffList"
-          :get-staffs="getStaff"
-          :add-new-member="addNewMember"
-          @set-member-id="orderObject.member_id = $event"
-        />
-        <sale-add-product
-          v-model="orderObject"
-          :price="goldList"
-          :billing-set="billingSet"
-          :search-product-list="searchProductList"
-          :check-product-class="checkProductClass"
-        />
-        <sale-add-masterials
-          v-model="orderObject"
-          v-model:now-old-master="OldObj"
-          :price="goldList"
-          :search-olds="searchOlds"
-          :check-old-class="CheckOldClass"
-          :old-filter-list="oldFilterList"
-          :old-filter-list-to-array="oldFilterListToArray"
-          :billing-set="billingSet"
-        />
-        <sale-add-parts
-          v-model="orderObject"
-          :check-accessories-score="checkAccessoriesScore"
-          :is-integral="orderObject.has_integral"
-          :billing-set="billingSet"
-          :search-parts="searchParts"
-          :part-filter="accessorieFilterList"
-        />
-        <template v-if="route.query.id">
-          <sale-add-depositorder
-            v-model:list="showDepositList"
-            v-model:select="selectDepositList"
-            :search-deposit-orders="searchDepositOrders"
-            :order-detail="OrderDetail"
-            @update-product="updateDepostitProduct()"
+    <template
+      v-if="initFinished">
+      <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] pb-[80px] col-12" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3">
+        <n-form
+          ref="formRef"
+          :model="orderObject"
+          :rules="rules"
+          label-align="left"
+          size="large"
+        >
+          <div class="w-[120px] color-[#fff] pb-[12px]">
+            <product-manage-company :confirm="true" @change="changeStore" />
+          </div>
+          <sale-add-base
+            v-model="orderObject"
+            :filter-list="filterList"
+            :store-staff="StoreStaffList"
+            :get-staff="getStaff"
+            :set-score="handleIsInterChange"
           />
-        </template>
+          <sale-add-member
+            ref="addMemberRef"
+            v-model="orderObject"
+            :get-member="getMember"
+            :store="myStore"
+            :staffs="StoreStaffList"
+            :get-staffs="getStaff"
+            :add-new-member="addNewMember"
+            @set-member-id="orderObject.member_id = $event"
+          />
+          <sale-add-product
+            v-model="orderObject"
+            :price="goldList"
+            :billing-set="billingSet"
+            :search-product-list="searchProductList"
+            :check-product-class="checkProductClass"
+          />
+          <sale-add-masterials
+            v-model="orderObject"
+            v-model:now-old-master="OldObj"
+            :price="goldList"
+            :search-olds="searchOlds"
+            :check-old-class="CheckOldClass"
+            :old-filter-list="oldFilterList"
+            :old-filter-list-to-array="oldFilterListToArray"
+            :billing-set="billingSet"
+          />
+          <sale-add-parts
+            v-model="orderObject"
+            :check-accessories-score="checkAccessoriesScore"
+            :is-integral="orderObject.has_integral"
+            :billing-set="billingSet"
+            :search-parts="searchParts"
+            :part-filter="accessorieFilterList"
+          />
+          <template v-if="route.query.id">
+            <sale-add-depositorder
+              v-model:list="showDepositList"
+              v-model:select="selectDepositList"
+              :search-deposit-orders="searchDepositOrders"
+              :order-detail="OrderDetail"
+              @update-product="updateDepostitProduct()"
+            />
+          </template>
 
-        <sale-add-settlement
-          v-model:form="orderObject"
-          v-model:deposit="selectDepositList"
-          :filter-list="filterList"
-          :dis-score="disScore"
-          :get-search-phrase="getSearchPhrase"
-          :billing-set="billingSet"
-        />
+          <sale-add-settlement
+            v-model:form="orderObject"
+            v-model:deposit="selectDepositList"
+            :filter-list="filterList"
+            :dis-score="disScore"
+            :get-search-phrase="getSearchPhrase"
+            :billing-set="billingSet"
+          />
 
-        <div class="h-[80px] bg-[#fff] fixed z-1">
-          <div class="btn grid-12 px-[16px]">
-            <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
-              <common-button-rounded content="开单" />
+          <div class="h-[80px] bg-[#fff] fixed z-1">
+            <div class="btn grid-12 px-[16px]">
+              <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
+                <common-button-rounded content="开单" />
+              </div>
             </div>
           </div>
-        </div>
-      </n-form>
-    </div>
+        </n-form>
+      </div>
+    </template>
     <common-confirm
       v-model:show="tipForm" icon="warning" title="提醒" text="检测到有未完成的新增订单,是否继续填写?" @cancel="() => {
         initObjForm()
@@ -406,6 +416,7 @@ onMounted(async () => {
       @submit="async () => {
         await getStaff()
       }" />
+    <common-loading v-model="loading" />
   </div>
 </template>
 

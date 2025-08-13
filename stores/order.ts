@@ -10,7 +10,7 @@ export const useOrder = defineStore('Order', {
     oldFilterListToArray: {} as FilterWhere<OrderMaterial>[],
     showtype: 'list' as 'list' | 'table',
     OldObj: {} as OrderMaterial,
-    orderObject: { } as Orders,
+    orderObject: {} as Orders,
   }),
   actions: {
     /**
