@@ -82,8 +82,8 @@ try {
   await handleQueryParams()
   await getFinishedWhere()
   await getOldWhere()
-  await getStoreList({ page: 1, limit: 20 })
   await getMyStore()
+  await getStoreList({ page: 1, limit: 20 })
   changeStore()
 }
 catch (error) {
