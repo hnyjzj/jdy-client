@@ -18,7 +18,9 @@ const deleteSale = (index: number) => {
   orderObject.value.clerks?.splice(index, 1)
   const aliveMain = orderObject.value.clerks?.filter(item => item.is_main === true)
   if (!aliveMain?.length) {
-    orderObject.value.clerks[0].is_main = true
+    if (orderObject.value.clerks?.length) {
+      orderObject.value.clerks[0].is_main = true
+    }
   }
 }
 // 新增销售员

@@ -6,7 +6,7 @@ export const useDepositOrder = defineStore('depositOrder', {
     OrderDetail: {} as DepositOrderInfo,
     filterListToArray: [] as FilterWhere<DepositOrderWhere>[],
     oldFilterList: {} as Where<OrderMaterial>,
-    oldFilterListToArray: {} as FilterWhere<OrderMaterial>[],
+    oldFilterListToArray: [] as FilterWhere<OrderMaterial>[],
     showtype: 'list' as 'list' | 'table',
   }),
 

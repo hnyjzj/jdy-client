@@ -69,9 +69,9 @@ interface Orders {
   /**
    * 展示的成品列表
    */
-  showProductList: OrderProductFinished[]
-  showMasterialsList: OrderMaterial[]
-  showPartsList: OrderPart[]
+  showProductList?: OrderProductFinished[]
+  showMasterialsList?: OrderMaterial[]
+  showPartsList?: OrderPart[]
 
   userRemark: string
 }

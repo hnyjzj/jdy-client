@@ -40,9 +40,7 @@ export const useBillingSetStore = defineStore('BillingSet', {
       const { data } = await https.post<any, { store_id: string }>('/setting/open_order/info', params)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.billingSet = data.value.data
-        if (this.billingSet.discount_rate && this.billingSet.discount_rate !== '0') {
-          this.disScore = true
-        }
+        this.disScore = !!(this.billingSet.discount_rate && this.billingSet.discount_rate !== '0')
         return data.value.data
       }
     },

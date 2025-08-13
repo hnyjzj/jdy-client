@@ -16,12 +16,12 @@ const showModal = ref(false)
 // 设置折扣率
 const handleDiscountRateBlur = (discount_rate?: number) => {
   if (!discount_rate) {
-    orderObject.value.showProductList.forEach((item) => {
+    orderObject.value.showProductList?.forEach((item) => {
       item.discount_fixed = 100
     })
     return
   }
-  orderObject.value.showProductList.forEach((item) => {
+  orderObject.value.showProductList?.forEach((item) => {
     item.discount_fixed = discount_rate
   })
 }
@@ -76,7 +76,7 @@ const handleAmountReduceBlur = (amount_reduce?: number) => {
 // 更新总抵扣值
 const updateDedution = () => {
   const total = ref(0)
-  orderObject.value.showProductList.forEach((item) => {
+  orderObject.value.showProductList?.forEach((item) => {
     total.value += item.integral_deduction || 0
   })
 
@@ -138,13 +138,12 @@ const addProduct = async (products: ProductFinisheds[]) => {
         weight_metal: product.weight_metal,
         code: product.code,
         product_id: product?.id as string, // 商品id
-        discount_fixed: 100,
         discount_member: 100, // 会员折扣
         class: product.class,
       } as OrderProductFinished
       data.labor_fee = Number(product.labor_fee)
       // 匹配金价
-      data.discount_fixed = Number(orderObject.value.discount_rate) || 100
+      data.discount_fixed = Number(orderObject.value.discount_rate || 100)
       const exists = Props.price.filter(item =>
         item.product_type === GoodsType.ProductFinish
         && item.product_material === product.material
@@ -154,7 +153,7 @@ const addProduct = async (products: ProductFinisheds[]) => {
       data.price_gold = (exists && exists.length > 0) ? Number(exists[0].price) : undefined
       const rate = await Props.checkProductClass({ class: data.class })
       data.rate = (rate && rate !== '0') ? Number(rate) : 0
-      orderObject.value.showProductList.push(data)
+      orderObject.value.showProductList?.push(data)
       nextTick(() => {
         handleScoreReduceBlur(orderObject.value.integral_deduction || 0)
         handleAmountReduceBlur(orderObject.value.round_off || 0)

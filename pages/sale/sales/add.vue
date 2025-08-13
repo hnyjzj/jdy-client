@@ -243,6 +243,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
       orderObject.value.product_olds = orderObject.value.showMasterialsList || []
       // 添加备注
       if (orderObject.value.userRemark && orderObject.value.userRemark.trim()) {
+        orderObject.value.remarks ??= []
         orderObject.value.remarks?.push(orderObject.value.userRemark)
       }
 
@@ -290,9 +291,8 @@ if (route?.query?.id) {
   await getOrderDetail({ id: route?.query?.id as string })
   showDepositList.value.push(OrderDetail.value)
   updateDepostitProduct()
-  setTimeout(() => {
-    addMemberRef.value?.setMbid(OrderDetail.value.member_id, OrderDetail.value.member?.phone)
-  }, 200)
+  await nextTick()
+  addMemberRef.value?.setMbid(OrderDetail.value.member_id, OrderDetail.value.member?.phone)
 }
 
 // 提示是否继续添加的弹窗

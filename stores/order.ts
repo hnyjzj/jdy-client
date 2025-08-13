@@ -7,7 +7,7 @@ export const useOrder = defineStore('Order', {
     OrderDetail: {} as OrderInfo,
     filterListToArray: [] as FilterWhere<OrderWhere>[],
     oldFilterList: {} as Where<OrderMaterial>,
-    oldFilterListToArray: {} as FilterWhere<OrderMaterial>[],
+    oldFilterListToArray: [] as FilterWhere<OrderMaterial>[],
     showtype: 'list' as 'list' | 'table',
     OldObj: {} as OrderMaterial,
     orderObject: {} as Orders,
@@ -43,7 +43,6 @@ export const useOrder = defineStore('Order', {
         if (data.value?.code === HttpCode.SUCCESS) {
           if (data.value.data.list !== null && data.value.data.list?.length > 0) {
             const params = data.value.data.list[0]
-            // 设置OldObj对象的is_our属性为true，表示该对象属于我们
             this.OldObj = params
             this.OldObj.weight_metal = Number(params.weight_metal)
           }
