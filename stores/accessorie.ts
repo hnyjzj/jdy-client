@@ -19,6 +19,7 @@ export const useAccessorie = defineStore('Accessorie', {
     // 配件列表
     async getAccessorieList(pamars: ReqList<ProductAccessories>) {
       try {
+        this.accessorieList = []
         pamars = { ...pamars, where: { ...pamars.where } }
         const { data } = await https.post<ResList<ProductAccessories>, ReqList<ProductAccessories>>('/product/accessorie/list', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {

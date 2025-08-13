@@ -9,24 +9,21 @@ const props = defineProps<{
   billingSet: BillingSet
 }>()
 
-const formData = defineModel<Orders>('form', { default: {} })
-const userremark = defineModel<string>('userremark', { default: '' })
-// 成品列表数据
-const showProductList = defineModel<ProductFinished[]>('showList', { default: [] })
-// 旧料列表数据
-const masterList = defineModel<ProductOld[]>('master', { default: [] })
-// 配件列表数据
-const PartsList = defineModel<ProductAccessories[]>('parts', { default: [] })
+const orderObject = defineModel<Orders>('form', { default: {} })
+
 const deposit = defineModel<DepositOrderInfo[]>('deposit', { default: [] })
+
+// const payments = ref<Orders['payments']>([{ amount: undefined, payment_method: 1 }])
 // 转换支付方式下拉菜单
 const payMethods = optonsToSelect(props.filterList.payment_method?.preset)
+
 const addNewMethod = () => {
-  formData.value.payments.push({ payment_method: 1, amount: undefined })
+  orderObject.value.payments.push({ payment_method: 1, amount: undefined })
 }
 
 // 删除支付方式
 const deleteMethod = (index: number) => {
-  formData.value.payments.splice(index, 1)
+  orderObject.value.payments.splice(index, 1)
 }
 const hold = holdFunction(props.billingSet.decimal_point)
 // 取整控制函数
@@ -43,7 +40,9 @@ const depositMoney = computed(() => {
 // 计算成品列表金额
 const productMoney = computed(() => {
   const total = ref(0)
-  total.value = showProductList.value.reduce((total, item) => {
+  if (!orderObject.value.showProductList)
+    return total.value
+  total.value = orderObject.value.showProductList?.reduce((total, item) => {
     return calc(`(t + i) | =${hold} ~${rounding},!n`, { t: total, i: item.price || 0 })
   }, 0)
   return total.value
@@ -51,7 +50,9 @@ const productMoney = computed(() => {
 // 旧料金额
 const masterMoney = computed(() => {
   const total = ref(0)
-  total.value = masterList.value.reduce((total, item) => {
+  if (!orderObject.value.showMasterialsList)
+    return total.value
+  total.value = orderObject.value.showMasterialsList.reduce((total, item) => {
     return calc(`(t + i) | =${hold} ~${rounding},!n`, { t: total, i: item.recycle_price || 0 })
   }, 0)
   return total.value
@@ -59,7 +60,9 @@ const masterMoney = computed(() => {
 // 计算配件总金额
 const PartsListMoney = computed(() => {
   const total = ref(0)
-  total.value = PartsList.value.reduce((total, item) => {
+  if (!orderObject.value.showPartsList)
+    return total.value
+  total.value = orderObject.value.showPartsList.reduce((total, item) => {
     return calc(`(t + i) | =${hold} ~${rounding},!n`, { t: total, i: item.amount || 0 })
   }, 0)
   return total.value
@@ -68,7 +71,9 @@ const PartsListMoney = computed(() => {
 // 计算成品列表加的积分
 const productListScore = computed(() => {
   const total = ref(0)
-  total.value = showProductList.value.reduce((total, item) => {
+  if (!orderObject.value.showProductList)
+    return total.value
+  total.value = orderObject.value.showProductList.reduce((total, item) => {
     return calc(`(t + i) | =${hold} ~${rounding},!n`, { t: total, i: item.integral || 0 })
   }, 0)
   return total.value
@@ -76,7 +81,9 @@ const productListScore = computed(() => {
 // 计算旧料列表 减的积分
 const masterListScore = computed(() => {
   const total = ref(0)
-  total.value = masterList.value.reduce((total, item) => {
+  if (!orderObject.value.showMasterialsList)
+    return total.value
+  total.value = orderObject.value.showMasterialsList.reduce((total, item) => {
     return calc(`(t + i) | =${hold} ~${rounding},!n`, { t: total, i: item.integral || 0 })
   }, 0)
   return total.value
@@ -84,7 +91,9 @@ const masterListScore = computed(() => {
 // 配件积分
 const PartsListScore = computed(() => {
   const total = ref(0)
-  total.value = PartsList.value.reduce((total, item) => {
+  if (!orderObject.value.showPartsList)
+    return total.value
+  total.value = orderObject.value.showPartsList.reduce((total, item) => {
     return calc(`(t + i) | =${hold} ~${rounding},!n`, { t: total, i: item.integral || 0 })
   }, 0)
   return total.value
@@ -92,9 +101,9 @@ const PartsListScore = computed(() => {
 // 总积分计算
 const totalScore = computed(() => {
   return calc(`(a - b + c) | =${hold} ~${rounding},!n`, {
-    a: productListScore.value,
-    b: masterListScore.value,
-    c: PartsListScore.value,
+    a: productListScore.value || 0,
+    b: masterListScore.value || 0,
+    c: PartsListScore.value || 0,
   })
 })
 
@@ -112,7 +121,7 @@ const payMoney = computed(() => {
 // 支付方式之和
 const payMethodsTotal = computed(() => {
   const total = ref(0)
-  formData.value.payments.forEach((item) => {
+  orderObject.value.payments?.forEach((item) => {
     total.value += item.amount || 0
   })
   return total.value
@@ -148,7 +157,7 @@ const searchRmk = async (query: string) => {
               label="积分抵扣" label-placement="left"
             >
               <n-input-number
-                v-model:value="formData.integral_deduction"
+                v-model:value="orderObject.integral_deduction"
                 min="0"
                 :disabled="props.disScore"
                 placeholder="抵扣积分值"
@@ -175,7 +184,7 @@ const searchRmk = async (query: string) => {
           <common-cell label="实付金额" :value="payMoney" label-color="#3971F3" val-color="#3971F3" />
         </div>
         <div class=" ">
-          <template v-for="(item, index) in formData.payments" :key="index">
+          <template v-for="(item, index) in orderObject.payments" :key="index">
             <div>
               <n-grid :cols="24" :x-gap="8">
                 <n-form-item-gi
@@ -191,7 +200,8 @@ const searchRmk = async (query: string) => {
                 >
                   <n-select
                     v-model:value="item.payment_method"
-                    :options="payMethods" />
+                    :options="payMethods"
+                  />
                 </n-form-item-gi>
                 <n-form-item-gi
                   :span="12"
@@ -234,7 +244,7 @@ const searchRmk = async (query: string) => {
           <div class="flex flex-col w-full">
             <div class="pb-[12px]">
               <n-select
-                v-model:value="formData.remarks" filterable
+                v-model:value="orderObject.remarks" filterable
                 multiple
                 :options="remarkList"
                 @search="searchRmk"
@@ -244,7 +254,7 @@ const searchRmk = async (query: string) => {
               />
             </div>
             <n-input
-              v-model:value="userremark"
+              v-model:value="orderObject.userRemark"
               :style="{ '--n-border-radius': '20px' }"
               placeholder="备注信息"
               type="textarea"

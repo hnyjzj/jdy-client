@@ -3,19 +3,14 @@ import type { FormRules } from 'naive-ui'
 import { calc } from 'a-calc'
 
 const props = defineProps<{
-  oldFilterListToArray: FilterWhere<ProductOld>[]
-  isIntegral: boolean
+  oldFilterListToArray: FilterWhere<OrderMaterial>[]
   nowEditState?: number
-  checkOldClass: (params: Partial<ProductOld>) => any
+  checkOldClass: (nowOldMaster: Partial<OrderMaterial>) => any
   billingSet: BillingSet
 }>()
-const showMasterialsList = defineModel<ProductOld[]>('list', { default: [] })
-const params = defineModel<ProductOld>('params', { default: {
-
-} })
 const { $toast } = useNuxtApp()
-// 禁用选择表单的是否自产
-
+const orderObject = defineModel<Orders>({ default: {} as Orders })
+const nowOldMaster = defineModel('nowOldMaster', { default: {} as OrderMaterial })
 const showModal = defineModel<boolean>('show', { default: false })
 const rules = ref<FormRules>({})
 const MformRef = ref()
@@ -72,60 +67,35 @@ forRules()
 const submitMasterialsForm = async () => {
   MformRef.value?.validate(async (errors: any) => {
     if (!errors) {
+      // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
+      const data = await props.checkOldClass({ material: nowOldMaster.value.material, quality: nowOldMaster.value.quality, gem: nowOldMaster.value.gem })
+      if (!data.res.value) {
+        return
+      }
+      nowOldMaster.value.class = data?.res.value
+      // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
+      if (nowOldMaster.value.recycle_price && data.rate && Number(data.rate) !== 0) {
+        nowOldMaster.value.integral = orderObject.value.has_integral
+          ? calc('(a / b)| =0 ~5, !n', {
+              a: nowOldMaster.value.recycle_price,
+              b: data.rate,
+            })
+          : 0
+      }
       if (props.nowEditState !== undefined) {
         // 编辑时
-        if (Number(params.value?.recycle_price || 0) < 0) {
-          $toast.error('回收金额不能小于0')
-          return
-        }
-
-        // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
-        const data = await props.checkOldClass({ material: params.value.material, quality: params.value.quality, gem: params.value.gem })
-        if (!data.res.value) {
-          // 如果没有大类则中断
-          return
-        }
-
-        params.value.class = data?.res.value
-        // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
-        if (params.value.recycle_price && data.rate && Number(data.rate) !== 0) {
-          params.value.integral = props.isIntegral
-            ? calc('(a / b)| =0 ~5, !n', {
-                a: params.value.recycle_price,
-                b: data.rate,
-              })
-            : 0
-        }
-        showMasterialsList.value.splice(props.nowEditState, 1, params.value)
-        showModal.value = false
+        orderObject.value.showMasterialsList.splice(props.nowEditState, 1, nowOldMaster.value)
       }
       else {
-        params.value.is_our = false
-        if (Number(params.value.recycle_price) < 0) {
-          $toast.error('回收金额不能小于0')
-          return
+        nowOldMaster.value.is_our = false
+        nowOldMaster.value.rate = data?.rate
+        if (!orderObject.value.showMasterialsList) {
+          orderObject.value.showMasterialsList = []
         }
-        // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
-        const data = await props.checkOldClass({ material: params.value.material, quality: params.value.quality, gem: params.value.gem })
-        if (!data.res.value) {
-          // 如果没有大类则中断
-          return
-        }
-        params.value.rate = data?.rate
-        params.value.class = data?.res.value
-        // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
-        if (params.value.recycle_price && data.rate && Number(data.rate) !== 0) {
-          params.value.integral = props.isIntegral
-            ? calc('(a / b)| =0 ~5, !n', {
-                a: params.value.recycle_price,
-                b: data.rate,
-              })
-            : 0
-        }
-        showMasterialsList.value.push(params.value)
-
-        showModal.value = false
+        orderObject.value.showMasterialsList?.push(nowOldMaster.value)
       }
+
+      showModal.value = false
     }
     else {
       $toast.error(errors[0][0].message)
@@ -134,33 +104,33 @@ const submitMasterialsForm = async () => {
 }
 // 手动添加的旧料 如果不是自有旧料
 const changePrice = () => {
-  if (!params.value.recycle_price_labor_method) {
-    params.value.recycle_price_labor_method = 1
+  if (!nowOldMaster.value.recycle_price_labor_method) {
+    nowOldMaster.value.recycle_price_labor_method = 1
   }
   const hold = holdFunction(props.billingSet.decimal_point)
   // 取整控制函数
   const rounding = roundFunction(props.billingSet.rounding)
-  if (params.value.recycle_price_labor_method === 1) {
+  if (nowOldMaster.value.recycle_price_labor_method === 1) {
     // 如果回收工费方式按克 (回收金价-回收工费)*金重*实际成色
-    params.value.recycle_price = calc(`((b - c) * a * d)| =${hold} ~${rounding},!n`, {
-      a: params.value.weight_metal || 0,
-      b: params.value.recycle_price_gold || 0,
-      c: params.value.recycle_price_labor || 0,
-      d: params.value.quality_actual || 1,
+    nowOldMaster.value.recycle_price = calc(`((b - c) * a * d)| =${hold} ~${rounding},!n`, {
+      a: nowOldMaster.value.weight_metal || 0,
+      b: nowOldMaster.value.recycle_price_gold || 0,
+      c: nowOldMaster.value.recycle_price_labor || 0,
+      d: nowOldMaster.value.quality_actual || 1,
     })
   }
-  else if (params.value.recycle_price_labor_method === 2) {
+  else if (nowOldMaster.value.recycle_price_labor_method === 2) {
     // 如果回收工费方式按件 (金重* 回收金价 * 实际成色) - 回收工费
-    params.value.recycle_price = calc(`((a*b*d) - c)| =${hold} ~${rounding},!n`, {
-      a: params.value.weight_metal || 0,
-      b: params.value.recycle_price_gold || 0,
-      c: params.value.recycle_price_labor || 0,
-      d: params.value.quality_actual || 1,
+    nowOldMaster.value.recycle_price = calc(`((a*b*d) - c)| =${hold} ~${rounding},!n`, {
+      a: nowOldMaster.value.weight_metal || 0,
+      b: nowOldMaster.value.recycle_price_gold || 0,
+      c: nowOldMaster.value.recycle_price_labor || 0,
+      d: nowOldMaster.value.quality_actual || 1,
     })
   }
 }
 // 转换下拉参数
-const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value: any }[] => {
+const presetToSelect = (filter: FilterWhere<OrderMaterial>): { label: string, value: any }[] => {
   if (!filter.preset) {
     return []
   }
@@ -186,7 +156,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
     <common-model v-model="showModal" title="添加旧料" :show-ok="true" :show-cancel="true" @confirm="submitMasterialsForm">
       <div class="grid-12 h-[300px] overflow-y-scroll">
         <div class="col-12 px-[12px]">
-          <n-form ref="MformRef" :model="params" :rules="rules">
+          <n-form ref="MformRef" :model="nowOldMaster" :rules="rules">
             <n-grid :cols="24" :x-gap="8">
               <template v-for="(item, index) in props.oldFilterListToArray" :key="index">
                 <template v-if="item.input !== 'list' && item.name !== 'is_our' && item.create === true">
@@ -194,7 +164,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                     <template v-if="item.input === 'select'">
                       <template v-if="item.name === 'recycle_price_labor_method'">
                         <n-select
-                          v-model:value="(params[item.name] as number)"
+                          v-model:value="(nowOldMaster[item.name] as number)"
                           size="large"
                           :placeholder="`选择${item.label}`"
                           :options="presetToSelect(item)"
@@ -205,7 +175,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                       </template>
                       <template v-else>
                         <n-select
-                          v-model:value="(params[item.name] as number)"
+                          v-model:value="(nowOldMaster[item.name] as number)"
                           size="large"
                           :placeholder="`选择${item.label}`"
                           :options="presetToSelect(item)"
@@ -220,7 +190,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                       <!-- type 字符串输入框 -->
                       <template v-if="item.type === 'string'">
                         <n-input
-                          v-model:value="(params[item.name] as string)"
+                          v-model:value="(nowOldMaster[item.name] as string)"
                           size="large" round :placeholder="`输入${item.label}`"
                           @focus="focus"
                         />
@@ -231,7 +201,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                           v-if="item.name === 'weight_metal'
                             || item.name === 'recycle_price_gold' || item.name === 'recycle_price_labor' ">
                           <n-input-number
-                            v-model:value="(params[item.name] as number)"
+                            v-model:value="(nowOldMaster[item.name] as number)"
                             size="large"
                             round :placeholder="`输入${item.label}`"
                             :show-button="false"
@@ -240,7 +210,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                         </template>
                         <template v-else-if="item.name === 'quality_actual'">
                           <n-input-number
-                            v-model:value="(params[item.name] as number)"
+                            v-model:value="(nowOldMaster[item.name] as number)"
                             size="large"
                             :max="1"
                             :min="0"
@@ -249,7 +219,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                         </template>
                         <template v-else-if="item.name === 'recycle_price'">
                           <n-input-number
-                            v-model:value="(params[item.name] as number)"
+                            v-model:value="(nowOldMaster[item.name] as number)"
                             size="large"
                             :min="0"
                             round :placeholder="`输入${item.label}`" :show-button="false"
@@ -257,7 +227,7 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                         </template>
                         <template v-else>
                           <n-input-number
-                            v-model:value="(params[item.name] as number)"
+                            v-model:value="(nowOldMaster[item.name] as number)"
                             size="large"
                             :min="0"
                             round :placeholder="`输入${item.label}`" :show-button="false"
@@ -265,17 +235,16 @@ const presetToSelect = (filter: FilterWhere<ProductOld>): { label: string, value
                         </template>
                       </template>
                     </template>
-                    <!-- input 数字输入框 -->
                     <template v-if="item.input === 'number'">
                       <n-input-number
-                        v-model:value="(params[item.name] as number)"
+                        v-model:value="(nowOldMaster[item.name] as number)"
                         size="large"
                         :min="0"
                         round :placeholder="`输入${item.label}`" :show-button="false"
                         @focus="focus" />
                     </template>
                     <template v-if="item.input === 'textarea'">
-                      <n-input v-model:value="(params[item.name] as string)" rows="1" type="textarea" size="large" @focus="focus" />
+                      <n-input v-model:value="(nowOldMaster[item.name] as string)" rows="1" type="textarea" size="large" @focus="focus" />
                     </template>
                   </n-form-item-gi>
                 </template>

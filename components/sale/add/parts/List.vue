@@ -5,7 +5,7 @@ const props = defineProps<{
   rounding: string
   hold: number
 }>()
-const showPartsList = defineModel<ProductAccessories[]>('list', { default: [] })
+const orderObject = defineModel<Orders>('list', { default: {} as Orders })
 const hasCheck = ref(false)
 
 // 删除展示的配件
@@ -16,7 +16,7 @@ const deleteParts = (index: number) => {
   delId.value = index
 }
 // 改变配件数量
-const changeQuantity = (obj: ProductAccessories) => {
+const changeQuantity = (obj: OrderPart) => {
   if (obj.quantity && obj.price) {
     // 计算应付金额
     const qty = obj.quantity ?? 1
@@ -28,14 +28,14 @@ const changeQuantity = (obj: ProductAccessories) => {
   }
 }
 const deleteConfirm = () => {
-  showPartsList.value.splice(delId.value, 1)
+  orderObject.value.showPartsList.splice(delId.value, 1)
   delId.value = 0
 }
 </script>
 
 <template>
   <div class="px-[16px] py-[8px]">
-    <template v-for="(obj, ix) in showPartsList" :key="ix">
+    <template v-for="(obj, ix) in orderObject.showPartsList" :key="ix">
       <div class="pb-[12px]">
         <sale-order-nesting v-model="hasCheck" title="">
           <template #left>

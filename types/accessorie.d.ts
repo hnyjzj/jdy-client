@@ -39,7 +39,7 @@ interface ProductAccessories {
   quantity?: number
   price?: string
 
-  amount?: number
+  amount: number
   integral?: number
   rate?: number
 }

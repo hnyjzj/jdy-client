@@ -90,7 +90,7 @@ interface ProductOlds {
   /**
    * 回收金价
    */
-  recycle_price_gold: number
+  recycle_price_gold?: number
   /**
    * 回收工费
    */

@@ -17,8 +17,7 @@ const { myStore } = storeToRefs(useStores())
 const { userinfo } = storeToRefs(useUser())
 
 const orderObject = defineModel({ default: {
-  MemberInfo: {},
-} as orderObject })
+} as Orders })
 const Key = ref()
 const { $toast } = useNuxtApp()
 // 提示新增
@@ -30,14 +29,14 @@ const canUseScore = ref()
 // 会员id
 const memberId = ref()
 const setUserInfo = (list: Member[]) => {
-  orderObject.value.MemberInfo = list[0]
+  orderObject.value.member = list[0]
   memberId.value = list[0].id
   emit('setMemberId', memberId.value)
   if (props.billingSet) {
     // 积分设置
-    if (orderObject.value.MemberInfo.integral && props.billingSet.discount_rate !== '0') {
+    if (orderObject.value.member.integral && props.billingSet.discount_rate !== '0') {
       canUseScore.value = calc('(a / b )| =0 ~5,!n', {
-        a: orderObject.value.MemberInfo.integral,
+        a: orderObject.value.member.integral,
         b: props.billingSet.discount_rate,
       })
     }
@@ -60,7 +59,7 @@ const searchMember = async (val: string) => {
   }
   memberId.value = undefined
   Key.value = Date.now().toString()
-  orderObject.value.MemberInfo = {} as Member
+  orderObject.value.member = {} as Member
   searchList.value = await props.getMember(val)
   if (searchList.value.length === 0) {
     if (!myStore.value.id) {
@@ -128,11 +127,11 @@ defineExpose({
             </div>
           </n-form-item-gi>
 
-          <template v-if="orderObject.MemberInfo?.id">
+          <template v-if="orderObject.member?.id">
             <n-form-item-gi :span="24" label="会员信息">
               <div class="mr-[16px]">
-                <template v-if=" orderObject.MemberInfo?.avatar">
-                  <n-image width="68" :src=" orderObject.MemberInfo.avatar" />
+                <template v-if=" orderObject.member?.avatar">
+                  <n-image width="68" :src=" orderObject.member.avatar" />
                 </template>
                 <template v-else>
                   <icon name="i-svg:avatar" :size="68" />
@@ -140,16 +139,16 @@ defineExpose({
               </div>
               <div class="flex-col">
                 <div>
-                  昵称:{{ orderObject.MemberInfo?.nickname || '' }}
+                  昵称:{{ orderObject.member?.nickname || '' }}
                 </div>
-                <div>姓名:{{ orderObject.MemberInfo?.name || '' }}</div>
+                <div>姓名:{{ orderObject.member?.name || '' }}</div>
                 <div>
-                  积分:{{ orderObject.MemberInfo?.integral || '' }}
+                  积分:{{ orderObject.member?.integral || '' }}
                   <template v-if="canUseScore">
                     (可抵扣{{ canUseScore }}元)
                   </template>
                 </div>
-                <div>等级:{{ orderObject.MemberInfo?.level || '' }}</div>
+                <div>等级:{{ orderObject.member?.level || '' }}</div>
               </div>
             </n-form-item-gi>
           </template>

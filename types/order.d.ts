@@ -1,23 +1,4 @@
 /**
- * 缓存数据
- */
-interface orderObject {
-  formData: Orders
-  // 展示商品列表
-  showProductList: ProductFinished[]
-  showMasterialsList: ProductOld[]
-  showPartsList: ProductAccessories[]
-  MemberInfo: Member
-  scoreDeduct: number
-  ProductListSet: {
-    scoreDeduct: number
-    amount_reduce: number
-    discount_rate: number
-  }
-  userremark: string
-}
-
-/**
  * 新增销售单
  */
 interface Orders {
@@ -25,11 +6,12 @@ interface Orders {
    * 收银员ID
    */
   cashier_id?: string
+  cashier?: Staff
   clerks: OrderSalesClerks[]
   /**
    * 整单折扣
    */
-  discount_rate: number
+  discount_rate?: number
   /**
    * 是否积分
    */
@@ -37,15 +19,16 @@ interface Orders {
   /**
    * 积分抵扣
    */
-  integral_deduction: number
+  integral_deduction?: number
   /**
    * 会员ID
    */
   member_id?: string
+  member?: Member
   /**
    * 定金单 ID
    */
-  order_deposit_ids: string[]
+  order_deposit_ids?: string[]
   /**
    * 支付方式
    */
@@ -54,19 +37,19 @@ interface Orders {
    * 配件
    */
   product_accessories?: {
-    product_id: string
+    product_id?: string
     quantity?: number
-    price?: number
+    price?: string
     integral?: number
   }[]
   /**
    * 成品
    */
-  product_finisheds?: ProductFinished[]
+  product_finisheds?: OrderProductFinished[]
   /**
    * 旧料
    */
-  product_olds?: ProductOld[]
+  product_olds?: OrderMaterial[]
   /**
    * 订单备注
    */
@@ -74,7 +57,7 @@ interface Orders {
   /**
    * 抹零
    */
-  round_off: number
+  round_off?: number
   /**
    * 订单来源
    */
@@ -83,6 +66,14 @@ interface Orders {
    * 门店ID
    */
   store_id: string
+  /**
+   * 展示的成品列表
+   */
+  showProductList: OrderProductFinished[]
+  showMasterialsList: OrderMaterial[]
+  showPartsList: OrderPart[]
+
+  userRemark: string
 }
 
 /**
@@ -143,30 +134,7 @@ interface Payment {
 
 }
 
-interface ProductAccessorie {
-  /**
-   * 积分
-   */
-  integral?: number | string
-  /**
-   * 应付金额
-   */
-  price?: number | string
-  /**
-   * 产品ID
-   */
-  product_id: string
-  /**
-   * 数量
-   */
-  quantity: number
-
-  product: ProductAccessories
-  status?: number
-  id?: string
-}
-
-interface ProductFinished {
+interface OrderProductFinished extends ProductFinisheds {
   /**
    * 折扣(显示)
    */
@@ -190,7 +158,7 @@ interface ProductFinished {
   /**
    * 工费
    */
-  labor_fee?: number
+  labor_fee: number
   /**
    * 应付金额
    */
@@ -215,151 +183,48 @@ interface ProductFinished {
    *积分比例
    */
   rate?: number
-  /**
-   *成品信息
-   */
+  //   /**
+  //    *成品信息
+  //    */
   product?: ProductFinisheds
-  weight_gem?: number
-  retail_type?: number
-  label_price?: string
-  weight_metal?: number
-  color_gem?: number
-  clarity?: number
-  name?: string
-  code?: string
-  status?: number
-  id?: string
-  finisheds?: ProductFinisheds
-}
 
-interface ProductOld {
-  /**
-   * 品牌
-   */
-  brand: number
-  /**
-   * 品类
-   */
-  category?: number
-  /**
-   * 主石净度
-   */
-  clarity?: number
-  /**
-   * 条码
-   */
-  code?: string
-  /**
-   * 主石色
-   */
-  color_gem?: number
-  /**
-   * 工艺
-   */
-  craft?: number
-  /**
-   * 主石切工
-   */
-  cut?: number
-  /**
-   * 主石
-   */
-  gem?: number
+}
+interface OrderMaterial extends ProductFinisheds {
+  product_id?: string
+  integral?: number
+  product?: ProductOlds
+  recycle_method?: number
+  quality_actual?: number
+  recycle_method?: number
+  recycle_price?: number
+  recycle_price_gold?: number
+  recycle_price_labor?: number
+  recycle_price_labor_method?: number
+  recycle_type?: number
+  is_our?: boolean
+}
+interface OrderPart extends ProductAccessories {
   /**
    * 积分
    */
   integral?: number
   /**
-   * 是否本司货品
+   * 应付金额
    */
-  is_our: boolean
-  /**
-   * 标签价
-   */
-  label_price?: string
-  /**
-   * 材质
-   */
-  material?: number
-  /**
-   * 名称
-   */
-  name?: string
-  /**
-   * 主石数
-   */
-  num_gem?: number
-  /**
-   * 杂料数
-   */
-  num_other?: number
+  price?: string
   /**
    * 产品ID
    */
   product_id?: string
   /**
-   * 成色
+   * 数量
    */
-  quality: number
-  /**
-   * 实际成色
-   */
-  quality_actual?: number
-  /**
-   * 回收方式
-   */
-  recycle_method?: number
-  /**
-   * 回收金额
-   */
-  recycle_price: number
-  /**
-   * 回收金价
-   */
-  recycle_price_gold?: number
-  /**
-   * 回收工费
-   */
-  recycle_price_labor?: number
-  /**
-   * 回收工费方式
-   */
-  recycle_price_labor_method?: number
-  /**
-   * 回收类型
-   */
-  recycle_type?: number
-  /**
-   * 主石重
-   */
-  weight_gem?: number
-  /**
-   * 金重
-   */
-  weight_metal?: number
-  /**
-   * 杂料重
-   */
-  weight_other?: number
-  /**
-   * 总重
-   */
-  weight_total?: number
-  /**
-   * 积分比例
-   */
-  rate: string | number
+  quantity?: number
 
-  class: number
-  /**
-   * 产品类型
-   */
-  type: number
   status?: number
-  product?: ProductOlds
-  id?: string
+  id: string
+  product?: ProductAccessories
 }
-
 interface OrderWhere {
   cashier_id?: string
   end_date?: string
@@ -377,6 +242,9 @@ interface OrderWhere {
   searchPage?: number
   limits?: number
 }
+/**
+ * 退货成品
+ */
 interface ReturnGoods {
   /**
    * 订单 ID
@@ -480,11 +348,11 @@ interface OrderInfo extends Orders {
 interface orderInfoProducts {
   code?: string
   member?: Member
-  accessorie: ProductAccessorie
+  accessorie: OrderPart
   created_at: string
-  finished: ProductFinished
+  finished: OrderProductFinished
   id: string
-  old: ProductOld
+  old: OrderMaterial
   order: OrderInfo
   order_id: string
   status: number

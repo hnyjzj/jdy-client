@@ -2,6 +2,9 @@
 const props = defineProps<{
   searchDepositOrders: (val?: string) => Promise<DepositOrderInfo[]>
 }>()
+const emit = defineEmits<{
+  updateProduct: []
+}>()
 const searchShow = defineModel('show', { default: false })
 const showDepositList = defineModel<DepositOrderInfo[]>('list', { default: [] })
 const Preselection = ref<DepositOrderInfo[]>([])
@@ -29,7 +32,7 @@ const confirmFn = () => {
   const map = new Map()
   showDepositList.value.forEach(item => map.set(item.id, item)) // 假设以id为唯一标识
   showDepositList.value = Array.from(map.values())
-
+  emit('updateProduct')
   searchShow.value = false
   Preselection.value = []
   resultList.value = []

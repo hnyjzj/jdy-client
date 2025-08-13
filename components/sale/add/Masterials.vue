@@ -1,22 +1,17 @@
 <script setup lang="ts">
 const props = defineProps<{
-  title: string
-  isIntegral: boolean
   price: GoldPrices[]
-  oldFilterListToArray: FilterWhere<ProductOld>[]
-  checkOldClass: (params: Partial<ProductOld>) => any
-  searchOlds: (val: string) => Promise<ProductOld>
+  oldFilterList: Where<OrderMaterial>
+  oldFilterListToArray: FilterWhere<OrderMaterial>[]
+  checkOldClass: (params: Partial<OrderMaterial>) => any
+  searchOlds: (val: string) => Promise<OrderMaterial>
   billingSet: BillingSet
 }>()
-
 const showModal = ref(false)
-
-// 手动添加旧料表单
-const params = ref({} as ProductOld)
-
+// 展示列表
+const orderObject = defineModel<Orders>({ default: {} as Orders })
 // 当前搜索的旧料的form
-const nowOldMaster = defineModel('nowOldMaster', { default: {} as ProductOld })
-
+const nowOldMaster = defineModel('nowOldMaster', { default: {} as OrderMaterial })
 // 显示搜索的弹窗
 const searchShow = ref(false)
 // 当前编辑状态
@@ -26,22 +21,20 @@ const nowEditState = ref<number | undefined>(undefined)
 const searchQl = () => {
   nowEditState.value = undefined
   searchShow.value = true
-  nowOldMaster.value = {} as ProductOld
+  nowOldMaster.value = {} as OrderMaterial
 }
 
 // 手动添加
 const handleAdd = () => {
   showModal.value = true
   nowEditState.value = undefined
-  params.value = {} as ProductOld
+  nowOldMaster.value = {} as OrderMaterial
 }
-// 展示列表
-const showMasterialsList = defineModel<ProductOld[]>('list', { default: [] })
 
 // 设置编辑时禁用选择回收方式
 const setDisabled = ref(false)
 // 编辑旧料
-const editOld = (item: ProductOld, index: number) => {
+const editOld = (item: OrderMaterial, index: number) => {
   // 当前编辑的是哪个旧料
   nowEditState.value = index
   //   如果是自有商品
@@ -52,40 +45,42 @@ const editOld = (item: ProductOld, index: number) => {
   }
   else {
     // 如果不是自有商品
-    params.value = item
+    nowOldMaster.value = item
     showModal.value = true
   }
 }
 </script>
 
 <template>
-  <common-fold :title="props.title" :is-collapse="false">
-    <sale-add-masterials-button
-      @handle-add="handleAdd"
-      @search-ql="searchQl" />
-    <sale-add-masterials-list
-      v-model:list="showMasterialsList"
-      :old-filter-list-to-array="oldFilterListToArray"
-      @edit="editOld" />
-    <sale-add-masterials-search
-      v-model:list="showMasterialsList"
-      v-model:show="searchShow"
-      v-model:now-old-master="nowOldMaster"
-      :price="props.price"
-      :search-olds="searchOlds"
-      :is-integral="props.isIntegral"
-      :check-old-class="props.checkOldClass"
-      :now-edit-state="nowEditState"
-    />
-    <sale-add-masterials-handle
-      v-model:params="params"
-      v-model:show="showModal"
-      v-model:list="showMasterialsList"
-      :old-filter-list-to-array="props.oldFilterListToArray"
-      :is-integral="props.isIntegral"
-      :check-old-class="props.checkOldClass"
-      :now-edit-state="nowEditState"
-      :billing-set="props.billingSet"
-    />
-  </common-fold>
+  <div class="pb-[16px]">
+    <common-fold title="旧料" :is-collapse="false">
+      <sale-add-masterials-button
+        @handle-add="handleAdd"
+        @search-ql="searchQl" />
+      <sale-add-masterials-list
+        v-model="orderObject"
+        :old-filter-list-to-array="oldFilterListToArray"
+        @edit="editOld" />
+      <sale-add-masterials-search
+        v-model="orderObject"
+        v-model:show="searchShow"
+        v-model:now-old-master="nowOldMaster"
+        :old-filter-list="props.oldFilterList"
+        :price="props.price"
+        :search-olds="searchOlds"
+        :check-old-class="props.checkOldClass"
+        :now-edit-state="nowEditState"
+        :billing-set="props.billingSet"
+      />
+      <sale-add-masterials-handle
+        v-model="orderObject"
+        v-model:now-old-master="nowOldMaster"
+        v-model:show="showModal"
+        :old-filter-list-to-array="props.oldFilterListToArray"
+        :check-old-class="props.checkOldClass"
+        :now-edit-state="nowEditState"
+        :billing-set="props.billingSet"
+      />
+    </common-fold>
+  </div>
 </template>

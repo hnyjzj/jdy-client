@@ -8,12 +8,14 @@ export const useBillingSetStore = defineStore('BillingSet', {
      * 排序后的筛选条件列表
      */
     billingSetFilterListToArray: FilterWhere<BillingSet>[]
-
-    info: any
+    disScore: boolean
+    billingSet: BillingSet
   } => ({
     billingSetFilterList: {} as Where<BillingSet>,
     billingSetFilterListToArray: [] as FilterWhere<BillingSet>[],
-    info: {},
+
+    billingSet: {} as BillingSet,
+    disScore: false, // 是否禁止修改积分抵扣  true:禁止 false:允许
   }),
 
   actions: {
@@ -35,10 +37,12 @@ export const useBillingSetStore = defineStore('BillingSet', {
       }
     },
     async getSetInfo(params: { store_id: string }) {
-      // /setting/open_order/info
       const { data } = await https.post<any, { store_id: string }>('/setting/open_order/info', params)
       if (data.value?.code === HttpCode.SUCCESS) {
-        this.info = data.value.data
+        this.billingSet = data.value.data
+        if (this.billingSet.discount_rate && this.billingSet.discount_rate !== '0') {
+          this.disScore = true
+        }
         return data.value.data
       }
     },

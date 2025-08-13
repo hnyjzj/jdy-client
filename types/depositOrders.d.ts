@@ -144,7 +144,7 @@ interface DepositOrderInfo {
   /**
    * ID
    */
-  id?: string
+  id: string
   /**
    * IP地址
    */

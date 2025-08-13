@@ -175,7 +175,7 @@ const changeStore = () => {
   formData.value = { ...initform.value }
   Key.value = Date.now().toString()
 }
-const orderObject = ref<orderObject>({} as orderObject)
+const orderObject = ref<Orders>({} as Orders)
 </script>
 
 <template>
