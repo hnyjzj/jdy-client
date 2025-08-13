@@ -37,7 +37,7 @@ const confirmParts = async () => {
   prePartsList.value.forEach((item) => {
     const newItem = { ...item, quantity: 1, amount: Number(item?.price || 0), product_id: item.id }
     // 判断是否存在
-    const existingItem = orderObject.value.showPartsList.find(part => part.id === newItem.id)
+    const existingItem = orderObject.value.showPartsList?.find(part => part.id === newItem.id)
     if (existingItem) {
       if (!existingItem.quantity)
         return
@@ -45,7 +45,7 @@ const confirmParts = async () => {
       existingItem.amount += Number(item?.price || 0)
     }
     else {
-      orderObject.value.showPartsList.push(newItem)
+      orderObject.value.showPartsList?.push(newItem)
     }
   })
   prePartsList.value = []

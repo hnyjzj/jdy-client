@@ -28,7 +28,7 @@ const changeQuantity = (obj: OrderPart) => {
   }
 }
 const deleteConfirm = () => {
-  orderObject.value.showPartsList.splice(delId.value, 1)
+  orderObject.value.showPartsList?.splice(delId.value, 1)
   delId.value = 0
 }
 </script>

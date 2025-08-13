@@ -84,7 +84,7 @@ const submitMasterialsForm = async () => {
       }
       if (props.nowEditState !== undefined) {
         // 编辑时
-        orderObject.value.showMasterialsList.splice(props.nowEditState, 1, nowOldMaster.value)
+        orderObject.value.showMasterialsList?.splice(props.nowEditState, 1, nowOldMaster.value)
       }
       else {
         nowOldMaster.value.is_our = false

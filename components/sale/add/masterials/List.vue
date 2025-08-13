@@ -15,7 +15,7 @@ const deleteOld = (index: number) => {
   delId.value = index
 }
 const deleteConfirm = () => {
-  orderObject.value.showMasterialsList.splice(delId.value, 1)
+  orderObject.value.showMasterialsList?.splice(delId.value, 1)
 }
 </script>
 

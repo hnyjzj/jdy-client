@@ -15,10 +15,10 @@ const deleteDialog = ref(false)
 const dleId = ref(0)
 
 const delProduct = () => {
-  orderObject.value.showProductList.splice(dleId.value, 1)
+  orderObject.value.showProductList?.splice(dleId.value, 1)
   dleId.value = 0
   // 判断,如果成品列表为空, 设置 整单, 抹零,积分抵扣为undefined
-  if (orderObject.value.showProductList.length === 0) {
+  if (orderObject.value.showProductList?.length === 0) {
     orderObject.value.discount_rate = undefined
     orderObject.value.round_off = undefined
     orderObject.value.integral_deduction = undefined
