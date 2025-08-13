@@ -27,6 +27,8 @@ const isChooseModel = ref(false)
 const pCode = ref()
 /** 成品条码添加还是成品条码搜索添加 */
 const isOldCodeSearch = ref(false)
+/** 旧料搜索选择集合 */
+const selectedCategories = ref([] as ProductOlds['code'][])
 
 async function getWhere() {
   if (GoodsTypePure.ProductFinish === type.value) {
@@ -131,7 +133,8 @@ const delProduct = useThrottleFn(async (code: ProductFinisheds['code'] | Product
 async function addProduct() {
   const params = {
     id: allocateInfo.value?.id,
-    codes: [pCode.value],
+    /** 旧料搜索时使用 旧料搜索code集合 */
+    codes: isOldCodeSearch.value ? selectedCategories.value : [pCode.value],
   }
   const res = await add(params)
   if (res?.code === HttpCode.SUCCESS) {
@@ -190,8 +193,6 @@ async function searchOldList() {
   obj[searchParams.value.label] = searchParams.value.val
   await getOldList({ page: 1, limit: 20, where: { ...obj } })
 }
-
-const selectedCategories = ref([] as ProductOlds['id'][])
 
 /** 全选/全不选 */
 function toggleSelectAll(event: any) {
@@ -355,7 +356,7 @@ const clearFun = useThrottleFn(async () => {
         </template>
       </div>
     </div>
-    <common-model v-model="isAddModel" title="添加" :show-ok="true" cancel-text="取消" confirm-text="确认添加" @confirm="addProduct">
+    <common-model v-model="isAddModel" title="添加" :show-ok="true" cancel-text="取消" confirm-text="确认添加" @confirm="addProduct()">
       <div class="min-h-[140px]">
         <template v-if="type === GoodsTypePure.ProductFinish">
           <div class="flex justify-center items-center mb-6">
@@ -420,10 +421,11 @@ const clearFun = useThrottleFn(async () => {
 
                 <template v-if="oldList?.length">
                   <tbody class="pt-2">
+                    <div>{{ selectedCategories }}</div>
                     <template v-for="(old, i) in oldList" :key="i">
                       <tr class="table-color">
                         <td class="sticky-left table-color py-1 px-2">
-                          <input v-model="selectedCategories" type="checkbox" :value="old.id" @focus="focus">
+                          <input v-model="selectedCategories" type="checkbox" :value="old.code" @focus="focus">
                         </td>
                         <td class="tabel-text">
                           {{ old.id }}
