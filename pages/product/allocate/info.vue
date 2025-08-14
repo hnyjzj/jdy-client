@@ -187,10 +187,12 @@ const options = ref([
   { label: '旧料名称', value: 'name' },
 ])
 
-/** 搜索要入库的配件 */
+/** 搜索要入库的旧料 */
 async function searchOldList() {
+  selectedCategories.value = [] as ProductOlds['code'][]
   const obj = {} as Partial<ProductOlds>
   obj[searchParams.value.label] = searchParams.value.val
+  obj.status = GoodsStatus.ProductStatusNormal
   await getOldList({ page: 1, limit: 20, where: { ...obj } })
 }
 
@@ -199,7 +201,7 @@ function toggleSelectAll(event: any) {
   if (!oldList.value?.length)
     return
   if (event.target.checked) {
-    selectedCategories.value = oldList.value.map(cat => cat.id)
+    selectedCategories.value = oldList.value.map(cat => cat.code)
   }
   else {
     selectedCategories.value = []
@@ -294,6 +296,13 @@ const clearFun = useThrottleFn(async () => {
     loading.value = false
   }
 }, 1000)
+
+async function createFun() {
+  isChooseModel.value = true
+  if (allocateInfo.value.type === GoodsType.ProductOld) {
+    await searchOldList()
+  }
+}
 </script>
 
 <template>
@@ -402,9 +411,6 @@ const clearFun = useThrottleFn(async () => {
                       <input type="checkbox" :disabled="oldList?.length === 0" @change="toggleSelectAll" @focus="focus">
                     </th>
                     <th class="tabel-text">
-                      旧料编号
-                    </th>
-                    <th class="tabel-text">
                       条码
                     </th>
                     <th class="tabel-text">
@@ -425,9 +431,6 @@ const clearFun = useThrottleFn(async () => {
                       <tr class="table-color">
                         <td class="sticky-left table-color py-1 px-2">
                           <input v-model="selectedCategories" type="checkbox" :value="old.code" @focus="focus">
-                        </td>
-                        <td class="tabel-text">
-                          {{ old.id }}
                         </td>
                         <td class="tabel-text">
                           {{ old.code }}
@@ -487,7 +490,7 @@ const clearFun = useThrottleFn(async () => {
     </template>
     <!-- 状态为草稿中 增加产品 -->
     <template v-if="allocateInfo.status === AllocateStatus.Draft && myStore.id && myStore.id === allocateInfo.from_store_id">
-      <common-create @click="isChooseModel = true" />
+      <common-create @click="createFun" />
     </template>
     <product-upload-choose v-model:is-model="isChooseModel" title="调拨" @go-add="isChooseModel = false; isAddModel = true" @batch="isImportModel = true" />
     <product-allocate-force ref="uploadRef" v-model="isImportModel" @upload="submitGoods" />
