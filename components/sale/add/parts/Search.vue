@@ -33,14 +33,13 @@ const confirmParts = async () => {
   orderObject.value.showPartsList ??= []
   //  然后添加新的数据
   prePartsList.value.forEach((item) => {
-    const newItem = { ...item, quantity: 1, amount: Number(item?.price || 0), product_id: item.id }
+    const newItem = { ...item, quantity: 1, price: Number(item?.price || 0), amount: Number(item?.price || 0), product_id: item.id }
     // 判断是否存在
     const existingItem = orderObject.value.showPartsList?.find(part => part.id === newItem.id)
     if (existingItem) {
       if (!existingItem.quantity)
         return
       existingItem.quantity += 1
-      existingItem.amount += Number(item?.price || 0)
     }
     else {
       orderObject.value.showPartsList?.push(newItem)

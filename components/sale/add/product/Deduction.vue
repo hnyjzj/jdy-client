@@ -22,6 +22,7 @@ const formData = defineModel({ default: { } as Orders })
               placeholder="请输入折扣"
               round
               :precision="2"
+              :default-value="100"
               :min="1"
               :max="100"
               :show-button="false"

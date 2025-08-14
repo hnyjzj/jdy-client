@@ -44,6 +44,9 @@ export const useRepair = defineStore('Repair', {
       if (data.value?.code === HttpCode.SUCCESS) {
         return true
       }
+      else {
+        return data.value?.message
+      }
     },
     /**
      * 上传维修单图片

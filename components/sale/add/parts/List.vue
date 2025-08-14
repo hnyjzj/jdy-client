@@ -45,38 +45,38 @@ const deleteConfirm = () => {
             <div class="flex flex-col gap-[12px] px-[16px]">
               <common-cell label="编号" :value="obj?.id" />
               <common-cell label="名称" :value="obj?.name" />
-              <common-cell label="单价" :value="obj?.price" />
               <div class="h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
               <div class="pb-[16px]">
                 <n-grid :cols="24" :x-gap="8">
+                  <n-form-item-gi :span="12" label="单价">
+                    <n-input-number
+                      v-model:value="obj.price"
+                      :show-button="false"
+                      placeholder="单价"
+                      round
+                      :min="0"
+                      :precision="Number(props.hold)"
+                      @focus="focus"
+                      @update:value="changeQuantity(obj)"
+                    >
+                      <template #suffix>
+                        元
+                      </template>
+                    </n-input-number>
+                  </n-form-item-gi>
                   <n-form-item-gi :span="12" label="数量">
                     <div class="flex items-center w-full">
                       <div class="w-full">
                         <n-input-number
                           v-model:value="obj.quantity"
                           placeholder="请输入数量" round
-                          min="1"
+                          :min="1"
                           :precision="0"
                           :show-button="false"
                           @focus="focus"
                           @update:value="changeQuantity(obj)" />
                       </div>
                     </div>
-                  </n-form-item-gi>
-                  <n-form-item-gi :span="12" label="应付金额">
-                    <n-input-number
-                      v-model:value="obj.amount"
-                      :show-button="false"
-                      placeholder="请输入应付金额"
-                      round
-                      :precision="props.hold"
-                      min="0"
-                      @focus="focus"
-                    >
-                      <template #suffix>
-                        元
-                      </template>
-                    </n-input-number>
                   </n-form-item-gi>
                 </n-grid>
                 <div class="flex justify-between items-center">
@@ -85,6 +85,7 @@ const deleteConfirm = () => {
                     @click="deleteParts(ix)">
                     <icon name="i-svg:delete" :size="16" />
                   </div>
+                  <div>应付金额:{{ obj.amount }}</div>
                 </div>
               </div>
             </div>

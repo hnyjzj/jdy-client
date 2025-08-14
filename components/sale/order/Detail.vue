@@ -51,6 +51,16 @@ const PartsListScore = computed(() => {
   }
   return total.value
 })
+
+const PartAmout = (quantity?: number, price?: number) => {
+  if (quantity && price) {
+    return calc('(a * b ) | =3,!n', {
+      a: quantity,
+      b: price,
+    })
+  }
+}
+
 // 总积分计算
 const totalScore = computed(() => {
   return calc('(a - b + c) | =0,!n', {
@@ -88,7 +98,7 @@ const onReturnProduct = async (index: number) => {
               <common-cell label="关联订金单" value="" label-color="#4C8DF6" />
               <template v-for="(deposit, ix) in props.orders.order_deposits" :key="ix">
                 <common-cell label="订金单号" :value="deposit.id" label-color="#4C8DF6" />
-                <common-cell label="订金金额" :value="deposit.price_pay" />
+                <common-cell label="订金金额" :value="deposit.price" />
                 <template v-for="(p, index) in deposit.products" :key="index">
                   <common-cell :label="`商品${index + 1}`" :value="p.product_finished.name" />
                 </template>
@@ -199,9 +209,9 @@ const onReturnProduct = async (index: number) => {
                   <common-cell label="配件类型" :value="props.partFilter.type?.preset[obj.accessorie.product?.type!]" val-color="#4C8DF6" />
                   <common-cell label="零售方式" :value="props.partFilter.retail_type?.preset[obj.accessorie.product?.retail_type!]" />
                   <common-cell label="积分" :value="obj.accessorie?.integral" />
-                  <common-cell label="单价" format="￥" :value="obj.accessorie.product?.price" />
+                  <common-cell label="单价" format="￥" :value="obj.accessorie?.price" />
                   <common-cell label="数量" :value="obj.accessorie.quantity" />
-                  <common-cell label="应付金额" format="￥" :value="obj.accessorie.price" />
+                  <common-cell label="应付金额" format="￥" :value="PartAmout(obj.accessorie?.quantity, obj.accessorie?.price)" />
                   <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusReturn">
                     <common-cell label="状态" value="已退货" val-color="#FF9900" />
                   </template>

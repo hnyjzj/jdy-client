@@ -28,6 +28,26 @@ const { OrderDetail, OrdersList } = storeToRefs(useDepositOrder())
 const { getPhraseList } = usePhrase()
 const route = useRoute()
 const Key = ref()
+const addMemberRef = ref()
+const rules = ref<FormRules>({
+  cashier_id: {
+    required: true,
+    trigger: ['blur', 'change'],
+    message: '请选择收银员',
+  },
+  source: {
+    type: 'number',
+    required: true,
+    trigger: ['blur', 'change'],
+    message: '请选择订单来源',
+  },
+})
+// 初始化导购员 和 收款方式 和 积分
+const initOptions = () => {
+  orderObject.value.payments ??= [{ payment_method: 1, amount: undefined }]
+  orderObject.value.clerks ??= [{ salesman_id: undefined, performance_rate: 100, is_main: true }]
+  orderObject.value.has_integral ??= false
+}
 
 // 获取备注列表
 const getSearchPhrase = async (value: string) => {
@@ -83,56 +103,10 @@ const checkProductClass = async (params: { class: number }) => {
   return data?.rate ? data.rate : '0'
 }
 
-const addMemberRef = ref()
-const rules = ref<FormRules>({
-  cashier_id: {
-    required: true,
-    trigger: ['blur', 'change'],
-    message: '请选择收银员',
-  },
-  source: {
-    type: 'number',
-    required: true,
-    trigger: ['blur', 'change'],
-    message: '请选择订单来源',
-  },
-})
 // 定金单列表
 const showDepositList = ref<DepositOrderInfo[]>([])
 // 选择的订金单列表
 const selectDepositList = ref<DepositOrderInfo[]>([])
-
-// 初始化导购员 和 收款方式 和 积分
-const initOptions = () => {
-  orderObject.value.payments ??= [{ payment_method: 1, amount: undefined }]
-  orderObject.value.clerks ??= [{ salesman_id: undefined, performance_rate: 100, is_main: true }]
-  orderObject.value.has_integral ??= false
-}
-
-// 添加商品
-const addProduct = async (product: DepositOrderInfoProducts) => {
-  orderObject.value.showProductList ??= []
-  const index = orderObject.value.showProductList.findIndex(item => item.id === product.product_finished?.id)
-  //   添加成品到列表中
-  if (index === -1) {
-    const data = {
-      id: product.product_finished.id,
-      product_id: product.product_finished.id,
-      name: product.product_finished.name,
-      retail_type: product.product_finished.retail_type,
-      label_price: product.product_finished.label_price,
-      weight_metal: product.product_finished.weight_metal,
-      code: product.product_finished.code,
-      class: product.product_finished.class,
-      discount_fixed: 100, // 折扣
-      discount_member: 100, // 会员折扣
-      labor_fee: Number(product.product_finished.labor_fee),
-    } as OrderProductFinished
-    const rate = await checkProductClass({ class: data.class })
-    data.rate = (rate && rate !== '0') ? Number(rate) : 0
-    orderObject.value.showProductList.push(data)
-  }
-}
 
 // 设置积分抵扣值
 
@@ -267,7 +241,40 @@ const changeStore = async () => {
   initOptions()
   Key.value = Date.now().toString()
 }
+// 添加商品
+const addProduct = async (product: DepositOrderInfoProducts) => {
+  orderObject.value.showProductList ??= []
+  const index = orderObject.value.showProductList.findIndex(item => item.id === product.product_finished?.id)
+  //   添加成品到列表中
+  if (index === -1) {
+    const data = {
+      id: product.product_finished.id,
+      product_id: product.product_finished.id,
+      name: product.product_finished.name,
+      retail_type: product.product_finished.retail_type,
+      label_price: product.product_finished.label_price,
+      weight_metal: product.product_finished.weight_metal,
+      code: product.product_finished.code,
+      class: product.product_finished.class,
+      discount_fixed: 100, // 折扣
+      discount_member: 100, // 会员折扣
+      labor_fee: Number(product.product_finished.labor_fee),
+    } as OrderProductFinished
+    // 匹配金价
+    data.discount_fixed = Number(orderObject.value.discount_rate || 100)
+    const exists = goldList.value.filter(item =>
+      item.product_type === GoodsType.ProductFinish
+      && item.product_material === product.product_finished.material
+      && item.product_quality.includes(product.product_finished.quality)
+      && item.product_brand?.includes(product.product_finished.brand),
+    )
+    data.price_gold = (exists && exists.length > 0) ? Number(exists[0].price) : undefined
 
+    const rate = await checkProductClass({ class: data.class })
+    data.rate = (rate && rate !== '0') ? Number(rate) : 0
+    orderObject.value.showProductList.push(data)
+  }
+}
 // 更新订金单中的货品到成品展示列表中
 const updateDepostitProduct = () => {
   showDepositList.value.forEach((item) => {
@@ -277,14 +284,6 @@ const updateDepostitProduct = () => {
       }
     })
   })
-}
-if (route?.query?.id) {
-  // 判断是否有定金单订单详情
-  await getOrderDetail({ id: route?.query?.id as string })
-  showDepositList.value.push(OrderDetail.value)
-  updateDepostitProduct()
-  await nextTick()
-  addMemberRef.value?.setMbid(OrderDetail.value.member_id, OrderDetail.value.member?.phone)
 }
 
 // 提示是否继续添加的弹窗
@@ -313,8 +312,9 @@ if (myStore.value.id) {
   await getGoldPrice(myStore.value.id)
   await getSetInfo({ store_id: myStore.value.id })
 }
-// 继续新增
+// 弹窗确认继续新增
 const ContinueAdd = async () => {
+  // 如果没有id , 全部门店,则清空数据重置
   if (!myStore.value?.id) {
     initObjForm()
     initOptions()
@@ -324,6 +324,14 @@ const ContinueAdd = async () => {
     await getGoldPrice(myStore.value.id)
     await getSetInfo({ store_id: myStore.value.id })
   }
+}
+if (route?.query?.id) {
+  // 判断是否有定金单订单详情
+  await getOrderDetail({ id: route?.query?.id as string })
+  showDepositList.value.push(OrderDetail.value)
+  updateDepostitProduct()
+  await nextTick()
+  addMemberRef.value?.setMbid(OrderDetail.value.member_id, OrderDetail.value.member?.phone)
 }
 
 const initFinished = ref(false)

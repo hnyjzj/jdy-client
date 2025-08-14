@@ -16,6 +16,7 @@ const showModal = ref(false)
 // 设置折扣率
 const handleDiscountRateBlur = (discount_rate?: number) => {
   if (!discount_rate) {
+    orderObject.value.discount_rate = 100
     orderObject.value.showProductList?.forEach((item) => {
       item.discount_fixed = 100
     })

@@ -39,7 +39,7 @@ interface Orders {
   product_accessories?: {
     product_id?: string
     quantity?: number
-    price?: string
+    price?: number
     integral?: number
   }[]
   /**
@@ -210,7 +210,7 @@ interface OrderPart extends ProductAccessories {
   /**
    * 应付金额
    */
-  price?: string
+  price?: number
   /**
    * 产品ID
    */

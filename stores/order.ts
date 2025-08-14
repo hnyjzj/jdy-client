@@ -44,6 +44,7 @@ export const useOrder = defineStore('Order', {
           if (data.value.data.list !== null && data.value.data.list?.length > 0) {
             const params = data.value.data.list[0]
             this.OldObj = params
+            this.OldObj.product_id = params.id
             this.OldObj.weight_metal = Number(params.weight_metal)
           }
           else {
