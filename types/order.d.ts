@@ -195,7 +195,6 @@ interface OrderMaterial extends ProductFinisheds {
   product?: ProductOlds
   recycle_method?: number
   quality_actual?: number
-  recycle_method?: number
   recycle_price?: number
   recycle_price_gold?: number
   recycle_price_labor?: number
