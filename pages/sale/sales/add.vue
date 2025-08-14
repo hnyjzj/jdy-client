@@ -134,15 +134,6 @@ const addProduct = async (product: DepositOrderInfoProducts) => {
   }
 }
 
-await getSaleWhere()
-await OldMaterialsWhere()
-await getFinishedWhere()
-await getAccessorieWhere()
-if (myStore.value.id) {
-  await getStaff()
-  await getGoldPrice(myStore.value.id)
-  await getSetInfo({ store_id: myStore.value.id })
-}
 // 设置积分抵扣值
 
 const handleIsInterChange = () => {
@@ -271,6 +262,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
 // 切换门店的操作
 const changeStore = async () => {
   await getSetInfo({ store_id: myStore.value.id })
+  await getGoldPrice(myStore.value.id)
   initObjForm()
   initOptions()
   Key.value = Date.now().toString()
@@ -311,6 +303,29 @@ const tipFormVisible = () => {
     }
   })?.length > 0)
 }
+
+await getSaleWhere()
+await OldMaterialsWhere()
+await getFinishedWhere()
+await getAccessorieWhere()
+if (myStore.value.id) {
+  await getStaff()
+  await getGoldPrice(myStore.value.id)
+  await getSetInfo({ store_id: myStore.value.id })
+}
+// 继续新增
+const ContinueAdd = async () => {
+  if (!myStore.value?.id) {
+    initObjForm()
+    initOptions()
+  }
+  else {
+    await getStaff()
+    await getGoldPrice(myStore.value.id)
+    await getSetInfo({ store_id: myStore.value.id })
+  }
+}
+
 const initFinished = ref(false)
 const loading = ref(true)
 onMounted(async () => {
@@ -413,9 +428,7 @@ onMounted(async () => {
         initObjForm()
         initOptions()
       }"
-      @submit="async () => {
-        await getStaff()
-      }" />
+      @submit="ContinueAdd" />
     <common-loading v-model="loading" />
   </div>
 </template>
