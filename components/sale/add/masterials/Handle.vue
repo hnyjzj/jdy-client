@@ -105,7 +105,7 @@ const submitMasterialsForm = async () => {
 // 手动添加的旧料 如果不是自有旧料
 const changePrice = () => {
   if (!nowOldMaster.value.recycle_price_labor_method) {
-    nowOldMaster.value.recycle_price_labor_method = 1
+    nowOldMaster.value.recycle_price_labor_method ??= 1
   }
   const hold = holdFunction(props.billingSet.decimal_point)
   // 取整控制函数

@@ -30,9 +30,7 @@ const searchPartsList = async () => {
 
 // 确认配件 ，将选中的配件添加到 展示列表中, 调用接口获取积分比例
 const confirmParts = async () => {
-  if (!orderObject.value.showPartsList) {
-    orderObject.value.showPartsList = []
-  }
+  orderObject.value.showPartsList ??= []
   //  然后添加新的数据
   prePartsList.value.forEach((item) => {
     const newItem = { ...item, quantity: 1, amount: Number(item?.price || 0), product_id: item.id }
