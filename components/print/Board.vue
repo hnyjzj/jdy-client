@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { calc } from 'a-calc'
+
 const props = defineProps<{
   /**
    * 订单详情
@@ -77,6 +79,19 @@ const formartMoney = (money: number | string | undefined) => {
 
 findSalesman()
 judgeType()
+const partTotalPrice = computed(() => {
+  // 计算配件总价
+  let totalPrice = 0
+  props.details?.products?.forEach((item) => {
+    if (item.type === 3) {
+      totalPrice += calc('(a * b )| =3 ~5,!n', {
+        a: item?.accessorie.price,
+        b: item?.accessorie.quantity,
+      })
+    }
+  })
+  return totalPrice
+})
 </script>
 
 <template>
@@ -261,18 +276,27 @@ judgeType()
             </table>
           </template>
           <template v-if="hasAccessorie || !props.details">
-            <div>
-              <template v-for="(item, index) in props.details?.products" :key="index">
-                <template v-if="item.type === GoodsType.ProductAccessories">
-                  <span class="table-body">
-                    {{ item.accessorie.product?.name || '' }}
-                  </span>
-                  <span class="table-body">
-                    x{{ item.accessorie.quantity || '' }};
-                  </span>
-                </template>
-              </template>
-            </div>
+            <table cellspacing="0" class="table-header" style="width: 100%;">
+              <thead>
+                <tr>
+                  <th class="table-header" style=" width:auto;">
+                    <template v-for="(item, index) in props.details?.products" :key="index">
+                      <template v-if="item.type === GoodsType.ProductAccessories">
+                        <span class="table-body">
+                          {{ item.accessorie.product?.name || '' }}
+                        </span>
+                        <span class="table-body">
+                          x{{ item.accessorie.quantity || '' }};
+                        </span>
+                      </template>
+                    </template>
+                  </th>
+                  <th class="table-header" style=" width:16%;">
+                    {{ partTotalPrice }}
+                  </th>
+                </tr>
+              </thead>
+            </table>
           </template>
         </div>
       </template>
