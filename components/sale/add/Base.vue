@@ -1,14 +1,52 @@
 <script lang="ts" setup>
+import { calc } from 'a-calc'
+
 const props = withDefaults(defineProps<{
   title?: string
   filterList: Where<OrderWhere>
   storeStaff: StoresStaff[]
   getStaff: () => void
-  setScore: (score: number) => void
 }>(), {
   title: '基础信息',
 })
 const orderObject = defineModel<Orders>({ default: {} })
+// 设置积分抵扣值
+const handleIsInterChange = () => {
+  if (!orderObject.value.has_integral) {
+    // 清空积分
+    orderObject.value.showProductList?.forEach((item) => {
+      item.integral = 0
+    })
+    orderObject.value.showMasterialsList?.forEach((item) => {
+      item.integral = 0
+    })
+  }
+  else {
+    orderObject.value.showProductList?.forEach((item) => {
+      if (item.price && item.rate && Number(item.rate) !== 0) {
+        // 计算应得的积分 +
+        item.integral = calc('(a / b) | =0 ~5 ,!n', {
+          a: item.price,
+          b: item.rate,
+        })
+      }
+      else {
+        item.integral = 0
+      }
+    })
+    orderObject.value.showMasterialsList?.forEach((item) => {
+      if (item.recycle_price && item.rate && Number(item.rate) !== 0) {
+        item.integral = calc('(a / b)| =0 ~5, !n', {
+          a: item.recycle_price || 0,
+          b: item?.rate || 0,
+        })
+      }
+      else {
+        item.integral = 0
+      }
+    })
+  }
+}
 
 // 订单来源参数
 const sourceOptions = optonsToSelect(props.filterList.source?.preset)
@@ -135,7 +173,7 @@ const checkRatio = () => {
             :span="12"
             label="是否积分" label-placement="top"
           >
-            <n-radio-group v-model:value="orderObject.has_integral" name="radiogroup" @update:value="props.setScore">
+            <n-radio-group v-model:value="orderObject.has_integral" name="radiogroup" @update:value="handleIsInterChange()">
               <n-space>
                 <n-radio
                   v-for="(items, index) in [{ value: true, label: '积分' }, { value: false, label: '不积分' }]" :key="index" :value="items.value" :style="{

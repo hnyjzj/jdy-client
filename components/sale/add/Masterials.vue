@@ -3,10 +3,17 @@ const props = defineProps<{
   price: GoldPrices[]
   oldFilterList: Where<OrderMaterial>
   oldFilterListToArray: FilterWhere<OrderMaterial>[]
-  checkOldClass: (params: Partial<OrderMaterial>) => any
-  searchOlds: (val: string) => Promise<OrderMaterial>
   billingSet: BillingSet
 }>()
+const { getOldClass, getOldScoreProportion } = useOld()
+// 获取旧料大类，并获取旧料积分比例
+const CheckOldClass = async (params: Partial<OrderMaterial>) => {
+  const res = await getOldClass(params)
+  if (res?.value) {
+    const data = await getOldScoreProportion({ class: res?.value })
+    return { rate: data, res }
+  }
+}
 const showModal = ref(false)
 // 展示列表
 const orderObject = defineModel<Orders>({ default: {} as Orders })
@@ -67,8 +74,7 @@ const editOld = (item: OrderMaterial, index: number) => {
         v-model:now-old-master="nowOldMaster"
         :old-filter-list="props.oldFilterList"
         :price="props.price"
-        :search-olds="searchOlds"
-        :check-old-class="props.checkOldClass"
+        :check-old-class="CheckOldClass"
         :now-edit-state="nowEditState"
         :billing-set="props.billingSet"
       />
@@ -77,7 +83,7 @@ const editOld = (item: OrderMaterial, index: number) => {
         v-model:now-old-master="nowOldMaster"
         v-model:show="showModal"
         :old-filter-list-to-array="props.oldFilterListToArray"
-        :check-old-class="props.checkOldClass"
+        :check-old-class="CheckOldClass"
         :now-edit-state="nowEditState"
         :billing-set="props.billingSet"
       />

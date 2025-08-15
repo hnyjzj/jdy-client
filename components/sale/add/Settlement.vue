@@ -5,10 +5,15 @@ import { calc } from 'a-calc'
 const props = defineProps<{
   disScore: boolean
   filterList: Where<OrderWhere>
-  getSearchPhrase: (val: string) => Promise<Phrase[]>
+  storeid: string
   billingSet: BillingSet
 }>()
-
+const { getPhraseList } = usePhrase()
+// 获取备注列表
+const getSearchPhrase = async (value: string) => {
+  const res = await getPhraseList({ page: 1, limit: 10, where: { store_id: props.storeid, content: value || '' } })
+  return res || [] as Phrase[]
+}
 const orderObject = defineModel<Orders>('form', { default: {} })
 
 const deposit = defineModel<DepositOrderInfo[]>('deposit', { default: [] })
@@ -138,7 +143,7 @@ const unPayMoney = computed(() => {
 })
 const remarkList = ref<SelectOption[]>([])
 const searchRmk = async (query: string) => {
-  const res = await props.getSearchPhrase(query)
+  const res = await getSearchPhrase(query)
   remarkList.value = res.map(item => ({
     label: item.content,
     value: item.content,

@@ -46,12 +46,16 @@ export const useOrder = defineStore('Order', {
             this.OldObj = params
             this.OldObj.product_id = params.id
             this.OldObj.weight_metal = Number(params.weight_metal)
+            return this.OldObj
           }
           else {
             this.OldObj = {} as OrderMaterial
+            return this.OldObj
           }
         }
-        return data.value
+        else {
+          return {} as OrderMaterial
+        }
       }
       catch (error) {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
@@ -156,7 +160,12 @@ export const useOrder = defineStore('Order', {
     async initObjForm() {
       this.orderObject = {} as Orders
     },
-
+    // 初始化导购员 和 收款方式 和 积分
+    async initOptions() {
+      this.orderObject.payments ??= [{ payment_method: 1, amount: undefined }]
+      this.orderObject.clerks ??= [{ salesman_id: undefined, performance_rate: 100, is_main: true }]
+      this.orderObject.has_integral ??= false
+    },
   },
   persist: [
     {

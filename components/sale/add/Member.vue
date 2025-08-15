@@ -2,9 +2,7 @@
 import { calc } from 'a-calc'
 
 const props = defineProps<{
-  getMember: (val: string) => Promise<Member[]>
   getStaffs: () => void
-  addNewMember: (val: Member) => any
   billingSet?: BillingSet
   store: Stores
   staffs: StoresStaff[]
@@ -15,7 +13,14 @@ const emit = defineEmits<{
 }>()
 const { myStore } = storeToRefs(useStores())
 const { userinfo } = storeToRefs(useUser())
+const { getMemberList, createMember } = useMemberManage()
+const { memberList } = storeToRefs(useMemberManage())
 
+// 获取会员列表
+const getMember = async (val: string) => {
+  await getMemberList({ page: 1, limit: 1, where: { phone: val } })
+  return memberList.value || []
+}
 const orderObject = defineModel({ default: {
 } as Orders })
 const Key = ref()
@@ -60,7 +65,7 @@ const searchMember = async (val: string) => {
   memberId.value = undefined
   Key.value = Date.now().toString()
   orderObject.value.member = {} as Member
-  searchList.value = await props.getMember(val)
+  searchList.value = await getMember(val)
   if (searchList.value.length === 0) {
     if (!myStore.value.id) {
       $toast.error('请先切换门店')
@@ -85,15 +90,15 @@ const handleAddMember = () => {
 
 // 提交新用户
 const submitNewMember = async () => {
-  const res = await props.addNewMember(memberParams.value)
-  if (res.code === HttpCode.SUCCESS) {
+  const res = await createMember(memberParams.value)
+  if (res?.code === HttpCode.SUCCESS) {
     $toast.success(res.message)
     showModel.value = false
-    searchList.value = await props.getMember(memberParams.value?.phone)
+    searchList.value = await getMember(memberParams.value?.phone)
     setUserInfo(searchList.value)
   }
   else {
-    $toast.error(res.message)
+    $toast.error(res?.message || '新增失败')
   }
 }
 const setMbid = async (id: string, phone: string) => {

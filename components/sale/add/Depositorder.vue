@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const props = defineProps<{
   orderDetail: DepositOrderInfo
-  searchDepositOrders: (val?: string) => Promise<DepositOrderInfo[]>
+  storeid: string
 }>()
 const emit = defineEmits<{
   updateProduct: []
@@ -69,7 +69,7 @@ const showProductName = (products: DepositOrderInfo['products']) => {
     <sale-add-deposit-model
       v-model:show="searchShow"
       v-model:list="showDepositList"
-      :search-deposit-orders="props.searchDepositOrders"
+      :storeid="props.storeid"
       @update-product="emit('updateProduct')" />
   </div>
 </template>

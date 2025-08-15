@@ -4,7 +4,6 @@ import { calc } from 'a-calc'
 const Props = defineProps<{
   price: GoldPrices[]
   billingSet: BillingSet
-  searchProductList: (data: { val: string }) => Promise<ProductFinisheds[]>
   checkProductClass: (val: { class: number }) => any
 }>()
 
@@ -188,7 +187,6 @@ const addProduct = async (products: ProductFinisheds[]) => {
       <!-- 选择时使用的列表 -->
       <sale-add-product-popup
         v-model:show="showModal"
-        :search-product-list="searchProductList"
         @add-product="addProduct" />
     </common-fold>
   </div>

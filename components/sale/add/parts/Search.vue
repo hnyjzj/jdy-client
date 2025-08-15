@@ -3,9 +3,17 @@ const Props = defineProps<{
   billingSet: BillingSet
   isIntegral: boolean
   partFilter: Where<OrderPart>
-  searchParts: (val: string,) => Promise<ProductAccessories[]>
-  checkAccessoriesScore: (params: { classes: OrderPart['type'][] }) => any
+  storeid: string
 }>()
+const { getAccessorieList } = useAccessorie()
+// 搜索配件
+const searchParts = async (val: string) => {
+  const res = await getAccessorieList({ page: 1, limit: 10, where: { name: val, store_id: Props.storeid } })
+  if (res?.data?.list) {
+    return res.data.list || []
+  }
+  return []
+}
 const showModal = defineModel('show', { default: false })
 const searchPartsVal = ref('')
 // 预设选中状态的配置列表
@@ -23,7 +31,7 @@ const selectPart = (part: ProductAccessories) => {
 }
 const partslist = ref<ProductAccessories[]>([])
 const searchPartsList = async () => {
-  const data = await Props.searchParts(searchPartsVal.value)
+  const data = await searchParts(searchPartsVal.value)
   partslist.value = data
   document.body.style.overflow = 'hidden'
 }

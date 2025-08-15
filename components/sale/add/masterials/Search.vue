@@ -3,7 +3,6 @@ import type { FormRules } from 'naive-ui'
 import { calc } from 'a-calc'
 
 const props = defineProps<{
-  searchOlds: (val: string) => Promise<OrderMaterial>
   checkOldClass: (params: Partial<OrderMaterial>) => any
   nowEditState?: number
   price: GoldPrices[]
@@ -11,6 +10,14 @@ const props = defineProps<{
   oldFilterList: Where<OrderMaterial>
 }>()
 const { $toast } = useNuxtApp()
+const { getOldList } = useOrder()
+// 搜索旧料
+const searchOlds = async (val: string) => {
+  if (val) {
+    return await getOldList({ page: 1, limit: 10, where: { code: val, status: ProductFinishedsStatus.Sold } })
+  }
+  return {}
+}
 // 旧料表单 Ref
 const oldMasterRef = ref()
 const oldRules = ref<FormRules>({
@@ -59,7 +66,7 @@ const scanCode = async () => {
     searchShow.value = true
     searchInput.value = code
     nowOldMaster.value = {} as OrderMaterial
-    props.searchOlds(searchInput.value)
+    await searchOlds(searchInput.value)
   }
 }
 const ourChangePrice = () => {
@@ -134,7 +141,7 @@ const searchConfirm = async () => {
 }
 // 调用旧料列表接口
 const searchOldFn = async () => {
-  await props.searchOlds(searchInput.value)
+  await searchOlds(searchInput.value)
   if (nowOldMaster.value?.product_id) {
     // 匹配金价
     const exists = props.price.filter(item =>
@@ -177,7 +184,7 @@ const searchOldFn = async () => {
                 type="text"
                 clearable
                 placeholder="请输入商品条码"
-                @keydown.enter="props.searchOlds(searchInput)"
+                @keydown.enter="searchOlds(searchInput)"
                 @focus="focus" />
             </div>
             <div class="pl-[16px] flex">

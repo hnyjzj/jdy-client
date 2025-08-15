@@ -3,8 +3,7 @@ const Props = withDefaults(defineProps<{
   isIntegral: boolean
   billingSet: BillingSet
   partFilter: Where<OrderPart>
-  checkAccessoriesScore: (params: { classes: OrderPart['type'][] }) => any
-  searchParts: (val: string,) => Promise<ProductAccessories[]>
+  storeid: string
 }>(), {
   isIntegral: false,
 })
@@ -39,8 +38,7 @@ const rounding = roundFunction(Props.billingSet.rounding)
         v-model:list="orderObject"
         :is-integral="Props.isIntegral"
         :billing-set="Props.billingSet"
-        :check-accessories-score="Props.checkAccessoriesScore"
-        :search-parts="Props.searchParts"
+        :storeid="Props.storeid"
         :part-filter="Props.partFilter"
       />
     </common-fold>

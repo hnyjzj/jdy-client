@@ -1,10 +1,17 @@
 <script lang="ts" setup>
-const Props = defineProps<{
-  searchProductList: (data: { val: string }) => Promise<ProductFinisheds[]>
-}>()
 const emits = defineEmits<{
   addProduct: [val: ProductFinisheds[]]
 }>()
+const { getFinishedList } = useFinished()
+// 搜索成品,查询list
+const searchProductList = async (data: { val: string }) => {
+  if (data.val) {
+    const res = await getFinishedList({ page: 1, limit: 10, where: { code: data.val, status: ProductFinishedsStatus.Normal } })
+    return res?.data.list || []
+  }
+  return []
+}
+
 const showModal = defineModel('show', { default: false })
 // 搜索出来的货品列表
 const productList = ref<ProductFinisheds[]>([])
@@ -21,7 +28,7 @@ const setAddProduct = (product: ProductFinisheds) => {
 // 输入框
 const searchProduct = ref('')
 const search = async () => {
-  const res = await Props.searchProductList({ val: searchProduct.value })
+  const res = await searchProductList({ val: searchProduct.value })
   if (res.length > 0) {
     const index = readyAddproduct.value.findIndex(p => p.id === res[0].id)
     if (index !== -1)
