@@ -27,6 +27,8 @@ const isChooseModel = ref(false)
 const pCode = ref()
 /** 成品条码添加还是成品条码搜索添加 */
 const isOldCodeSearch = ref(false)
+/** 旧料搜索选择集合 */
+const selectedCategories = ref([] as ProductOlds['code'][])
 
 async function getWhere() {
   if (GoodsTypePure.ProductFinish === type.value) {
@@ -131,7 +133,8 @@ const delProduct = useThrottleFn(async (code: ProductFinisheds['code'] | Product
 async function addProduct() {
   const params = {
     id: allocateInfo.value?.id,
-    codes: [pCode.value],
+    /** 旧料搜索时使用 旧料搜索code集合 */
+    codes: isOldCodeSearch.value ? selectedCategories.value : [pCode.value],
   }
   const res = await add(params)
   if (res?.code === HttpCode.SUCCESS) {
@@ -184,21 +187,21 @@ const options = ref([
   { label: '旧料名称', value: 'name' },
 ])
 
-/** 搜索要入库的配件 */
+/** 搜索要入库的旧料 */
 async function searchOldList() {
+  selectedCategories.value = [] as ProductOlds['code'][]
   const obj = {} as Partial<ProductOlds>
   obj[searchParams.value.label] = searchParams.value.val
+  obj.status = GoodsStatus.ProductStatusNormal
   await getOldList({ page: 1, limit: 20, where: { ...obj } })
 }
-
-const selectedCategories = ref([] as ProductOlds['id'][])
 
 /** 全选/全不选 */
 function toggleSelectAll(event: any) {
   if (!oldList.value?.length)
     return
   if (event.target.checked) {
-    selectedCategories.value = oldList.value.map(cat => cat.id)
+    selectedCategories.value = oldList.value.map(cat => cat.code)
   }
   else {
     selectedCategories.value = []
@@ -293,6 +296,13 @@ const clearFun = useThrottleFn(async () => {
     loading.value = false
   }
 }, 1000)
+
+async function createFun() {
+  isChooseModel.value = true
+  if (allocateInfo.value?.type === GoodsType.ProductOld) {
+    await searchOldList()
+  }
+}
 </script>
 
 <template>
@@ -355,7 +365,7 @@ const clearFun = useThrottleFn(async () => {
         </template>
       </div>
     </div>
-    <common-model v-model="isAddModel" title="添加" :show-ok="true" cancel-text="取消" confirm-text="确认添加" @confirm="addProduct">
+    <common-model v-model="isAddModel" title="添加" :show-ok="true" cancel-text="取消" confirm-text="确认添加" @confirm="addProduct()">
       <div class="min-h-[140px]">
         <template v-if="type === GoodsTypePure.ProductFinish">
           <div class="flex justify-center items-center mb-6">
@@ -401,9 +411,6 @@ const clearFun = useThrottleFn(async () => {
                       <input type="checkbox" :disabled="oldList?.length === 0" @change="toggleSelectAll" @focus="focus">
                     </th>
                     <th class="tabel-text">
-                      旧料编号
-                    </th>
-                    <th class="tabel-text">
                       条码
                     </th>
                     <th class="tabel-text">
@@ -423,10 +430,7 @@ const clearFun = useThrottleFn(async () => {
                     <template v-for="(old, i) in oldList" :key="i">
                       <tr class="table-color">
                         <td class="sticky-left table-color py-1 px-2">
-                          <input v-model="selectedCategories" type="checkbox" :value="old.id" @focus="focus">
-                        </td>
-                        <td class="tabel-text">
-                          {{ old.id }}
+                          <input v-model="selectedCategories" type="checkbox" :value="old.code" @focus="focus">
                         </td>
                         <td class="tabel-text">
                           {{ old.code }}
@@ -486,7 +490,7 @@ const clearFun = useThrottleFn(async () => {
     </template>
     <!-- 状态为草稿中 增加产品 -->
     <template v-if="allocateInfo.status === AllocateStatus.Draft && myStore.id && myStore.id === allocateInfo.from_store_id">
-      <common-create @click="isChooseModel = true" />
+      <common-create @click="createFun" />
     </template>
     <product-upload-choose v-model:is-model="isChooseModel" title="调拨" @go-add="isChooseModel = false; isAddModel = true" @batch="isImportModel = true" />
     <product-allocate-force ref="uploadRef" v-model="isImportModel" @upload="submitGoods" />
