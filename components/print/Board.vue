@@ -90,7 +90,9 @@ const partTotalPrice = computed(() => {
       })
     }
   })
-  return totalPrice
+  return calc('(a)| =3 ~5,!n', {
+    a: totalPrice,
+  })
 })
 </script>
 
