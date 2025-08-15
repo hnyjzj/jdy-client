@@ -15,18 +15,13 @@ const getSearchPhrase = async (value: string) => {
   return res || [] as Phrase[]
 }
 const orderObject = defineModel<Orders>('form', { default: {} })
-
 const deposit = defineModel<DepositOrderInfo[]>('deposit', { default: [] })
-
-// const payments = ref<Orders['payments']>([{ amount: undefined, payment_method: 1 }])
 // 转换支付方式下拉菜单
 const payMethods = optonsToSelect(props.filterList.payment_method?.preset)
-
 const addNewMethod = () => {
   orderObject.value.payments ??= []
   orderObject.value.payments.push({ payment_method: 1, amount: undefined })
 }
-
 // 删除支付方式
 const deleteMethod = (index: number) => {
   orderObject.value.payments.splice(index, 1)
