@@ -68,7 +68,7 @@ const rules = {
     message: '请选择收银员',
   },
 }
-const orderObject = ref<orderObject>({} as orderObject)
+const orderObject = ref<Orders>({} as Orders)
 // 点击验证表单
 const handleValidateButtonClick = async (e: MouseEvent) => {
   e.preventDefault()

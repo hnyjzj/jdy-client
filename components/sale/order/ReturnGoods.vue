@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import type { FormRules } from 'naive-ui'
+import { calc } from 'a-calc'
 
 const props = defineProps<{
   productFilter: Where<ProductFinisheds>
@@ -60,6 +61,7 @@ const submit = async () => {
       model.value.product_type = showReturnGoods.value?.goods?.type || 0
 
       await props.returnGoods(model.value)
+      showModel.value = false
       model.value = {
         id: '',
         product_id: '',
@@ -72,6 +74,15 @@ const submit = async () => {
     }
   })
 }
+const PartAmout = (quantity?: number, price?: number) => {
+  if (quantity && price) {
+    return calc('(a * b ) | =3,!n', {
+      a: quantity,
+      b: price,
+    })
+  }
+}
+
 const titleText = computed(() => {
   return showReturnGoods.value?.goods?.type === 1 ? '成品退货' : showReturnGoods.value?.goods?.type === 2 ? '旧料退货' : '配给退货'
 })
@@ -79,7 +90,7 @@ const setPrice = (index: number) => {
   showModel.value = true
   showReturnGoods.value.goods = props.orders.products[index]
   showReturnGoods.value.id = props.orders.id
-  model.value.price = Number(props.orders.products[index].accessorie.price) || 0
+  model.value.price = PartAmout(props.orders.products[index].accessorie.quantity, props.orders.products[index].accessorie.price) || 0
 }
 defineExpose({
   setPrice,
@@ -114,8 +125,8 @@ defineExpose({
         </template>
         <template v-if="showReturnGoods?.goods?.type === GoodsType.ProductAccessories">
           <common-cell label="配件名称" :value="showReturnGoods?.goods?.accessorie.product?.name" />
-          <common-cell label="数量" :value="showReturnGoods?.goods?.accessorie?.quantity" />
-          <common-cell :label="`编号:${showReturnGoods?.goods?.accessorie?.id}`" :value="`应付金额:${showReturnGoods?.goods?.accessorie?.price}`" />
+          <common-cell :label="`数量:${showReturnGoods?.goods?.accessorie?.quantity}`" :value="`单价:${showReturnGoods?.goods?.accessorie?.price}`" />
+          <common-cell :label="`编号:${showReturnGoods?.goods?.accessorie?.id}`" :value="`应付金额:${PartAmout(showReturnGoods?.goods?.accessorie?.quantity, showReturnGoods?.goods?.accessorie?.price)}`" />
         </template>
         <n-form
           ref="formRef"
@@ -135,7 +146,7 @@ defineExpose({
               </n-form-item-gi>
             </template>
             <n-form-item-gi :span="6" label="退款金额" path="price">
-              <n-input-number v-model:value="model.price" min="0" :disabled="showReturnGoods?.goods?.type === 3" @focus="focus" />
+              <n-input-number v-model:value="model.price" :min="0" :disabled="showReturnGoods?.goods?.type === 3" @focus="focus" />
             </n-form-item-gi>
             <n-form-item-gi :span="12" label="备注" path="remark">
               <n-input v-model:value="model.remark" type="textarea" rows="2" placeholder="请输入退款说明" @focus="focus" />

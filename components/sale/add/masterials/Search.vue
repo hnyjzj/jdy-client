@@ -3,12 +3,25 @@ import type { FormRules } from 'naive-ui'
 import { calc } from 'a-calc'
 
 const props = defineProps<{
-  searchOlds: (val: string) => Promise<ProductOld>
-  checkOldClass: (params: Partial<ProductOld>) => any
-  isIntegral: boolean
+  checkOldClass: (params: Partial<OrderMaterial>) => any
   nowEditState?: number
   price: GoldPrices[]
+  billingSet: BillingSet
+  oldFilterList: Where<OrderMaterial>
 }>()
+const { $toast } = useNuxtApp()
+const { getOldList } = useOrder()
+// 搜索旧料
+const searchOlds = async (val: string) => {
+  if (val) {
+    const res = await getOldList({ page: 1, limit: 10, where: { code: val, status: ProductFinishedsStatus.Sold } })
+    if (Object.keys(res).length === 0) {
+      $toast.error('没有找到旧料')
+    }
+  }
+}
+// 旧料表单 Ref
+const oldMasterRef = ref()
 const oldRules = ref<FormRules>({
   weight_metal: {
     type: 'number',
@@ -42,48 +55,38 @@ const oldRules = ref<FormRules>({
   },
 })
 const searchShow = defineModel<boolean>('show', { default: false })
-const showMasterialsList = defineModel<ProductOld[]>('list', { default: [] })
+const orderObject = defineModel<Orders>({ default: {} as Orders })
 
-const searchOld = ref()
-const nowOldMaster = defineModel('nowOldMaster', { default: {} as ProductOld })
-// 扫码
-const { useWxWork } = useWxworkStore()
-const scanCode = async () => {
-  const wx = await useWxWork()
-  const code = await wx?.scanQRCode()
-  if (code) {
-    searchShow.value = true
-    searchOld.value = code
-    nowOldMaster.value = {} as ProductOld
-    props.searchOlds(searchOld.value)
-  }
-}
+const searchInput = ref()
+const nowOldMaster = defineModel('nowOldMaster', { default: {} as OrderMaterial })
+
 const ourChangePrice = () => {
+  nowOldMaster.value.recycle_price_labor_method ??= 1
+  const hold = holdFunction(props.billingSet.decimal_point)
+  // 取整控制函数
+  const rounding = roundFunction(props.billingSet.rounding)
+  const countContetn = {
+    a: nowOldMaster.value.weight_metal || 0,
+    b: nowOldMaster.value.recycle_price_gold || 0,
+    c: nowOldMaster.value.recycle_price_labor || 0,
+    d: nowOldMaster.value.quality_actual || 1,
+  }
   if (nowOldMaster.value.recycle_price_labor_method === 1) {
-    nowOldMaster.value.recycle_price = calc('((b - c) * a * d)| =0 ~5,!n', {
-      a: nowOldMaster.value.weight_metal || 0,
-      b: nowOldMaster.value.recycle_price_gold || 0,
-      c: nowOldMaster.value.recycle_price_labor || 0,
-      d: nowOldMaster.value.quality_actual || 1,
-    })
+    // 如果回收工费方式按克 (回收金价-回收工费)*金重*实际成色
+    nowOldMaster.value.recycle_price = calc(`((b - c) * a * d)| =${hold} ~${rounding},!n`, countContetn)
   }
   else if (nowOldMaster.value.recycle_price_labor_method === 2) {
-    nowOldMaster.value.recycle_price = calc('((a*b*d) - c)| =0 ~5,!n', {
-      a: nowOldMaster.value.weight_metal || 0,
-      b: nowOldMaster.value.recycle_price_gold || 0,
-      c: nowOldMaster.value.recycle_price_labor || 0,
-      d: nowOldMaster.value.quality_actual || 1,
-    })
+    // 如果回收工费方式按件 (金重* 回收金价 * 实际成色) - 回收工费
+    nowOldMaster.value.recycle_price = calc(`((a*b*d) - c)| =${hold} ~${rounding},!n`, countContetn)
   }
 }
-// 旧料表单 Ref
-const oldMasterRef = ref()
+
 // 设置大类和 积分
 const setNowOldMaster = (data: any) => {
   nowOldMaster.value.class = data?.res.value
   // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
   if (nowOldMaster.value.recycle_price && data.rate && Number(data.rate) !== 0) {
-    nowOldMaster.value.integral = props.isIntegral
+    nowOldMaster.value.integral = orderObject.value.has_integral
       ? calc('(a / b)| =0 ~5, !n', {
           a: nowOldMaster.value.recycle_price,
           b: data.rate,
@@ -91,49 +94,35 @@ const setNowOldMaster = (data: any) => {
       : 0
   }
 }
-const { $toast } = useNuxtApp()
+
 // 搜索旧料后的 确认操作
 const searchConfirm = async () => {
   oldMasterRef.value?.validate(async (errors: any) => {
     if (!errors) {
-      const isDuplicate = showMasterialsList.value.find(item => item.code === nowOldMaster.value.code)
+      orderObject.value.showMasterialsList ??= []
+      // 去重
+      const isDuplicate = orderObject.value.showMasterialsList.find(item => item.code === nowOldMaster.value.code)
       if (isDuplicate && props.nowEditState === undefined) {
         $toast.error('不能添加相同商品')
       }
       else {
+        // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
+        const data = await props.checkOldClass({ material: nowOldMaster.value.material, quality: nowOldMaster.value.quality, gem: nowOldMaster.value.gem })
+        if (!data.res.value) {
+          // 如果没有大类则中断
+          return
+        }
+        setNowOldMaster(data)
         if (props.nowEditState !== undefined) {
           // 这里是编辑状态 确认时，需要把当前编辑的值替换掉
-          if (Number(nowOldMaster.value.recycle_price) < 0) {
-            $toast.error('回收金额不能小于0')
-            return
-          }
-          // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
-          const data = await props.checkOldClass({ material: nowOldMaster.value.material, quality: nowOldMaster.value.quality, gem: nowOldMaster.value.gem })
-          if (!data.res.value) {
-          // 如果没有大类则中断
-            return
-          }
-          setNowOldMaster(data)
-          showMasterialsList.value.splice(props.nowEditState, 1, nowOldMaster.value)
-          searchShow.value = false
+          orderObject.value.showMasterialsList.splice(props.nowEditState, 1, nowOldMaster.value)
         }
         else {
-          nowOldMaster.value.is_our = true
           // 这里是新增时
-          if (Number(nowOldMaster.value.recycle_price) < 0) {
-            $toast.error('回收金额不能小于0')
-            return
-          }
-          // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
-          const data = await props.checkOldClass({ material: nowOldMaster.value.material, quality: nowOldMaster.value.quality, gem: nowOldMaster.value.gem })
-          if (!data.res.value) {
-          // 如果没有大类则中断
-            return
-          }
-          setNowOldMaster(data)
-          showMasterialsList.value.push(nowOldMaster.value)
-          searchShow.value = false
+          nowOldMaster.value.is_our = true
+          orderObject.value.showMasterialsList.push(nowOldMaster.value)
         }
+        searchShow.value = false
       }
     }
     else {
@@ -143,10 +132,9 @@ const searchConfirm = async () => {
 }
 // 调用旧料列表接口
 const searchOldFn = async () => {
-  await props.searchOlds(searchOld.value)
+  await searchOlds(searchInput.value)
   if (nowOldMaster.value?.product_id) {
     // 匹配金价
-
     const exists = props.price.filter(item =>
       item.product_type === GoodsType.ProductOld
       && item.product_material === nowOldMaster.value.material
@@ -159,6 +147,17 @@ const searchOldFn = async () => {
     else {
       nowOldMaster.value.recycle_price_gold = undefined
     }
+  }
+}
+// 扫码
+const { useWxWork } = useWxworkStore()
+const scanCode = async () => {
+  const wx = await useWxWork()
+  const code = await wx?.scanQRCode()
+  if (code) {
+    searchInput.value = code
+    nowOldMaster.value = {} as OrderMaterial
+    await searchOldFn()
   }
 }
 </script>
@@ -182,12 +181,12 @@ const searchOldFn = async () => {
           <div class="flex items-center pb-[16px]">
             <div class="flex-1">
               <n-input
-                v-model:value="searchOld"
+                v-model:value="searchInput"
                 size="large"
                 type="text"
                 clearable
                 placeholder="请输入商品条码"
-                @keydown.enter="props.searchOlds(searchOld)"
+                @keydown.enter="searchOldFn()"
                 @focus="focus" />
             </div>
             <div class="pl-[16px] flex">
@@ -220,14 +219,9 @@ const searchOldFn = async () => {
                         v-model:value="nowOldMaster.recycle_price_labor_method"
                         menu-size="large"
                         placeholder="选择回收工费方式"
-                        :options="[{
-                          value: 1,
-                          label: '按克',
-                        }, {
-                          value: 2,
-                          label: '按件',
-                        }]"
+                        :options="optonsToSelect(props.oldFilterList.recycle_price_labor_method?.preset)"
                         @focus="focus"
+                        @update:value="ourChangePrice()"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收方式" path="recycle_method">
@@ -236,13 +230,7 @@ const searchOldFn = async () => {
                         menu-size="large"
                         placeholder="选择回收方式"
                         :disabled="props.nowEditState !== undefined"
-                        :options="[{
-                          value: 1,
-                          label: '按克',
-                        }, {
-                          value: 2,
-                          label: '按件',
-                        }]"
+                        :options="optonsToSelect(props.oldFilterList.recycle_method?.preset)"
                         @focus="focus"
                       />
                     </n-form-item-gi>
@@ -264,16 +252,7 @@ const searchOldFn = async () => {
                         menu-size="large"
                         placeholder="选择回收类型"
                         :default-value="1"
-                        :options="[{
-                          value: 1,
-                          label: '无',
-                        }, {
-                          value: 2,
-                          label: '回收',
-                        }, {
-                          value: 3,
-                          label: '兑换',
-                        }]"
+                        :options="optonsToSelect(props.oldFilterList.recycle_type?.preset)"
                         @focus="focus"
                       />
                     </n-form-item-gi>
@@ -296,7 +275,8 @@ const searchOldFn = async () => {
                         :show-button="false"
                         placeholder="请输入实际成色"
                         round
-                        min="0"
+                        :max="1"
+                        :min="0"
                         :precision="3"
                         @focus="focus"
                       />
@@ -323,7 +303,7 @@ const searchOldFn = async () => {
                         :show-button="false"
                         placeholder="请输入回收金额"
                         round
-                        min="0"
+                        :min="0"
                         :precision="3"
                         @focus="focus"
                       />

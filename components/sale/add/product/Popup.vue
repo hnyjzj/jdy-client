@@ -1,31 +1,34 @@
 <script lang="ts" setup>
-const Props = defineProps<{
-  searchProductList: (data: { val: string, type: string }) => Promise<ProductFinisheds[]>
-}>()
 const emits = defineEmits<{
   addProduct: [val: ProductFinisheds[]]
 }>()
+const { getFinishedList } = useFinished()
+// 搜索成品,查询list
+const searchProductList = async (data: { val: string }) => {
+  if (data.val) {
+    const res = await getFinishedList({ page: 1, limit: 10, where: { code: data.val, status: ProductFinishedsStatus.Normal } })
+    return res?.data.list || []
+  }
+  return []
+}
+
 const showModal = defineModel('show', { default: false })
-// 搜索商品 名称 和 条码   code
-const searchType = ref('code')
-// 选择成品
+// 搜索出来的货品列表
+const productList = ref<ProductFinisheds[]>([])
+
+//  已选的成品列表(点击确定时,此列表会传给父组件用作,添加到成品展示数组showProductList)
 const readyAddproduct = ref([] as ProductFinisheds[])
 const setAddProduct = (product: ProductFinisheds) => {
   const index = readyAddproduct.value.findIndex(p => p.id === product.id) // 假设每个产品都有一个唯一的 id 属性
-  if (index !== -1) {
-    // 如果产品已存在，则从数组中移除
-    readyAddproduct.value.splice(index, 1)
-  }
-  else {
-    // 如果产品不存在，则添加进数组
-    readyAddproduct.value.push(product)
-  }
+  index !== -1
+    ? readyAddproduct.value.splice(index, 1)
+    : readyAddproduct.value.push(product)
 }
-const productList = ref<ProductFinisheds[]>([])
-const searchProduct = ref('')
 
+// 输入框
+const searchProduct = ref('')
 const search = async () => {
-  const res = await Props.searchProductList({ val: searchProduct.value, type: searchType.value })
+  const res = await searchProductList({ val: searchProduct.value })
   if (res.length > 0) {
     const index = readyAddproduct.value.findIndex(p => p.id === res[0].id)
     if (index !== -1)
@@ -34,11 +37,15 @@ const search = async () => {
     setAddProduct(res[0])
   }
 }
-const confirm = () => {
-  emits('addProduct', readyAddproduct.value)
+const clearData = () => {
+  showModal.value = false
   searchProduct.value = ''
   productList.value = []
   readyAddproduct.value = []
+}
+const confirm = () => {
+  emits('addProduct', readyAddproduct.value)
+  clearData()
 }
 
 const { useWxWork } = useWxworkStore()
@@ -51,37 +58,22 @@ const scanCode = async () => {
     search()
   }
 }
-const realtype = (val?: number) => {
-  switch (val) {
-    case 1:
-      return '计件'
-    case 2:
-      return '计重工费按克'
-    case 3:
-      return '计重工费按件'
-  }
-}
 </script>
 
 <template>
   <div>
     <common-model
-      v-model="showModal" title="选择成品" :show-ok="true" :show-cancel="true" @confirm="confirm" @cancel="() => {
-        showModal = false
-        searchProduct = ''
-        productList = []
-        readyAddproduct = []
-      }">
+      v-model="showModal" title="选择成品" :show-ok="true" :show-cancel="true" @confirm="confirm" @cancel="clearData()">
       <div class="grid-12 h-[300px] overflow-y-scroll">
         <div class="col-12">
           <div>
             <div class="flex justify-start py-[12px]">
               <div
                 class="flex-center-col pr-[32px]">
-                <div class="text-[16px] pb-[2px] font-semibold line-height-[24px]" :style="{ color: searchType === 'code' ? '#333' : '#53565C' }">
+                <div class="text-[16px] pb-[2px] font-semibold line-height-[24px] color-[#333]">
                   条码搜索
                 </div>
-                <div class="w-[32px] h-[4px] rounded" :style="{ background: searchType === 'code' ? '#2080F0' : '' }" />
+                <div class="w-[32px] h-[4px] rounded bg-[#2080F0]" />
               </div>
             </div>
           </div>
@@ -91,7 +83,7 @@ const realtype = (val?: number) => {
                 v-model:value="searchProduct"
                 type="text"
                 clearable
-                :placeholder="searchType === 'name' ? '请输入商品名称' : '请输入商品条码'"
+                placeholder="请输入商品条码"
                 size="large"
                 @keydown.enter="search"
                 @focus="focus"

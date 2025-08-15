@@ -1,25 +1,24 @@
 <script lang="ts" setup>
-import { calc } from 'a-calc'
-
 const Props = defineProps<{
   billingSet: BillingSet
   isIntegral: boolean
-  partFilter: Where<ProductAccessories>
-  searchParts: (val: string,) => Promise<ProductAccessories[]>
-  checkAccessoriesScore: (params: { classes: ProductAccessories['type'][] }) => any
+  partFilter: Where<OrderPart>
+  storeid: string
 }>()
+const { getAccessorieList } = useAccessorie()
+// 搜索配件
+const searchParts = async (val: string) => {
+  const res = await getAccessorieList({ page: 1, limit: 10, where: { name: val, store_id: Props.storeid } })
+  if (res?.data?.list) {
+    return res.data.list || []
+  }
+  return []
+}
 const showModal = defineModel('show', { default: false })
 const searchPartsVal = ref('')
-
-const countIntegral = (amount: number, rate: number | string) => {
-  return calc('(a / b)| =0 ~5, !n', {
-    a: amount,
-    b: rate,
-  })
-}
 // 预设选中状态的配置列表
 const prePartsList = ref<ProductAccessories[]>([])
-const showPartsList = defineModel<ProductAccessories[]>('list', { default: [] })
+const orderObject = defineModel<Orders>('list', { default: {} as Orders })
 // 设置选中状态
 const selectPart = (part: ProductAccessories) => {
   // 如果已经选中，则取消选中
@@ -32,67 +31,26 @@ const selectPart = (part: ProductAccessories) => {
 }
 const partslist = ref<ProductAccessories[]>([])
 const searchPartsList = async () => {
-  const data = await Props.searchParts(searchPartsVal.value)
+  const data = await searchParts(searchPartsVal.value)
   partslist.value = data
   document.body.style.overflow = 'hidden'
-}
-// 计算积分 如果积分比例存在 并且 应付金额大于0 才能计算
-const calculateIntegral = (amount: number, rate?: number) => {
-  return rate && amount > 0 ? countIntegral(amount, rate) : 0
 }
 
 // 确认配件 ，将选中的配件添加到 展示列表中, 调用接口获取积分比例
 const confirmParts = async () => {
-  // 判断 showPartsList 是否存在 prePartsList 中的元素 ，如果存在则不添加
-  const existingCache = {} as { [key: string]: ProductAccessories }
-  //  先缓存原始数据
-  showPartsList.value.forEach((part) => {
-    if (part.id !== undefined && part.id !== null) {
-      existingCache[part.id] = part
-    }
-  })
-
+  orderObject.value.showPartsList ??= []
+  //  然后添加新的数据
   prePartsList.value.forEach((item) => {
-    if (!item.id)
-      return
-
-    const existingItem = existingCache[item.id]
-
-    if (existingItem?.quantity) { // 如果当前存在了此配件 数量加1，应付金额累加
+    const newItem = { ...item, quantity: 1, price: Number(item?.price || 0), amount: Number(item?.price || 0), product_id: item.id }
+    // 判断是否存在
+    const existingItem = orderObject.value.showPartsList?.find(part => part.id === newItem.id)
+    if (existingItem) {
+      if (!existingItem.quantity)
+        return
       existingItem.quantity += 1
-      existingItem.amount = Number(existingItem?.price || 0) * existingItem.quantity
     }
     else {
-      // 添加配件到展示列表中
-      const newItem = { ...item, quantity: 1, amount: Number(item?.price || 0) }
-      existingCache[item.id] = newItem
-      showPartsList.value.push(newItem)
-    }
-  })
-  // 筛选大类
-  const arr = ref<ProductAccessories['type'][]>([])
-  arr.value = showPartsList.value.map(item => item?.type as number)
-  // 获取大类的比例
-  const classArray = await Props.checkAccessoriesScore({ classes: arr.value })
-  if (!classArray?.length) {
-    arr.value.forEach(() => {
-      classArray.push(0)
-    })
-  }
-
-  // 创建分类快速查询索引
-  const classRateMap = new Map(classArray.map((c: { class: number, rate: string }) => [c.class, c.rate]))
-  // 遍历 列表
-  showPartsList.value.forEach((item) => {
-    //  匹配配件大类
-    if (classRateMap.has(item?.type)) {
-      // 设置当前配件的积分比例
-      item.rate = Number(classRateMap.get(item?.type))
-      // 设置当前配件的积分
-      item.integral = Props.isIntegral ? calculateIntegral(Number(item?.amount || 0), item.rate) : 0
-    }
-    else {
-      item.integral = 0
+      orderObject.value.showPartsList?.push(newItem)
     }
   })
   prePartsList.value = []

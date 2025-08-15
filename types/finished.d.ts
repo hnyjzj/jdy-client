@@ -180,6 +180,8 @@ interface ProductFinisheds {
   rate?: number
 
   all?: boolean
+
+  product_id?: string
 }
 
 /**

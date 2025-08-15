@@ -3,31 +3,26 @@ import { calc } from 'a-calc'
 
 const Props = defineProps<{
   billingSet: BillingSet
-  isIntegral: boolean
 }>()
 const emit = defineEmits<{
-  updateScoreDeDeduction: []
-  updateAmount: []
+  updateScoreDeduction: []
+  delPorduct: []
 }>()
-const showProductList = defineModel<ProductFinished[]>('list', { default: [] })
+const orderObject = defineModel<Orders>({ default: {} as Orders })
 const hasCheck = ref(false)
-const realtype = (val?: number) => {
-  switch (val) {
-    case 1:
-      return '计件'
-    case 2:
-      return '计重工费按克'
-    case 3:
-      return '计重工费按件'
-  }
-}
+
 const deleteDialog = ref(false)
 const dleId = ref(0)
 
 const delProduct = () => {
-  showProductList.value.splice(dleId.value, 1)
+  orderObject.value.showProductList?.splice(dleId.value, 1)
   dleId.value = 0
-  emit('updateAmount')
+  // 判断,如果成品列表为空, 设置 整单, 抹零,积分抵扣为undefined
+  if (orderObject.value.showProductList?.length === 0) {
+    orderObject.value.discount_rate = undefined
+    orderObject.value.round_off = undefined
+    orderObject.value.integral_deduction = undefined
+  }
 }
 // 删除商品
 const deleteProduct = (index: number) => {
@@ -35,9 +30,9 @@ const deleteProduct = (index: number) => {
   deleteDialog.value = true
 }
 // 计件方式
-const count = (p: ProductFinished) => {
+const count = (p: OrderProductFinished) => {
   // 小数点进位计算函数
-  const hold = holdFunction(Props.billingSet.decimal_point)
+  const hold = holdFunction(Props.billingSet?.decimal_point)
   // 取整控制函数
   const rounding = roundFunction(Props.billingSet.rounding)
 
@@ -73,7 +68,7 @@ const count = (p: ProductFinished) => {
       orign,
     })
     // 计算应得的积分 +
-    if (Props.isIntegral) {
+    if (orderObject.value.has_integral) {
       if (p.rate === 0) {
         p.integral = 0
       }
@@ -115,13 +110,13 @@ const count = (p: ProductFinished) => {
     }
     else {
       p.discount_final = calc('(total / orign) * a | <=2 ,!n', {
-        total: p?.price || 0,
-        orign: p?.price_original || 0,
+        total: p.price || 1,
+        orign: p.price_original || 1,
         a: 100,
       })
     }
 
-    if (Props.isIntegral) {
+    if (orderObject.value.has_integral) {
       if (p.rate === 0) {
         p.integral = 0
       }
@@ -162,12 +157,12 @@ const count = (p: ProductFinished) => {
     }
     else {
       p.discount_final = calc('(total / orign) * a | <=2 ,!n', {
-        total: p?.price,
-        orign: p?.price_original,
+        total: p?.price || 1,
+        orign: p?.price_original || 1,
         a: 100,
       })
     }
-    if (Props.isIntegral) {
+    if (orderObject.value.has_integral) {
       if (p.rate === 0) {
         p.integral = 0
       }
@@ -189,7 +184,7 @@ const count = (p: ProductFinished) => {
 
 <template>
   <div>
-    <template v-for="(obj, ix) in showProductList" :key="ix">
+    <template v-for="(obj, ix) in orderObject.showProductList" :key="ix">
       <div class="pb-[12px]">
         <sale-order-nesting v-model="hasCheck" :title="obj?.name || ''">
           <template #left>
@@ -212,11 +207,10 @@ const count = (p: ProductFinished) => {
                       :show-button="false"
                       placeholder="请输入折扣"
                       round
-                      min="0"
-                      max="100"
+                      :min="0"
+                      :max="100"
                       :default-value="100"
                       @focus="focus"
-
                       @blur="() => {
                         if (!obj.discount_fixed?.toString()){
                           obj.discount_fixed = 100
@@ -234,15 +228,11 @@ const count = (p: ProductFinished) => {
                       :show-button="false"
                       placeholder="抹零金额"
                       :default-value="0"
-                      min="0"
+                      :precision="2"
+                      :min="0"
                       round
                       @focus="focus"
 
-                      @blur="() => {
-                        if (!obj.round_off?.toString()){
-                          obj.round_off = 0
-                        }
-                      }"
                     />
                   </n-form-item-gi>
 
@@ -252,15 +242,12 @@ const count = (p: ProductFinished) => {
                       :show-button="false"
                       placeholder="积分抵扣"
                       :default-value="0"
-                      min="0"
+                      :min="0"
                       round
                       :precision="2"
                       @focus="focus"
                       @blur="() => {
-                        if (!obj.integral_deduction?.toString()){
-                          obj.integral_deduction = 0
-                        }
-                        emit('updateScoreDeDeduction')
+                        emit('updateScoreDeduction')
                       }"
                     />
                   </n-form-item-gi>
@@ -269,12 +256,11 @@ const count = (p: ProductFinished) => {
                       v-model:value="obj.discount_member"
                       :show-button="false"
                       placeholder="会员折扣"
-                      :default-value="0"
-                      min="0"
+                      :default-value="100"
+                      :min="0"
                       :max="100"
                       round
                       @focus="focus"
-
                       @blur="() => {
                         if (!obj.discount_member?.toString()){
                           obj.discount_member = 100
@@ -311,14 +297,9 @@ const count = (p: ProductFinished) => {
                         :show-button="false"
                         placeholder="请输入金价(元/g)"
                         round
-                        min="0"
+                        :min="0"
                         @focus="focus"
 
-                        @blur="() => {
-                          if (!obj.price_gold?.toString()){
-                            obj.price_gold = 0
-                          }
-                        }"
                       />
                     </n-form-item-gi>
                   </template>
@@ -330,7 +311,7 @@ const count = (p: ProductFinished) => {
                         :show-button="false"
                         placeholder="请输入工费"
                         round
-                        min="0"
+                        :min="0"
                         @focus="focus"
                         @blur="() => {
                           if (!obj.labor_fee?.toString()){

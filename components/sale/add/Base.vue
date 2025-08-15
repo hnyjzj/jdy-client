@@ -1,30 +1,69 @@
 <script lang="ts" setup>
+import { calc } from 'a-calc'
+
 const props = withDefaults(defineProps<{
   title?: string
   filterList: Where<OrderWhere>
   storeStaff: StoresStaff[]
   getStaff: () => void
-  setScore: (score: number) => void
 }>(), {
   title: '基础信息',
 })
-const formData = defineModel<Orders>({ default: {} })
-const has_integral = defineModel<boolean>('integral', { default: true })
+const orderObject = defineModel<Orders>({ default: {} })
+// 设置积分抵扣值
+const handleIsInterChange = () => {
+  if (!orderObject.value.has_integral) {
+    // 清空积分
+    orderObject.value.showProductList?.forEach((item) => {
+      item.integral = 0
+    })
+    orderObject.value.showMasterialsList?.forEach((item) => {
+      item.integral = 0
+    })
+  }
+  else {
+    orderObject.value.showProductList?.forEach((item) => {
+      if (item.price && item.rate && Number(item.rate) !== 0) {
+        // 计算应得的积分 +
+        item.integral = calc('(a / b) | =0 ~5 ,!n', {
+          a: item.price,
+          b: item.rate,
+        })
+      }
+      else {
+        item.integral = 0
+      }
+    })
+    orderObject.value.showMasterialsList?.forEach((item) => {
+      if (item.recycle_price && item.rate && Number(item.rate) !== 0) {
+        item.integral = calc('(a / b)| =0 ~5, !n', {
+          a: item.recycle_price || 0,
+          b: item?.rate || 0,
+        })
+      }
+      else {
+        item.integral = 0
+      }
+    })
+  }
+}
 
 // 订单来源参数
 const sourceOptions = optonsToSelect(props.filterList.source?.preset)
 
 // 删除销售
 const deleteSale = (index: number) => {
-  formData.value.clerks?.splice(index, 1)
-  const aliveMain = formData.value.clerks?.filter(item => item.is_main === true)
+  orderObject.value.clerks?.splice(index, 1)
+  const aliveMain = orderObject.value.clerks?.filter(item => item.is_main === true)
   if (!aliveMain?.length) {
-    formData.value.clerks[0].is_main = true
+    if (orderObject.value.clerks?.length) {
+      orderObject.value.clerks[0].is_main = true
+    }
   }
 }
 // 新增销售员
 const addNewSale = () => {
-  formData.value.clerks.push({
+  orderObject.value.clerks.push({
     salesman_id: '',
     performance_amount: 0,
     performance_rate: 0,
@@ -37,24 +76,24 @@ const { $toast } = useNuxtApp()
 // 检查比例
 const checkRatio = () => {
   const result = ref(0)
-  formData.value.clerks.forEach((item) => {
+  orderObject.value.clerks.forEach((item) => {
     result.value += item.performance_rate || 0
   })
-  if (result.value > 100) {
-    $toast.error('业绩比例总合不能超过100%')
+  if (result.value !== 100) {
+    $toast.error('业绩比例总合不等于100%')
     return false
   }
 }
 </script>
 
 <template>
-  <div>
+  <div class="pb-[16px]">
     <common-fold :title="props.title" :is-collapse="false">
       <div class="p-[16px] w-auto flex flex-col" uno-lg="grid grid-cols-1 gap-[16px] grid-cols-0">
         <n-grid :cols="24" :x-gap="8">
           <n-form-item-gi :span="12" label="收银员" path="cashier_id" class="">
             <n-select
-              v-model:value="formData.cashier_id"
+              v-model:value="orderObject.cashier_id"
               placeholder="请输入收银员"
               :options="props.storeStaff.map(v => ({
                 label: v.nickname,
@@ -70,14 +109,14 @@ const checkRatio = () => {
 
           <n-form-item-gi :span="12" label="来源" path="source" class="">
             <n-select
-              v-model:value="formData.source"
+              v-model:value="orderObject.source"
               placeholder="请选择"
               :options="sourceOptions"
             />
           </n-form-item-gi>
         </n-grid>
 
-        <template v-for="(item, index) in formData.clerks" :key="index">
+        <template v-for="(item, index) in orderObject.clerks" :key="index">
           <div class="">
             <n-grid :cols="24" :x-gap="8">
               <n-form-item-gi
@@ -134,7 +173,7 @@ const checkRatio = () => {
             :span="12"
             label="是否积分" label-placement="top"
           >
-            <n-radio-group v-model:value="has_integral" name="radiogroup" @update:value="props.setScore">
+            <n-radio-group v-model:value="orderObject.has_integral" name="radiogroup" @update:value="handleIsInterChange()">
               <n-space>
                 <n-radio
                   v-for="(items, index) in [{ value: true, label: '积分' }, { value: false, label: '不积分' }]" :key="index" :value="items.value" :style="{

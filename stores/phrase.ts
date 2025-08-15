@@ -15,9 +15,9 @@ export const usePhrase = defineStore('Phrase', {
         this.filterListToArray = sortArr(this.filter)
       }
     },
-    // 获取列表
+    // 获取备注列表
     async getPhraseList(params: ReqList<Phrase>) {
-      const { data } = await https.post<ResList<Phrase>, ReqList<Phrase>>('/setting/remark/list', params)
+      const { data } = await https.post<ResList<Phrase>, ReqList<Phrase>>('/setting/remark/list', params, true, false)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.List = data.value?.data.list
         this.total = data.value?.data.total

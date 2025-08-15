@@ -1,7 +1,17 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  searchDepositOrders: (val?: string) => Promise<DepositOrderInfo[]>
+  storeid: string
 }>()
+const emit = defineEmits<{
+  updateProduct: []
+}>()
+const { OrdersList } = storeToRefs(useDepositOrder())
+const { getDepositList } = useDepositOrder()
+// 获取订金单列表
+const searchDepositOrders = async (val?: string) => {
+  await getDepositList({ page: 1, limit: 5, where: { id: val, status: DepositOrderStatus.Booking, store_id: props.storeid } })
+  return OrdersList.value || []
+}
 const searchShow = defineModel('show', { default: false })
 const showDepositList = defineModel<DepositOrderInfo[]>('list', { default: [] })
 const Preselection = ref<DepositOrderInfo[]>([])
@@ -9,7 +19,7 @@ const resultList = ref<DepositOrderInfo[]>([])
 const searchVal = ref('')
 // 搜索列表
 const searchList = async () => {
-  const data = await props.searchDepositOrders(searchVal.value)
+  const data = await searchDepositOrders(searchVal.value)
   resultList.value = data
 }
 // 设置预选
@@ -29,7 +39,7 @@ const confirmFn = () => {
   const map = new Map()
   showDepositList.value.forEach(item => map.set(item.id, item)) // 假设以id为唯一标识
   showDepositList.value = Array.from(map.values())
-
+  emit('updateProduct')
   searchShow.value = false
   Preselection.value = []
   resultList.value = []

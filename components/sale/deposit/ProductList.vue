@@ -4,16 +4,7 @@ const props = defineProps<{
   filterList: Where<ProductFinisheds>
 }>()
 const showProductList = defineModel<DepositOrderProduct[]>('list', { default: [] })
-const realtype = (val?: number) => {
-  switch (val) {
-    case 1:
-      return '计件'
-    case 2:
-      return '计重工费按克'
-    case 3:
-      return '计重工费按件'
-  }
-}
+
 const hasCheck = ref(false)
 // 删除商品
 const deleteProduct = (index: number) => {

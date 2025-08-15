@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  oldFilterListToArray: FilterWhere<ProductOld>[]
+  oldFilterListToArray: FilterWhere<OrderMaterial>[]
 }>()
 const emits = defineEmits<{
-  edit: [obj: ProductOld, index: number]
+  edit: [obj: OrderMaterial, index: number]
   del: [index: number]
 }>()
-const showMasterialsList = defineModel<ProductOld[]>('list', { default: [] })
+const orderObject = defineModel<Orders>({ default: {} as Orders })
 const hasCheck = ref(false)
 const confirmShow = ref(false)
 const delId = ref()
@@ -15,13 +15,13 @@ const deleteOld = (index: number) => {
   delId.value = index
 }
 const deleteConfirm = () => {
-  showMasterialsList.value.splice(delId.value, 1)
+  orderObject.value.showMasterialsList?.splice(delId.value, 1)
 }
 </script>
 
 <template>
   <div class="px-[16px] py-[8px]">
-    <template v-for="(obj, ix) in showMasterialsList" :key="ix">
+    <template v-for="(obj, ix) in orderObject.showMasterialsList" :key="ix">
       <div class="pb-[12px]">
         <sale-order-nesting v-model="hasCheck" :title="obj?.name || ''">
           <template #left>
@@ -38,9 +38,16 @@ const deleteConfirm = () => {
                       </n-grid-item>
                     </template>
                     <template v-else>
-                      <n-grid-item :span="12">
-                        {{ item.label }}: {{ item.input === 'select' ? item.preset[obj[item.name] as string ] : obj[item.name] }}
-                      </n-grid-item>
+                      <template v-if=" item.input === 'select'">
+                        <n-grid-item :span="12">
+                          {{ item.label }}: {{ item.preset[obj[item.name] as string ] ? item.preset[obj[item.name] as string ] : '无' }}
+                        </n-grid-item>
+                      </template>
+                      <template v-else>
+                        <n-grid-item :span="12">
+                          {{ item.label }}: {{ obj[item.name] ? obj[item.name] : '无' }}
+                        </n-grid-item>
+                      </template>
                     </template>
                   </template>
                 </template>
@@ -59,7 +66,7 @@ const deleteConfirm = () => {
                         v-model:value="obj.integral"
                         :show-button="false"
                         placeholder="积分"
-                        min="0"
+                        :min="0"
                         round
                         @focus="focus"
                       />

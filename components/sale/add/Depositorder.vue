@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 const props = defineProps<{
-  title: string
   orderDetail: DepositOrderInfo
-  searchDepositOrders: (val?: string) => Promise<DepositOrderInfo[]>
+  storeid: string
 }>()
 const emit = defineEmits<{
-  setOrderIds: [string[]]
+  updateProduct: []
 }>()
 // 展示定金单列表
 const showDepositList = defineModel<DepositOrderInfo[]>('list', { default: [] })
@@ -13,18 +12,24 @@ const selectDepositList = defineModel<DepositOrderInfo[]>('select', { default: [
 const searchShow = ref(false)
 const depositSelect = ref()
 const handleBlur = () => {
-  emit('setOrderIds', depositSelect.value)
   selectDepositList.value = showDepositList.value.filter(item => depositSelect.value.includes(item.id))
 }
 
 const cute = (index: number) => {
   showDepositList.value.splice(index, 1)
 }
+const showProductName = (products: DepositOrderInfo['products']) => {
+  let str = ''
+  products?.forEach((item) => {
+    str += `,${item.product_finished.name || '其他'} `
+  })
+  return str
+}
 </script>
 
 <template>
-  <div>
-    <common-fold :title="props.title" :is-collapse="false">
+  <div class="pb-[16px]">
+    <common-fold title="订金单" :is-collapse="false">
       <div class="p-[16px]">
         <div class="p-[16px]">
           <div class="grid-12">
@@ -44,7 +49,7 @@ const cute = (index: number) => {
                 <div>
                   <n-checkbox
                     :value="item.id"
-                    :label="`订金金额${item.price_pay},订金单号:${item.id},${item.products[0]?.product_finished?.name || ''}`" :style="{
+                    :label="`订金金额${item.price},订金单号:${item.id}${showProductName(item.products) || ''} `" :style="{
                       '--n-color-checked': '#1D6DEC',
                       '--n-border-focus': '#1D6DEC',
                       '--n-box-shadow-focus': '0 0 0 2px rgba(37, 115, 238, 0.3)',
@@ -64,7 +69,8 @@ const cute = (index: number) => {
     <sale-add-deposit-model
       v-model:show="searchShow"
       v-model:list="showDepositList"
-      :search-deposit-orders="props.searchDepositOrders" />
+      :storeid="props.storeid"
+      @update-product="emit('updateProduct')" />
   </div>
 </template>
 

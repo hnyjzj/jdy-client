@@ -2,29 +2,26 @@
 import { calc } from 'a-calc'
 
 const Props = defineProps<{
-  title: string
   price: GoldPrices[]
-  isIntegral: boolean
   billingSet: BillingSet
-  searchProductList: (data: { val: string, type: string }) => Promise<ProductFinisheds[]>
   checkProductClass: (val: { class: number }) => any
 }>()
 
 // 展示商品列表
-const showProductList = defineModel<ProductFinished[]>({ default: [] })
-const formData = defineModel('formData', { default: {} as Orders })
+const orderObject = defineModel<Orders>({ default: {} as Orders })
 // 显示搜索弹窗
 const showModal = ref(false)
 
 // 设置折扣率
-const handleDiscountRateBlur = (discount_rate: number) => {
-  if (!discount_rate || discount_rate <= 0) {
-    showProductList.value.forEach((item) => {
+const handleDiscountRateBlur = (discount_rate?: number) => {
+  if (!discount_rate) {
+    orderObject.value.discount_rate = 100
+    orderObject.value.showProductList?.forEach((item) => {
       item.discount_fixed = 100
     })
     return
   }
-  showProductList.value.forEach((item) => {
+  orderObject.value.showProductList?.forEach((item) => {
     item.discount_fixed = discount_rate
   })
 }
@@ -32,120 +29,106 @@ const handleDiscountRateBlur = (discount_rate: number) => {
 // 计算选择的成品列表中所有应付金额 不算折扣
 const allAmount = () => {
   let total = 0
-  showProductList.value.forEach((item: ProductFinished) => {
+  orderObject.value.showProductList?.forEach((item: OrderProductFinished) => {
     total += item?.price_original || 0
   })
   return total
 }
 
 // 设置整体抹零金额
-const handleAmountReduceBlur = (amount_reduce: number) => {
-  // 初始化结果变量
-  let result = 0
-  // 检查amount_reduce的值是否小于0或者为空
-  if ((amount_reduce && amount_reduce < 0) || !amount_reduce) {
+const handleAmountReduceBlur = (amount_reduce?: number) => {
+  const productList = orderObject.value.showProductList || []
+  if (!amount_reduce || amount_reduce < 0) {
     // 如果不符合条件，将amount_reduce的值设为undefined
-    amount_reduce = 0
-    // 遍历showProductList，将每个item的notCount设为0
-    showProductList.value.forEach((item) => {
+    orderObject.value.round_off = 0
+    // 遍历showProductList，将每个成品的抹零金额设为0
+    productList?.forEach((item) => {
       item.round_off = 0
     })
-    // 退出函数
     return
   }
-  showProductList.value.forEach((item, index) => {
-    // 计算每个item的 抹零金额
-    if (Number(item.price_original) === 0 || allAmount() === 0 || amount_reduce === 0) {
+
+  let accumulatedAmount = 0
+  productList.forEach((item, index) => {
+    // 如果是无效金额，直接设为0
+    if (!item.price_original || allAmount() === 0 || amount_reduce === 0) {
       item.round_off = 0
+      return
     }
-    else {
-      item.round_off = calc('((amount / allAmount ) * amountReduce) | 1 ~5, !n , <=0', {
-        amount: Number(item.price_original),
-        allAmount: allAmount(),
-        amountReduce: amount_reduce || 0, // 整单设置抹零金额
-      })
-    }
-    // 如果不是最后一个item，累加notCount到结果变量
-    if (index !== showProductList.value.length - 1) {
-      result += item?.round_off || 0
-    }
-    else {
-      // 用总抹零金额减去前面累加的抹零金额 就是最后一项的抹零金额
+    // 处理最后一项的特殊逻辑
+    if (index === productList.length - 1) {
       item.round_off = calc('(a - b) | !n', {
         a: amount_reduce,
-        b: result,
+        b: accumulatedAmount,
       })
+      return
     }
+    // 计算常规项的抹零金额
+    item.round_off = calc('((amount / allAmount) * amountReduce) | 1 ~5, !n , <=0', {
+      amount: Number(item.price_original),
+      allAmount: allAmount(),
+      amountReduce: amount_reduce,
+    })
+    accumulatedAmount += item.round_off || 0
   })
 }
 
-// 更新抵扣值
-const updateDedution = (val?: number) => {
-  if (val) {
-    // 如果存在
-    formData.value.integral_deduction = calc('(a * b) |!n', {
-      a: val,
+// 更新总抵扣值
+const updateDedution = () => {
+  const total = ref(0)
+  orderObject.value.showProductList?.forEach((item) => {
+    total.value += item.integral_deduction || 0
+  })
+
+  if (total.value !== 0) {
+    orderObject.value.integral_deduction = calc('(a * b) |!n', {
+      a: total.value,
       b: Number(Props.billingSet.discount_rate),
     })
   }
   else {
-    const total = ref(0)
-    showProductList.value.forEach((item) => {
-      total.value += item.integral_deduction || 0
-    })
-
-    if (total.value !== 0) {
-      formData.value.integral_deduction = calc('(a * b) |!n', {
-        a: total.value,
-        b: Number(Props.billingSet.discount_rate),
-      })
-    }
-    else {
-      formData.value.integral_deduction = 0
-    }
+    orderObject.value.integral_deduction = 0
   }
 }
 // 设置积分抵扣金额
-const handleScoreReduceBlur = (scoreDeduct: number) => {
-  let result = 0
-  updateDedution(scoreDeduct)
+const handleScoreReduceBlur = (scoreDeduct?: number) => {
+  const productList = orderObject.value.showProductList || []
   // 如果积分抵扣金额小于0或者没有输入值，则清空积分抵扣金额，并重置所有商品积分抵扣为0
-  if ((formData.value.integral_deduction && formData.value.integral_deduction < 0) || !formData.value.integral_deduction) {
-    formData.value.integral_deduction = 0
-    showProductList.value.forEach((item) => {
+  if (!scoreDeduct || scoreDeduct < 0) {
+    orderObject.value.integral_deduction = 0
+    productList.forEach((item) => {
       item.integral_deduction = 0
     })
     return
   }
-  if (formData.value.integral_deduction !== 0) {
-    // 遍历商品列表，计算每个商品的积分抵扣金额
-    showProductList.value.forEach((item, index) => {
-    // 计算当前商品的积分抵扣金额
-
-      item.integral_deduction = calc('(amount / allAmount * scoreDeduct) | =0 ~5, !n', {
-        amount: item.price_original, // 应付金额
-        allAmount: allAmount(), // 总金额
-        scoreDeduct: scoreDeduct || 0, // 整单设置积分抵扣金额
+  let accumulatedDeduction = 0
+  productList.forEach((item, index) => {
+    if (!item.price_original || allAmount() === 0 || !scoreDeduct) {
+      item.integral_deduction = 0
+      return
+    }
+    if (index === productList.length - 1) {
+      // 计算最后一项的积分抵扣
+      item.integral_deduction = calc('(a - b) | !n', {
+        a: scoreDeduct,
+        b: accumulatedDeduction,
       })
-
-      // 累加积分抵扣金额，但不包括最后一个商品
-      if (index !== showProductList.value.length - 1) {
-        result += item?.integral_deduction || 0
-      }
-      else {
-      // 最后一行 抹零金额
-        item.integral_deduction = calc('(a - b) | !n', {
-          a: scoreDeduct,
-          b: result,
-        })
-      }
+      return
+    }
+    // 计算常规项的积分抵扣
+    item.integral_deduction = calc('(amount / allAmount * scoreDeduct) | =0 ~5, !n', {
+      amount: item.price_original,
+      allAmount: allAmount(),
+      scoreDeduct,
     })
-  }
+    accumulatedDeduction += item.integral_deduction || 0
+  })
 }
 // 添加商品
 const addProduct = async (products: ProductFinisheds[]) => {
+  orderObject.value.showProductList ??= []
   products.forEach(async (product: ProductFinisheds) => {
-    const index = showProductList.value.findIndex(item => item.product_id === product?.id)
+    const index = orderObject.value.showProductList?.findIndex(item => item.product_id === product?.id)
     //   添加成品到列表中
     if (index === -1) {
       const data = {
@@ -154,88 +137,57 @@ const addProduct = async (products: ProductFinisheds[]) => {
         label_price: product.label_price,
         weight_metal: product.weight_metal,
         code: product.code,
-        price_gold: 0, // 金价
-        discount_fixed: 100, // 折扣
-        price: 0, // 应付金额
         product_id: product?.id as string, // 商品id
-        labor_fee: 0, // 工费
-        round_off: 0, // 抹零
-        discount_final: 0, // 显示折扣
-        price_original: 0, // 原始价格
         discount_member: 100, // 会员折扣
-        integral: 0, // 积分
-        integral_deduction: 0, // 积分抵扣
-        rate: 0, // 积分比例
         class: product.class,
-      }
+      } as OrderProductFinished
       data.labor_fee = Number(product.labor_fee)
       // 匹配金价
-      data.discount_fixed = Number(formData.value.discount_rate)
+      data.discount_fixed = Number(orderObject.value.discount_rate || 100)
       const exists = Props.price.filter(item =>
         item.product_type === GoodsType.ProductFinish
         && item.product_material === product.material
         && item.product_quality.includes(product.quality)
         && item.product_brand?.includes(product.brand),
       )
-
-      if (exists && exists.length > 0) {
-        data.price_gold = Number(exists[0].price)
-      }
-      else {
-        data.price_gold = 0
-      }
+      data.price_gold = (exists && exists.length > 0) ? Number(exists[0].price) : undefined
       const rate = await Props.checkProductClass({ class: data.class })
-      if (rate && rate !== '0') {
-        data.rate = Number(rate)
-      }
-      else {
-        data.rate = 0
-      }
-      data.discount_fixed = formData.value.discount_rate
-      showProductList.value.push(data)
+      data.rate = (rate && rate !== '0') ? Number(rate) : 0
+      orderObject.value.showProductList?.push(data)
       nextTick(() => {
-        handleScoreReduceBlur(formData.value.integral_deduction)
-        handleAmountReduceBlur(formData.value.round_off)
+        handleScoreReduceBlur(orderObject.value.integral_deduction || 0)
+        handleAmountReduceBlur(orderObject.value.round_off || 0)
       })
     }
   })
-
-  showModal.value = false
-}
-
-// 点击搜索按钮 弹出弹窗
-const clickSearchButton = () => {
-  showModal.value = true
 }
 </script>
 
 <template>
-  <common-fold :title="Props.title" :is-collapse="false">
-    <sale-add-product-button @search="clickSearchButton" />
-    <!-- 整单折扣设置 -->
-
-    <div class="px-[16px] py-[8px]">
-      <!-- 成品列表 -->
-      <sale-add-product-list
-        v-model:list="showProductList"
-        :billing-set="Props.billingSet"
-        :is-integral="Props.isIntegral"
-        @update-score-de-deduction="updateDedution"
-        @update-amount="handleAmountReduceBlur(formData.round_off)"
-      />
-    </div>
-    <template v-if="showProductList.length">
-      <sale-add-product-deduction
-        v-model="formData"
-        @set-amount-reduce="handleAmountReduceBlur"
-        @set-score-deduct="handleScoreReduceBlur"
-        @set-discount-rate="handleDiscountRateBlur"
-      />
-    </template>
-    <!-- 选择时使用的列表 -->
-    <sale-add-product-popup
-      v-model:show="showModal"
-      :search-product-list="searchProductList"
-      @add-product="addProduct" />
-  </common-fold>
+  <div class="pb-[16px]">
+    <common-fold title="成品" :is-collapse="false">
+      <sale-add-product-button @search="showModal = true" />
+      <!-- 整单折扣设置 -->
+      <div class="px-[16px] py-[8px]">
+        <!-- 成品列表 -->
+        <sale-add-product-list
+          v-model="orderObject"
+          :billing-set="Props.billingSet"
+          @update-score-deduction="updateDedution"
+        />
+      </div>
+      <template v-if="orderObject.showProductList && orderObject.showProductList.length">
+        <sale-add-product-deduction
+          v-model="orderObject"
+          @set-amount-reduce="handleAmountReduceBlur"
+          @set-score-deduct="handleScoreReduceBlur"
+          @set-discount-rate="handleDiscountRateBlur"
+        />
+      </template>
+      <!-- 选择时使用的列表 -->
+      <sale-add-product-popup
+        v-model:show="showModal"
+        @add-product="addProduct" />
+    </common-fold>
+  </div>
 </template>

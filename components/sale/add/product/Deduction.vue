@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 const emits = defineEmits<{
-  setScoreDeduct: [val: number]
-  setAmountReduce: [val: number]
-  setDiscountRate: [val: number]
+  setScoreDeduct: [val?: number]
+  setAmountReduce: [val?: number]
+  setDiscountRate: [val?: number]
 }>()
 // 设置整单积分抵扣
 const formData = defineModel({ default: { } as Orders })
@@ -22,8 +22,9 @@ const formData = defineModel({ default: { } as Orders })
               placeholder="请输入折扣"
               round
               :precision="2"
-              min="1"
-              max="100"
+              :default-value="100"
+              :min="1"
+              :max="100"
               :show-button="false"
               @focus="focus"
               @update:value="emits('setDiscountRate', formData.discount_rate)"
@@ -42,7 +43,7 @@ const formData = defineModel({ default: { } as Orders })
               v-model:value="formData.integral_deduction"
               placeholder="0"
               round
-              min="0"
+              :min="0"
               :precision="2"
               :show-button="false"
               @blur="emits('setScoreDeduct', formData.integral_deduction)"
@@ -57,12 +58,11 @@ const formData = defineModel({ default: { } as Orders })
               v-model:value="formData.round_off"
               placeholder="0"
               round
-              min="0"
+              :min="0"
               :precision="2"
               :show-button="false"
               @focus="focus"
               @blur="emits('setAmountReduce', formData.round_off)"
-
             />
           </n-form-item-gi>
         </n-grid>

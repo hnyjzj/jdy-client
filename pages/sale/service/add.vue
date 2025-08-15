@@ -100,6 +100,10 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
       formData.value.store_id = myStore.value.id
+      if (!formData.value.member_id) {
+        $toast.error('请先添加会员')
+        return
+      }
       // 如果选择邮寄,判断省市区是否选择
       if (formData.value.delivery_method === 2) {
         if (!vilidateArea()) {
@@ -107,11 +111,6 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
           return false
         }
       }
-      if (!formData.value.member_id) {
-        $toast.error('请先添加会员')
-        return
-      }
-
       else {
         formData.value.province = undefined
         formData.value.city = undefined
@@ -135,7 +134,7 @@ const handleValidateButtonClick = async (e: MouseEvent) => {
           Key.value = Date.now().toString()
         }
         else {
-          $toast.error('创建维修单失败')
+          $toast.error(res || '创建维修单失败')
         }
         layoutLoading.value = false
       }
@@ -175,7 +174,7 @@ const changeStore = () => {
   formData.value = { ...initform.value }
   Key.value = Date.now().toString()
 }
-const orderObject = ref<orderObject>({} as orderObject)
+const orderObject = ref<Orders>({} as Orders)
 </script>
 
 <template>

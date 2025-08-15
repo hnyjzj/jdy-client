@@ -6,46 +6,11 @@ export const useOrder = defineStore('Order', {
     total: 0 as number,
     OrderDetail: {} as OrderInfo,
     filterListToArray: [] as FilterWhere<OrderWhere>[],
-    oldFilterList: {} as Where<ProductOld>,
-    oldFilterListToArray: {} as FilterWhere<ProductOld>[],
+    oldFilterList: {} as Where<OrderMaterial>,
+    oldFilterListToArray: [] as FilterWhere<OrderMaterial>[],
     showtype: 'list' as 'list' | 'table',
-    OldObj: {} as ProductOld,
-    orderObject: {
-      formData: {
-        source: 1, // 订单来源
-        remarks: [], // 备注
-        discount_rate: 100, // 整单折扣
-        round_off: 0, // 抹零金额
-        member_id: undefined, // 会员ID
-        store_id: '', // 门店ID
-        cashier_id: undefined, // 收银员ID
-        //   积分抵扣
-        integral_deduction: 0,
-        has_integral: false, // 是否使用积分
-        product_finisheds: [], // 商品列表
-        product_olds: [], // 旧料
-        product_accessories: [], // 配件列表
-        clerks: [{
-          salesman_id: undefined,
-          performance_rate: 100,
-          is_main: true,
-        }],
-        payments: [{ amount: undefined, payment_method: 1 }], // 支付方式
-        order_deposit_ids: [], // 定金单id
-      } as Orders,
-      // 展示商品列表
-      showProductList: [] as ProductFinished[],
-      showMasterialsList: [] as ProductOld[],
-      showPartsList: [] as ProductAccessories[],
-      MemberInfo: {} as Member,
-      scoreDeduct: 0 as number,
-      ProductListSet: {
-        scoreDeduct: 0,
-        amount_reduce: 0,
-        discount_rate: 100,
-      },
-      userremark: '',
-    } as orderObject,
+    OldObj: {} as OrderMaterial,
+    orderObject: {} as Orders,
   }),
   actions: {
     /**
@@ -63,7 +28,7 @@ export const useOrder = defineStore('Order', {
      * 获取旧料的新增条件
      */
     async OldMaterialsWhere() {
-      const { data } = await https.get<Where<ProductOld>, null>('/product/old/where_create')
+      const { data } = await https.get<Where<OrderMaterial>, null>('/product/old/where_create')
       if (data.value?.code === HttpCode.SUCCESS) {
         this.oldFilterList = data.value.data
         this.oldFilterListToArray = sortArr(this.oldFilterList)
@@ -71,37 +36,27 @@ export const useOrder = defineStore('Order', {
     },
     // 开单增加的旧料列表
     // 从成品列表中拿 成品列表
-    async getOldList(pamars: ReqList<ProductFinisheds>) {
+    async getOldList(pamars: ReqList<OrderMaterial>) {
       try {
         pamars = { ...pamars, where: { ...pamars.where } }
-        const { data } = await https.post<ResList<ProductFinisheds>, ReqList<ProductFinisheds>>('/product/finished/list', pamars)
+        const { data } = await https.post<ResList<OrderMaterial>, ReqList<OrderMaterial>>('/product/finished/list', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {
           if (data.value.data.list !== null && data.value.data.list?.length > 0) {
             const params = data.value.data.list[0]
-            // 设置OldObj对象的is_our属性为true，表示该对象属于我们
-            this.OldObj.is_our = true
+            this.OldObj = params
             this.OldObj.product_id = params.id
-            this.OldObj.code = params.code
-            this.OldObj.gem = params.gem
             this.OldObj.weight_metal = Number(params.weight_metal)
-            this.OldObj.material = params.material
-            this.OldObj.category = params.category
-            this.OldObj.color_gem = params.color_gem
-            this.OldObj.num_gem = params.num_gem
-            this.OldObj.weight_total = Number(params.weight_total)
-            this.OldObj.label_price = params.label_price
-            this.OldObj.brand = params.brand
-            this.OldObj.clarity = params.clarity
-            this.OldObj.name = params.name
-            this.OldObj.quality = params.quality
-            this.OldObj.craft = params.craft
-            this.OldObj.weight_gem = Number(params.weight_gem)
+            this.OldObj.code_finished = params.code
+            return this.OldObj
           }
           else {
-            this.OldObj = {} as ProductOld
+            this.OldObj = {} as OrderMaterial
+            return this.OldObj
           }
         }
-        return data.value
+        else {
+          return {} as OrderMaterial
+        }
       }
       catch (error) {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
@@ -204,49 +159,19 @@ export const useOrder = defineStore('Order', {
       }
     },
     async initObjForm() {
-      this.orderObject = {
-        formData: {
-          source: 1, // 订单来源
-          remarks: [], // 备注
-          discount_rate: 100, // 整单折扣
-          round_off: 0, // 抹零金额
-          member_id: undefined, // 会员ID
-          store_id: '', // 门店ID
-          cashier_id: undefined, // 收银员ID
-          //   积分抵扣
-          integral_deduction: 0,
-          has_integral: false, // 是否使用积分
-          product_finisheds: [], // 商品列表
-          product_olds: [], // 旧料
-          product_accessories: [], // 配件列表
-          clerks: [{
-            salesman_id: undefined,
-            performance_rate: 100,
-            is_main: true,
-          }],
-          payments: [{ amount: undefined, payment_method: 1 }], // 支付方式
-          order_deposit_ids: [], // 定金单id
-        } as Orders,
-        // 展示商品列表
-        showProductList: [] as ProductFinished[],
-        showMasterialsList: [] as ProductOld[],
-        showPartsList: [] as ProductAccessories[],
-        MemberInfo: {} as Member,
-        scoreDeduct: 0 as number,
-        ProductListSet: {
-          scoreDeduct: 0,
-          amount_reduce: 0,
-          discount_rate: 100,
-        },
-        userremark: '',
-      }
+      this.orderObject = {} as Orders
     },
-
+    // 初始化导购员 和 收款方式 和 积分
+    async initOptions() {
+      this.orderObject.payments ??= [{ payment_method: 1, amount: undefined }]
+      this.orderObject.clerks ??= [{ salesman_id: undefined, performance_rate: 100, is_main: true }]
+      this.orderObject.has_integral ??= false
+    },
   },
   persist: [
     {
       pick: ['orderObject'],
-      storage: typeof window !== 'undefined' ? localStorage : undefined,
+      storage: piniaPluginPersistedstate.localStorage(),
     },
   ],
 })

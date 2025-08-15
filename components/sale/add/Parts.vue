@@ -1,18 +1,14 @@
 <script setup lang="ts">
-const Props = defineProps<{
-  title: string
+const Props = withDefaults(defineProps<{
   isIntegral: boolean
   billingSet: BillingSet
-  partFilter: Where<ProductAccessories>
-  checkAccessoriesScore: (params: { classes: ProductAccessories['type'][] }) => any
-  searchParts: (val: string,) => Promise<ProductAccessories[]>
+  partFilter: Where<OrderPart>
+  storeid: string
+}>(), {
+  isIntegral: false,
+})
 
-}>()
-const emits = defineEmits<{
-  clearList: []
-}>()
-
-const showPartsList = defineModel<ProductAccessories[]>('list', { default: [] })
+const orderObject = defineModel<Orders>({ default: {} as Orders })
 const showModal = ref(false)
 // 小数点进位计算函数
 const hold = holdFunction(Props.billingSet.decimal_point)
@@ -20,38 +16,33 @@ const rounding = roundFunction(Props.billingSet.rounding)
 </script>
 
 <template>
-  <common-fold :title="Props.title" :is-collapse="false">
-    <div class="p-[16px]">
-      <div class="grid-12">
+  <div class="pb-[16px]">
+    <common-fold title="配件礼品" :is-collapse="false">
+      <div class="grid-12 p-[16px]">
         <div
-          class="btn-left col-6 offset-3 cursor-pointer py-[10px]" uno-sm="col-4 offset-4" @click="() => {
-            emits('clearList')
-            showModal = true
-          }
-          ">
+          class="btn-left col-6 offset-3 cursor-pointer py-[10px]" uno-sm="col-4 offset-4" @click="showModal = true">
           <icon name="i-icon:search" color="#FFF" :size="16" />
           <div class="ml-2">
             搜索
           </div>
         </div>
       </div>
-    </div>
 
-    <sale-add-parts-list
-      v-model:list="showPartsList"
-      :hold="hold"
-      :rounding="rounding"
-      :is-integral="Props.isIntegral" />
-    <sale-add-parts-search
-      v-model:show="showModal"
-      v-model:list="showPartsList"
-      :is-integral="Props.isIntegral"
-      :billing-set="Props.billingSet"
-      :check-accessories-score="Props.checkAccessoriesScore"
-      :search-parts="Props.searchParts"
-      :part-filter="Props.partFilter"
-    />
-  </common-fold>
+      <sale-add-parts-list
+        v-model:list="orderObject"
+        :hold="hold"
+        :rounding="rounding"
+        :is-integral="Props.isIntegral" />
+      <sale-add-parts-search
+        v-model:show="showModal"
+        v-model:list="orderObject"
+        :is-integral="Props.isIntegral"
+        :billing-set="Props.billingSet"
+        :storeid="Props.storeid"
+        :part-filter="Props.partFilter"
+      />
+    </common-fold>
+  </div>
 </template>
 
 <style lang="scss" scoped>
