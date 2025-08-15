@@ -38,9 +38,16 @@ const deleteConfirm = () => {
                       </n-grid-item>
                     </template>
                     <template v-else>
-                      <n-grid-item :span="12">
-                        {{ item.label }}: {{ item.input === 'select' ? item.preset[obj[item.name] as string ] : obj[item.name] }}
-                      </n-grid-item>
+                      <template v-if=" item.input === 'select'">
+                        <n-grid-item :span="12">
+                          {{ item.label }}: {{ item.preset[obj[item.name] as string ] ? item.preset[obj[item.name] as string ] : '无' }}
+                        </n-grid-item>
+                      </template>
+                      <template v-else>
+                        <n-grid-item :span="12">
+                          {{ item.label }}: {{ obj[item.name] ? obj[item.name] : '无' }}
+                        </n-grid-item>
+                      </template>
                     </template>
                   </template>
                 </template>

@@ -133,7 +133,6 @@ const searchConfirm = async () => {
 // 调用旧料列表接口
 const searchOldFn = async () => {
   await searchOlds(searchInput.value)
-
   if (nowOldMaster.value?.product_id) {
     // 匹配金价
     const exists = props.price.filter(item =>

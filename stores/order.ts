@@ -36,16 +36,17 @@ export const useOrder = defineStore('Order', {
     },
     // 开单增加的旧料列表
     // 从成品列表中拿 成品列表
-    async getOldList(pamars: ReqList<ProductFinisheds>) {
+    async getOldList(pamars: ReqList<OrderMaterial>) {
       try {
         pamars = { ...pamars, where: { ...pamars.where } }
-        const { data } = await https.post<ResList<ProductFinisheds>, ReqList<ProductFinisheds>>('/product/finished/list', pamars)
+        const { data } = await https.post<ResList<OrderMaterial>, ReqList<OrderMaterial>>('/product/finished/list', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {
           if (data.value.data.list !== null && data.value.data.list?.length > 0) {
             const params = data.value.data.list[0]
             this.OldObj = params
             this.OldObj.product_id = params.id
             this.OldObj.weight_metal = Number(params.weight_metal)
+            this.OldObj.code_finished = params.code
             return this.OldObj
           }
           else {
