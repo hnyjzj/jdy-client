@@ -299,7 +299,7 @@ const clearFun = useThrottleFn(async () => {
 
 async function createFun() {
   isChooseModel.value = true
-  if (allocateInfo.value.type === GoodsType.ProductOld) {
+  if (allocateInfo.value?.type === GoodsType.ProductOld) {
     await searchOldList()
   }
 }
