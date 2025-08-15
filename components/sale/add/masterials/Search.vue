@@ -14,9 +14,11 @@ const { getOldList } = useOrder()
 // 搜索旧料
 const searchOlds = async (val: string) => {
   if (val) {
-    return await getOldList({ page: 1, limit: 10, where: { code: val, status: ProductFinishedsStatus.Sold } })
+    const res = await getOldList({ page: 1, limit: 10, where: { code: val, status: ProductFinishedsStatus.Sold } })
+    if (Object.keys(res).length === 0) {
+      $toast.error('没有找到旧料')
+    }
   }
-  return {}
 }
 // 旧料表单 Ref
 const oldMasterRef = ref()
@@ -57,18 +59,7 @@ const orderObject = defineModel<Orders>({ default: {} as Orders })
 
 const searchInput = ref()
 const nowOldMaster = defineModel('nowOldMaster', { default: {} as OrderMaterial })
-// 扫码
-const { useWxWork } = useWxworkStore()
-const scanCode = async () => {
-  const wx = await useWxWork()
-  const code = await wx?.scanQRCode()
-  if (code) {
-    searchShow.value = true
-    searchInput.value = code
-    nowOldMaster.value = {} as OrderMaterial
-    await searchOlds(searchInput.value)
-  }
-}
+
 const ourChangePrice = () => {
   nowOldMaster.value.recycle_price_labor_method ??= 1
   const hold = holdFunction(props.billingSet.decimal_point)
@@ -142,6 +133,7 @@ const searchConfirm = async () => {
 // 调用旧料列表接口
 const searchOldFn = async () => {
   await searchOlds(searchInput.value)
+
   if (nowOldMaster.value?.product_id) {
     // 匹配金价
     const exists = props.price.filter(item =>
@@ -156,6 +148,17 @@ const searchOldFn = async () => {
     else {
       nowOldMaster.value.recycle_price_gold = undefined
     }
+  }
+}
+// 扫码
+const { useWxWork } = useWxworkStore()
+const scanCode = async () => {
+  const wx = await useWxWork()
+  const code = await wx?.scanQRCode()
+  if (code) {
+    searchInput.value = code
+    nowOldMaster.value = {} as OrderMaterial
+    await searchOldFn()
   }
 }
 </script>
@@ -184,7 +187,7 @@ const searchOldFn = async () => {
                 type="text"
                 clearable
                 placeholder="请输入商品条码"
-                @keydown.enter="searchOlds(searchInput)"
+                @keydown.enter="searchOldFn()"
                 @focus="focus" />
             </div>
             <div class="pl-[16px] flex">
