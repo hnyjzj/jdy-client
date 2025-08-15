@@ -23,6 +23,7 @@ const deposit = defineModel<DepositOrderInfo[]>('deposit', { default: [] })
 const payMethods = optonsToSelect(props.filterList.payment_method?.preset)
 
 const addNewMethod = () => {
+  orderObject.value.payments ??= []
   orderObject.value.payments.push({ payment_method: 1, amount: undefined })
 }
 

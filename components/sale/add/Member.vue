@@ -13,8 +13,9 @@ const emit = defineEmits<{
 }>()
 const { myStore } = storeToRefs(useStores())
 const { userinfo } = storeToRefs(useUser())
-const { getMemberList, createMember } = useMemberManage()
-const { memberList } = storeToRefs(useMemberManage())
+const memberManage = useMemberManage()
+const { getMemberList, createMember } = memberManage
+const { memberList } = storeToRefs(memberManage)
 
 // 获取会员列表
 const getMember = async (val: string) => {
