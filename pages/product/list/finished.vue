@@ -13,7 +13,6 @@ const searchKey = ref('')
 const isFilter = ref(false)
 const isModel = ref(false)
 const isExportModel = ref(false)
-const batchCode = ref('')
 const isBatchCodeModel = ref(false)
 const isLoading = ref(false)
 const filterData = ref({} as Partial<ExpandPage<ProductFinisheds>>)
@@ -308,19 +307,25 @@ async function submitCode(code: BatchCode[]) {
 }
 
 async function batchFindCode(e: string[]) {
-  const res = await findFinishedCode(e)
-  if (res?.code === HttpCode.SUCCESS) {
-    if (!res?.data?.length) {
-      $toast.error('没有找到条码')
+  isLoading.value = true
+  try {
+    const res = await findFinishedCode(e)
+    if (res?.code === HttpCode.SUCCESS) {
+      if (!res?.data?.length) {
+        $toast.error('没有找到条码')
+      }
+      else {
+        await exportProductListToXlsx(res.data, finishedFilterListToArray.value, '货品列表')
+        isBatchCodeModel.value = false
+        $toast.success('批量查找条码导出成功')
+      }
     }
     else {
-      await exportProductListToXlsx(res.data, finishedFilterListToArray.value, '货品列表')
-      isBatchCodeModel.value = false
-      $toast.success('批量查找条码导出成功')
+      $toast.error(res?.message ?? '批量查找条码失败')
     }
   }
-  else {
-    $toast.error(res?.message ?? '批量查找条码失败')
+  finally {
+    isLoading.value = false
   }
 }
 </script>
@@ -364,7 +369,7 @@ async function batchFindCode(e: string[]) {
     <div class="z-9">
       <product-manage-bottom :statistics="finisheStatistics" />
     </div>
-    <product-upload-find-code v-model:is-model="isBatchCodeModel" v-model:batch-code="batchCode" @upload="batchFindCode" />
+    <product-upload-find-code v-model:is-model="isBatchCodeModel" @upload="batchFindCode" />
     <product-upload-choose v-model:is-model="isModel" title="更新" first-text="数据更新" second-text="条码更新" @go-add="isCodeModel = true" @batch="isUploadModel = true" />
     <product-upload-choose v-model:is-model="isExportModel" title="导出" first-text="直接导出" second-text="批量查条码" @go-add="isBatchCodeModel = true" @batch="downloadLocalFile" />
     <product-upload-code ref="uploadCodeRef" v-model="isCodeModel" @upload="submitCode" />

@@ -108,7 +108,7 @@ const changeTab = async (val: string) => {
                   下载模板
                 </div>
               </div>
-              <input class="h-[40px] absolute bottom-0 w-full opacity-0" type="file" @change="FileUpload" @focus="focus">
+              <input class="h-[40px] absolute bottom-0 w-full opacity-0" type="file" @change="FileUpload">
               <div class="uploadInp cursor-pointer">
                 <div class="text-row-hide w-[60%]">
                   {{ fileName || '请添加文件' }}
