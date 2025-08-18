@@ -1,6 +1,7 @@
 /** 中文 => 英文字段映射 */
 /** 成品 */
 export const finishedHeaderMap: Record<string, string> = {
+  '门店': 'store',
   '条码': 'code',
   '货品名称': 'name',
   '入网费': 'access_fee',
@@ -35,6 +36,7 @@ export const finishedHeaderMap: Record<string, string> = {
 
 /** 旧料 */
 export const oldHeaderMap: Record<string, string> = {
+  '门店': 'store',
   '旧料条码': 'code',
   '名称': 'name',
   '是否自有': 'is_our',
