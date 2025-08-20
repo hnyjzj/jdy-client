@@ -2,11 +2,17 @@
 import { NButton } from 'naive-ui'
 
 const { $toast } = useNuxtApp()
-const { getAllocateList, getAllocateWhere } = useAllocate()
+const { getAllocateList, getAllocateWhere, getAllocateDetails } = useAllocate()
 const { allocateList, allocateFilterListToArray, allocateFilterList, allocateTotal } = storeToRefs(useAllocate())
 const { myStoreList, myStore } = storeToRefs(useStores())
 const { getMyStore } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
+const { getStaffList } = useStaff()
+const { staffList } = storeToRefs(useStaff())
+const { oldFilterListToArray } = storeToRefs(useOld())
+const { finishedFilterListToArray } = storeToRefs(useFinished())
+const { getFinishedWhere } = useFinished()
+const { getOldWhere } = useOld()
 
 const searchKey = ref('')
 const route = useRoute()
@@ -15,8 +21,11 @@ const filterData = ref({} as Partial<ExpandPage<Allocate>>)
 const limits = ref(50)
 const tableLoading = ref(false)
 const storeCol = ref()
+const staffCol = ref()
 
+const isExportModel = ref(false)
 const filterRef = ref()
+const isLoading = ref()
 /** 跳转并刷新列表 */
 const listJump = () => {
   const url = UrlAndParams('/product/allocate', filterData.value)
@@ -24,13 +33,11 @@ const listJump = () => {
 }
 /** 获取列表 */
 const getList = async (where = {} as Partial<Allocate>) => {
-  tableLoading.value = true
   const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<Allocate>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
   const res = await getAllocateList(params)
-  tableLoading.value = false
   return res
 }
 /** 读取参数并初始化列表 */
@@ -73,9 +80,20 @@ function changeStore() {
     storeCol.value.push({ label: item.name, value: item.id })
   })
 }
+
+function initStaffCol() {
+  staffCol.value = []
+  staffList.value.forEach((item: Staff) => {
+    staffCol.value.push({ label: item.nickname, value: item.id })
+  })
+}
 await getMyStore()
+await getStaffList({ page: 1, limit: 30, where: { store_id: myStore.value.id } })
 await changeStore()
+await initStaffCol()
 await getAllocateWhere()
+await getOldWhere()
+await getFinishedWhere()
 // 筛选框显示隐藏
 const isFilter = ref(false)
 useSeoMeta({
@@ -230,6 +248,40 @@ const cols = [
     },
   },
 ]
+
+async function downloadLocalFile() {
+  isLoading.value = true
+  try {
+    exportProductListToXlsx(allocateList.value, allocateFilterListToArray.value, '导出调拨单据', [], 1, checkHeaderMap)
+  }
+  finally {
+    isLoading.value = false
+  }
+}
+
+async function downloadDetails() {
+  const params = { page: 1, limit: 20, where: { ...filterData.value } } as ReqList<Allocate>
+  if (!filterData.value?.start_time || !filterData.value?.end_time) {
+    $toast.error('请先在高级筛选内选择时间范围')
+  }
+  const res = await getAllocateDetails(params)
+  if (res?.code !== 200) {
+    return $toast.error(res?.message || '获取调拨明细失败')
+  }
+  if (!res?.data?.length) {
+    return $toast.error('暂无调拨明细')
+  }
+  isLoading.value = true
+  try {
+    const product = res.data.map((item) => {
+      return item.product ?? []
+    })
+    exportToXlsxMultiple([res.data, product], [...allocateFilterListToArray.value, ...oldFilterListToArray.value, ...finishedFilterListToArray.value], { ...checkHeaderMap, ...oldHeaderMap }, '导出调拨单据')
+  }
+  finally {
+    isLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -240,10 +292,12 @@ const cols = [
       v-model:showtype="showtype"
       :product-list-total="allocateTotal"
       placeholder="搜索调拨单号"
+      :is-export="true"
       @change-card="changeCard"
       @filter="openFilter"
       @search="search"
       @clear-search="clearSearch"
+      @export="isExportModel = true"
     >
       <template #company>
         <product-manage-company @change="changeMyStore" />
@@ -275,6 +329,22 @@ const cols = [
                   </div>
                   <div class="val">
                     {{ allocateFilterList.type?.preset[info.type] }}
+                  </div>
+                </div>
+                <div class="flex py-[4px] justify-between">
+                  <div>
+                    发起人
+                  </div>
+                  <div class="val">
+                    {{ info?.initiator?.nickname || '' }}
+                  </div>
+                </div>
+                <div class="flex py-[4px] justify-between">
+                  <div>
+                    接收人
+                  </div>
+                  <div class="val">
+                    {{ info?.receiver?.nickname || '' }}
                   </div>
                 </div>
                 <div class="flex py-[4px] justify-between">
@@ -353,6 +423,7 @@ const cols = [
       </template>
     </div>
     <common-create @click="jump('/product/allocate/add')" />
+    <product-upload-choose v-model:is-model="isExportModel" title="导出" first-text="导出单据" second-text="导出明细" @go-add="downloadDetails" @batch="downloadLocalFile" />
 
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="allocateFilterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #from_store_id>
@@ -362,6 +433,7 @@ const cols = [
           filterable
           placeholder="选择调出门店"
           :options="storeCol"
+          clearable
           @focus="focus"
         />
       </template>
@@ -372,6 +444,29 @@ const cols = [
           filterable
           placeholder="选择调入门店"
           :options="storeCol"
+          clearable
+          @focus="focus"
+        />
+      </template>
+      <template #initiator_id>
+        <n-select
+          v-model:value="filterData.initiator_id"
+          menu-size="large"
+          filterable
+          placeholder="选择发起人"
+          :options="staffCol"
+          clearable
+          @focus="focus"
+        />
+      </template>
+      <template #receiver_id>
+        <n-select
+          v-model:value="filterData.receiver_id"
+          menu-size="large"
+          filterable
+          placeholder="选择接收人"
+          :options="staffCol"
+          clearable
           @focus="focus"
         />
       </template>

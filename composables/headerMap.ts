@@ -119,3 +119,17 @@ export const statementHeaderMap: Record<string, string> = {
   '会员折扣': 'discount_member',
   '备注': 'remark',
 }
+
+export const checkHeaderMap: Record<string, string> = {
+  调出门店: 'from_store_id',
+  调入门店: 'to_store_id',
+  调拨单号: 'id',
+  发起人: 'initiator_id',
+  接收人: 'receiver_id',
+  调拨单状态: 'status',
+  调拨类型: 'method',
+  仓库类型: 'type',
+  调拨备注: 'remark',
+  开始时间: 'created_at',
+  完成时间: 'updated_at',
+}
