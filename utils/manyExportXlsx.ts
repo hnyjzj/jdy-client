@@ -46,6 +46,9 @@ function mapEnumValues(
     else if (key === 'updated_at') {
       newRow[key] = row?.updated_at ? formatTimestampToDateTime(row.updated_at) : ''
     }
+    else if (key === 'to_region_id') {
+      newRow[key] = row.to_region?.name ?? ''
+    }
   }
   return newRow
 }

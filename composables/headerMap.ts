@@ -123,6 +123,7 @@ export const statementHeaderMap: Record<string, string> = {
 export const checkHeaderMap: Record<string, string> = {
   调出门店: 'from_store_id',
   调入门店: 'to_store_id',
+  调入区域: 'to_region_id',
   调拨单号: 'id',
   发起人: 'initiator_id',
   接收人: 'receiver_id',
@@ -132,4 +133,13 @@ export const checkHeaderMap: Record<string, string> = {
   调拨备注: 'remark',
   开始时间: 'created_at',
   完成时间: 'updated_at',
+}
+
+export const accessorieHeaderMap: Record<string, string> = {
+  编号: 'code',
+  名称: 'name',
+  库存: 'stock',
+  类型: 'type',
+  零售方式: 'retail_type',
+  单价: 'price',
 }

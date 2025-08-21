@@ -215,6 +215,20 @@ const cols = [
     },
   },
   {
+    title: '发起人',
+    key: 'rinitiator_id.name',
+    render(row: Allocate) {
+      return row.initiator?.nickname ?? '-'
+    },
+  },
+  {
+    title: '接收人',
+    key: 'receiver_id',
+    render(row: Allocate) {
+      return row.receiver?.nickname ?? '-'
+    },
+  },
+  {
     title: '备注',
     key: 'remark',
   },
@@ -262,7 +276,7 @@ async function downloadLocalFile() {
 async function downloadDetails() {
   const params = { page: 1, limit: 20, where: { ...filterData.value } } as ReqList<Allocate>
   if (!filterData.value?.start_time || !filterData.value?.end_time) {
-    $toast.error('请先在高级筛选内选择时间范围')
+    return $toast.error('请先在高级筛选内选择时间范围')
   }
   const res = await getAllocateDetails(params)
   if (res?.code !== 200) {
@@ -333,22 +347,6 @@ async function downloadDetails() {
                 </div>
                 <div class="flex py-[4px] justify-between">
                   <div>
-                    发起人
-                  </div>
-                  <div class="val">
-                    {{ info?.initiator?.nickname || '' }}
-                  </div>
-                </div>
-                <div class="flex py-[4px] justify-between">
-                  <div>
-                    接收人
-                  </div>
-                  <div class="val">
-                    {{ info?.receiver?.nickname || '' }}
-                  </div>
-                </div>
-                <div class="flex py-[4px] justify-between">
-                  <div>
                     调拨原因
                   </div>
                   <div class="val">
@@ -389,6 +387,22 @@ async function downloadDetails() {
                 </div>
                 <div class="flex py-[4px] justify-between">
                   <div>
+                    发起人
+                  </div>
+                  <div class="val">
+                    {{ info?.initiator?.nickname || '' }}
+                  </div>
+                </div>
+                <div class="flex py-[4px] justify-between">
+                  <div>
+                    接收人
+                  </div>
+                  <div class="val">
+                    {{ info?.receiver?.nickname || '' }}
+                  </div>
+                </div>
+                <div class="flex py-[4px] justify-between">
+                  <div>
                     备注
                   </div>
                   <div class="val">
@@ -424,6 +438,7 @@ async function downloadDetails() {
     </div>
     <common-create @click="jump('/product/allocate/add')" />
     <product-upload-choose v-model:is-model="isExportModel" title="导出" first-text="导出单据" second-text="导出明细" @go-add="downloadDetails" @batch="downloadLocalFile" />
+    <common-loading v-model="isLoading" />
 
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="allocateFilterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #from_store_id>
