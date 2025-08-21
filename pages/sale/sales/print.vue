@@ -2,28 +2,41 @@
 import PrintTemp from '@/components/print/Statement.vue'
 import usePrint from 'vue3-use-print'
 
+const { printData } = storeToRefs(useStatement())
+const { PrintSattementTotal } = useStatement()
+const formRef = ref()
+const model = ref<PrintSattementTotalReq>({
+  start_time: '2025-08-21T16:16:23.000+08:00',
+  end_time: '2025-08-21T16:16:23.000+08:00',
+  store_id: undefined,
+  salesman_id: undefined,
+})
+const rules = {}
+const time = getTodayRange()
+model.value.start_time = time.start
+model.value.end_time = time.end
+await PrintSattementTotal(model.value)
+
 const printFn = () => {
   const PrintComponent = defineComponent({
     render() {
       return h(PrintTemp)
     },
   })
-  //   getMethod()
   usePrint(PrintComponent)
 }
 
-const formRef = ref()
-const model = ref({
-  brand: 1,
-  startTime: null,
-  endTime: null,
-})
-const rules = {}
+const SearchResult = async () => {
+  await PrintSattementTotal(model.value)
+}
 </script>
 
 <template>
   <div class="py-[20px] sm:grid-12">
     <div uno-sm="col-10 offset-1">
+      <div class="w-fit color-[#fff] pb-[12px]">
+        <product-manage-company />
+      </div>
       <div class="bg-[#fff] p-[12px] rounded-[12px]">
         <div style="border: 1px dashed #ccc;" class="p-[12px]  rounded-[12px]">
           <div>
@@ -35,42 +48,33 @@ const rules = {}
               label-placement="left"
               label-width="auto"
               require-mark-placement="right-hanging"
-
             >
               <div class="grid-12 gap-[12px] w-full">
                 <div class="col-12" uno-sm="col-6" uno-lg="col-3">
-                  <n-form-item label="品牌" path="brand">
+                  <n-form-item label="销售员">
                     <n-select
-                      v-model:value="model.brand"
-                      placeholder="Select"
-                      :options="[]"
-                    />
-                  </n-form-item>
-                </div>
-                <div class="col-12" uno-sm="col-6" uno-lg="col-3">
-                  <n-form-item label="收银员" path="brand">
-                    <n-select
-                      v-model:value="model.brand"
-                      placeholder="Select"
+                      v-model:value="model.salesman_id"
+                      placeholder="选择销售员"
                       :options="[]"
                     />
                   </n-form-item>
                 </div>
 
                 <div class="col-12" uno-sm="col-6" uno-lg="col-3">
-                  <n-form-item label="开始时间" path="startTime">
-                    <n-date-picker v-model:value="model.startTime" type="datetime" />
+                  <n-form-item label="开始时间" path="start_time">
+                    <n-date-picker v-model:formatted-value="model.start_time" input-readonly type="datetime" value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" />
                   </n-form-item>
                 </div>
                 <div class="col-12" uno-sm="col-6" uno-lg="col-3">
-                  <n-form-item label="结束时间" path="endTime">
-                    <n-date-picker v-model:value="model.endTime" type="datetime" />
+                  <n-form-item label="结束时间" path="end_time">
+                    <n-date-picker v-model:formatted-value="model.end_time" input-readonly type="datetime" value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" />
                   </n-form-item>
                 </div>
-                <div class="col-6 offset-6" uno-sm="col-4 offset-8" uno-lg="col-4 offset-8">
+
+                <div class="col-12" uno-sm="col-6" uno-lg="col-3">
                   <n-form-item>
                     <div class="flex justify-end  w-full">
-                      <div class="bg-[#208AFF] hover:bg-[#0B57D0] color-[#fff] p-[6px] rounded-[6px] cursor-pointer mr-[20px]" @click="printFn">
+                      <div class="bg-[#208AFF] hover:bg-[#0B57D0] color-[#fff] p-[6px] rounded-[6px] cursor-pointer mr-[20px]" @click="SearchResult">
                         查询报表
                       </div>
                       <div class="bg-[#2F80ED] hover:bg-[#0B57D0] color-[#fff] p-[6px] rounded-[6px] cursor-pointer" @click="printFn">
@@ -82,7 +86,7 @@ const rules = {}
               </div>
             </n-form>
           </div>
-          <PrintStatement />
+          <PrintStatement :data="printData" />
         </div>
       </div>
     </div>
