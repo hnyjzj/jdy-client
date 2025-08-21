@@ -58,6 +58,7 @@ interface Allocate {
    * 调拨单成品列表
    */
   product_olds: ProductOlds[]
+  product?: ProductOlds
   /**
    * 调拨状态
    * 1:草稿 2:在途 3:已完成 4:已取消
@@ -89,6 +90,12 @@ interface Allocate {
   product_total_label_price: number
   /** 总重 */
   product_total_weight_metal: number
+  //   发起人
+  initiator: Staff
+  initiator_id: string
+  /** 接收人 */
+  receiver: Staff
+  receiver_id: string
 }
 
 interface AllocateReq {

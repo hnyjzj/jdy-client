@@ -40,6 +40,13 @@ interface AccessorieAllocate {
   to_store: Stores
   updated_at: string
   created_at: string
+  start_time: string
+  end_time: string
+  product?: ProductAccessories
+  initiator_id: string
+  initiator: Staffs
+  receiver_id: string
+  receiver: Staffs
 }
 
 interface AccessorieAllocateInfo extends AccessorieAllocate {
