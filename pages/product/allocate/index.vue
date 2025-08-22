@@ -288,9 +288,43 @@ async function downloadDetails() {
   isLoading.value = true
   try {
     const product = res.data.map((item) => {
-      return item.product ?? []
+      const prod = item.product ?? {}
+      if (item.type === GoodsType.ProductFinish) {
+        if ('class' in prod) {
+          const { class: finished_class, ...rest } = prod
+          return { ...rest, finished_class }
+        }
+        return prod
+      }
+      else {
+        if ('class' in prod) {
+          const { class: old_class, ...rest } = prod
+          return { ...rest, old_class }
+        }
+        return prod
+      }
     })
-    exportToXlsxMultiple([res.data, product], [...allocateFilterListToArray.value, ...oldFilterListToArray.value, ...finishedFilterListToArray.value], { ...checkHeaderMap, ...oldHeaderMap }, '导出调拨单据')
+
+    const newProduct = product.map((item) => {
+      if ('status' in item) {
+        const { status, ...rest } = item
+        return rest
+      }
+      return item
+    })
+
+    const oldList = oldFilterListToArray.value.map(item =>
+      item.name === 'class' ? { ...item, name: 'old_class' } : item,
+    )
+
+    const finishedList = finishedFilterListToArray.value.map(item =>
+      item.name === 'class' ? { ...item, name: 'finished_class' } : item,
+    )
+
+    const productToArray = [...finishedList, ...oldList]
+    const newProductToArray = productToArray.filter(item => item.name !== 'status')
+
+    exportToXlsxMultiple([res.data, newProduct], [...allocateFilterListToArray.value, ...newProductToArray], { ...checkHeaderMapA, ...oldUnclassHeaderMap }, '导出调拨单据')
   }
   finally {
     isLoading.value = false

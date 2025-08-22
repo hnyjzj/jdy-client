@@ -1,10 +1,10 @@
 import * as XLSX from 'xlsx'
 
 /** 提取字段中的 preset 枚举 */
-function extractPresets<T extends { name: string, preset?: Record<any, string> }>(
-  fields: T[],
-): { [K in T as K['preset'] extends Record<any, string> ? K['name'] : never]: K['preset'] } {
-  const result: any = {}
+function extractPresets<
+  T extends { name: string, preset?: Record<any, string> },
+>(fields: T[]): Record<string, Record<any, string>> {
+  const result: Record<string, Record<any, string>> = {}
   fields.forEach((field) => {
     if (field.preset)
       result[field.name] = field.preset
@@ -59,16 +59,19 @@ function convertDataWithChineseHeaders(
   fieldMap: Record<string, string>, // 英文 -> 中文
   fieldOrder: string[], // 英文字段顺序
 ): any[][] {
-  const headers = fieldOrder.map(f => fieldMap[f]).filter(Boolean) // 只保留有中文映射的
+  const headers = fieldOrder.map(f => fieldMap[f]).filter(Boolean)
   const rows = data.map(row =>
-    fieldOrder.map(f => (fieldMap[f] ? row[f] ?? '' : undefined)) // 只取有映射的字段
+    fieldOrder
+      .map(f => (fieldMap[f] ? row[f] ?? '' : undefined))
       .filter(v => v !== undefined),
   )
   return [headers, ...rows]
 }
 
-/** 合并多个数组按索引对应成一行 */
-function mergeRowsByIndex(dataList: Record<string, any>[][]): Record<string, any>[] {
+/** 按行索引合并多个数组 */
+function mergeRowsByIndex(
+  dataList: Record<string, any>[][],
+): Record<string, any>[] {
   const maxLength = Math.max(...dataList.map(arr => arr.length))
   const merged: Record<string, any>[] = []
 
@@ -77,16 +80,21 @@ function mergeRowsByIndex(dataList: Record<string, any>[][]): Record<string, any
     dataList.forEach((data) => {
       const item = data[i] || {}
       Object.entries(item).forEach(([key, value]) => {
-        row[key] = value // ⚠️ 如果重复会覆盖，可加前缀
+        row[key] = value // ⚠️ 相同字段会覆盖
       })
     })
     merged.push(row)
   }
-
   return merged
 }
 
-/** 导出 Excel（多个数组对应成同一行，表头中文，按 headerMap 顺序循环） */
+/**
+ * 导出 Excel（单 Sheet，多数据源拼一行）
+ * @param dataList - 多个数据源数组 [res.data, newProduct]
+ * @param fields - 字段配置（可能包含枚举）
+ * @param headerMap - 中文 -> 英文 的映射
+ * @param name - 导出文件名
+ */
 export function exportToXlsxMultiple(
   dataList: Record<string, any>[][],
   fields: { name: string, preset?: Record<any, string> }[],
@@ -96,21 +104,25 @@ export function exportToXlsxMultiple(
   const enumMap = extractPresets(fields)
 
   // 映射枚举值
-  const mappedDataList = dataList.map(arr => arr.map(row => mapEnumValues(row, enumMap)))
+  const mappedDataList = dataList.map(arr =>
+    arr.map(row => mapEnumValues(row, enumMap)),
+  )
 
-  // 按行索引合并
+  // 合并
   const mergedData = mergeRowsByIndex(mappedDataList)
 
   // 翻转 headerMap => 英文 -> 中文
+  const fieldOrder = Object.values(headerMap) // 英文字段顺序
   const fieldMap: Record<string, string> = Object.fromEntries(
     Object.entries(headerMap).map(([zh, en]) => [en, zh]),
   )
 
-  // 表头顺序 = headerMap 的 value 顺序（英文字段）
-  const fieldOrder = Object.values(headerMap)
-
-  // 转换为 AOA（只保留在 headerMap 中有映射的字段）
-  const aoaData = convertDataWithChineseHeaders(mergedData, fieldMap, fieldOrder)
+  // 转换为 AOA
+  const aoaData = convertDataWithChineseHeaders(
+    mergedData,
+    fieldMap,
+    fieldOrder,
+  )
 
   const worksheet = XLSX.utils.aoa_to_sheet(aoaData)
   const workbook = XLSX.utils.book_new()
@@ -119,7 +131,9 @@ export function exportToXlsxMultiple(
   // 导出文件名带时间戳
   const now = new Date()
   const pad = (n: number) => n.toString().padStart(2, '0')
-  const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}`
+  const timestamp = `${now.getFullYear()}-${pad(
+    now.getMonth() + 1,
+  )}-${pad(now.getDate())}_${pad(now.getHours())}-${pad(now.getMinutes())}`
   const finalFilename = `${name}_${timestamp}.xlsx`
 
   XLSX.writeFile(workbook, finalFilename)
