@@ -75,6 +75,24 @@ interface StatisticSalesDetailDailyResp {
    */
   payment: StatisticSalesDetailDailyPayment[]
   payment_total: StatisticSalesDetailDailyPayment
+  finished_sales: {
+    [key]: {
+      [key]: {
+        labor_fee: string
+        price: string
+        receivable: string
+        weight_metal: string
+        quantity: number
+      }
+    }
+  }
+  accessorie_sales: {
+    [key ]: {
+      price: string
+      receivable: string
+      quantity: number
+    }
+  }
 }
 
 interface StatisticSalesDetailDailySummary {

@@ -2,21 +2,51 @@
 import PrintTemp from '@/components/print/Statement.vue'
 import usePrint from 'vue3-use-print'
 
+const { myStore, StoreStaffList } = storeToRefs(useStores())
+const { getStoreStaffList } = useStores()
+
 const { printData } = storeToRefs(useStatement())
 const { PrintSattementTotal } = useStatement()
 const formRef = ref()
 const model = ref<PrintSattementTotalReq>({
-  start_time: '2025-08-21T16:16:23.000+08:00',
-  end_time: '2025-08-21T16:16:23.000+08:00',
-  store_id: undefined,
-  salesman_id: undefined,
+  start_time: '',
+  end_time: '',
+  store_id: myStore.value.id,
+  salesman_id: '',
 })
-const rules = {}
+const rules = {
+  start_time: {
+    required: true,
+    message: '开始时间不能为空',
+    trigger: 'blur',
+  },
+  end_time: {
+    required: true,
+    message: '结束时间不能为空',
+    trigger: 'blur',
+  },
+}
 const time = getTodayRange()
 model.value.start_time = time.start
 model.value.end_time = time.end
 await PrintSattementTotal(model.value)
-
+const { $toast } = useNuxtApp()
+// 获取门店员工列表
+StoreStaffList.value.unshift({
+  nickname: '全部',
+  id: '',
+} as StoresStaff)
+model.value.salesman_id = ''
+const getStaff = async () => {
+  const res = await getStoreStaffList({ id: myStore.value.id })
+  StoreStaffList.value.unshift({
+    nickname: '全部',
+    id: '',
+  } as StoresStaff)
+  if (res) {
+    $toast.error(res?.data.value?.message || '获取员工列表失败')
+  }
+}
 const printFn = () => {
   const PrintComponent = defineComponent({
     render() {
@@ -25,9 +55,12 @@ const printFn = () => {
   })
   usePrint(PrintComponent)
 }
-
+const salesman = ref<string>('')
 const SearchResult = async () => {
   await PrintSattementTotal(model.value)
+}
+const setSalesman = (_: string, option: any) => {
+  salesman.value = option.label
 }
 </script>
 
@@ -55,7 +88,10 @@ const SearchResult = async () => {
                     <n-select
                       v-model:value="model.salesman_id"
                       placeholder="选择销售员"
-                      :options="[]"
+                      :options="StoreStaffList.map(item => ({ label: item.nickname, value: item.id }))"
+                      default-value=""
+                      @focus="getStaff"
+                      @update:value="setSalesman"
                     />
                   </n-form-item>
                 </div>
@@ -86,7 +122,7 @@ const SearchResult = async () => {
               </div>
             </n-form>
           </div>
-          <PrintStatement :data="printData" />
+          <PrintStatement :start="model.start_time" :end="model.end_time" :salesman="salesman" :data="printData" />
         </div>
       </div>
     </div>

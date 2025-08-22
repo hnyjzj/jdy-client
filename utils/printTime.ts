@@ -37,3 +37,17 @@ function getTimezoneOffsetString(date: Date): string {
   const minutes = absOffset % 60
   return `${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
 }
+// 将'2025-08-21T16:16:23.000+08:00'格式转为'YYYY-MM-DD hh:mm:ss'
+export function formatIsoToDateTime(str: string): string {
+  if (!str)
+    return ''
+  const d = new Date(str)
+  const pad = (n: number) => n.toString().padStart(2, '0')
+  const year = d.getFullYear()
+  const month = pad(d.getMonth() + 1)
+  const day = pad(d.getDate())
+  const hour = pad(d.getHours())
+  const min = pad(d.getMinutes())
+  const sec = pad(d.getSeconds())
+  return `${year}-${month}-${day} ${hour}:${min}:${sec}`
+}
