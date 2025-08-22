@@ -275,9 +275,12 @@ async function downloadLocalFile() {
 
 async function downloadDetails() {
   const params = { page: 1, limit: 20, where: { ...filterData.value } } as ReqList<Allocate>
+
+  // 必须先选择时间范围
   if (!filterData.value?.start_time || !filterData.value?.end_time) {
     return $toast.error('请先在高级筛选内选择时间范围')
   }
+
   const res = await getAllocateDetails(params)
   if (res?.code !== 200) {
     return $toast.error(res?.message || '获取调拨明细失败')
@@ -285,8 +288,10 @@ async function downloadDetails() {
   if (!res?.data?.length) {
     return $toast.error('暂无调拨明细')
   }
+
   isLoading.value = true
   try {
+    // 处理 product 数据，成品 class → finished_class，非成品 class → old_class
     const product = res.data.map((item) => {
       const prod = item.product ?? {}
       if (item.type === GoodsType.ProductFinish) {
@@ -305,6 +310,7 @@ async function downloadDetails() {
       }
     })
 
+    // 删除 status 字段
     const newProduct = product.map((item) => {
       if ('status' in item) {
         const { status, ...rest } = item
@@ -313,18 +319,27 @@ async function downloadDetails() {
       return item
     })
 
+    // oldFilterList 配置里 class 改成 old_class
     const oldList = oldFilterListToArray.value.map(item =>
       item.name === 'class' ? { ...item, name: 'old_class' } : item,
     )
 
+    // finishedFilterList 配置里 class 改成 finished_class
     const finishedList = finishedFilterListToArray.value.map(item =>
       item.name === 'class' ? { ...item, name: 'finished_class' } : item,
     )
 
+    // 合并配置并去掉 status
     const productToArray = [...finishedList, ...oldList]
     const newProductToArray = productToArray.filter(item => item.name !== 'status')
 
-    exportToXlsxMultiple([res.data, newProduct], [...allocateFilterListToArray.value, ...newProductToArray], { ...checkHeaderMapA, ...oldUnclassHeaderMap }, '导出调拨单据')
+    // 导出 Excel
+    exportToXlsxMultiple(
+      [res.data, newProduct],
+      [...allocateFilterListToArray.value, ...newProductToArray],
+      { ...checkHeaderMapA, ...oldUnclassHeaderMap },
+      '导出调拨单据',
+    )
   }
   finally {
     isLoading.value = false
