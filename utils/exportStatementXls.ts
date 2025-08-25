@@ -17,104 +17,136 @@ function extractPresets<T extends { name: string, preset?: Record<any, string> }
 
 /** 将枚举值映射为中文 */
 // 定义一个函数，用于将枚举值映射到新的对象中
+// 优化后的 mapEnumValues，减少重复、提升可维护性
 function mapEnumValues(
-  row: Record<string, any>, // 输入的行对象
-  enumMap: Record<string, Record<any, string>>, // 枚举映射对象
-): Record<string, any> { // 返回新的行对象
+  row: Record<string, any>,
+  enumMap: Record<string, Record<any, string>>,
+): Record<string, any> {
   const newRow: Record<string, any> = { ...row }
-  for (const key in row) { // 遍历行对象的每一个键
-    if (enumMap[key]) { // 如果键在枚举映射对象中存在
-      const rawValue = row[key] // 获取原始值
-      // ✅ 如果值匹配到 preset 映射，则用映射值；否则置空
-      newRow[key] = rawValue in enumMap[key] ? enumMap[key][rawValue] : ''
+  // 通用枚举和布尔
+  Object.keys(row).forEach((key) => {
+    if (enumMap[key]) {
+      newRow[key] = enumMap[key][row[key]] ?? ''
     }
-    else if (key === 'is_special_offer') { // 如果键是 is_special_offer
-      newRow[key] = row[key] ? '是' : '否' // 如果原始值是 true，则映射为 '是'，否则为 '否'
+    else if (key === 'is_special_offer') {
+      newRow[key] = row[key] ? '是' : '否'
     }
-    if (key === 'member') {
-      newRow.member_name = row[key].name
-      newRow.member_phone = row[key].phone
+  })
+  // member 信息
+  if (row.member) {
+    newRow.member_name = row.member.name ?? ''
+    newRow.member_phone = row.member.phone ?? ''
+  }
+  // order 信息
+  if (row.order) {
+    const order = row.order
+    Object.assign(newRow, {
+      source: enumMap.source?.[order.source] ?? '',
+      price_pay: order.price_pay ?? '',
+      order_price: order.price ?? '',
+      price_original: order.price_original ?? '',
+      remarks: Array.isArray(order.remarks) ? order.remarks.join(',') : '',
+      mainSale: order.clerks?.[0]?.salesman?.nickname ?? '',
+    })
+    if (row.type === GoodsType.ProductFinish) {
+      newRow.price_product = order.product_finished_price ?? ''
     }
-    if (key === 'order') {
-      newRow.source = enumMap.source[row[key].source] || ''
-      newRow.price_pay = row[key].price_pay || ''
-      newRow.order_price = row[key].price || ''
-      newRow.price_original = row[key].price_original || ''
-      newRow.remarks = row[key]?.remarks?.join(',') || ''
-      newRow.mainSale = row[key].clerks[0].salesman?.nickname || ''
-      if (row.type === GoodsType.ProductFinish) {
-        newRow.price_product = row[key].product_finished_price || ''
-      }
-      if (row.type === GoodsType.ProductOld) {
-        newRow.price_old = row[key].product_old_price || ''
-      }
-      if (row.type === GoodsType.ProductAccessories) {
-        newRow.price_accessory = row[key].product_accessorie_price || ''
-      }
+    else if (row.type === GoodsType.ProductOld) {
+      newRow.price_old = order.product_old_price ?? ''
     }
-    if (row.type === GoodsType.ProductFinish && key === 'finished') {
-      newRow.retail_type = enumMap.retail_type[row[key].product.retail_type] || ''
-      newRow.labor_fee_product = row[key].labor_fee || ''
-      newRow.weight_metal = row[key].product.weight_metal || ''
-      newRow.price = row[key].price || ''
-      newRow.product_price_gold = row[key].price_gold || ''
-      newRow.product_price_original = row[key].price_original || ''
-      newRow.discount_member = row[key].discount_member || ''
-      newRow.discount_final = row[key].discount_final || ''
-      newRow.weight_total = row[key].product.weight_total || ''
-      newRow.supplier = enumMap.supplier[row[key].product.supplier] || ''
-      newRow.brand = enumMap.brand[row[key].product.brand] || ''
-      newRow.material = enumMap.material[row[key].product.material] || ''
-      newRow.quality = enumMap.quality[row[key].product.quality] || ''
-      newRow.gem = enumMap.gem[row[key].product.gem] || ''
-      newRow.category = enumMap.category[row[key].product.category] || ''
-      newRow.craft = enumMap.craft[row[key].product.craft] || ''
-      newRow.name = row[key].product.name || ''
-      newRow.code = row[key].product.code || ''
-    }
-    if (row.type === GoodsType.ProductOld && key === 'old') {
-      newRow.recycle_price = row[key].recycle_price || ''
-      newRow.recycle_price_gold = row[key].recycle_price_gold || ''
-      newRow.recycle_price_labor = row[key].recycle_price_labor || ''
-      newRow.quality_actual = row[key].quality_actual || ''
-      newRow.recycle_points = row[key].integral || ''
-      newRow.weight_metal = row[key].weight_metal || ''
-      newRow.recycle_method = enumMap.recycle_method[row[key].product.recycle_method] || ''
-      newRow.recycle_weight_metal = row[key].weight_metal || ''
-      newRow.recycle_price_labor_method = enumMap.recycle_price_labor_method[row[key].recycle_price_labor_method] || ''
-      newRow.supplier = enumMap.supplier[row[key].product.supplier] || ''
-      newRow.brand = enumMap.brand[row[key].product.brand] || ''
-      newRow.material = enumMap.material[row[key].product.material] || ''
-      newRow.quality = enumMap.quality[row[key].product.quality] || ''
-      newRow.gem = enumMap.gem[row[key].product.gem] || ''
-      newRow.category = enumMap.category[row[key].product.category] || ''
-      newRow.craft = enumMap.craft[row[key].product.craft] || ''
-      newRow.name = row[key].product.name || ''
-      newRow.code = row[key].product.code || ''
-    }
-    if (row.type === GoodsType.ProductAccessories && key === 'accessorie') {
-      newRow.accessory_price = row[key].product.price || ''
-      newRow.accessory_retail_type = enumMap.retail_type[row[key].product.retail_type] || ''
-      newRow.accessory_quantity = row[key].quantity || ''
-      newRow.name = row[key].product.name || ''
-      switch (row[key].product.type) {
-        case accessoriesType.part:
-          newRow.accessory_type = '配件'
-          break
-        case accessoriesType.material:
-          newRow.accessory_type = '物料'
-          break
-        case accessoriesType.gift:
-          newRow.accessory_type = '赠品'
-          break
-        case accessoriesType.goods:
-          newRow.accessory_type = '商品'
-          break
-        default:
-          break
-      }
+    else if (row.type === GoodsType.ProductAccessories) {
+      newRow.price_accessory = order.product_accessorie_price ?? ''
     }
   }
+  // 类型相关处理
+  const fillProductFields = (p: any, fields: string[]) => {
+    fields.forEach((field) => {
+      const val = p[field]
+      newRow[field] = enumMap[field]?.[val] ?? (val == null || val === 0 ? '' : val)
+    })
+  }
+  switch (row.type) {
+    case GoodsType.ProductFinish:
+      if (row.finished) {
+        const f = row.finished
+        const p = f.product || {}
+        Object.assign(newRow, {
+          discount_member: f.discount_member ?? '',
+          discount_final: f.discount_final ?? '',
+          labor_fee_product: f.labor_fee ?? '',
+          price: f.price ?? '',
+          product_price_gold: f.price_gold ?? '',
+          product_price_original: f.price_original ?? '',
+          class: enumMap.finished_class?.[p.class] ?? '',
+        })
+        fillProductFields(p, [
+          'name',
+          'code',
+          'weight_metal',
+          'weight_total',
+          'retail_type',
+          'supplier',
+          'brand',
+          'material',
+          'quality',
+          'gem',
+          'category',
+          'craft',
+        ])
+      }
+      break
+    case GoodsType.ProductOld:
+      if (row.old) {
+        const o = row.old
+        const p = o.product || {}
+        Object.assign(newRow, {
+          recycle_price: o.recycle_price ?? '',
+          recycle_price_gold: o.recycle_price_gold ?? '',
+          recycle_price_labor: o.recycle_price_labor ?? '',
+          quality_actual: o.quality_actual ?? '',
+          recycle_points: o.integral ?? '',
+          weight_metal: o.weight_metal ?? '',
+          recycle_weight_metal: o.weight_metal ?? '',
+          recycle_price_labor_method: enumMap.recycle_price_labor_method?.[o.recycle_price_labor_method] ?? '',
+          class: enumMap.class?.[p.class] ?? '',
+        })
+        fillProductFields(p, [
+          'name',
+          'code',
+          'recycle_method',
+          'supplier',
+          'brand',
+          'material',
+          'quality',
+          'gem',
+          'category',
+          'craft',
+        ])
+      }
+      break
+    case GoodsType.ProductAccessories:
+      if (row.accessorie) {
+        const a = row.accessorie
+        const p = a.product || {}
+        Object.assign(newRow, {
+          accessory_price: p.price ?? '',
+          accessory_retail_type: enumMap.retail_type?.[p.retail_type] ?? '',
+          accessory_quantity: a.quantity ?? '',
+          name: p.name ?? '',
+        })
+        newRow.accessory_type = (() => {
+          switch (p.type) {
+            case accessoriesType.part: return '配件'
+            case accessoriesType.material: return '物料'
+            case accessoriesType.gift: return '赠品'
+            case accessoriesType.goods: return '商品'
+            default: return ''
+          }
+        })()
+      }
+      break
+  }
+
   return newRow
 }
 

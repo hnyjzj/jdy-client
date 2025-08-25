@@ -224,7 +224,7 @@ const partTotalPrice = computed(() => {
               <thead>
                 <tr>
                   <th class="table-header" style=" width:16%;">
-                    原条码
+                    条码
                   </th>
                   <th class="table-header" style=" width:16%;">
                     旧料名称
@@ -370,7 +370,7 @@ const partTotalPrice = computed(() => {
               <thead>
                 <tr>
                   <th class="table-header" style=" width:16%;">
-                    原条码
+                    条码
                   </th>
                   <th class="table-header" style=" width:16%;">
                     旧料名称

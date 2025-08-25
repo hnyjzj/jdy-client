@@ -182,6 +182,8 @@ interface ProductFinisheds {
   all?: boolean
 
   product_id?: string
+
+  finished_class?: string
 }
 
 /**
