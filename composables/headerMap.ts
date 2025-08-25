@@ -85,6 +85,7 @@ export const statementHeaderMap: Record<string, string> = {
   '成品原价': 'product_price_original',
   '成品工费': 'labor_fee_product',
   '零售方式': 'retail_type',
+  '大类': 'class',
   '旧料抵扣': 'price_old',
   '回收方式': 'recycle_method',
   '回收金额': 'recycle_price',

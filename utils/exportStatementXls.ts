@@ -77,6 +77,7 @@ function mapEnumValues(
           price: f.price ?? '',
           product_price_gold: f.price_gold ?? '',
           product_price_original: f.price_original ?? '',
+          class: enumMap.finished_class?.[p.class] ?? '',
         })
         fillProductFields(p, [
           'name',
@@ -107,6 +108,7 @@ function mapEnumValues(
           weight_metal: o.weight_metal ?? '',
           recycle_weight_metal: o.weight_metal ?? '',
           recycle_price_labor_method: enumMap.recycle_price_labor_method?.[o.recycle_price_labor_method] ?? '',
+          class: enumMap.class?.[p.class] ?? '',
         })
         fillProductFields(p, [
           'name',

@@ -214,7 +214,16 @@ const cols = [
 
 const exportExcel = async () => {
   const res = await getStatementListAll({ all: true, where: filterData.value })
-  exportStatementListToXlsx(res, [...accessorieFilterListToArray.value, ...salesFilterListToArray.value, ...finishedFilterListToArray.value, ...oldFilterListToArray.value, ...filterListToArray.value], '销售明细报表', [])
+  const finishedClass = finishedFilterListToArray.value.filter(item => item.name === 'class')
+  finishedClass[0].name = 'finished_class'
+  exportStatementListToXlsx(res, [
+    ...accessorieFilterListToArray.value,
+    ...salesFilterListToArray.value,
+    ...finishedFilterListToArray.value,
+    ...oldFilterListToArray.value,
+    ...filterListToArray.value,
+    ...finishedClass,
+  ], '销售明细报表', [])
 }
 </script>
 
