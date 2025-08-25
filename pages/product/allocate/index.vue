@@ -201,6 +201,14 @@ const cols = [
     key: 'product_count',
   },
   {
+    title: '调拨金重',
+    key: 'product_total_weight_metal',
+  },
+  {
+    title: '调拨标签价',
+    key: 'product_total_label_price',
+  },
+  {
     title: '调出门店',
     key: 'from_store.name',
     render(row: Allocate) {
@@ -416,6 +424,22 @@ async function downloadDetails() {
                   </div>
                   <div class="val">
                     {{ info.product_count }}
+                  </div>
+                </div>
+                <div class="flex py-[4px] justify-between">
+                  <div>
+                    调拨金重
+                  </div>
+                  <div class="val">
+                    {{ info.product_total_weight_metal }}
+                  </div>
+                </div>
+                <div class="flex py-[4px] justify-between">
+                  <div>
+                    调拨标签价
+                  </div>
+                  <div class="val">
+                    {{ info.product_total_label_price }}
                   </div>
                 </div>
                 <div class="flex py-[4px] justify-between">
