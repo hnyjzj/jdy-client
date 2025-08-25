@@ -17,13 +17,13 @@ const deleteParts = (index: number) => {
 }
 // 改变配件数量
 const changeQuantity = (obj: OrderPart) => {
-  if (obj.quantity && obj.price) {
+  if (obj.quantity && obj.one_price) {
     // 计算应付金额
     const qty = obj.quantity ?? 1
-    const price = Number(obj.price ?? 0)
-    obj.amount = calc(`(a * b)| =${props.hold} ~${props.rounding}, !n`, {
+    const one_price = Number(obj.one_price ?? 0)
+    obj.price = calc(`(a * b)| =${props.hold} ~${props.rounding}, !n`, {
       a: qty,
-      b: price,
+      b: one_price,
     })
   }
 }
@@ -45,25 +45,10 @@ const deleteConfirm = () => {
             <div class="flex flex-col gap-[12px] px-[16px]">
               <common-cell label="编号" :value="obj?.id" />
               <common-cell label="名称" :value="obj?.name" />
+              <common-cell label="单价" :value="obj?.one_price" />
               <div class="h-[1px] bg-[#E6E6E8] dark:bg-[rgba(230,230,232,0.3)]" />
               <div class="pb-[16px]">
                 <n-grid :cols="24" :x-gap="8">
-                  <n-form-item-gi :span="12" label="单价">
-                    <n-input-number
-                      v-model:value="obj.price"
-                      :show-button="false"
-                      placeholder="单价"
-                      round
-                      :min="0"
-                      :precision="Number(props.hold)"
-                      @focus="focus"
-                      @update:value="changeQuantity(obj)"
-                    >
-                      <template #suffix>
-                        元
-                      </template>
-                    </n-input-number>
-                  </n-form-item-gi>
                   <n-form-item-gi :span="12" label="数量">
                     <div class="flex items-center w-full">
                       <div class="w-full">
@@ -74,7 +59,22 @@ const deleteConfirm = () => {
                           :precision="0"
                           :show-button="false"
                           @focus="focus"
-                          @update:value="changeQuantity(obj)" />
+                          @update:value="changeQuantity(obj)"
+                        />
+                      </div>
+                    </div>
+                  </n-form-item-gi>
+                  <n-form-item-gi :span="12" label="应付金额">
+                    <div class="flex items-center w-full">
+                      <div class="w-full">
+                        <n-input-number
+                          v-model:value="obj.price"
+                          placeholder="请输入应付金额" round
+                          :min="1"
+                          :precision="0"
+                          :show-button="false"
+                          @focus="focus"
+                        />
                       </div>
                     </div>
                   </n-form-item-gi>
@@ -85,7 +85,7 @@ const deleteConfirm = () => {
                     @click="deleteParts(ix)">
                     <icon name="i-svg:delete" :size="16" />
                   </div>
-                  <div>应付金额:{{ obj.amount }}</div>
+                  <!-- <div>应付金额:{{ obj.amount }}</div> -->
                 </div>
               </div>
             </div>

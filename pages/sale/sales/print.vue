@@ -5,7 +5,6 @@ import usePrint from 'vue3-use-print'
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 
-const { printData } = storeToRefs(useStatement())
 const { PrintSattementTotal } = useStatement()
 const formRef = ref()
 const model = ref<PrintSattementTotalReq>({
@@ -47,15 +46,20 @@ const getStaff = async () => {
     $toast.error(res?.data.value?.message || '获取员工列表失败')
   }
 }
+const salesman = ref<string>('')
 const printFn = () => {
   const PrintComponent = defineComponent({
     render() {
-      return h(PrintTemp)
+      return h(PrintTemp, {
+        salesman: salesman.value,
+        start: model.value.start_time,
+        end: model.value.end_time,
+      })
     },
   })
   usePrint(PrintComponent)
 }
-const salesman = ref<string>('')
+
 const SearchResult = async () => {
   await PrintSattementTotal(model.value)
 }
@@ -113,7 +117,7 @@ const setSalesman = (_: string, option: any) => {
                       <div class="bg-[#208AFF] hover:bg-[#0B57D0] color-[#fff] p-[6px] rounded-[6px] cursor-pointer mr-[20px]" @click="SearchResult">
                         查询报表
                       </div>
-                      <div class="bg-[#2F80ED] hover:bg-[#0B57D0] color-[#fff] p-[6px] rounded-[6px] cursor-pointer" @click="printFn">
+                      <div class="bg-[#fff] border-[#999] border-solid border hover:bg-[#eee] color-[#333] p-[6px] rounded-[6px] cursor-pointer" @click="printFn">
                         打印报表
                       </div>
                     </div>
@@ -122,7 +126,7 @@ const setSalesman = (_: string, option: any) => {
               </div>
             </n-form>
           </div>
-          <PrintStatement :start="model.start_time" :end="model.end_time" :salesman="salesman" :data="printData" />
+          <PrintStatement :start="model.start_time" :end="model.end_time" :salesman="salesman" />
         </div>
       </div>
     </div>

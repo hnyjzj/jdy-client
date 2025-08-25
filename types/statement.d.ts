@@ -88,8 +88,21 @@ interface StatisticSalesDetailDailyResp {
   }
   accessorie_sales: {
     [key ]: {
+      /**
+       * 单价
+       */
       price: string
+      /**
+       * 实收
+       */
+      received: string
+      /**
+       * 应收
+       */
       receivable: string
+      /**
+       * 数量
+       */
       quantity: number
     }
   }
@@ -160,4 +173,21 @@ interface StatisticSalesDetailDailyPayment {
   expense: string
   /** 实收 */
   received: string
+}
+
+// 定义成品销售数据的item类型
+interface PrintFinishedSalesItem {
+  labor_fee: string
+  price: string
+  receivable: string
+  weight_metal: string
+  quantity: number
+}
+
+// 定义汇总统计行的数据类型
+interface PrintSummaryRow {
+  firstKey: string
+  secondKey: string
+  item: FinishedSalesItem
+  index: number
 }
