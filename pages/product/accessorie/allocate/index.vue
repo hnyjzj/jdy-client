@@ -256,7 +256,11 @@ async function downloadDetails() {
   isLoading.value = true
   try {
     const product = res.data.map(item => item.product ?? []) as ProductAccessories[]
-    const newProduct = product.map(({ id, ...rest }) => ({ code: id, ...rest }))
+    /** id冲突更改属性名 删除配件的状态 */
+    const newProduct = product.map(({ id, status, ...rest }) => ({
+      code: id,
+      ...rest,
+    }))
     const newFields = accessorieFilterListToArray.value.map(field => ({
       ...field,
       name: field.name === 'id' ? 'code' : field.name,
