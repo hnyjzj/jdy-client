@@ -8,8 +8,8 @@ export const useStatement = defineStore('statement', {
     filterListToArray: [] as FilterWhere <StatementWhere> [],
     ReturnfilterList: {} as Where<StatementRefundWhere>,
     ReturnfilterListToArray: [] as FilterWhere<StatementRefundWhere>[],
-
     showtype: 'list' as 'list' | 'table',
+    printData: {} as StatisticSalesDetailDailyResp,
   }),
   actions: {
     /**
@@ -88,6 +88,22 @@ export const useStatement = defineStore('statement', {
           this.statementReturnList = data.value.data.list
         }
         return data.value
+      }
+      catch (error) {
+        throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
+      }
+    },
+
+    /**
+     * 销售报表打印数据
+     */
+    async PrintSattementTotal(pamars: PrintSattementTotalReq) {
+      try {
+        const { data } = await https.post<StatisticSalesDetailDailyResp, PrintSattementTotalReq>('/statistic/sales_detail_daily', pamars)
+        if (data.value?.code === HttpCode.SUCCESS) {
+          this.printData = data.value.data
+          return data.value.data
+        }
       }
       catch (error) {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)

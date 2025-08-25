@@ -48,7 +48,11 @@ const searchKey = defineModel<string>('searchKey', { required: false, default: '
             </div>
           </template>
         </div>
-        <common-tool-list v-model:showtype="showtype" :is-export="isExport" :total="props.productListTotal" @export="emits('export')" @height="filter" @change-card="emits('changeCard')" />
+        <common-tool-list v-model:showtype="showtype" :is-export="isExport" :total="props.productListTotal" @export="emits('export')" @height="filter" @change-card="emits('changeCard')">
+          <template #default>
+            <slot name="print" />
+          </template>
+        </common-tool-list>
       </div>
     </common-layout-center>
   </div>

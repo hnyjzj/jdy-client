@@ -220,7 +220,10 @@ interface OrderPart extends ProductAccessories {
    * 数量
    */
   quantity?: number
-
+  /**
+   * 单价
+   */
+  one_price?: number
   status?: number
   id: string
   product?: ProductAccessories
