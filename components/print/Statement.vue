@@ -91,7 +91,7 @@ const oldSales = computed(() =>
   processSalesData<oldSalesClass>(
     printData.value?.old_sales,
     '合计',
-    (key: string) => key.includes('回收'),
+    (key: string) => key.includes(''),
   ),
 )
 </script>
@@ -183,29 +183,47 @@ const oldSales = computed(() =>
           </tbody>
         </table>
       </template>
-      <table class="w-full fixed-table">
-        <thead>
-          <tr>
-            <th>旧料</th>
-            <th>材质成色主石/明细</th>
-            <th>抵值</th>
-            <th>金重</th>
-            <th>主石重</th>
-            <th>件数</th>
-            <th>标价</th>
-            <th>工费</th>
-            <th>转成品抵值</th>
-            <th>转成品金重</th>
-            <th>转成品件数</th>
-            <th>剩余金重</th>
-          </tr>
-        </thead>
-        <tbody>
-          <template v-for="(projectRows, projectName) in oldSales.normalRows" :key="projectName">
-            <template v-for="rows in projectRows" :key="`${rows.firstKey}-${rows.secondKey}`">
+      <template v-if="Object.entries(printData.old_sales).length">
+        <table class="w-full fixed-table">
+          <thead>
+            <tr>
+              <th>旧料</th>
+              <th>材质成色主石/明细</th>
+              <th>抵值</th>
+              <th>金重</th>
+              <th>主石重</th>
+              <th>件数</th>
+              <th>标价</th>
+              <th>工费</th>
+              <th>转成品抵值</th>
+              <th>转成品金重</th>
+              <th>转成品件数</th>
+              <th>剩余金重</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="(projectRows, projectName) in oldSales.normalRows" :key="projectName">
+              <template v-for="rows in projectRows" :key="`${rows.firstKey}-${rows.secondKey}`">
+                <tr>
+                  <td>{{ rows.index === 0 ? rows.firstKey : '' }}</td>
+                  <td>{{ rows.item.name }}</td>
+                  <td>{{ rows.item.deduction }}</td>
+                  <td>{{ rows.item.weight_metal }}</td>
+                  <td>{{ rows.item.weight_gem }}</td>
+                  <td>{{ rows.item.quantity }}</td>
+                  <td>{{ rows.item.label_price }}</td>
+                  <td>{{ rows.item.labor_fee }}</td>
+                  <td>{{ rows.item.to_finished_deduction }}</td>
+                  <td>{{ rows.item.to_finished_weight_metal }}</td>
+                  <td>{{ rows.item.to_finished_quantity }}</td>
+                  <td>{{ rows.item.surplus_weight }}</td>
+                </tr>
+              </template>
+            </template>
+            <template v-for="(rows, index) in oldSales.summary" :key="index">
               <tr>
-                <td>{{ rows.index === 0 ? rows.firstKey : '' }}</td>
-                <td>{{ rows.item.name }}</td>
+                <td>{{ rows.firstKey }}</td>
+                <td />
                 <td>{{ rows.item.deduction }}</td>
                 <td>{{ rows.item.weight_metal }}</td>
                 <td>{{ rows.item.weight_gem }}</td>
@@ -218,25 +236,9 @@ const oldSales = computed(() =>
                 <td>{{ rows.item.surplus_weight }}</td>
               </tr>
             </template>
-          </template>
-          <template v-for="(rows, index) in oldSales.summary" :key="index">
-            <tr>
-              <td>{{ rows.firstKey }}</td>
-              <td />
-              <td>{{ rows.item.deduction }}</td>
-              <td>{{ rows.item.weight_metal }}</td>
-              <td>{{ rows.item.weight_gem }}</td>
-              <td>{{ rows.item.quantity }}</td>
-              <td>{{ rows.item.label_price }}</td>
-              <td>{{ rows.item.labor_fee }}</td>
-              <td>{{ rows.item.to_finished_deduction }}</td>
-              <td>{{ rows.item.to_finished_weight_metal }}</td>
-              <td>{{ rows.item.to_finished_quantity }}</td>
-              <td>{{ rows.item.surplus_weight }}</td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </template>
       <template v-if="printData.itemized?.accessorie_quantity > 0">
         <table class="w-full fixed-table">
           <thead>
