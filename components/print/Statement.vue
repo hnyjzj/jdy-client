@@ -6,6 +6,62 @@ const props = defineProps<{
 }>()
 const { printData } = storeToRefs(useStatement())
 const { userinfo } = storeToRefs(useUser())
+
+/**
+ * 处理销售数据的通用函数
+ * @param data - 待处理的数据，格式为 Record<string, Record<string, T>>，可能为 undefined
+ * @param summaryKey - 汇总数据的键名，用于识别汇总数据
+ * @param sortCondition - 排序条件函数，用于对非汇总数据进行排序
+ * @returns 包含普通行数据和汇总行数据的对象
+ */
+function processSalesData<T>(
+  data: Record<string, Record<string, T>> | undefined,
+  summaryKey: string,
+  sortCondition: (key: string) => boolean,
+): { normalRows: { [key: string]: PrintSummaryRow<T>[] }, summary: PrintSummaryRow<T>[] } {
+  // 初始化普通行数据，用于存储非汇总数据
+  const normalRows: { [key: string]: PrintSummaryRow<T>[] } = {}
+  // 初始化汇总行数据，用于存储汇总数据
+  const summary: PrintSummaryRow<T>[] = []
+
+  // 如果数据为空，直接返回空的普通行和汇总行数据
+  if (!data)
+    return { normalRows, summary }
+
+  // 遍历第一层数据
+  Object.entries(data).forEach(([firstKey, secondLevel]) => {
+    // 如果当前键名是汇总键名，则处理汇总数据
+    if (firstKey === summaryKey) {
+      // 遍历第二层数据，将数据添加到汇总行中
+      Object.entries(secondLevel).forEach(([secondKey, item], index) => {
+        summary.push({ firstKey, secondKey, item, index })
+      })
+    }
+    else {
+      // 对非汇总数据进行排序
+      const sortedEntries = Object.entries(secondLevel).sort(([keyA], [keyB]) => {
+        // 如果 keyA 满足排序条件而 keyB 不满足，则 keyA 排在 keyB 前面
+        if (sortCondition(keyA) && !sortCondition(keyB))
+          return -1
+        // 如果 keyA 不满足排序条件而 keyB 满足，则 keyA 排在 keyB 后面
+        if (!sortCondition(keyA) && sortCondition(keyB))
+          return 1
+        // 如果两者都满足或都不满足排序条件，则保持原有顺序
+        return 0
+      })
+      // 将排序后的结果转换为普通行数据
+      normalRows[firstKey] = sortedEntries.map(([secondKey, item], index) => ({
+        firstKey,
+        secondKey,
+        item,
+        index,
+      }))
+    }
+  })
+
+  // 返回处理后的普通行数据和汇总行数据
+  return { normalRows, summary }
+}
 const summaryRows = computed(() => [
   { summarylabel: '销售退款', itemizedlabel: '成品件数', value: printData.value.summary?.sales_refund, itemized: printData.value.itemized?.finished_quantity },
   { summarylabel: '销售实收', itemizedlabel: '订金抵扣', value: printData.value.summary?.sales_received, itemized: printData.value.itemized?.deposit_deduction },
@@ -18,57 +74,26 @@ const summaryRows = computed(() => [
   { summarylabel: '', itemizedlabel: '配件金额', value: '', itemized: printData.value.itemized?.accessorie_price },
   { summarylabel: '', itemizedlabel: '配件件数', value: '', itemized: printData.value.itemized?.accessorie_quantity },
 ])
-const maxRows = computed(() => Math.max(summaryRows.value.length, printData.value.payment?.length ?? 0))
-// 处理成品销售数据，分离汇总统计行并按项目分组处理合计行
-// 计算属性，用于处理成品销售数据，分离汇总统计行并按项目分组处理合计行
-const processedFinishedSales = computed(() => {
-  // 用于存储普通的销售数据，键为项目名称，值为该项目下的销售数据数组
-  const normalRows: { [key: string]: PrintSummaryRow[] } = {}
-  // 用于存储 "汇总统计" 行的销售数据
-  const summary: { firstKey: string, secondKey: string, item: PrintFinishedSalesItem, index: number }[] = []
-  // 遍历成品销售数据的一级键值对
-  Object.entries(printData.value?.finished_sales).forEach(([firstKey, secondLevel]) => {
-    // 如果一级键为 '汇总统计'，则处理汇总统计行的数据
-    if (firstKey === '汇总统计') {
-      // 遍历汇总统计行下的二级键值对
-      Object.entries(secondLevel).forEach(([secondKey, item], index) => {
-        // 将汇总统计行的数据添加到 summaryRows 数组中
-        summary.push({
-          firstKey,
-          secondKey,
-          item,
-          index,
-        })
-      })
-    }
-    // 处理非汇总统计行的普通项目数据
-    else {
-      // 先对secondLevel条目进行排序，将包含'合计'的放到最后
-      const sortedEntries = Object.entries(secondLevel).sort(([keyA], [keyB]) => {
-        // 如果 keyA 包含 '合计' 而 keyB 不包含 '合计'，则将 keyA 排在 keyB 后面
-        if (keyA.includes('合计') && !keyB.includes('合计')) {
-          return -1
-        }
-        // 如果 keyA 不包含 '合计' 而 keyB 包含 '合计'，则将 keyA 排在 keyB 前面
-        if (!keyA.includes('合计') && keyB.includes('合计')) {
-          return 1
-        }
-        // 如果 keyA 和 keyB 都包含 '合计' 或者都不包含 '合计'，则保持原有顺序
-        return 0
-      })
-      // 将排序后的条目映射为包含一级键、二级键、数据和索引的对象数组，并存储到 normalRows 中
-      normalRows[firstKey] = sortedEntries.map(([secondKey, item], index) => ({
-        firstKey,
-        secondKey,
-        item,
-        index,
-      }))
-    }
-  })
 
-  // 返回处理后的普通项目数据和汇总统计行数据
-  return { normalRows, summary }
-})
+const maxRows = computed(() => Math.max(summaryRows.value.length, printData.value.payment?.length ?? 0))
+
+// 使用通用函数处理成品销售数据
+const processedFinishedSales = computed(() =>
+  processSalesData<PrintFinishedSalesItem>(
+    printData.value?.finished_sales,
+    '汇总统计',
+    (key: string) => key.includes('合计'),
+  ),
+)
+
+// 使用通用函数处理旧料销售数据
+const oldSales = computed(() =>
+  processSalesData<oldSalesClass>(
+    printData.value?.old_sales,
+    '合计',
+    (key: string) => key.includes('回收'),
+  ),
+)
 </script>
 
 <template>
@@ -114,22 +139,37 @@ const processedFinishedSales = computed(() => {
           </template>
         </tbody>
       </table>
-      <table class="w-full fixed-table">
-        <thead>
-          <tr>
-            <th>成品</th>
-            <th>大类品类工艺</th>
-            <th>应收</th>
-            <th>标签价</th>
-            <th>金重</th>
-            <th>工费</th>
-            <th>件数</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- 按项目渲染，已排序的普通行和合计行 -->
-          <template v-for="(projectRows, projectName) in processedFinishedSales.normalRows" :key="projectName">
-            <template v-for="row in projectRows" :key="`${row.firstKey}-${row.secondKey}`">
+
+      <template v-if="printData.itemized?.finished_quantity > 0">
+        <table class="w-full fixed-table">
+          <thead>
+            <tr>
+              <th>成品</th>
+              <th>大类品类工艺</th>
+              <th>应收</th>
+              <th>标签价</th>
+              <th>金重</th>
+              <th>工费</th>
+              <th>件数</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 按项目渲染，已排序的普通行和合计行 -->
+            <template v-for="(projectRows, projectName) in processedFinishedSales.normalRows" :key="projectName">
+              <template v-for="row in projectRows" :key="`${row.firstKey}-${row.secondKey}`">
+                <tr>
+                  <td>{{ row.index === 0 ? row.firstKey : '' }}</td>
+                  <td>{{ row.secondKey }}</td>
+                  <td>{{ row.item?.receivable || '' }}</td>
+                  <td>{{ row.item?.price || '' }}</td>
+                  <td>{{ row.item?.weight_metal || '' }}</td>
+                  <td>{{ row.item?.labor_fee || '' }}</td>
+                  <td>{{ row.item?.quantity || '' }}</td>
+                </tr>
+              </template>
+            </template>
+            <!-- 汇总统计行 -->
+            <template v-for="row in processedFinishedSales.summary" :key="`${row.firstKey}-${row.secondKey}`">
               <tr>
                 <td>{{ row.index === 0 ? row.firstKey : '' }}</td>
                 <td>{{ row.secondKey }}</td>
@@ -140,60 +180,103 @@ const processedFinishedSales = computed(() => {
                 <td>{{ row.item?.quantity || '' }}</td>
               </tr>
             </template>
-          </template>
-          <!-- 汇总统计行 -->
-          <template v-for="row in processedFinishedSales.summary" :key="`${row.firstKey}-${row.secondKey}`">
-            <tr>
-              <td>{{ row.index === 0 ? row.firstKey : '' }}</td>
-              <td>{{ row.secondKey }}</td>
-              <td>{{ row.item?.receivable || '' }}</td>
-              <td>{{ row.item?.price || '' }}</td>
-              <td>{{ row.item?.weight_metal || '' }}</td>
-              <td>{{ row.item?.labor_fee || '' }}</td>
-              <td>{{ row.item?.quantity || '' }}</td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
-
+          </tbody>
+        </table>
+      </template>
       <table class="w-full fixed-table">
         <thead>
           <tr>
-            <th>配件名称</th>
-            <th>实收</th>
-            <th>应收</th>
-            <th>单价</th>
+            <th>旧料</th>
+            <th>材质成色主石/明细</th>
+            <th>抵值</th>
+            <th>金重</th>
+            <th>主石重</th>
             <th>件数</th>
+            <th>标价</th>
+            <th>工费</th>
+            <th>转成品抵值</th>
+            <th>转成品金重</th>
+            <th>转成品件数</th>
+            <th>剩余金重</th>
           </tr>
         </thead>
         <tbody>
-          <template v-for="([name, item]) in Object.entries(printData.accessorie_sales).filter(([n]) => !n.includes('合计'))" :key="name">
-            <tr>
-              <td>{{ name }}</td>
-              <td>{{ item.received }}</td>
-              <td>{{ item.receivable }}</td>
-              <td>{{ item.price }}</td>
-              <td>{{ item.quantity }}</td>
-            </tr>
+          <template v-for="(projectRows, projectName) in oldSales.normalRows" :key="projectName">
+            <template v-for="rows in projectRows" :key="`${rows.firstKey}-${rows.secondKey}`">
+              <tr>
+                <td>{{ rows.index === 0 ? rows.firstKey : '' }}</td>
+                <td>{{ rows.item.name }}</td>
+                <td>{{ rows.item.deduction }}</td>
+                <td>{{ rows.item.weight_metal }}</td>
+                <td>{{ rows.item.weight_gem }}</td>
+                <td>{{ rows.item.quantity }}</td>
+                <td>{{ rows.item.label_price }}</td>
+                <td>{{ rows.item.labor_fee }}</td>
+                <td>{{ rows.item.to_finished_deduction }}</td>
+                <td>{{ rows.item.to_finished_weight_metal }}</td>
+                <td>{{ rows.item.to_finished_quantity }}</td>
+                <td>{{ rows.item.surplus_weight }}</td>
+              </tr>
+            </template>
           </template>
-          <template v-for="([name, item]) in Object.entries(printData.accessorie_sales).filter(([n]) => n.includes('合计'))" :key="name">
+          <template v-for="(rows, index) in oldSales.summary" :key="index">
             <tr>
-              <td>{{ name }}</td>
-              <td>{{ item.received }}</td>
-              <td>{{ item.receivable }}</td>
-              <td>{{ item.price }}</td>
-              <td>{{ item.quantity }}</td>
+              <td>{{ rows.firstKey }}</td>
+              <td />
+              <td>{{ rows.item.deduction }}</td>
+              <td>{{ rows.item.weight_metal }}</td>
+              <td>{{ rows.item.weight_gem }}</td>
+              <td>{{ rows.item.quantity }}</td>
+              <td>{{ rows.item.label_price }}</td>
+              <td>{{ rows.item.labor_fee }}</td>
+              <td>{{ rows.item.to_finished_deduction }}</td>
+              <td>{{ rows.item.to_finished_weight_metal }}</td>
+              <td>{{ rows.item.to_finished_quantity }}</td>
+              <td>{{ rows.item.surplus_weight }}</td>
             </tr>
           </template>
         </tbody>
       </table>
+      <template v-if="printData.itemized?.accessorie_quantity > 0">
+        <table class="w-full fixed-table">
+          <thead>
+            <tr>
+              <th>配件名称</th>
+              <th>实收</th>
+              <th>应收</th>
+              <th>单价</th>
+              <th>件数</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="([name, item]) in Object.entries(printData.accessorie_sales).filter(([n]) => !n.includes('合计'))" :key="name">
+              <tr>
+                <td>{{ name }}</td>
+                <td>{{ item.received }}</td>
+                <td>{{ item.receivable }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.quantity }}</td>
+              </tr>
+            </template>
+            <template v-for="([name, item]) in Object.entries(printData.accessorie_sales).filter(([n]) => n.includes('合计'))" :key="name">
+              <tr>
+                <td>{{ name }}</td>
+                <td>{{ item.received }}</td>
+                <td>{{ item.receivable }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.quantity }}</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </template>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .fixed-table {
-  table-layout: fixed;
+  table-layout: auto;
   border-collapse: collapse; // 关键：合并边框，去除间隙
   thead {
     tr {
@@ -205,14 +288,14 @@ const processedFinishedSales = computed(() => {
   }
   th,
   td {
-    text-align: center;
+    text-align: left;
     padding: 6px 0;
     word-break: break-all;
   }
 }
 .row {
   display: flex;
-  border-top: 1px solid #000;
+  border-top: 1px centerd #000;
   border-bottom: 1px solid #000;
   padding: 4px 0;
   margin-bottom: 20px;

@@ -77,13 +77,7 @@ interface StatisticSalesDetailDailyResp {
   payment_total: StatisticSalesDetailDailyPayment
   finished_sales: {
     [key]: {
-      [key]: {
-        labor_fee: string
-        price: string
-        receivable: string
-        weight_metal: string
-        quantity: number
-      }
+      [key]: PrintFinishedSalesItem
     }
   }
   accessorie_sales: {
@@ -106,8 +100,61 @@ interface StatisticSalesDetailDailyResp {
       quantity: number
     }
   }
-}
 
+  old_sales: {
+    [key as string]: oldSalesClass[]
+  }
+}
+interface oldSalesClass {
+  /**
+   * 名称
+   */
+  name: string
+  /**
+   * 抵值
+   */
+  deduction: string
+  /**
+   * 金重
+   */
+  weight_metal: string
+  /**
+   * 主石重
+   */
+  weight_gem: string
+  /**
+   * 件数
+   */
+  quantity: number
+  /**
+   * 标签价
+   */
+  label_price: string
+  /**
+   * 工费
+   */
+  labor_fee: string
+  /**
+   * 转成品抵值
+   */
+  to_finished_deduction: string
+  /**
+   * 转成品金重
+   */
+  to_finished_weight_metal?: string
+  /**
+   * 剩余金重
+   */
+  surplus_weight?: string
+  /**
+   * 转成品件数
+   */
+  to_finished_quantity?: string
+  /**
+   * 剩余主石重
+   */
+  surplus_weight_gem?: string
+}
 interface StatisticSalesDetailDailySummary {
   /**
    * 销售应收
@@ -143,7 +190,7 @@ interface StatisticSalesDetailDailyItemized {
   /** 成品应收 */
   finished_receivable: string
   /** 成品件数 */
-  finished_quantity: string
+  finished_quantity: number
   /** 定金抵扣 */
   deposit_deduction: string
   /** 旧料抵扣 */
@@ -161,7 +208,7 @@ interface StatisticSalesDetailDailyItemized {
   /** 配件金额 */
   accessorie_price: string
   /** 配件件数 */
-  accessorie_quantity: string
+  accessorie_quantity: number
 }
 
 interface StatisticSalesDetailDailyPayment {
@@ -185,9 +232,9 @@ interface PrintFinishedSalesItem {
 }
 
 // 定义汇总统计行的数据类型
-interface PrintSummaryRow {
+interface PrintSummaryRow<T> {
   firstKey: string
   secondKey: string
-  item: FinishedSalesItem
+  item: T
   index: number
 }

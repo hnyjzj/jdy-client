@@ -216,7 +216,6 @@ const exportExcel = async () => {
   const res = await getStatementListAll({ all: true, where: filterData.value })
   exportStatementListToXlsx(res, [...accessorieFilterListToArray.value, ...filterListToArray.value, ...salesFilterListToArray.value, ...finishedFilterListToArray.value, ...oldFilterListToArray.value], '销售明细报表', [])
 }
-const router = useRouter()
 </script>
 
 <template>
@@ -228,12 +227,6 @@ const router = useRouter()
       :is-export="true"
       placeholder="搜索产品条码"
       @export="exportExcel" @change-card="changeCard" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
-      <template #print>
-        <span
-          @click="() => {
-            router.push('/sale/sales/print')
-          }">打印报表</span>
-      </template>
       <template #company>
         <product-manage-company @change="changeStores" />
       </template>
