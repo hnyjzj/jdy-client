@@ -51,7 +51,7 @@ function getFunBtn() {
     funbtns.value.push({ status: CheckStatus.ToBeVerified, text: '结束盘点', finish: true })
     funbtns.value.push({ status: CheckStatus.ToBeVerified, text: '添加产品', add: true })
   }
-  if (checkInfo.value.inventory_person_ids?.indexOf(userinfo.id) !== -1 && checkInfo.value.status === CheckStatus.ToBeVerified) {
+  if (checkInfo.value.inspector_id?.indexOf(userinfo.id) !== -1 && checkInfo.value.status === CheckStatus.ToBeVerified) {
     funbtns.value.push({ status: CheckStatus.Abnormal, text: '异常' })
     funbtns.value.push({ status: CheckStatus.Checked, text: '验证通过' })
   }
