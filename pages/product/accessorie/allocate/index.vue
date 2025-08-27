@@ -175,7 +175,7 @@ const resetWhere = async () => {
 const cols = [
   // 动态字段生成
   ...accessorieAllocateFilterListToArray.value
-    .filter(item => item.find)
+    .filter(item => item.info)
     .map((item) => {
       return {
         title: item.label,
@@ -215,16 +215,6 @@ const cols = [
         },
       }
     }),
-  {
-    title: '调拨总数',
-    key: 'product_count',
-    render: (row: any) => row.product_count ?? 0,
-  },
-  {
-    title: '调拨总件数',
-    key: 'product_total',
-    render: (row: any) => row.product_total ?? 0,
-  },
   {
     title: '操作',
     key: 'action',
