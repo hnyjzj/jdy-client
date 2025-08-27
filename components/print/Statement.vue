@@ -80,7 +80,7 @@ const summaryRows = computed(() => [
   { summarylabel: '', itemizedlabel: '配件件数', value: '', itemized: printData.value.itemized?.accessorie_quantity },
 ])
 
-const maxRows = computed(() => Math.max(summaryRows.value.length, printData.value.payment?.length ?? 0))
+const maxRows = computed(() => Math.max(summaryRows?.value?.length, printData.value?.payment?.length ?? 0))
 
 // 使用通用函数处理成品销售数据
 const processedFinishedSales = computed(() =>
