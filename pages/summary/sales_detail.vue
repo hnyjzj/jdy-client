@@ -27,6 +27,7 @@ const rules = {
     trigger: 'blur',
   },
 }
+const checkTime = ref('')
 // 获取当天的时间范围
 const time = getTodayRange()
 // 设置表单中的开始时间为当天开始时间
@@ -35,6 +36,7 @@ model.value.start_time = time.start
 model.value.end_time = time.end
 // 调用打印报表汇总数据的方法
 await PrintSattementTotal(model.value)
+
 StoreStaffList.value.unshift({
   nickname: '全部',
   id: '',
@@ -67,6 +69,9 @@ const printFn = () => {
         salesman: salesman.value,
         start: model.value.start_time,
         end: model.value.end_time,
+        font: '10px',
+        store: myStore.value.name,
+        time: checkTime.value,
       })
     },
   })
@@ -78,6 +83,7 @@ const printFn = () => {
 const SearchResult = async () => {
   // 调用打印报表汇总数据的方法
   await PrintSattementTotal(model.value)
+  checkTime.value = new Date().toISOString()
 }
 
 // 定义设置销售员名称的方法
@@ -103,6 +109,10 @@ const changeStore = () => {
     model.value.store_id = ''
   }
 }
+
+onMounted(() => {
+  checkTime.value = new Date().toISOString()
+})
 </script>
 
 <template>
@@ -164,7 +174,7 @@ const changeStore = () => {
               </div>
             </n-form>
           </div>
-          <PrintStatement :start="model.start_time" :end="model.end_time" :salesman="salesman" />
+          <PrintStatement :store="myStore.name" :time="checkTime" :start="model.start_time" :end="model.end_time" :salesman="salesman" />
         </div>
       </div>
     </div>

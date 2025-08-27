@@ -1,9 +1,14 @@
 <script setup lang="ts">
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   salesman: string
   start?: string
   end?: string
-}>()
+  font?: string
+  store?: string
+  time?: string
+}>(), {
+  font: '14px',
+})
 const { printData } = storeToRefs(useStatement())
 const { userinfo } = storeToRefs(useUser())
 
@@ -110,11 +115,12 @@ const refundData = computed(() =>
       销售报表
     </div>
     <div>
-      <common-cell :label="`销售员:${props.salesman || '全部'}`" label-color="#000" :value="`开始时间:${formatIsoToDateTime(props.start ?? '') || ''}`" val-color="#000" lcol="col-5" rcol="col-7" />
-      <common-cell :label="`打印人:${userinfo.nickname + userinfo.phone || ''}`" label-color="#000" :value="`结束时间:${formatIsoToDateTime(props.end ?? '') || ''}`" lcol="col-5" rcol="col-7" val-color="#000" />
+      <common-cell :font="props.font" :label="`门店: ${props.store || '全部'}`" label-color="#000" :value="`开始时间: ${formatIsoToDateTime(props.start ?? '') || ''}`" val-color="#000" lcol="col-5" rcol="col-7" />
+      <common-cell :font="props.font" :label="`销售员: ${props.salesman || '全部'}`" label-color="#000" :value="`结束时间: ${formatIsoToDateTime(props.end ?? '') || ''}`" lcol="col-5" rcol="col-7" val-color="#000" />
+      <common-cell :font="props.font" :label="`打印人: ${userinfo.nickname + userinfo.phone || ''}`" label-color="#000" :value="`打印时间: ${formatIsoToDateTime(props.time ?? '')}`" lcol="col-5" rcol="col-7" val-color="#000" />
     </div>
     <div>
-      <table class="w-full fixed-table">
+      <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
         <thead>
           <tr>
             <th>汇总项</th>
@@ -126,20 +132,20 @@ const refundData = computed(() =>
         </thead>
         <tbody>
           <tr>
-            <td>{{ '销售应收' }}:{{ printData.summary?.sales_receivable }}</td>
-            <td>{{ '成品应收' }}:{{ printData.itemized?.finished_receivable }}</td>
+            <td>{{ '销售应收' }}: {{ printData.summary?.sales_receivable }}</td>
+            <td>{{ '成品应收' }}: {{ printData.itemized?.finished_receivable }}</td>
             <template v-if="printData?.payment_total">
-              <td>{{ `${printData?.payment_total?.name}:` || '' }}{{ `${printData?.payment_total?.income}` || '' }}</td>
+              <td>{{ `${printData?.payment_total?.name}: ` || '' }}{{ `${printData?.payment_total?.income}` || '' }}</td>
               <td>{{ `${printData?.payment_total?.expense}` || '' }}</td>
               <td>{{ `${printData?.payment_total?.received}` || '' }}</td>
             </template>
           </tr>
           <template v-for="index in maxRows" :key="index">
             <tr>
-              <td>{{ summaryRows[index - 1]?.summarylabel ? `${summaryRows[index - 1].summarylabel}:${summaryRows[index - 1].value ?? ''}` : '' }}</td>
-              <td>{{ summaryRows[index - 1]?.itemizedlabel ? `${summaryRows[index - 1].itemizedlabel}:${summaryRows[index - 1].itemized ?? ''}` : '' }}</td>
+              <td>{{ summaryRows[index - 1]?.summarylabel ? `${summaryRows[index - 1].summarylabel}: ${summaryRows[index - 1].value ?? ''}` : '' }}</td>
+              <td>{{ summaryRows[index - 1]?.itemizedlabel ? `${summaryRows[index - 1].itemizedlabel}: ${summaryRows[index - 1].itemized ?? ''}` : '' }}</td>
               <template v-if="printData?.payment && printData?.payment[index - 1]">
-                <td>{{ `${printData?.payment[index - 1]?.name}:` || '' }}{{ `${printData?.payment[index - 1]?.income}` || '' }}</td>
+                <td>{{ `${printData?.payment[index - 1]?.name}: ` || '' }}{{ `${printData?.payment[index - 1]?.income}` || '' }}</td>
                 <td>{{ `${printData?.payment[index - 1]?.expense}` || '' }}</td>
                 <td>{{ `${printData?.payment[index - 1]?.received}` || '' }}</td>
               </template>
@@ -149,7 +155,7 @@ const refundData = computed(() =>
       </table>
 
       <template v-if="printData.itemized?.finished_quantity > 0">
-        <table class="w-full fixed-table">
+        <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
           <thead>
             <tr>
               <th>成品</th>
@@ -192,7 +198,7 @@ const refundData = computed(() =>
         </table>
       </template>
       <template v-if="Number(printData.itemized?.old_quantity) > 0">
-        <table class="w-full fixed-table">
+        <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
           <thead>
             <tr>
               <th>旧料</th>
@@ -248,7 +254,7 @@ const refundData = computed(() =>
         </table>
       </template>
       <template v-if="printData.itemized?.accessorie_quantity > 0">
-        <table class="w-full fixed-table">
+        <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
           <thead>
             <tr>
               <th>配件名称</th>
@@ -280,23 +286,36 @@ const refundData = computed(() =>
           </tbody>
         </table>
       </template>
-
-      <table class="w-full fixed-table">
-        <thead>
-          <tr>
-            <th>成品(退货)</th>
-            <th>大类品类工艺</th>
-            <th>退款金额</th>
-            <th>标签价</th>
-            <th>金重</th>
-            <th>工费</th>
-            <th>件数</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- 按项目渲染，已排序的普通行和合计行 -->
-          <template v-for="(projectRows, projectName) in refundData.normalRows" :key="projectName">
-            <template v-for="row in projectRows" :key="`${row.firstKey}-${row.secondKey}`">
+      <template v-if="Number(printData.summary.sales_refund) > 0">
+        <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
+          <thead>
+            <tr>
+              <th>成品(退货)</th>
+              <th>大类品类工艺</th>
+              <th>退款金额</th>
+              <th>标签价</th>
+              <th>金重</th>
+              <th>工费</th>
+              <th>件数</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 按项目渲染，已排序的普通行和合计行 -->
+            <template v-for="(projectRows, projectName) in refundData.normalRows" :key="projectName">
+              <template v-for="row in projectRows" :key="`${row.firstKey}-${row.secondKey}`">
+                <tr>
+                  <td>{{ row.index === 0 ? row.firstKey : '' }}</td>
+                  <td>{{ row.secondKey }}</td>
+                  <td>{{ row.item?.refunded || '' }}</td>
+                  <td>{{ row.item?.price || '' }}</td>
+                  <td>{{ row.item?.weight_metal || '' }}</td>
+                  <td>{{ row.item?.labor_fee || '' }}</td>
+                  <td>{{ row.item?.quantity }}</td>
+                </tr>
+              </template>
+            </template>
+            <!-- 汇总统计行 -->
+            <template v-for="row in refundData.summary" :key="`${row.firstKey}-${row.secondKey}`">
               <tr>
                 <td>{{ row.index === 0 ? row.firstKey : '' }}</td>
                 <td>{{ row.secondKey }}</td>
@@ -307,21 +326,9 @@ const refundData = computed(() =>
                 <td>{{ row.item?.quantity }}</td>
               </tr>
             </template>
-          </template>
-          <!-- 汇总统计行 -->
-          <template v-for="row in refundData.summary" :key="`${row.firstKey}-${row.secondKey}`">
-            <tr>
-              <td>{{ row.index === 0 ? row.firstKey : '' }}</td>
-              <td>{{ row.secondKey }}</td>
-              <td>{{ row.item?.refunded || '' }}</td>
-              <td>{{ row.item?.price || '' }}</td>
-              <td>{{ row.item?.weight_metal || '' }}</td>
-              <td>{{ row.item?.labor_fee || '' }}</td>
-              <td>{{ row.item?.quantity }}</td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </template>
     </div>
   </div>
 </template>
@@ -335,6 +342,7 @@ const refundData = computed(() =>
       th {
         border-top: 1px solid #000;
         border-bottom: 1px solid #000;
+        font-weight: normal;
       }
     }
   }
