@@ -102,7 +102,6 @@ const openSearch = () => {
               <n-input
                 ref="inputRef"
                 v-model:value="searchProduct"
-
                 type="text"
                 clearable
                 placeholder="请输入商品条码"
