@@ -205,7 +205,7 @@ const cols = [
             return accessorieAllocateFilterList.value[item.name]?.preset?.[value] ?? '-'
           }
 
-          if (item.input === 'date') {
+          if (item.type === 'date') {
             if (value) {
               return formatTimestampToDateTime(value)
             }
