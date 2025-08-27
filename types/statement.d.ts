@@ -104,6 +104,18 @@ interface StatisticSalesDetailDailyResp {
   old_sales: {
     [key as string]: oldSalesClass[]
   }
+  finished_sales_refund: {
+    [key]: {
+      [key]: finished_sales_refundItem
+    }
+  }
+}
+interface finished_sales_refundItem {
+  labor_fee: string
+  price: string
+  quantity: number
+  refunded: string
+  weight_metal: string
 }
 interface oldSalesClass {
   /**

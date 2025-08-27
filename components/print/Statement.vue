@@ -94,6 +94,14 @@ const oldSales = computed(() =>
     (key: string) => key.includes(''),
   ),
 )
+// 处理退货数据
+const refundData = computed(() =>
+  processSalesData<finished_sales_refundItem>(
+    printData.value?.finished_sales_refund,
+    '汇总统计',
+    (key: string) => key.includes(''),
+  ),
+)
 </script>
 
 <template>
@@ -183,7 +191,7 @@ const oldSales = computed(() =>
           </tbody>
         </table>
       </template>
-      <template v-if="Object.entries(printData.old_sales).length">
+      <template v-if="Number(printData.itemized?.old_quantity) > 0">
         <table class="w-full fixed-table">
           <thead>
             <tr>
@@ -272,6 +280,48 @@ const oldSales = computed(() =>
           </tbody>
         </table>
       </template>
+
+      <table class="w-full fixed-table">
+        <thead>
+          <tr>
+            <th>成品(退货)</th>
+            <th>大类品类工艺</th>
+            <th>退款金额</th>
+            <th>标签价</th>
+            <th>金重</th>
+            <th>工费</th>
+            <th>件数</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 按项目渲染，已排序的普通行和合计行 -->
+          <template v-for="(projectRows, projectName) in refundData.normalRows" :key="projectName">
+            <template v-for="row in projectRows" :key="`${row.firstKey}-${row.secondKey}`">
+              <tr>
+                <td>{{ row.index === 0 ? row.firstKey : '' }}</td>
+                <td>{{ row.secondKey }}</td>
+                <td>{{ row.item?.refunded || '' }}</td>
+                <td>{{ row.item?.price || '' }}</td>
+                <td>{{ row.item?.weight_metal || '' }}</td>
+                <td>{{ row.item?.labor_fee || '' }}</td>
+                <td>{{ row.item?.quantity }}</td>
+              </tr>
+            </template>
+          </template>
+          <!-- 汇总统计行 -->
+          <template v-for="row in refundData.summary" :key="`${row.firstKey}-${row.secondKey}`">
+            <tr>
+              <td>{{ row.index === 0 ? row.firstKey : '' }}</td>
+              <td>{{ row.secondKey }}</td>
+              <td>{{ row.item?.refunded || '' }}</td>
+              <td>{{ row.item?.price || '' }}</td>
+              <td>{{ row.item?.weight_metal || '' }}</td>
+              <td>{{ row.item?.labor_fee || '' }}</td>
+              <td>{{ row.item?.quantity }}</td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
