@@ -9,7 +9,7 @@ const emit = defineEmits<{
 }>()
 // 订金单手动添加产品组件
 const { $toast } = useNuxtApp()
-const handleAddProductPopup = defineModel<boolean>('show', { default: false })
+const handleAddProductPopup = ref(false)
 const handleFormRef = ref()
 const handleFormData = ref<DepositOrderProduct>({
   name: '',
@@ -44,7 +44,14 @@ const submitForm = () => {
 </script>
 
 <template>
-  <div>
+  <div class="btn-right  col-6 cursor-pointer" uno-sm="col-4 offset-6">
+    <div
+      @click="handleAddProductPopup = true">
+      <div class="ml-2">
+        手动添加
+      </div>
+    </div>
+
     <common-model v-model="handleAddProductPopup" title="手动添加" :show-ok="true" :show-cancel="true" @confirm="submitForm" @cancel="handleAddProductPopup = false">
       <div class="h-[300px] overflow-y-scroll">
         <n-form
