@@ -173,14 +173,6 @@ const resetWhere = async () => {
 }
 
 const cols = [
-  {
-    title: '状态',
-    key: 'status',
-    render(row: any) {
-      const val = row.statusProductAccessories
-      return accessorieAllocateFilterList.value.status?.preset?.[val] ?? '-'
-    },
-  },
   // 动态字段生成
   ...accessorieAllocateFilterListToArray.value
     .filter(item => item.find)
@@ -223,6 +215,16 @@ const cols = [
         },
       }
     }),
+  {
+    title: '调拨总数',
+    key: 'product_count',
+    render: (row: any) => row.product_count ?? 0,
+  },
+  {
+    title: '调拨总件数',
+    key: 'product_total',
+    render: (row: any) => row.product_total ?? 0,
+  },
   {
     title: '操作',
     key: 'action',
@@ -317,6 +319,16 @@ async function focus() {
                       <template v-if="item.type === 'date'">
                         <div class="val">
                           {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
+                        </div>
+                      </template>
+                      <template v-else-if="item.name === 'product_count'">
+                        <div class="val">
+                          {{ info?.product_count }}
+                        </div>
+                      </template>
+                      <template v-else-if="item.name === 'product_total'">
+                        <div class="val">
+                          {{ info?.product_total }}
                         </div>
                       </template>
                       <template v-else>
