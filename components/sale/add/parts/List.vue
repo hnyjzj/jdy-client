@@ -85,7 +85,6 @@ const deleteConfirm = () => {
                     @click="deleteParts(ix)">
                     <icon name="i-svg:delete" :size="16" />
                   </div>
-                  <!-- <div>应付金额:{{ obj.amount }}</div> -->
                 </div>
               </div>
             </div>
