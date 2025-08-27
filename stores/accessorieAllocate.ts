@@ -27,7 +27,18 @@ export const useAccessorieAllocate = defineStore('AccessorieAllocate', {
         return data.value
       }
       catch (error) {
-        throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
+        throw new Error(`获取配件列表失败: ${error || '未知错误'}`)
+      }
+    },
+    // 调拨明细列表
+    async getAccessorieAllocateDetaills(pamars: ReqList<AccessorieAllocate>) {
+      try {
+        pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
+        const { data } = await https.post<AccessorieAllocate[], ReqList<AccessorieAllocate>>('/product/accessorie/allocate/details', pamars)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`获取配件调拨失败: ${error || '未知错误'}`)
       }
     },
     // 获取筛选列表
@@ -52,7 +63,7 @@ export const useAccessorieAllocate = defineStore('AccessorieAllocate', {
         }
       }
       catch (error) {
-        throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
+        throw new Error(`获取配件详情失败: ${error || '未知错误'}`)
       }
     },
 

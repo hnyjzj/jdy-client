@@ -1,6 +1,7 @@
 /** 中文 => 英文字段映射 */
 /** 成品 */
 export const finishedHeaderMap: Record<string, string> = {
+  '门店': 'store',
   '条码': 'code',
   '货品名称': 'name',
   '入网费': 'access_fee',
@@ -35,6 +36,7 @@ export const finishedHeaderMap: Record<string, string> = {
 
 /** 旧料 */
 export const oldHeaderMap: Record<string, string> = {
+  '门店': 'store',
   '旧料条码': 'code',
   '名称': 'name',
   '是否自有': 'is_our',
@@ -116,4 +118,28 @@ export const statementHeaderMap: Record<string, string> = {
   '主销': 'mainSale',
   '会员折扣': 'discount_member',
   '备注': 'remark',
+}
+
+export const checkHeaderMap: Record<string, string> = {
+  调出门店: 'from_store_id',
+  调入门店: 'to_store_id',
+  调入区域: 'to_region_id',
+  调拨单号: 'id',
+  发起人: 'initiator_id',
+  接收人: 'receiver_id',
+  调拨单状态: 'status',
+  调拨类型: 'method',
+  仓库类型: 'type',
+  调拨备注: 'remark',
+  开始时间: 'created_at',
+  完成时间: 'updated_at',
+}
+
+export const accessorieHeaderMap: Record<string, string> = {
+  编号: 'code',
+  名称: 'name',
+  库存: 'stock',
+  类型: 'type',
+  零售方式: 'retail_type',
+  单价: 'price',
 }

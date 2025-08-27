@@ -157,24 +157,15 @@ async function submitGoods(e: AddAccessorieAllocateProduct[]) {
             <template #body>
               <div class="flex flex-col gap-4">
                 <div class="operation-information flex flex-col gap-1">
-                  <div class="info-row">
-                    <div class="info-title">
-                      操作人
-                    </div>
-                    <div class="info-val">
-                      {{ accessorieAllocateInfo.operator?.nickname }}
-                    </div>
-                  </div>
-                  <div class="info-row">
-                    <div class="info-title">
-                      状态
-                    </div>
-                    <div class="info-val">
-                      {{ accessorieAllocateFilterList.status?.preset[accessorieAllocateInfo.status] }}
-                    </div>
-                  </div>
-                  <div class="h-0.5 bg-[#E6E6E8]" />
                   <div class="other-information flex flex-col gap-1">
+                    <div class="info-row">
+                      <div class="info-title">
+                        状态
+                      </div>
+                      <div class="info-val">
+                        {{ accessorieAllocateFilterList.status?.preset[accessorieAllocateInfo.status] }}
+                      </div>
+                    </div>
                     <template v-for="(item, index) in accessorieAllocateFilterListToArray" :key="index">
                       <template v-if="item.info">
                         <div class="info-row">
@@ -211,6 +202,16 @@ async function submitGoods(e: AddAccessorieAllocateProduct[]) {
                               <template v-if="item.name === 'from_store_id'">
                                 <div class="val">
                                   {{ accessorieAllocateInfo?.from_store?.name || '' }}
+                                </div>
+                              </template>
+                              <template v-if="item.name === 'receiver_id'">
+                                <div class="val">
+                                  {{ accessorieAllocateInfo?.receiver?.nickname || '' }}
+                                </div>
+                              </template>
+                              <template v-if="item.name === 'initiator_id'">
+                                <div class="val">
+                                  {{ accessorieAllocateInfo?.initiator?.nickname || '' }}
                                 </div>
                               </template>
                             </template>

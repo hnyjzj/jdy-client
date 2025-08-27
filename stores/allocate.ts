@@ -27,7 +27,18 @@ export const useAllocate = defineStore('Allocate', {
         return data.value
       }
       catch (error) {
-        throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
+        throw new Error(`获取调拨列表失败: ${error || '未知错误'}`)
+      }
+    },
+    // 调拨明细列表
+    async getAllocateDetails(pamars: ReqList<Allocate>) {
+      try {
+        pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
+        const { data } = await https.post<Allocate[], ReqList<Allocate>>('/product/allocate/details', pamars)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`获取调拨明细失败: ${error || '未知错误'}`)
       }
     },
     // 获取调拨单筛选列表
@@ -52,7 +63,7 @@ export const useAllocate = defineStore('Allocate', {
         }
       }
       catch (error) {
-        throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
+        throw new Error(`获取调拨详情失败: ${error || '未知错误'}`)
       }
     },
     /** 调拨单详情 */
@@ -62,7 +73,7 @@ export const useAllocate = defineStore('Allocate', {
         return data.value
       }
       catch (error) {
-        throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
+        throw new Error(`获取调拨详情失败: ${error || '未知错误'}`)
       }
     },
     /** 确认调拨 */
