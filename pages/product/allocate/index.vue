@@ -346,7 +346,7 @@ async function downloadDetails() {
       [res.data, newProduct],
       [...allocateFilterListToArray.value, ...newProductToArray],
       { ...checkHeaderMapA, ...oldUnclassHeaderMap },
-      '导出调拨单据',
+      '导出调拨明细',
     )
   }
   finally {
