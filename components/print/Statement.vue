@@ -117,7 +117,7 @@ const refundData = computed(() =>
     <div>
       <common-cell :font="props.font" :label="`门店: ${props.store || '全部'}`" label-color="#000" :value="`开始时间: ${formatIsoToDateTime(props.start ?? '') || ''}`" val-color="#000" lcol="col-5" rcol="col-7" />
       <common-cell :font="props.font" :label="`销售员: ${props.salesman || '全部'}`" label-color="#000" :value="`结束时间: ${formatIsoToDateTime(props.end ?? '') || ''}`" lcol="col-5" rcol="col-7" val-color="#000" />
-      <common-cell :font="props.font" :label="`打印人: ${userinfo.nickname + userinfo.phone || ''}`" label-color="#000" :value="`打印时间: ${formatIsoToDateTime(props.time ?? '')}`" lcol="col-5" rcol="col-7" val-color="#000" />
+      <common-cell :font="props.font" :label="`打印人: ${userinfo.nickname || ''}${userinfo.phone || ''}`" label-color="#000" :value="`打印时间: ${formatIsoToDateTime(props.time ?? '')}`" lcol="col-5" rcol="col-7" val-color="#000" />
     </div>
     <div>
       <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
