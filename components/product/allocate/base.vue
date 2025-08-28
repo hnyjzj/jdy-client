@@ -16,14 +16,6 @@ const props = defineProps<{
             <div class="operation-information flex flex-col gap-1">
               <div class="info-row">
                 <div class="info-title">
-                  操作人
-                </div>
-                <div class="info-val">
-                  {{ props.info.operator?.nickname }}
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-title">
                   调拨单号
                 </div>
                 <div class="info-val">
@@ -46,31 +38,44 @@ const props = defineProps<{
                       <div class="info-title">
                         {{ item.label }}
                       </div>
-                      <template v-if="item.input === 'text'">
+
+                      <template v-if="item.name === 'initiator_id'">
                         <div class="info-val">
-                          {{ props.info[item.name] }}
+                          {{ props.info?.initiator?.nickname || '' }}
                         </div>
                       </template>
-                      <template v-else-if="item.input === 'select'">
+                      <template v-else-if="item.name === 'receiver_id'">
                         <div class="info-val">
-                          {{ filterList[item.name]?.preset[props.info[item.name] as number] }}
+                          {{ props.info?.receiver?.nickname || '' }}
                         </div>
                       </template>
-                      <template v-else-if="item.input === 'date'">
-                        <div v-if="item.name === 'start_time'" class="info-val">
-                          {{ formatTimestampToDateTime(props.info.created_at) }}
-                        </div>
-                        <div v-if="item.name === 'end_time'" class="info-val">
-                          {{ formatTimestampToDateTime(props.info.updated_at) }}
-                        </div>
-                      </template>
-                      <template v-else-if="item.input === 'search'">
-                        <div v-if="item.name === 'to_store_id'" class="info-val">
-                          {{ props.info.to_store?.name }}
-                        </div>
-                        <div v-if="item.name === 'from_store_id'" class="info-val">
-                          {{ props.info.from_store?.name }}
-                        </div>
+                      <template v-else>
+                        <template v-if="item.input === 'text'">
+                          <div class="info-val">
+                            {{ props.info[item.name] }}
+                          </div>
+                        </template>
+                        <template v-else-if="item.input === 'select'">
+                          <div class="info-val">
+                            {{ filterList[item.name]?.preset[props.info[item.name] as number] }}
+                          </div>
+                        </template>
+                        <template v-else-if="item.input === 'date'">
+                          <div v-if="item.name === 'start_time'" class="info-val">
+                            {{ formatTimestampToDateTime(props.info.created_at) }}
+                          </div>
+                          <div v-if="item.name === 'end_time'" class="info-val">
+                            {{ formatTimestampToDateTime(props.info.updated_at) }}
+                          </div>
+                        </template>
+                        <template v-else-if="item.input === 'search'">
+                          <div v-if="item.name === 'to_store_id'" class="info-val">
+                            {{ props.info.to_store?.name }}
+                          </div>
+                          <div v-if="item.name === 'from_store_id'" class="info-val">
+                            {{ props.info.from_store?.name }}
+                          </div>
+                        </template>
                       </template>
                     </div>
                   </template>

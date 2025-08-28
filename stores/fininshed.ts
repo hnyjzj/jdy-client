@@ -116,7 +116,17 @@ export const useFinished = defineStore('Finished', {
     // 更新条码
     async updateFinishedCode(pamars: BatchCode[]) {
       try {
-        const { data } = await https.put<any, { data: BatchCode[] }>('/product/finished/batch/code', { data: pamars })
+        const { data } = await https.put<any, { data: BatchCode[] }>('/product/finished/batch/update_code', { data: pamars })
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`更新失败: ${error || '未知错误'}`)
+      }
+    },
+    // 批量查找条码
+    async findFinishedCode(pamars: string[]) {
+      try {
+        const { data } = await https.put<any, { codes: string[], store_id: Stores['id'] }>('/product/finished/batch/find_code', { codes: pamars, store_id: useStores().myStore.id })
         return data.value
       }
       catch (error) {

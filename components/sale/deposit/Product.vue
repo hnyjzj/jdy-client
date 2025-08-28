@@ -10,30 +10,28 @@ const showModal = ref(false)
 const showProductList = defineModel<DepositOrderProduct[]>({ default: [] })
 
 // 添加商品
-const addProduct = async (product: ProductFinisheds) => {
-  const index = showProductList.value.findIndex(item => item.product_id === product.id)
-  if (index !== -1) {
-    $toast.error('该商品已经添加过')
-    return
-  }
-  //   添加成品到列表中
-  if (index === -1) {
-    const data = {
-      is_our: true,
-      price: 0,
-      price_gold: 0,
-      product_id: '',
-      product_demand: undefined,
-      product,
+const addProduct = async (products: ProductFinisheds[]) => {
+  products.forEach((product) => {
+    const index = showProductList.value.findIndex(item => item.product_id === product.id)
+    if (index !== -1) {
+      $toast.error('该商品已经添加过')
+      return
     }
-    data.product_id = product.id
-
-    showProductList.value.push(data)
-    showModal.value = false
-  }
-  else {
-    $toast.error('该商品已经添加过')
-  }
+    //   添加成品到列表中
+    if (index === -1) {
+      const data = {
+        is_our: true,
+        price: 0,
+        price_gold: 0,
+        product_id: '',
+        product_demand: undefined,
+        product,
+      }
+      data.product_id = product.id
+      showProductList.value.push(data)
+      showModal.value = false
+    }
+  })
 }
 const handleAddProductFn = (value: DepositOrderProduct) => {
   const data = {
@@ -46,8 +44,6 @@ const handleAddProductFn = (value: DepositOrderProduct) => {
   showProductList.value.push(data)
   showModal.value = false
 }
-
-const handleAddProductPopup = ref(false)
 </script>
 
 <template>
@@ -55,19 +51,8 @@ const handleAddProductPopup = ref(false)
     <common-fold title="货品" :is-collapse="false">
       <div class="p-[16px]">
         <div class="btn grid-12 gap-[8px]">
-          <div
-            class="btn-left col-6 cursor-pointer" uno-sm="col-4 offset-2" @click="showModal = true">
-            <icon name="i-icon:search" color="#fff" :size="16" />
-            <div class="ml-2">
-              搜索
-            </div>
-          </div>
-          <div
-            class="btn-right  col-6 cursor-pointer" uno-sm="col-4 offset-6" @click="handleAddProductPopup = true">
-            <div class="ml-2">
-              手动添加
-            </div>
-          </div>
+          <sale-deposit-select-product :search-product-list="props.searchProductList" @add="addProduct" />
+          <sale-deposit-handle-add :filter-list="props.filterList" @add-product="handleAddProductFn" />
         </div>
 
         <div class=" pt-[16px]">
@@ -76,8 +61,6 @@ const handleAddProductPopup = ref(false)
       </div>
     </common-fold>
     <!-- 选择成品 -->
-    <sale-deposit-select-product v-model:show="showModal" :search-product-list="props.searchProductList" @add="addProduct" />
-    <sale-deposit-handle-add v-model:show="handleAddProductPopup" :filter-list="props.filterList" @add-product="handleAddProductFn" />
   </div>
 </template>
 

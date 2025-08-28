@@ -33,8 +33,26 @@ function mapEnumValues(
     else if (key === 'is_our') {
       newRow[key] = row[key] ? '是' : '否'
     }
-    else if (key === 'store' || key === 'recycle_store') {
+    else if (key === 'store' || key === 'recycle_store' || key === 'operator') {
       newRow[key] = row[key]?.name ?? ''
+    }
+    else if (key === 'from_store_id') {
+      newRow[key] = row.from_store?.name ?? ''
+    }
+    else if (key === 'to_store_id') {
+      newRow[key] = row.to_store?.name ?? ''
+    }
+    else if (key === 'initiator_id') {
+      newRow[key] = row.initiator?.nickname ?? ''
+    }
+    else if (key === 'receiver_id') {
+      newRow[key] = row.receiver?.nickname ?? ''
+    }
+    else if (key === 'created_at') {
+      newRow[key] = row?.created_at ? formatTimestampToDateTime(row.created_at) : ''
+    }
+    else if (key === 'updated_at') {
+      newRow[key] = row?.updated_at ? formatTimestampToDateTime(row.updated_at) : ''
     }
   }
   return newRow
@@ -58,6 +76,7 @@ function convertDataWithChineseHeaders(
  * @param name 导出文件名
  * @param summary 统计信息区域
  * @param type 类型：1 为成品，2 为旧料（默认 1）
+ * @param header 自定义 header 表头映射
  */
 export function exportProductListToXlsx(
   data: Record<string, any>[],
@@ -65,9 +84,16 @@ export function exportProductListToXlsx(
   name: string = '货品列表',
   summary?: [string, string | number][],
   type: 1 | 2 = 1,
+  header?: Record<string, string>,
 ) {
-  const headerMap = type === 1 ? finishedHeaderMap : oldHeaderMap
+  let headerMap
 
+  if (header) {
+    headerMap = header
+  }
+  else {
+    headerMap = type === 1 ? finishedHeaderMap : oldHeaderMap
+  }
   // 👇 生成 英文字段 => 中文标题 映射
   const fieldMap: Record<string, string> = Object.fromEntries(
     Object.entries(headerMap).map(([zh, en]) => [en, zh]),

@@ -2,14 +2,17 @@
 import { NButton } from 'naive-ui'
 
 const { $toast } = useNuxtApp()
-const { getAccessorieAllocate, getAccessorieAllocateWhere } = useAccessorieAllocate()
+const { getAccessorieAllocate, getAccessorieAllocateWhere, getAccessorieAllocateDetaills } = useAccessorieAllocate()
 const { accessorieAllocateList, accessorieAllocateFilterListToArray, accessorieAllocateFilterList, accessorieAllocateTotal } = storeToRefs(useAccessorieAllocate())
 const { storesList, myStore } = storeToRefs(useStores())
 const { getStoreList } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
 const { getRegionList } = useRegion()
 const { regionList } = storeToRefs(useRegion())
-
+const { getAccessorieWhere } = useAccessorie()
+const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
+const { getStaffList } = useStaff()
+const { staffList } = storeToRefs(useStaff())
 const route = useRoute()
 const searchKey = ref('')
 
@@ -18,6 +21,8 @@ const tableLoading = ref(false)
 const storeCol = ref()
 const filterData = ref({} as Partial<ExpandPage<AccessorieAllocate>>)
 const regionCol = ref()
+const isLoading = ref(false)
+const staffCol = ref()
 
 function changeRegion() {
   regionCol.value = []
@@ -115,12 +120,6 @@ async function changeStore() {
   listJump()
 }
 
-/** id获取门店名称 */
-function getStoreName(id: Stores['id']) {
-  const store = storesList.value.find((item: Stores) => item.id === id)
-  return store?.name ?? ''
-}
-
 const pageOption = ref({
   page: searchPage,
   pageSize: limits,
@@ -136,12 +135,23 @@ const pageOption = ref({
     updatePage(page)
   },
 })
+
+function initStaffCol() {
+  staffCol.value = []
+  staffList.value.forEach((item: Staff) => {
+    staffCol.value.push({ label: item.nickname, value: item.id })
+  })
+}
+
 try {
   await getStoreList({ page: 1, limit: 20 })
+  await getStaffList({ page: 1, limit: 30, where: { store_id: myStore.value.id } })
   await changeStoer()
   await getRegionList({ page: 1, limit: 20 })
   await changeRegion()
   await getAccessorieAllocateWhere()
+  await getAccessorieWhere()
+  await initStaffCol()
   await handleQueryParams()
 }
 catch (error) {
@@ -167,7 +177,7 @@ const cols = [
     title: '状态',
     key: 'status',
     render(row: any) {
-      const val = row.status
+      const val = row.statusProductAccessories
       return accessorieAllocateFilterList.value.status?.preset?.[val] ?? '-'
     },
   },
@@ -179,7 +189,22 @@ const cols = [
         title: item.label,
         key: item.name,
         render(row: any) {
-          const value = row[item.name]
+          let value = row[item.name]
+          if (item.name === 'to_store_id') {
+            value = row.to_store?.name
+          }
+          if (item.name === 'from_store_id') {
+            value = row.from_store?.name
+          }
+          if (item.name === 'to_region_id') {
+            value = row.to_region?.name
+          }
+          if (item.name === 'receiver_id') {
+            value = row.receiver?.nickname
+          }
+          if (item.name === 'initiator_id') {
+            value = row.initiator?.nickname
+          }
           if (item.input === 'text') {
             return value ?? '-'
           }
@@ -194,12 +219,7 @@ const cols = [
             }
             return '-'
           }
-
-          if (item.input === 'search') {
-            return getStoreName(value)
-          }
-
-          return '-'
+          return value ?? '-'
         },
       }
     }),
@@ -220,6 +240,38 @@ const cols = [
     },
   },
 ]
+
+async function downloadDetails() {
+  const params = { page: 1, limit: 20, where: { ...filterData.value } } as ReqList<AccessorieAllocate>
+  if (!filterData.value?.start_time || !filterData.value?.end_time) {
+    return $toast.error('请先在高级筛选内选择时间范围')
+  }
+  const res = await getAccessorieAllocateDetaills(params)
+  if (res?.code !== 200) {
+    return $toast.error(res?.message || '获取调拨明细失败')
+  }
+  if (!res?.data?.length) {
+    return $toast.error('暂无调拨明细')
+  }
+  isLoading.value = true
+  try {
+    const product = res.data.map(item => item.product ?? []) as ProductAccessories[]
+    const newProduct = product.map(({ id, ...rest }) => ({ code: id, ...rest }))
+    const newFields = accessorieFilterListToArray.value.map(field => ({
+      ...field,
+      name: field.name === 'id' ? 'code' : field.name,
+    }))
+
+    exportToXlsxMultiple([res.data, newProduct], [...newFields, ...accessorieAllocateFilterListToArray.value], { ...checkHeaderMap, ...accessorieHeaderMap }, '配件调拨单据')
+  }
+  finally {
+    isLoading.value = false
+  }
+}
+
+async function focus() {
+  await getStaffList({ page: 1, limit: 30, where: { store_id: myStore.value.id } })
+}
 </script>
 
 <template>
@@ -230,10 +282,12 @@ const cols = [
       v-model:search-key="searchKey"
       :product-list-total="accessorieAllocateTotal"
       placeholder="搜索调拨单号"
+      :is-export="true"
       @change-card="changeCard"
       @filter="openFilter"
       @search="search"
       @clear-search="clearSearch"
+      @export="downloadDetails"
     >
       <template #company>
         <product-manage-company @change="changeStore" />
@@ -288,6 +342,16 @@ const cols = [
                               {{ info?.from_store?.name || '' }}
                             </div>
                           </template>
+                          <template v-if="item.name === 'receiver_id'">
+                            <div class="val">
+                              {{ info?.receiver?.nickname || '' }}
+                            </div>
+                          </template>
+                          <template v-if="item.name === 'initiator_id'">
+                            <div class="val">
+                              {{ info?.initiator?.nickname || '' }}
+                            </div>
+                          </template>
                         </template>
                       </template>
                     </div>
@@ -316,6 +380,7 @@ const cols = [
     <template v-if="myStore.id">
       <common-create @click="jump('/product/accessorie/allocate/add')" />
     </template>
+    <common-loading v-model="isLoading" />
 
     <common-filter-where ref="filterRef" v-model:show="isFilter" :is-only-show="true" :data="filterData" :filter="accessorieAllocateFilterListToArray" @reset="resetWhere" @submit="submitWhere">
       <template #from_store_id>
@@ -347,6 +412,28 @@ const cols = [
           filterable
           placeholder="选择调入区域"
           :options="regionCol"
+          clearable
+          @focus="focus"
+        />
+      </template>
+      <template #initiator_id>
+        <n-select
+          v-model:value="filterData.initiator_id"
+          menu-size="large"
+          filterable
+          placeholder="选择发起人"
+          :options="staffCol"
+          clearable
+          @focus="focus"
+        />
+      </template>
+      <template #receiver_id>
+        <n-select
+          v-model:value="filterData.receiver_id"
+          menu-size="large"
+          filterable
+          placeholder="选择接收人"
+          :options="staffCol"
           clearable
           @focus="focus"
         />

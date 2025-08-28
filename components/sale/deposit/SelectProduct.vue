@@ -1,27 +1,55 @@
 <script lang="ts" setup>
 // 订金单搜索选择成品组件
-const props = defineProps<{
-  searchProductList: (str: string) => Promise< ProductFinisheds[]>
-}>()
+
 const emit = defineEmits<{
-  add: [product: ProductFinisheds]
+  add: [product: ProductFinisheds[]]
 }>()
-const showModal = defineModel<boolean>('show', { default: false })
+const { getFinishedList } = useFinished()
+// 搜索成品,查询list
+const searchProductList = async (data: { val: string }) => {
+  if (data.val) {
+    const res = await getFinishedList({ page: 1, limit: 10, where: { code: data.val, status: ProductFinishedsStatus.Normal } })
+    return res?.data.list || []
+  }
+  return []
+}
+
+const { $toast } = useNuxtApp()
+const showModal = ref(false)
 // 选择成品
-const readyAddproduct = ref()
+const readyAddproduct = ref<ProductFinisheds[]>([])
 const setAddProduct = (product: ProductFinisheds) => {
-  readyAddproduct.value = product
+  const index = readyAddproduct.value.findIndex(p => p.id === product.id) // 假设每个产品都有一个唯一的 id 属性
+  index !== -1
+    ? readyAddproduct.value.splice(index, 1)
+    : readyAddproduct.value.push(product)
 }
 // 条码搜索框
+const inputRef = ref()
 const searchInput = ref('')
 const searchList = ref<ProductFinisheds[]>([])
 const searchProduct = async () => {
-  searchList.value = await props.searchProductList(searchInput.value)
+  if (!searchInput.value) {
+    $toast.error('请输入搜索内容')
+    return
+  }
+  const res = await searchProductList({ val: searchInput.value })
+  if (res.length > 0) {
+    const index = readyAddproduct.value.findIndex(p => p.id === res[0].id)
+    if (index !== -1)
+      return
+    searchList.value.push(...res)
+    setAddProduct(res[0])
+    searchInput.value = ''
+    inputRef.value?.focus()
+  }
 }
-const addProduct = (product: ProductFinisheds) => {
+const addProduct = (product: ProductFinisheds[]) => {
   emit('add', product)
+
   showModal.value = false
   searchInput.value = ''
+  inputRef.value?.focus()
 }
 const { useWxWork } = useWxworkStore()
 // 扫码
@@ -33,10 +61,26 @@ const scanCode = async () => {
     searchProduct()
   }
 }
+const openSearch = () => {
+  readyAddproduct.value = []
+  searchList.value = []
+  showModal.value = true
+  nextTick(() => {
+    inputRef.value?.focus()
+  })
+}
 </script>
 
 <template>
-  <div>
+  <div class="col-6 cursor-pointer" uno-sm="col-4 offset-2">
+    <div
+      class="flex btn-left" @click="openSearch"
+    >
+      <icon name="i-icon:search" color="#fff" :size="16" />
+      <div class="ml-2">
+        搜索
+      </div>
+    </div>
     <common-model
       v-model="showModal" title="选择成品" :show-ok="true" :show-cancel="true" @confirm="addProduct(readyAddproduct)" @cancel="() => {
         showModal = false
@@ -58,11 +102,13 @@ const scanCode = async () => {
           <div class="flex items-center pb-[16px]">
             <div class="flex-1">
               <n-input
+                ref="inputRef"
                 v-model:value="searchInput"
                 size="large"
                 type="text"
                 clearable
                 placeholder="请输入商品条码"
+                @keydown.enter="searchProduct"
                 @focus="focus" />
             </div>
             <div class="pl-[16px] flex">
@@ -93,9 +139,9 @@ const scanCode = async () => {
           <div class=" py-[16px]">
             <template v-for="(item, index) in searchList" :key="index">
               <div
-                class="py-[12px] px-[8px] rounded-2xl grid-12 "
-                :style="{ color: readyAddproduct && item.id === readyAddproduct.id ? '#2080F0' : '',
-                          background: readyAddproduct && item.id === readyAddproduct.id ? '#fff' : '' }"
+                class="py-[12px] px-[8px] rounded-2xl grid-12 mb-[8px]"
+                :style="{ color: readyAddproduct && readyAddproduct.findIndex(p => p.id === item.id) !== -1 ? '#2080F0' : '',
+                          background: readyAddproduct && readyAddproduct.findIndex(p => p.id === item.id) !== -1 ? '#fff' : '' }"
                 @click="setAddProduct(item)">
                 <div class="col-4 whitespace-nowrap text-ellipsis overflow-hidden">
                   {{ item.code }}
@@ -104,7 +150,7 @@ const scanCode = async () => {
                   {{ item.name }}
                 </div>
                 <div class="col-3">
-                  <!-- {{ realtype(item.retail_type) }} -->
+                  {{ realtype(item.retail_type) }}
                 </div>
                 <div class="col-2">
                   {{ item.weight_metal }}
@@ -122,5 +168,11 @@ const scanCode = async () => {
 </template>
 
 <style lang="scss" scoped>
-
+.btn-left {
+  --uno: 'text-[16px] border-none rounded-[36px] text-[#FFFFFF] flex justify-center items-center py-[10px]';
+  background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
+}
+.btn-right {
+  --uno: 'text-[16px] py-[9px]  text-[#1a6beb]  dark:color-#fff dark:border-[#fff] rounded-[36px] bg-[transparent] flex justify-center items-center border-[1px] border-solid border-[#1a6beb]';
+}
 </style>
