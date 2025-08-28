@@ -3,7 +3,7 @@ import { NButton } from 'naive-ui'
 
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
-const { getFinishedList, getFinishedWhere, getFinishedListAll, updateFinishedCode, updateFinishedUpdata } = useFinished()
+const { getFinishedList, getFinishedWhere, getFinishedListAll, updateFinishedCode, updateFinishedUpdata, findFinishedCode } = useFinished()
 const { finishedList, finishedFilterList, finishedFilterListToArray, finishedListTotal, finisheStatistics, finishedListAll } = storeToRefs(useFinished())
 const { searchPage, showtype } = storeToRefs(usePages())
 
@@ -12,6 +12,8 @@ const searchKey = ref('')
 
 const isFilter = ref(false)
 const isModel = ref(false)
+const isExportModel = ref(false)
+const isBatchCodeModel = ref(false)
 const isLoading = ref(false)
 const filterData = ref({} as Partial<ExpandPage<ProductFinisheds>>)
 const limits = ref(50)
@@ -303,6 +305,29 @@ async function submitCode(code: BatchCode[]) {
     uploadCodeRef.value.clearData()
   }
 }
+
+async function batchFindCode(e: string[]) {
+  isLoading.value = true
+  try {
+    const res = await findFinishedCode(e)
+    if (res?.code === HttpCode.SUCCESS) {
+      if (!res?.data?.length) {
+        $toast.error('没有找到条码')
+      }
+      else {
+        await exportProductListToXlsx(res.data, finishedFilterListToArray.value, '货品列表')
+        isBatchCodeModel.value = false
+        $toast.success('批量查找条码导出成功')
+      }
+    }
+    else {
+      $toast.error(res?.message ?? '批量查找条码失败')
+    }
+  }
+  finally {
+    isLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -318,13 +343,12 @@ async function submitCode(code: BatchCode[]) {
       @filter="openFilter"
       @search="search"
       @clear-search="clearSearch"
-      @export="downloadLocalFile"
+      @export="isExportModel = true"
     >
       <template #company>
         <product-manage-company @change="changeStore" />
       </template>
     </product-filter>
-
     <!-- 列表 -->
     <div class="pb-20">
       <template v-if="finishedList?.length">
@@ -345,7 +369,9 @@ async function submitCode(code: BatchCode[]) {
     <div class="z-9">
       <product-manage-bottom :statistics="finisheStatistics" />
     </div>
+    <product-upload-find-code v-model:is-model="isBatchCodeModel" @upload="batchFindCode" />
     <product-upload-choose v-model:is-model="isModel" title="更新" first-text="数据更新" second-text="条码更新" @go-add="isCodeModel = true" @batch="isUploadModel = true" />
+    <product-upload-choose v-model:is-model="isExportModel" title="导出" first-text="直接导出" second-text="批量查条码" @go-add="isBatchCodeModel = true" @batch="downloadLocalFile" />
     <product-upload-code ref="uploadCodeRef" v-model="isCodeModel" @upload="submitCode" />
     <product-upload-warehouse ref="uploadRef" v-model="isUploadModel" title="数据更新" :filter-list="finishedFilterList" :type="1" @upload="submitGoods">
       <template #content>

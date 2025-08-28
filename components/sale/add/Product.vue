@@ -9,8 +9,6 @@ const Props = defineProps<{
 
 // 展示商品列表
 const orderObject = defineModel<Orders>({ default: {} as Orders })
-// 显示搜索弹窗
-const showModal = ref(false)
 
 // 设置折扣率
 const handleDiscountRateBlur = (discount_rate?: number) => {
@@ -166,7 +164,8 @@ const addProduct = async (products: ProductFinisheds[]) => {
 <template>
   <div class="pb-[16px]">
     <common-fold title="成品" :is-collapse="false">
-      <sale-add-product-button @search="showModal = true" />
+      <sale-add-product-button
+        @add-product="addProduct" />
       <!-- 整单折扣设置 -->
       <div class="px-[16px] py-[8px]">
         <!-- 成品列表 -->
@@ -184,10 +183,6 @@ const addProduct = async (products: ProductFinisheds[]) => {
           @set-discount-rate="handleDiscountRateBlur"
         />
       </template>
-      <!-- 选择时使用的列表 -->
-      <sale-add-product-popup
-        v-model:show="showModal"
-        @add-product="addProduct" />
     </common-fold>
   </div>
 </template>
