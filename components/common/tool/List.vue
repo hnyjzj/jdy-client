@@ -42,13 +42,16 @@ const railStyle = ({
           <span class="underline">
             <icon name="i-icon:download" :size="14" color="#FFF" />
           </span>
-          <span>
+          <span class="px-[8px]">
             导出
           </span>
         </div>
       </template>
     </div>
     <div class="flex items-center gap-[12px]">
+      <span class="cursor-pointer">
+        <slot />
+      </span>
       <div @click="emits('height')">
         <product-filter-senior class="color-[#fff]" />
       </div>

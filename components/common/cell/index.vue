@@ -9,10 +9,12 @@ const props = withDefaults(defineProps<{
   right?: string
   rcol?: string
   lcol?: string
+  font?: string
 }>(), {
   rcol: 'col-6',
   lcol: 'col-6',
   value: '-',
+  font: '14px',
 })
 </script>
 
@@ -20,7 +22,7 @@ const props = withDefaults(defineProps<{
   <div class="part pb-[8px]">
     <div class="part-left break-words " :class="[props.lcol ? props.lcol : 'col-6']">
       <template v-if="props.labelColor">
-        <div :style="{ color: props.labelColor }" class="dark:color-[#fff]">
+        <div :style="{ color: props.labelColor, fontSize: props.font }" class="dark:color-[#fff]">
           {{ props.label }}
         </div>
       </template>
@@ -30,12 +32,12 @@ const props = withDefaults(defineProps<{
         </div>
       </template>
     </div>
-    <div class="part-right break-words" :class="[props.rcol ? props.rcol : 'col-6']" :style="{ color: props.valColor, fontWeight: props.valueWeight }">
+    <div class="part-right break-words" :class="[props.rcol ? props.rcol : 'col-6']" :style="{ color: props.valColor, fontWeight: props.valueWeight, fontSize: props.font }">
       <template v-if="props.valColor">
         {{ props.format ? props.format : '' }} {{ typeof props.value === 'boolean' ? props.value ? '是' : '否' : props.value === '' ? '-' : props.value }}  {{ props.right ? props.right : '' }}
       </template>
       <template v-else>
-        <div class="dark:color-[#fff]">
+        <div class="dark:color-[#fff]" :style="{ fontSize: props.font }">
           {{ props.format ? props.format : '' }} {{ typeof props.value === 'boolean' ? props.value ? '是' : '否' : props.value === '' ? '-' : props.value }}  {{ props.right ? props.right : '' }}
         </div>
       </template>
@@ -47,10 +49,10 @@ const props = withDefaults(defineProps<{
   .part {
   --uno: 'grid-12';
   &-left {
-    --uno: ' text-size-[14px] color-[#666] dark:color-[#CBCDD1]';
+    --uno: 'color-[#666] dark:color-[#CBCDD1]';
   }
   &-right {
-    --uno: 'text-size-[14px] text-end color-[#333] dark:color-[#fff]';
+    --uno: 'text-end color-[#333] dark:color-[#fff]';
     white-space: wrap;
   }
 }

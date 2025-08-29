@@ -64,7 +64,7 @@ const PartsListMoney = computed(() => {
   if (!orderObject.value.showPartsList)
     return total.value
   total.value = orderObject.value.showPartsList.reduce((total, item) => {
-    return calc(`(t + i) | =${hold} ~${rounding},!n`, { t: total, i: item.amount || 0 })
+    return calc(`(t + i) | =${hold} ~${rounding},!n`, { t: total, i: item.price || 0 })
   }, 0)
   return total.value
 })
