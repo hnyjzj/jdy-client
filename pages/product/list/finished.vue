@@ -339,7 +339,7 @@ async function downloadEmptyImage() {
       }
       else {
         await exportProductListToXlsx(res.data, finishedFilterListToArray.value, '无图货品列表')
-        isBatchCodeModel.value = false
+        isExportModel.value = false
         $toast.success('导出成功')
       }
     }
