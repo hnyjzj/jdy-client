@@ -1,19 +1,25 @@
 <script lang="ts" setup>
-const { StorePerformance } = homeDataStore()
-const { StorePerformanceList } = storeToRefs(homeDataStore())
-await StorePerformance({ duration: Duration.today })
+useSeoMeta({
+  title: 'boss看板',
+})
+
+// await OldGetStockType()
+// await OldGetStockTitle()
+// await getOldData()
+// await getStockType()
+// await getStockTitle()
+// await getData()
 </script>
 
 <template>
-  <div class="grid-12">
-    <div class="p-[16px] col-12" uno-md="col-8 offset-2">
-      <template v-if="StorePerformanceList">
-        <summary-card-boss :store-performance-list="StorePerformanceList" />
-      </template>
-      <template v-else>
-        <common-tmptys />
-      </template>
-    </div>
+  <div>
+    <common-layout-center>
+      <div class="px-[16px]">
+        <div class="flex justify-between items-center py-[12px] text-[#FFF]" />
+        <summary-boss-finished />
+        <summary-boss-old-product />
+      </div>
+    </common-layout-center>
   </div>
 </template>
 
