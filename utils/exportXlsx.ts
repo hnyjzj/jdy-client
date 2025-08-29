@@ -54,6 +54,9 @@ function mapEnumValues(
     else if (key === 'updated_at') {
       newRow[key] = row?.updated_at ? formatTimestampToDateTime(row.updated_at) : ''
     }
+    else if (key === 'enter_time') {
+      newRow[key] = getDaysFromToday(row?.enter_time || '')
+    }
   }
   return newRow
 }
