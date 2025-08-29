@@ -122,6 +122,18 @@ const onReturnProduct = async (index: number) => {
           <sale-cards title="成品信息">
             <template #info>
               <div class="info">
+                <template v-if="obj.finished.product?.images?.length">
+                  <div class="flex overflow-x-auto">
+                    <template v-for="(img, index) in obj.finished.product.images" :key="index">
+                      <n-image
+                        :src="ImageUrl(img)"
+                        width="100"
+                        height="100"
+                        class="shrink-0 p-1"
+                      />
+                    </template>
+                  </div>
+                </template>
                 <common-cell label="商品条码" :value="obj.finished.product?.code" />
                 <common-cell label="商品名称" :value="obj.finished.product?.name" val-color="#4C8DF6" />
                 <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[(obj.finished.product?.retail_type as number)]" />
@@ -156,6 +168,18 @@ const onReturnProduct = async (index: number) => {
           <sale-cards title="旧料信息">
             <template #info>
               <div class="info">
+                <template v-if="obj.finished.product?.images?.length">
+                  <div class="flex overflow-x-auto">
+                    <template v-for="(img, index) in obj.finished.product.images" :key="index">
+                      <n-image
+                        :src="ImageUrl(img)"
+                        width="100"
+                        height="100"
+                        class="shrink-0 p-1"
+                      />
+                    </template>
+                  </div>
+                </template>
                 <common-cell label="旧料名称" :value="obj.old?.product?.name " val-color="#4C8DF6" />
                 <common-cell label="旧料编号" :value="obj?.old.product_id" />
                 <common-cell label="旧料条码" :value="obj?.old.product?.code " />
