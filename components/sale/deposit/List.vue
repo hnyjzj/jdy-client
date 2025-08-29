@@ -5,6 +5,7 @@ const props = defineProps<{
   where: Where<DepositOrderWhere>
   isStoreStaff: () => Promise<boolean>
 }>()
+const { orderObject } = storeToRefs(useOrder())
 const { $toast } = useNuxtApp()
 const handleClick = (id?: string) => {
   if (!id) {
@@ -22,6 +23,7 @@ const openOrder = async (id?: string) => {
     $toast.error('未入职门店无法操作')
     return
   }
+  orderObject.value = {} as Orders
   navigateTo(`/sale/sales/add?id=${id}`)
 }
 const jumpSaleOreder = (id: string) => {
