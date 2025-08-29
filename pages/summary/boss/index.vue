@@ -2,13 +2,42 @@
 useSeoMeta({
   title: 'boss看板',
 })
+const { getStockTitle, getStockList, getStockType, OldGetStockType, OldGetStockTitle, OldGetStockList, getRevenueList, getRevenueWhere, getRevenueTitle } = useStock()
+const params = ref({
+  duration: 1,
+} as Revenue)
+// 成品统计
+const radioValueFinsihed = ref<Revenue['type']>(1)
+const getFinishedList = async () => {
+  await getStockList({ ...params.value, type: radioValueFinsihed.value })
+}
+await getStockTitle()
+await getStockType()
+await getFinishedList()
 
-// await OldGetStockType()
-// await OldGetStockTitle()
-// await getOldData()
-// await getStockType()
-// await getStockTitle()
-// await getData()
+// 旧料统计
+const radioValueOld = ref<Revenue['type']>(1)
+const getOldList = async () => {
+  await OldGetStockList({ ...params.value, type: radioValueOld.value })
+}
+await OldGetStockType()
+await OldGetStockTitle()
+await getOldList()
+
+// 收支统计初始化
+const radioValueRevenue = ref<Revenue['type']>(1)
+const getRevenueListFn = async () => {
+  await getRevenueList({ ...params.value, type: radioValueRevenue.value })
+}
+await getRevenueWhere()
+await getRevenueTitle()
+await getRevenueListFn()
+
+const updateTimeFn = async () => {
+  await getFinishedList()
+  await getOldList()
+  await getRevenueListFn()
+}
 </script>
 
 <template>
@@ -16,8 +45,14 @@ useSeoMeta({
     <common-layout-center>
       <div class="px-[16px]">
         <div class="flex justify-between items-center py-[12px] text-[#FFF]" />
-        <summary-boss-finished />
-        <summary-boss-old-product />
+        <!-- 时间选择器 -->
+        <summary-boss-select-time v-model="params" @update-time="updateTimeFn" />
+        <!-- 成品统计 -->
+        <summary-boss-finished v-model="radioValueFinsihed" @getlist="getFinishedList" />
+        <!-- 旧料统计 -->
+        <summary-boss-old-product v-model="radioValueOld" @getlist="getOldList" />
+        <!-- 收支统计 -->
+        <summary-boss-revenue v-model="radioValueRevenue" @getlist="getRevenueListFn" />
       </div>
     </common-layout-center>
   </div>
