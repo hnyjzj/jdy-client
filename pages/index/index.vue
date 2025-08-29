@@ -3,8 +3,8 @@ useSeoMeta({
   title: '待办',
 })
 
-const { myStoreTodaySale, myStoreTodayInventory, StorePerformance } = homeDataStore()
-const { TodayInventory, todaySaleData, StorePerformanceList } = storeToRefs(homeDataStore())
+const { myStoreTodaySale, myStoreTodayInventory } = homeDataStore()
+const { TodayInventory, todaySaleData } = storeToRefs(homeDataStore())
 const { myStore, myStoreList } = storeToRefs(useStores())
 const { getMyStore, switchStore } = useStores()
 if (!myStore.value.id) {
@@ -23,7 +23,6 @@ const handleSelectFn = async (id: Stores['id']) => {
 
 await myStoreTodayInventory({ store_id: myStore.value.id })
 await myStoreTodaySale({ store_id: myStore.value.id })
-await StorePerformance({ duration: Duration.today })
 </script>
 
 <template>
@@ -43,9 +42,7 @@ await StorePerformance({ duration: Duration.today })
           @get-store-list="() => {
             getMyStore()
           }" />
-        <template v-if="StorePerformanceList">
-          <summary-card-boss :store-performance-list="StorePerformanceList" />
-        </template>
+
         <!-- <home-action /> -->
         <template v-if="todaySaleData">
           <summary-card-sale :today-sale-data="todaySaleData" />

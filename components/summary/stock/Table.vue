@@ -16,8 +16,11 @@ for (let i = 0; i < props.title.length; ++i) {
 
 <template>
   <div class="blur-bgc rounded-[16px] overflow-hidden mb-[16px]" data-allow-mismatch="style">
-    <div class="">
-      <slot name="header" />
+    <div class="flex justify-between rounded-[4px] p-[20px] pb-0">
+      <div class="text-[16px] font-bold">
+        <slot name="header-title" />
+      </div>
+      <slot name="header-right" />
     </div>
 
     <div class="table pt-[20px]">

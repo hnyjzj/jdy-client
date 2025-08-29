@@ -18,40 +18,41 @@ export const useStock = defineStore('Stock', {
   actions: {
     // 获取库存类型
     async getStockType() {
-      const { data } = await https.get<Where<{ type: number }>>('/statistic/product_inventory_finished/where')
+      const { data } = await https.get<Where<{ type: number }>>('/statistic/boos/finished_stock/where')
       if (data.value?.code === HttpCode.SUCCESS) {
         this.filterList = data.value?.data
       }
     },
     // 获取库存title
     async getStockTitle() {
-      const { data } = await https.get<StockTitle[]>('/statistic/product_inventory_finished/title')
+      const { data } = await https.get<StockTitle[]>('/statistic/boos/finished_stock/title')
       if (data.value?.code === HttpCode.SUCCESS) {
         this.title = data.value?.data
       }
     },
     async getStockList(params: { type: number }) {
-      const { data } = await https.post<any, { type: number }>('/statistic/product_inventory_finished/data', params)
+      const { data } = await https.post<any, { type: number }>('/statistic/boos/finished_stock/data', params)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.stockList = data.value?.data
       }
     },
+
     // 获取库存类型
     async OldGetStockType() {
-      const { data } = await https.get<Where<{ type: number }>>('/statistic/product_inventory_old/where')
+      const { data } = await https.get<Where<{ type: number }>>('/statistic/boos/old_stock/where')
       if (data.value?.code === HttpCode.SUCCESS) {
         this.oldfilterList = data.value?.data
       }
     },
     // 获取库存title
     async OldGetStockTitle() {
-      const { data } = await https.get<StockTitle[]>('/statistic/product_inventory_old/title')
+      const { data } = await https.get<StockTitle[]>('/statistic/boos/old_stock/title')
       if (data.value?.code === HttpCode.SUCCESS) {
         this.oldtitle = data.value?.data
       }
     },
     async OldGetStockList(params: { type: number }) {
-      const { data } = await https.post<any, { type: number }>('/statistic/product_inventory_old/data', params)
+      const { data } = await https.post<any, { type: number }>('/statistic/boos/old_stock/data', params)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.oldstockList = data.value?.data
       }
@@ -60,20 +61,20 @@ export const useStock = defineStore('Stock', {
     // 收支统计
 
     async getRevenueWhere() {
-      const { data } = await https.get<Where<Revenue>>('/statistic/order_payment/where')
+      const { data } = await https.get<Where<Revenue>>('/statistic/boos/payments/where')
       if (data.value?.code === HttpCode.SUCCESS) {
         this.RevenueWhere = data.value?.data
       }
     },
     async getRevenueList(params: Revenue) {
-      const { data } = await https.post<any, Revenue>('/statistic/order_payment/data', params)
+      const { data } = await https.post<any, Revenue>('/statistic/boos/payments/data', params)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.RevenueList = data.value?.data
       }
     },
     // 获取库存title
     async getRevenueTitle() {
-      const { data } = await https.get<Revenue[]>('/statistic/order_payment/title')
+      const { data } = await https.get<Revenue[]>('/statistic/boos/payments/title')
       if (data.value?.code === HttpCode.SUCCESS) {
         this.RevenueTitle = data.value?.data
       }
