@@ -56,6 +56,16 @@ export const useFinished = defineStore('Finished', {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
       }
     },
+    /** 无图成品列表 */
+    async getFinishedEmptyImage(store_id: string) {
+      try {
+        const { data } = await https.post<ProductFinisheds[], { store_id: string }>('/product/finished/empty_image', { store_id })
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`获取无图货品列表失败: ${error || '未知错误'}`)
+      }
+    },
     /**
      * 获取成品筛选列表
      * @returns finishedFilterList

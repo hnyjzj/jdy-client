@@ -39,6 +39,7 @@ function batchFun() {
             {{ secondText }}
           </div>
         </div>
+        <slot name="other" />
       </div>
     </common-model>
   </div>
