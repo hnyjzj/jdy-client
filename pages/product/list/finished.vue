@@ -3,7 +3,7 @@ import { NButton } from 'naive-ui'
 
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
-const { getFinishedList, getFinishedWhere, getFinishedListAll, updateFinishedCode, updateFinishedUpdata, findFinishedCode } = useFinished()
+const { getFinishedList, getFinishedWhere, getFinishedListAll, updateFinishedCode, updateFinishedUpdata, findFinishedCode, getFinishedEmptyImage } = useFinished()
 const { finishedList, finishedFilterList, finishedFilterListToArray, finishedListTotal, finisheStatistics, finishedListAll } = storeToRefs(useFinished())
 const { searchPage, showtype } = storeToRefs(usePages())
 
@@ -328,6 +328,29 @@ async function batchFindCode(e: string[]) {
     isLoading.value = false
   }
 }
+
+async function downloadEmptyImage() {
+  isLoading.value = true
+  try {
+    const res = await getFinishedEmptyImage(myStore.value.id)
+    if (res?.code === HttpCode.SUCCESS) {
+      if (!res?.data?.length) {
+        $toast.error('没有无图货品')
+      }
+      else {
+        await exportProductListToXlsx(res.data, finishedFilterListToArray.value, '无图货品列表')
+        isBatchCodeModel.value = false
+        $toast.success('导出成功')
+      }
+    }
+    else {
+      $toast.error(res?.message ?? '查找无图货品失败')
+    }
+  }
+  finally {
+    isLoading.value = false
+  }
+}
 </script>
 
 <template>
@@ -371,7 +394,18 @@ async function batchFindCode(e: string[]) {
     </div>
     <product-upload-find-code v-model:is-model="isBatchCodeModel" @upload="batchFindCode" />
     <product-upload-choose v-model:is-model="isModel" title="更新" first-text="数据更新" second-text="条码更新" @go-add="isCodeModel = true" @batch="isUploadModel = true" />
-    <product-upload-choose v-model:is-model="isExportModel" title="导出" first-text="直接导出" second-text="批量查条码" @go-add="isBatchCodeModel = true" @batch="downloadLocalFile" />
+    <product-upload-choose v-model:is-model="isExportModel" title="导出" first-text="直接导出" second-text="批量查条码" @go-add="isBatchCodeModel = true" @batch="downloadLocalFile">
+      <template #other>
+        <div class="box ml-2" @click="downloadEmptyImage">
+          <div class="batch red">
+            <img class="block" src="/images/icon/export.png" width="24" height="24">
+          </div>
+          <div class="export-text">
+            无图货品
+          </div>
+        </div>
+      </template>
+    </product-upload-choose>
     <product-upload-code ref="uploadCodeRef" v-model="isCodeModel" @upload="submitCode" />
     <product-upload-warehouse ref="uploadRef" v-model="isUploadModel" title="数据更新" :filter-list="finishedFilterList" :type="1" @upload="submitGoods">
       <template #content>
@@ -399,3 +433,16 @@ async function batchFindCode(e: string[]) {
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="finishedFilterListToArray" @submit="submitWhere" @reset="resetWhere" />
   </div>
 </template>
+
+<style lang="scss" scoped>
+.box {
+  --uno: 'flex flex-col items-center w-[104px] h-[82px] rounded-[18px] bg-[rgba(255,255,255,1)] dark:bg-[rgba(0,0,0,0.3)]';
+}
+.batch {
+  --uno: 'flex justify-center items-center w-36px h-36px rounded-full mt-3';
+  background: linear-gradient(90deg, rgb(197, 68, 46), rgb(189, 61, 52));
+}
+.export-text {
+  --uno: 'text-color text-14px pb-2 pt-2.5';
+}
+</style>
