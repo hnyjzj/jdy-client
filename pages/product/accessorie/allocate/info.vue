@@ -177,6 +177,16 @@ async function submitGoods(e: AddAccessorieAllocateProduct[]) {
                               {{ accessorieAllocateInfo[item.name] ? formatTimestampToDateTime(accessorieAllocateInfo[item.name] as string || '') : '' }}
                             </div>
                           </template>
+                          <template v-else-if="item.name === 'product_count'">
+                            <div class="val">
+                              {{ accessorieAllocateInfo?.product_count }}
+                            </div>
+                          </template>
+                          <template v-else-if="item.name === 'product_total'">
+                            <div class="val">
+                              {{ accessorieAllocateInfo?.product_total }}
+                            </div>
+                          </template>
                           <template v-else>
                             <template v-if="item.input === 'text'">
                               <div class="info-val">
@@ -219,25 +229,6 @@ async function submitGoods(e: AddAccessorieAllocateProduct[]) {
                         </div>
                       </template>
                     </template>
-                  </div>
-                </div>
-                <div class="h-0.5 bg-[#E6E6E8]" />
-                <div class="product-information flex flex-col gap-1">
-                  <div class="info-row">
-                    <div class="info-title">
-                      总数
-                    </div>
-                    <div class="info-val">
-                      {{ accessorieAllocateInfo.product_count }}
-                    </div>
-                  </div>
-                  <div class="info-row">
-                    <div class="info-title">
-                      总件数
-                    </div>
-                    <div class="info-val">
-                      {{ accessorieAllocateInfo.product_total }}
-                    </div>
                   </div>
                 </div>
               </div>

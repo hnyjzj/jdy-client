@@ -47,6 +47,8 @@ interface AccessorieAllocate {
   initiator: Staffs
   receiver_id: string
   receiver: Staffs
+  product_count: number
+  product_total: number
 }
 
 interface AccessorieAllocateInfo extends AccessorieAllocate {

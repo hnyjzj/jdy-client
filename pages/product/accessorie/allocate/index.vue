@@ -173,17 +173,9 @@ const resetWhere = async () => {
 }
 
 const cols = [
-  {
-    title: '状态',
-    key: 'status',
-    render(row: any) {
-      const val = row.statusProductAccessories
-      return accessorieAllocateFilterList.value.status?.preset?.[val] ?? '-'
-    },
-  },
   // 动态字段生成
   ...accessorieAllocateFilterListToArray.value
-    .filter(item => item.find)
+    .filter(item => item.info)
     .map((item) => {
       return {
         title: item.label,
@@ -213,7 +205,7 @@ const cols = [
             return accessorieAllocateFilterList.value[item.name]?.preset?.[value] ?? '-'
           }
 
-          if (item.input === 'date') {
+          if (item.type === 'date') {
             if (value) {
               return formatTimestampToDateTime(value)
             }
@@ -256,7 +248,11 @@ async function downloadDetails() {
   isLoading.value = true
   try {
     const product = res.data.map(item => item.product ?? []) as ProductAccessories[]
-    const newProduct = product.map(({ id, ...rest }) => ({ code: id, ...rest }))
+    /** id冲突更改属性名 删除配件的状态 */
+    const newProduct = product.map(({ id, status, ...rest }) => ({
+      code: id,
+      ...rest,
+    }))
     const newFields = accessorieFilterListToArray.value.map(field => ({
       ...field,
       name: field.name === 'id' ? 'code' : field.name,
@@ -313,6 +309,16 @@ async function focus() {
                       <template v-if="item.type === 'date'">
                         <div class="val">
                           {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
+                        </div>
+                      </template>
+                      <template v-else-if="item.name === 'product_count'">
+                        <div class="val">
+                          {{ info?.product_count }}
+                        </div>
+                      </template>
+                      <template v-else-if="item.name === 'product_total'">
+                        <div class="val">
+                          {{ info?.product_total }}
                         </div>
                       </template>
                       <template v-else>
