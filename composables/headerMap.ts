@@ -32,6 +32,7 @@ export const finishedHeaderMap: Record<string, string> = {
   '系列': 'series',
   '备注': 'remark',
   '是否特价': 'is_special_offer',
+  '库龄': 'enter_time',
 }
 
 /** 旧料 */
