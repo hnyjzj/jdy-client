@@ -37,7 +37,7 @@ const depositMoney = computed(() => {
   }, 0)
   return total.value
 })
-//
+
 // 计算成品列表金额
 const productMoney = computed(() => {
   const total = ref(0)
@@ -178,8 +178,8 @@ const searchRmk = async (query: string) => {
           <common-cell label="货品金额" :value="productMoney" />
           <common-cell label="配件礼品" :value="PartsListMoney" />
           <common-cell label="旧料抵扣" :value="masterMoney" />
-          <common-cell label="优惠金额" value="0" />
-          <common-cell label="订金抵扣" value="0" />
+          <!-- <common-cell label="优惠金额" value="0" /> -->
+          <common-cell label="订金抵扣" :value="depositMoney" />
           <common-cell label="积分合计：" :value="`销售(+${productListScore}) 旧料(-${masterListScore})  配件礼品(+${PartsListScore}) `" label-color="#3971F3" val-color="#3971F3" />
           <common-cell label="实际积分" :value="totalScore" label-color="#3971F3" val-color="#3971F3" />
           <common-cell label="实付金额" :value="payMoney" label-color="#3971F3" val-color="#3971F3" />

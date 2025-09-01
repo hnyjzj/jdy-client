@@ -335,7 +335,14 @@ async function downloadLocalFile() {
         <template v-if="showtype === 'list'">
           <product-manage-card :list="productRocordList">
             <template #top="{ info }">
-              <div>{{ historyFilterList.action?.preset[info.action] }}</div>
+              <div class="flex items-center">
+                <template v-if="info?.new_value?.images?.length">
+                  <common-avatar :size="24" :img="info?.new_value?.images[0]" />
+                </template>
+                <div class="pl-2">
+                  {{ historyFilterList.action?.preset[info.action] }}
+                </div>
+              </div>
             </template>
             <template #info="{ info }">
               <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">

@@ -16,7 +16,12 @@ const props = defineProps<{
     <template #body>
       <div class="whitespace-nowrap overflow-x-auto flex gap-4" style=" ">
         <template v-for="(img, index) in info.images" :key="index">
-          <img class="shrink-0" :src="ImageUrl(img)" width="100" height="100">
+          <n-image
+            :src="ImageUrl(img)"
+            width="100"
+            height="100"
+            class="shrink-0"
+          />
         </template>
       </div>
       <div class="flex flex-col gap-3 px-4 py-3" uno-sm="grid grid-cols-[1fr_1fr] gap-x-8">

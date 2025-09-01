@@ -218,15 +218,6 @@ const tipFormVisible = () => {
   })?.length > 0)
 }
 
-if (route?.query?.id) {
-  // 判断是否有定金单订单详情
-  await getOrderDetail({ id: route?.query?.id as string })
-  showDepositList.value.push(OrderDetail.value)
-  updateDepostitProduct()
-  await nextTick()
-  addMemberRef.value?.setMbid(OrderDetail.value.member_id, OrderDetail.value.member?.phone)
-}
-
 const initFinished = ref(false)
 const loading = ref(true)
 onMounted(async () => {
@@ -235,6 +226,15 @@ onMounted(async () => {
   initOptions()
   initFinished.value = true
   loading.value = false
+
+  if (route?.query?.id) {
+  // 判断是否有定金单订单详情
+    await getOrderDetail({ id: route?.query?.id as string })
+    showDepositList.value.push(OrderDetail.value)
+    updateDepostitProduct()
+    await nextTick()
+    addMemberRef.value?.setMbid(OrderDetail.value.member_id, OrderDetail.value.member?.phone)
+  }
 })
 </script>
 
@@ -280,6 +280,7 @@ onMounted(async () => {
             :old-filter-list="oldFilterList"
             :old-filter-list-to-array="oldFilterListToArray"
             :billing-set="billingSet"
+            :storeid="myStore.id"
           />
           <sale-add-parts
             v-model="orderObject"
