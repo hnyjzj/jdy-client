@@ -26,16 +26,16 @@ const props = withDefaults(defineProps<{
 <template>
   <div>
     <template v-if="props.img">
-      <img
+      <n-image
         :src="props.img"
         class="w-full h-full shadow-[-3px_3px_0px_-1px_rgba(56,101,258,.8)]"
+        :width="props.size"
+        :height="props.size"
         :style="{
-          width: `${props.size}px`,
-          height: `${props.size}px`,
           borderRadius: props.rounded,
           boxShadow: props.hasShadow ? '-4 4px 0px 1px rgba(56,101,258,.8)' : 'none',
         }"
-      >
+      />
     </template>
     <template v-else>
       <div
