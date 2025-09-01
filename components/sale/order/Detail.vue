@@ -124,14 +124,16 @@ const onReturnProduct = async (index: number) => {
               <div class="info">
                 <template v-if="obj.finished.product?.images?.length">
                   <div class="flex overflow-x-auto">
-                    <template v-for="(img, index) in obj.finished.product.images" :key="index">
-                      <n-image
-                        :src="ImageUrl(img)"
-                        width="100"
-                        height="100"
-                        class="shrink-0 p-1"
-                      />
-                    </template>
+                    <n-image-group>
+                      <template v-for="(img, index) in obj.finished.product.images" :key="index">
+                        <n-image
+                          :src="ImageUrl(img)"
+                          width="100"
+                          height="100"
+                          class="shrink-0 p-1"
+                        />
+                      </template>
+                    </n-image-group>
                   </div>
                 </template>
                 <common-cell label="商品条码" :value="obj.finished.product?.code" />
@@ -168,17 +170,19 @@ const onReturnProduct = async (index: number) => {
           <sale-cards title="旧料信息">
             <template #info>
               <div class="info">
-                <template v-if="obj.finished.product?.images?.length">
-                  <div class="flex overflow-x-auto">
-                    <template v-for="(img, index) in obj.finished.product.images" :key="index">
-                      <n-image
-                        :src="ImageUrl(img)"
-                        width="100"
-                        height="100"
-                        class="shrink-0 p-1"
-                      />
-                    </template>
-                  </div>
+                <template v-if="obj.old?.product?.images?.length">
+                  <n-image-group>
+                    <div class="flex overflow-x-auto">
+                      <template v-for="(img, index) in obj.old.product.images" :key="index">
+                        <n-image
+                          :src="ImageUrl(img)"
+                          width="100"
+                          height="100"
+                          class="shrink-0 p-1"
+                        />
+                      </template>
+                    </div>
+                  </n-image-group>
                 </template>
                 <common-cell label="旧料名称" :value="obj.old?.product?.name " val-color="#4C8DF6" />
                 <common-cell label="旧料编号" :value="obj?.old.product_id" />

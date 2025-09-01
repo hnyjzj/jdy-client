@@ -172,4 +172,5 @@ interface ProductOlds {
    */
   rate: number | string
   supplier: number
+  images: string
 }
