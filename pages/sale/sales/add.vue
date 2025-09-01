@@ -280,6 +280,7 @@ onMounted(async () => {
             :old-filter-list="oldFilterList"
             :old-filter-list-to-array="oldFilterListToArray"
             :billing-set="billingSet"
+            :storeid="myStore.id"
           />
           <sale-add-parts
             v-model="orderObject"

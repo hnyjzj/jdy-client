@@ -4,6 +4,7 @@ const props = defineProps<{
   oldFilterList: Where<OrderMaterial>
   oldFilterListToArray: FilterWhere<OrderMaterial>[]
   billingSet: BillingSet
+  storeid: string
 }>()
 const { getOldClass, getOldScoreProportion } = useOld()
 // 获取旧料大类，并获取旧料积分比例
@@ -77,6 +78,7 @@ const editOld = (item: OrderMaterial, index: number) => {
         :check-old-class="CheckOldClass"
         :now-edit-state="nowEditState"
         :billing-set="props.billingSet"
+        :storeid="props.storeid"
       />
       <sale-add-masterials-handle
         v-model="orderObject"
