@@ -8,15 +8,24 @@ const props = defineProps<{
   price: GoldPrices[]
   billingSet: BillingSet
   oldFilterList: Where<OrderMaterial>
+  storeid: string
 }>()
 const { $toast } = useNuxtApp()
-const { getOldList } = useOrder()
+const { OldObj } = storeToRefs(useOrder())
+const { getFinishedRetrieval } = useFinished()
 // 搜索旧料
 const searchOlds = async (val: string) => {
   if (val) {
-    const res = await getOldList({ page: 1, limit: 10, where: { code: val, status: ProductFinishedsStatus.Sold } })
-    if (Object.keys(res).length === 0) {
-      $toast.error('没有找到旧料')
+    const data = await getFinishedRetrieval(val, props.storeid)
+    if (data?.code === HttpCode.SUCCESS && data?.data?.status === GoodsStatus.ProductStatusSold) {
+      const params = data.data
+      OldObj.value = params
+      OldObj.value.product_id = params.id
+      OldObj.value.weight_metal = Number(params.weight_metal)
+      OldObj.value.code_finished = params.code
+    }
+    else {
+      $toast.error(data?.message || '没有找到旧料')
     }
   }
 }
