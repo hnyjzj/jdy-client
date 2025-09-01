@@ -17,7 +17,7 @@ const { getFinishedRetrieval } = useFinished()
 const searchOlds = async (val: string) => {
   if (val) {
     const data = await getFinishedRetrieval(val, props.storeid)
-    if (data?.code === HttpCode.SUCCESS && data?.data?.status === 5) {
+    if (data?.code === HttpCode.SUCCESS && data?.data?.status === GoodsStatus.ProductStatusSold) {
       const params = data.data
       OldObj.value = params
       OldObj.value.product_id = params.id
