@@ -20,10 +20,10 @@ const selectDuration = async () => {
 // 确定时间
 const cofirmTime = async () => {
   params.value.duration = duration.value
-  if (startTime.value && endTime.value) {
-    params.value.startTime = startTime.value
-    params.value.endTime = endTime.value
-  }
+  if (!startTime.value || !endTime.value)
+    return
+  params.value.startTime = startTime.value
+  params.value.endTime = endTime.value
   emits('updateTime')
 }
 </script>
@@ -36,7 +36,7 @@ const cofirmTime = async () => {
         placeholder="请选择时间范围"
         clearable
         remote
-        :options="optonsToSelect(RevenueWhere.duration?.preset)"
+        :options="optonsToSelect(RevenueWhere.duration?.preset ?? [])"
         @update:value="selectDuration" />
     </div>
     <div class="col-12" uno-sm="col-8">
