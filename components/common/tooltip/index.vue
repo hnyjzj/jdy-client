@@ -11,9 +11,7 @@ const props = defineProps<{
         {{ props.val || '--' }}
       </div>
     </template>
-    <template v-if="props.val">
-      <span>{{ props.val || '--' }}</span>
-    </template>
+    <span>{{ props.val || '--' }}</span>
   </n-tooltip>
 </template>
 
