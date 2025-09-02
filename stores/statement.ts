@@ -102,8 +102,11 @@ export const useStatement = defineStore('statement', {
         const { data } = await https.post<StatisticSalesDetailDailyResp, PrintSattementTotalReq>('/statistic/sales_detail_daily', pamars)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.printData = data.value.data
-          return data.value.data
         }
+        else {
+          this.printData = {} as StatisticSalesDetailDailyResp
+        }
+        return data.value
       }
       catch (error) {
         throw new Error(`获取货品列表失败: ${error || '未知错误'}`)
