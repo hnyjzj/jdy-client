@@ -150,7 +150,7 @@ onMounted(() => {
 
                 <div class="col-12" uno-sm="col-6" uno-lg="col-3">
                   <n-form-item label="开始时间" path="start_time">
-                    <n-date-picker v-model:formatted-value="model.start_time" input-readonly type="datetime" value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" />
+                    <n-date-picker v-model:formatted-value="model.start_time" :is-date-disabled="dateDisabled" input-readonly type="datetime" value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" />
                   </n-form-item>
                 </div>
                 <div class="col-12" uno-sm="col-6" uno-lg="col-3">

@@ -148,3 +148,9 @@ export const toFixedChinaISOString = (input: string): string => {
 
   return `${yyyy}-${MM}-${dd}T${hh}:${mm}:${ss}.${ms}+08:00`
 }
+
+export const dateDisabled = (ts: number) => {
+  const date = new Date(ts).getTime()
+  const now = new Date().getTime()
+  return now < date
+}

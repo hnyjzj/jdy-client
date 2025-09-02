@@ -10,7 +10,7 @@ const radioValueOld = defineModel<Revenue['type']>({ default: 1 })
   <div>
     <summary-stock-table :title="oldtitle" :stock-list="oldstockList">
       <template #header-title>
-        旧料统计
+        旧料库存统计
       </template>
       <template #header-right>
         <div>

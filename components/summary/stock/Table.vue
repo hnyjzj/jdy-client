@@ -3,6 +3,7 @@ const props = withDefaults(defineProps<{
   title: any[]
   stockList?: any
   loading?: boolean
+  chart?: any
 }>(), {
   stockList: [],
 })
@@ -12,18 +13,22 @@ const scrollX = ref(0)
 for (let i = 0; i < props.title.length; ++i) {
   scrollX.value += 100
 }
+const toggleChart = defineModel({ default: 'list' })
 </script>
 
 <template>
   <div class="blur-bgc rounded-[16px] overflow-hidden mb-[16px]" data-allow-mismatch="style">
     <div class="flex justify-between rounded-[4px] p-[20px] pb-0">
       <div class="text-[16px] font-bold">
-        <slot name="header-title" />
+        <div class="flex items-center gap-[12px]">
+          <slot name="header-title" />
+          <slot name="toggle" />
+        </div>
       </div>
       <slot name="header-right" />
     </div>
 
-    <div class="table pt-[20px]">
+    <div v-if="toggleChart === 'list'" class="pt-[20px]">
       <n-data-table
         :style="{
           '--n-merged-th-color': $colorMode.value === 'light' ? '#C7DAFF' : '#1A6BEB',
@@ -34,9 +39,12 @@ for (let i = 0; i < props.title.length; ++i) {
         :columns="props.title"
         :data="props.stockList"
         :scroll-x="scrollX"
-        :max-height="650"
+        :max-height="500"
         :bordered="true"
       />
+    </div>
+    <div v-if="toggleChart === 'chart'" class="pt-[20px]">
+      <VChart class="chart" :option="props.chart" />
     </div>
   </div>
 </template>
@@ -55,5 +63,8 @@ for (let i = 0; i < props.title.length; ++i) {
 .skew-text {
   display: flex;
   align-items: flex-start;
+}
+.chart {
+  height: 330px;
 }
 </style>
