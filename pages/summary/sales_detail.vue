@@ -82,7 +82,11 @@ const printFn = () => {
 // 定义查询报表的方法
 const SearchResult = async () => {
   // 调用打印报表汇总数据的方法
-  await PrintSattementTotal(model.value)
+  const res = await PrintSattementTotal(model.value)
+  if (res?.code !== HttpCode.SUCCESS) {
+    $toast.error(res?.message || '获取数据失败')
+    return
+  }
   checkTime.value = new Date().toISOString()
 }
 

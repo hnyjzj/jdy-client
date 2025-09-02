@@ -286,7 +286,7 @@ const refundData = computed(() =>
           </tbody>
         </table>
       </template>
-      <template v-if="Number(printData.summary.sales_refund) > 0">
+      <template v-if="Number(printData?.summary?.sales_refund) > 0">
         <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
           <thead>
             <tr>
