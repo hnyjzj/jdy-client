@@ -8,10 +8,10 @@ const props = defineProps<{
   <n-tooltip v-if="props.val" placement="bottom" trigger="click">
     <template #trigger>
       <div class="ellipsis-value cursor-pointer">
-        {{ props.val || '--' }}
+        {{ props.val }}
       </div>
     </template>
-    <span>{{ props.val || '--' }}</span>
+    <span>{{ props.val }}</span>
   </n-tooltip>
 </template>
 
