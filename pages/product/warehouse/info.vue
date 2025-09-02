@@ -375,7 +375,7 @@ async function downloadLocalFile() {
                                 </div>
                                 <template v-if="filter.input === 'select'">
                                   <div class="value">
-                                    {{ filter.preset[item[filter.name]] }}
+                                    <common-tooltip :val="filter.preset[item[filter.name]]" />
                                   </div>
                                 </template>
                                 <template v-else-if="filter.input === 'switch'">
@@ -385,7 +385,7 @@ async function downloadLocalFile() {
                                 </template>
                                 <template v-else>
                                   <div class="value">
-                                    {{ item[filter.name] ? item[filter.name] : '' }}
+                                    <common-tooltip :val="item[filter.name]" />
                                   </div>
                                 </template>
                               </div>
@@ -397,7 +397,7 @@ async function downloadLocalFile() {
                             入库时间
                           </div>
                           <div class="value">
-                            {{ formatTimestampToDateTime(item.enter_time) }}
+                            <common-tooltip :val="formatTimestampToDateTime(item.enter_time)" />
                           </div>
                         </div>
                       </div>
@@ -528,6 +528,7 @@ async function downloadLocalFile() {
 <style lang="scss" scoped>
 .key {
   --uno: 'text-size-[14px] color-[#666] dark:color-[#CBCDD1] mr-2';
+  white-space: nowrap;
 }
 .value {
   --uno: 'text-size-[14px] color-[#333] dark:color-[#fff] w-[60%]';
