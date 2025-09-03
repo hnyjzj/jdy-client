@@ -2,24 +2,21 @@
 const emits = defineEmits<{
   updateTime: []
 }>()
-const { RevenueWhere } = storeToRefs(useStock())
+const { timeWhere } = storeToRefs(useStock())
 const startTime = ref()
 const endTime = ref()
-const params = defineModel<Revenue>({ default: { duration: 1 } as Revenue })
-const duration = ref<number>(1)
+const params = defineModel<BossWhere>({ default: { } as BossWhere })
 // 选择范围
 const selectDuration = async () => {
-  if (duration.value === 11) {
+  if (params.value.duration === 11) {
     return
   }
-  params.value.duration = duration.value
   params.value.startTime = undefined
   params.value.endTime = undefined
   emits('updateTime')
 }
 // 确定时间
 const cofirmTime = async () => {
-  params.value.duration = duration.value
   if (!startTime.value || !endTime.value)
     return
   params.value.startTime = startTime.value
@@ -32,15 +29,15 @@ const cofirmTime = async () => {
   <div class="grid-12 mb-[12px] gap-[6px]">
     <div class="col-4" uno-sm="col-4">
       <n-select
-        v-model:value="duration"
+        v-model:value="params.duration"
         placeholder="请选择时间范围"
         clearable
         remote
-        :options="optonsToSelect(RevenueWhere.duration?.preset ?? [])"
+        :options="optonsToSelect(timeWhere.duration?.preset ?? [])"
         @update:value="selectDuration" />
     </div>
     <div class="col-12" uno-sm="col-8">
-      <template v-if="duration === 11">
+      <template v-if="params.duration === 11">
         <div class="grid-12 gap-[6px]">
           <div class="col-10 flex gap-[12px]">
             <n-date-picker

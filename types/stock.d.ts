@@ -4,12 +4,18 @@ interface StockTitle {
   width?: string
   fixed?: string
   className?: string
-  align: 'right' | 'left' | undefined
+  align?: 'right' | 'left' | 'center' | undefined
 }
 
-interface Revenue {
-  type: number
-  duration: number
+interface BossWhere {
+  type?: number
+  duration?: number
   endTime?: string
   startTime?: string
+}
+
+interface BossSalesList {
+  name: string
+  total: string
+  [key]: string
 }

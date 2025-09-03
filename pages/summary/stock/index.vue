@@ -2,48 +2,48 @@
 useSeoMeta({
   title: '库存统计',
 })
-const { getStockType, getStockTitle, getStockList, OldGetStockType, OldGetStockTitle, OldGetStockList } = useStock()
-const { filterList, title, stockList, oldfilterList, oldtitle, oldstockList } = storeToRefs(useStock())
-const tab = ref('product')
-const loading = ref(false)
+// const { getStockType, getStockTitle, getStockList, OldGetStockType, OldGetStockTitle, OldGetStockList } = useStock()
+// const { filterList, title, stockList, oldfilterList, oldtitle, oldstockList } = storeToRefs(useStock())
+// const tab = ref('product')
+// const loading = ref(false)
 
-await getStockType()
-const value = ref<number>(1)
+// await getStockType()
+// const value = ref<number>(1)
 
-await getStockTitle()
-await getStockList({ type: value.value })
+// await getStockTitle()
+// await getStockList({ type: value.value })
 
-const getData = async () => {
-  loading.value = true
-  await getStockList({ type: Number(value.value) })
-  loading.value = false
-}
+// const getData = async () => {
+//   loading.value = true
+//   await getStockList({ type: Number(value.value) })
+//   loading.value = false
+// }
 
-const oldVal = ref<number>(1)
-const getOldData = async () => {
-  loading.value = true
-  await OldGetStockList({ type: oldVal.value })
-  loading.value = false
-}
+// const oldVal = ref<number>(1)
+// const getOldData = async () => {
+//   loading.value = true
+//   await OldGetStockList({ type: oldVal.value })
+//   loading.value = false
+// }
 
-const changeTab = async (val: string) => {
-  tab.value = val
-  if (val === 'old') {
-    await OldGetStockType()
-    await OldGetStockTitle()
-    await getOldData()
-  }
-  else {
-    await getStockType()
-    await getStockTitle()
-    await getData()
-  }
-}
+// const changeTab = async (val: string) => {
+//   tab.value = val
+//   if (val === 'old') {
+//     await OldGetStockType()
+//     await OldGetStockTitle()
+//     await getOldData()
+//   }
+//   else {
+//     await getStockType()
+//     await getStockTitle()
+//     await getData()
+//   }
+// }
 </script>
 
 <template>
   <div>
-    <common-layout-center>
+    <!-- <common-layout-center>
       <div class="px-[16px]">
         <div class="flex justify-between items-center py-[12px] text-[#FFF]" />
         <n-tabs type="segment" animated @update:value="changeTab">
@@ -91,7 +91,7 @@ const changeTab = async (val: string) => {
           </n-tab-pane>
         </n-tabs>
       </div>
-    </common-layout-center>
+    </common-layout-center> -->
   </div>
 </template>
 

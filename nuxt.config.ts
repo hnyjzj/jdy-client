@@ -68,7 +68,7 @@ export default defineNuxtConfig({
   },
   echarts: {
     charts: ['BarChart', 'LineChart', 'PieChart'],
-    components: ['DatasetComponent', 'GridComponent', 'TooltipComponent', 'LegendComponent'],
+    components: ['DatasetComponent', 'GridComponent', 'TooltipComponent', 'LegendComponent', 'DataZoomComponent'],
   },
   naiveui: {
     spaLoadingTemplate: {

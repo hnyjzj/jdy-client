@@ -12,7 +12,7 @@ const duration = ref<number>(1)
 const radioVal = ref<number>(1)
 const params = ref({
   type: 1,
-} as Revenue)
+} as BossWhere)
 await getRevenueWhere()
 await getRevenueTitle()
 params.value.duration = duration.value

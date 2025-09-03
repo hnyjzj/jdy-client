@@ -53,7 +53,7 @@ const option = computed(() => {
       left: '3%',
       right: '4%',
       bottom: '10%',
-      top: '15%',
+      top: '18%',
       containLabel: true,
     },
     xAxis: {
@@ -105,53 +105,60 @@ const option = computed(() => {
 </script>
 
 <template>
-  <div class="blur-bgc rounded-[16px]  overflow-hidden mb-[16px]" data-allow-mismatch="style">
-    <div class=" rounded-[4px] p-[20px]">
-      <div class="text-[16px] font-bold pb-[12px]">
-        <div class="flex items-center gap-[12px] justify-between">
-          <slot name="header-title" />
-          <template v-if="props.isToggle">
-            <div
-              class="text-[14px] font-normal text-[#666666] bg-[#fff] px-[12px] py-[3px] rounded-[4px] cursor-pointer"
-              @click="toggleChart = toggleChart === 'list' ? 'chart' : 'list'">
-              <template v-if="toggleChart === 'list'">
-                <div class="flex gap-[6px]">
-                  <icon name="i-icon:chart-boss" color="#0068FF" :size="16" />
-                  <span class="text-[12px]">图表</span>
-                </div>
-              </template>
-              <template v-else>
-                <div class="flex gap-[6px]">
-                  <icon name="i-icon:table-boss" color="#0068FF" :size="16" />
-                  <span class="text-[12px]">表格</span>
-                </div>
-              </template>
-            </div>
-          </template>
+  <n-spin :show="props.loading" stroke="#fff" size="large">
+    <div class="blur-bgc rounded-[16px]  overflow-hidden mb-[16px]" data-allow-mismatch="style">
+      <div class=" rounded-[4px] p-[20px]">
+        <div class="text-[16px] font-bold pb-[12px]">
+          <div class="flex items-center gap-[12px] justify-between">
+            <slot name="header-title" />
+            <template v-if="props.isToggle">
+              <div
+                class="text-[14px] font-normal text-[#666666] bg-[#fff] px-[12px] py-[3px] rounded-[4px] cursor-pointer"
+                @click="toggleChart = toggleChart === 'list' ? 'chart' : 'list'">
+                <template v-if="toggleChart === 'list'">
+                  <div class="flex gap-[6px]">
+                    <icon name="i-icon:chart-boss" color="#0068FF" :size="16" />
+                    <span class="text-[12px]">图表</span>
+                  </div>
+                </template>
+                <template v-else>
+                  <div class="flex gap-[6px]">
+                    <icon name="i-icon:table-boss" color="#0068FF" :size="16" />
+                    <span class="text-[12px]">表格</span>
+                  </div>
+                </template>
+              </div>
+            </template>
+          </div>
         </div>
+        <slot name="select" />
       </div>
-      <slot name="select" />
-    </div>
 
-    <div v-if="toggleChart === 'list'">
-      <n-data-table
-        :style="{
-          '--n-merged-th-color': $colorMode.value === 'light' ? '#C7DAFF' : '#1A6BEB',
-          '--n-merged-td-color': $colorMode.value === 'light' ? 'rgba(203,219,240,1)' : '#224879',
-          '--n-merged-border-color': 'rgba(57,113,243,0.08)',
-        }"
-        :loading="props.loading"
-        :columns="props.title"
-        :data="props.list"
-        :scroll-x="scrollX"
-        :max-height="450"
-        :bordered="true"
-      />
+      <div v-if="toggleChart === 'list'">
+        <n-data-table
+          :style="{
+            '--n-merged-th-color': $colorMode.value === 'light' ? '#C7DAFF' : '#1A6BEB',
+            '--n-merged-td-color': $colorMode.value === 'light' ? 'rgba(203,219,240,1)' : '#224879',
+            '--n-merged-border-color': 'rgba(57,113,243,0.08)',
+          }"
+          :columns="props.title"
+          :data="props.list"
+          :scroll-x="scrollX"
+          :max-height="450"
+          :bordered="true"
+          :render-cell="(value: any) => {
+            if (!value){
+              return 0
+            }
+            return value
+          }"
+        />
+      </div>
+      <div v-if="toggleChart === 'chart'">
+        <VChart class="chart" :option="option" />
+      </div>
     </div>
-    <div v-if="toggleChart === 'chart'">
-      <VChart class="chart" :option="option" />
-    </div>
-  </div>
+  </n-spin>
 </template>
 
 <style lang="scss" scoped>
