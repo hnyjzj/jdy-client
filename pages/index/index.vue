@@ -73,7 +73,7 @@ onMounted(async () => {
           <summary-card-inventory :today-inventory="TodayInventory" />
         </template>
         <summary-boss-card
-          card-title="实时业绩"
+          card-title="跨门店实时业绩"
           :title="performanceTitle"
           :list="performanceList"
           :loading="PerformanceLoading"

@@ -107,13 +107,21 @@ const option = computed(() => {
 <template>
   <n-spin :show="props.loading" stroke="#fff" size="large">
     <div class="blur-bgc rounded-[16px]  overflow-hidden mb-[16px]" data-allow-mismatch="style">
-      <div class=" rounded-[4px] p-[20px]">
-        <div class="text-[16px] font-bold ">
-          <div class="flex items-center gap-[12px] justify-between">
-            <slot name="header-title" />
+      <div class=" rounded-[4px]">
+        <div class="grid-12 pb-[16px]">
+          <div
+            class="skew col-6" uno-md="col-4">
+            <div class="skew-right" />
+            <div class="skew-text pl-[15px] text-[16px] font-semibold">
+              <div class="flex-center-row h-full">
+                <slot name="header-title" />
+              </div>
+            </div>
+          </div>
+          <div class="col-6 flex-end" uno-md="col-4 offset-8">
             <template v-if="props.isToggle">
               <div
-                class="text-[14px] font-normal text-[#666666] bg-[#fff] px-[12px] py-[3px] rounded-[4px] cursor-pointer"
+                class="w-[80px] text-[14px] font-normal text-[#666666]  px-[12px] py-[3px] rounded-[4px] cursor-pointer"
                 @click="toggleChart = toggleChart === 'list' ? 'chart' : 'list'">
                 <template v-if="toggleChart === 'list'">
                   <div class="flex gap-[6px]">
@@ -131,6 +139,7 @@ const option = computed(() => {
             </template>
           </div>
         </div>
+
         <slot name="select" />
       </div>
 
