@@ -38,7 +38,7 @@ export const finishedHeaderMap: Record<string, string> = {
 /** 旧料 */
 export const oldHeaderMap: Record<string, string> = {
   '门店': 'store',
-  '旧料条码': 'code',
+  '条码': 'code',
   '名称': 'name',
   '是否自有': 'is_our',
   '所属店铺': 'store',
@@ -76,8 +76,7 @@ export const oldHeaderMap: Record<string, string> = {
 
 /** 旧料 */
 export const oldUnclassHeaderMap: Record<string, string> = {
-  '门店': 'store',
-  '旧料条码': 'code',
+  '条码': 'code',
   '名称': 'name',
   '是否自有': 'is_our',
   '所属店铺': 'store',
@@ -172,6 +171,7 @@ export const checkHeaderMap: Record<string, string> = {
   调拨单状态: 'status',
   调拨类型: 'method',
   仓库类型: 'type',
+  调拨原因: 'reason',
   调拨数量: 'product_count',
   调拨金重: 'product_total_weight_metal',
   调拨标签价: 'product_total_label_price',
@@ -189,6 +189,7 @@ export const checkHeaderMapA: Record<string, string> = {
   调拨单状态: 'status',
   调拨类型: 'method',
   仓库类型: 'type',
+  调拨原因: 'reason',
   调拨备注: 'remark',
   开始时间: 'created_at',
   完成时间: 'updated_at',

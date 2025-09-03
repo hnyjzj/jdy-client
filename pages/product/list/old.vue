@@ -7,7 +7,8 @@ const { myStore } = storeToRefs(useStores())
 const { getOldList, getOldListAll, getOldWhere } = useOld()
 const { oldList, oldFilterList, oldFilterListToArray, oldListTotal } = storeToRefs(useOld())
 const { searchPage, showtype } = storeToRefs(usePages())
-
+const { myStoreList } = storeToRefs(useStores())
+const { getMyStore } = useStores()
 const searchKey = ref('')
 const route = useRoute()
 
@@ -21,6 +22,7 @@ const filterData = ref({} as Partial<ExpandPage<ProductOlds>>)
 const limits = ref(50)
 const tableLoading = ref(false)
 const loading = ref(false)
+const storeCol = ref()
 
 useSeoMeta({
   title: '旧料列表',
@@ -96,6 +98,13 @@ const updatePage = (page: number) => {
   listJump()
 }
 
+function initStore() {
+  storeCol.value = []
+  myStoreList.value.forEach((item: Stores) => {
+    storeCol.value.push({ label: item.name, value: item.id })
+  })
+}
+
 /** 编辑 */
 function edit(code: string) {
   jump('/product/manage/edit', { code })
@@ -136,6 +145,8 @@ try {
   if (myStore.value.id || myStore.value.id === '') {
     await getOldWhere()
     await handleQueryParams()
+    await getMyStore()
+    await initStore()
   }
   else {
     $toast.error('您尚未分配任何门店，请先添加门店')
@@ -284,6 +295,18 @@ async function downloadLocalFile() {
     </div>
     <common-loading v-model="loading" text="正在处理中" />
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
-    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="oldFilterListToArray" @submit="submitWhere" @reset="resetWhere" />
+    <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="oldFilterListToArray" @submit="submitWhere" @reset="resetWhere">
+      <template #recycle_store_id>
+        <n-select
+          v-model:value="filterData.recycle_store_id"
+          menu-size="large"
+          filterable
+          placeholder="选择回收门店"
+          :options="storeCol"
+          clearable
+          @focus="focus"
+        />
+      </template>
+    </common-filter-where>
   </div>
 </template>

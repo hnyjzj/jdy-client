@@ -110,7 +110,7 @@ interface ProductOlds {
   /**
    * 回收门店
    */
-  recycle_store: null | Stores
+  recycle_store: Stores
   /**
    * 回收门店ID
    */

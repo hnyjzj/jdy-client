@@ -330,6 +330,14 @@ async function downloadDetails() {
         obj.product_remark = item.remark
         delete obj.remark
       }
+      if ('created_at' in item) {
+        obj.product_created_at = item.created_at
+        delete obj.created_at
+      }
+      if ('updated_at' in item) {
+        obj.product_updated_at = item.updated_at
+        delete obj.updated_at
+      }
       return obj
     })
 
@@ -341,6 +349,10 @@ async function downloadDetails() {
         return { ...item, name: 'product_id' }
       if (item.name === 'remark')
         return { ...item, name: 'product_remark' }
+      if (item.name === 'created_at')
+        return { ...item, name: 'product_created_at' }
+      if (item.name === 'updated_at')
+        return { ...item, name: 'product_updated_at' }
       return item
     })
 
@@ -352,12 +364,16 @@ async function downloadDetails() {
         return { ...item, name: 'product_id' }
       if (item.name === 'remark')
         return { ...item, name: 'product_remark' }
+      if (item.name === 'created_at')
+        return { ...item, name: 'product_created_at' }
+      if (item.name === 'updated_at')
+        return { ...item, name: 'product_updated_at' }
       return item
     })
 
     // 合并配置并去掉 status
     const productToArray = [...finishedList, ...oldList]
-    const newProductToArray = productToArray.filter(item => item.name !== 'status')
+    const newProductToArray = productToArray.filter(item => item.name !== 'status' && item.name !== 'store')
 
     // 导出 Excel
     exportToXlsxMultiple(
