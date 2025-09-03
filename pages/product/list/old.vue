@@ -304,7 +304,6 @@ async function downloadLocalFile() {
           placeholder="选择回收门店"
           :options="storeCol"
           clearable
-          @focus="focus"
         />
       </template>
     </common-filter-where>
