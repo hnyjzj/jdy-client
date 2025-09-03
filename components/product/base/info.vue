@@ -42,7 +42,7 @@ const props = defineProps<{
                 </span>
               </template>
               <template v-else-if="item.name === 'recycle_store_id'">
-                {{ (props.info as ProductOlds)?.recycle_store?.name || '--' }}
+                <common-tooltip :val="(props.info as ProductOlds)?.recycle_store?.name" />
               </template>
               <template v-else>
                 <span>
