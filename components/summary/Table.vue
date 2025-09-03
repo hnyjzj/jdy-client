@@ -108,7 +108,7 @@ const option = computed(() => {
   <n-spin :show="props.loading" stroke="#fff" size="large">
     <div class="blur-bgc rounded-[16px]  overflow-hidden mb-[16px]" data-allow-mismatch="style">
       <div class=" rounded-[4px] p-[20px]">
-        <div class="text-[16px] font-bold pb-[12px]">
+        <div class="text-[16px] font-bold ">
           <div class="flex items-center gap-[12px] justify-between">
             <slot name="header-title" />
             <template v-if="props.isToggle">
@@ -138,7 +138,7 @@ const option = computed(() => {
         <n-data-table
           :style="{
             '--n-merged-th-color': $colorMode.value === 'light' ? '#C7DAFF' : '#1A6BEB',
-            '--n-merged-td-color': $colorMode.value === 'light' ? 'rgba(203,219,240,1)' : '#224879',
+            '--n-merged-td-color': $colorMode.value === 'light' ? 'rgba(0,0,0,0)' : '#224879',
             '--n-merged-border-color': 'rgba(57,113,243,0.08)',
           }"
           :columns="props.title"

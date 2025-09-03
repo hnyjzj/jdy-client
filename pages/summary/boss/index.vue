@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 useSeoMeta({
-  title: 'boss看板',
+  title: 'Boss看板',
 })
-const { getPerformanceType, getPerformanceList, getPublicWhere, getOldSalesList, getOldSalesType, getFinishedSalesType, getFinishedSalesList, getStockList, getStockType, OldGetStockType, OldGetStockList, getRevenueList, getRevenueWhere } = useStock()
-const { RevenueWhere, finishedSalesWhere, oldfilterWhere, oldSalesFilterWhere, finishedWhere } = storeToRefs(useStock())
+const { getPerformanceType, getPerformanceList, getPublicWhere, getOldSalesList, getOldSalesType, getFinishedSalesType, getFinishedSalesList, getStockList, getStockType, OldGetStockType, OldGetStockList, getRevenueList, getRevenueWhere } = useBoss()
+const { RevenueWhere, finishedSalesWhere, oldfilterWhere, oldSalesFilterWhere, finishedWhere } = storeToRefs(useBoss())
 const params = ref({} as BossWhere)
 await getPublicWhere()
 
@@ -121,14 +121,14 @@ const getOldStockReq = async () => {
   await getOldList()
 }
 
-// 性能统计初始化
-const radioValuePerformance = ref<BossWhere['type']>(1)
+// 业绩统计初始化
+
 const PerformanceLoading = ref<boolean>(false)
 const performanceTitle = ref<StockTitle[]>([])
 const performanceList = ref<BossSalesList[]>([])
 PerformanceLoading.value = true
 const getPerformanceListFn = async () => {
-  const res = await getPerformanceList({ ...params.value, type: radioValuePerformance.value })
+  const res = await getPerformanceList({ ...params.value })
   performanceTitle.value = res?.title || []
   performanceList.value = res?.list || []
   PerformanceLoading.value = false
@@ -161,7 +161,6 @@ onMounted(async () => {
         <summary-boss-select-time v-model="params" @update-time="updateTimeFn" />
         <!-- 性能统计 -->
         <summary-boss-card
-          v-model="radioValuePerformance"
           card-title="业绩统计"
           :title="performanceTitle"
           :list="performanceList"

@@ -2,7 +2,7 @@
 const emits = defineEmits<{
   updateTime: []
 }>()
-const { timeWhere } = storeToRefs(useStock())
+const { timeWhere } = storeToRefs(useBoss())
 const startTime = ref()
 const endTime = ref()
 const params = defineModel<BossWhere>({ default: { } as BossWhere })
