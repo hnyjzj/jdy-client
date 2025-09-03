@@ -259,12 +259,12 @@ async function submitGoods(e: AddAccessorieAllocateProduct[]) {
                             </div>
                             <template v-if="filter.input === 'select'">
                               <div class="value">
-                                {{ filter.preset[item[filter.name] as string] || '--' }}
+                                <common-tooltip :val="filter.preset[item[filter.name] as string]" />
                               </div>
                             </template>
                             <template v-else>
                               <div class="value">
-                                {{ item[filter.name] || '--' }}
+                                <common-tooltip :val="item[filter.name]" />
                               </div>
                             </template>
                           </div>

@@ -16,7 +16,7 @@ const props = defineProps<{
               {{ item.label }}
             </div>
             <div class="value text-[rgba(57,113,243,1)]">
-              {{ item.preset[info[item.name]] || '--' }}
+              <common-tooltip :val="item.preset[info[item.name]]" />
             </div>
           </div>
         </template>
@@ -38,7 +38,7 @@ const props = defineProps<{
             <div class="value text-[rgba(57,113,243,1)]">
               <template v-if="item.name === 'code'">
                 <span>
-                  {{ props.code || props.info[item.name] }}
+                  <common-tooltip :val="props.code || props.info[item.name]" />
                 </span>
               </template>
               <template v-else-if="item.name === 'recycle_store_id'">
@@ -46,7 +46,7 @@ const props = defineProps<{
               </template>
               <template v-else>
                 <span>
-                  {{ props.info[item.name] || '--' }}
+                  <common-tooltip :val="props.info[item.name]" />
                 </span>
               </template>
             </div>
