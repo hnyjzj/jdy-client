@@ -7,9 +7,9 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4">
+  <div class="px-[16px] pb-4 grid grid-cols-2 justify-between sm:grid-cols-3 md:grid-cols-4 gap-4 mb-2">
     <template v-for="(item, index) in props.filterList" :key="index">
-      <template v-if="item.find">
+      <template v-if="item.find && item.name !== 'recycle_source_id'">
         <template v-if="item.input === 'select'">
           <div class="flex">
             <div class="key">
@@ -40,6 +40,9 @@ const props = defineProps<{
                 <span>
                   <common-tooltip :val="props.code || props.info[item.name]" />
                 </span>
+              </template>
+              <template v-else-if="item.name === 'recycle_store_id'">
+                <common-tooltip :val="(props.info as ProductOlds)?.recycle_store?.name" />
               </template>
               <template v-else>
                 <span>

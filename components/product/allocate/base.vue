@@ -14,23 +14,6 @@ const props = defineProps<{
         <template #body>
           <div class="flex flex-col gap-4">
             <div class="operation-information flex flex-col gap-1">
-              <div class="info-row">
-                <div class="info-title">
-                  调拨单号
-                </div>
-                <div class="info-val">
-                  {{ props.info.id }}
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-title">
-                  状态
-                </div>
-                <div class="info-val">
-                  {{ props.filterList.status?.preset[props.info.status] }}
-                </div>
-              </div>
-              <div class="h-0.5 bg-[#E6E6E8]" />
               <div class="other-information flex flex-col gap-1">
                 <template v-for="(item, index) in props.filterListToArray" :key="index">
                   <template v-if="item.name !== 'store_id'">
@@ -80,6 +63,14 @@ const props = defineProps<{
                     </div>
                   </template>
                 </template>
+                <div class="info-row">
+                  <div class="info-title">
+                    状态
+                  </div>
+                  <div class="info-val">
+                    {{ props.filterList.status?.preset[props.info.status] }}
+                  </div>
+                </div>
               </div>
             </div>
             <div class="h-0.5 bg-[#E6E6E8]" />

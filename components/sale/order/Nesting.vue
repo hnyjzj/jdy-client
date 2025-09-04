@@ -12,7 +12,7 @@ const toggleFold = () => {
 </script>
 
 <template>
-  <div class="card">
+  <div class="card mb-2">
     <!-- header -->
     <div class="flex-center-between px-[16px] py-[8px] bg-[#F1F5FE] dark:bg-[rgb(245,245,245,0.1)]">
       <div class="flex-center-row gap-[8px]">

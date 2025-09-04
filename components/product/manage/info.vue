@@ -37,46 +37,51 @@ const props = defineProps<{
         </template>
         <template v-for="(item, index) in props.filterListToArray" :key="index">
           <!-- 配件是使用 info 控制显示 -->
-          <template v-if="item.label && (productType === GoodsType.ProductAccessories ? item.info : item.find)">
+          <template v-if="item.label && (productType === GoodsType.ProductAccessories ? item.info : item.find) && item.name !== 'recycle_source_id'">
             <div class="flex justify-between text-sm font-normal">
-              <div class="text-color-light">
+              <div class="text-color-light whitespace-nowrap">
                 {{ item?.label }}
               </div>
               <div class="info-val">
-                <template v-if="item.type === 'date'">
-                  <span>
-                    {{ formatTimestampToDateTime(props.info[item.name]) ?? '' }}
-                  </span>
+                <template v-if="item.name === 'recycle_store_id'">
+                  {{ props.info.recycle_store?.name ?? '' }}
                 </template>
-                <template v-if="item.input === 'select'">
-                  <span>
-                    {{ filterList[item.name]?.preset[props.info[item.name]] ?? '' }}
-                  </span>
-                </template>
-                <template v-else-if="item.input === 'text' || item.input === 'textarea'">
-                  <template v-if="item.name === 'store'">
+                <template v-else>
+                  <template v-if="item.type === 'date'">
                     <span>
-                      {{ props.info.store?.name ?? '' }}
+                      {{ formatTimestampToDateTime(props.info[item.name]) ?? '' }}
                     </span>
                   </template>
-                  <template v-else>
+                  <template v-if="item.input === 'select'">
+                    <span>
+                      {{ filterList[item.name]?.preset[props.info[item.name]] ?? '' }}
+                    </span>
+                  </template>
+                  <template v-else-if="item.input === 'text' || item.input === 'textarea'">
+                    <template v-if="item.name === 'store'">
+                      <span>
+                        {{ props.info.store?.name ?? '' }}
+                      </span>
+                    </template>
+                    <template v-else>
+                      <span>
+                        {{ props.info[item.name] ?? '' }}
+                      </span>
+                    </template>
+                  </template>
+                  <template v-else-if="item.input === 'number'">
                     <span>
                       {{ props.info[item.name] ?? '' }}
                     </span>
                   </template>
-                </template>
-                <template v-else-if="item.input === 'number'">
-                  <span>
-                    {{ props.info[item.name] ?? '' }}
-                  </span>
-                </template>
-                <template v-else-if="item.input === 'switch'">
-                  <span>
-                    {{ props.info[item.name] ? '是' : '否' }}
-                  </span>
-                </template>
-                <template v-else-if="item.input === 'list'">
-                  {{ props.info[item.name]?.length ? props.info[item.name].join(',') : '' }}
+                  <template v-else-if="item.input === 'switch'">
+                    <span>
+                      {{ props.info[item.name] ? '是' : '否' }}
+                    </span>
+                  </template>
+                  <template v-else-if="item.input === 'list'">
+                    {{ props.info[item.name]?.length ? props.info[item.name].join(',') : '' }}
+                  </template>
                 </template>
               </div>
             </div>
