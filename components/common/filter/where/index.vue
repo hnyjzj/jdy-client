@@ -154,8 +154,11 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                   <template v-if="input === 'textarea'">
                     <n-input v-model:value="datas[name as string]" :placeholder="`输入${label}`" type="textarea" maxlength="255" size="large" round :autosize="{ minRows: 1, maxRows: 2 }" :disabled="disabled?.includes(name)" @focus="focus" />
                   </template>
-                  <template v-if="input === 'date'">
-                    <n-date-picker v-model:formatted-value="datas[name as string]" input-readonly value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" size="large" :placeholder="`选择${label}`" round clearable :disabled="disabled?.includes(name)" />
+                  <template v-if="input === 'date' && name.includes('start')">
+                    <n-date-picker v-model:formatted-value="datas[name as string]" :is-date-disabled="dateDisabled" default-time="00:00:00" input-readonly value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" size="large" :placeholder="`选择${label}`" round clearable :disabled="disabled?.includes(name)" />
+                  </template>
+                  <template v-if="input === 'date' && name.includes('end')">
+                    <n-date-picker v-model:formatted-value="datas[name as string]" :is-date-disabled="dateDisabled" default-time="23:59:59" input-readonly value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" size="large" :placeholder="`选择${label}`" round clearable :disabled="disabled?.includes(name)" />
                   </template>
                   <template v-if="input === 'multiple'">
                     <n-select

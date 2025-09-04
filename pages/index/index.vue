@@ -3,10 +3,11 @@ useSeoMeta({
   title: '待办',
 })
 
-const { myStoreTodaySale, myStoreTodayInventory, StorePerformance } = homeDataStore()
-const { TodayInventory, todaySaleData, StorePerformanceList } = storeToRefs(homeDataStore())
+const { myStoreTodaySale, myStoreTodayInventory } = homeDataStore()
+const { TodayInventory, todaySaleData } = storeToRefs(homeDataStore())
 const { myStore, myStoreList } = storeToRefs(useStores())
 const { getMyStore, switchStore } = useStores()
+const { getPerformanceType, getPerformanceList } = useBoss()
 if (!myStore.value.id) {
   await getMyStore()
 }
@@ -23,7 +24,27 @@ const handleSelectFn = async (id: Stores['id']) => {
 
 await myStoreTodayInventory({ store_id: myStore.value.id })
 await myStoreTodaySale({ store_id: myStore.value.id })
-await StorePerformance({ duration: Duration.today })
+
+// 业绩
+const params = ref({ duration: 1 } as BossWhere)
+const PerformanceLoading = ref<boolean>(false)
+const performanceTitle = ref<StockTitle[]>([])
+const performanceList = ref<BossSalesList[]>([])
+PerformanceLoading.value = true
+const getPerformanceListFn = async () => {
+  const res = await getPerformanceList({ ...params.value })
+  performanceTitle.value = res?.title || []
+  performanceList.value = res?.list || []
+  PerformanceLoading.value = false
+}
+
+const getPerformanceReq = async () => {
+  await getPerformanceType()
+  await getPerformanceListFn()
+}
+onMounted(async () => {
+  await getPerformanceReq()
+})
 </script>
 
 <template>
@@ -43,9 +64,7 @@ await StorePerformance({ duration: Duration.today })
           @get-store-list="() => {
             getMyStore()
           }" />
-        <template v-if="StorePerformanceList">
-          <summary-card-boss :store-performance-list="StorePerformanceList" />
-        </template>
+
         <!-- <home-action /> -->
         <template v-if="todaySaleData">
           <summary-card-sale :today-sale-data="todaySaleData" />
@@ -53,6 +72,12 @@ await StorePerformance({ duration: Duration.today })
         <template v-if="TodayInventory">
           <summary-card-inventory :today-inventory="TodayInventory" />
         </template>
+        <summary-boss-card
+          card-title="跨门店实时业绩"
+          :title="performanceTitle"
+          :list="performanceList"
+          :loading="PerformanceLoading"
+          @getlist="getPerformanceListFn" />
       </template>
       <template v-else>
         <common-emptys text="暂未分配门店" />

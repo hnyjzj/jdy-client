@@ -159,6 +159,7 @@ const rules = ref<FormRules>({
             input-readonly
             clearable
             format="yyyy-MM-dd"
+            :is-date-disabled="dateDisabled"
             type="date"
             @blur="handleDateBlur('birthday')"
           />
@@ -166,6 +167,7 @@ const rules = ref<FormRules>({
         <n-form-item path="anniversary" label="纪念日">
           <n-date-picker
             v-model:value="anniversary"
+            :is-date-disabled="dateDisabled"
             input-readonly
             clearable
             format="yyyy-MM-dd"
