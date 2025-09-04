@@ -6,19 +6,19 @@ useSeoMeta({
 })
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
-const { getMemberList } = useMemberManage()
 const { memberList } = storeToRefs(useMemberManage())
-const { createMember } = useMemberManage()
 const { OldMaterialsWhere } = useOrder()
 const { getAddRepairOrderWhere, createRepairOrder, getRepairOrderWhere, uploadRepairOrderImg } = useRepair()
 const { repairGoodsFilterListToArray, repairFilterList } = storeToRefs(useRepair())
 const { getFinishedList } = useFinished()
 const { finishedList } = storeToRefs(useFinished())
+const { getMemberList, getMemberWhere, createMember } = useMemberManage()
 const layoutLoading = ref(false)
+
 await OldMaterialsWhere()
 await getAddRepairOrderWhere()
 await getRepairOrderWhere()
-
+await getMemberWhere()
 const searchServiceGoods = async (val: string) => {
   await getFinishedList({ page: 1, limit: 5, where: { store_id: myStore.value.id, code: val, all: true, status: 5 } })
   return finishedList.value || []
