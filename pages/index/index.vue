@@ -7,6 +7,7 @@ const { myStoreTodaySale, myStoreTodayInventory } = homeDataStore()
 const { TodayInventory, todaySaleData } = storeToRefs(homeDataStore())
 const { myStore, myStoreList } = storeToRefs(useStores())
 const { getMyStore, switchStore } = useStores()
+const { getPerformanceType, getPerformanceList } = useBoss()
 if (!myStore.value.id) {
   await getMyStore()
 }
@@ -24,8 +25,7 @@ const handleSelectFn = async (id: Stores['id']) => {
 await myStoreTodayInventory({ store_id: myStore.value.id })
 await myStoreTodaySale({ store_id: myStore.value.id })
 
-// 性能统计初始化
-const { getPerformanceType, getPerformanceList } = useBoss()
+// 业绩
 const params = ref({ duration: 1 } as BossWhere)
 const PerformanceLoading = ref<boolean>(false)
 const performanceTitle = ref<StockTitle[]>([])
