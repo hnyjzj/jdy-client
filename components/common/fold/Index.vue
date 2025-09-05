@@ -64,7 +64,7 @@ function toggleShow() {
       </div>
       <Transition mode="out-in">
         <template v-if="isShow">
-          <div class="bg-[#fff] rounded-b-[24px] dark:bg-[rgba(239,240,246,0.1)]">
+          <div class="bg-[#fff] rounded-b-[24px] dark:bg-[rgba(239,240,246,0.1)] overflow-hidden">
             <slot />
           </div>
         </template>

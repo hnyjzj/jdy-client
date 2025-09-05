@@ -32,7 +32,7 @@ function addto(e: number) {
 <template>
   <div class="px-[16px]">
     <common-dark />
-    <summary-total :data="data" :col="3" title="营销分析数据汇总" />
+    <!-- <summary-total :data="data" :col="3" title="营销分析数据汇总" /> -->
     <analyze-marketing-list />
     <analyze-addto @addto="addto" />
   </div>
