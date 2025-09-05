@@ -19,3 +19,9 @@ interface BossSalesList {
   total: string
   [key]: string
 }
+
+/** 门店库存 */
+interface StatisticStock {
+  day: string
+  store_id: string
+}

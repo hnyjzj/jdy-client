@@ -1,16 +1,9 @@
 <script lang="ts" setup>
 const props = withDefaults(defineProps<{
-  data: any[]
-  /**
-   * 一行几列?
-   */
-  col?: number
-  /**
-   * 标题
-   */
+  data: Record<string, string>
   title: string
 }>(), {
-  col: 4,
+
 })
 </script>
 
@@ -23,15 +16,15 @@ const props = withDefaults(defineProps<{
       <div class="label" />
       <div>{{ props.title }}</div>
     </div>
-    <div class="box" :style="`grid-template-columns: repeat(${props.col}, 1fr)`">
-      <template v-for="(item, index) in props.data" :key="index">
+    <div class="box grid-cols-3 md:grid-cols-4" style="">
+      <template v-for="(value, key, index) in props.data" :key="index">
         <div class="flex">
-          <div class="obj">
-            <div class="text-[16px]">
-              {{ item.value }}
+          <div class="obj text-[14px]">
+            <div>
+              {{ key }}
             </div>
-            <div class="text-[12px] mt-1">
-              {{ item.name }}
+            <div class="mt-1">
+              {{ value }}
             </div>
           </div>
         </div>
