@@ -8,6 +8,7 @@ const props = defineProps<{
 }>()
 const emits = defineEmits<{
   getlist: []
+  clickTitle: []
 }>()
 
 const radio = defineModel<BossWhere['type']>({ default: 1 })
@@ -16,7 +17,7 @@ const toggleChart = ref<'list' | 'chart'>('list')
 
 <template>
   <div>
-    <summary-table v-model="toggleChart" :loading="props.loading" :title="props.title" :list="props.list">
+    <summary-table v-model="toggleChart" :loading="props.loading" :title="props.title" :list="props.list" @click-title="emits('clickTitle')">
       <template #header-title>
         {{ props.cardTitle }}
       </template>
