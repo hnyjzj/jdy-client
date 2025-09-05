@@ -8,6 +8,10 @@ const props = withDefaults(defineProps<{
 }>(), {
   isToggle: true,
 })
+
+const emits = defineEmits<{
+  clickTitle: []
+}>()
 const { $colorMode } = useNuxtApp()
 const scrollX = ref(0)
 
@@ -110,7 +114,8 @@ const option = computed(() => {
       <div class=" rounded-[4px]">
         <div class="grid-12 pb-[16px]">
           <div
-            class="skew col-6" uno-md="col-4">
+            class="skew col-6"
+            uno-md="col-4" @click="emits('clickTitle')">
             <div class="skew-right" />
             <div class="skew-text pl-[15px] text-[16px] font-semibold">
               <div class="flex-center-row h-full">
