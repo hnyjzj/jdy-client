@@ -147,7 +147,7 @@ const option = computed(() => {
         <n-data-table
           :style="{
             '--n-merged-th-color': $colorMode.value === 'light' ? '#C7DAFF' : '#1A6BEB',
-            '--n-merged-td-color': $colorMode.value === 'light' ? 'rgba(0,0,0,0)' : '#224879',
+            '--n-merged-td-color': $colorMode.value === 'light' ? '#D9E4F4' : '#224879',
             '--n-merged-border-color': 'rgba(57,113,243,0.08)',
           }"
           :columns="props.title"
