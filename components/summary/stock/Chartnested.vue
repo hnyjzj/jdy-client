@@ -132,8 +132,20 @@ watch(chartMode, (val) => {
       >
         <template #title>
           <div class="w-[100%] flex justify-between items-center">
-            <div class="text-[14px]">
-              {{ props.title }}
+            <div class="flex items-center">
+              <div class="text-[14px] pr-2">
+                {{ props.title }}
+              </div>
+              <template v-if="chartMode === 'chart'">
+                <div class="flex my-2">
+                  <n-select
+                    v-model:value="bigCategory"
+                    :options="Object.keys(props.stockCategoryDate || {}).map(key => ({ label: key, value: key }))"
+                    class="min-w-[120px]"
+                    placeholder="请选择大类"
+                  />
+                </div>
+              </template>
             </div>
             <div>
               <summary-Toggle v-model="chartMode" />
@@ -145,15 +157,6 @@ watch(chartMode, (val) => {
         <template v-if="chartMode === 'chart'">
           <!-- 大类选择 -->
           <div class="flex justify-center items-center gap-6">
-            <div class="flex justify-center gap-2 my-2">
-              <n-select
-                v-model:value="bigCategory"
-                :options="Object.keys(props.stockCategoryDate || {}).map(key => ({ label: key, value: key }))"
-                class="w-[200px]"
-                placeholder="请选择大类"
-              />
-            </div>
-
             <!-- 维度选择 -->
             <div class="flex justify-center gap-2 my-4 flex-wrap">
               <template
@@ -181,23 +184,13 @@ watch(chartMode, (val) => {
 
         <!-- 列表模式 -->
         <template v-else>
-          <!-- 大类选择 -->
-          <div class="flex gap-2 my-2 ml-2">
-            <n-select
-              v-model:value="bigCategory"
-              :options="Object.keys(props.stockCategoryDate || {}).map(key => ({ label: key, value: key }))"
-              class="w-[200px]"
-              placeholder="请选择大类"
-            />
-          </div>
-
           <!-- 表格 -->
           <n-data-table
             :columns="columns"
             :data="data"
             :style="{
               '--n-merged-th-color': $colorMode.value === 'light' ? '#C7DAFF' : 'rgba(71, 126, 245, 0.6)',
-              '--n-merged-td-color': $colorMode.value === 'light' ? 'rgba(0,0,0,0)' : '#224879',
+              '--n-merged-td-color': $colorMode.value === 'light' ? '#DEEBFD' : '#224879',
               '--n-merged-border-color': 'rgba(57,113,243,0.08)',
             }"
             bordered />

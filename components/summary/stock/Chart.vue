@@ -134,7 +134,7 @@ watch([() => props.stockCategoryDate, chartBar, chartMode], updateChart)
           <n-data-table
             :style="{
               '--n-merged-th-color': $colorMode.value === 'light' ? '#C7DAFF' : 'rgba(71, 126, 245, 0.6)',
-              '--n-merged-td-color': $colorMode.value === 'light' ? 'rgba(0,0,0,0)' : '#224879',
+              '--n-merged-td-color': $colorMode.value === 'light' ? '#DEEBFD' : '#224879',
               '--n-merged-border-color': 'rgba(57,113,243,0.08)',
             }"
             :columns="columns"
