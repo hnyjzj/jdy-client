@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { getStockData, getSalesData } = useStock()
+const { getStockData } = useStock()
 
 const { stockDate } = storeToRefs(useStock())
 const { myStore } = storeToRefs(useStores())
@@ -45,7 +45,6 @@ const fetchData = useDebounceFn(async () => {
 onMounted(async () => {
   await nextTick()
   await getMyStore()
-  await getSalesData({ duration: 5 })
   await fetchData()
 })
 
@@ -92,14 +91,14 @@ async function changeStores() {
       <!-- 数据汇总 -->
       <summary-total :data="stockDate.overview" title="数据汇总" />
       <!-- 封装后的饼图/表格组件 -->
-      <summary-stock-chartnested
+      <summary-stock-chart
         title="成品大类"
-        :stock-category-date="stockDate.finished_category"
+        :stock-category-date="stockDate.finished_class"
         :loading="isLoading"
       />
-      <summary-stock-chart
+      <summary-stock-chartnested
         title="成品品类"
-        :stock-category-date="stockDate.finished_class"
+        :stock-category-date="stockDate.finished_category"
         :loading="isLoading"
       />
       <summary-stock-chartnested

@@ -45,24 +45,42 @@ const option = ref<any>({
       labelLine: { show: true, length: 12, length2: 8 },
     },
   ],
-  graphic: [
-    {
-      type: 'text',
-      left: '50%',
-      top: '50%',
-      style: {
-        text: '总计\n0',
-        textAlign: 'center',
-        textVerticalAlign: 'middle',
-        fill: '#3971F3',
-        fontSize: 20,
-        fontWeight: 'bold',
-      },
-    },
-  ],
 })
 
-// 更新饼图数据
+// 动态生成表格列（保证第一列是 分类）
+const columns = computed<DataTableColumns>(() => {
+  const dims = Object.keys(props.stockCategoryDate?.[bigCategory.value] || {})
+  return [
+    { title: '分类', key: '分类', fixed: 'left', width: 120 },
+    ...dims.map(dim => ({ title: dim, key: dim, width: 120 })),
+  ]
+})
+
+// 生成表格数据
+const data = computed(() => {
+  if (!props.stockCategoryDate || !bigCategory.value)
+    return []
+
+  const dims = props.stockCategoryDate[bigCategory.value] || {}
+  const subCategories = new Set<string>()
+
+  // 收集所有子分类
+  for (const dim in dims) {
+    Object.keys(dims[dim] || {}).forEach((sub) => {
+      subCategories.add(sub)
+    })
+  }
+
+  return Array.from(subCategories).map((sub) => {
+    const row: Record<string, any> = { 分类: sub }
+    for (const dim in dims) {
+      row[dim] = dims[dim]?.[sub]
+    }
+    return row
+  })
+})
+
+// 更新图表
 function updateChart() {
   if (!props.stockCategoryDate || !bigCategory.value)
     return
@@ -70,50 +88,14 @@ function updateChart() {
   const dimData = props.stockCategoryDate[bigCategory.value]?.[chartBar.value]
   if (!dimData) {
     option.value.series[0].data = []
-    option.value.graphic[0].style.text = '总计\n0'
     return
   }
 
-  const chartData = Object.entries(dimData).map(([name, value]) => ({
+  option.value.series[0].data = Object.entries(dimData).map(([name, value]) => ({
     name,
-    value: Number(value),
+    value,
   }))
-
-  option.value.series[0].data = chartData
-
-  // 总计
-  const total = chartData.reduce((sum, item) => sum + item.value, 0)
-  option.value.graphic[0].style.text = `总计\n${total}`
 }
-
-// 动态生成表格列
-const columns = computed<DataTableColumns>(() => {
-  const dims = Object.keys(props.stockCategoryDate?.[bigCategory.value] || {})
-  return [
-    ...dims.map(dim => ({ title: dim, key: dim, width: 100 })),
-  ]
-})
-
-// 动态生成表格数据
-const data = computed(() => {
-  if (!props.stockCategoryDate || !bigCategory.value)
-    return []
-
-  const dims = props.stockCategoryDate[bigCategory.value]
-  const subCategories = new Set<string>()
-
-  for (const dim in dims) {
-    Object.keys(dims[dim] || {}).forEach(sub => subCategories.add(sub))
-  }
-
-  return Array.from(subCategories).map((sub) => {
-    const row: Record<string, any> = { }
-    for (const dim in dims) {
-      row[dim] = dims[dim]?.[sub] ?? 0
-    }
-    return row
-  })
-})
 
 // 监听数据变化，初始化大类
 watch(
@@ -162,7 +144,7 @@ watch(chartMode, (val) => {
         <!-- 图表模式 -->
         <template v-if="chartMode === 'chart'">
           <!-- 大类选择 -->
-          <div class="flex justify-center items-center gap-6 bg-[#224879]">
+          <div class="flex justify-center items-center gap-6">
             <div class="flex justify-center gap-2 my-2">
               <n-select
                 v-model:value="bigCategory"

@@ -19,42 +19,27 @@ const option = ref<any>({
   legend: {
     orient: 'horizontal',
     left: 'center',
-    bottom: 0, // 放在底部
+    bottom: 0,
     itemGap: 12,
     textStyle: { color: '#666666', fontSize: 12 },
-    type: 'scroll', // 横向滚动
+    type: 'scroll',
     pageIconColor: '#999',
     pageIconSize: 12,
   },
   series: [
     {
       type: 'pie',
-      radius: ['35%', '60%'], // 缩小饼图留空间给 legend
-      center: ['50%', '45%'], // 上移给 legend 空间
+      radius: ['35%', '60%'],
+      center: ['50%', '45%'],
       avoidLabelOverlap: false,
       itemStyle: { borderRadius: 8, borderColor: '#fff', borderWidth: 2 },
       label: {
         show: true,
-        position: 'outside', // 标签显示在饼图外部
+        position: 'outside',
         formatter: '{b}\n{d}%',
         fontSize: 12,
       },
       labelLine: { show: true, length: 12, length2: 8 },
-    },
-  ],
-  graphic: [
-    {
-      type: 'text',
-      left: '50%',
-      top: '50%',
-      style: {
-        text: '总计\n0', // 默认文字
-        textAlign: 'center',
-        textVerticalAlign: 'middle', // ✅ 关键：垂直居中
-        fill: '#3971F3',
-        fontSize: 20,
-        fontWeight: 'bold',
-      },
     },
   ],
 })
@@ -63,16 +48,18 @@ const option = ref<any>({
 function updateChart() {
   if (!props.stockCategoryDate)
     return
+
   const dataObj = props.stockCategoryDate[chartBar.value]
   if (!dataObj)
     return
+
   option.value.series[0].data = Object.entries(dataObj).map(([name, value]) => ({
     name,
     value: Number(value),
   }))
 }
 
-// 动态生成表格列
+// 生成表格列
 const columns = computed<DataTableColumns>(() => {
   const row = Object.keys(props.stockCategoryDate || {})
   return [
@@ -81,12 +68,16 @@ const columns = computed<DataTableColumns>(() => {
   ]
 })
 
-// 动态生成表格数据
+// 生成表格数据
 const data = computed(() => {
   if (!props.stockCategoryDate)
     return []
+
   const keys = Object.keys(props.stockCategoryDate)
-  const categories = Array.from(new Set(keys.flatMap(key => Object.keys(props.stockCategoryDate[key] || {}))))
+  const categories = Array.from(
+    new Set(keys.flatMap(key => Object.keys(props.stockCategoryDate[key] || {}))),
+  )
+
   return categories.map((category) => {
     const row: Record<string, any> = { 分类: category }
     keys.forEach((val) => {
@@ -97,7 +88,7 @@ const data = computed(() => {
 })
 
 // 监听数据和维度变化更新图表
-watch([() => props.stockCategoryDate, chartBar], updateChart)
+watch([() => props.stockCategoryDate, chartBar, chartMode], updateChart)
 </script>
 
 <template>
