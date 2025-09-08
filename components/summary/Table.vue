@@ -44,7 +44,7 @@ const option = computed(() => {
     },
     legend: {
       data: props.title
-        .filter((item: StockTitle) => item.title !== '门店' && item.title !== '合计')
+        .filter((item: StockTitle) => item.title !== '门店' && item.title !== '合计' && item.title !== '支付方式')
         .map((item: StockTitle) => item.title),
       left: 'center',
       top: 10,
@@ -114,7 +114,7 @@ const option = computed(() => {
       <div class=" rounded-[4px]">
         <div class="grid-12 pb-[16px]">
           <div
-            class="skew col-6"
+            class="skew col-6 cursor-pointer"
             uno-md="col-4" @click="emits('clickTitle')">
             <div class="skew-right" />
             <div class="skew-text pl-[15px] text-[16px] font-semibold">

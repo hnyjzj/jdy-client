@@ -68,7 +68,7 @@ onMounted(async () => {
 
         <!-- <home-action /> -->
         <template v-if="Payments">
-          <summary-card-payment :payments="Payments" />
+          <summary-card-payment :payments="Payments" @click-title="jump('/summary/cashflow')" />
         </template>
         <template v-if="todaySaleData">
           <summary-card-sale :today-sale-data="todaySaleData" />

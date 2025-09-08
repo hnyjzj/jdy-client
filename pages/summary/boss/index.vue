@@ -4,9 +4,9 @@ useSeoMeta({
 })
 const { getPerformanceType, getPerformanceList, getPublicWhere, getOldSalesList, getOldSalesType, getFinishedSalesType, getFinishedSalesList, getStockList, getStockType, OldGetStockType, OldGetStockList, getRevenueList, getRevenueWhere } = useBoss()
 const { RevenueWhere, finishedSalesWhere, oldfilterWhere, oldSalesFilterWhere, finishedWhere } = storeToRefs(useBoss())
+const { timeWhere } = storeToRefs(useBoss())
 const params = ref({} as BossWhere)
 await getPublicWhere()
-
 // 读取url参数,获取列表
 const route = useRoute()
 const handleQueryParams = async () => {
@@ -158,7 +158,7 @@ onMounted(async () => {
       <div class="px-[16px]">
         <div class="flex justify-between items-center py-[12px] text-[#FFF]" />
         <!-- 时间选择器 -->
-        <summary-boss-select-time v-model="params" @update-time="updateTimeFn" />
+        <summary-boss-select-time v-model="params" :time-where="timeWhere" @update-time="updateTimeFn" />
         <!-- 性能统计 -->
         <summary-boss-card
           card-title="业绩统计"
