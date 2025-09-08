@@ -24,7 +24,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="blur-bgc rounded-[16px]  cursor-pointer" :style="{ marginBottom: props.marginBottom }">
+  <div class="bg-[#DEEBFD] dark:bg-[rgba(0,0,0,0.3)]  rounded-[16px] cursor-pointer" :style="{ marginBottom: props.marginBottom }">
     <div class="grid-12">
       <div
         class="skew col-6"

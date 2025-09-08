@@ -4,6 +4,7 @@ useSeoMeta({
 })
 const { getPublicWhere, getCashflowList } = useCashflow()
 const { timeWhere } = storeToRefs(useCashflow())
+const { myStore } = storeToRefs(useStores())
 const params = ref({} as CashflowWhere)
 await getPublicWhere()
 
@@ -37,7 +38,7 @@ const cashflowTitle = ref<StockTitle[]>([])
 const cashflowList = ref<BossSalesList[]>([])
 cashflowLoading.value = true
 const getcashflowListFn = async () => {
-  const res = await getCashflowList({ ...params.value })
+  const res = await getCashflowList({ ...params.value, store_id: myStore.value.id })
   cashflowTitle.value = res?.title || []
   cashflowList.value = res?.list.sort((a, b) => {
     // 将合计项提到最前面
@@ -49,16 +50,17 @@ const getcashflowListFn = async () => {
   }) || []
   cashflowLoading.value = false
 }
-const getCashflowReq = async () => {
-  await getcashflowListFn()
-}
 
 const updateTimeFn = () => {
   listJump()
 }
+
+const changeStore = async () => {
+  await getcashflowListFn()
+}
 onMounted(async () => {
   await nextTick()
-  await getCashflowReq()
+  await getcashflowListFn()
 })
 </script>
 
@@ -67,6 +69,9 @@ onMounted(async () => {
     <common-layout-center>
       <div class="px-[16px]">
         <div class="flex justify-between items-center py-[12px] text-[#FFF]" />
+        <div class="w-fit color-[#fff] pb-[12px]">
+          <product-manage-company @change="changeStore" />
+        </div>
         <!-- 时间选择器 -->
         <summary-boss-select-time v-model="params" :time-where="timeWhere" @update-time="updateTimeFn" />
         <summary-cashflow-card

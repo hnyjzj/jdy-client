@@ -110,7 +110,7 @@ const option = computed(() => {
 
 <template>
   <n-spin :show="props.loading" stroke="#fff" size="large">
-    <div class="blur-bgc rounded-[16px]  overflow-hidden mb-[16px]" data-allow-mismatch="style">
+    <div class="bg-[#DEEBFD] dark:bg-[rgba(0,0,0,0.3)]  rounded-[16px]  overflow-hidden mb-[16px]" data-allow-mismatch="style">
       <div class=" rounded-[4px]">
         <div class="grid-12 pb-[16px]">
           <div
@@ -152,7 +152,7 @@ const option = computed(() => {
         <n-data-table
           :style="{
             '--n-merged-th-color': $colorMode.value === 'light' ? '#C7DAFF' : '#1A6BEB',
-            '--n-merged-td-color': $colorMode.value === 'light' ? '#D9E4F4' : '#224879',
+            '--n-merged-td-color': $colorMode.value === 'light' ? '#DEEBFD' : '#224879',
             '--n-merged-border-color': 'rgba(57,113,243,0.08)',
           }"
           :columns="props.title"
