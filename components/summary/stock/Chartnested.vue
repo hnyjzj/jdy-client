@@ -107,7 +107,7 @@ const data = computed(() => {
   }
 
   return Array.from(subCategories).map((sub) => {
-    const row: Record<string, any> = { 大类: bigCategory.value, 小类: sub }
+    const row: Record<string, any> = { }
     for (const dim in dims) {
       row[dim] = dims[dim]?.[sub] ?? 0
     }

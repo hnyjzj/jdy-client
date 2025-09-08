@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { getStockData } = useStock()
+const { getStockData, getSalesData } = useStock()
 
 const { stockDate } = storeToRefs(useStock())
 const { myStore } = storeToRefs(useStores())
@@ -34,13 +34,18 @@ const fetchData = useDebounceFn(async () => {
   if (!date)
     return
   isLoading.value = true
-  await getStockData({ day: date, store_id: myStore.value.id })
-  isLoading.value = false
+  try {
+    await getStockData({ day: date, store_id: myStore.value.id })
+  }
+  finally {
+    isLoading.value = false
+  }
 }, 300)
 
 onMounted(async () => {
   await nextTick()
   await getMyStore()
+  await getSalesData({ duration: 5 })
   await fetchData()
 })
 
