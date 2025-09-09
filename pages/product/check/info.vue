@@ -152,7 +152,7 @@ const scanCode = async () => {
   const wx = await useWxWork()
   const code = await wx?.scanQRCode()
   if (code) {
-    goodCode.value = code.replace(' ', '')
+    goodCode.value = code.trim()
     await submitGoods(true)
   }
 }
