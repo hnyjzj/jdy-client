@@ -54,11 +54,13 @@ export const useCheck = defineStore('check', {
     },
     /** 盘点单详情 */
     async getCheckInfo(params: CheckInfoParams) {
+      this.checkInfo = {} as CheckInfo
       try {
         const { data } = await https.post<CheckInfo, CheckInfoParams>('/product/inventory/info', params)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.checkInfo = data.value.data
         }
+        return data.value
       }
       catch (error) {
         throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
