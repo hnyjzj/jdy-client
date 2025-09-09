@@ -274,7 +274,7 @@ const cols = [
 async function downloadLocalFile() {
   isLoading.value = true
   try {
-    exportProductListToXlsx(allocateList.value, allocateFilterListToArray.value, '导出调拨单据', [], 1, checkHeaderMap)
+    exportProductListToXlsx(allocateList.value, allocateFilterListToArray.value, '调拨单据', [], 1, checkHeaderMap)
   }
   finally {
     isLoading.value = false
@@ -301,7 +301,7 @@ async function downloadDetails() {
   try {
     // 处理 product 数据，成品 class → finished_class，非成品 class → old_class
     const product = res.data.map((item) => {
-      const prod = item.product ?? {}
+      const prod: Record<string, any> = item.product ?? {}
       if (item.type === GoodsType.ProductFinish) {
         if ('class' in prod) {
           const { class: finished_class, ...rest } = prod
@@ -318,35 +318,69 @@ async function downloadDetails() {
       }
     })
 
-    // 删除 status 字段
+    // 删除 status 字段，并重命名 id/remark，避免和调拨字段冲突
     const newProduct = product.map((item) => {
-      if ('status' in item) {
-        const { status, ...rest } = item
-        return rest
+      const obj: Record<string, any> = { ...item }
+      delete obj.status
+      if ('id' in item) {
+        obj.product_id = item.id
+        delete obj.id
       }
+      if ('remark' in item) {
+        obj.product_remark = item.remark
+        delete obj.remark
+      }
+      if ('created_at' in item) {
+        obj.product_created_at = item.created_at
+        delete obj.created_at
+      }
+      if ('updated_at' in item) {
+        obj.product_updated_at = item.updated_at
+        delete obj.updated_at
+      }
+      return obj
+    })
+
+    // oldFilterList 配置里 class → old_class，同时处理 id/remark → product_id/product_remark
+    const oldList = oldFilterListToArray.value.map((item) => {
+      if (item.name === 'class')
+        return { ...item, name: 'old_class' }
+      if (item.name === 'id')
+        return { ...item, name: 'product_id' }
+      if (item.name === 'remark')
+        return { ...item, name: 'product_remark' }
+      if (item.name === 'created_at')
+        return { ...item, name: 'product_created_at' }
+      if (item.name === 'updated_at')
+        return { ...item, name: 'product_updated_at' }
       return item
     })
 
-    // oldFilterList 配置里 class 改成 old_class
-    const oldList = oldFilterListToArray.value.map(item =>
-      item.name === 'class' ? { ...item, name: 'old_class' } : item,
-    )
-
-    // finishedFilterList 配置里 class 改成 finished_class
-    const finishedList = finishedFilterListToArray.value.map(item =>
-      item.name === 'class' ? { ...item, name: 'finished_class' } : item,
-    )
+    // finishedFilterList 配置里 class → finished_class，同时处理 id/remark → product_id/product_remark
+    const finishedList = finishedFilterListToArray.value.map((item) => {
+      if (item.name === 'class')
+        return { ...item, name: 'finished_class' }
+      if (item.name === 'id')
+        return { ...item, name: 'product_id' }
+      if (item.name === 'remark')
+        return { ...item, name: 'product_remark' }
+      if (item.name === 'created_at')
+        return { ...item, name: 'product_created_at' }
+      if (item.name === 'updated_at')
+        return { ...item, name: 'product_updated_at' }
+      return item
+    })
 
     // 合并配置并去掉 status
     const productToArray = [...finishedList, ...oldList]
-    const newProductToArray = productToArray.filter(item => item.name !== 'status')
+    const newProductToArray = productToArray.filter(item => item.name !== 'status' && item.name !== 'store')
 
     // 导出 Excel
     exportToXlsxMultiple(
       [res.data, newProduct],
       [...allocateFilterListToArray.value, ...newProductToArray],
       { ...checkHeaderMapA, ...oldUnclassHeaderMap },
-      '导出调拨明细',
+      '调拨明细',
     )
   }
   finally {

@@ -3,8 +3,8 @@ useSeoMeta({
   title: '待办',
 })
 
-const { myStoreTodaySale, myStoreTodayInventory } = homeDataStore()
-const { TodayInventory, todaySaleData } = storeToRefs(homeDataStore())
+const { myStoreTodaySale, myStoreTodayInventory, myStoreTodayPayment } = homeDataStore()
+const { TodayInventory, todaySaleData, Payments } = storeToRefs(homeDataStore())
 const { myStore, myStoreList } = storeToRefs(useStores())
 const { getMyStore, switchStore } = useStores()
 const { getPerformanceType, getPerformanceList } = useBoss()
@@ -24,6 +24,7 @@ const handleSelectFn = async (id: Stores['id']) => {
 
 await myStoreTodayInventory({ store_id: myStore.value.id })
 await myStoreTodaySale({ store_id: myStore.value.id })
+await myStoreTodayPayment({ store_id: myStore.value.id })
 
 // 业绩
 const params = ref({ duration: 1 } as BossWhere)
@@ -66,18 +67,22 @@ onMounted(async () => {
           }" />
 
         <!-- <home-action /> -->
+        <template v-if="Payments">
+          <summary-card-payment :payments="Payments" @click-title="jump('/summary/cashflow')" />
+        </template>
         <template v-if="todaySaleData">
-          <summary-card-sale :today-sale-data="todaySaleData" />
+          <summary-card-sale :today-sale-data="todaySaleData" @click-title="jump('/summary/sale')" />
         </template>
         <template v-if="TodayInventory">
-          <summary-card-inventory :today-inventory="TodayInventory" />
+          <summary-card-inventory :today-inventory="TodayInventory" @click-title="jump('/summary/stock')" />
         </template>
         <summary-boss-card
           card-title="跨门店实时业绩"
           :title="performanceTitle"
           :list="performanceList"
           :loading="PerformanceLoading"
-          @getlist="getPerformanceListFn" />
+          @getlist="getPerformanceListFn"
+          @click-title="jump('/summary/boss')" />
       </template>
       <template v-else>
         <common-emptys text="暂未分配门店" />
