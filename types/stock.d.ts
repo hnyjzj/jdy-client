@@ -25,3 +25,10 @@ interface StatisticStock {
   day: string
   store_id: string
 }
+
+interface statisticSale {
+  duration: number
+  store_id: string
+  startTime?: string
+  endTime?: string
+}

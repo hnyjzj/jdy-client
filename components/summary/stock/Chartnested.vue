@@ -136,16 +136,14 @@ watch(chartMode, (val) => {
               <div class="text-[14px] pr-2">
                 {{ props.title }}
               </div>
-              <template v-if="chartMode === 'chart'">
-                <div class="flex my-2">
-                  <n-select
-                    v-model:value="bigCategory"
-                    :options="Object.keys(props.stockCategoryDate || {}).map(key => ({ label: key, value: key }))"
-                    class="min-w-[120px]"
-                    placeholder="请选择大类"
-                  />
-                </div>
-              </template>
+              <div class="flex my-2">
+                <n-select
+                  v-model:value="bigCategory"
+                  :options="Object.keys(props.stockCategoryDate || {}).map(key => ({ label: key, value: key }))"
+                  class="min-w-[120px]"
+                  placeholder="请选择"
+                />
+              </div>
             </div>
             <div>
               <summary-Toggle v-model="chartMode" />

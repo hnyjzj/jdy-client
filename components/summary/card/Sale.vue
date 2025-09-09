@@ -31,7 +31,7 @@ const toTodayPrice = () => {
 </script>
 
 <template>
-  <div class="blur-bgc rounded-[16px]  cursor-pointer" :style="{ marginBottom: props.marginBottom }">
+  <div class="blur-bgc rounded-[16px]  cursor-pointer" :style="{ marginBottom: props.marginBottom }" @click="jump('/summary/sale')">
     <div class="grid-12">
       <div
         class="skew col-6" uno-md="col-4">
