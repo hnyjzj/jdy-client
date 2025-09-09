@@ -8,9 +8,8 @@ const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { filterList } = storeToRefs(useDepositOrder())
 const { finishedList, finishedFilterList } = storeToRefs(useFinished())
 const { memberList } = storeToRefs(useMemberManage())
-const { createMember } = useMemberManage()
+const { createMember, getMemberList, getMemberWhere } = useMemberManage()
 const { getStoreStaffList } = useStores()
-const { getMemberList } = useMemberManage()
 const { $toast } = useNuxtApp()
 const { getPhraseList } = usePhrase()
 const Key = ref()
@@ -23,6 +22,8 @@ const userremark = ref<string>('')
 // 展示成品列表
 const showProductList = ref<DepositOrderProduct[]>([])
 await getSaleWhere()
+
+await getMemberWhere()
 await getFinishedWhere()
 // 获取会员列表
 const getMember = async (val: string) => {

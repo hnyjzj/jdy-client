@@ -11,11 +11,12 @@ const emit = defineEmits<{
   setMemberId: [val: string]
   setShowSubmit: [val: boolean]
 }>()
+
 const { myStore } = storeToRefs(useStores())
 const { userinfo } = storeToRefs(useUser())
-const memberManage = useMemberManage()
-const { getMemberList, createMember } = memberManage
-const { memberList } = storeToRefs(memberManage)
+
+const { getMemberList, createMember } = useMemberManage()
+const { memberList, filterList } = storeToRefs(useMemberManage())
 
 // 获取会员列表
 const getMember = async (val: string) => {
@@ -82,6 +83,14 @@ const searchMember = async (val: string) => {
     setUserInfo(searchList.value)
   }
 }
+const setMbid = async (id: string, phone: string) => {
+  memberId.value = id
+  searchPhone.value = phone
+  await searchMember(phone)
+}
+defineExpose({
+  setMbid,
+})
 
 const showModel = ref(false)
 // 新增会员
@@ -102,14 +111,6 @@ const submitNewMember = async () => {
     $toast.error(res?.message || '新增失败')
   }
 }
-const setMbid = async (id: string, phone: string) => {
-  memberId.value = id
-  searchPhone.value = phone
-  await searchMember(phone)
-}
-defineExpose({
-  setMbid,
-})
 </script>
 
 <template>
@@ -154,7 +155,7 @@ defineExpose({
                     (可抵扣{{ canUseScore }}元)
                   </template>
                 </div>
-                <div>等级:{{ orderObject.member?.level || '' }}</div>
+                <div>等级:{{ filterList.level?.preset[orderObject.member?.level] || orderObject.member?.level || '' }}</div>
               </div>
             </n-form-item-gi>
           </template>

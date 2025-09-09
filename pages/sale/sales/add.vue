@@ -19,6 +19,7 @@ const { getAccessorieWhere } = useAccessorie()
 const { OrderDetail } = storeToRefs(useDepositOrder())
 const { getOrderDetail } = useDepositOrder()
 const { getFinishedWhere, getFinishedsClass } = useFinished()
+const { getMemberWhere } = useMemberManage()
 const route = useRoute()
 const Key = ref()
 const addMemberRef = ref()
@@ -52,7 +53,7 @@ const checkProductClass = async (params: { class: number }) => {
 const showDepositList = ref<DepositOrderInfo[]>([])
 // 选择的订金单列表
 const selectDepositList = ref<DepositOrderInfo[]>([])
-
+await getMemberWhere()
 await getSaleWhere()
 await OldMaterialsWhere()
 await getFinishedWhere()
