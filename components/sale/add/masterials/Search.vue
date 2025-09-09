@@ -260,7 +260,6 @@ const scanCode = async () => {
                         v-model:value="nowOldMaster.recycle_type"
                         menu-size="large"
                         placeholder="选择回收类型"
-                        :default-value="1"
                         :options="optonsToSelect(props.oldFilterList.recycle_type?.preset)"
                         @focus="focus"
                       />
