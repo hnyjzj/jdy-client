@@ -8,7 +8,9 @@ const props = withDefaults(defineProps<{
   rbText: '查看排行',
   marginBottom: '16px',
 })
-
+const emit = defineEmits<{
+  clickTitle: []
+}>()
 const id = useId()
 const { run, stop } = addMouseEvent(`#${id}`)
 onMounted(() => {
@@ -30,7 +32,7 @@ const TodayInventoryList = ref<DataCardList<TodayInventory>>({
   <div class="bg-[#DEEBFD] dark:bg-[rgba(0,0,0,0.3)]  rounded-[16px]  cursor-pointer" :style="{ marginBottom: props.marginBottom }">
     <div class="grid-12">
       <div
-        class="skew col-6" uno-md="col-4">
+        class="skew col-6" uno-md="col-4" @click="emit('clickTitle')">
         <div class="skew-right" />
         <div class="skew-text pl-[15px] text-[16px] font-semibold">
           <div class="flex-center-row h-full">
