@@ -71,10 +71,10 @@ onMounted(async () => {
           <summary-card-payment :payments="Payments" @click-title="jump('/summary/cashflow')" />
         </template>
         <template v-if="todaySaleData">
-          <summary-card-sale :today-sale-data="todaySaleData" />
+          <summary-card-sale :today-sale-data="todaySaleData" @click-title="jump('/summary/sale')" />
         </template>
         <template v-if="TodayInventory">
-          <summary-card-inventory :today-inventory="TodayInventory" />
+          <summary-card-inventory :today-inventory="TodayInventory" @click-title="jump('/summary/stock')" />
         </template>
         <summary-boss-card
           card-title="跨门店实时业绩"
