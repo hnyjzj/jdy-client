@@ -69,8 +69,13 @@ async function getInfo() {
     page: page.value,
     limit: limit.value,
   } as CheckInfoParams
-  await getCheckInfo(params)
-  getFunBtn() // 调用 getFunBtn，更新 funbtns
+  try {
+    await getCheckInfo(params)
+    getFunBtn()
+  }
+  catch {
+    $toast.error('获取盘点单详情失败')
+  }
 }
 
 /** 多选值 */
@@ -142,7 +147,7 @@ const scanCode = async () => {
   const wx = await useWxWork()
   const code = await wx?.scanQRCode()
   if (code) {
-    goodCode.value = code
+    goodCode.value = code.replace(' ', '')
     await submitGoods(true)
   }
 }
@@ -346,7 +351,7 @@ async function downloadLocalFile(status: 'extra' | 'loss') {
 </script>
 
 <template>
-  <div class="pt-6 px-4">
+  <div v-if="checkInfo.id" class="pt-6 px-4">
     <div class="grid-12 pb-10">
       <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <div class="rounded-6 w-auto top">

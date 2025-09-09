@@ -54,10 +54,14 @@ export const useCheck = defineStore('check', {
     },
     /** 盘点单详情 */
     async getCheckInfo(params: CheckInfoParams) {
+      this.checkInfo = {} as CheckInfo
       try {
         const { data } = await https.post<CheckInfo, CheckInfoParams>('/product/inventory/info', params)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.checkInfo = data.value.data
+        }
+        else {
+          useNuxtApp().$toast.error('盘点单获取失败')
         }
       }
       catch (error) {
