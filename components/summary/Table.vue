@@ -8,6 +8,10 @@ const props = withDefaults(defineProps<{
 }>(), {
   isToggle: true,
 })
+
+const emits = defineEmits<{
+  clickTitle: []
+}>()
 const { $colorMode } = useNuxtApp()
 const scrollX = ref(0)
 
@@ -40,7 +44,7 @@ const option = computed(() => {
     },
     legend: {
       data: props.title
-        .filter((item: StockTitle) => item.title !== '门店' && item.title !== '合计')
+        .filter((item: StockTitle) => item.title !== '门店' && item.title !== '合计' && item.title !== '支付方式')
         .map((item: StockTitle) => item.title),
       left: 'center',
       top: 10,
@@ -106,11 +110,12 @@ const option = computed(() => {
 
 <template>
   <n-spin :show="props.loading" stroke="#fff" size="large">
-    <div class="blur-bgc rounded-[16px]  overflow-hidden mb-[16px]" data-allow-mismatch="style">
+    <div class="bg-[#DEEBFD] dark:bg-[rgba(0,0,0,0.3)]  rounded-[16px]  overflow-hidden mb-[16px]" data-allow-mismatch="style">
       <div class=" rounded-[4px]">
         <div class="grid-12 pb-[16px]">
           <div
-            class="skew col-6" uno-md="col-4">
+            class="skew col-6 cursor-pointer"
+            uno-md="col-4" @click="emits('clickTitle')">
             <div class="skew-right" />
             <div class="skew-text pl-[15px] text-[16px] font-semibold">
               <div class="flex-center-row h-full">
@@ -147,7 +152,7 @@ const option = computed(() => {
         <n-data-table
           :style="{
             '--n-merged-th-color': $colorMode.value === 'light' ? '#C7DAFF' : '#1A6BEB',
-            '--n-merged-td-color': $colorMode.value === 'light' ? '#D9E4F4' : '#224879',
+            '--n-merged-td-color': $colorMode.value === 'light' ? '#DEEBFD' : '#224879',
             '--n-merged-border-color': 'rgba(57,113,243,0.08)',
           }"
           :columns="props.title"

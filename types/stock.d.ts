@@ -16,7 +16,7 @@ interface BossWhere {
 
 interface BossSalesList {
   name: string
-  total: string
+  total?: string
   [key]: string
 }
 

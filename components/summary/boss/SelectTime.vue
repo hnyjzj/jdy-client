@@ -1,8 +1,11 @@
 <script lang="ts" setup>
+const props = defineProps<{
+  timeWhere?: Where<CashflowWhere> | Where<BossWhere>
+}>()
 const emits = defineEmits<{
   updateTime: []
 }>()
-const { timeWhere } = storeToRefs(useBoss())
+
 const startTime = ref()
 const endTime = ref()
 const params = defineModel<BossWhere>({ default: { } as BossWhere })
@@ -33,7 +36,7 @@ const cofirmTime = async () => {
         placeholder="请选择时间范围"
         clearable
         remote
-        :options="optonsToSelect(timeWhere.duration?.preset ?? [])"
+        :options="optonsToSelect(props.timeWhere?.duration?.preset ?? [])"
         @update:value="selectDuration" />
     </div>
     <div class="col-12" uno-sm="col-8">
