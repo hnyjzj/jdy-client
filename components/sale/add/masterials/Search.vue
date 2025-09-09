@@ -25,7 +25,7 @@ const searchOlds = async (val: string) => {
       OldObj.value.code_finished = params.code
     }
     else {
-      $toast.error(data?.message || '没有找到旧料')
+      $toast.error('没有找到旧料')
     }
   }
 }
@@ -260,7 +260,6 @@ const scanCode = async () => {
                         v-model:value="nowOldMaster.recycle_type"
                         menu-size="large"
                         placeholder="选择回收类型"
-                        :default-value="1"
                         :options="optonsToSelect(props.oldFilterList.recycle_type?.preset)"
                         @focus="focus"
                       />
