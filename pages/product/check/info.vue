@@ -70,8 +70,13 @@ async function getInfo() {
     limit: limit.value,
   } as CheckInfoParams
   try {
-    await getCheckInfo(params)
-    getFunBtn()
+    const res = await getCheckInfo(params)
+    if (res?.code === HttpCode.SUCCESS) {
+      await getFunBtn()
+    }
+    else {
+      $toast.error('获取盘点单详情失败')
+    }
   }
   catch {
     $toast.error('获取盘点单详情失败')

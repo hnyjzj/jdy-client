@@ -60,9 +60,7 @@ export const useCheck = defineStore('check', {
         if (data.value?.code === HttpCode.SUCCESS) {
           this.checkInfo = data.value.data
         }
-        else {
-          useNuxtApp().$toast.error('盘点单获取失败')
-        }
+        return data.value
       }
       catch (error) {
         throw new Error(`获取货品详情失败: ${error || '未知错误'}`)
