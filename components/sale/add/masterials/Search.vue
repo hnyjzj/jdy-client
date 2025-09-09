@@ -25,7 +25,7 @@ const searchOlds = async (val: string) => {
       OldObj.value.code_finished = params.code
     }
     else {
-      $toast.error(data?.message || '没有找到旧料')
+      $toast.error('没有找到旧料')
     }
   }
 }
