@@ -70,7 +70,7 @@ onMounted(async () => {
       <div class="px-[16px]">
         <div class="flex justify-between items-center py-[12px] text-[#FFF]" />
         <div class="w-fit color-[#fff] pb-[12px]">
-          <product-manage-company @change="changeStore" />
+          <product-manage-company :bg="false" @change="changeStore" />
         </div>
         <!-- 时间选择器 -->
         <summary-boss-select-time v-model="params" :time-where="timeWhere" @update-time="updateTimeFn" />
