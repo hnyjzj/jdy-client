@@ -137,6 +137,7 @@ watch([() => props.stockCategoryDate, chartBar, chartMode], updateChart)
               '--n-merged-td-color': $colorMode.value === 'light' ? '#DEEBFD' : '#224879',
               '--n-merged-border-color': 'rgba(57,113,243,0.08)',
             }"
+            :max-height="400"
             :columns="columns"
             :data="data"
             bordered

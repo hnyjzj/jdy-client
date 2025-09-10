@@ -55,6 +55,7 @@ const data = computed(() => {
           }"
           :columns="columns"
           :data="data"
+          :max-height="400"
           bordered
         />
       </common-fold>
