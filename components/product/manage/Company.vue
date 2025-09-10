@@ -2,9 +2,11 @@
 const props = withDefaults(defineProps<{
   confirm?: boolean
   maxHeight?: string
+  bg?: boolean
 }>(), {
   confirm: false,
   maxHeight: '400px',
+  bg: true,
 })
 
 const emits = defineEmits(['change'])
@@ -74,8 +76,9 @@ const renderLabel = (option: any) => {
   <div>
     <n-dropdown trigger="click" placement="bottom-start" :render-label="renderLabel" :options="columns" :style="{ maxHeight: props.maxHeight, overflowY: 'auto' }" @select="handleSelect">
       <div
-        class="py-[6px] px-[12px] bg-[#FFFFFF66] border-rd-full h-full flex-center-row shadow-lg cursor-pointer  "
-        @click="changeStoer">
+        class="py-[6px] px-[12px]  border-rd-full h-full flex-center-row  cursor-pointer"
+        :class="{ 'shadow-lg': props.bg }"
+        :style="{ background: props.bg ? '#FFFFFF66' : 'transparent' }" @click="changeStoer">
         <client-only>
           <div class="store-name font-bold text-size-[14px] mr-[4px]">
             {{ myStore.name || '选择门店' }}
@@ -100,7 +103,7 @@ const renderLabel = (option: any) => {
 
 <style lang="scss" scoped>
 .store-name {
-  width: 80%;
+  width: 100%;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
