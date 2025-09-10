@@ -79,12 +79,12 @@ const option = computed(() => {
       {
         type: 'inside',
         start: 0,
-        end: 30,
+        end: 14,
       },
       {
         type: 'slider',
         start: 0,
-        end: 30,
+        end: 14,
         bottom: 10,
         height: 20,
       },
@@ -158,7 +158,7 @@ const option = computed(() => {
           :columns="props.title"
           :data="props.list"
           :scroll-x="scrollX"
-          :max-height="450"
+          :max-height="350"
           :bordered="true"
           :render-cell="(value: any) => {
             if (!value){

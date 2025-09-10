@@ -134,7 +134,7 @@ watch([() => props.date, trendKey], updateChart, { deep: true, immediate: true }
             :data="data"
             bordered
             :min-width="800"
-            :max-height="400"
+            :max-height="350"
           />
         </template>
       </common-fold>
