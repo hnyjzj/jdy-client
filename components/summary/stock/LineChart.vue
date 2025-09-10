@@ -133,7 +133,6 @@ watch([() => props.date, trendKey], updateChart, { deep: true, immediate: true }
             :columns="columns"
             :data="data"
             bordered
-            :min-width="800"
             :max-height="350"
           />
         </template>

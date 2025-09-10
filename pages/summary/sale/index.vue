@@ -26,9 +26,6 @@ onMounted(async () => {
   if (!params.value.duration) {
     params.value.duration = 1
   }
-  else {
-    params.value.duration = 1
-  }
   await getSalesWhere()
   await getMyStore()
   await fetchData()
