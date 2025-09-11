@@ -204,6 +204,7 @@ export const useBoss = defineStore('boss', {
      * 业绩列表
      */
     async getPerformanceList(params: BossWhere) {
+      this.performanceList = []
       const { data } = await https.post<any, BossWhere>('/statistic/boos/performance/data', params, true, false)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.performanceList = data.value?.data
