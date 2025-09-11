@@ -4,9 +4,9 @@ export const homeDataStore = defineStore('homeDataStore', {
     TodayInventory?: Record<string, string> // 今日库存数据
     Payments?: Record<string, string> // 今日收支数据
   } => ({
-    todaySaleData: undefined,
-    TodayInventory: undefined,
-    Payments: undefined,
+    todaySaleData: {} as Record<string, string>,
+    TodayInventory: {} as Record<string, string>,
+    Payments: {} as Record<string, string>,
   }),
 
   getters: {
@@ -16,7 +16,7 @@ export const homeDataStore = defineStore('homeDataStore', {
     // 获取今日本店销售数据
     async myStoreTodaySale(req: { store_id: string }) {
       this.todaySaleData = undefined
-      const { data } = await https.post<todaySales, { store_id: string }>('/statistic/today/sales', req)
+      const { data } = await https.post<Record<string, string>, { store_id: string }>('/statistic/today/sales', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.todaySaleData = reorderObject(data.value.data)
       }
@@ -24,7 +24,7 @@ export const homeDataStore = defineStore('homeDataStore', {
     // 本店今日货品库存情况
     async myStoreTodayInventory(req: { store_id: string }) {
       this.TodayInventory = undefined
-      const { data } = await https.post<TodayInventory, { store_id: string }>('/statistic/today/product', req)
+      const { data } = await https.post<Record<string, string>, { store_id: string }>('/statistic/today/product', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.TodayInventory = reorderObject(data.value.data)
       }
