@@ -38,7 +38,7 @@ const data = computed(() => {
 
 <template>
   <n-spin :show="props.loading" stroke="#fff" size="large">
-    <div class="mt-[16px] overflow-hidden">
+    <div class="my-[16px] overflow-hidden">
       <common-fold :is-collapse="false" from-color="rgba(71,126,245,0.6)" to-color="rgba(243,245,254,0.6)">
         <template #title>
           <div class="w-[100%] flex justify-between items-center">
@@ -55,6 +55,7 @@ const data = computed(() => {
           }"
           :columns="columns"
           :data="data"
+          :max-height="350"
           bordered
         />
       </common-fold>
