@@ -16,6 +16,7 @@ export const useStock = defineStore('Stock', {
       const { data } = await https.post<any, StatisticStock>('/statistic/stock/data', params, true, false)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.stockDate = data.value.data
+        this.stockDate.overview = reorderObject(this.stockDate.overview)
       }
     },
     /** 销售数据 */
@@ -23,6 +24,7 @@ export const useStock = defineStore('Stock', {
       const { data } = await https.post<any, statisticSale>('/statistic/sales/data', params, true, false)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.salesData = data.value.data
+        this.salesData.overview = reorderObject(this.salesData.overview)
       }
     },
     async getSalesWhere() {
