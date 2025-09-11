@@ -41,7 +41,7 @@ function toggleShow() {
 </script>
 
 <template>
-  <div class="collapse-item">
+  <div class="collapse-item overflow-hidden">
     <div class="rounded-t-[24px] ">
       <div class="title rounded-t-[24px]  cursor-pointer" :style="`background: linear-gradient(to ${direction}, ${fromColor}, ${toColor});font-size:${size};`" @click="toggleShow">
         <template v-if="$slots.title">
