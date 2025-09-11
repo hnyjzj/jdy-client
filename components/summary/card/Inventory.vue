@@ -3,7 +3,7 @@ const props = withDefaults(defineProps<{
   rbText?: string
   marginBottom?: string
   goldPrice?: string
-  todayInventory: TodayInventory
+  todayInventory: Record<string, string>
 }>(), {
   rbText: '查看排行',
   marginBottom: '16px',
@@ -18,13 +18,6 @@ onMounted(() => {
 })
 onBeforeUnmount(() => {
   stop()
-})
-
-const TodayInventoryList = ref<DataCardList<TodayInventory>>({
-  old_stock_count: '旧料库存件数',
-  old_stock_weight: '旧料库存金重',
-  product_stock_count: '成品库存件数',
-  unsalable_count: '滞销货品件数',
 })
 </script>
 
@@ -44,16 +37,16 @@ const TodayInventoryList = ref<DataCardList<TodayInventory>>({
 
     <div class="p-[16px] ">
       <div :id="id" class="flex overflow-x-scroll gap-[20px]">
-        <template v-for="(item, key) in TodayInventoryList" :key="key">
+        <template v-for="(item, key) in todayInventory" :key="key">
           <div class="flex-grow-1 flex-shrink-0">
             <div class="flex-start">
               <div class="w-[4px] h-[10px] bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] rounded-[2px]" />
               <div class="color-[#333] dark:color-[#fff] ml-[4px] text-[12px]  line-height-[24px]">
-                {{ TodayInventoryList[key] }}
+                {{ key }}
               </div>
             </div>
             <div class="color-[#3971F3] dark:color-[#fff] font-semibold  line-height-[24px]">
-              <span class="text-[16px]">{{ props.todayInventory[key] }}</span>
+              <span class="text-[16px]">{{ item }}</span>
             </div>
           </div>
         </template>
