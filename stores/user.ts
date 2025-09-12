@@ -20,7 +20,7 @@ export const useUser = defineStore('userStore', {
       return true
     },
     async UserScreen(params: { username: string, storename?: string | undefined, url: string }) {
-      await https.post<any, { username: string, storename?: string | undefined, url: string }>('/log/on_capture_screen', params, false)
+      await https.post<any, { username: string, storename?: string | undefined, url: string }>('/log/on_capture_screen', params, false, false)
     },
   },
   persist: {

@@ -7,7 +7,7 @@ const { myStoreTodaySale, myStoreTodayInventory, myStoreTodayPayment } = homeDat
 const { TodayInventory, todaySaleData, Payments } = storeToRefs(homeDataStore())
 const { myStore, myStoreList } = storeToRefs(useStores())
 const { getMyStore, switchStore } = useStores()
-const { getPerformanceType, getPerformanceList } = useBoss()
+const { getPerformanceList } = useBoss()
 if (!myStore.value.id) {
   await getMyStore()
 }
@@ -39,12 +39,9 @@ const getPerformanceListFn = async () => {
   PerformanceLoading.value = false
 }
 
-const getPerformanceReq = async () => {
-  await getPerformanceType()
-  await getPerformanceListFn()
-}
 onMounted(async () => {
-  await getPerformanceReq()
+  await nextTick()
+  await getPerformanceListFn()
 })
 </script>
 
@@ -76,13 +73,15 @@ onMounted(async () => {
         <template v-if="TodayInventory">
           <summary-card-inventory :today-inventory="TodayInventory" @click-title="jump('/summary/stock')" />
         </template>
-        <summary-boss-card
-          card-title="跨门店实时业绩"
-          :title="performanceTitle"
-          :list="performanceList"
-          :loading="PerformanceLoading"
-          @getlist="getPerformanceListFn"
-          @click-title="jump('/summary/boss')" />
+        <template v-if="performanceList.length > 0">
+          <summary-boss-card
+            card-title="跨门店实时业绩"
+            :title="performanceTitle"
+            :list="performanceList"
+            :loading="PerformanceLoading"
+            @getlist="getPerformanceListFn"
+            @click-title="jump('/summary/boss')" />
+        </template>
       </template>
       <template v-else>
         <common-emptys text="暂未分配门店" />
