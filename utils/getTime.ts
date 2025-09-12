@@ -96,57 +96,36 @@ export function dateStringToExcelSerial(dateStr: string): number {
  * @returns 日期
  */
 export const excelSerialToDate = (serial: number | string): string => {
-  if (!serial || Number.isNaN(serial))
+  if (!serial || Number.isNaN(Number(serial)))
     return ''
 
-  // 如果 serial 是字符串，则尝试将其转换为excel日期
   if (typeof serial === 'string') {
-    serial = dateStringToExcelSerial(serial)
+    serial = Number(serial)
   }
 
-  const utc_days = Math.floor(serial) - 25569
-  const daySeconds = utc_days * 86400
-  const timeFraction = serial % 1
-  const timeSeconds = Math.round(timeFraction * 86400)
+  // Excel 起点 1899-12-30
+  const base = new Date(Date.UTC(1899, 11, 30))
 
-  const totalSeconds = (daySeconds + timeSeconds) * 1000 // 毫秒
-  const date = new Date(totalSeconds)
+  // 分钟 = 总天数 * 1440
+  const totalMinutes = Math.round(serial * 24 * 60)
 
-  const yyyy = date.getFullYear()
-  const MM = String(date.getMonth() + 1).padStart(2, '0')
-  const dd = String(date.getDate()).padStart(2, '0')
-  const hh = String(date.getHours()).padStart(2, '0')
-  const mm = String(date.getMinutes()).padStart(2, '0')
-  const ss = String(date.getSeconds()).padStart(2, '0')
+  // 得到最终时间
+  const date = new Date(base.getTime() + totalMinutes * 60 * 1000)
 
-  return `${yyyy}-${MM}-${dd} ${hh}:${mm}:${ss}`
+  const yyyy = date.getUTCFullYear()
+  const MM = String(date.getUTCMonth() + 1).padStart(2, '0')
+  const dd = String(date.getUTCDate()).padStart(2, '0')
+  const hh = String(date.getUTCHours()).padStart(2, '0')
+  const mm = String(date.getUTCMinutes()).padStart(2, '0')
+
+  return `${yyyy}-${MM}-${dd} ${hh}:${mm}`
 }
 
 export const toFixedChinaISOString = (input: string): string => {
   if (!input)
     return ''
-
-  // 假设输入是“2023-11-11 08:00:00”
-  const parts = input.split(' ')
-  if (parts.length !== 2)
-    return ''
-
-  const [dateStr, timeStr] = parts
-  const [year, month, day] = dateStr.split('-').map(Number)
-  const [hour, minute, second] = timeStr.split(':').map(Number)
-
-  // 构建本地（北京时间）对应的 Date 对象
-  const date = new Date(Date.UTC(year, month - 1, day, hour - 8, minute, second)) // -8 小时转换为 UTC 时间
-
-  const yyyy = date.getFullYear()
-  const MM = String(date.getMonth() + 1).padStart(2, '0')
-  const dd = String(date.getDate()).padStart(2, '0')
-  const hh = String(date.getHours()).padStart(2, '0')
-  const mm = String(date.getMinutes()).padStart(2, '0')
-  const ss = String(date.getSeconds()).padStart(2, '0')
-  const ms = String(date.getMilliseconds()).padStart(3, '0')
-
-  return `${yyyy}-${MM}-${dd}T${hh}:${mm}:${ss}.${ms}+08:00`
+  const [dateStr, timeStr] = input.split(' ')
+  return `${dateStr}T${timeStr}:00+08:00`
 }
 
 export const dateDisabled = (ts: number) => {
