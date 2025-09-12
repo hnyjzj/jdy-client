@@ -52,7 +52,7 @@ export const useStores = defineStore('Store', {
     },
     // 门店列表
     async staffGetStoreList(req: ReqList<Stores>) {
-      const { data } = await https.post<ResList<Stores>, ReqList<Stores>>('/store/list', req)
+      const { data } = await https.post<ResList<Stores>, ReqList<Stores>>('/store/list', req, true, false)
       if (data.value?.code === HttpCode.SUCCESS) {
         return data.value.data.list
       }
@@ -60,6 +60,17 @@ export const useStores = defineStore('Store', {
         return []
       }
     },
+    // 获取全部门店
+    async staffGetStoreListAll() {
+      const { data } = await https.post<ResList<Stores>, { all: true }>('/store/list', { all: true }, true, false)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return data.value.data.list
+      }
+      else {
+        return []
+      }
+    },
+
     // 创建门店
     async createStore(req: Partial<Stores>) {
       const { data } = await https.post<undefined, Partial<Stores>>('/store/create', req)

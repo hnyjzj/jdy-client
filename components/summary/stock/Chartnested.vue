@@ -191,6 +191,7 @@ watch(chartMode, (val) => {
               '--n-merged-td-color': $colorMode.value === 'light' ? '#DEEBFD' : '#224879',
               '--n-merged-border-color': 'rgba(57,113,243,0.08)',
             }"
+            :max-height="350"
             bordered />
         </template>
       </common-fold>

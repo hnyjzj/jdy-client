@@ -8,18 +8,24 @@ const { uploadAvatar, getStaffWhere, EditStaff } = useStaff()
 const { filterListToArray } = storeToRefs(useStaff())
 const { getRoleWhere, getRoleList } = useAuthority()
 const { roleWhereList, roleList } = storeToRefs(useAuthority())
-const { staffGetStoreList } = useStores()
-const { staffGetRegionList } = useRegion()
+const { staffGetStoreList, staffGetStoreListAll } = useStores()
+const { staffGetRegionList, staffGetRegionListAll } = useRegion()
 const getStoreList = async (query: string) => {
   const res = await staffGetStoreList({ page: 1, limit: 10, where: { name: query } })
   return res || []
 }
-
+const searchStoresAll = async () => {
+  const res = await staffGetStoreListAll()
+  return res || []
+}
 const getRegionList = async (query: string) => {
   const res = await staffGetRegionList({ page: 1, limit: 10, where: { name: query } })
   return res || []
 }
-
+const getRegionListAll = async () => {
+  const res = await staffGetRegionListAll()
+  return res || []
+}
 const route = useRoute()
 
 const dialogShow = ref(false)
@@ -199,7 +205,9 @@ const getroleListFn = async (data: number) => {
         v-model="storeForm"
         v-model:default-form="defaultform"
         :get-store-list="getStoreList"
+        :get-store-list-all="searchStoresAll"
         :get-region-list="getRegionList"
+        :get-region-list-all="getRegionListAll"
         @submit="submitEditStore"
       />
       <staff-manage-auth

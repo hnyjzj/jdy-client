@@ -188,7 +188,7 @@ onMounted(async () => {
         <!-- 旧料销售 -->
         <summary-boss-card
           v-model="radioValueOldSale"
-          card-title="旧料销售"
+          card-title="旧料回收"
           :where="oldSalesFilterWhere"
           :title="oldSalesTitle"
           :list="oldSalesList"
