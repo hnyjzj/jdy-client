@@ -44,7 +44,7 @@ export const useRegion = defineStore('Region', {
     },
     // 区域列表
     async staffGetRegionList(req: ReqList<Region>) {
-      const { data } = await https.post<ResList<Region>, ReqList<Region>>('/region/list', req)
+      const { data } = await https.post<ResList<Region>, ReqList<Region>>('/region/list', req, true, false)
       if (data.value?.code === HttpCode.SUCCESS) {
         return data.value.data.list
       }
@@ -52,6 +52,17 @@ export const useRegion = defineStore('Region', {
         return []
       }
     },
+    // 获取全部区域列表
+    async staffGetRegionListAll() {
+      const { data } = await https.post<ResList<Region>, { all: true }>('/region/list', { all: true }, true, false)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return data.value.data.list
+      }
+      else {
+        return []
+      }
+    },
+
     // 创建区域
     async createRegion(req: Partial<Region>) {
       const { data } = await https.post<undefined, Partial<Region>>('/region/create', req)
