@@ -84,10 +84,7 @@ const partTotalPrice = computed(() => {
   let totalPrice = 0
   props.details?.products?.forEach((item) => {
     if (item.type === 3) {
-      totalPrice += calc('(a * b )| =3 ~5,!n', {
-        a: item?.accessorie.price,
-        b: item?.accessorie.quantity,
-      })
+      totalPrice += Number(item?.accessorie?.price) || 0
     }
   })
   return calc('(a)| =3 ~5,!n', {
