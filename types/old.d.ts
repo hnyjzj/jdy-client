@@ -173,4 +173,8 @@ interface ProductOlds {
   rate: number | string
   supplier: number
   images: string[]
+  /**
+   * 成品条码
+   */
+  code_finished?: string
 }
