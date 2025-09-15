@@ -4,15 +4,13 @@ import { NButton } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { getAccessorieAllocate, getAccessorieAllocateWhere, getAccessorieAllocateDetaills } = useAccessorieAllocate()
 const { accessorieAllocateList, accessorieAllocateFilterListToArray, accessorieAllocateFilterList, accessorieAllocateTotal } = storeToRefs(useAccessorieAllocate())
-const { myStoreList, myStore } = storeToRefs(useStores())
-const { getMyStore } = useStores()
+const { myStoreList, myStore, StoreStaffList } = storeToRefs(useStores())
+const { getMyStore, getStoreStaffList } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
 const { getRegionList } = useRegion()
 const { regionList } = storeToRefs(useRegion())
 const { getAccessorieWhere } = useAccessorie()
 const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
-const { getStaffList } = useStaff()
-const { staffList } = storeToRefs(useStaff())
 const route = useRoute()
 const searchKey = ref('')
 
@@ -138,14 +136,14 @@ const pageOption = ref({
 
 function initStaffCol() {
   staffCol.value = []
-  staffList.value.forEach((item: Staff) => {
+  StoreStaffList.value.forEach((item: StoresStaff) => {
     staffCol.value.push({ label: item.nickname, value: item.id })
   })
 }
 
 try {
   await getMyStore()
-  await getStaffList({ page: 1, limit: 30, where: { store_id: myStore.value.id } })
+  await getStoreStaffList({ id: myStore.value.id })
   await changeStoer()
   await getRegionList({ page: 1, limit: 20 })
   await changeRegion()
@@ -266,7 +264,7 @@ async function downloadDetails() {
 }
 
 async function focus() {
-  await getStaffList({ page: 1, limit: 30, where: { store_id: myStore.value.id } })
+  await getStoreStaffList({ id: myStore.value.id })
 }
 </script>
 
@@ -417,7 +415,6 @@ async function focus() {
         <n-select
           v-model:value="filterData.to_region_id"
           menu-size="large"
-          filterable
           placeholder="选择调入区域"
           :options="regionCol"
           clearable
@@ -428,7 +425,6 @@ async function focus() {
         <n-select
           v-model:value="filterData.initiator_id"
           menu-size="large"
-          filterable
           placeholder="选择发起人"
           :options="staffCol"
           clearable
@@ -439,7 +435,6 @@ async function focus() {
         <n-select
           v-model:value="filterData.receiver_id"
           menu-size="large"
-          filterable
           placeholder="选择接收人"
           :options="staffCol"
           clearable
