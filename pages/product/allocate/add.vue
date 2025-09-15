@@ -48,7 +48,7 @@ const getStoreFun = useDebounceFn(async (query: string) => {
     label: item.name,
     value: item.id,
   }))
-}, 1000)
+}, 500)
 
 await getAllocateWhere()
 await getStoreList({ page: 1, limit: 20 })
@@ -160,7 +160,9 @@ function handleValidateButtonClick() {
                         :placeholder="`选择${allocateFilterList.method?.label}`"
                         :options="presetToSelect('method')"
                         clearable
-                        @focus="focus"
+                        @focus="() => {
+                          storeCol = []
+                        }"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" path="type" required label="仓库类型">
@@ -171,7 +173,6 @@ function handleValidateButtonClick() {
                         :options="optonsToSelect(typePreset)"
                         clearable
                         :disabled="type"
-                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <template v-if="params.method === 1">
@@ -208,11 +209,10 @@ function handleValidateButtonClick() {
                         placeholder="选择调拨原因"
                         :options="presetToSelect('reason') "
                         clearable
-                        @focus="focus"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" path="remark" label="备注">
-                      <n-input v-model:value="params.remark" type="textarea" round placeholder="输入备注" @focus="focus" />
+                      <n-input v-model:value="params.remark" type="textarea" round placeholder="输入备注" />
                     </n-form-item-gi>
                   </n-grid>
                 </n-form>

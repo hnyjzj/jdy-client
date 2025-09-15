@@ -552,7 +552,6 @@ async function downloadDetails() {
         <n-select
           v-model:value="filterData.from_store_id"
           menu-size="large"
-          filterable
           placeholder="选择调出门店"
           :options="storeCol"
           clearable
@@ -563,7 +562,6 @@ async function downloadDetails() {
         <n-select
           v-model:value="filterData.to_store_id"
           menu-size="large"
-          filterable
           placeholder="选择调入门店"
           :options="storeCol"
           clearable

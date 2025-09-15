@@ -4,8 +4,8 @@ import { NButton } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { getAccessorieAllocate, getAccessorieAllocateWhere, getAccessorieAllocateDetaills } = useAccessorieAllocate()
 const { accessorieAllocateList, accessorieAllocateFilterListToArray, accessorieAllocateFilterList, accessorieAllocateTotal } = storeToRefs(useAccessorieAllocate())
-const { storesList, myStore } = storeToRefs(useStores())
-const { getStoreList } = useStores()
+const { myStoreList, myStore } = storeToRefs(useStores())
+const { getMyStore } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
 const { getRegionList } = useRegion()
 const { regionList } = storeToRefs(useRegion())
@@ -33,7 +33,7 @@ function changeRegion() {
 
 function changeStoer() {
   storeCol.value = []
-  storesList.value.forEach((item: Stores) => {
+  myStoreList.value.forEach((item: Stores) => {
     storeCol.value.push({ label: item.name, value: item.id })
   })
 }
@@ -144,7 +144,7 @@ function initStaffCol() {
 }
 
 try {
-  await getStoreList({ page: 1, limit: 20 })
+  await getMyStore()
   await getStaffList({ page: 1, limit: 30, where: { store_id: myStore.value.id } })
   await changeStoer()
   await getRegionList({ page: 1, limit: 20 })
@@ -408,7 +408,9 @@ async function focus() {
           placeholder="选择调入门店"
           :options="storeCol"
           clearable
-          @focus="focus"
+          @focus="() => {
+            getMyStore()
+          }"
         />
       </template>
       <template #to_region_id>
