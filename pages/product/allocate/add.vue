@@ -51,7 +51,6 @@ const getStoreFun = useDebounceFn(async (query: string) => {
 }, 500)
 
 await getAllocateWhere()
-await getStoreList({ page: 1, limit: 20 })
 await changeStoer()
 
 /** 创建调拨单 */

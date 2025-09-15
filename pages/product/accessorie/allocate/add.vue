@@ -50,7 +50,6 @@ function changeStoer() {
 }
 
 await getAccessorieAllocateWhere()
-await getStoreList({ page: 1, limit: 20 })
 await getRegionList({ page: 1, limit: 20 })
 await changeStoer()
 async function submit() {
