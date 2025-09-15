@@ -96,6 +96,8 @@ interface Allocate {
   /** 接收人 */
   receiver: Staff
   receiver_id: string
+  /** 总部  */
+  to_headquarters_id: string
 }
 
 interface AllocateReq {
@@ -135,6 +137,8 @@ interface AllocateReq {
    * 入库单id
    */
   enter_id?: Enter['id']
+  /** 总部 */
+  to_headquarters_id: string
 }
 
 interface AllocateInfoParams {

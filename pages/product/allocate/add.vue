@@ -37,13 +37,18 @@ useSeoMeta({
 
 /** 门店选择列表 */
 const storeCol = ref()
-
 function changeStoer() {
   storeCol.value = []
-  storesList.value.forEach((item: Stores) => {
-    storeCol.value.push({ label: item.name, value: item.id })
-  })
 }
+
+const getStoreFun = useDebounceFn(async (query: string) => {
+  await getStoreList({ page: 1, limit: 20, where: { name: query } }, false, false)
+
+  storeCol.value = storesList.value.map((item: Stores) => ({
+    label: item.name,
+    value: item.id,
+  }))
+}, 300)
 
 await getAllocateWhere()
 await getStoreList({ page: 1, limit: 20 })
@@ -177,7 +182,22 @@ function handleValidateButtonClick() {
                           placeholder="选择调入门店"
                           :options="storeCol"
                           clearable
-                          @focus="focus"
+                          filterable
+                          remote
+                          :on-search="getStoreFun"
+                          @focus="getStoreFun('')"
+                        />
+                      </n-form-item-gi>
+                    </template>
+                    <template v-if="params.method === 2">
+                      <n-form-item-gi :span="12" path="to_headquarters_id" label="调入总部" required>
+                        <n-select
+                          v-model:value="params.to_headquarters_id"
+                          menu-size="large"
+                          placeholder="选择调入总部"
+                          :options="storeCol"
+                          clearable
+                          @focus="getStoreFun('总部')"
                         />
                       </n-form-item-gi>
                     </template>
