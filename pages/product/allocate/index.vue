@@ -4,11 +4,9 @@ import { NButton } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { getAllocateList, getAllocateWhere, getAllocateDetails } = useAllocate()
 const { allocateList, allocateFilterListToArray, allocateFilterList, allocateTotal } = storeToRefs(useAllocate())
-const { myStoreList, myStore } = storeToRefs(useStores())
-const { getMyStore } = useStores()
+const { myStoreList, myStore, StoreStaffList } = storeToRefs(useStores())
+const { getMyStore, getStoreStaffList } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
-const { getStaffList } = useStaff()
-const { staffList } = storeToRefs(useStaff())
 const { oldFilterListToArray } = storeToRefs(useOld())
 const { finishedFilterListToArray } = storeToRefs(useFinished())
 const { getFinishedWhere } = useFinished()
@@ -83,12 +81,12 @@ function changeStore() {
 
 function initStaffCol() {
   staffCol.value = []
-  staffList.value.forEach((item: Staff) => {
+  StoreStaffList.value.forEach((item: StoresStaff) => {
     staffCol.value.push({ label: item.nickname, value: item.id })
   })
 }
 await getMyStore()
-await getStaffList({ page: 1, limit: 30, where: { store_id: myStore.value.id } })
+await getStoreStaffList({ id: myStore.value.id })
 await changeStore()
 await initStaffCol()
 await getAllocateWhere()
@@ -552,7 +550,6 @@ async function downloadDetails() {
         <n-select
           v-model:value="filterData.from_store_id"
           menu-size="large"
-          filterable
           placeholder="选择调出门店"
           :options="storeCol"
           clearable
@@ -563,7 +560,6 @@ async function downloadDetails() {
         <n-select
           v-model:value="filterData.to_store_id"
           menu-size="large"
-          filterable
           placeholder="选择调入门店"
           :options="storeCol"
           clearable
@@ -574,7 +570,6 @@ async function downloadDetails() {
         <n-select
           v-model:value="filterData.initiator_id"
           menu-size="large"
-          filterable
           placeholder="选择发起人"
           :options="staffCol"
           clearable
@@ -585,7 +580,6 @@ async function downloadDetails() {
         <n-select
           v-model:value="filterData.receiver_id"
           menu-size="large"
-          filterable
           placeholder="选择接收人"
           :options="staffCol"
           clearable

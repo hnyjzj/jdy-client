@@ -50,7 +50,6 @@ function changeStoer() {
 }
 
 await getAccessorieAllocateWhere()
-await getStoreList({ page: 1, limit: 20 })
 await getRegionList({ page: 1, limit: 20 })
 await changeStoer()
 async function submit() {
@@ -128,6 +127,15 @@ const canShowFilter = (item: FilterWhere<AccessorieAllocate>) => {
 
   return true
 }
+
+const getStoreFun = useDebounceFn(async (query: string) => {
+  await getStoreList({ page: 1, limit: 20, where: { name: query } }, false, false)
+
+  storeCol.value = storesList.value.map((item: Stores) => ({
+    label: item.name,
+    value: item.id,
+  }))
+}, 500)
 </script>
 
 <template>
@@ -150,6 +158,9 @@ const canShowFilter = (item: FilterWhere<AccessorieAllocate>) => {
                               :placeholder="`选择${item.label}`"
                               :options="optonsToSelect(item.preset)"
                               clearable
+                              @focus="() => {
+                                storeCol = []
+                              }"
                             />
                           </template>
                           <template v-if="item.input === 'text'">
@@ -171,17 +182,13 @@ const canShowFilter = (item: FilterWhere<AccessorieAllocate>) => {
                               <n-select
                                 v-model:value="params[item.name as keyof AccessorieAllocateReq]"
                                 :placeholder="`选择${item.label}`"
-                                :options="storesList.map(v => ({
-                                  label: v.name,
-                                  value: v.id,
-                                }))"
+                                menu-size="large"
+                                :options="storeCol"
                                 clearable
-                                size="large"
+                                filterable
                                 remote
-                                @focus="(e) => {
-                                  focus(e)
-                                  getStoreList({ page: 1, limit: 20 })
-                                }"
+                                :on-search="getStoreFun"
+                                @focus="getStoreFun('')"
                               />
                             </template>
                             <template v-else-if="item.name === 'to_region_id'">
@@ -198,6 +205,16 @@ const canShowFilter = (item: FilterWhere<AccessorieAllocate>) => {
                                 @focus="(e) => {
                                   focus(e)
                                 }"
+                              />
+                            </template>
+                            <template v-else-if="item.name === 'to_headquarters_id'">
+                              <n-select
+                                v-model:value="params.to_headquarters_id"
+                                menu-size="large"
+                                placeholder="选择调入总部"
+                                :options="storeCol"
+                                clearable
+                                @focus="getStoreFun('总部')"
                               />
                             </template>
                           </template>

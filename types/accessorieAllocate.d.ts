@@ -49,6 +49,7 @@ interface AccessorieAllocate {
   receiver: Staffs
   product_count: number
   product_total: number
+  to_headquarters_id: string
 }
 
 interface AccessorieAllocateInfo extends AccessorieAllocate {
@@ -114,6 +115,7 @@ interface AccessorieAllocateReq {
   enter_id?: Enter['id']
   /** 区域id */
   to_region_id: string
+  to_headquarters_id: string
 }
 interface AddAccessorieAllocateProduct {
   /**
