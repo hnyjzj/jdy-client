@@ -48,7 +48,7 @@ const getStoreFun = useDebounceFn(async (query: string) => {
     label: item.name,
     value: item.id,
   }))
-}, 300)
+}, 1000)
 
 await getAllocateWhere()
 await getStoreList({ page: 1, limit: 20 })
