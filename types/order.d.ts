@@ -227,6 +227,7 @@ interface OrderPart extends ProductAccessories {
   status?: number
   id: string
   product?: ProductAccessories
+  price_original?: string
 }
 interface OrderWhere {
   cashier_id?: string

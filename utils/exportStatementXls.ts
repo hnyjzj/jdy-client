@@ -43,20 +43,10 @@ function mapEnumValues(
     Object.assign(newRow, {
       source: enumMap.source?.[order.source] ?? '',
       price_pay: order.price_pay ?? '',
-      order_price: order.price ?? '',
-      price_original: order.price_original ?? '',
-      remarks: Array.isArray(order.remarks) ? order.remarks.join(',') : '',
+      price_deposit: order.price_deposit ?? '',
+      remark: order.remarks?.join(',') || '',
       mainSale: order.clerks?.[0]?.salesman?.nickname ?? '',
     })
-    if (row.type === GoodsType.ProductFinish) {
-      newRow.price_product = order.product_finished_price ?? ''
-    }
-    else if (row.type === GoodsType.ProductOld) {
-      newRow.price_old = order.product_old_price ?? ''
-    }
-    else if (row.type === GoodsType.ProductAccessories) {
-      newRow.price_accessory = order.product_accessorie_price ?? ''
-    }
   }
   // 类型相关处理
   const fillProductFields = (p: any, fields: string[]) => {
@@ -76,7 +66,9 @@ function mapEnumValues(
           labor_fee_product: f.labor_fee ?? '',
           price: f.price ?? '',
           product_price_gold: f.price_gold ?? '',
-          product_price_original: f.price_original ?? '',
+          price_original: f.price_original ?? '',
+          label_price: p.label_price ?? '',
+          amount_price: f.price ?? '',
           class: enumMap.finished_class?.[p.class] ?? '',
         })
         fillProductFields(p, [
@@ -100,7 +92,7 @@ function mapEnumValues(
         const o = row.old
         const p = o.product || {}
         Object.assign(newRow, {
-          recycle_price: o.recycle_price ?? '',
+          price_old: o.recycle_price ?? '',
           recycle_price_gold: o.recycle_price_gold ?? '',
           recycle_price_labor: o.recycle_price_labor ?? '',
           quality_actual: o.quality_actual ?? '',
@@ -109,10 +101,11 @@ function mapEnumValues(
           recycle_weight_metal: o.weight_metal ?? '',
           recycle_price_labor_method: enumMap.recycle_price_labor_method?.[o.recycle_price_labor_method] ?? '',
           class: enumMap.class?.[p.class] ?? '',
+          code_old: p.code ?? '',
+          code: p.code_finished ?? '',
         })
         fillProductFields(p, [
           'name',
-          'code',
           'recycle_method',
           'supplier',
           'brand',
@@ -133,6 +126,9 @@ function mapEnumValues(
           accessory_retail_type: enumMap.retail_type?.[p.retail_type] ?? '',
           accessory_quantity: a.quantity ?? '',
           name: p.name ?? '',
+          price_original: a.price_original ?? '',
+          amount_price: a.price ?? '',
+          label_price: p.price ?? '',
         })
         newRow.accessory_type = (() => {
           switch (p.type) {
