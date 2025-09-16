@@ -1,6 +1,7 @@
 type RegionWhere = Partial<Region>
 // 门店列表
 interface Region {
+  alias?: string
   addressName?: string
   address: string
   city: string

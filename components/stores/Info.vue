@@ -1,13 +1,24 @@
 <script setup lang="ts">
-// 成品列表-详情
-const props = defineProps<{
-  infoDetail: Stores
-}>()
-
-// 转换省市区名字
-const addressName = computed(() => {
-  return toProvinces(props.infoDetail.province, props.infoDetail.city, props.infoDetail.district)
+const { $toast } = useNuxtApp()
+const { updateStore } = useStores()
+const { storeDetails } = storeToRefs(useStores())
+const modelRef = ref<Partial<Stores>>({
+  id: storeDetails.value.id,
+  name: storeDetails.value.name,
+  alias: storeDetails.value.alias,
 })
+const formRef = ref()
+const rules = {
+  name: [{ required: true, message: '请输入门店名称', trigger: 'blur' }],
+  alias: [{ required: true, message: '请输入门店别名', trigger: 'blur' }],
+}
+const handleValidateButtonClick = async () => {
+  await formRef.value.validate()
+  const res = await updateStore(modelRef.value)
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('更新成功')
+  }
+}
 </script>
 
 <template>
@@ -16,56 +27,19 @@ const addressName = computed(() => {
       <div class="rounded-[24px]">
         <common-gradient title="基本信息">
           <template #body>
-            <div class="flex flex-col px-4 py-[6px]">
-              <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
-                <div class="color-[#666666] dark:color-[#fff]">
-                  Logo
-                </div>
-                <div>
-                  <img :src="ImageUrl(props.infoDetail?.logo)" mode="asc" class="w-auto max-w-[150px] h-[100px]">
-                </div>
+            <n-form ref="formRef" :model="modelRef" :rules="rules">
+              <n-form-item path="name" label="门店名称">
+                <n-input v-model:value="modelRef.name" @keydown.enter.prevent />
+              </n-form-item>
+              <n-form-item path="alias" label="别名">
+                <n-input v-model:value="modelRef.alias" @keydown.enter.prevent />
+              </n-form-item>
+              <div style="display: flex; justify-content: flex-end">
+                <n-button round type="info" @click="handleValidateButtonClick">
+                  保存
+                </n-button>
               </div>
-            </div>
-            <div class="flex flex-col px-4 py-[6px]">
-              <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
-                <div class="color-[#666666] dark:color-[#fff]">
-                  门店名称
-                </div>
-                <div class="color-[#333333] max-w-[60%] dark:color-[#fff]">
-                  {{ props.infoDetail.name }}
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-col px-4 py-[6px]">
-              <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
-                <div class="color-[#666666] dark:color-[#fff]">
-                  省市区
-                </div>
-                <div class="color-[#333333] max-w-[60%] dark:color-[#fff]">
-                  {{ addressName }}
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-col px-4 py-[6px]">
-              <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
-                <div class="color-[#666666] dark:color-[#fff]">
-                  地址
-                </div>
-                <div class="color-[#333333] max-w-[60%] dark:color-[#fff]">
-                  {{ props.infoDetail.address }}
-                </div>
-              </div>
-            </div>
-            <div class="flex flex-col px-4 py-[6px]">
-              <div class="flex-center-between text-sm font-normal even:bg-[#F5F5F5]">
-                <div class="color-[#666666] dark:color-[#fff]">
-                  联系方式
-                </div>
-                <div class="color-[#333333] dark:color-[#fff]">
-                  {{ props.infoDetail.contact }}
-                </div>
-              </div>
-            </div>
+            </n-form>
           </template>
         </common-gradient>
       </div>

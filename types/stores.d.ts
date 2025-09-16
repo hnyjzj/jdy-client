@@ -1,6 +1,7 @@
 type StoresWhere = Partial<Stores>
 // 门店列表
 interface Stores {
+  alias?: string
   addressName?: string
   address: string
   city: string
@@ -24,6 +25,7 @@ interface Stores {
   showtype?: 'list' | 'table'
   searchPage?: number
   limits?: number
+  region?: Region
 }
 
 interface StoresStaff {
