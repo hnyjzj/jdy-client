@@ -84,7 +84,7 @@ const renderLabel = (option: any) => {
         :style="{ background: props.bg ? '#FFFFFF66' : 'transparent' }" @click="changeStoer">
         <client-only>
           <div class="store-name font-bold text-size-[14px] mr-[4px]">
-            {{ myStore.name || '选择门店' }}{{ myStore.alias }}
+            {{ myStore.alias }}
           </div>
         </client-only>
         <icon name="i-icon:product-toggle" :size="24" />
