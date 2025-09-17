@@ -6,8 +6,7 @@ const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 const { getCheckList, getCheckWhere } = useCheck()
 const { checkList, checkFilterList, checkFilterListToArray, checkTotal } = storeToRefs(useCheck())
-const { storesList } = storeToRefs(useStores())
-const { getStoreList, getMyStore } = useStores()
+const { getMyStore } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
 const searchKey = ref('')
 const route = useRoute()
@@ -15,16 +14,7 @@ const route = useRoute()
 const filterData = ref({} as Partial<ExpandPage<Check>>)
 const limits = ref(50)
 const tableLoading = ref(false)
-const storeCol = ref()
-async function changeStore() {
-  storeCol.value = []
-  storesList.value.forEach((item: Stores) => {
-    storeCol.value.push({ label: item.name, value: item.id })
-  })
-}
-await getStoreList({ page: 1, limit: 20 })
 await getMyStore()
-await changeStore()
 await getCheckWhere()
 // 筛选框显示隐藏
 const isFilter = ref(false)

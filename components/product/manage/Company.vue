@@ -47,7 +47,10 @@ async function changeStoer() {
     $toast.error('暂未分配门店')
   }
   myStoreList.value.forEach((item: Stores) => {
-    columns.value.push({ label: item.name, key: item.id })
+    columns.value.push({
+      label: `${item.name}${item.alias ? `（${item.alias}）` : ''}`,
+      key: item.id,
+    })
   })
 }
 
@@ -81,7 +84,7 @@ const renderLabel = (option: any) => {
         :style="{ background: props.bg ? '#FFFFFF66' : 'transparent' }" @click="changeStoer">
         <client-only>
           <div class="store-name font-bold text-size-[14px] mr-[4px]">
-            {{ myStore.name || '选择门店' }}
+            {{ myStore.name || '选择门店' }}{{ myStore.alias }}
           </div>
         </client-only>
         <icon name="i-icon:product-toggle" :size="24" />

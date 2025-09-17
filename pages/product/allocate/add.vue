@@ -4,8 +4,8 @@ import type { FormInst, FormRules } from 'naive-ui'
 const { createAllocate, getAllocateWhere } = useAllocate()
 const { allocateFilterList } = storeToRefs(useAllocate())
 const { $toast } = useNuxtApp()
-const { storesList, myStore } = storeToRefs(useStores())
-const { getStoreList } = useStores()
+const { storeAliasList, myStore } = storeToRefs(useStores())
+const { getStoreAlias } = useStores()
 const { getFinishedEnterInfo } = useFinishedEnter()
 const { enterInfo } = storeToRefs(useFinishedEnter())
 const loading = ref(false)
@@ -37,21 +37,19 @@ useSeoMeta({
 
 /** 门店选择列表 */
 const storeCol = ref()
-function changeStoer() {
+
+const getStoreFun = useDebounceFn(async (isAlias: boolean) => {
   storeCol.value = []
-}
+  storeAliasList.value = []
+  await getStoreAlias(isAlias)
 
-const getStoreFun = useDebounceFn(async (query: string) => {
-  await getStoreList({ page: 1, limit: 20, where: { name: query } }, false, false)
-
-  storeCol.value = storesList.value.map((item: Stores) => ({
-    label: item.alias, // 展示别名
+  storeCol.value = storeAliasList.value.map((item: Stores) => ({
+    label: isAlias ? item.name : item.alias,
     value: item.id,
   }))
 }, 500)
 
 await getAllocateWhere()
-await changeStoer()
 
 /** 创建调拨单 */
 async function submit() {
@@ -183,9 +181,7 @@ function handleValidateButtonClick() {
                           :options="storeCol"
                           clearable
                           filterable
-                          remote
-                          :on-search="getStoreFun"
-                          @focus="getStoreFun('')"
+                          @focus="getStoreFun(false)"
                         />
                       </n-form-item-gi>
                     </template>
@@ -197,7 +193,7 @@ function handleValidateButtonClick() {
                           placeholder="选择调入总部"
                           :options="storeCol"
                           clearable
-                          @focus="getStoreFun('总部')"
+                          @focus="getStoreFun(true)"
                         />
                       </n-form-item-gi>
                     </template>
