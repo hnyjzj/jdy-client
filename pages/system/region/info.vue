@@ -120,7 +120,6 @@ const showDeleteText = computed(() => {
         @delete-region-super="deleteRegionSuperFn"
         @delete-region-store="deleteRegionStoreFn"
         @confirm="assign" />
-
       <common-confirm v-model:show="dialogShow" title="提示" :text="showDeleteText" @submit="confirmDelete" />
     </div>
 

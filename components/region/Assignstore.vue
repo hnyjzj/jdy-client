@@ -40,6 +40,9 @@ const getStores = useDebounceFn(async (query) => {
       value: item.id,
     }))
   }
+  else {
+    Stores.value = []
+  }
 }, 500)
 const searchStores = (query: string) => {
   loading.value = true

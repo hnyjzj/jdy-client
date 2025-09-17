@@ -8,11 +8,7 @@ export const useStores = defineStore('Store', {
       id: undefined,
       address: '',
       name: '',
-      logo: '',
-      province: '',
-      city: '',
-      district: '',
-      contact: '',
+      alias: '',
       sort: undefined,
     } as Partial<Stores>,
     // 我的门店

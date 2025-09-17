@@ -39,6 +39,9 @@ const getStaff = useDebounceFn(async (query) => {
       value: item.id,
     }))
   }
+  else {
+    staffList.value = []
+  }
 }, 500)
 const searchStaff = (query: string) => {
   loadingStaff.value = true
