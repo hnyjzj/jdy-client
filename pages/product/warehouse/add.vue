@@ -2,8 +2,7 @@
 import type { FormInst, FormRules } from 'naive-ui'
 
 const { $toast } = useNuxtApp()
-const { storesList, myStore } = storeToRefs(useStores())
-const { getStoreList } = useStores()
+const { myStore } = storeToRefs(useStores())
 const { getFinishedWhere } = useFinished()
 const { addFinishedEnter } = useFinishedEnter()
 const { finishedFilterListToArray, finishedFilterList } = storeToRefs(useFinished())
@@ -68,16 +67,7 @@ function handleValidateButtonClick() {
     }
   })
 }
-/** 门店选择列表 */
-const storeCol = ref()
-function changeStore() {
-  storeCol.value = []
-  storesList.value.forEach((item: Stores) => {
-    storeCol.value.push({ label: item.name, value: item.id })
-  })
-}
-await getStoreList({ page: 1, limit: 20 })
-await changeStore()
+
 forRules()
 async function submit() {
   if (!myStore.value?.id) {

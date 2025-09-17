@@ -6,7 +6,7 @@ useSeoMeta({
 })
 const { regionList, addorUpdateForm, filterListToArray, total, showtype, filterList } = storeToRefs(useRegion())
 const { searchPage } = storeToRefs(usePages())
-const { reastAddForm, createRegion, getRegionList, deleteRegion, updateRegion, getRegionWhere, uploadImage } = useRegion()
+const { reastAddForm, createRegion, getRegionList, deleteRegion, getRegionWhere } = useRegion()
 const { $toast } = useNuxtApp()
 // 新增门店弹窗
 const addOrUpdateShow = ref<boolean>(false)
@@ -84,11 +84,11 @@ const newAdd = () => {
 const newRegion = async () => {
   const res = await createRegion(addorUpdateForm.value)
   if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('创建门店成功')
+    $toast.success('创建区域成功')
     listJump()
   }
   else {
-    $toast.error(res?.message ?? '创建门店失败')
+    $toast.error(res?.message ?? '创建区域失败')
   }
 }
 
@@ -124,37 +124,9 @@ const edit = (val: string) => {
   Object.assign(addorUpdateForm.value, { name, id, address, sort, province, city, district })
 }
 
-// 调用更新门店接口
-const editRegion = async () => {
-  const res = await updateRegion(addorUpdateForm.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('更新成功')
-    listJump()
-  }
-}
-
 // 高级搜索按钮
 const heightSearchFn = () => {
   show.value = true
-}
-
-// 上传图片文件
-const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
-  try {
-    const upParams = { image: file, store_id: id }
-    if (!id) {
-      delete (upParams.store_id)
-    }
-    const res = await uploadImage(upParams)
-    if (res.data.value?.code !== HttpCode.SUCCESS) {
-      $toast.error(res.data.value?.message || '上传失败')
-      return false
-    }
-    onfinish && onfinish()
-  }
-  catch {
-    $toast.error('上传失败，请重试')
-  }
 }
 
 const pageOption = ref({
@@ -247,12 +219,11 @@ const cols = [
     </template>
 
     <!-- 新增或更新门店弹窗 -->
-    <common-popup v-model="addOrUpdateShow" :title="addorUpdateForm.id ? '编辑区域' : '新增区域'">
+    <common-model v-model="addOrUpdateShow" :show-cancel="false" title="新增区域">
       <region-add-update
-        @upload="uploadFile"
         @submit="newRegion"
-        @edit-submit="editRegion" />
-    </common-popup>
+      />
+    </common-model>
     <common-confirm v-model:show="deleteDialog" text="确认删除此区域吗?" @submit="confirmDelete" />
     <common-create @create="newAdd()" />
     <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetwhere" />

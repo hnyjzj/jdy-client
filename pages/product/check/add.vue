@@ -4,8 +4,6 @@ import type { FormInst, FormRules } from 'naive-ui'
 const { StoreStaffList, myStore } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 const { $toast } = useNuxtApp()
-const { storesList } = storeToRefs(useStores())
-const { getStoreList } = useStores()
 const { getCheckWhere, createCheck } = useCheck()
 const { checkFilterListToArray, checkFilterList } = storeToRefs(useCheck())
 
@@ -38,17 +36,7 @@ function forRules() {
   })
 }
 
-/** 门店选择列表 */
-const storeCol = ref()
-function changeStore() {
-  storeCol.value = []
-  storesList.value.forEach((item: Stores) => {
-    storeCol.value.push({ label: item.name, value: item.id })
-  })
-}
 await getCheckWhere()
-await getStoreList({ page: 1, limit: 20 })
-await changeStore()
 forRules()
 /**
  * 表单唯一标识

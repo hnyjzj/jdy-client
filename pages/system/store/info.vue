@@ -73,7 +73,7 @@ const assign = (data: string) => {
 <template>
   <div class="grid-12 p-[16px]">
     <div class="col-12" uno-md="col-8 offset-2" uno-lg="col-6 offset-3">
-      <stores-info :info-detail="storeDetails" />
+      <stores-info />
       <div class="mt-[12px]">
         <n-tabs type="segment" animated>
           <n-tab-pane name="chap1" tab="分配员工">

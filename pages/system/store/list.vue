@@ -5,7 +5,7 @@ useSeoMeta({
 
 const { storesList, addorUpdateForm, filterListToArray, total, filterList } = storeToRefs(useStores())
 const { searchPage } = storeToRefs(usePages())
-const { reastAddForm, createStore, getStoreList, deleteStore, updateStore, getStoreWhere, uploadImage } = useStores()
+const { reastAddForm, createStore, getStoreList, deleteStore, getStoreWhere } = useStores()
 const { getMyRegion } = useRegion()
 const { myRegion } = storeToRefs(useRegion())
 const { $toast } = useNuxtApp()
@@ -79,10 +79,7 @@ const newStore = async () => {
   const res = await createStore(addorUpdateForm.value)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建门店成功')
-    reastAddForm()
-    addOrUpdateShow.value = false
-    storesList.value = []
-    await getStoreList({ page: 1, limit: 12 })
+    listJump()
   }
   else {
     $toast.error(res?.message ?? '创建门店失败')
@@ -122,43 +119,9 @@ const edit = (val: string) => {
   Object.assign(addorUpdateForm.value, { name, id, address, contact, sort, province, city, district, logo })
 }
 
-// 调用更新门店接口
-const editStore = async () => {
-  const res = await updateStore(addorUpdateForm.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('更新成功')
-    addOrUpdateShow.value = false
-    storesList.value = []
-    await getStoreList({ page: searchPage.value, limit: 12 })
-    reastAddForm()
-  }
-}
-
 // 高级搜索按钮
 const heightSearchFn = () => {
   show.value = true
-}
-
-// 上传图片文件
-const uploadFile = async (file: any, onfinish?: () => void, id?: string) => {
-  try {
-    const upParams = { image: file, store_id: id }
-    if (!id) {
-      delete (upParams.store_id)
-    }
-    const res = await uploadImage(upParams)
-    if (res.data.value?.code !== HttpCode.SUCCESS) {
-      $toast.error(res.data.value?.message || '上传失败')
-      return false
-    }
-    const url = res.data.value.data.url
-    //  如果有id 说明是 修改logo ,没有id则是新增
-    addorUpdateForm.value.logo = url
-    onfinish && onfinish()
-  }
-  catch {
-    $toast.error('上传失败，请重试')
-  }
 }
 
 const updatePage = async (page: number) => {
@@ -189,12 +152,10 @@ const complate = ref(0)
     </template>
     <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
     <!-- 新增或更新门店弹窗 -->
-    <common-popup v-model="addOrUpdateShow" :title="addorUpdateForm.id ? '编辑门店' : '新增门店'">
+    <common-model v-model="addOrUpdateShow" :show-cancel="false" title="新增门店">
       <stores-add-update
-        @upload="uploadFile"
-        @submit="newStore"
-        @edit-submit="editStore" />
-    </common-popup>
+        @submit="newStore" />
+    </common-model>
     <common-confirm v-model:show="deleteDialog" text="确认删除此门店吗?" @submit="confirmDelete" />
 
     <common-create @create="newAdd()" />

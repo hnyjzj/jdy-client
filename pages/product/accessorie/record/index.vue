@@ -4,8 +4,8 @@ import { NButton } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { getProductHistory, getHistoryWhere } = useAcessorieRecord()
 const { historyFilterList, historyListTotal, productRocordList, HistoryFilterListToArray } = storeToRefs(useAcessorieRecord())
-const { storesList, myStore } = storeToRefs(useStores())
-const { getStoreList, getMyStore } = useStores()
+const { myStore } = storeToRefs(useStores())
+const { getMyStore } = useStores()
 const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
 const { searchPage, showtype } = storeToRefs(usePages())
@@ -18,13 +18,6 @@ const limits = ref(50)
 const tableLoading = ref(false)
 // 筛选框显示隐藏
 const isFilter = ref(false)
-const storeCol = ref()
-function changeStore() {
-  storeCol.value = []
-  storesList.value.forEach((item: Stores) => {
-    storeCol.value.push({ label: item.name, value: item.id })
-  })
-}
 useSeoMeta({
   title: '配件记录',
 })
@@ -84,8 +77,6 @@ const updatePage = (page: number) => {
   listJump()
 }
 
-await changeStore()
-await getStoreList({ page: 1, limit: 20 })
 await getMyStore()
 // 页面初始化逻辑
 try {

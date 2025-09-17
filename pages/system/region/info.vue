@@ -95,13 +95,11 @@ const assign = (data: 'superior' | 'staff' | 'store') => {
   if (data === 'store') {
     nowid.value = regionDetails.value.id
     isModel.value = true
-    // navigateTo(`/system/region/assignstore?id=${regionDetails.value.id}`)
   }
   else {
     isModelStaff.value = true
     nowidStaff.value = regionDetails.value.id
     nowidtype.value = data
-    // navigateTo(`/system/region/assign?id=${regionDetails.value.id}&type=${data}`)
   }
 }
 
@@ -113,7 +111,7 @@ const showDeleteText = computed(() => {
 <template>
   <div class="grid-12 p-[16px]">
     <div class="col-12" uno-md="col-6 offset-3" uno-lg="col-6 offset-3" uno-xl="col-4 offset-4">
-      <region-info :info-detail="regionDetails" />
+      <region-info />
       <region-assign-super
         :stores="regionDetails.stores"
         :list="regionDetails.staffs"
@@ -122,9 +120,6 @@ const showDeleteText = computed(() => {
         @delete-region-super="deleteRegionSuperFn"
         @delete-region-store="deleteRegionStoreFn"
         @confirm="assign" />
-      <template v-if="regionDetails.staffs.length === 0">
-        <common-emptys text="暂未分配员工" />
-      </template>
       <common-confirm v-model:show="dialogShow" title="提示" :text="showDeleteText" @submit="confirmDelete" />
     </div>
 

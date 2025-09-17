@@ -123,6 +123,6 @@ const themeProcess = () => {
 
 <style scoped lang="scss">
 .info {
-  --uno: 'bg-[rgba(255,255,255,0.8)] dark:bg-[rgb(245,245,245,0.1)] border-solid border-[1px] border-[#EFF0F6] dark:border-[rgb(239,240,246,0.01)] rounded-[24px] overflow-hidden';
+  --uno: 'bg-[rgba(255,255,255,0.8)] dark:bg-[rgb(245,245,245,0.1)] rounded-[24px] overflow-hidden';
 }
 </style>
