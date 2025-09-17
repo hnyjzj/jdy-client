@@ -75,7 +75,10 @@ const updatePage = (page: number) => {
 function changeStore() {
   storeCol.value = []
   myStoreList.value.forEach((item: Stores) => {
-    storeCol.value.push({ label: item.name, value: item.id })
+    storeCol.value.push({
+      label: `${item.name}${item.alias ? `（${item.alias}）` : ''}`,
+      value: item.id,
+    })
   })
 }
 
