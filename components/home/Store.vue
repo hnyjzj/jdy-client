@@ -9,7 +9,9 @@ const emits = defineEmits<{
 const { $toast } = useNuxtApp()
 // 门店选择列表
 const columns = ref()
-const store = defineModel('store', { default: { name: '' } })
+const store = defineModel<Stores>('store', {
+  default: { name: '', alias: '' },
+})
 // 选择门店
 const choiceStore = () => {
   columns.value = []
@@ -18,7 +20,10 @@ const choiceStore = () => {
     $toast.error('暂未分配门店')
   }
   porps.storeList.forEach((item: Stores) => {
-    columns.value.push({ label: item.name, key: item.id })
+    columns.value.push({
+      label: `${item.name}${item.alias ? `（${item.alias}）` : ''}`,
+      key: item.id,
+    })
   })
 }
 
@@ -32,7 +37,7 @@ const renderLabel = (option: any) => {
     <div class="pb-[16px]">
       <div class="blur-bgc rounded-[16px] py-[8px] px-[16px] flex-between items-center">
         <div class="flex-1 dark:color-[#fff]">
-          {{ store.name }}
+          {{ store?.alias }}
         </div>
         <n-dropdown trigger="click" :options="columns" :render-label="renderLabel" :style="{ maxHeight: '300px', overflowY: 'auto' }" @select="(e) => { emits('handleSelect', e) }">
           <div class="bg-[#0068FF] py-[10px] px-[16px] rounded-[40px] color-[#fff] flex items-center w-auto" @click="choiceStore">
