@@ -4,7 +4,6 @@ const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
 const { accessorieAllocateInfo, accessorieAllocateFilterList, accessorieAllocateFilterListToArray } = storeToRefs(useAccessorieAllocate())
 const { myStore } = storeToRefs(useStores())
-const { getStoreList } = useStores()
 
 useSeoMeta({
   title: '调拨单详情',
@@ -23,7 +22,6 @@ if (route.query.id) {
   await getInfo()
   await getAccessorieAllocateWhere()
   await getAccessorieWhere()
-  await getStoreList({ limit: 20, page: 1 })
 }
 
 async function getInfo() {

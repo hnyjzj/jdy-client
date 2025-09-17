@@ -18,6 +18,7 @@ export const useStores = defineStore('Store', {
     StoreStaffList: [] as StoresStaff[],
     filterListToArray: [] as FilterWhere<Stores>[],
     showtype: 'list' as 'list' | 'table',
+    storeAliasList: [] as Stores[],
   }),
 
   actions: {
@@ -54,6 +55,17 @@ export const useStores = defineStore('Store', {
           return false
         }
       }
+    },
+    /** 门店带有别名列表 */
+    async getStoreAlias(is_headquarters: boolean) {
+      const { data } = await https.post<Stores[], { is_headquarters: boolean }>('/store/alias', { is_headquarters }, true, false)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.storeAliasList = data.value.data
+      }
+      else {
+        return []
+      }
+      return data.value
     },
     // 门店列表
     async staffGetStoreList(req: ReqList<Stores>) {

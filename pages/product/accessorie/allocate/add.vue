@@ -4,8 +4,8 @@ import type { FormInst, FormRules } from 'naive-ui'
 const { $toast } = useNuxtApp()
 const { createAccessorieAllocate, getAccessorieAllocateWhere } = useAccessorieAllocate()
 const { accessorieAllocateFilterListToArray } = storeToRefs(useAccessorieAllocate())
-const { myStore, storesList } = storeToRefs(useStores())
-const { getStoreList } = useStores()
+const { storeAliasList, myStore } = storeToRefs(useStores())
+const { getStoreAlias } = useStores()
 const { getRegionList } = useRegion()
 const { regionList } = storeToRefs(useRegion())
 const { getFinishedEnterInfo } = useFinishedEnter()
@@ -39,19 +39,8 @@ useSeoMeta({
   title: '新增调拨单',
 })
 
-/** 门店选择列表 */
-const storeCol = ref()
-
-function changeStoer() {
-  storeCol.value = []
-  storesList.value.forEach((item: Stores) => {
-    storeCol.value.push({ label: item.name, value: item.id })
-  })
-}
-
 await getAccessorieAllocateWhere()
 await getRegionList({ page: 1, limit: 20 })
-await changeStoer()
 async function submit() {
   const res = await createAccessorieAllocate(params.value as AccessorieAllocateReq)
   if (res?.code === HttpCode.SUCCESS) {
@@ -128,11 +117,15 @@ const canShowFilter = (item: FilterWhere<AccessorieAllocate>) => {
   return true
 }
 
-const getStoreFun = useDebounceFn(async (query: string) => {
-  await getStoreList({ page: 1, limit: 20, where: { name: query } }, false, false)
+/** 门店选择列表 */
+const storeCol = ref()
 
-  storeCol.value = storesList.value.map((item: Stores) => ({
-    label: item.name,
+const getStoreFun = useDebounceFn(async (isAlias: boolean) => {
+  storeCol.value = []
+  await getStoreAlias(isAlias)
+
+  storeCol.value = storeAliasList.value.map((item: Stores) => ({
+    label: isAlias ? item.name : item.alias,
     value: item.id,
   }))
 }, 500)
@@ -182,13 +175,10 @@ const getStoreFun = useDebounceFn(async (query: string) => {
                               <n-select
                                 v-model:value="params[item.name as keyof AccessorieAllocateReq]"
                                 :placeholder="`选择${item.label}`"
-                                menu-size="large"
                                 :options="storeCol"
                                 clearable
                                 filterable
-                                remote
-                                :on-search="getStoreFun"
-                                @focus="getStoreFun('')"
+                                @focus="getStoreFun(false)"
                               />
                             </template>
                             <template v-else-if="item.name === 'to_region_id'">
@@ -214,7 +204,7 @@ const getStoreFun = useDebounceFn(async (query: string) => {
                                 placeholder="选择调入总部"
                                 :options="storeCol"
                                 clearable
-                                @focus="getStoreFun('总部')"
+                                @focus="getStoreFun(true)"
                               />
                             </template>
                           </template>

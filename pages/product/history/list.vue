@@ -9,8 +9,8 @@ const { finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinishe
 const { oldFilterListToArray } = storeToRefs(useOld())
 const { getOldWhere } = useOld()
 
-const { storesList, myStore } = storeToRefs(useStores())
-const { getStoreList, getMyStore } = useStores()
+const { myStore } = storeToRefs(useStores())
+const { getMyStore } = useStores()
 const { searchPage, showtype } = storeToRefs(usePages())
 
 const route = useRoute()
@@ -22,7 +22,6 @@ const searchKey = ref('')
 const filterData = ref({} as Partial<ExpandPage<ProductHistories>>)
 // 筛选框显示隐藏
 const isFilter = ref(false)
-const storeCol = ref()
 
 const filterRef = ref()
 /** 跳转并刷新列表 */
@@ -83,19 +82,11 @@ try {
   await getFinishedWhere()
   await getOldWhere()
   await getMyStore()
-  await getStoreList({ page: 1, limit: 20 })
-  changeStore()
 }
 catch (error) {
   throw new Error(`初始化失败: ${error || '未知错误'}`)
 }
 
-function changeStore() {
-  storeCol.value = []
-  storesList.value.forEach((item: Stores) => {
-    storeCol.value.push({ label: item.name, value: item.id })
-  })
-}
 useSeoMeta({
   title: '货品记录',
 })
