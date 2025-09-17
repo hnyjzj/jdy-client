@@ -45,7 +45,7 @@ const getStoreFun = useDebounceFn(async (query: string) => {
   await getStoreList({ page: 1, limit: 20, where: { name: query } }, false, false)
 
   storeCol.value = storesList.value.map((item: Stores) => ({
-    label: item.name,
+    label: item.alias, // 展示别名
     value: item.id,
   }))
 }, 500)
