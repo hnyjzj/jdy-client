@@ -1,6 +1,7 @@
 type StoresWhere = Partial<Stores>
 // 门店列表
 interface Stores {
+  admins: Staff[]
   alias?: string
   addressName?: string
   address: string
@@ -58,4 +59,9 @@ interface AssignStaff {
 interface AssignSuperior {
   id?: string
   superior_id: string[]
+}
+
+interface AssignAdmin {
+  id?: string
+  admin_id: string[]
 }

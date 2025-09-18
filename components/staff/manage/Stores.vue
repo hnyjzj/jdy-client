@@ -18,6 +18,8 @@ const storeForm = defineModel({ default: {
   store_superior_ids: [],
   region_ids: [],
   region_superior_ids: [],
+  store_admin_ids: [],
+  region_admin_ids: [],
 } as updateStaffForm })
 
 const defaultform = defineModel<{ [key: string]: { label: string, value: string }[] }>('default-form', { default:
@@ -189,6 +191,88 @@ if (storeForm.value.region_superior_ids?.length) {
   Regions_sup.value = defaultform.value.regions_superior
 }
 
+// 管理门店
+const storeAdminAllswitch = ref(false)
+const StoresAdmin = ref<SelectOption[]>([])
+const loadingStoresAdmin = ref(false)
+const searchStoresAdmin = useDebounceFn(async (query) => {
+  if (storeAdminAllswitch.value) {
+    loadingStoresAdmin.value = false
+    return
+  }
+  loadingStoresAdmin.value = true
+  const res = await props.getStoreList(query)
+  loadingStoresAdmin.value = false
+  if (res.length) {
+    StoresAdmin.value = res.map(item => ({
+      label: item.name,
+      value: item.id,
+    }))
+  }
+}, 500)
+const searchStoresAdminAll = async (value: boolean) => {
+  if (value) {
+    loadingStores.value = true
+    const res = await props.getStoreListAll()
+    loadingStores.value = false
+    if (res.length) {
+      StoresAdmin.value = res.map(item => ({
+        label: item.name,
+        value: item.id,
+      }))
+      storeForm.value.store_admin_ids = res.map(item => item.id)
+    }
+  }
+  else {
+    storeForm.value.store_admin_ids = []
+    StoresAdmin.value = []
+  }
+}
+if (storeForm.value.store_admin_ids?.length) {
+  StoresAdmin.value = defaultform.value.store_admin_ids
+}
+
+// 管理区域
+const RegionsAdmin = ref<SelectOption[]>([])
+const loadingRegionsAdmin = ref(false)
+const RegionAllswitchAdmin = ref(false)
+const searchRegionsAdmin = useDebounceFn(async (query) => {
+  if (RegionAllswitchAdmin.value) {
+    loadingRegionsAdmin.value = false
+    return
+  }
+  loadingRegionsAdmin.value = true
+  const res = await props.getRegionList(query)
+  loadingRegionsAdmin.value = false
+  if (res.length) {
+    RegionsAdmin.value = res.map(item => ({
+      label: item.name,
+      value: item.id,
+    }))
+  }
+}, 500)
+
+const searchRegionsAllAdmin = async (value: boolean) => {
+  if (value) {
+    loadingRegionsAdmin.value = true
+    const res = await props.getRegionListAll()
+    loadingRegionsAdmin.value = false
+    if (res.length) {
+      RegionsAdmin.value = res.map(item => ({
+        label: item.name,
+        value: item.id,
+      }))
+      storeForm.value.region_admin_ids = res.map(item => item.id)
+    }
+  }
+  else {
+    storeForm.value.region_admin_ids = []
+    RegionsAdmin.value = []
+  }
+}
+if (storeForm.value.region_admin_ids?.length) {
+  RegionsAdmin.value = defaultform.value.region_admin_ids
+}
 const formRef = ref()
 function handleValidateButtonClick(e: MouseEvent) {
   e.preventDefault()
@@ -236,28 +320,7 @@ function handleValidateButtonClick(e: MouseEvent) {
                 }"
               />
             </n-form-item-gi>
-            <n-form-item-gi :span="12" label="负责门店" path="store_superior_ids">
-              <div class="absolute z-1 right-0 top-[-24px]">
-                <span class="color-[#4B576D]">全选 </span> <n-switch v-model:value="StoresSupAllswitch" @update:value="searchStoresSupAll" />
-              </div>
-              <n-select
-                v-model:value="storeForm.store_superior_ids"
-                multiple
-                filterable
-                placeholder="搜索门店选择"
-                :options="Stores_sup"
-                :loading="loadingStores_sup"
-                clearable
-                remote
-                :max-tag-count="1"
-                :clear-filter-after-select="false"
-                @search="searchStores_sup"
-                @focus="() => {
-                  loadingStores_sup = true
-                  searchStores_sup('')
-                }"
-              />
-            </n-form-item-gi>
+
             <n-form-item-gi :span="12" label="所属区域" path="region_ids">
               <div class="absolute z-1 right-0 top-[-24px]">
                 <span class="color-[#4B576D]">全选 </span> <n-switch v-model:value="RegionAllswitch" @update:value="searchRegionsAll" />
@@ -280,6 +343,28 @@ function handleValidateButtonClick(e: MouseEvent) {
                 }"
               />
             </n-form-item-gi>
+            <n-form-item-gi :span="12" label="负责门店" path="store_superior_ids">
+              <div class="absolute z-1 right-0 top-[-24px]">
+                <span class="color-[#4B576D]">全选 </span> <n-switch v-model:value="StoresSupAllswitch" @update:value="searchStoresSupAll" />
+              </div>
+              <n-select
+                v-model:value="storeForm.store_superior_ids"
+                multiple
+                filterable
+                placeholder="搜索门店选择"
+                :options="Stores_sup"
+                :loading="loadingStores_sup"
+                clearable
+                remote
+                :max-tag-count="1"
+                :clear-filter-after-select="false"
+                @search="searchStores_sup"
+                @focus="() => {
+                  loadingStores_sup = true
+                  searchStores_sup('')
+                }"
+              />
+            </n-form-item-gi>
             <n-form-item-gi :span="12" label="负责区域" path="region_superior_ids">
               <div class="absolute z-1 right-0 top-[-24px]">
                 <span class="color-[#4B576D]">全选 </span>  <n-switch v-model:value="RegionSupAllswitch" @update:value="searchRegionsSupAll" />
@@ -299,6 +384,56 @@ function handleValidateButtonClick(e: MouseEvent) {
                 @focus="() => {
                   loadingRegions_sup = true
                   searchRegions_sup('')
+                }"
+              />
+            </n-form-item-gi>
+            <n-form-item-gi :span="12" label="管理门店" path="store_admin_ids">
+              <div class="absolute z-1 right-0 top-[-24px]">
+                <span class="color-[#4B576D]">全选 </span>
+                <n-switch
+                  v-model:value="storeAdminAllswitch"
+                  @update:value="searchStoresAdminAll" />
+              </div>
+              <n-select
+                v-model:value="storeForm.store_admin_ids"
+                multiple
+                filterable
+                placeholder="搜索门店选择"
+                :options="StoresAdmin"
+                :loading="loadingStoresAdmin"
+                clearable
+                remote
+                :max-tag-count="1"
+                :clear-filter-after-select="false"
+                @search="searchStoresAdmin"
+                @focus="() => {
+                  loadingStoresAdmin = true
+                  searchStoresAdmin('')
+                }"
+              />
+            </n-form-item-gi>
+            <n-form-item-gi :span="12" label="管理区域" path="region_admin_ids">
+              <div class="absolute z-1 right-0 top-[-24px]">
+                <span class="color-[#4B576D]">全选 </span>
+                <n-switch
+                  v-model:value="RegionAllswitchAdmin"
+                  @update:value="searchRegionsAllAdmin" />
+              </div>
+              <n-select
+                v-model:value="storeForm.region_admin_ids"
+                multiple
+                filterable
+                placeholder="搜索区域选择"
+                :options="RegionsAdmin"
+                :loading="loadingRegionsAdmin"
+                clearable
+                remote
+                :max-tag-count="1"
+                :clear-filter-after-select="false"
+                @search="searchRegionsAdmin"
+                @focus="() => {
+                  loadingRegionsAdmin = true
+                  searchRegionsAdmin('')
                 }"
               />
             </n-form-item-gi>

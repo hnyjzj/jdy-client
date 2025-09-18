@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const { $toast } = useNuxtApp()
 const { storeDetails } = storeToRefs(useStores())
-const { getStoreDetail, deleteStaff, deleteSuperior } = useStores()
+const { getStoreDetail, deleteStaff, deleteSuperior, deleteAdmin } = useStores()
 const route = useRoute()
 useSeoMeta({
   title: '门店详情',
@@ -26,13 +26,24 @@ const deleteStoreStaffFn = async (id: string) => {
   deleteModel.value.id = storeDetails.value.id
   deleteModel.value.staff_id = [id]
 }
-// 移除负责人
 //  移除员工
 const deleteStoreSuperiorFn = async (id: string) => {
   deleteObj.value = 'superior'
   dialogShow.value = true
   deleteModel.value.id = storeDetails.value.id
   deleteModel.value.staff_id = [id]
+}
+// 移除管理
+const deleteAdminParams = ref<AssignAdmin>({
+  id: undefined,
+  admin_id: [],
+})
+// 移除管理员
+const deleteStoreAdminFn = async (id: string) => {
+  deleteObj.value = 'admin'
+  dialogShow.value = true
+  deleteAdminParams.value.id = storeDetails.value.id
+  deleteAdminParams.value.admin_id = [id]
 }
 
 const confirmDelete = async () => {
@@ -55,6 +66,12 @@ const confirmDelete = async () => {
       $toast.success('移除成功')
     }
   }
+  if (deleteObj.value === 'admin') {
+    const res = await deleteAdmin(deleteAdminParams.value)
+    if (res) {
+      $toast.success('移除成功')
+    }
+  }
 
   await getStoreDetail(route.query.id as Stores['id'])
 }
@@ -68,6 +85,10 @@ const assign = (data: string) => {
   nowidStaff.value = storeDetails.value.id
   nowidtype.value = data
 }
+
+const confirmTitle = computed(() => {
+  return `确认移除此${deleteObj.value === 'staff' ? '员工' : deleteObj.value === 'superior' ? '负责人' : '管理员'}吗?`
+})
 </script>
 
 <template>
@@ -78,9 +99,21 @@ const assign = (data: string) => {
         <n-tabs type="segment" animated>
           <n-tab-pane name="chap1" tab="分配员工">
             <staff-assign-card :list="storeDetails.staffs" @delete-store-staff="deleteStoreStaffFn" @confirm="assign" />
+            <template v-if="storeDetails.staffs.length === 0">
+              <common-emptys text="暂未分配员工" />
+            </template>
           </n-tab-pane>
           <n-tab-pane name="chap2" tab="分配负责人">
             <staff-assign-superior :list="storeDetails.superiors" @delete-store-staff="deleteStoreSuperiorFn" @confirm="assign" />
+            <template v-if="storeDetails.superiors.length === 0">
+              <common-emptys text="暂未分配负责人" />
+            </template>
+          </n-tab-pane>
+          <n-tab-pane name="chap3" tab="分配管理员">
+            <staff-assign-admin :list="storeDetails.admins" @delete-store-staff="deleteStoreAdminFn" @confirm="assign" />
+            <template v-if="storeDetails.admins.length === 0">
+              <common-emptys text="暂未分配管理员" />
+            </template>
           </n-tab-pane>
         </n-tabs>
       </div>
@@ -88,7 +121,7 @@ const assign = (data: string) => {
       <template v-if="storeDetails.staffs.length === 0">
         <common-emptys text="暂未分配员工" />
       </template>
-      <common-confirm v-model:show="dialogShow" title="提示" :text="`确认移除此${deleteObj === 'staff' ? '员工' : '负责人'}吗?`" @submit="confirmDelete" />
+      <common-confirm v-model:show="dialogShow" title="提示" :text="confirmTitle" @submit="confirmDelete" />
     </div>
     <common-model v-model="isModelStaff" title="添加员工" :show-ok="false" :show-cancel="false" confirm-text="导入货品">
       <stores-assign-staff

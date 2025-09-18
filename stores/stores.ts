@@ -83,10 +83,10 @@ export const useStores = defineStore('Store', {
       }
     },
     // 获取全部门店
-    async staffGetStoreListAll() {
-      const { data } = await https.post<ResList<Stores>, { all: true }>(
+    async staffGetStoreListAll(params?: Partial<Stores>) {
+      const { data } = await https.post<ResList<Stores>, { all: true, where: Partial<Stores> }>(
         '/store/list',
-        { all: true },
+        { all: true, where: params || {} },
         true,
         false,
       )
@@ -236,6 +236,20 @@ export const useStores = defineStore('Store', {
         return false
       }
     },
+    // 为门店分配负责人
+    async assignAdmin(req: AssignAdmin) {
+      const { data } = await https.post<any, AssignAdmin>(
+        '/store/admin/add',
+        req,
+      )
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return true
+      }
+      else {
+        return false
+      }
+    },
+
     // 移除员工
     async deleteStaff(req: AssignStaff) {
       const { data } = await https.delete<any, AssignStaff>(
@@ -253,6 +267,19 @@ export const useStores = defineStore('Store', {
     async deleteSuperior(req: AssignSuperior) {
       const { data } = await https.delete<any, AssignSuperior>(
         '/store/superior/del',
+        req,
+      )
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return true
+      }
+      else {
+        return false
+      }
+    },
+    // 移除负责人
+    async deleteAdmin(req: AssignAdmin) {
+      const { data } = await https.delete<any, AssignAdmin>(
+        '/store/admin/del',
         req,
       )
       if (data.value?.code === HttpCode.SUCCESS) {
