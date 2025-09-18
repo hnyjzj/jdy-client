@@ -2,7 +2,7 @@ type StoresWhere = Partial<Stores>
 // 门店列表
 interface Stores {
   admins: Staff[]
-  alias?: string
+  alias: string
   addressName?: string
   address: string
   city: string

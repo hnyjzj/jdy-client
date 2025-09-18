@@ -107,7 +107,7 @@ if (route.query.id) {
   authForm.value.role_id = role_id as string
   // 获取所属门店默认数据
   stores?.forEach((item) => {
-    defaultform.value.stores.push({ label: item.name, value: item.id })
+    defaultform.value.stores.push({ label: item.alias, value: item.id })
     formlist.value.store_ids?.push(item.id)
     parsswordForm.value.store_ids?.push(item.id)
     authForm.value.store_ids?.push(item.id)
@@ -116,7 +116,7 @@ if (route.query.id) {
 
   // 获取所属区域默认数据
   regions?.forEach((item) => {
-    defaultform.value.regions.push({ label: item.name, value: item.id })
+    defaultform.value.regions.push({ label: item.alias, value: item.id })
     formlist.value.region_ids?.push(item.id)
     parsswordForm.value.region_ids?.push(item.id)
     authForm.value.region_ids?.push(item.id)
@@ -125,7 +125,7 @@ if (route.query.id) {
 
   // 获取负责门店数据
   store_superiors?.forEach((item) => {
-    defaultform.value.stores_superior.push({ label: item.name, value: item.id })
+    defaultform.value.stores_superior.push({ label: item.alias, value: item.id })
     formlist.value.store_superior_ids?.push(item.id)
     parsswordForm.value.store_superior_ids?.push(item.id)
     authForm.value.store_superior_ids?.push(item.id)
@@ -133,7 +133,7 @@ if (route.query.id) {
   })
   // 获取负责区域数据
   region_superiors?.forEach((item) => {
-    defaultform.value.regions_superior.push({ label: item.name, value: item.id })
+    defaultform.value.regions_superior.push({ label: item.alias, value: item.id })
     formlist.value.region_superior_ids?.push(item.id)
     parsswordForm.value.region_superior_ids?.push(item.id)
     authForm.value.region_superior_ids?.push(item.id)
@@ -141,7 +141,7 @@ if (route.query.id) {
   })
   // 获取门店管理
   store_admins?.forEach((item) => {
-    defaultform.value.store_admin_ids.push({ label: item.name, value: item.id })
+    defaultform.value.store_admin_ids.push({ label: item.alias, value: item.id })
     formlist.value.store_admin_ids?.push(item.id)
     parsswordForm.value.store_admin_ids?.push(item.id)
     authForm.value.store_admin_ids?.push(item.id)
@@ -149,7 +149,7 @@ if (route.query.id) {
   })
   // 获取区域管理
   region_admins?.forEach((item) => {
-    defaultform.value.region_admin_ids.push({ label: item.name, value: item.id })
+    defaultform.value.region_admin_ids.push({ label: item.alias, value: item.id })
     formlist.value.region_admin_ids?.push(item.id)
     parsswordForm.value.region_admin_ids?.push(item.id)
     authForm.value.region_admin_ids?.push(item.id)

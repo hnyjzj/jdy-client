@@ -20,30 +20,11 @@ const deleteModel = ref<AssignStaff>({
 const dialogShow = ref(false)
 const deleteObj = ref('')
 //  移除员工
-const deleteStoreStaffFn = async (id: string) => {
-  deleteObj.value = 'staff'
+const deleteStoreStaffFn = async (type: 'staff' | 'admin' | 'superior', id: string) => {
+  deleteObj.value = type
   dialogShow.value = true
   deleteModel.value.id = storeDetails.value.id
   deleteModel.value.staff_id = [id]
-}
-//  移除员工
-const deleteStoreSuperiorFn = async (id: string) => {
-  deleteObj.value = 'superior'
-  dialogShow.value = true
-  deleteModel.value.id = storeDetails.value.id
-  deleteModel.value.staff_id = [id]
-}
-// 移除管理
-const deleteAdminParams = ref<AssignAdmin>({
-  id: undefined,
-  admin_id: [],
-})
-// 移除管理员
-const deleteStoreAdminFn = async (id: string) => {
-  deleteObj.value = 'admin'
-  dialogShow.value = true
-  deleteAdminParams.value.id = storeDetails.value.id
-  deleteAdminParams.value.admin_id = [id]
 }
 
 const confirmDelete = async () => {
@@ -54,20 +35,19 @@ const confirmDelete = async () => {
     }
   }
   if (deleteObj.value === 'superior') {
-    const params = ref<AssignSuperior>({
-      id: '',
-      superior_id: [],
+    const res = await deleteSuperior({
+      id: deleteModel.value.id,
+      superior_id: deleteModel.value.staff_id,
     })
-    const { id, staff_id } = deleteModel.value
-    params.value.id = id
-    params.value.superior_id = staff_id
-    const res = await deleteSuperior(params.value)
     if (res) {
       $toast.success('移除成功')
     }
   }
   if (deleteObj.value === 'admin') {
-    const res = await deleteAdmin(deleteAdminParams.value)
+    const res = await deleteAdmin({
+      id: deleteModel.value.id,
+      admin_id: deleteModel.value.staff_id,
+    })
     if (res) {
       $toast.success('移除成功')
     }
@@ -98,22 +78,34 @@ const confirmTitle = computed(() => {
       <div class="mt-[12px]">
         <n-tabs type="segment" animated>
           <n-tab-pane name="chap1" tab="分配员工">
-            <staff-assign-card :list="storeDetails.staffs" @delete-store-staff="deleteStoreStaffFn" @confirm="assign" />
-            <template v-if="storeDetails.staffs.length === 0">
-              <common-emptys text="暂未分配员工" />
-            </template>
+            <staff-assign-staff-card
+              :list="storeDetails.staffs"
+              title="员工"
+              button-text="分配员工"
+              button-type="staff"
+              @delete-store-staff="deleteStoreStaffFn"
+              @confirm="assign"
+            />
           </n-tab-pane>
           <n-tab-pane name="chap2" tab="分配负责人">
-            <staff-assign-superior :list="storeDetails.superiors" @delete-store-staff="deleteStoreSuperiorFn" @confirm="assign" />
-            <template v-if="storeDetails.superiors.length === 0">
-              <common-emptys text="暂未分配负责人" />
-            </template>
+            <staff-assign-staff-card
+              :list="storeDetails.superiors"
+              title="负责人"
+              button-text="分配负责人"
+              button-type="superior"
+              @delete-store-staff="deleteStoreStaffFn"
+              @confirm="assign"
+            />
           </n-tab-pane>
           <n-tab-pane name="chap3" tab="分配管理员">
-            <staff-assign-admin :list="storeDetails.admins" @delete-store-staff="deleteStoreAdminFn" @confirm="assign" />
-            <template v-if="storeDetails.admins.length === 0">
-              <common-emptys text="暂未分配管理员" />
-            </template>
+            <staff-assign-staff-card
+              :list="storeDetails.admins"
+              title="管理员"
+              button-text="分配管理员"
+              button-type="admin"
+              @delete-store-staff="deleteStoreStaffFn"
+              @confirm="assign"
+            />
           </n-tab-pane>
         </n-tabs>
       </div>

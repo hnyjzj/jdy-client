@@ -2,7 +2,7 @@ type RegionWhere = Partial<Region>
 // 门店列表
 interface Region {
   admins: Staff[]
-  alias?: string
+  alias: string
   addressName?: string
   address: string
   city: string
