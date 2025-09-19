@@ -6,7 +6,7 @@ export const useStores = defineStore('Store', {
     storeDetails: {} as Stores, //  门店详情
     addorUpdateForm: {
       id: undefined,
-      address: '',
+      phone: '',
       name: '',
       alias: '',
       sort: undefined,
@@ -154,12 +154,8 @@ export const useStores = defineStore('Store', {
     // 重置新增表单
     async reastAddForm() {
       this.addorUpdateForm = {
-        address: '',
         name: '',
-        logo: '',
-        province: '',
-        city: '',
-        district: '',
+        phone: '',
         contact: '',
         sort: 0,
       }

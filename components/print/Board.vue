@@ -138,7 +138,10 @@ const partTotalPrice = computed(() => {
     </div>
 
     <div class="phone">
-      - -
+      <template v-if="props.details?.store?.phone">
+        联系电话:
+      </template>
+      {{ props.details?.store?.phone || '--' }}
     </div>
 
     <div class="form">

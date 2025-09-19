@@ -3,26 +3,15 @@ type StoresWhere = Partial<Stores>
 interface Stores {
   admins: Staff[]
   alias: string
-  addressName?: string
-  address: string
-  city: string
   contact: string
   created_at: string
-  district: string
+  phone: string
   id: string
-  logo?: string
   name: string
-  province: string
   sort: number
   staffs: Staff[]
   updated_at: string
   superiors: Superior[]
-  // 省市区
-  field?: {
-    province?: string
-    city?: string
-    district?: string
-  }
   showtype?: 'list' | 'table'
   searchPage?: number
   limits?: number

@@ -50,21 +50,13 @@ const sex = (val: number) => {
                   </div>
                 </div>
                 <div class=" px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                  <div class="flex-between p-[4px] grid-12">
-                    <div class="col-6">
-                      门店省市区
-                    </div>
-                    <div class="text-align-end col-6">
-                      {{ item.address || '未设置' }}
-                    </div>
-                  </div>
                   <div class=" p-[4px] grid-12">
                     <div class="col-6">
                       电话
                     </div>
                     <div class="text-align-end col-6">
                       <div class="break-words">
-                        {{ item.contact || '暂无' }}
+                        {{ item.phone || '暂无' }}
                       </div>
                     </div>
                   </div>
