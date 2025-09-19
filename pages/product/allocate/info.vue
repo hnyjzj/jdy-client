@@ -331,7 +331,7 @@ async function createFun() {
                       <template v-if="allocateInfo.status === 1">
                         <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="delProduct(item.id)" />
                       </template>
-                      <common-tags type="pink" :text="GoodsStatusMap[item.status as GoodsStatus]" :is-oval="true" />
+                      <common-tags :status="item.status" :status-map="GoodsStatusColorMap" :text="GoodsStatusMap[item.status as GoodsStatus]" :is-oval="true" />
                     </template>
                     <template #info>
                       <product-base-info :info="item" :filter-list="finishedFilterListToArray" />
