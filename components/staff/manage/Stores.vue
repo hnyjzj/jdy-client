@@ -38,7 +38,7 @@ const searchStores_sup = useDebounceFn(async (query) => {
   loadingStores_sup.value = false
   if (res.length) {
     Stores_sup.value = res.map(item => ({
-      label: item.alias,
+      label: item.alias || item.name,
       value: item.id,
     }))
   }
@@ -51,7 +51,7 @@ const searchStoresSupAll = async (value: boolean) => {
     loadingStores_sup.value = false
     if (res.length) {
       Stores_sup.value = res.map(item => ({
-        label: item.alias,
+        label: item.alias || item.name,
         value: item.id,
       }))
       storeForm.value.store_superior_ids = res.map(item => item.id)
@@ -80,7 +80,7 @@ const searchStores = useDebounceFn(async (query) => {
   loadingStores.value = false
   if (res.length) {
     Stores.value = res.map(item => ({
-      label: item.alias,
+      label: item.alias || item.name,
       value: item.id,
     }))
   }
@@ -92,7 +92,7 @@ const searchStoresAll = async (value: boolean) => {
     loadingStores.value = false
     if (res.length) {
       Stores.value = res.map(item => ({
-        label: item.alias,
+        label: item.alias || item.name,
         value: item.id,
       }))
       storeForm.value.store_ids = res.map(item => item.id)
@@ -121,7 +121,7 @@ const searchRegions = useDebounceFn(async (query) => {
   loadingRegions.value = false
   if (res.length) {
     Regions.value = res.map(item => ({
-      label: item.alias,
+      label: item.alias || item.name,
       value: item.id,
     }))
   }
@@ -134,7 +134,7 @@ const searchRegionsAll = async (value: boolean) => {
     loadingRegions.value = false
     if (res.length) {
       Regions.value = res.map(item => ({
-        label: item.alias,
+        label: item.alias || item.name,
         value: item.id,
       }))
       storeForm.value.region_ids = res.map(item => item.id)
@@ -163,7 +163,7 @@ const searchRegions_sup = useDebounceFn(async (query) => {
   loadingRegions_sup.value = false
   if (res.length) {
     Regions_sup.value = res.map(item => ({
-      label: item.alias,
+      label: item.alias || item.name,
       value: item.id,
     }))
   }
@@ -175,7 +175,7 @@ const searchRegionsSupAll = async (value: boolean) => {
     loadingRegions_sup.value = false
     if (res.length) {
       Regions_sup.value = res.map(item => ({
-        label: item.alias,
+        label: item.alias || item.name,
         value: item.id,
       }))
       storeForm.value.region_superior_ids = res.map(item => item.id)
@@ -205,7 +205,7 @@ const searchStoresAdmin = useDebounceFn(async (query) => {
   loadingStoresAdmin.value = false
   if (res.length) {
     StoresAdmin.value = res.map(item => ({
-      label: item.alias,
+      label: item.alias || item.name,
       value: item.id,
     }))
   }
@@ -217,7 +217,7 @@ const searchStoresAdminAll = async (value: boolean) => {
     loadingStoresAdmin.value = false
     if (res.length) {
       StoresAdmin.value = res.map(item => ({
-        label: item.alias,
+        label: item.alias || item.name,
         value: item.id,
       }))
       storeForm.value.store_admin_ids = res.map(item => item.id)
@@ -246,7 +246,7 @@ const searchRegionsAdmin = useDebounceFn(async (query) => {
   loadingRegionsAdmin.value = false
   if (res.length) {
     RegionsAdmin.value = res.map(item => ({
-      label: item.alias,
+      label: item.alias || item.name,
       value: item.id,
     }))
   }
@@ -259,7 +259,7 @@ const searchRegionsAllAdmin = async (value: boolean) => {
     loadingRegionsAdmin.value = false
     if (res.length) {
       RegionsAdmin.value = res.map(item => ({
-        label: item.alias,
+        label: item.alias || item.name,
         value: item.id,
       }))
       storeForm.value.region_admin_ids = res.map(item => item.id)

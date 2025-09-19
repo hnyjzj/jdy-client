@@ -58,6 +58,21 @@ const { storesList } = storeToRefs(useStores())
                   </div>
                 </div>
               </template>
+              <template v-if="item.admins.length > 0">
+                <div class="flex-between min-h-[28px]">
+                  <div>
+                    管理员
+                  </div>
+                  <div class="text-align-end w-[60%]">
+                    <span>
+                      <n-tag> {{ item.admins[0].nickname }} </n-tag>
+                      <template v-if="item.admins.length - 1 > 0">
+                        <n-tag>+{{ item.admins.length - 1 }} </n-tag>
+                      </template>
+                    </span>
+                  </div>
+                </div>
+              </template>
             </div>
             <div class="bg-[#F3F5FE] dark:bg-[#F3F5FE1A] rounded-b-[24px] ">
               <div class="flex-between">
