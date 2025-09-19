@@ -89,7 +89,7 @@ const finalStyle = computed(() => {
   }
   // 2️⃣ 没有 type，则根据 status/statusMap 取色
   if (props.status !== undefined && props.statusMap) {
-    return getStatusStyle(props.status, props.statusMap)
+    return getStatusStyle(props.status, props.statusMap) || { backgroundColor: 'rgb(221, 146, 0)', color: '#333' }
   }
   // 3️⃣ 默认值
   return { backgroundColor: 'rgb(221, 146, 0)', color: '#333' }

@@ -13,28 +13,17 @@ const handleClick = (id?: string) => {
   }
   navigateTo(`/sale/sales/order?id=${id}`)
 }
-
-const returnColor = (number: number) => {
-  if (number === 1) {
-    return 'greyblue'
-  }
-  if (number === 2) {
-    return 'grey'
-  }
-  if (number === 3) {
-    return 'green'
-  }
-  if (number === 5) {
-    return 'red'
-  }
-  return 'orange'
-}
 </script>
 
 <template>
   <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
-      <sale-cards :title="`编号:${item.id}`" :tag-text="props.where.status?.preset[item.status]" :bg="returnColor(item.status)">
+      <sale-cards
+        :title="`编号:${item.id}`"
+        :tag-text="props.where.status?.preset[item.status]"
+        :status="item.status"
+        :status-map="OrderStatusColor"
+      >
         <template #info>
           <div class="info">
             <common-cell label="开单时间" :value="formatTimestampToDateTime(item.order.created_at) || '--'" />
