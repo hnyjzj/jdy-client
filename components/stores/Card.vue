@@ -41,7 +41,7 @@ const { storesList } = storeToRefs(useStores())
                 </div>
               </template>
               <template v-if="item.superiors.length > 0">
-                <div class="flex-between min-h-[28px]">
+                <div class="flex-between min-h-[28px] pb-[4px]">
                   <div>
                     负责人
                   </div>
