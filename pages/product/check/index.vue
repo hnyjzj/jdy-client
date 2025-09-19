@@ -315,7 +315,7 @@ const cols = [
         <template v-if="showtype === 'list'">
           <product-manage-card :list="checkList">
             <template #top="{ info }">
-              <div class="status-title" :class="info.status === 1 ? 'orange' : info.status === 2 ? 'bule' : 'grey'">
+              <div class="status-title" :style="getStatusStyle(info.status, CheckStatusColorMap)">
                 {{ checkFilterList.status?.preset[info.status] }}
               </div>
             </template>

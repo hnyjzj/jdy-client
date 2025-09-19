@@ -261,7 +261,7 @@ const cols = [
         <template v-if="showtype === 'list'">
           <product-manage-card :list="EnterList" @edit="edit">
             <template #top="{ info }">
-              <div class="enter-title" :class="info.status === 1 ? 'caogao' : info.status === 2 ? 'wancheng' : 'chexiao'">
+              <div class="enter-title" :style="getStatusStyle(info.status, EnterStatusColorMap)">
                 {{ enterStatus[info.status] }}
               </div>
             </template>

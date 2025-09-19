@@ -32,6 +32,20 @@ export const GoodsStatusMap = {
 }
 
 /**
+ * 产品状态颜色
+ */
+export const GoodsStatusColorMap: Record<GoodsStatus, string> = {
+  [GoodsStatus.ProductStatusDraft]: '#8B5CF6',
+  [GoodsStatus.ProductStatusNormal]: '#059669',
+  [GoodsStatus.ProductStatusDamage]: '#DC2626',
+  [GoodsStatus.ProductStatusAllocate]: '#4F46E5',
+  [GoodsStatus.ProductStatusSold]: '#DC2626',
+  [GoodsStatus.ProductStatusReturn]: '#DC2626',
+  [GoodsStatus.ProductStatusCheck]: '#4F46E5',
+  [GoodsStatus.ProductStatusNoStock]: '#D97706',
+}
+
+/**
  * 产品类型
  */
 export enum GoodsType {

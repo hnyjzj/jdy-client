@@ -415,7 +415,7 @@ async function downloadDetails() {
         <template v-if="showtype === 'list'">
           <product-manage-card :list="allocateList">
             <template #top="{ info }">
-              <div class="status-title" :class="info.status === 1 ? 'orange' : info.status === 2 ? 'bule' : 'grey'">
+              <div class="status-title" :style="getStatusStyle(info.status, AllocateStatusColorMap)">
                 {{ allocateFilterList.status?.preset[info.status] }}
               </div>
             </template>
@@ -619,5 +619,8 @@ async function downloadDetails() {
 }
 .grey {
   --uno: 'bg-[#999]';
+}
+.purple {
+  --uno: 'bg-[#C7DAFF]';
 }
 </style>
