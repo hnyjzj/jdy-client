@@ -13,7 +13,7 @@ useHead({
 })
 const { $toast } = useNuxtApp()
 const route = useRoute()
-const { assignStaff, assignSuperior } = useStores()
+const { assignStaff, assignSuperior, assignAdmin } = useStores()
 const { getOptionsStafflist } = useStaff()
 const formRef = ref()
 const model = ref<AssignStaff>({
@@ -84,6 +84,20 @@ const handleValidateButtonClick = (e: MouseEvent) => {
           $toast.error('分配失败')
         }
       }
+      if (props.nowidtype === 'admin') {
+        const params: AssignAdmin = {
+          id: model.value.id,
+          admin_id: model.value.staff_id,
+        }
+        const res = await assignAdmin(params)
+        if (res) {
+          $toast.success('分配成功')
+          emits('close')
+        }
+        else {
+          $toast.error('分配失败')
+        }
+      }
     }
     else {
       $toast.error('验证失败')
@@ -91,10 +105,28 @@ const handleValidateButtonClick = (e: MouseEvent) => {
   })
 }
 const title = computed(() => {
-  return props.nowidtype === 'staff' ? '分配员工' : '分配负责人'
+  switch (props.nowidtype) {
+    case 'staff':
+      return '分配员工'
+    case 'superior':
+      return '分配负责人'
+    case 'admin':
+      return '分配管理员'
+    default:
+      return '分配员工'
+  }
 })
 const content = computed(() => {
-  return props.nowidtype === 'staff' ? '搜索选择要分配的员工' : '搜索选择要分配的负责人'
+  switch (props.nowidtype) {
+    case 'staff':
+      return '搜索选择要分配的员工'
+    case 'superior':
+      return '搜索选择要分配的负责人'
+    case 'admin':
+      return '搜索选择要分配的管理员'
+    default:
+      return '搜索选择要分配的员工'
+  }
 })
 </script>
 

@@ -147,16 +147,17 @@ const pageOption = ref({
 
 const cols = [
   { title: '区域名称', key: 'name' },
-
-  { title: '员工', key: '', render: (rowData: Region) => {
+  { title: '门店', render: (rowData: Region) => {
+    return rowData.stores?.length ? `${rowData.stores[0].name}${rowData.stores.length - 1 > 0 ? `+${rowData.stores.length - 1}` : ''}` : '--'
+  } },
+  { title: '员工', render: (rowData: Region) => {
     return rowData.staffs?.length ? `${rowData.staffs[0].nickname}${rowData.staffs.length - 1 > 0 ? `+${rowData.staffs.length - 1}` : ''}` : '--'
   } },
-  { title: '负责人', key: '', render: (rowData: Region) => {
+  { title: '负责人', render: (rowData: Region) => {
     return rowData.superiors?.length ? `${rowData.superiors[0].nickname}${rowData.superiors.length - 1 > 0 ? `+${rowData.superiors.length - 1}` : ''}` : '--'
   } },
-
-  { title: '门店', key: 'contact', render: (rowData: Region) => {
-    return rowData.stores?.length ? `${rowData.stores[0].name}${rowData.stores.length - 1 > 0 ? `+${rowData.stores.length - 1}` : ''}` : '--'
+  { title: '管理员', render: (rowData: Region) => {
+    return rowData.admins?.length ? `${rowData.admins[0].nickname}${rowData.admins.length - 1 > 0 ? `+${rowData.admins.length - 1}` : ''}` : '--'
   } },
   {
     title: '操作',

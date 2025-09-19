@@ -3,7 +3,7 @@ import type { FormRules, SelectOption } from 'naive-ui'
 
 const props = defineProps<{
   nowidStaff: string
-  nowidtype: 'superior' | 'staff'
+  nowidtype: 'super' | 'staff' | 'admin'
 }>()
 const emits = defineEmits<{
   close: []
@@ -12,13 +12,14 @@ useHead({
   title: '分配',
 })
 const { $toast } = useNuxtApp()
-const { assignStaff, assignSuperiors } = useRegion()
+const { assignStaff, assignSuperiors, assignAdmins } = useRegion()
 const { getOptionsStafflist } = useStaff()
 const formRef = ref()
 const model = ref<AssignStaff>({
   id: undefined,
   staff_id: [],
 })
+
 const rules = ref<FormRules>({
   staff_id: {
     required: true,
@@ -67,7 +68,7 @@ const handleValidateButtonClick = (e: MouseEvent) => {
           $toast.error('分配失败')
         }
       }
-      if (props.nowidtype === 'superior') {
+      if (props.nowidtype === 'super') {
         const params = ref<RegionAssignsuperior>({
           id: '',
           superior_id: [],
@@ -84,6 +85,23 @@ const handleValidateButtonClick = (e: MouseEvent) => {
           $toast.error('分配失败')
         }
       }
+      if (props.nowidtype === 'admin') {
+        const params = ref<RegionAssignAdmin>({
+          id: '',
+          admin_id: [],
+        })
+        const { id, staff_id } = model.value
+        params.value.id = id
+        params.value.admin_id = staff_id
+        const res = await assignAdmins(params.value)
+        if (res) {
+          $toast.success('分配成功')
+          emits('close')
+        }
+        else {
+          $toast.error('分配失败')
+        }
+      }
     }
     else {
       $toast.error('验证失败')
@@ -91,10 +109,28 @@ const handleValidateButtonClick = (e: MouseEvent) => {
   })
 }
 const title = computed(() => {
-  return props.nowidtype === 'staff' ? '分配员工' : '分配负责人'
+  switch (props.nowidtype) {
+    case 'staff':
+      return '分配员工'
+    case 'super':
+      return '分配负责人'
+    case 'admin':
+      return '分配管理员'
+    default:
+      return ''
+  }
 })
 const content = computed(() => {
-  return props.nowidtype === 'staff' ? '搜索选择要分配的员工' : '搜索选择要分配的负责人'
+  switch (props.nowidtype) {
+    case 'staff':
+      return '搜索选择要分配的员工'
+    case 'super':
+      return '搜索选择要分配的负责人'
+    case 'admin':
+      return '搜索选择要分配的管理员'
+    default:
+      return ''
+  }
 })
 </script>
 
