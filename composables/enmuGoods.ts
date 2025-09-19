@@ -22,7 +22,7 @@ export enum GoodsStatus {
 
 export const GoodsStatusMap = {
   1: '草稿',
-  2: '正常',
+  2: '在库',
   3: '已报损',
   4: '调拨中',
   5: '已出售',
