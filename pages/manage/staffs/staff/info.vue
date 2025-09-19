@@ -76,6 +76,15 @@ const toEdit = () => {
               </template>
             </div>
           </n-tab-pane>
+          <n-tab-pane name="chap3" tab="管理" :disabled="!staffInfo.store_admins?.length">
+            <div class="flex flex-wrap flex-start">
+              <template v-for="(item, index) in staffInfo.store_admins" :key="index">
+                <div class="ml-[12px] model-item">
+                  {{ item.name }}
+                </div>
+              </template>
+            </div>
+          </n-tab-pane>
         </n-tabs>
       </div>
     </div>
@@ -99,6 +108,15 @@ const toEdit = () => {
           <n-tab-pane name="chap2" tab="负责" :disabled="!staffInfo.region_superiors?.length">
             <div class="flex flex-wrap flex-start">
               <template v-for="(item, index) in staffInfo.region_superiors" :key="index">
+                <div class="ml-[12px] model-item">
+                  {{ item.name }}
+                </div>
+              </template>
+            </div>
+          </n-tab-pane>
+          <n-tab-pane name="chap3" tab="管理" :disabled="!staffInfo.region_admins?.length">
+            <div class="flex flex-wrap flex-start">
+              <template v-for="(item, index) in staffInfo.region_admins" :key="index">
                 <div class="ml-[12px] model-item">
                   {{ item.name }}
                 </div>

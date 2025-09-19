@@ -166,8 +166,7 @@ const confirmChange = async () => {
       <common-fold title="基础信息" :is-collapse="false">
         <div class="info">
           <common-cell label="门店" :value="props.detail.store?.name!" rcol="col-8" lcol="col-4" />
-          <common-cell label="门店地址" :value="props.detail.store?.address" rcol="col-8" lcol="col-4" />
-          <common-cell label="门店电话" :value="props.detail.store?.contact" rcol="col-8" lcol="col-4" />
+          <common-cell label="门店电话" :value="props.detail.store?.phone" rcol="col-8" lcol="col-4" />
           <common-cell label="维修单编号" :value="props.detail.id" rcol="col-8" lcol="col-4" />
           <common-cell label="维修单状态" :value="props.orderWhere.status?.preset[props.detail.status] " rcol="col-8" lcol="col-4" val-color="#0B57D0" />
           <common-cell label="接待人" :value="props.detail.operator?.nickname" rcol="col-8" lcol="col-4" />

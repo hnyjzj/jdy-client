@@ -126,7 +126,9 @@ const cols = [
     title: '姓名',
     key: 'nickname',
   },
-  { title: '手机号', key: 'phone', width: 150 },
+  { title: '手机号', width: 150, render: (rowData: Staff) => {
+    return rowData.phone || '--'
+  } },
   { title: '身份', render: (rowData: Staff) => {
     return filterList.value.identity?.preset[rowData.identity as number] || '--'
   } },
@@ -140,20 +142,26 @@ const cols = [
     return filterList.value.gender?.preset[rowData.gender as number] || '--'
   } },
   { title: '用户名', key: 'username' },
-  { title: '最后登录时间', key: '', render: (rowData: Staff) => {
-    return formatISODate(rowData.last_login_at!)
+  { title: '最后登录时间', render: (rowData: Staff) => {
+    return formatISODate(rowData.last_login_at!) || '--'
   } },
-  { title: '所属门店', key: '', render: (rowData: Staff) => {
+  { title: '所属门店', render: (rowData: Staff) => {
     return rowData.stores?.length ? `${rowData.stores[0].name}${rowData.stores.length - 1 > 0 ? `+${rowData.stores.length - 1}` : ''}` : '--'
   } },
-  { title: '负责门店', key: '', render: (rowData: Staff) => {
+  { title: '负责门店', render: (rowData: Staff) => {
     return rowData.store_superiors?.length ? `${rowData.store_superiors[0].name}${rowData.store_superiors.length - 1 > 0 ? `+${rowData.store_superiors.length - 1}` : ''}` : '--'
   } },
-  { title: '所属区域', key: '', render: (rowData: Staff) => {
+  { title: '所属区域', render: (rowData: Staff) => {
     return rowData.regions?.length ? `${rowData.regions[0].name}${rowData.regions.length - 1 > 0 ? `+${rowData.regions.length - 1}` : ''}` : '--'
   } },
-  { title: '负责门店', key: '', render: (rowData: Staff) => {
+  { title: '负责区域', render: (rowData: Staff) => {
     return rowData.region_superiors?.length ? `${rowData.region_superiors[0].name}${rowData.region_superiors.length - 1 > 0 ? `+${rowData.region_superiors.length - 1}` : ''}` : '--'
+  } },
+  { title: '管理区域', render: (rowData: Staff) => {
+    return rowData.region_admins?.length ? `${rowData.region_admins[0].name}${rowData.region_admins.length - 1 > 0 ? `+${rowData.region_admins.length - 1}` : ''}` : '--'
+  } },
+  { title: '管理门店', render: (rowData: Staff) => {
+    return rowData.store_admins?.length ? `${rowData.store_admins[0].name}${rowData.store_admins.length - 1 > 0 ? `+${rowData.store_admins.length - 1}` : ''}` : '--'
   } },
   {
     title: '操作',

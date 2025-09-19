@@ -1,97 +1,75 @@
 <script lang="ts" setup>
 const { $toast } = useNuxtApp()
 const { regionDetails } = storeToRefs(useRegion())
-const { getRegionDetail, deleteStaff, Delsuperiors, DelRegionStore } = useRegion()
+const { getRegionDetail, deleteStaff, Delsuperiors, DelRegionStore, DelAdmins } = useRegion()
 const route = useRoute()
 useSeoMeta({
   title: '区域详情',
 })
-
 if (route.query.id) {
   await getRegionDetail(route.query.id as Stores['id'])
 }
-
 // 移除的员工
 const deleteModel = ref<AssignStaff>({
   id: undefined,
   staff_id: [],
 })
-
 const dialogShow = ref(false)
 const deleteObj = ref<string>('')
-//  移除员工
-const deleteRegionStaffFn = async (id: string) => {
-  deleteObj.value = 'staff'
+// 移除员工、负责人、门店、管理员的通用函数
+const deleteRegionItem = async (type: 'staff' | 'super' | 'store' | 'admin', id: string) => {
+  deleteObj.value = type
   dialogShow.value = true
   deleteModel.value.id = regionDetails.value.id
   deleteModel.value.staff_id = [id]
 }
-// 移除负责人
-const deleteRegionSuperFn = async (id: string) => {
-  deleteObj.value = 'super'
-  dialogShow.value = true
-  deleteModel.value.id = regionDetails.value.id
-  deleteModel.value.staff_id = [id]
+// 移除成功提示
+const toastTips = async (res: boolean) => {
+  if (res) {
+    $toast.success('移除成功')
+    await getRegionDetail(route.query.id as Stores['id'])
+  }
+  else {
+    $toast.error('移除失败')
+  }
 }
-const deleteRegionStoreFn = async (id: string) => {
-  deleteObj.value = 'store'
-  dialogShow.value = true
-  deleteModel.value.id = regionDetails.value.id
-  deleteModel.value.staff_id = [id]
-}
-
 const confirmDelete = async () => {
+  // 删除管理员
+  if (deleteObj.value === 'admin') {
+    const res = await DelAdmins({
+      id: deleteModel.value.id,
+      admin_id: deleteModel.value.staff_id,
+    })
+    await toastTips(res)
+  }
+  //   删除负责人
   if (deleteObj.value === 'super') {
-    const params = ref<RegionAssignsuperior>({
-      id: '',
-      superior_id: [],
+    const res = await Delsuperiors({
+      id: deleteModel.value.id,
+      superior_id: deleteModel.value.staff_id,
     })
-    const { id, staff_id } = deleteModel.value
-    params.value.id = id
-    params.value.superior_id = staff_id
-    const res = await Delsuperiors(params.value)
-    if (res) {
-      $toast.success('移除成功')
-      await getRegionDetail(route.query.id as Stores['id'])
-    }
-    else {
-      $toast.error('移除失败')
-    }
+    await toastTips(res)
   }
+  // 删除门店
   if (deleteObj.value === 'store') {
-    const params = ref<RegionassignStores>({
-      id: '',
-      store_id: [],
+    const res = await DelRegionStore({
+      id: deleteModel.value.id,
+      store_id: deleteModel.value.staff_id,
     })
-    const { id, staff_id } = deleteModel.value
-    params.value.id = id
-    params.value.store_id = staff_id
-    const res = await DelRegionStore(params.value)
-    if (res) {
-      $toast.success('移除成功')
-      await getRegionDetail(route.query.id as Stores['id'])
-    }
-    else {
-      $toast.error('移除失败')
-    }
+    await toastTips(res)
   }
+  // 删除员工
   if (deleteObj.value === 'staff') {
     const res = await deleteStaff(deleteModel.value)
-    if (res) {
-      $toast.success('移除成功')
-      await getRegionDetail(route.query.id as Stores['id'])
-    }
-    else {
-      $toast.error('移除失败')
-    }
+    await toastTips(res)
   }
 }
 const isModel = ref(false)
 const isModelStaff = ref(false)
 const nowid = ref<string>('')
 const nowidStaff = ref<string>('')
-const nowidtype = ref<'superior' | 'staff'>('staff')
-const assign = (data: 'superior' | 'staff' | 'store') => {
+const nowidtype = ref<'super' | 'staff' | 'admin'>('staff')
+const assign = (data: 'super' | 'staff' | 'store' | 'admin') => {
   if (data === 'store') {
     nowid.value = regionDetails.value.id
     isModel.value = true
@@ -104,7 +82,17 @@ const assign = (data: 'superior' | 'staff' | 'store') => {
 }
 
 const showDeleteText = computed(() => {
-  return deleteObj.value === 'staff' ? '确认移除此员工吗?' : deleteObj.value === 'store' ? '确认移除此门店吗' : '确认移除此负责人吗'
+  switch (deleteObj.value) {
+    case 'staff':
+      return '确认移除此员工吗?'
+    case 'store':
+      return '确认移除此门店吗'
+    case 'super':
+      return '确认移除此负责人吗'
+    case 'admin':
+      return '确认移除此管理员吗'
+  }
+  return '确认移除吗?'
 })
 </script>
 
@@ -116,21 +104,20 @@ const showDeleteText = computed(() => {
         :stores="regionDetails.stores"
         :list="regionDetails.staffs"
         :super="regionDetails.superiors"
-        @delete-region-staff="deleteRegionStaffFn"
-        @delete-region-super="deleteRegionSuperFn"
-        @delete-region-store="deleteRegionStoreFn"
+        :admins="regionDetails.admins"
+        @delete-region="deleteRegionItem"
         @confirm="assign" />
       <common-confirm v-model:show="dialogShow" title="提示" :text="showDeleteText" @submit="confirmDelete" />
     </div>
 
-    <common-model v-model="isModel" title="添加门店" :show-ok="false" :show-cancel="false" confirm-text="导入货品">
+    <common-model v-model="isModel" title="添加门店" :show-ok="false" :show-cancel="false">
       <region-assignstore
         :nowid="nowid" @close="async () => {
           isModel = false
           await getRegionDetail(route.query.id as Stores['id'])
         }" />
     </common-model>
-    <common-model v-model="isModelStaff" title="添加员工" :show-ok="false" :show-cancel="false" confirm-text="导入货品">
+    <common-model v-model="isModelStaff" title="添加员工" :show-ok="false" :show-cancel="false">
       <region-assign-staff
         :nowid-staff="nowidStaff" :nowidtype="nowidtype" @close="async () => {
           isModelStaff = false
@@ -139,7 +126,3 @@ const showDeleteText = computed(() => {
     </common-model>
   </div>
 </template>
-
-<style lang="scss" scoped>
-
-</style>

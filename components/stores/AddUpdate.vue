@@ -17,6 +17,11 @@ const rules = {
     message: '请输入别名',
     trigger: ['input', 'blur'],
   },
+  phone: {
+    required: true,
+    message: '请输入联系电话',
+    trigger: ['input', 'blur'],
+  },
 }
 
 // 表单校验
@@ -48,6 +53,9 @@ const handleValidateButtonClick = (e: MouseEvent) => {
           </n-form-item>
           <n-form-item label="别名" path="alias">
             <n-input v-model:value="addorUpdateForm.alias" placeholder="请输入别名" round clearable @focus="focus" />
+          </n-form-item>
+          <n-form-item label="联系电话">
+            <n-input v-model:value="addorUpdateForm.phone" placeholder="请输入联系电话" round clearable @focus="focus" />
           </n-form-item>
         </div>
 

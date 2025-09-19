@@ -53,8 +53,13 @@ export const useRegion = defineStore('Region', {
       }
     },
     // 获取全部区域列表
-    async staffGetRegionListAll() {
-      const { data } = await https.post<ResList<Region>, { all: true }>('/region/list', { all: true }, true, false)
+    async staffGetRegionListAll(params?: Partial<Region>) {
+      const { data } = await https.post<ResList<Region>, { all: true, where: Partial<Region> }>(
+        '/region/list',
+        { all: true, where: params || {} },
+        true,
+        false,
+      )
       if (data.value?.code === HttpCode.SUCCESS) {
         return data.value.data.list
       }
@@ -164,6 +169,18 @@ export const useRegion = defineStore('Region', {
       }
     },
     /**
+     * 分配管理员
+     */
+    async assignAdmins(req: RegionAssignAdmin) {
+      const { data } = await https.post<any, RegionAssignAdmin>('/region/admin/add', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return true
+      }
+      else {
+        return false
+      }
+    },
+    /**
      * 分配区域
      */
     async assignStores(req: RegionassignStores) {
@@ -190,6 +207,18 @@ export const useRegion = defineStore('Region', {
      */
     async Delsuperiors(req: RegionAssignsuperior) {
       const { data } = await https.delete<any, RegionAssignsuperior>('/region/superior/del', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return true
+      }
+      else {
+        return false
+      }
+    },
+    /**
+     * 移除管理员
+     */
+    async DelAdmins(req: RegionAssignAdmin) {
+      const { data } = await https.delete<any, RegionAssignAdmin>('/region/admin/del', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         return true
       }

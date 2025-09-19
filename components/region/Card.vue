@@ -21,6 +21,35 @@ const { regionList } = storeToRefs(useRegion())
           </div>
           <div class="px-[16px] py-[8px]">
             <common-cell label-color="#000" label="别名" :value="item.alias" />
+            <div class="flex-1 text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+              <template v-if="item.stores.length > 0">
+                <div class="flex-between min-h-[28px]">
+                  <div>
+                    门店
+                  </div>
+                  <div class="text-align-end w-[60%]">
+                    <span>
+                      <n-tag> {{ item.stores[0].name }} </n-tag>
+                      <template v-if="item.stores.length - 1 > 0">
+                        <n-tag>+{{ item.stores.length - 1 }} </n-tag>
+                      </template>
+                    </span>
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <div class="flex-between min-h-[28px]">
+                  <div>
+                    门店
+                  </div>
+                  <div class="text-align-end w-[60%]">
+                    <span>
+                      无
+                    </span>
+                  </div>
+                </div>
+              </template>
+            </div>
             <div class="flex-1 py-[2px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
               <template v-if="item.staffs.length > 0">
                 <div class="flex-between min-h-[28px]">
@@ -79,17 +108,17 @@ const { regionList } = storeToRefs(useRegion())
                 </div>
               </template>
             </div>
-            <div class="flex-1 text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-              <template v-if="item.stores.length > 0">
+            <div class="flex-1 py-[2px]  text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+              <template v-if="item.admins.length > 0">
                 <div class="flex-between min-h-[28px]">
                   <div>
-                    门店
+                    管理员
                   </div>
                   <div class="text-align-end w-[60%]">
                     <span>
-                      <n-tag> {{ item.stores[0].name }} </n-tag>
-                      <template v-if="item.stores.length - 1 > 0">
-                        <n-tag>+{{ item.stores.length - 1 }} </n-tag>
+                      <n-tag> {{ item.admins[0].nickname }} </n-tag>
+                      <template v-if="item.admins.length - 1 > 0">
+                        <n-tag>+{{ item.admins.length - 1 }} </n-tag>
                       </template>
                     </span>
                   </div>
@@ -98,7 +127,7 @@ const { regionList } = storeToRefs(useRegion())
               <template v-else>
                 <div class="flex-between min-h-[28px]">
                   <div>
-                    门店
+                    管理员
                   </div>
                   <div class="text-align-end w-[60%]">
                     <span>

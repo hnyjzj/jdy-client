@@ -1,7 +1,8 @@
 type RegionWhere = Partial<Region>
 // 门店列表
 interface Region {
-  alias?: string
+  admins: Staff[]
+  alias: string
   addressName?: string
   address: string
   city: string
@@ -46,6 +47,10 @@ interface RegionAssignStaff {
 interface RegionAssignsuperior {
   id?: string
   superior_id: string[]
+}
+interface RegionAssignAdmin {
+  id?: string
+  admin_id: string[]
 }
 interface RegionassignStores {
   id?: string

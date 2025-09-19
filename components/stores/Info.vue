@@ -6,6 +6,7 @@ const modelRef = ref<Partial<Stores>>({
   id: storeDetails.value.id,
   name: storeDetails.value.name,
   alias: storeDetails.value.alias,
+  phone: storeDetails.value.phone,
 })
 const formRef = ref()
 const rules = {
@@ -34,6 +35,10 @@ const handleValidateButtonClick = async () => {
               <n-form-item path="alias" label="别名">
                 <n-input v-model:value="modelRef.alias" @keydown.enter.prevent />
               </n-form-item>
+              <n-form-item path="phone" label="联系电话">
+                <n-input v-model:value="modelRef.phone" @keydown.enter.prevent />
+              </n-form-item>
+
               <div style="display: flex; justify-content: flex-end">
                 <n-button round type="info" @click="handleValidateButtonClick">
                   保存

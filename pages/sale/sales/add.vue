@@ -162,6 +162,10 @@ const changeStore = async () => {
 // 添加商品
 const addProduct = async (product: DepositOrderInfoProducts) => {
   orderObject.value.showProductList ??= []
+  if (product.product_finished.retail_type === 1 && Number(product.product_finished.label_price) <= 0) {
+    $toast.error('计件商品标签价格不能小于等于0')
+    return
+  }
   const index = orderObject.value?.showProductList?.findIndex(item => item.id === product?.product_finished?.id)
   //   添加成品到列表中
   if (index === -1) {

@@ -114,9 +114,9 @@ const edit = (val: string) => {
     return
   }
   // 解构赋值，简化代码
-  const { name, id, address, contact, sort, province, city, district, logo } = store
+  const { name, id, contact, sort } = store
   // 一次性更新表单数据
-  Object.assign(addorUpdateForm.value, { name, id, address, contact, sort, province, city, district, logo })
+  Object.assign(addorUpdateForm.value, { name, id, contact, sort })
 }
 
 // 高级搜索按钮
