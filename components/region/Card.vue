@@ -127,7 +127,7 @@ const { regionList } = storeToRefs(useRegion())
               <template v-else>
                 <div class="flex-between min-h-[28px]">
                   <div>
-                    负责人
+                    管理员
                   </div>
                   <div class="text-align-end w-[60%]">
                     <span>
