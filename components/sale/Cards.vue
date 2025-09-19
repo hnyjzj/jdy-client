@@ -4,6 +4,8 @@ const props = defineProps<{
   bg?: string
   title?: string | number
   tagText?: string | number
+  status?: number
+  statusMap?: { [key: number]: string }
 }>()
 </script>
 
@@ -21,7 +23,7 @@ const props = defineProps<{
         <slot name="status" />
       </div>
       <template v-if="props.tagText">
-        <common-tags :text="props.tagText" :type="props.bg" />
+        <common-tags :text="props.tagText" :status="props.status" :status-map="props.statusMap" :type="props.bg" />
       </template>
     </div>
     <!-- info -->
