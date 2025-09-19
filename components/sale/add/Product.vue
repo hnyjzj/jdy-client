@@ -6,7 +6,7 @@ const Props = defineProps<{
   billingSet: BillingSet
   checkProductClass: (val: { class: number }) => any
 }>()
-
+const { $toast } = useNuxtApp()
 // 展示商品列表
 const orderObject = defineModel<Orders>({ default: {} as Orders })
 
@@ -126,6 +126,10 @@ const handleScoreReduceBlur = (scoreDeduct?: number) => {
 const addProduct = async (products: ProductFinisheds[]) => {
   orderObject.value.showProductList ??= []
   products.forEach(async (product: ProductFinisheds) => {
+    if (product.retail_type === 1 && Number(product.label_price) <= 0) {
+      $toast.error('计件商品标签价格不能小于等于0')
+      return
+    }
     const index = orderObject.value.showProductList?.findIndex(item => item.product_id === product?.id)
     //   添加成品到列表中
     if (index === -1) {
