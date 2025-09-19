@@ -212,9 +212,9 @@ const searchStoresAdmin = useDebounceFn(async (query) => {
 }, 500)
 const searchStoresAdminAll = async (value: boolean) => {
   if (value) {
-    loadingStores.value = true
+    loadingStoresAdmin.value = true
     const res = await props.getStoreListAll()
-    loadingStores.value = false
+    loadingStoresAdmin.value = false
     if (res.length) {
       StoresAdmin.value = res.map(item => ({
         label: item.alias,
@@ -271,7 +271,7 @@ const searchRegionsAllAdmin = async (value: boolean) => {
   }
 }
 if (storeForm.value.region_admin_ids?.length) {
-  RegionsAdmin.value = defaultform.value.region_admin_ids
+  RegionsAdmin.value = defaultform.value.region_admin_ids || []
 }
 const formRef = ref()
 function handleValidateButtonClick(e: MouseEvent) {

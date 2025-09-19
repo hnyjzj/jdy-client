@@ -72,9 +72,6 @@ const sex = (val: number) => {
               </div>
             </div>
           </template>
-          <template v-if="props.super.length === 0">
-            <common-emptys text="暂未分配门店" />
-          </template>
         </div>
         <template v-if="props.stores.length === 0">
           <common-emptys text="暂未分配门店" />

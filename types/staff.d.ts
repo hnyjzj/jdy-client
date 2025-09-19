@@ -15,8 +15,8 @@ interface Staff {
   store_id?: string
   regions?: Region[]
   region_superiors?: Region[]
-  stores?: Store[]
-  store_superiors?: Store[]
+  stores?: Stores[]
+  store_superiors?: Stores[]
   identity?: UserLevel
   role_id?: string
   updated_at?: string

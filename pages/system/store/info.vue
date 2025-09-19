@@ -109,10 +109,6 @@ const confirmTitle = computed(() => {
           </n-tab-pane>
         </n-tabs>
       </div>
-
-      <template v-if="storeDetails.staffs.length === 0">
-        <common-emptys text="暂未分配员工" />
-      </template>
       <common-confirm v-model:show="dialogShow" title="提示" :text="confirmTitle" @submit="confirmDelete" />
     </div>
     <common-model v-model="isModelStaff" title="添加员工" :show-ok="false" :show-cancel="false" confirm-text="导入货品">
