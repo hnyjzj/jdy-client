@@ -572,7 +572,7 @@ async function downloadLocalFile(status: 'extra' | 'loss') {
                       <icon class="cursor-pointer" name="i-svg:reduce" :size="20" @click="removeDict(item.id)" />
                     </template>
                     <template v-if="checkInfo.type === GoodsType.ProductFinish">
-                      <common-tags type="pink" :text="GoodsStatusMap[item.product_finished?.status as GoodsStatus]" :is-oval="true" />
+                      <common-tags :status="item.product_finished?.status" :status-map="GoodsStatusColorMap" :text="GoodsStatusMap[item.product_finished?.status as GoodsStatus]" :is-oval="true" />
                     </template>
                   </template>
                   <template #info>
