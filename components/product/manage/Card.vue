@@ -18,7 +18,7 @@ const props = defineProps<{
                   <common-avatar :size="24" :img="item?.images[0]" />
                 </div>
                 <template v-if="item?.status">
-                  <div class="enter-title" :class="item.status === 1 ? 'draft' : item.status === 2 ? 'finish' : 'cancel'">
+                  <div class="enter-title" :style="getStatusStyle(item.status, GoodsStatusColorMap)">
                     <slot name="status" :info="item.status">
                       {{ GoodsStatusMap[item.status as GoodsStatus] }}
                     </slot>

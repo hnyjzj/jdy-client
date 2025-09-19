@@ -15,7 +15,7 @@ const handleClick = (id?: string) => {
 <template>
   <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
-      <sale-cards :title="`销售单号:${item.id}`" :tag-text="props.where.status?.preset[item.status]">
+      <sale-cards :title="`销售单号:${item.id}`" :status-map="OrderStatusColor" :tag-text="props.where.status?.preset[item.status]" :status="item.status">
         <template #info>
           <div class="info">
             <common-cell label="门店" :value="item.store.name || '--'" />

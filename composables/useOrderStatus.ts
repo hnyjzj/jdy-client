@@ -24,6 +24,14 @@ export enum OrderStatusText {
 
 }
 
+export const OrderStatusColor: Record<OrderStatusText, string> = {
+  [OrderStatusText.OrderSalesProductStatusWaitPay]: '#D97706',
+  [OrderStatusText.OrderSalesProductStatusCancel]: '#374151',
+  [OrderStatusText.OrderSalesProductStatusComplete]: '#059669',
+  [OrderStatusText.OrderSalesProductStatusRefund]: '#DC2626',
+  [OrderStatusText.OrderSalesProductStatusReturn]: '#DC2626',
+}
+
 // 订金单状态
 export enum DepositOrderStatus {
   /**
@@ -50,6 +58,14 @@ export enum DepositOrderStatus {
    * 已退货
    */
   Returned,
+}
+export const DepositOrderStatusColor: Record<DepositOrderStatus, string> = {
+  [DepositOrderStatus.PendingPayment]: '#D97706',
+  [DepositOrderStatus.Canceled]: '#374151',
+  [DepositOrderStatus.Booking]: '#4F46E5',
+  [DepositOrderStatus.Verified]: '#DC2626',
+  [DepositOrderStatus.HaveRefunded]: '#DC2626',
+  [DepositOrderStatus.Returned]: '#DC2626',
 }
 
 // 维修单订单状态
@@ -90,6 +106,17 @@ export enum serviceOrderStatus {
    * 已完成
    */
   Completed,
+}
+export const ServiceOrderStatusColor: Record<serviceOrderStatus, string> = {
+  [serviceOrderStatus.PendingPayment]: '#D97706',
+  [serviceOrderStatus.Cancelled]: '#374151',
+  [serviceOrderStatus.StoreReceived]: '#4F46E5',
+  [serviceOrderStatus.Refund]: '#DC2626',
+  [serviceOrderStatus.SentForRepair]: '#DC2626',
+  [serviceOrderStatus.UnderRepair]: '#4F46E5',
+  [serviceOrderStatus.RepairedAndReturned]: '#059669',
+  [serviceOrderStatus.ReadyForPickup]: '#D97706',
+  [serviceOrderStatus.Completed]: '#059669',
 }
 
 export enum ProductFinishedsStatus {
