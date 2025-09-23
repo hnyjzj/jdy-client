@@ -2,6 +2,9 @@
 import PrintTemp from '@/components/print/Statement.vue'
 import usePrint from 'vue3-use-print'
 
+useSeoMeta({
+  title: '销售报表',
+})
 const { myStore, StoreStaffList } = storeToRefs(useStores())
 const { getStoreStaffList } = useStores()
 const { PrintSattementTotal } = useStatement()
