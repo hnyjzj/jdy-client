@@ -99,7 +99,15 @@ const oldSales = computed(() =>
     (key: string) => key.includes(''),
   ),
 )
-// 处理退货数据
+// 旧料退货数据
+const oldSalesRefund = computed(() =>
+  processSalesData<oldSalesClass>(
+    printData.value?.old_sales_refund,
+    '合计',
+    (key: string) => key.includes(''),
+  ),
+)
+// 成品退货数据
 const refundData = computed(() =>
   processSalesData<finished_sales_refundItem>(
     printData.value?.finished_sales_refund,
@@ -253,11 +261,12 @@ const refundData = computed(() =>
           </tbody>
         </table>
       </template>
+
       <template v-if="printData.itemized?.accessorie_quantity > 0">
         <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
           <thead>
             <tr>
-              <th>配件名称</th>
+              <th>配件</th>
               <th>实收</th>
               <th>应收</th>
               <th>单价</th>
@@ -324,6 +333,77 @@ const refundData = computed(() =>
                 <td>{{ row.item?.weight_metal || '' }}</td>
                 <td>{{ row.item?.labor_fee || '' }}</td>
                 <td>{{ row.item?.quantity }}</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+        <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
+          <thead>
+            <tr>
+              <th>旧料(退货)</th>
+              <th>材质成色主石/明细</th>
+              <th>退款</th>
+              <th>金重</th>
+              <th>主石重</th>
+              <th>件数</th>
+              <th>标价</th>
+              <th>工费</th>
+              <th>条码</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="(projectRows, projectName) in oldSalesRefund.normalRows" :key="projectName">
+              <template v-for="rows in projectRows" :key="`${rows.firstKey}-${rows.secondKey}`">
+                <tr>
+                  <td>{{ rows.index === 0 ? rows.firstKey : '' }}</td>
+                  <td>{{ rows.item.name }}</td>
+                  <td>{{ rows.item.refunded }}</td>
+                  <td>{{ rows.item.weight_metal }}</td>
+                  <td>{{ rows.item.weight_gem }}</td>
+                  <td>{{ rows.item.quantity }}</td>
+                  <td>{{ rows.item.label_price }}</td>
+                  <td>{{ rows.item.labor_fee }}</td>
+                  <td>{{ rows.item.code }}</td>
+                </tr>
+              </template>
+            </template>
+            <template v-for="(rows, index) in oldSalesRefund.summary" :key="index">
+              <tr>
+                <td>{{ rows.firstKey }}</td>
+                <td />
+                <td>{{ rows.item.refunded }}</td>
+                <td>{{ rows.item.weight_metal }}</td>
+                <td>{{ rows.item.weight_gem }}</td>
+                <td>{{ rows.item.quantity }}</td>
+                <td>{{ rows.item.label_price }}</td>
+                <td>{{ rows.item.labor_fee }}</td>
+                <td>{{ rows.item.code }}</td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+
+        <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
+          <thead>
+            <tr>
+              <th>配件(退货)</th>
+              <th>退款</th>
+              <th>数量</th>
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="([name, item]) in Object.entries(printData.accessorie_sales_refund).filter(([n]) => !n.includes('合计'))" :key="name">
+              <tr>
+                <td>{{ name }}</td>
+                <td>{{ item.refunded }}</td>
+                <td>{{ item.quantity }}</td>
+              </tr>
+            </template>
+            <template v-for="([name, item]) in Object.entries(printData.accessorie_sales_refund).filter(([n]) => n.includes('合计'))" :key="name">
+              <tr>
+                <td>{{ name }}</td>
+                <td>{{ item.refunded }}</td>
+                <td>{{ item.quantity }}</td>
               </tr>
             </template>
           </tbody>

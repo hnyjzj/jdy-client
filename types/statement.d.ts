@@ -100,8 +100,22 @@ interface StatisticSalesDetailDailyResp {
       quantity: number
     }
   }
-
+  accessorie_sales_refund: {
+    [key ]: {
+      /**
+       * 数量
+       */
+      quantity: 数量
+      /**
+       * 退款
+       */
+      refunded: string
+    }
+  }
   old_sales: {
+    [key as string]: oldSalesClass[]
+  }
+  old_sales_refund: {
     [key as string]: oldSalesClass[]
   }
   finished_sales_refund: {
@@ -166,6 +180,14 @@ interface oldSalesClass {
    * 剩余主石重
    */
   surplus_weight_gem?: string
+  /**
+   *条码
+   */
+  code?: string
+  /**
+   * 退货金额
+   */
+  refunded?: string
 }
 interface StatisticSalesDetailDailySummary {
   /**
