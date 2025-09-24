@@ -37,7 +37,7 @@ onMounted(async () => {
       params.value.storename = undefined
     }
     params.value.url = window.location.href
-    params.value.title = document.title
+    params.value.title = document?.title || '其他'
     await UserScreen(params.value)
   })
 })
