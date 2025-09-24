@@ -17,6 +17,7 @@ const isChooseModel = ref(false)
 const isImportModel = ref(false)
 const uploadRef = ref()
 const page = ref(1)
+const limit = ref(20)
 if (route.query.id) {
   allocateId.value = route.query.id
   await getInfo()
@@ -28,7 +29,7 @@ async function getInfo() {
   const parmas = {
     id: route.query?.id,
     page: page.value,
-    limit: 20,
+    limit: limit.value,
   } as AccessorieAllocateInfoParams
   await getAccessorieAllocateInfo(parmas)
 }
@@ -274,6 +275,11 @@ async function submitGoods(e: AddAccessorieAllocateProduct[]) {
                 </sale-order-nesting>
               </div>
             </template>
+            <common-page
+              v-model:page="page" :total="accessorieAllocateInfo.product_count" :limit="limit" @update:page="() => {
+                getInfo()
+              }
+              " />
           </div>
         </template>
       </div>
