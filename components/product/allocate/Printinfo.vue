@@ -1,16 +1,18 @@
 <script setup lang="ts">
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   time: string
   font?: string
   printType: string
-}>()
+}>(), {
+  font: '14px',
+})
 const { allocateInfoAll, allocateFilterList, allocateInfoOverview } = storeToRefs(useAllocate())
 const { finishedFilterList } = storeToRefs(useFinished())
 const { oldFilterList } = storeToRefs(useOld())
 </script>
 
 <template>
-  <div :style="{ 'font-size': props.font || '14px' }">
+  <div :style="{ 'font-size': props.font }">
     <div class="grid-12 py-[12px] gap-[8px]">
       <div class="col-12" uno-sm="col-6" uno-md="col-4">
         调拨单号: {{ allocateInfoAll.id }}
@@ -40,7 +42,7 @@ const { oldFilterList } = storeToRefs(useOld())
         操作时间: {{ formatIsoToDateTime(props.time) }}
       </div>
     </div>
-    <table class="w-full fixed-table" :style="{ 'font-size': props.font || '14px' }">
+    <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
       <thead>
         <tr>
           <th>汇总项</th>
@@ -59,12 +61,12 @@ const { oldFilterList } = storeToRefs(useOld())
       </tbody>
     </table>
     <template v-if="props.printType === 'all'">
-      <div class="" :style="{ 'font-size': props.font || '14px' }">
+      <div class="" :style="{ 'font-size': props.font }">
         <template v-for="(value, key) in allocateInfoOverview" :key="key">
           <div class="py-[8px]">
             {{ key }}
           </div>
-          <table class="w-full fixed-table" :style="{ 'font-size': props.font || '14px' }">
+          <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
             <thead>
               <tr>
                 <th>品类</th>
@@ -92,7 +94,7 @@ const { oldFilterList } = storeToRefs(useOld())
 
     <template v-if="props.printType === 'info'">
       <div class="">
-        <table class="w-full fixed-table" :style="{ 'font-size': props.font || '14px' }">
+        <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
           <thead>
             <tr>
               <th>条码</th>
