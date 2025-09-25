@@ -161,37 +161,22 @@ const refundData = computed(() =>
           </template>
         </tbody>
       </table>
-
-      <template v-if="printData.itemized?.finished_quantity > 0">
-        <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
-          <thead>
-            <tr>
-              <th>成品</th>
-              <th>大类品类工艺</th>
-              <th>应收</th>
-              <th>标签价</th>
-              <th>金重</th>
-              <th>工费</th>
-              <th>件数</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- 按项目渲染，已排序的普通行和合计行 -->
-            <template v-for="(projectRows, projectName) in processedFinishedSales.normalRows" :key="projectName">
-              <template v-for="row in projectRows" :key="`${row.firstKey}-${row.secondKey}`">
-                <tr>
-                  <td>{{ row.index === 0 ? row.firstKey : '' }}</td>
-                  <td>{{ row.secondKey }}</td>
-                  <td>{{ row.item?.receivable || '' }}</td>
-                  <td>{{ row.item?.price || '' }}</td>
-                  <td>{{ row.item?.weight_metal || '' }}</td>
-                  <td>{{ row.item?.labor_fee || '' }}</td>
-                  <td>{{ row.item?.quantity || '' }}</td>
-                </tr>
-              </template>
-            </template>
-            <!-- 汇总统计行 -->
-            <template v-for="row in processedFinishedSales.summary" :key="`${row.firstKey}-${row.secondKey}`">
+      <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
+        <thead>
+          <tr>
+            <th>成品</th>
+            <th>大类品类工艺</th>
+            <th>应收</th>
+            <th>标签价</th>
+            <th>金重</th>
+            <th>工费</th>
+            <th>件数</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 按项目渲染，已排序的普通行和合计行 -->
+          <template v-for="(projectRows, projectName) in processedFinishedSales.normalRows" :key="projectName">
+            <template v-for="row in projectRows" :key="`${row.firstKey}-${row.secondKey}`">
               <tr>
                 <td>{{ row.index === 0 ? row.firstKey : '' }}</td>
                 <td>{{ row.secondKey }}</td>
@@ -202,50 +187,44 @@ const refundData = computed(() =>
                 <td>{{ row.item?.quantity || '' }}</td>
               </tr>
             </template>
-          </tbody>
-        </table>
-      </template>
-      <template v-if="Number(printData.itemized?.old_quantity) > 0">
-        <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
-          <thead>
+          </template>
+          <!-- 汇总统计行 -->
+          <template v-for="row in processedFinishedSales.summary" :key="`${row.firstKey}-${row.secondKey}`">
             <tr>
-              <th>旧料</th>
-              <th>材质成色主石/明细</th>
-              <th>抵值</th>
-              <th>金重</th>
-              <th>主石重</th>
-              <th>件数</th>
-              <th>标价</th>
-              <th>工费</th>
-              <th>转成品抵值</th>
-              <th>转成品金重</th>
-              <th>转成品件数</th>
-              <th>剩余金重</th>
+              <td>{{ row.index === 0 ? row.firstKey : '' }}</td>
+              <td>{{ row.secondKey }}</td>
+              <td>{{ row.item?.receivable || '' }}</td>
+              <td>{{ row.item?.price || '' }}</td>
+              <td>{{ row.item?.weight_metal || '' }}</td>
+              <td>{{ row.item?.labor_fee || '' }}</td>
+              <td>{{ row.item?.quantity || '' }}</td>
             </tr>
-          </thead>
-          <tbody>
-            <template v-for="(projectRows, projectName) in oldSales.normalRows" :key="projectName">
-              <template v-for="rows in projectRows" :key="`${rows.firstKey}-${rows.secondKey}`">
-                <tr>
-                  <td>{{ rows.index === 0 ? rows.firstKey : '' }}</td>
-                  <td>{{ rows.item.name }}</td>
-                  <td>{{ rows.item.deduction }}</td>
-                  <td>{{ rows.item.weight_metal }}</td>
-                  <td>{{ rows.item.weight_gem }}</td>
-                  <td>{{ rows.item.quantity }}</td>
-                  <td>{{ rows.item.label_price }}</td>
-                  <td>{{ rows.item.labor_fee }}</td>
-                  <td>{{ rows.item.to_finished_deduction }}</td>
-                  <td>{{ rows.item.to_finished_weight_metal }}</td>
-                  <td>{{ rows.item.to_finished_quantity }}</td>
-                  <td>{{ rows.item.surplus_weight }}</td>
-                </tr>
-              </template>
-            </template>
-            <template v-for="(rows, index) in oldSales.summary" :key="index">
+          </template>
+        </tbody>
+      </table>
+      <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
+        <thead>
+          <tr>
+            <th>旧料</th>
+            <th>材质成色主石/明细</th>
+            <th>抵值</th>
+            <th>金重</th>
+            <th>主石重</th>
+            <th>件数</th>
+            <th>标价</th>
+            <th>工费</th>
+            <th>转成品抵值</th>
+            <th>转成品金重</th>
+            <th>转成品件数</th>
+            <th>剩余金重</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template v-for="(projectRows, projectName) in oldSales.normalRows" :key="projectName">
+            <template v-for="rows in projectRows" :key="`${rows.firstKey}-${rows.secondKey}`">
               <tr>
-                <td>{{ rows.firstKey }}</td>
-                <td />
+                <td>{{ rows.index === 0 ? rows.firstKey : '' }}</td>
+                <td>{{ rows.item.name }}</td>
                 <td>{{ rows.item.deduction }}</td>
                 <td>{{ rows.item.weight_metal }}</td>
                 <td>{{ rows.item.weight_gem }}</td>
@@ -258,73 +237,72 @@ const refundData = computed(() =>
                 <td>{{ rows.item.surplus_weight }}</td>
               </tr>
             </template>
-          </tbody>
-        </table>
-      </template>
-
-      <template v-if="printData.itemized?.accessorie_quantity > 0">
-        <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
-          <thead>
+          </template>
+          <template v-for="(rows, index) in oldSales.summary" :key="index">
             <tr>
-              <th>配件</th>
-              <th>实收</th>
-              <th>应收</th>
-              <th>单价</th>
-              <th>件数</th>
+              <td>{{ rows.firstKey }}</td>
+              <td />
+              <td>{{ rows.item.deduction }}</td>
+              <td>{{ rows.item.weight_metal }}</td>
+              <td>{{ rows.item.weight_gem }}</td>
+              <td>{{ rows.item.quantity }}</td>
+              <td>{{ rows.item.label_price }}</td>
+              <td>{{ rows.item.labor_fee }}</td>
+              <td>{{ rows.item.to_finished_deduction }}</td>
+              <td>{{ rows.item.to_finished_weight_metal }}</td>
+              <td>{{ rows.item.to_finished_quantity }}</td>
+              <td>{{ rows.item.surplus_weight }}</td>
             </tr>
-          </thead>
-          <tbody>
-            <template v-for="([name, item]) in Object.entries(printData.accessorie_sales).filter(([n]) => !n.includes('合计'))" :key="name">
-              <tr>
-                <td>{{ name }}</td>
-                <td>{{ item.received }}</td>
-                <td>{{ item.receivable }}</td>
-                <td>{{ item.price }}</td>
-                <td>{{ item.quantity }}</td>
-              </tr>
-            </template>
-            <template v-for="([name, item]) in Object.entries(printData.accessorie_sales).filter(([n]) => n.includes('合计'))" :key="name">
-              <tr>
-                <td>{{ name }}</td>
-                <td>{{ item.received }}</td>
-                <td>{{ item.receivable }}</td>
-                <td>{{ item.price }}</td>
-                <td>{{ item.quantity }}</td>
-              </tr>
-            </template>
-          </tbody>
-        </table>
-      </template>
-      <template v-if="Number(printData?.summary?.sales_refund) > 0">
-        <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
-          <thead>
+          </template>
+        </tbody>
+      </table>
+      <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
+        <thead>
+          <tr>
+            <th>配件</th>
+            <th>实收</th>
+            <th>应收</th>
+            <th>单价</th>
+            <th>件数</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template v-for="([name, item]) in Object.entries(printData.accessorie_sales).filter(([n]) => !n.includes('合计'))" :key="name">
             <tr>
-              <th>成品(退货)</th>
-              <th>大类品类工艺</th>
-              <th>退款金额</th>
-              <th>标签价</th>
-              <th>金重</th>
-              <th>工费</th>
-              <th>件数</th>
+              <td>{{ name }}</td>
+              <td>{{ item.received }}</td>
+              <td>{{ item.receivable }}</td>
+              <td>{{ item.price }}</td>
+              <td>{{ item.quantity }}</td>
             </tr>
-          </thead>
-          <tbody>
-            <!-- 按项目渲染，已排序的普通行和合计行 -->
-            <template v-for="(projectRows, projectName) in refundData.normalRows" :key="projectName">
-              <template v-for="row in projectRows" :key="`${row.firstKey}-${row.secondKey}`">
-                <tr>
-                  <td>{{ row.index === 0 ? row.firstKey : '' }}</td>
-                  <td>{{ row.secondKey }}</td>
-                  <td>{{ row.item?.refunded || '' }}</td>
-                  <td>{{ row.item?.price || '' }}</td>
-                  <td>{{ row.item?.weight_metal || '' }}</td>
-                  <td>{{ row.item?.labor_fee || '' }}</td>
-                  <td>{{ row.item?.quantity }}</td>
-                </tr>
-              </template>
-            </template>
-            <!-- 汇总统计行 -->
-            <template v-for="row in refundData.summary" :key="`${row.firstKey}-${row.secondKey}`">
+          </template>
+          <template v-for="([name, item]) in Object.entries(printData.accessorie_sales).filter(([n]) => n.includes('合计'))" :key="name">
+            <tr>
+              <td>{{ name }}</td>
+              <td>{{ item.received }}</td>
+              <td>{{ item.receivable }}</td>
+              <td>{{ item.price }}</td>
+              <td>{{ item.quantity }}</td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
+      <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
+        <thead>
+          <tr>
+            <th>成品(退货)</th>
+            <th>大类品类工艺</th>
+            <th>退款金额</th>
+            <th>标签价</th>
+            <th>金重</th>
+            <th>工费</th>
+            <th>件数</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 按项目渲染，已排序的普通行和合计行 -->
+          <template v-for="(projectRows, projectName) in refundData.normalRows" :key="projectName">
+            <template v-for="row in projectRows" :key="`${row.firstKey}-${row.secondKey}`">
               <tr>
                 <td>{{ row.index === 0 ? row.firstKey : '' }}</td>
                 <td>{{ row.secondKey }}</td>
@@ -335,42 +313,41 @@ const refundData = computed(() =>
                 <td>{{ row.item?.quantity }}</td>
               </tr>
             </template>
-          </tbody>
-        </table>
-        <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
-          <thead>
+          </template>
+          <!-- 汇总统计行 -->
+          <template v-for="row in refundData.summary" :key="`${row.firstKey}-${row.secondKey}`">
             <tr>
-              <th>旧料(退货)</th>
-              <th>材质成色主石/明细</th>
-              <th>退款</th>
-              <th>金重</th>
-              <th>主石重</th>
-              <th>件数</th>
-              <th>标价</th>
-              <th>工费</th>
-              <th>条码</th>
+              <td>{{ row.index === 0 ? row.firstKey : '' }}</td>
+              <td>{{ row.secondKey }}</td>
+              <td>{{ row.item?.refunded || '' }}</td>
+              <td>{{ row.item?.price || '' }}</td>
+              <td>{{ row.item?.weight_metal || '' }}</td>
+              <td>{{ row.item?.labor_fee || '' }}</td>
+              <td>{{ row.item?.quantity }}</td>
             </tr>
-          </thead>
-          <tbody>
-            <template v-for="(projectRows, projectName) in oldSalesRefund.normalRows" :key="projectName">
-              <template v-for="rows in projectRows" :key="`${rows.firstKey}-${rows.secondKey}`">
-                <tr>
-                  <td>{{ rows.index === 0 ? rows.firstKey : '' }}</td>
-                  <td>{{ rows.item.name }}</td>
-                  <td>{{ rows.item.refunded }}</td>
-                  <td>{{ rows.item.weight_metal }}</td>
-                  <td>{{ rows.item.weight_gem }}</td>
-                  <td>{{ rows.item.quantity }}</td>
-                  <td>{{ rows.item.label_price }}</td>
-                  <td>{{ rows.item.labor_fee }}</td>
-                  <td>{{ rows.item.code }}</td>
-                </tr>
-              </template>
-            </template>
-            <template v-for="(rows, index) in oldSalesRefund.summary" :key="index">
+          </template>
+        </tbody>
+      </table>
+      <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
+        <thead>
+          <tr>
+            <th>旧料(退货)</th>
+            <th>材质成色主石/明细</th>
+            <th>退款</th>
+            <th>金重</th>
+            <th>主石重</th>
+            <th>件数</th>
+            <th>标价</th>
+            <th>工费</th>
+            <th>条码</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template v-for="(projectRows, projectName) in oldSalesRefund.normalRows" :key="projectName">
+            <template v-for="rows in projectRows" :key="`${rows.firstKey}-${rows.secondKey}`">
               <tr>
-                <td>{{ rows.firstKey }}</td>
-                <td />
+                <td>{{ rows.index === 0 ? rows.firstKey : '' }}</td>
+                <td>{{ rows.item.name }}</td>
                 <td>{{ rows.item.refunded }}</td>
                 <td>{{ rows.item.weight_metal }}</td>
                 <td>{{ rows.item.weight_gem }}</td>
@@ -380,35 +357,47 @@ const refundData = computed(() =>
                 <td>{{ rows.item.code }}</td>
               </tr>
             </template>
-          </tbody>
-        </table>
-
-        <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
-          <thead>
+          </template>
+          <template v-for="(rows, index) in oldSalesRefund.summary" :key="index">
             <tr>
-              <th>配件(退货)</th>
-              <th>退款</th>
-              <th>数量</th>
+              <td>{{ rows.firstKey }}</td>
+              <td />
+              <td>{{ rows.item.refunded }}</td>
+              <td>{{ rows.item.weight_metal }}</td>
+              <td>{{ rows.item.weight_gem }}</td>
+              <td>{{ rows.item.quantity }}</td>
+              <td>{{ rows.item.label_price }}</td>
+              <td>{{ rows.item.labor_fee }}</td>
+              <td>{{ rows.item.code }}</td>
             </tr>
-          </thead>
-          <tbody>
-            <template v-for="([name, item]) in Object.entries(printData.accessorie_sales_refund).filter(([n]) => !n.includes('合计'))" :key="name">
-              <tr>
-                <td>{{ name }}</td>
-                <td>{{ item.refunded }}</td>
-                <td>{{ item.quantity }}</td>
-              </tr>
-            </template>
-            <template v-for="([name, item]) in Object.entries(printData.accessorie_sales_refund).filter(([n]) => n.includes('合计'))" :key="name">
-              <tr>
-                <td>{{ name }}</td>
-                <td>{{ item.refunded }}</td>
-                <td>{{ item.quantity }}</td>
-              </tr>
-            </template>
-          </tbody>
-        </table>
-      </template>
+          </template>
+        </tbody>
+      </table>
+      <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
+        <thead>
+          <tr>
+            <th>配件(退货)</th>
+            <th>退款</th>
+            <th>数量</th>
+          </tr>
+        </thead>
+        <tbody>
+          <template v-for="([name, item]) in Object.entries(printData.accessorie_sales_refund).filter(([n]) => !n.includes('合计'))" :key="name">
+            <tr>
+              <td>{{ name }}</td>
+              <td>{{ item.refunded }}</td>
+              <td>{{ item.quantity }}</td>
+            </tr>
+          </template>
+          <template v-for="([name, item]) in Object.entries(printData.accessorie_sales_refund).filter(([n]) => n.includes('合计'))" :key="name">
+            <tr>
+              <td>{{ name }}</td>
+              <td>{{ item.refunded }}</td>
+              <td>{{ item.quantity }}</td>
+            </tr>
+          </template>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
