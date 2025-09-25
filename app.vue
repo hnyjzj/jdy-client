@@ -14,10 +14,11 @@ onMounted(async () => {
     return
   }
   wx.value?.UserCaptureScreen(async () => {
-    const params = ref<{ username: string, storename?: string | undefined, url: string }>({
+    const params = ref<{ username: string, storename?: string | undefined, url: string, title: string }>({
       username: '',
       storename: '',
       url: '',
+      title: '',
     })
     // 判断是否登录
     const store = useAuth()
@@ -36,6 +37,7 @@ onMounted(async () => {
       params.value.storename = undefined
     }
     params.value.url = window.location.href
+    params.value.title = document?.title || '其他'
     await UserScreen(params.value)
   })
 })
