@@ -21,10 +21,10 @@ const { oldFilterList } = storeToRefs(useOld())
         调拨状态: {{ allocateFilterList.status?.preset[allocateInfoAll.status] }}
       </div>
       <div class="col-12" uno-sm="col-6" uno-md="col-4">
-        调出门店: {{ allocateInfoAll.from_store.name }}
+        调出门店: {{ allocateInfoAll.from_store.alias }}
       </div>
       <div class="col-12" uno-sm="col-6" uno-md="col-4">
-        调入门店: {{ allocateInfoAll.to_store.name }}
+        调入门店: {{ allocateInfoAll.to_store.alias }}
       </div>
       <div class="col-12" uno-sm="col-6" uno-md="col-4">
         调拨类型: {{ allocateFilterList.method?.preset[allocateInfoAll.method] }}

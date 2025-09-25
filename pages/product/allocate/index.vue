@@ -213,14 +213,14 @@ const cols = [
     title: '调出门店',
     key: 'from_store.name',
     render(row: Allocate) {
-      return row.from_store?.name ?? '-'
+      return row.from_store?.alias ?? '-'
     },
   },
   {
     title: '调入门店',
     key: 'to_store.name',
     render(row: Allocate) {
-      return row.to_store?.name ?? '-'
+      return row.to_store?.alias ?? '-'
     },
   },
   {
@@ -482,7 +482,7 @@ async function downloadDetails() {
                     调出门店
                   </div>
                   <div class="val">
-                    {{ info?.from_store?.name }}
+                    {{ info?.from_store?.alias }}
                   </div>
                 </div>
                 <div class="flex py-[4px] justify-between">
@@ -490,7 +490,7 @@ async function downloadDetails() {
                     调入门店
                   </div>
                   <div class="val">
-                    {{ info?.to_store?.name }}
+                    {{ info?.to_store?.alias }}
                   </div>
                 </div>
                 <div class="flex py-[4px] justify-between">

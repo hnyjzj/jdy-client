@@ -19,6 +19,7 @@ function extractPresets<T extends { name: string, preset?: Record<any, string> }
 function mapEnumValues(
   row: Record<string, any>,
   enumMap: Record<string, Record<any, string>>,
+  isAlias: boolean,
 ): Record<string, any> {
   const newRow: Record<string, any> = { ...row }
   for (const key in row) {
@@ -34,13 +35,18 @@ function mapEnumValues(
       newRow[key] = row[key] ? '是' : '否'
     }
     else if (key === 'store' || key === 'recycle_store' || key === 'operator') {
-      newRow[key] = row[key]?.name ?? ''
+      if (isAlias) {
+        newRow[key] = row[key]?.alias ?? ''
+      }
+      else {
+        newRow[key] = row[key]?.name ?? ''
+      }
     }
     else if (key === 'from_store_id') {
-      newRow[key] = row.from_store?.name ?? ''
+      newRow[key] = row.from_store?.alias ?? ''
     }
     else if (key === 'to_store_id') {
-      newRow[key] = row.to_store?.name ?? ''
+      newRow[key] = row.to_store?.alias ?? ''
     }
     else if (key === 'initiator_id') {
       newRow[key] = row.initiator?.nickname ?? ''
@@ -87,7 +93,8 @@ export function exportProductListToXlsx(
   name: string = '货品列表',
   summary?: [string, string | number][],
   type: 1 | 2 = 1,
-  header?: Record<string, string>,
+  header?: Record<string, string> | undefined,
+  isAlias: boolean = false, // 门店名是否导出别名
 ) {
   let headerMap
 
@@ -103,7 +110,7 @@ export function exportProductListToXlsx(
   )
 
   const enumMap = extractPresets(fields)
-  const mappedData = data.map(row => mapEnumValues(row, enumMap))
+  const mappedData = data.map(row => mapEnumValues(row, enumMap, isAlias))
   const aoaData = convertDataWithChineseHeaders(mappedData, fieldMap)
 
   let finalData: any[][] = []

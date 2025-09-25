@@ -226,16 +226,16 @@ async function downloadLocalFile() {
         ['入网费合计', res.data.product_total_access_fee],
         ['标签价合计', res.data.product_total_label_price],
         ['金重合计', res.data.product_total_weight_metal],
-        ['调出门店', res.data?.from_store?.name ?? ''],
-        ['调入门店', res.data?.to_store?.name ?? ''],
+        ['调出门店', res.data?.from_store?.alias ?? ''],
+        ['调入门店', res.data?.to_store?.alias ?? ''],
       ]
 
       if (type.value === GoodsTypePure.ProductFinish) {
-        await exportProductListToXlsx(res.data.product_finisheds, finishedFilterListToArray.value, '调拨单详情货品列表', summary)
+        await exportProductListToXlsx(res.data.product_finisheds, finishedFilterListToArray.value, '调拨单详情货品列表', summary, 1, undefined, true)
         loading.value = false
       }
       if (type.value === GoodsTypePure.ProductOld) {
-        await exportProductListToXlsx(res.data.product_olds, oldFilterListToArray.value, '调拨单详情货品列表', summary, GoodsTypePure.ProductOld)
+        await exportProductListToXlsx(res.data.product_olds, oldFilterListToArray.value, '调拨单详情货品列表', summary, GoodsTypePure.ProductOld, undefined, true)
         loading.value = false
       }
     }

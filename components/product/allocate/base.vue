@@ -53,10 +53,10 @@ const props = defineProps<{
                         </template>
                         <template v-else-if="item.input === 'search'">
                           <div v-if="item.name === 'to_store_id'" class="info-val">
-                            {{ props.info.to_store?.name }}
+                            {{ props.info.to_store?.alias }}
                           </div>
                           <div v-if="item.name === 'from_store_id'" class="info-val">
-                            {{ props.info.from_store?.name }}
+                            {{ props.info.from_store?.alias }}
                           </div>
                         </template>
                       </template>
