@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { getAllocateInfo, getAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove, add, getAllocateInfoAll, clear } = useAllocate()
+const { getAllocateInfoOverview, getAllocateInfo, getAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove, add, getAllocateInfoAll, clear } = useAllocate()
 const { allocateInfo, allocateFilterList, allocateFilterListToArray } = storeToRefs(useAllocate())
 const { useWxWork } = useWxworkStore()
 const { getFinishedWhere } = useFinished()
@@ -303,10 +303,35 @@ async function createFun() {
     await searchOldList()
   }
 }
+// 打印
+const showPrintModel = ref(false)
+const printTypeVal = ref('all')
+const printType = ref([{
+  label: '总览',
+  value: 'all',
+}, {
+  label: '明细',
+  value: 'info',
+}])
+const printShow = ref(false)
+const printFun = async () => {
+//  调接口
+  await getAllocateInfoAll({ all: true, id: allocateInfo.value.id })
+  await getAllocateInfoOverview({ id: allocateInfo.value.id })
+  //  展示数据
+  printShow.value = true
+  showPrintModel.value = false
+}
 </script>
 
 <template>
   <div class="storage pb-20 px-4">
+    <common-model v-model="showPrintModel" title="选择打印类型" :show-ok="true" @confirm="printFun">
+      <div>
+        <n-select v-model:value="printTypeVal" :options="printType" />
+      </div>
+    </common-model>
+    <product-allocate-print v-model="printShow" :print-type="printTypeVal" />
     <div class="grid-12 pt-4">
       <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <template v-if="type === GoodsTypePure.ProductFinish">
@@ -318,9 +343,14 @@ async function createFun() {
 
         <template v-if="productList?.length">
           <div class="p-4 blur-bgc rounded-6">
-            <div class="text-[rgba(57,113,243,1)] flex mb-4" @click="downloadLocalFile">
-              <icon name="i-svg:download" :size="16" color="#666" />
-              导出数据
+            <div class="flex justify-between mb-4">
+              <div class="text-[rgba(57,113,243,1)] flex items-center cursor-pointer" @click="downloadLocalFile">
+                <icon name="i-svg:download" :size="16" color="#666" />
+                导出数据
+              </div>
+              <div class="text-center bg-[#1b6ceb] color-[#fff] px-[8px] py-[4px] rounded-[8px] cursor-pointer" @click="showPrintModel = true">
+                打印
+              </div>
             </div>
             <template v-if="type === GoodsTypePure.ProductFinish">
               <template v-for="(item, index) in allocateInfo.product_finisheds" :key="index">

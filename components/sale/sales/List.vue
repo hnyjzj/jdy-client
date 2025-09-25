@@ -25,10 +25,11 @@ const handleClick = (id?: string) => {
             <template v-if="item?.products && item?.products?.length">
               <common-cell label="货品信息" :value="item?.products[0].finished?.product?.name || '--'" />
             </template>
-            <common-cell label="实付金额" format="￥" :value="item.price_pay" />
             <common-cell label="货品金额" format="￥" :value="item.product_finished_price" />
-            <common-cell label="优惠金额" format="￥" :value="item.price_discount" />
+            <common-cell label="配件金额" format="￥" :value="item.product_accessorie_price" />
             <common-cell label="旧料抵扣" format="￥" :value="item.product_old_price" />
+            <common-cell label="优惠金额" format="￥" :value="item.price_discount" />
+            <common-cell label="实付金额" format="￥" :value="item.price_pay" />
             <common-cell label="积分" :value="item.integral" />
             <common-cell label="销售时间" :value="formatISODate(item.created_at)" />
           </div>

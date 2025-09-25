@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { getAccessorieAllocateInfo, getAccessorieAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove, clear, addAccessorieAllocate } = useAccessorieAllocate()
+const { getAccessorieAllocateInfo, getAccessorieAllocateInfoTotal, getAccessorieAllocateWhere, confirmAllcate, cancelAllcate, finishAllcate, remove, clear, addAccessorieAllocate } = useAccessorieAllocate()
 const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
 const { accessorieAllocateInfo, accessorieAllocateFilterList, accessorieAllocateFilterListToArray } = storeToRefs(useAccessorieAllocate())
@@ -17,6 +17,7 @@ const isChooseModel = ref(false)
 const isImportModel = ref(false)
 const uploadRef = ref()
 const page = ref(1)
+const limit = ref(20)
 if (route.query.id) {
   allocateId.value = route.query.id
   await getInfo()
@@ -28,7 +29,7 @@ async function getInfo() {
   const parmas = {
     id: route.query?.id,
     page: page.value,
-    limit: 20,
+    limit: limit.value,
   } as AccessorieAllocateInfoParams
   await getAccessorieAllocateInfo(parmas)
 }
@@ -144,10 +145,19 @@ async function submitGoods(e: AddAccessorieAllocateProduct[]) {
     $toast.error(res?.message ?? '添加失败')
   }
 }
+
+// 打印
+const showPrintModel = ref(false)
+const printFn = async () => {
+//  调接口
+  await getAccessorieAllocateInfoTotal({ id: accessorieAllocateInfo.value?.id })
+  showPrintModel.value = true
+}
 </script>
 
 <template>
   <div class="storage pb-20 px-4">
+    <product-allocate-access-print v-model="showPrintModel" />
     <div class="grid-12 pt-4">
       <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <div class="rounded-6 bg-white w-auto blur-bga top">
@@ -235,8 +245,15 @@ async function submitGoods(e: AddAccessorieAllocateProduct[]) {
         </div>
         <template v-if="accessorieAllocateInfo.products?.length">
           <div class="p-4 blur-bgc rounded-6">
-            <div class="text-[14px] pb-4 text-color">
-              共 {{ accessorieAllocateInfo.product_count }} 条数据
+            <div class="flex justify-between pb-4 items-center">
+              <div class="text-[14px] text-color">
+                共 {{ accessorieAllocateInfo.product_count }} 条数据
+              </div>
+              <div
+                class="text-center bg-[#1b6ceb] color-[#fff] px-[8px] py-[4px] rounded-[8px] cursor-pointer"
+                @click="printFn">
+                打印
+              </div>
             </div>
             <template v-for="(item, index) in accessorieAllocateInfo.products" :key="index">
               <div class="grid mb-3">
@@ -274,6 +291,11 @@ async function submitGoods(e: AddAccessorieAllocateProduct[]) {
                 </sale-order-nesting>
               </div>
             </template>
+            <common-page
+              v-model:page="page" :total="accessorieAllocateInfo.product_count" :limit="limit" @update:page="() => {
+                getInfo()
+              }
+              " />
           </div>
         </template>
       </div>

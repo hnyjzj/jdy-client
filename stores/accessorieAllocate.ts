@@ -7,12 +7,14 @@ export const useAccessorieAllocate = defineStore('AccessorieAllocate', {
     accessorieAllocateFilterListToArray: FilterWhere<AccessorieAllocate>[]
     accessorieAllocateFilterList: Where<AccessorieAllocate>
     accessorieAllocateInfo: AccessorieAllocateInfo
+    accessorieAllocateInfoTotal: AccessorieAllocateInfo
   } => ({
     accessorieAllocateList: [],
     accessorieAllocateTotal: 0,
     accessorieAllocateFilterListToArray: [] as FilterWhere<AccessorieAllocate>[],
     accessorieAllocateFilterList: {} as Where<AccessorieAllocate>,
     accessorieAllocateInfo: {} as AccessorieAllocateInfo,
+    accessorieAllocateInfoTotal: {} as AccessorieAllocateInfo,
   }),
   actions: {
     // 调拨列表
@@ -66,7 +68,18 @@ export const useAccessorieAllocate = defineStore('AccessorieAllocate', {
         throw new Error(`获取配件详情失败: ${error || '未知错误'}`)
       }
     },
-
+    /** 调拨详情总 */
+    async getAccessorieAllocateInfoTotal(params: { id: string }) {
+      try {
+        const { data } = await https.post<AccessorieAllocateInfo, { id: string, all: boolean }>('/product/accessorie/allocate/info', { id: params.id, all: true })
+        if (data.value?.code === HttpCode.SUCCESS) {
+          this.accessorieAllocateInfoTotal = data.value.data
+        }
+      }
+      catch (error) {
+        throw new Error(`获取配件详情失败: ${error || '未知错误'}`)
+      }
+    },
     /** 确认调拨 */
     async confirmAllcate(id: AccessorieAllocate['id']) {
       try {
