@@ -15,13 +15,22 @@ export function formatFloatFieldsInWorksheet(
       const fieldName = fieldOrder[colIndex]
       if (floatFields.includes(fieldName) && rowIndex > 0) { // Skip header row
         const cellRef = XLSX.utils.encode_cell({ r: rowIndex, c: colIndex })
-        if (!worksheet[cellRef])
-          worksheet[cellRef] = { v: cell }
-        worksheet[cellRef].t = 'n'
-        if (typeof cell === 'string' && cell !== '') {
+        // 仅在确定为数值时才写入并标记为数值型
+        if (typeof cell === 'number') {
+          if (!worksheet[cellRef])
+            worksheet[cellRef] = { v: cell }
+          else worksheet[cellRef].v = cell
+          worksheet[cellRef].t = 'n'
+          delete worksheet[cellRef].w
+        }
+        else if (typeof cell === 'string' && cell.trim() !== '') {
           const parsed = Number.parseFloat(cell)
           if (!Number.isNaN(parsed)) {
-            worksheet[cellRef].v = parsed
+            if (!worksheet[cellRef])
+              worksheet[cellRef] = { v: parsed }
+            else worksheet[cellRef].v = parsed
+            worksheet[cellRef].t = 'n'
+            delete worksheet[cellRef].w
           }
         }
       }
