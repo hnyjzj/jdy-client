@@ -4,7 +4,7 @@ const props = defineProps<{
   list?: BossSalesList[]
   cardTitle: string
   where?: Where<BossWhere>
-  loading: boolean
+  loading?: boolean
 }>()
 const emits = defineEmits<{
   getlist: []

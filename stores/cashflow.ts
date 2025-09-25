@@ -75,23 +75,27 @@ export const useCashflow = defineStore('cashflow', {
 
     async getCashflowList(params: CashflowWhere) {
       this.sourceTitle = []
+      this.sourceList = []
       const { data } = await https.post<{ list: CashflowList, overview: Record<string, string>, detail_title: string[], details: Record<string, string>[] }, CashflowWhere>('/statistic/payment/data', params, true, false)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.casflowList = this.convertCashflowRecordToArray(reorderObject(data.value?.data?.list))
         this.casflowTitle = this.generateTableTitle(this.casflowList)
         this.overview = reorderObject(data.value?.data?.overview)
-        this.sourceTitle = data.value?.data?.detail_title.map(item => ({
-          title: item,
-          key: item,
-          width: '90px',
-          align: 'center',
-        })) ?? []
+        this.sourceList = data.value?.data?.details ?? []
+        data.value?.data?.detail_title.forEach((item) => {
+          this.sourceTitle.push({
+            title: item,
+            key: item,
+            width: '90px',
+            align: 'center',
+          })
+        })
       }
       return {
         title: this.casflowTitle,
         list: this.casflowList,
         sourceTitle: this.sourceTitle,
-        sourceList: data.value?.data?.details,
+        sourceList: this.sourceList,
       }
     },
 

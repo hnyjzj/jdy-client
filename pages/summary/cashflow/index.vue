@@ -62,10 +62,7 @@ const { overview } = storeToRefs(useCashflow())
 const changeStore = async () => {
   await getcashflowListFn()
 }
-onMounted(async () => {
-  await nextTick()
-  await getcashflowListFn()
-})
+await getcashflowListFn()
 </script>
 
 <template>
@@ -85,9 +82,8 @@ onMounted(async () => {
           card-title="收支统计"
           :title="cashflowTitle"
           :list="cashflowList"
-          :loading="cashflowLoading"
           @getlist="getcashflowListFn" />
-        <summary-cashflow-source-card :title="sourceTitle" :list="sourceList" :loading="cashflowLoading">
+        <summary-cashflow-source-card :title="sourceTitle" :list="sourceList">
           <template #header-title>
             收支明细
           </template>
