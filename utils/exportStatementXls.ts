@@ -176,7 +176,7 @@ function convertDataWithChineseHeaders(
  */
 export function exportStatementListToXlsx(
   data: Record<string, any>[],
-  fields: { name: string, preset?: Record<any, string> }[],
+  fields: { name: string, preset?: Record<any, string>, type?: string }[],
   name: string = '货品列表',
   summary?: [string, string | number][],
 ) {
@@ -199,6 +199,9 @@ export function exportStatementListToXlsx(
   }
 
   const worksheet = XLSX.utils.aoa_to_sheet(finalData)
+  // Apply number formatting for float fields
+  formatFloatFieldsInWorksheet(worksheet, finalData, Object.keys(fieldMap), fields)
+
   const workbook = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
 

@@ -97,11 +97,13 @@ function convertDataWithChineseHeaders(
 /**
  * 导出 Excel
  * @param data 需要导出的数据
- * @param fields 字段定义（带 name 和 preset）
+ * @param fields 字段定义（带 name, preset 和 type）
+ * @param name 导出文件名
+ * @param summary 统计信息区域
  */
 export function exportHistoryListToXlsx(
   data: Record<string, any>[],
-  fields: { name: string, preset?: Record<any, string> }[],
+  fields: { name: string, preset?: Record<any, string>, type?: string }[],
   name: string = '货品记录列表',
   summary?: [string, string | number][],
 ) {
@@ -140,6 +142,8 @@ export function exportHistoryListToXlsx(
   }
 
   const worksheet = XLSX.utils.aoa_to_sheet(finalData)
+  formatFloatFieldsInWorksheet(worksheet, finalData, Object.keys(fieldMap), fields)
+
   const workbook = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
 

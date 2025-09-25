@@ -81,7 +81,7 @@ function convertDataWithChineseHeaders(
 /**
  * 导出 Excel
  * @param data 导出的数据数组
- * @param fields 字段定义（带 name 和 preset）
+ * @param fields 字段定义（带 name, preset 和 type）
  * @param name 导出文件名
  * @param summary 统计信息区域
  * @param type 类型：1 为成品，2 为旧料（默认 1）
@@ -89,7 +89,7 @@ function convertDataWithChineseHeaders(
  */
 export function exportProductListToXlsx(
   data: Record<string, any>[],
-  fields: { name: string, preset?: Record<any, string> }[],
+  fields: { name: string, preset?: Record<any, string>, type?: string }[],
   name: string = '货品列表',
   summary?: [string, string | number][],
   type: 1 | 2 = 1,
@@ -124,6 +124,8 @@ export function exportProductListToXlsx(
   }
 
   const worksheet = XLSX.utils.aoa_to_sheet(finalData)
+  formatFloatFieldsInWorksheet(worksheet, finalData, Object.keys(fieldMap), fields)
+
   const workbook = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
 

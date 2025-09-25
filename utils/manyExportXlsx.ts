@@ -91,14 +91,14 @@ function mergeRowsByIndex(
 /**
  * 导出 Excel（单 Sheet，多数据源拼一行）
  * @param dataList - 多个数据源数组 [res.data, newProduct]
- * @param fields - 字段配置（可能包含枚举）
+ * @param fields - 字段配置（可能包含枚举和类型）
  * @param headerMap - 中文 -> 英文 的映射
  * @param name - 导出文件名
  */
 export function exportToXlsxMultiple(
   dataList: Record<string, any>[][],
-  fields: { name: string, preset?: Record<any, string> }[],
-  headerMap: Record<string, string>, // 中文 -> 英文
+  fields: { name: string, preset?: Record<any, string>, type?: string }[],
+  headerMap: Record<string, string>,
   name: string = '货品列表',
 ) {
   const enumMap = extractPresets(fields)
@@ -125,6 +125,8 @@ export function exportToXlsxMultiple(
   )
 
   const worksheet = XLSX.utils.aoa_to_sheet(aoaData)
+  formatFloatFieldsInWorksheet(worksheet, aoaData, fieldOrder, fields)
+
   const workbook = XLSX.utils.book_new()
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1')
 

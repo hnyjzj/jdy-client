@@ -1,0 +1,39 @@
+import * as XLSX from 'xlsx'
+
+export function formatFloatFieldsInWorksheet(
+  worksheet: XLSX.WorkSheet,
+  aoaData: any[][],
+  fieldOrder: string[],
+  fields: { name: string, preset?: Record<any, string>, type?: string }[],
+) {
+  const floatFields = fields
+    .filter(field => field.type === 'float')
+    .map(field => field.name)
+
+  aoaData.forEach((row, rowIndex) => {
+    row.forEach((cell, colIndex) => {
+      const fieldName = fieldOrder[colIndex]
+      if (floatFields.includes(fieldName) && rowIndex > 0) { // Skip header row
+        const cellRef = XLSX.utils.encode_cell({ r: rowIndex, c: colIndex })
+        // 仅在确定为数值时才写入并标记为数值型
+        if (typeof cell === 'number') {
+          if (!worksheet[cellRef])
+            worksheet[cellRef] = { v: cell }
+          else worksheet[cellRef].v = cell
+          worksheet[cellRef].t = 'n'
+          delete worksheet[cellRef].w
+        }
+        else if (typeof cell === 'string' && cell.trim() !== '') {
+          const parsed = Number.parseFloat(cell)
+          if (!Number.isNaN(parsed)) {
+            if (!worksheet[cellRef])
+              worksheet[cellRef] = { v: parsed }
+            else worksheet[cellRef].v = parsed
+            worksheet[cellRef].t = 'n'
+            delete worksheet[cellRef].w
+          }
+        }
+      }
+    })
+  })
+}
