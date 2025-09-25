@@ -214,12 +214,12 @@ const printFn = async () => {
                               </template>
                               <template v-if="item.name === 'to_store_id'">
                                 <div class="val">
-                                  {{ accessorieAllocateInfo?.to_store?.name || '' }}
+                                  {{ accessorieAllocateInfo?.to_store?.alias || '' }}
                                 </div>
                               </template>
                               <template v-if="item.name === 'from_store_id'">
                                 <div class="val">
-                                  {{ accessorieAllocateInfo?.from_store?.name || '' }}
+                                  {{ accessorieAllocateInfo?.from_store?.alias || '' }}
                                 </div>
                               </template>
                               <template v-if="item.name === 'receiver_id'">

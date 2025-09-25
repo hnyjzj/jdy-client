@@ -184,10 +184,10 @@ const cols = [
         render(row: any) {
           let value = row[item.name]
           if (item.name === 'to_store_id') {
-            value = row.to_store?.name
+            value = row.to_store?.alias
           }
           if (item.name === 'from_store_id') {
-            value = row.from_store?.name
+            value = row.from_store?.alias
           }
           if (item.name === 'to_region_id') {
             value = row.to_region?.name
@@ -341,12 +341,12 @@ async function focus() {
                           </template>
                           <template v-if="item.name === 'to_store_id'">
                             <div class="val">
-                              {{ info?.to_store?.name || '' }}
+                              {{ info?.to_store?.alias || '' }}
                             </div>
                           </template>
                           <template v-if="item.name === 'from_store_id'">
                             <div class="val">
-                              {{ info?.from_store?.name || '' }}
+                              {{ info?.from_store?.alias || '' }}
                             </div>
                           </template>
                           <template v-if="item.name === 'receiver_id'">

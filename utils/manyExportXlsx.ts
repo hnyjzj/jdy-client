@@ -29,10 +29,10 @@ function mapEnumValues(
       newRow[key] = row[key]?.name ?? ''
     }
     else if (key === 'from_store_id') {
-      newRow[key] = row.from_store?.name ?? ''
+      newRow[key] = row.from_store?.alias ?? ''
     }
     else if (key === 'to_store_id') {
-      newRow[key] = row.to_store?.name ?? ''
+      newRow[key] = row.to_store?.alias ?? ''
     }
     else if (key === 'initiator_id') {
       newRow[key] = row.initiator?.nickname ?? ''
