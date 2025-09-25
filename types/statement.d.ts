@@ -105,7 +105,7 @@ interface StatisticSalesDetailDailyResp {
       /**
        * 数量
        */
-      quantity: 数量
+      quantity: number
       /**
        * 退款
        */
