@@ -2,13 +2,17 @@ export const useAllocate = defineStore('Allocate', {
   state: (): {
     /** 调拨列表 */
     allocateList: Allocate[]
+    allocateInfoAll: Allocate
     /** 调拨数量 */
     allocateTotal: number
     allocateFilterListToArray: FilterWhere<Allocate>[]
     allocateFilterList: Where<Allocate>
     allocateInfo: Allocate
+    allocateInfoOverview: AllocateInfoOverview
   } => ({
+    allocateInfoOverview: {} as AllocateInfoOverview,
     allocateList: [],
+    allocateInfoAll: {} as Allocate,
     allocateTotal: 0,
     allocateFilterListToArray: [] as FilterWhere<Allocate>[],
     allocateFilterList: {} as Where<Allocate>,
@@ -70,10 +74,28 @@ export const useAllocate = defineStore('Allocate', {
     async getAllocateInfoAll(param: AllocateInfoParamsAll) {
       try {
         const { data } = await https.post<Allocate, AllocateInfoParamsAll>('/product/allocate/info', param)
+        if (data.value?.code === HttpCode.SUCCESS) {
+          this.allocateInfoAll = data.value.data
+        }
         return data.value
       }
       catch (error) {
         throw new Error(`获取调拨详情失败: ${error || '未知错误'}`)
+      }
+    },
+    /**
+     * 调拨单详情总览 info_overview
+     */
+    async getAllocateInfoOverview(param: { id: string }) {
+      try {
+        const { data } = await https.post<any, { id: string }>('/product/allocate/info_overview', param)
+        if (data.value?.code === HttpCode.SUCCESS) {
+          this.allocateInfoOverview = data.value.data
+        }
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`获取调拨详情总览失败: ${error || '未知错误'}`)
       }
     },
     /** 确认调拨 */

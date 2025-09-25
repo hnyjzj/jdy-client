@@ -98,6 +98,8 @@ interface Allocate {
   receiver_id: string
   /** 总部  */
   to_headquarters_id: string
+
+  product_total_recycle_price: string
 }
 
 interface AllocateReq {
@@ -159,4 +161,26 @@ interface ExcelData {
 interface AllocateBatchAdd {
   id: Allocate['id']
   codes: string[]
+}
+
+/**
+ * 调拨信息概览类型
+ * 外层key为金类（如：足金（件））
+ * 内层key为品类（如：合计、吊坠、戒指等）
+ */
+interface AllocateInfoItem {
+  /** 件数 */
+  件数: string
+  /** 总标价 */
+  总标价: string
+  /** 金重 */
+  金重: string
+  /** 总抵值 */
+  抵值: string
+}
+
+interface AllocateInfoOverview {
+  [goldType: string]: {
+    [category: string]: AllocateInfoItem
+  }
 }
