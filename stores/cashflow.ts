@@ -2,11 +2,14 @@ export const useCashflow = defineStore('cashflow', {
   state: () => ({
     // 收支数据
     casflowWhere: {} as Where<CashflowWhere>,
-    casflowTitle: [] as any[],
+    casflowTitle: [] as StockTitle[],
     casflowList: [] as BossSalesList[],
     // 时间where
     timeWhere: {} as Where<CashflowWhere>,
     overview: {} as Record<string, string>,
+
+    sourceTitle: [] as StockTitle[],
+    sourceList: [] as Record<string, string>[],
   }),
   getters: {
 
@@ -71,15 +74,24 @@ export const useCashflow = defineStore('cashflow', {
     },
 
     async getCashflowList(params: CashflowWhere) {
-      const { data } = await https.post<{ list: CashflowList, overview: Record<string, string> }, CashflowWhere>('/statistic/payment/data', params, true, false)
+      this.sourceTitle = []
+      const { data } = await https.post<{ list: CashflowList, overview: Record<string, string>, detail_title: string[], details: Record<string, string>[] }, CashflowWhere>('/statistic/payment/data', params, true, false)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.casflowList = this.convertCashflowRecordToArray(reorderObject(data.value?.data?.list))
         this.casflowTitle = this.generateTableTitle(this.casflowList)
         this.overview = reorderObject(data.value?.data?.overview)
+        this.sourceTitle = data.value?.data?.detail_title.map(item => ({
+          title: item,
+          key: item,
+          width: '90px',
+          align: 'center',
+        })) ?? []
       }
       return {
         title: this.casflowTitle,
         list: this.casflowList,
+        sourceTitle: this.sourceTitle,
+        sourceList: data.value?.data?.details,
       }
     },
 

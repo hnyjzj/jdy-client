@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 useSeoMeta({
-  title: '收支数据',
+  title: '收支统计',
 })
 const { getPublicWhere, getCashflowList } = useCashflow()
 const { timeWhere } = storeToRefs(useCashflow())
@@ -36,6 +36,8 @@ const listJump = () => {
 const cashflowLoading = ref<boolean>(false)
 const cashflowTitle = ref<StockTitle[]>([])
 const cashflowList = ref<BossSalesList[]>([])
+const sourceTitle = ref<StockTitle[]>([])
+const sourceList = ref<Record<string, string>[]>([])
 cashflowLoading.value = true
 const getcashflowListFn = async () => {
   const res = await getCashflowList({ ...params.value, store_id: myStore.value.id })
@@ -48,13 +50,15 @@ const getcashflowListFn = async () => {
       return 1
     return 0
   }) || []
+  sourceTitle.value = res?.sourceTitle || []
+  sourceList.value = res?.sourceList || []
   cashflowLoading.value = false
 }
 
 const updateTimeFn = () => {
   listJump()
 }
-
+const { overview } = storeToRefs(useCashflow())
 const changeStore = async () => {
   await getcashflowListFn()
 }
@@ -74,12 +78,20 @@ onMounted(async () => {
         </div>
         <!-- 时间选择器 -->
         <summary-boss-select-time v-model="params" :time-where="timeWhere" @update-time="updateTimeFn" />
+        <div class="pb-[12px]">
+          <summary-total :data="overview" title="数据总览" />
+        </div>
         <summary-cashflow-card
-          card-title="收支数据"
+          card-title="收支统计"
           :title="cashflowTitle"
           :list="cashflowList"
           :loading="cashflowLoading"
           @getlist="getcashflowListFn" />
+        <summary-cashflow-source-card :title="sourceTitle" :list="sourceList" :loading="cashflowLoading">
+          <template #header-title>
+            收支明细
+          </template>
+        </summary-cashflow-source-card>
       </div>
     </common-layout-center>
   </div>
