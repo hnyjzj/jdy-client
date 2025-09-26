@@ -196,7 +196,7 @@ const presetToSelect = (filter: FilterWhere<OrderMaterial>): { label: string, va
                         />
                       </template>
                       <!-- type number 输入框 -->
-                      <template v-if="item.type === 'number'">
+                      <template v-if="item.type === 'float'">
                         <template
                           v-if="item.name === 'weight_metal'
                             || item.name === 'recycle_price_gold' || item.name === 'recycle_price_labor' ">
