@@ -132,6 +132,7 @@ const searchConfirm = async () => {
           orderObject.value.showMasterialsList.push(nowOldMaster.value)
         }
         searchShow.value = false
+        searchInput.value = ''
       }
     }
     else {
@@ -173,7 +174,12 @@ const scanCode = async () => {
 
 <template>
   <div>
-    <common-model v-model="searchShow" title="搜索" :show-ok="true" :show-cancel="true" @confirm="searchConfirm()" @cancel="searchShow = false">
+    <common-model
+      v-model="searchShow" title="搜索" :show-ok="true" :show-cancel="true"
+      @confirm="searchConfirm()" @cancel="() => {
+        searchShow = false
+        searchInput = ''
+      }">
       <div class="grid-12 h-[300px] overflow-y-scroll ">
         <div class="col-12">
           <div>
