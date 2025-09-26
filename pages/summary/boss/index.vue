@@ -2,8 +2,8 @@
 useSeoMeta({
   title: 'Boss看板',
 })
-const { getPerformanceType, getPerformanceList, getPublicWhere, getOldSalesList, getOldSalesType, getFinishedSalesType, getFinishedSalesList, getStockList, getStockType, OldGetStockType, OldGetStockList, getRevenueList, getRevenueWhere } = useBoss()
-const { RevenueWhere, finishedSalesWhere, oldfilterWhere, oldSalesFilterWhere, finishedWhere } = storeToRefs(useBoss())
+const { getOldRecycleType, getOldRecycleList, getPerformanceType, getPerformanceList, getPublicWhere, getOldSalesList, getOldSalesType, getFinishedSalesType, getFinishedSalesList, getStockList, getStockType, OldGetStockType, OldGetStockList, getRevenueList, getRevenueWhere } = useBoss()
+const { oldRecycleFilterWhere, RevenueWhere, finishedSalesWhere, oldfilterWhere, oldSalesFilterWhere, finishedWhere } = storeToRefs(useBoss())
 const { timeWhere } = storeToRefs(useBoss())
 const params = ref({} as BossWhere)
 await getPublicWhere()
@@ -85,6 +85,25 @@ const getOldSaleReq = async () => {
   await getOldSaleListFn()
 }
 
+// 旧料回收
+const radioValueOldRecycle = ref<BossWhere['type']>(1)
+const oldRecycleTitle = ref<StockTitle[]>([])
+const oldRecycleList = ref<BossSalesList[]>([])
+const oldRecycleLoading = ref<boolean>(false)
+oldRecycleLoading.value = true
+const getOldRecycleListFn = async () => {
+  oldRecycleLoading.value = true
+  const res = await getOldRecycleList({ ...params.value, type: radioValueOldRecycle.value })
+  oldRecycleTitle.value = res?.title || []
+  oldRecycleList.value = res?.list || []
+  oldRecycleLoading.value = false
+}
+
+const getOldRecycleReq = async () => {
+  await getOldRecycleType()
+  await getOldRecycleListFn()
+}
+
 // 成品统计
 const radioValueFinsihed = ref<BossWhere['type']>(1)
 const finishedTitle = ref<StockTitle[]>([])
@@ -143,6 +162,7 @@ const updateTimeFn = () => {
 }
 onMounted(async () => {
   await nextTick()
+  await getOldRecycleReq()
   await getPerformanceReq()
   await getFinishedSaleReq()
   await getRevenueReq()
@@ -185,15 +205,25 @@ onMounted(async () => {
           :loading="finishedSalesLoading"
           @getlist="getFinishedSaleListFn" />
 
-        <!-- 旧料销售 -->
+        <!-- 旧料兑换 -->
         <summary-boss-card
           v-model="radioValueOldSale"
-          card-title="旧料回收"
+          card-title="旧料兑换"
           :where="oldSalesFilterWhere"
           :title="oldSalesTitle"
           :list="oldSalesList"
           :loading="oldSalesLoading"
           @getlist="getOldSaleListFn" />
+
+        <!-- 旧料回收 -->
+        <summary-boss-card
+          v-model="radioValueOldRecycle"
+          card-title="旧料回收"
+          :where="oldRecycleFilterWhere"
+          :title="oldRecycleTitle"
+          :list="oldRecycleList"
+          :loading="oldRecycleLoading"
+          @getlist="getOldRecycleListFn" />
         <!-- 成品统计 -->
         <summary-boss-card
           v-model="radioValueFinsihed"

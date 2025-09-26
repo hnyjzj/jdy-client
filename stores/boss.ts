@@ -20,6 +20,11 @@ export const useBoss = defineStore('boss', {
     oldSalesFilterWhere: {} as Where<BossWhere>,
     oldSalesTitle: [] as StockTitle[],
     oldSalesList: [] as BossSalesList[],
+    // 旧料回收
+    oldRecycleFilterWhere: {} as Where<BossWhere>,
+    oldRecycleTitle: [] as StockTitle[],
+    oldRecycleList: [] as BossSalesList[],
+
     // performance
     performanceWhere: {} as Where<BossWhere>,
     performanceTitle: [] as StockTitle[],
@@ -176,17 +181,17 @@ export const useBoss = defineStore('boss', {
      * 获取旧料销售类型
      */
     async getOldSalesType() {
-      const { data } = await https.get<Where<BossWhere>>('/statistic/boos/old_sales/where', undefined, true, false)
+      const { data } = await https.get<Where<BossWhere>>('/statistic/boos/old_exchange/where', undefined, true, false)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.oldSalesFilterWhere = data.value?.data
       }
     },
 
     /**
-     * 获取旧料销售列表
+     * 获取旧料兑换列表
      */
     async getOldSalesList(params: BossWhere) {
-      const { data } = await https.post<any, BossWhere>('/statistic/boos/old_sales/data', params, true, false)
+      const { data } = await https.post<any, BossWhere>('/statistic/boos/old_exchange/data', params, true, false)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.oldSalesList = data.value?.data
         // 使用公共函数生成标题配置
@@ -194,6 +199,29 @@ export const useBoss = defineStore('boss', {
       }
       return { list: this.oldSalesList, title: this.oldSalesTitle }
     },
+    /**
+     * 获取旧料回收类型
+     */
+    async getOldRecycleType() {
+      const { data } = await https.get<Where<BossWhere>>('/statistic/boos/old_recycle/where', undefined, true, false)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.oldRecycleFilterWhere = data.value?.data
+      }
+    },
+
+    /**
+     * 获取旧料回收列表
+     */
+    async getOldRecycleList(params: BossWhere) {
+      const { data } = await https.post<any, BossWhere>('/statistic/boos/old_recycle/data', params, true, false)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.oldRecycleList = data.value?.data
+        // 使用公共函数生成标题配置
+        this.oldRecycleTitle = this.generateTableTitle(this.oldRecycleList)
+      }
+      return { list: this.oldRecycleList, title: this.oldRecycleTitle }
+    },
+
     async getPerformanceType() {
       const { data } = await https.get<Where<BossWhere>>('/statistic/boos/performance/where', undefined, true, false)
       if (data.value?.code === HttpCode.SUCCESS) {

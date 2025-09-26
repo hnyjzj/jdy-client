@@ -65,8 +65,13 @@ async function changeStores() {
         :loading="isLoading"
       />
       <summary-stock-chart
-        title="旧料大类"
-        :stock-category-date="salesData.old_class"
+        title="旧料兑换"
+        :stock-category-date="salesData.old_exchange"
+        :loading="isLoading"
+      />
+      <summary-stock-chart
+        title="旧料回收"
+        :stock-category-date="salesData.old_recycle"
         :loading="isLoading"
       />
       <summary-stock-chart
