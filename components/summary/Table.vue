@@ -28,23 +28,11 @@ const option = computed(() => {
       },
       triggerOn: 'click',
       confine: true,
-      formatter: (params: any) => {
-        let result = `${params[0].name}<br/>`
-        const total = params.reduce((acc: number, cur: any) => acc + cur.value, 0)
-        // 添加合计行
-        result += `<span style="color:#ff6b35;font-weight:bold">合计: ${total.toFixed(2)}</span><br/>`
-        // 遍历数据项，添加到结果中
-        params.forEach((item: any) => {
-          if (item.value) {
-            result += `${item.marker} ${item.seriesName}: ${item.value}<br/>`
-          }
-        })
-        return result
-      },
+
     },
     legend: {
       data: props.title
-        .filter((item: StockTitle) => item.title !== '门店' && item.title !== '合计' && item.title !== '支付方式')
+        .filter((item: StockTitle) => item.title !== '门店' && item.title !== '支付方式')
         .map((item: StockTitle) => item.title),
       left: 'center',
       top: 10,
@@ -70,11 +58,23 @@ const option = computed(() => {
         overflow: 'truncate',
       },
     },
-    yAxis: {
-      type: 'value',
-      axisTick: { show: false },
-      splitLine: { show: false },
-    },
+    yAxis: [
+      {
+        type: 'value',
+        axisTick: { show: false },
+        splitLine: { show: false },
+      },
+      {
+        type: 'value',
+        name: '',
+        position: 'right',
+        axisLine: {
+          lineStyle: {
+            color: '#505372',
+          },
+        },
+      },
+    ],
     dataZoom: [
       {
         type: 'inside',
@@ -89,9 +89,21 @@ const option = computed(() => {
         height: 20,
       },
     ],
-    series: props.title.filter((item: StockTitle) => item.title !== '门店' && item.title !== '合计')
-      .map((item: StockTitle, index) => {
-        return {
+    series: [
+      {
+        name: '合计',
+        type: 'line',
+        yAxisIndex: 0,
+        smooth: true,
+        data: props.list?.map((salesItem: BossSalesList) =>
+          Number(salesItem.total) || 0,
+        ),
+        itemStyle: {
+          color: '#505372',
+        },
+      },
+      ...props.title.filter((item: StockTitle) => item.title !== '门店' && item.title !== '合计')
+        .map((item: StockTitle, index) => ({
           name: item.title,
           type: 'bar',
           stack: 'total',
@@ -102,8 +114,9 @@ const option = computed(() => {
           itemStyle: {
             color: `hsl(${(index * 50) % 360}, 100%, 80%)`,
           },
-        }
-      }),
+        })),
+
+    ],
   }
 })
 </script>
