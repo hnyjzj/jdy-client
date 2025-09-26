@@ -60,7 +60,7 @@ const oldRules = ref<FormRules>({
     type: 'number',
     required: true,
     trigger: ['blur', 'change'],
-    message: '请选择回收方式',
+    message: '请选择回收类型',
   },
 })
 const searchShow = defineModel<boolean>('show', { default: false })
@@ -229,14 +229,13 @@ const scanCode = async () => {
                       {{ nowOldMaster.name }}
                     </n-form-item-gi>
                     <n-form-item-gi
-                      :span="12" label="回收工费方式" path="recycle_price_labor_method">
+                      :span="12" label="回收类型" path="recycle_type">
                       <n-select
-                        v-model:value="nowOldMaster.recycle_price_labor_method"
+                        v-model:value="nowOldMaster.recycle_type"
                         menu-size="large"
-                        placeholder="选择回收工费方式"
-                        :options="optonsToSelect(props.oldFilterList.recycle_price_labor_method?.preset)"
+                        placeholder="选择回收类型"
+                        :options="optonsToSelect(props.oldFilterList.recycle_type?.preset)"
                         @focus="focus"
-                        @update:value="ourChangePrice()"
                       />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收方式" path="recycle_method">
@@ -249,6 +248,19 @@ const scanCode = async () => {
                         @focus="focus"
                       />
                     </n-form-item-gi>
+
+                    <n-form-item-gi
+                      :span="12" label="回收工费方式" path="recycle_price_labor_method">
+                      <n-select
+                        v-model:value="nowOldMaster.recycle_price_labor_method"
+                        menu-size="large"
+                        placeholder="选择回收工费方式"
+                        :options="optonsToSelect(props.oldFilterList.recycle_price_labor_method?.preset)"
+                        @focus="focus"
+                        @update:value="ourChangePrice()"
+                      />
+                    </n-form-item-gi>
+
                     <n-form-item-gi :span="12" label="回收工费">
                       <n-input-number
                         v-model:value="nowOldMaster.recycle_price_labor"
@@ -260,16 +272,7 @@ const scanCode = async () => {
                         @blur="ourChangePrice()"
                       />
                     </n-form-item-gi>
-                    <n-form-item-gi
-                      :span="12" label="回收类型">
-                      <n-select
-                        v-model:value="nowOldMaster.recycle_type"
-                        menu-size="large"
-                        placeholder="选择回收类型"
-                        :options="optonsToSelect(props.oldFilterList.recycle_type?.preset)"
-                        @focus="focus"
-                      />
-                    </n-form-item-gi>
+
                     <n-form-item-gi :span="12" label="金重" path="weight_metal">
                       <n-input-number
                         v-model:value="nowOldMaster.weight_metal"
@@ -283,18 +286,6 @@ const scanCode = async () => {
                       />
                     </n-form-item-gi>
 
-                    <n-form-item-gi :span="12" label="实际成色" path="quality_actual">
-                      <n-input-number
-                        v-model:value="nowOldMaster.quality_actual"
-                        :show-button="false"
-                        placeholder="请输入实际成色"
-                        round
-                        :max="1"
-                        :min="0"
-                        :precision="3"
-                        @focus="focus"
-                      />
-                    </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收金价">
                       <n-input-number
                         v-model:value="nowOldMaster.recycle_price_gold"
@@ -310,6 +301,18 @@ const scanCode = async () => {
                           元/克
                         </template>
                       </n-input-number>
+                    </n-form-item-gi>
+                    <n-form-item-gi :span="12" label="实际成色" path="quality_actual">
+                      <n-input-number
+                        v-model:value="nowOldMaster.quality_actual"
+                        :show-button="false"
+                        placeholder="请输入实际成色"
+                        round
+                        :max="1"
+                        :min="0"
+                        :precision="3"
+                        @focus="focus"
+                      />
                     </n-form-item-gi>
                     <n-form-item-gi :span="12" label="回收金额">
                       <n-input-number
