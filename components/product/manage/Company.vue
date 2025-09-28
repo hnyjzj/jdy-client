@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { nextTick } from 'vue'
-
 const props = withDefaults(defineProps<{
   confirm?: boolean
   maxHeight?: string
@@ -20,21 +18,19 @@ const { myStoreList, myStore } = storeToRefs(useStores())
 const { initObjForm } = useOrder()
 const columns = ref()
 const confirmShow = ref(false)
-const dropdownRef = ref<any>(null) // 👉 用于获取 dropdown DOM
-const saveStoreId = ref('')
-
 const getList = async () => await getMyStore()
 
 if (!myStore.value || !Object.keys(myStoreList.value).length) {
   await getList()
 }
 
-// 打开确认弹窗
+// 使用确认弹窗的方式
 const useConfirmFunction = () => {
   confirmShow.value = true
 }
 
-// 确定切换
+const saveStoreId = ref('')
+// 确定使用
 const ConfirmUse = async () => {
   const stored = myStoreList.value.find(item => item.id === saveStoreId.value)
   if (stored) {
@@ -44,7 +40,6 @@ const ConfirmUse = async () => {
   }
 }
 
-// 拉取门店并生成下拉数据
 async function changeStoer() {
   await getList()
   columns.value = []
@@ -59,7 +54,6 @@ async function changeStoer() {
   })
 }
 
-// 选择门店
 function handleSelect(id: Stores['id']) {
   saveStoreId.value = id
   if (props.confirm) {
@@ -76,21 +70,6 @@ function handleSelect(id: Stores['id']) {
   }
 }
 
-// 打开下拉时自动滚动到当前选中项
-function handleShow(show: boolean) {
-  if (show) {
-    nextTick(() => {
-      const list = dropdownRef.value?.$el?.querySelectorAll('.n-dropdown-option')
-      if (!list)
-        return
-      const current = [...list].find(
-        (el: any) => el?.dataset?.key === myStore.value?.id,
-      )
-      current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
-    })
-  }
-}
-
 const renderLabel = (option: any) => {
   return h('span', { style: 'color: #000' }, option.label)
 }
@@ -98,25 +77,11 @@ const renderLabel = (option: any) => {
 
 <template>
   <div>
-    <n-dropdown
-      ref="dropdownRef"
-      key="id"
-      trigger="click"
-      placement="bottom-start"
-      :render-label="renderLabel"
-      :value="myStore?.id"
-      :options="columns"
-      :scrollable="true"
-      :style="{ maxHeight: props.maxHeight, overflowY: 'auto' }"
-      @select="handleSelect"
-      @update:show="handleShow"
-    >
+    <n-dropdown trigger="click" placement="bottom-start" :render-label="renderLabel" :options="columns" :style="{ maxHeight: props.maxHeight, overflowY: 'auto' }" @select="handleSelect">
       <div
-        class="py-[6px] px-[12px] border-rd-full h-full flex-center-row cursor-pointer"
+        class="py-[6px] px-[12px]  border-rd-full h-full flex-center-row  cursor-pointer"
         :class="{ 'shadow-lg': props.bg }"
-        :style="{ background: props.bg ? '#FFFFFF66' : 'transparent' }"
-        @click="changeStoer"
-      >
+        :style="{ background: props.bg ? '#FFFFFF66' : 'transparent' }" @click="changeStoer">
         <client-only>
           <div class="store-name font-bold text-size-[14px] mr-[4px]">
             {{ myStore.alias }}
@@ -125,7 +90,6 @@ const renderLabel = (option: any) => {
         <icon name="i-icon:product-toggle" :size="24" />
       </div>
     </n-dropdown>
-
     <common-confirm
       v-model:show="confirmShow"
       title="提示"
