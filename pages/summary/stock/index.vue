@@ -102,6 +102,11 @@ async function changeStores() {
         :loading="isLoading"
       />
       <summary-stock-chartnested
+        title="成品工艺"
+        :stock-category-date="stockDate.finished_craft"
+        :loading="isLoading"
+      />
+      <summary-stock-chartnested
         title="成品库龄"
         :stock-category-date="stockDate.finished_age"
         :loading="isLoading"
