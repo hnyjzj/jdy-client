@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const { getSalesData, getSalesWhere } = useStock()
-const { salesData, salesWhere } = storeToRefs(useStock())
+const { salesData, salesWhere, salesPersonalStatistics } = storeToRefs(useStock())
 const { myStore } = storeToRefs(useStores())
 const { getMyStore } = useStores()
 
@@ -81,7 +81,7 @@ async function changeStores() {
       />
       <summary-stock-table
         title="个人统计"
-        :date="salesData.list"
+        :date="salesPersonalStatistics"
         :loading="isLoading"
         classify="姓名"
       />
