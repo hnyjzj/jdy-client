@@ -246,7 +246,7 @@ onMounted(() => {
                     </n-form-item-gi>
 
                     <n-form-item-gi :span="8" label="字体大小">
-                      <n-input-number v-model:value="print_template.config.size.fontSize" :show-button="false" @keydown.enter.prevent @blur="() => { console.log('blur111', print_template.config.size.fontSize) }">
+                      <n-input-number v-model:value="print_template.config.size.fontSize" :show-button="false" @keydown.enter.prevent>
                         <template #suffix>
                           mm
                         </template>
