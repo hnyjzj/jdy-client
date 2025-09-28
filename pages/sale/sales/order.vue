@@ -98,7 +98,7 @@ const printPre = () => {
 
   const PrintComponent = defineComponent({
     render() {
-      return h(PrintTemp, { details: printDetail.value, type: 1, payMethod: gather.value, numerical: tempInfo.value })
+      return h(PrintTemp, { details: printDetail.value, type: 1, payMethod: gather.value, numerical: tempInfo.value, finishedWhere: finishedFilterList.value })
     },
   })
   getMethod()

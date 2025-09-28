@@ -18,6 +18,10 @@ const props = defineProps<{
    * 支付方式
    */
   payMethod?: string
+  /**
+   * 打印单类型
+   */
+  finishedWhere?: Where<ProductFinisheds>
 }>()
 
 const intercepting = () => {
@@ -155,23 +159,26 @@ const partTotalPrice = computed(() => {
                   <th class="table-header" style="width: 16%;">
                     条码
                   </th>
-                  <th class="table-header" style="width: 12%;">
+                  <th class="table-header" style="width: 16%;">
                     名称
                   </th>
-                  <th class="table-header" style="width: 12%;">
+                  <th class="table-header" style="width: 8%;">
+                    工艺
+                  </th>
+                  <th class="table-header" style="width: 6%;">
                     金重
                   </th>
-                  <th class="table-header" style="width: 12%;">
+                  <th class="table-header" style="width: 6%;">
                     金价
                   </th>
-                  <th class="table-header" style="width: auto;">
+                  <th class="table-header" style="width: 6%;">
                     工费
                   </th>
-                  <th class="table-header" style="width: 12%;">
+                  <th class="table-header" style="width: auto;">
                     证书号
                   </th>
-                  <th class="table-header" style="width: 12%;">
-                    单价
+                  <th class="table-header" style="width: 10%;">
+                    标签价
                   </th>
                   <th class="table-header" style="width: 16%;">
                     应付金额
@@ -187,6 +194,9 @@ const partTotalPrice = computed(() => {
                       </td>
                       <td class="table-body">
                         {{ item.finished.product?.name || '' }}
+                      </td>
+                      <td class="table-body">
+                        {{ finishedWhere?.craft?.preset[item.finished.product?.craft as number] || '' }}
                       </td>
                       <td class="table-body">
                         <template v-if="item.finished.product?.retail_type !== 1">
@@ -229,16 +239,19 @@ const partTotalPrice = computed(() => {
                   <th class="table-header" style=" width:16%;">
                     旧料名称
                   </th>
-                  <th class="table-header" style=" width:12%;">
+                  <th class="table-header" style="width: 8%;">
+                    工艺
+                  </th>
+                  <th class="table-header" style=" width:8%;">
                     金重
                   </th>
-                  <th class="table-header" style=" width:12%;">
+                  <th class="table-header" style=" width:10%;">
                     回收金价
                   </th>
-                  <th class="table-header" style=" width:auto;">
+                  <th class="table-header" style=" width:8%;">
                     工费
                   </th>
-                  <th class="table-header" style=" width:12%;">
+                  <th class="table-header" style=" width:auto;">
                     原单价
                   </th>
                   <th class="table-header" style=" width:16%;">
@@ -255,6 +268,9 @@ const partTotalPrice = computed(() => {
                       </td>
                       <td class="table-body">
                         {{ item.old.product?.name || '' }}
+                      </td>
+                      <td class="table-body">
+                        {{ finishedWhere?.craft?.preset[item.old.product?.craft as number] || '' }}
                       </td>
                       <td class="table-body">
                         {{ item.old.product?.weight_metal || '' }}
@@ -316,16 +332,16 @@ const partTotalPrice = computed(() => {
                   <th class="table-header" style="width: 16%;">
                     名称
                   </th>
-                  <th class="table-header" style="width: 12%;">
+                  <th class="table-header" style="width: 8%;">
                     金重
                   </th>
-                  <th class="table-header" style="width: 16%;">
+                  <th class="table-header" style="width: 8%;">
                     金价/单价
                   </th>
-                  <th class="table-header" style="width: auto;">
+                  <th class="table-header" style="width: 8%;">
                     工费
                   </th>
-                  <th class="table-header" style="width: 16%;">
+                  <th class="table-header" style="width: auto;">
                     证书号
                   </th>
                   <th class="table-header" style="width: 16%;">
@@ -375,10 +391,10 @@ const partTotalPrice = computed(() => {
                   <th class="table-header" style=" width:16%;">
                     旧料名称
                   </th>
-                  <th class="table-header" style=" width:12%;">
+                  <th class="table-header" style=" width:8%;">
                     金重
                   </th>
-                  <th class="table-header" style=" width:16%;">
+                  <th class="table-header" style=" width:8%;">
                     回收金价/原单价
                   </th>
                   <th class="table-header" style=" width:auto;">

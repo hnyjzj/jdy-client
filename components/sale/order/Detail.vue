@@ -139,6 +139,13 @@ const onReturnProduct = async (index: number) => {
                 <common-cell label="商品条码" :value="obj.finished.product?.code" />
                 <common-cell label="商品名称" :value="obj.finished.product?.name" val-color="#4C8DF6" />
                 <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[(obj.finished.product?.retail_type as number)]" />
+                <common-cell label="材质" :value="props.productFilter.material?.preset[(obj.finished.product?.material as number)]" />
+                <common-cell label="成色" :value="props.productFilter.quality?.preset[(obj.finished.product?.quality as number)]" />
+                <common-cell label="主石" :value="props.productFilter.gem?.preset[(obj.finished.product?.gem as number)]" />
+                <common-cell label="主石重(ct)" :value="obj.finished.product?.weight_gem" />
+                <common-cell label="品类" :value="props.productFilter.category?.preset[obj.finished.product?.category!] " />
+                <common-cell label="品牌" :value="props.productFilter.brand?.preset[obj.finished.product?.brand!] " />
+                <common-cell label="工艺" :value="props.productFilter.craft?.preset[(obj.finished.product?.craft as number)]" />
                 <common-cell label="金重(g)" :value="obj.finished.product?.weight_metal" />
                 <common-cell label="金价(元/g)" format="￥" :value="obj.finished.price_gold" />
                 <common-cell label="工费" format="￥" :value="obj.finished.labor_fee" />
