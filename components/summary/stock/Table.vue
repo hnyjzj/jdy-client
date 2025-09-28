@@ -8,6 +8,15 @@ const props = defineProps<{
   classify: string
 }>()
 
+const scrollX = ref(0)
+
+const metricsLength = computed(() => {
+  const firstPerson = Object.keys(props.date || {})[0]
+  return firstPerson ? Object.keys(props.date[firstPerson]).length : 0
+})
+
+scrollX.value = metricsLength.value * 120 + 120
+
 // 所有分类（从 props.date 的每个日期里收集）
 const categories = computed<string[]>(() => {
   const keys = Object.keys(props.date || {})
@@ -26,6 +35,7 @@ const columns = computed<DataTableColumns<Record<string, any>>>(() => [
 const data = computed(() => {
   if (!props.date)
     return []
+
   return Object.entries(props.date).map(([date, val]) => {
     const row: Record<string, any> = { [props.classify]: date }
     categories.value.forEach((c) => {
@@ -55,6 +65,7 @@ const data = computed(() => {
           }"
           :columns="columns"
           :data="data"
+          :scroll-x="scrollX"
           :max-height="350"
           bordered
         />

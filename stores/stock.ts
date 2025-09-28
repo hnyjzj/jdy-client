@@ -4,6 +4,7 @@ export const useStock = defineStore('Stock', {
     stockWhere: {} as Where<StatisticStock>,
     salesData: {} as Record<string, Record<string, string>>,
     salesWhere: {} as Where<any>,
+    salesPersonalStatistics: {} as Record<string, Record<string, string>>,
   }),
   actions: {
     async getStockWhere() {
@@ -25,6 +26,12 @@ export const useStock = defineStore('Stock', {
       if (data.value?.code === HttpCode.SUCCESS) {
         this.salesData = data.value.data
         this.salesData.overview = reorderObject(this.salesData.overview)
+        this.salesPersonalStatistics = Object.fromEntries(
+          Object.entries(this.salesData.list).map(([person, metrics]) => [
+            person,
+            reorderObject(typeof metrics === 'object' ? metrics : {}),
+          ]),
+        )
       }
     },
     async getSalesWhere() {
