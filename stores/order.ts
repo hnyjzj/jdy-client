@@ -155,7 +155,10 @@ export const useOrder = defineStore('Order', {
     async returnOrderGoods(req: ReturnGoods) {
       const { data } = await https.put<any, ReturnGoods>('/order/sales/refund', req)
       if (data.value?.code === HttpCode.SUCCESS) {
-        return true
+        return { code: data.value?.code, message: '退货成功' }
+      }
+      else {
+        return { code: data.value?.code, message: data.value?.message || '退货失败' }
       }
     },
     async initObjForm() {

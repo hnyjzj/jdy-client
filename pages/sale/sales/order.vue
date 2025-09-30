@@ -39,10 +39,15 @@ const mustSelect = ref<any[]>([])
 
 const returnGoods = async (req: ReturnGoods) => {
   const res = await returnOrderGoods(req)
-  if (res) {
+  if (res.code === HttpCode.SUCCESS) {
     showModel.value = false
     $toast.success('退货成功')
     await getOrderDetail({ id: route.query.id as string })
+    return true
+  }
+  else {
+    $toast.error(res.message || '退货失败')
+    return false
   }
 }
 

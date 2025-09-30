@@ -5,7 +5,7 @@ import { calc } from 'a-calc'
 const props = defineProps<{
   productFilter: Where<ProductFinisheds>
   where: Where<OrderWhere>
-  returnGoods: (req: ReturnGoods) => void
+  returnGoods: (req: ReturnGoods) => Promise<boolean>
   orders: OrderInfo
 }>()
 const showReturnGoods = ref({} as {
@@ -60,16 +60,18 @@ const submit = async () => {
       model.value.product_id = showReturnGoods.value?.goods?.id || ''
       model.value.product_type = showReturnGoods.value?.goods?.type || 0
 
-      await props.returnGoods(model.value)
-      showModel.value = false
-      model.value = {
-        id: '',
-        product_id: '',
-        method: undefined,
-        product_type: 0,
-        price: 0,
-        remark: '',
-        payments: [{ payment_method: 1, amount: 0 }],
+      const res = await props.returnGoods(model.value)
+      if (res) {
+        showModel.value = false
+        model.value = {
+          id: '',
+          product_id: '',
+          method: undefined,
+          product_type: 0,
+          price: 0,
+          remark: '',
+          payments: [{ payment_method: 1, amount: 0 }],
+        }
       }
     }
   })
