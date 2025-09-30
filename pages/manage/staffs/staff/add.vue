@@ -50,28 +50,27 @@ const continueAdd = () => {
   formlist.value = {
     phone: '',
     nickname: '',
-    gender: 0,
+    username: '',
     password: '',
     avatar: '',
     email: '',
+    gender: 0,
     is_disabled: false,
+    store_ids: [],
+    store_superior_ids: [],
+    region_ids: [],
+    region_superior_ids: [],
+    store_admin_ids: [],
+    region_admin_ids: [],
+    identity: 1,
+    role_id: '',
   } as addStaffForm
   addRef.value.clearAvatar()
 }
 const cancelAdd = () => {
   router.go(-1)
 }
-// 手动新增员工
-const addStaff = async () => {
-  const res = await createStaff(formlist.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('创建成功')
-    dialogShow.value = true
-  }
-  else {
-    $toast.error(res?.message || '创建失败')
-  }
-}
+
 // 是否是企业微信环境
 const iswx = ref(false)
 if (import.meta.client) {
@@ -102,9 +101,16 @@ const uploadFile = async (file: any, onfinish?: () => void) => {
 const formRef = ref()
 function handleValidateButtonClick(e: MouseEvent) {
   e.preventDefault()
-  formRef.value?.validate((errors: any) => {
+  formRef.value?.validate(async (errors: any) => {
     if (!errors) {
-      addStaff()
+      const res = await createStaff(formlist.value)
+      if (res?.code === HttpCode.SUCCESS) {
+        $toast.success('创建成功')
+        dialogShow.value = true
+      }
+      else {
+        $toast.error(res?.message || '创建失败')
+      }
     }
     else {
       $toast.error('验证失败')
