@@ -41,6 +41,14 @@ if (route.query.id) {
               </div>
               <div class="info-row">
                 <div class="info-title">
+                  原因
+                </div>
+                <div class="info-val">
+                  {{ historyInfo?.reason }}
+                </div>
+              </div>
+              <div class="info-row">
+                <div class="info-title">
                   关联单号
                 </div>
                 <div class="info-val">

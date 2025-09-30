@@ -152,6 +152,13 @@ const cols = [
     },
   },
   {
+    title: '原因',
+    key: 'reason',
+    render(row: ProductHistories) {
+      return row?.reason ?? '-'
+    },
+  },
+  {
     title: '操作时间',
     key: 'updated_at',
     render(row: ProductHistories) {
@@ -337,6 +344,14 @@ async function downloadLocalFile() {
             </template>
             <template #info="{ info }">
               <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                <div class="flex-between">
+                  <div>
+                    原因
+                  </div>
+                  <div class="text-align-end">
+                    {{ info?.reason }}
+                  </div>
+                </div>
                 <div class="flex-between">
                   <div>
                     操作时间

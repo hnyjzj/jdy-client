@@ -90,7 +90,7 @@ interface ProductHistories {
    */
   value: any[] | boolean | number | { [key: string]: any } | null | string
   code: string
-
+  reason: string
 }
 
 /**

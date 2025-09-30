@@ -50,6 +50,14 @@ function isUpdate(key: ProductKey) {
               </div>
               <div class="info-row">
                 <div class="info-title">
+                  原因
+                </div>
+                <div class="info-val">
+                  {{ historyInfo?.reason }}
+                </div>
+              </div>
+              <div class="info-row">
+                <div class="info-title">
                   操作时间
                 </div>
                 <div class="info-val">

@@ -3,6 +3,7 @@ import * as XLSX from 'xlsx'
 /** 中文 => 英文字段映射 */
 const headerMap: Record<string, string> = {
   '操作': 'action',
+  '原因': 'reason',
   '关联单号': 'source_id',
   '产品类型': 'type',
   '所属门店': 'store_id',
