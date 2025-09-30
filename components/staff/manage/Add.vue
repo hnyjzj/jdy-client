@@ -1,14 +1,18 @@
 <script setup lang="ts">
-import type { FormRules, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
+import type { FormRules, SelectOption, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 import { pinyin } from 'pinyin-pro'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   filed: FilterWhere<Staff>[]
-}>()
+  showBotton?: boolean
+}>(), {
+  showBotton: true,
+})
 const emits = defineEmits<{
   submit: []
   upload: [val: any, onFinish: () => void]
 }>()
+const { getOptionsStafflist } = useStaff()
 const { $toast } = useNuxtApp()
 const formlist = defineModel({ default: {
   phone: '',
@@ -90,7 +94,7 @@ const forRules = () => {
 }
 forRules()
 
-const formRef = ref()
+const formRef = defineModel<any>('form')
 function handleValidateButtonClick(e: MouseEvent) {
   e.preventDefault()
   formRef.value?.validate((errors: any) => {
@@ -102,6 +106,20 @@ function handleValidateButtonClick(e: MouseEvent) {
     }
   })
 }
+const staffListOpt = ref<SelectOption[]>([])
+const GetStaffList = async (query: string) => {
+  const res = await getOptionsStafflist({ page: 1, limit: 10, where: { nickname: query } })
+  if (res.length) {
+    staffListOpt.value = res.map(item => ({
+      label: `${item.nickname}(${item.phone || '无手机号'})`,
+      value: item.id,
+    }))
+  }
+  else {
+    staffListOpt.value = []
+  }
+}
+
 // 展示预览图
 const showModalRef = ref(false)
 const previewFileList = ref<UploadFileInfo[]>([])
@@ -136,7 +154,7 @@ defineExpose({
 
 <template>
   <div>
-    <div class="">
+    <div class="pb-[12px]">
       <common-fold title="新增员工" from-color="#9EBAF9" to-color="#fff">
         <div class="p-[16px]">
           <n-form
@@ -191,7 +209,7 @@ defineExpose({
                         @preview="showModalRef = true"
                       />
                     </template>
-                    <template v-if="item.input === 'select'">
+                    <template v-if="item.input === 'radio'">
                       <n-radio-group v-model:value="(formlist[item.name] as number)">
                         <n-space>
                           <template v-for="(obj, i) in genderList" :key="i">
@@ -207,6 +225,19 @@ defineExpose({
                         </n-space>
                       </n-radio-group>
                     </template>
+                    <template v-if="item.input === 'select'">
+                      <n-select
+                        v-model:value="(formlist[item.name] as string)"
+                        filterable
+                        :placeholder="`请选择${item.label}`"
+                        round
+                        :options="staffListOpt"
+                        clearable
+                        remote
+                        @search="GetStaffList"
+                        @focus="GetStaffList('')"
+                      />
+                    </template>
                     <template v-if="item.input === 'switch'">
                       <n-switch v-model:value="(formlist[item.name] as boolean)" size="medium" :style="{ 'border-radius': '20px' }" round />
                     </template>
@@ -214,15 +245,16 @@ defineExpose({
                 </template>
               </template>
             </n-grid>
-
-            <div class="grid-12 px-[26px]">
-              <div
-                class="font-semibold pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
-                <div @click="handleValidateButtonClick">
-                  <common-button-rounded content="确定" />
+            <template v-if="props.showBotton">
+              <div class="grid-12 px-[26px]">
+                <div
+                  class="font-semibold pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
+                  <div @click="handleValidateButtonClick">
+                    <common-button-rounded content="确定" />
+                  </div>
                 </div>
               </div>
-            </div>
+            </template>
           </n-form>
           <n-modal
             v-model:show="showModalRef"

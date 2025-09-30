@@ -1,12 +1,18 @@
 <script lang="ts" setup>
 const { $toast } = useNuxtApp()
 
-const { useWxWork } = useWxworkStore()
-const { createStaff, uploadAvatar, getQyWxUserInfo, getStaffWhere } = useStaff()
+const { createStaff, uploadAvatar, getStaffWhere } = useStaff()
 const { filterListToArray } = storeToRefs(useStaff())
+const { getMyStore } = useStores()
+const { myStoreList } = storeToRefs(useStores())
+const { getMyRegion } = useRegion()
+const { myRegionList } = storeToRefs(useRegion())
+const { roleWhereList, roleList } = storeToRefs(useAuthority())
+const { getRoleWhere, getRoleList } = useAuthority()
 const router = useRouter()
 const addRef = ref()
 const dialogShow = ref(false)
+await getRoleWhere()
 await getStaffWhere()
 const formlist = ref<addStaffForm>({
   phone: '',
@@ -17,7 +23,29 @@ const formlist = ref<addStaffForm>({
   email: '',
   gender: 0,
   is_disabled: false,
+  store_ids: [],
+  store_superior_ids: [],
+  region_ids: [],
+  region_superior_ids: [],
+  store_admin_ids: [],
+  region_admin_ids: [],
+  identity: 1,
+  role_id: '',
 } as addStaffForm)
+
+const getStoreList = async () => {
+  await getMyStore({ has_all: false })
+  return myStoreList.value || []
+}
+const getRegionList = async () => {
+  await getMyRegion({ has_all: false })
+  return myRegionList.value || []
+}
+
+const getroleListFn = async (data: number) => {
+  await getRoleList(data)
+  return roleList.value || []
+}
 const continueAdd = () => {
   formlist.value = {
     phone: '',
@@ -54,19 +82,7 @@ if (import.meta.client) {
     iswx.value = false
   }
 }
-// /jssdk/wxwork  企业微信授权添加
-const wxwordAdd = async () => {
-  if (!iswx.value) {
-    $toast.error('请在企业微信中使用')
-    return
-  }
 
-  const wx = await useWxWork()
-  const users = await wx?.selectPerson()
-  const { data } = await getQyWxUserInfo({ user_id: users?.userList[0].id as string })
-  formlist.value.nickname = data.value?.data.nickname as string
-  formlist.value.username = data.value?.data.username as string
-}
 const uploadFile = async (file: any, onfinish?: () => void) => {
   try {
     const { data } = await uploadAvatar({ avatar: file || undefined })
@@ -83,39 +99,62 @@ const uploadFile = async (file: any, onfinish?: () => void) => {
     $toast.error('上传失败，请重试')
   }
 }
-
-const other_ways = ref<{
-  icon: string
-  name: string
-  click: () => void
-}[]>([
-      {
-        icon: 'i-svg:qwicon',
-        name: '企业微信',
-        click: () => wxwordAdd(),
-      },
-    ])
+const formRef = ref()
+function handleValidateButtonClick(e: MouseEvent) {
+  e.preventDefault()
+  formRef.value?.validate((errors: any) => {
+    if (!errors) {
+      addStaff()
+    }
+    else {
+      $toast.error('验证失败')
+    }
+  })
+}
 </script>
 
 <template>
   <div class="grid-12 gap-[16px] p-[16px]">
     <div class="col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
-      <staff-manage-add ref="addRef" v-model="formlist" :filed="filterListToArray" @submit="addStaff" @upload="uploadFile" />
-    </div>
-    <div class="col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
-      <common-fold title="其他方式" from-color="#9EBAF9" to-color="#fff">
-        <div class="flex-center-row cursor-pointer">
-          <template v-for="item in other_ways" :key="item.name">
-            <div class=" rounded-full flex-center-col p-[16px]" @click="item.click()">
-              <icon :name="item.icon" :size="32" />
-              <div class="color-[#333]">
-                {{ item.name }}
+      <staff-manage-add
+        ref="addRef"
+        v-model:form="formRef"
+        v-model="formlist"
+        :filed="filterListToArray"
+        :show-botton="false"
+        @upload="uploadFile"
+      />
+      <staff-manage-stores
+        v-model="formlist"
+        :get-store-list="getStoreList"
+        :get-store-list-all="getStoreList"
+        :get-region-list="getRegionList"
+        :get-region-list-all="getRegionList"
+        :show-button="false"
+      />
+
+      <staff-manage-auth
+        v-model:authform="formlist"
+        :role-where-list="roleWhereList"
+        :getrole-list-fn="getroleListFn"
+        :showbutton="false"
+      />
+      <div>
+        <common-fold title="提交保存" from-color="#9EBAF9" to-color="#fff" :is-collapse="false">
+          <div class="p-[16px]">
+            <div class="grid-12 px-[26px]">
+              <div
+                class="font-semibold cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
+                <div @click="handleValidateButtonClick">
+                  <common-button-rounded content="确定" />
+                </div>
               </div>
             </div>
-          </template>
-        </div>
-      </common-fold>
+          </div>
+        </common-fold>
+      </div>
     </div>
+
     <common-confirm
       v-model:show="dialogShow"
       title="创建成功"

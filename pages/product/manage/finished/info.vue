@@ -6,7 +6,7 @@ const { $toast } = useNuxtApp()
 const productName = ref('')
 // 成品列表详情
 useSeoMeta({
-  title: finishedInfo.value.name,
+  title: finishedInfo.value.name || '成品详情',
 })
 productName.value = finishedInfo.value?.name || ''
 

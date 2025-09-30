@@ -15,7 +15,7 @@ const { getMyRegion, switchRegion } = useRegion()
 const { myRegionList, myRegion } = storeToRefs(useRegion())
 const columns = ref()
 const confirmShow = ref(false)
-const getList = async () => await getMyRegion({ page: 1, limit: 20 })
+const getList = async () => await getMyRegion()
 
 if (!myRegion.value || !Object.keys(myRegionList.value).length) {
   await getList()

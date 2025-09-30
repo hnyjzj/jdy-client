@@ -136,6 +136,7 @@ defineExpose({
                 <n-input
                   v-model:value="formlist.phone"
                   placeholder="请输入手机号"
+                  :disabled="formlist.phone !== ''"
                   round
                   @focus="focus"
                 />
@@ -145,6 +146,7 @@ defineExpose({
                   v-model:value="formlist.username"
                   placeholder="请输入用户名"
                   round
+                  :disabled="formlist.username !== ''"
                   @focus="focus"
 
                 />
@@ -153,6 +155,7 @@ defineExpose({
                 <n-input
                   v-model:value="formlist.nickname"
                   placeholder="请输入姓名"
+                  :disabled="formlist.nickname !== ''"
                   round
                   @focus="focus"
                   @blur="toPinyin"

@@ -1,13 +1,16 @@
 <script setup lang="ts">
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   roleWhereList: Record<number, string>
   getroleListFn: (val: number) => Promise<Roles[]>
-}>()
+  showbutton?: boolean
+}>(), {
+  showbutton: true,
+})
 const emits = defineEmits<{
   updateRole: []
 }>()
 
-const auth = defineModel<updateAuthRole>('authform', {
+const auth = defineModel<Partial<updateAuthRole>>('authform', {
   default: {
     id: '',
     identity: 0,
@@ -49,36 +52,36 @@ if (auth.value.identity) {
 </script>
 
 <template>
-  <div>
-    <div class="pt-[12px]">
-      <common-fold title="分配权限" from-color="#9EBAF9" to-color="#fff">
-        <div class="p-[16px]">
-          <n-form
-            :model="auth"
-            label-placement="top"
-            size="medium"
-          >
-            <n-grid :cols="24" x-gap="8">
-              <n-form-item-gi :span="24" label="角色">
-                <n-radio-group v-model:value="auth.identity" @update:value="updateRole">
-                  <n-space>
-                    <template v-for="(item, index) in roleList" :key="index">
-                      <n-radio
-                        :value="item.num" :style="{
-                          '--n-box-shadow-hover': 'inset 0 0 0 1px #0068ff',
-                          '--n-box-shadow-active': 'inset 0 0 0 1px #0068ff',
-                          '--n-dot-color-active': '#0068ff',
-                          '--n-box-shadow-focus': 'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)' }">
-                        {{ item.role }}
-                      </n-radio>
-                    </template>
-                  </n-space>
-                </n-radio-group>
-              </n-form-item-gi>
-              <n-form-item-gi :span="24" label="权限">
-                <n-select v-model:value="auth.role_id" :options="array" placeholder="请选择权限" />
-              </n-form-item-gi>
-            </n-grid>
+  <div class="pb-[12px]">
+    <common-fold title="分配权限" from-color="#9EBAF9" to-color="#fff" :is-collapse="false">
+      <div class="p-[16px] ">
+        <n-form
+          :model="auth"
+          label-placement="top"
+          size="medium"
+        >
+          <n-grid :cols="24" x-gap="8">
+            <n-form-item-gi :span="24" label="角色">
+              <n-radio-group v-model:value="auth.identity" @update:value="updateRole">
+                <n-space>
+                  <template v-for="(item, index) in roleList" :key="index">
+                    <n-radio
+                      :value="item.num" :style="{
+                        '--n-box-shadow-hover': 'inset 0 0 0 1px #0068ff',
+                        '--n-box-shadow-active': 'inset 0 0 0 1px #0068ff',
+                        '--n-dot-color-active': '#0068ff',
+                        '--n-box-shadow-focus': 'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)' }">
+                      {{ item.role }}
+                    </n-radio>
+                  </template>
+                </n-space>
+              </n-radio-group>
+            </n-form-item-gi>
+            <n-form-item-gi :span="24" label="权限">
+              <n-select v-model:value="auth.role_id" :options="array" placeholder="请选择权限" />
+            </n-form-item-gi>
+          </n-grid>
+          <template v-if="props.showbutton">
             <div class="grid-12 px-[26px]">
               <div
                 class="font-semibold  cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
@@ -87,11 +90,11 @@ if (auth.value.identity) {
                 </div>
               </div>
             </div>
-          </n-form>
-          <n-grid :cols="24" :x-gap="8" />
-        </div>
-      </common-fold>
-    </div>
+          </template>
+        </n-form>
+        <n-grid :cols="24" :x-gap="8" />
+      </div>
+    </common-fold>
   </div>
 </template>
 

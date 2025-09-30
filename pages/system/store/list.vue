@@ -3,9 +3,9 @@ useSeoMeta({
   title: '门店列表',
 })
 
-const { storesList, addorUpdateForm, filterListToArray, total, filterList } = storeToRefs(useStores())
+const { storesList, filterListToArray, total, filterList } = storeToRefs(useStores())
 const { searchPage } = storeToRefs(usePages())
-const { reastAddForm, createStore, getStoreList, deleteStore, getStoreWhere } = useStores()
+const { createStore, getStoreList, deleteStore, getStoreWhere } = useStores()
 const { getMyRegion } = useRegion()
 const { myRegion } = storeToRefs(useRegion())
 const { $toast } = useNuxtApp()
@@ -27,7 +27,16 @@ const getList = async (where = {} as StoresWhere) => {
   await getStoreList(params)
 }
 
-await getMyRegion({ page: 1, limit: 20 })
+const addorUpdateForm = ref<Partial<Stores>>({
+  id: undefined,
+  region_id: undefined,
+  phone: '',
+  name: '',
+  alias: '',
+  sort: undefined,
+})
+
+await getMyRegion()
 const route = useRoute()
 // 获取筛选条件
 await getStoreWhere()
@@ -67,7 +76,16 @@ const resetwhere = async () => {
 const getStoreInfo = async (id: string) => {
   navigateTo(`/system/store/info?id=${id}`)
 }
-
+const reastAddForm = () => {
+  addorUpdateForm.value = {
+    id: undefined,
+    region_id: undefined,
+    phone: '',
+    name: '',
+    alias: '',
+    sort: undefined,
+  }
+}
 // 开发新增门店弹窗, 清空表单数据
 const newAdd = () => {
   reastAddForm()
@@ -76,6 +94,7 @@ const newAdd = () => {
 
 // 调用新增门店接口
 const newStore = async () => {
+  addorUpdateForm.value.region_id = myRegion.value.id
   const res = await createStore(addorUpdateForm.value)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建门店成功')
@@ -154,7 +173,7 @@ const complate = ref(0)
     <!-- 新增或更新门店弹窗 -->
     <common-model v-model="addOrUpdateShow" :show-cancel="false" title="新增门店">
       <stores-add-update
-        @submit="newStore" />
+        v-model="addorUpdateForm" @submit="newStore" />
     </common-model>
     <common-confirm v-model:show="deleteDialog" text="确认删除此门店吗?" @submit="confirmDelete" />
 

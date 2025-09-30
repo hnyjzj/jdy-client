@@ -3,7 +3,14 @@ const emits = defineEmits<{
   submit: []
 }>()
 const { $toast } = useNuxtApp()
-const { addorUpdateForm } = storeToRefs(useStores())
+
+const addorUpdateForm = defineModel<Partial<Stores>>({ default: {
+  id: undefined,
+  region_id: undefined,
+  sort: undefined,
+  alias: undefined,
+  name: undefined,
+} })
 const formRef = ref()
 // 表单验证
 const rules = {

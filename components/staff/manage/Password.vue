@@ -25,7 +25,7 @@ const editPassword = () => {
 
 <template>
   <div>
-    <div class="pt-[12px]">
+    <div class="">
       <common-fold title="修改密码" from-color="#9EBAF9" to-color="#fff">
         <div class="p-[16px]">
           <n-form

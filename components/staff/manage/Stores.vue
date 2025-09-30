@@ -2,17 +2,21 @@
 // 搜索门店
 import type { SelectOption } from 'naive-ui'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   getStoreList: (val: string) => Promise<Stores[]>
   getStoreListAll: () => Promise<Stores[]>
   getRegionList: (val: string) => Promise<Region[]>
   getRegionListAll: () => Promise<Region[]>
-}>()
+  showButton?: boolean
+}>(), {
+  showButton: true,
+})
 const emits = defineEmits<{
   submit: []
 }>()
+const { userinfo } = useUser()
 const { $toast } = useNuxtApp()
-const storeForm = defineModel({ default: {
+const storeForm = defineModel<Partial<updateRegion>>({ default: {
   id: '',
   store_ids: [],
   store_superior_ids: [],
@@ -288,8 +292,8 @@ function handleValidateButtonClick(e: MouseEvent) {
 </script>
 
 <template>
-  <div class="">
-    <common-fold title="分配门店" from-color="#9EBAF9" to-color="#fff">
+  <div class="pb-[12px]">
+    <common-fold title="分配门店" from-color="#9EBAF9" to-color="#fff" :is-collapse="false">
       <div class="p-[16px]">
         <n-form
           ref="formRef"
@@ -300,7 +304,7 @@ function handleValidateButtonClick(e: MouseEvent) {
           <n-grid :cols="24" :x-gap="8">
             <n-form-item-gi :span="12" label="所属门店" path="store_ids">
               <div class="absolute z-1 right-0 top-[-24px]">
-                <span class="color-[#4B576D]">全选</span> <n-switch v-model:value="storeAllswitch" @update:value="searchStoresAll" />
+                <span class="color-[#4B576D]">全选</span> <n-switch v-model:value="storeAllswitch" :disabled="userinfo.identity < UserLevel.IdentityShopkeeper" @update:value="searchStoresAll" />
               </div>
               <n-select
                 v-model:value="storeForm.store_ids"
@@ -309,6 +313,7 @@ function handleValidateButtonClick(e: MouseEvent) {
                 placeholder="搜索门店选择"
                 :options="Stores"
                 :loading="loadingStores"
+                :disabled="userinfo.identity < UserLevel.IdentityShopkeeper"
                 clearable
                 remote
                 :max-tag-count="1"
@@ -323,7 +328,7 @@ function handleValidateButtonClick(e: MouseEvent) {
 
             <n-form-item-gi :span="12" label="所属区域" path="region_ids">
               <div class="absolute z-1 right-0 top-[-24px]">
-                <span class="color-[#4B576D]">全选 </span> <n-switch v-model:value="RegionAllswitch" @update:value="searchRegionsAll" />
+                <span class="color-[#4B576D]">全选 </span> <n-switch v-model:value="RegionAllswitch" :disabled="userinfo.identity < UserLevel.IdentityAreaManager" @update:value="searchRegionsAll" />
               </div>
               <n-select
                 v-model:value="storeForm.region_ids"
@@ -334,6 +339,7 @@ function handleValidateButtonClick(e: MouseEvent) {
                 :loading="loadingRegions"
                 clearable
                 remote
+                :disabled="userinfo.identity < UserLevel.IdentityAreaManager"
                 :max-tag-count="1"
                 :clear-filter-after-select="false"
                 @search="searchRegions"
@@ -345,7 +351,7 @@ function handleValidateButtonClick(e: MouseEvent) {
             </n-form-item-gi>
             <n-form-item-gi :span="12" label="负责门店" path="store_superior_ids">
               <div class="absolute z-1 right-0 top-[-24px]">
-                <span class="color-[#4B576D]">全选 </span> <n-switch v-model:value="StoresSupAllswitch" @update:value="searchStoresSupAll" />
+                <span class="color-[#4B576D]">全选 </span> <n-switch v-model:value="StoresSupAllswitch" :disabled="userinfo.identity < UserLevel.IdentityAreaManager" @update:value="searchStoresSupAll" />
               </div>
               <n-select
                 v-model:value="storeForm.store_superior_ids"
@@ -356,6 +362,7 @@ function handleValidateButtonClick(e: MouseEvent) {
                 :loading="loadingStores_sup"
                 clearable
                 remote
+                :disabled="userinfo.identity < UserLevel.IdentityAreaManager"
                 :max-tag-count="1"
                 :clear-filter-after-select="false"
                 @search="searchStores_sup"
@@ -367,7 +374,7 @@ function handleValidateButtonClick(e: MouseEvent) {
             </n-form-item-gi>
             <n-form-item-gi :span="12" label="负责区域" path="region_superior_ids">
               <div class="absolute z-1 right-0 top-[-24px]">
-                <span class="color-[#4B576D]">全选 </span>  <n-switch v-model:value="RegionSupAllswitch" @update:value="searchRegionsSupAll" />
+                <span class="color-[#4B576D]">全选 </span>  <n-switch v-model:value="RegionSupAllswitch" :disabled="userinfo.identity < UserLevel.IdentityAdmin" @update:value="searchRegionsSupAll" />
               </div>
               <n-select
                 v-model:value="storeForm.region_superior_ids"
@@ -378,6 +385,7 @@ function handleValidateButtonClick(e: MouseEvent) {
                 :loading="loadingRegions_sup"
                 clearable
                 remote
+                :disabled="userinfo.identity < UserLevel.IdentityAdmin"
                 :max-tag-count="1"
                 :clear-filter-after-select="false"
                 @search="searchRegions_sup"
@@ -392,6 +400,7 @@ function handleValidateButtonClick(e: MouseEvent) {
                 <span class="color-[#4B576D]">全选 </span>
                 <n-switch
                   v-model:value="storeAdminAllswitch"
+                  :disabled="userinfo.identity < UserLevel.IdentityAdmin"
                   @update:value="searchStoresAdminAll" />
               </div>
               <n-select
@@ -399,6 +408,7 @@ function handleValidateButtonClick(e: MouseEvent) {
                 multiple
                 filterable
                 placeholder="搜索门店选择"
+                :disabled="userinfo.identity < UserLevel.IdentityAdmin"
                 :options="StoresAdmin"
                 :loading="loadingStoresAdmin"
                 clearable
@@ -417,6 +427,7 @@ function handleValidateButtonClick(e: MouseEvent) {
                 <span class="color-[#4B576D]">全选 </span>
                 <n-switch
                   v-model:value="RegionAllswitchAdmin"
+                  :disabled="userinfo.identity < UserLevel.IdentityAdmin"
                   @update:value="searchRegionsAllAdmin" />
               </div>
               <n-select
@@ -425,6 +436,7 @@ function handleValidateButtonClick(e: MouseEvent) {
                 filterable
                 placeholder="搜索区域选择"
                 :options="RegionsAdmin"
+                :disabled="userinfo.identity < UserLevel.IdentityAdmin"
                 :loading="loadingRegionsAdmin"
                 clearable
                 remote
@@ -438,15 +450,16 @@ function handleValidateButtonClick(e: MouseEvent) {
               />
             </n-form-item-gi>
           </n-grid>
-
-          <div class="grid-12 px-[26px]">
-            <div
-              class="font-semibold pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
-              <div @click="handleValidateButtonClick">
-                <common-button-rounded content="确定" />
+          <template v-if="props.showButton">
+            <div class="grid-12 px-[26px]">
+              <div
+                class="font-semibold pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
+                <div @click="handleValidateButtonClick">
+                  <common-button-rounded content="确定" />
+                </div>
               </div>
             </div>
-          </div>
+          </template>
         </n-form>
       </div>
     </common-fold>
