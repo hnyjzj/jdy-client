@@ -152,6 +152,13 @@ const cols = [
     },
   },
   {
+    title: '原因',
+    key: 'reason',
+    render(row: ProductHistories) {
+      return row?.reason ?? '-'
+    },
+  },
+  {
     title: '操作时间',
     key: 'updated_at',
     render(row: AccessorieRecord) {
@@ -242,6 +249,14 @@ const cols = [
                   </div>
                   <div class="text-align-end">
                     {{ formatTimestampToDateTime(info.updated_at) }}
+                  </div>
+                </div>
+                <div class="flex-between">
+                  <div>
+                    原因
+                  </div>
+                  <div class="text-align-end">
+                    {{ info?.reason }}
                   </div>
                 </div>
                 <div class="flex-between">
