@@ -154,7 +154,7 @@ const cols = [
   {
     title: '原因',
     key: 'reason',
-    render(row: ProductHistories) {
+    render(row: AccessorieRecord) {
       return row?.reason ?? '-'
     },
   },
