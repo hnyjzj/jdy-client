@@ -66,6 +66,20 @@ const otherLogin = (way: string) => {
       break
   }
 }
+//   密码登录状态,是否显示密码登录
+const status = ref<boolean>(false)
+const statusLoading = ref<boolean>(true)
+onMounted(() => {
+  if (import.meta.env.DEV === true) {
+    // 如果是开发环境, 则显示密码登录
+    status.value = true
+    statusLoading.value = false
+  }
+  else {
+    status.value = false
+    statusLoading.value = false
+  }
+})
 </script>
 
 <template>
@@ -73,10 +87,13 @@ const otherLogin = (way: string) => {
     <div class="px-[16px] pt-[24px] col-12" uno-sm="col-6 offset-3" uno-lg="offset-4 col-4">
       <login-tips />
       <div class="cardbox blur-bgc rounded-[16px]">
-        <login-info v-model="form" :image-captcha="authStore.imageCaptcha" @get-code="showCode" @submit="login" />
+        <template v-if="status">
+          <login-info v-model="form" :image-captcha="authStore.imageCaptcha" @get-code="showCode" @submit="login" />
+        </template>
         <login-other :list="otherList" @other="otherLogin" />
       </div>
     </div>
+    <common-loading v-model="statusLoading" />
   </div>
 </template>
 
