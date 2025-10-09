@@ -103,37 +103,43 @@ const setNowOldMaster = (data: any) => {
       : 0
   }
 }
-
+const tipsMessage = ref(false)
+const handleOk = async () => {
+  orderObject.value.showMasterialsList ??= []
+  // 去重
+  const isDuplicate = orderObject.value.showMasterialsList.find(item => item.code === nowOldMaster.value.code)
+  if (isDuplicate && props.nowEditState === undefined) {
+    $toast.error('不能添加相同商品')
+  }
+  else {
+    // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
+    const data = await props.checkOldClass({ material: nowOldMaster.value.material, quality: nowOldMaster.value.quality, gem: nowOldMaster.value.gem })
+    if (!data.res.value) {
+      // 如果没有大类则中断
+      return
+    }
+    setNowOldMaster(data)
+    if (props.nowEditState !== undefined) {
+      // 这里是编辑状态 确认时，需要把当前编辑的值替换掉
+      orderObject.value.showMasterialsList.splice(props.nowEditState, 1, nowOldMaster.value)
+    }
+    else {
+      // 这里是新增时
+      nowOldMaster.value.is_our = true
+      orderObject.value.showMasterialsList.push(nowOldMaster.value)
+    }
+    searchShow.value = false
+    searchInput.value = ''
+  }
+}
+const handleCancel = () => {
+  tipsMessage.value = false
+}
 // 搜索旧料后的 确认操作
 const searchConfirm = async () => {
   oldMasterRef.value?.validate(async (errors: any) => {
     if (!errors) {
-      orderObject.value.showMasterialsList ??= []
-      // 去重
-      const isDuplicate = orderObject.value.showMasterialsList.find(item => item.code === nowOldMaster.value.code)
-      if (isDuplicate && props.nowEditState === undefined) {
-        $toast.error('不能添加相同商品')
-      }
-      else {
-        // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
-        const data = await props.checkOldClass({ material: nowOldMaster.value.material, quality: nowOldMaster.value.quality, gem: nowOldMaster.value.gem })
-        if (!data.res.value) {
-          // 如果没有大类则中断
-          return
-        }
-        setNowOldMaster(data)
-        if (props.nowEditState !== undefined) {
-          // 这里是编辑状态 确认时，需要把当前编辑的值替换掉
-          orderObject.value.showMasterialsList.splice(props.nowEditState, 1, nowOldMaster.value)
-        }
-        else {
-          // 这里是新增时
-          nowOldMaster.value.is_our = true
-          orderObject.value.showMasterialsList.push(nowOldMaster.value)
-        }
-        searchShow.value = false
-        searchInput.value = ''
-      }
+      tipsMessage.value = true
     }
     else {
       $toast.error(errors[0][0].message)
@@ -336,6 +342,13 @@ const scanCode = async () => {
         </div>
       </div>
     </common-model>
+    <common-confirm
+      v-model:show="tipsMessage"
+      icon="warning"
+      :text="`确认回收金额为${nowOldMaster.recycle_price}吗？`"
+      @submit="handleOk"
+      @cancel="handleCancel"
+    />
   </div>
 </template>
 

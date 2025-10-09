@@ -50,29 +50,37 @@ const addNewMethod = () => {
 const deleteMethod = (index: number) => {
   model.value.payments.splice(index, 1)
 }
+const tipsMessage = ref(false)
+const handleOk = async () => {
+  model.value.id = showReturnGoods.value?.id || ''
+  model.value.product_id = showReturnGoods.value?.goods?.id || ''
+  model.value.product_type = showReturnGoods.value?.goods?.type || 0
+
+  const res = await props.returnGoods(model.value)
+  if (res) {
+    showModel.value = false
+    model.value = {
+      id: '',
+      product_id: '',
+      method: undefined,
+      product_type: 0,
+      price: 0,
+      remark: '',
+      payments: [{ payment_method: 1, amount: 0 }],
+    }
+  }
+}
+const handleCancel = () => {
+  tipsMessage.value = false
+}
+
 const submit = async () => {
   formRef.value.validate(async (errors: any) => {
     if (errors) {
       $toast.error(errors[0][0].message)
     }
     else {
-      model.value.id = showReturnGoods.value?.id || ''
-      model.value.product_id = showReturnGoods.value?.goods?.id || ''
-      model.value.product_type = showReturnGoods.value?.goods?.type || 0
-
-      const res = await props.returnGoods(model.value)
-      if (res) {
-        showModel.value = false
-        model.value = {
-          id: '',
-          product_id: '',
-          method: undefined,
-          product_type: 0,
-          price: 0,
-          remark: '',
-          payments: [{ payment_method: 1, amount: 0 }],
-        }
-      }
+      tipsMessage.value = true
     }
   })
 }
@@ -200,6 +208,13 @@ defineExpose({
         </n-form>
       </div>
     </common-model>
+    <common-confirm
+      v-model:show="tipsMessage"
+      icon="warning"
+      :text="`确认退款金额为${model.price}吗？`"
+      @submit="handleOk"
+      @cancel="handleCancel"
+    />
   </div>
 </template>
 
