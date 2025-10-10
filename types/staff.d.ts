@@ -16,8 +16,10 @@ interface Staff {
   store_id?: string
   regions?: Region[]
   region_superiors?: Region[]
+  region_admins?: Region[]
   stores?: Stores[]
   store_superiors?: Stores[]
+  store_admins?: Stores[]
   identity?: UserLevel
   role_id?: string
   updated_at?: string
@@ -25,8 +27,6 @@ interface Staff {
   showtype?: 'list' | 'table'
   searchPage?: number
   limits?: number
-  store_admins?: Stores[]
-  region_admins?: Region[]
 }
 /**
  * 添加员工请求参数
@@ -45,7 +45,23 @@ interface wxUserid {
  * 添加员工表单
  */
 interface addStaffForm extends Staff {
-  password: string
+  phone?: string
+  password?: string
+  nickname?: string
+  username?: string
+  avatar?: string
+  email?: string
+  identity?: UserLevel
+  gender?: number
+  role_id?: string
+  leader_name?: string
+  is_disabled?: boolean
+  region_ids?: string[]
+  region_superior_ids?: string[]
+  store_ids?: string[]
+  store_superior_ids?: string[]
+  store_admin_ids?: string[]
+  region_admin_ids?: string[]
 }
 
 interface updateStaffReq {
@@ -72,6 +88,7 @@ interface updateStaffForm {
   email?: string
   identity?: UserLevel
   gender?: number
+  leader_name?: string
   role_id?: string
   is_disabled?: boolean
   region_ids?: string[]
@@ -84,6 +101,7 @@ interface updateStaffForm {
 
 interface updateRegion {
   id: string
+  identity?: UserLevel
   store_ids: string[]
   store_superior_ids: string[]
   region_ids: string[]

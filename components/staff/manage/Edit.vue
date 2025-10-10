@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // 搜索门店
-import type { FormRules, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
+import type { FormRules, SelectOption, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 import { pinyin } from 'pinyin-pro'
 
 const emits = defineEmits<{
@@ -17,6 +17,7 @@ const formlist = defineModel({ default: {
   avatar: '',
   email: '',
   gender: 0,
+  leader_name: '',
   is_disabled: false,
   store_ids: [],
   store_superior_ids: [],
@@ -51,7 +52,11 @@ const rules = {
     trigger: ['blur', 'input', 'change'],
     message: `请输入手机号`,
   },
-
+  leader_name: {
+    required: true,
+    trigger: ['blur', 'input', 'change'],
+    message: `请选择上级`,
+  },
 } as FormRules
 
 const formRef = ref()
@@ -97,6 +102,24 @@ const onChangeKey = () => {
 const clearAvatar = () => {
   previewFileList.value = []
   onChangeKey()
+}
+const options = ref<SelectOption[]>([])
+const { useWxWork } = useWxworkStore()
+const selectPer = async () => {
+  const wx = await useWxWork()
+  wx?.selectDepartment().then((res) => {
+    if (res.userList.length) {
+      formlist.value.leader_name = res.userList[0].id
+      options.value = res.userList.map(item => ({
+        label: item.name,
+        value: item.id,
+      }))
+    }
+    else {
+      options.value = []
+      formlist.value.leader_name = undefined
+    }
+  })
 }
 
 defineExpose({
@@ -168,6 +191,9 @@ defineExpose({
                   round
                   @focus="focus"
                 />
+              </n-form-item-gi>
+              <n-form-item-gi :span="12" label="上级" path="leader_name">
+                <n-select v-model:value="formlist.leader_name" clearable :options="options" placeholder="请选择上级" @click="selectPer" />
               </n-form-item-gi>
               <n-form-item-gi :span="12" label="性别" path="gender">
                 <n-radio-group v-model:value="formlist.gender">

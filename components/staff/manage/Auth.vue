@@ -8,6 +8,7 @@ const props = withDefaults(defineProps<{
 })
 const emits = defineEmits<{
   updateRole: []
+  changeRole: []
 }>()
 
 const auth = defineModel<Partial<updateAuthRole>>('authform', {
@@ -28,7 +29,7 @@ function transformRoleObjToArray(obj: Record<number, string>) {
 if (props.roleWhereList) {
   roleList.value = transformRoleObjToArray(props.roleWhereList)
 }
-// 修改密码
+
 const editRole = () => {
   emits('updateRole')
 }
@@ -41,6 +42,8 @@ const updateRole = async (e: any) => {
     array.value.push({ label: item.name, value: item.id })
   })
   auth.value.role_id = array.value[0].value
+
+  emits('changeRole')
 }
 if (auth.value.identity) {
   array.value = []

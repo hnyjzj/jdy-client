@@ -84,9 +84,15 @@ const deleteConfirm = async () => {
         </template>
         <template #footer>
           <div class="flex-between pl-[8px] bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
-            <div class="cursor-pointer" @click="delTips(item.id as string)">
-              <icon name="i-svg:delete" :size="16" />
-            </div>
+            <template v-if="(props.myidentity > (item.identity as number)) || props.myidentity === 6">
+              <div class="cursor-pointer" @click="delTips(item.id as string)">
+                <icon name="i-svg:delete" :size="16" />
+              </div>
+            </template>
+            <template v-else>
+              <div />
+            </template>
+
             <div class="flex-between">
               <div class="pr-[36px] color-[#1F6FEC] cursor-pointer" @click="router.push(`/manage/staffs/staff/info?id=${item.id}`)">
                 详情

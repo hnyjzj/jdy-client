@@ -24,7 +24,6 @@ const getRegionList = async () => {
 
 const route = useRoute()
 
-const dialogShow = ref(false)
 await getRoleWhere()
 await getStaffWhere()
 const formlist = ref<updateStaffForm>({
@@ -52,17 +51,9 @@ const storeForm = ref<updateRegion>({
   region_superior_ids: [],
   store_admin_ids: [],
   region_admin_ids: [],
+  identity: 1,
 })
-const parsswordForm = ref<updatePassword>({
-  id: '',
-  password: '',
-  store_ids: [],
-  store_superior_ids: [],
-  region_ids: [],
-  region_superior_ids: [],
-  store_admin_ids: [],
-  region_admin_ids: [],
-})
+
 const authForm = ref<updateAuthRole>({
   id: '',
   identity: 1,
@@ -87,9 +78,8 @@ const { getStaffInfo } = useStaff()
 const { staffInfo } = storeToRefs(useStaff())
 if (route.query.id) {
   await getStaffInfo({ id: route.query.id as string })
-  const { region_admins, store_admins, nickname, username, phone, email, gender, is_disabled, avatar, id, stores, regions, store_superiors, region_superiors, identity, role_id } = staffInfo.value
+  const { leader_name, region_admins, store_admins, nickname, username, phone, email, gender, is_disabled, avatar, id, stores, regions, store_superiors, region_superiors, identity, role_id } = staffInfo.value
   formlist.value.id = id as string
-  parsswordForm.value.id = id as string
   authForm.value.id = id as string
   storeForm.value.id = id as string
   formlist.value.nickname = nickname
@@ -98,14 +88,15 @@ if (route.query.id) {
   formlist.value.email = email
   formlist.value.gender = gender
   formlist.value.avatar = avatar
+  formlist.value.leader_name = leader_name
   formlist.value.is_disabled = is_disabled
   authForm.value.identity = identity as number
+  storeForm.value.identity = identity as number
   authForm.value.role_id = role_id as string
   // 获取所属门店默认数据
   stores?.forEach((item) => {
     defaultform.value.stores.push({ label: item.alias || item.name, value: item.id })
     formlist.value.store_ids?.push(item.id)
-    parsswordForm.value.store_ids?.push(item.id)
     authForm.value.store_ids?.push(item.id)
     storeForm.value.store_ids?.push(item.id)
   })
@@ -114,7 +105,6 @@ if (route.query.id) {
   regions?.forEach((item) => {
     defaultform.value.regions.push({ label: item.alias || item.name, value: item.id })
     formlist.value.region_ids?.push(item.id)
-    parsswordForm.value.region_ids?.push(item.id)
     authForm.value.region_ids?.push(item.id)
     storeForm.value.region_ids?.push(item.id)
   })
@@ -123,7 +113,6 @@ if (route.query.id) {
   store_superiors?.forEach((item) => {
     defaultform.value.stores_superior.push({ label: item.alias || item.name, value: item.id })
     formlist.value.store_superior_ids?.push(item.id)
-    parsswordForm.value.store_superior_ids?.push(item.id)
     authForm.value.store_superior_ids?.push(item.id)
     storeForm.value.store_superior_ids?.push(item.id)
   })
@@ -132,7 +121,6 @@ if (route.query.id) {
     defaultform.value.regions_superior.push({ label: item.alias || item.name, value: item.id })
     defaultform.value.regions_superior.push({ label: item.alias, value: item.id })
     formlist.value.region_superior_ids?.push(item.id)
-    parsswordForm.value.region_superior_ids?.push(item.id)
     authForm.value.region_superior_ids?.push(item.id)
     storeForm.value.region_superior_ids?.push(item.id)
   })
@@ -140,7 +128,6 @@ if (route.query.id) {
   store_admins?.forEach((item) => {
     defaultform.value.store_admin_ids.push({ label: item.alias || item.name, value: item.id })
     formlist.value.store_admin_ids?.push(item.id)
-    parsswordForm.value.store_admin_ids?.push(item.id)
     authForm.value.store_admin_ids?.push(item.id)
     storeForm.value.store_admin_ids?.push(item.id)
   })
@@ -148,7 +135,6 @@ if (route.query.id) {
   region_admins?.forEach((item) => {
     defaultform.value.region_admin_ids.push({ label: item.alias || item.name, value: item.id })
     formlist.value.region_admin_ids?.push(item.id)
-    parsswordForm.value.region_admin_ids?.push(item.id)
     authForm.value.region_admin_ids?.push(item.id)
     storeForm.value.region_admin_ids?.push(item.id)
   })
@@ -180,16 +166,6 @@ const uploadFile = async (file: any, onfinish?: () => void) => {
   }
 }
 
-const continueEdit = async () => {
-  const res = await EditStaff(parsswordForm.value)
-  if (res?.code === HttpCode.SUCCESS) {
-    $toast.success('密码修改成功')
-  }
-  else {
-    $toast.error(res?.message || '修改失败')
-  }
-}
-
 const submitEditRole = async () => {
   const res = await EditStaff(authForm.value)
   if (res?.code === HttpCode.SUCCESS) {
@@ -208,6 +184,17 @@ const submitEditStore = async () => {
     $toast.error(res?.message || '分配修改失败')
   }
 }
+const manageStores = ref()
+const changeRoleFn = () => {
+  manageStores.value.clearSwitch()
+  storeForm.value.identity = authForm.value.identity
+  storeForm.value.store_ids = []
+  storeForm.value.store_superior_ids = []
+  storeForm.value.region_ids = []
+  storeForm.value.region_superior_ids = []
+  storeForm.value.store_admin_ids = []
+  storeForm.value.region_admin_ids = []
+}
 
 const getroleListFn = async (data: number) => {
   await getRoleList(data)
@@ -224,7 +211,15 @@ const getroleListFn = async (data: number) => {
         @submit="submitEdit"
         @upload="uploadFile"
       />
+      <staff-manage-auth
+        v-model:authform="authForm"
+        :role-where-list="roleWhereList"
+        :getrole-list-fn="getroleListFn"
+        @update-role="submitEditRole"
+        @change-role="changeRoleFn"
+      />
       <staff-manage-stores
+        ref="manageStores"
         v-model="storeForm"
         v-model:default-form="defaultform"
         :get-store-list="getStoreList"
@@ -233,28 +228,7 @@ const getroleListFn = async (data: number) => {
         :get-region-list-all="getRegionList"
         @submit="submitEditStore"
       />
-      <staff-manage-auth
-        v-model:authform="authForm"
-        :role-where-list="roleWhereList"
-        :getrole-list-fn="getroleListFn"
-        @update-role="submitEditRole"
-      />
-      <staff-manage-password
-        v-model:password="parsswordForm"
-        @edit-pawd="dialogShow = true"
-      />
     </div>
-
-    <common-confirm
-      v-model:show="dialogShow"
-      title="提示"
-      text="确定修改此员工密码?"
-      icon="warning "
-      cancel-text="否"
-      confirm-text="是"
-      @submit="continueEdit"
-      @cancel="dialogShow = false"
-    />
   </div>
 </template>
 

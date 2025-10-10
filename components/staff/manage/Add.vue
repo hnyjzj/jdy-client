@@ -21,7 +21,7 @@ const formlist = defineModel({ default: {
   password: '',
   avatar: '',
   email: '',
-  leader_name: '',
+  leader_name: undefined,
   gender: 0,
   is_disabled: false,
 } as addStaffForm })
@@ -109,7 +109,6 @@ function handleValidateButtonClick(e: MouseEvent) {
 }
 
 const options = ref<SelectOption[]>([])
-// 扫码
 const { useWxWork } = useWxworkStore()
 const selectPer = async () => {
   const wx = await useWxWork()
@@ -123,7 +122,7 @@ const selectPer = async () => {
     }
     else {
       options.value = []
-      formlist.value.leader_name = ''
+      formlist.value.leader_name = undefined
     }
   })
 }
@@ -152,7 +151,7 @@ const clearAvatar = () => {
   onChangeKey()
 }
 const changeNickname = () => {
-  formlist.value.nickname = formlist.value.nickname.replace(/[^\u4E00-\u9FA5]/g, '')
+  formlist.value.nickname = formlist.value?.nickname?.trim().replace(/[^\u4E00-\u9FA5]/g, '')
   toPinyin()
 }
 defineExpose({
