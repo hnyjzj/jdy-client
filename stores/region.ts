@@ -52,21 +52,6 @@ export const useRegion = defineStore('Region', {
         return []
       }
     },
-    // 获取全部区域列表
-    async staffGetRegionListAll(params?: Partial<Region>) {
-      const { data } = await https.post<ResList<Region>, { all: true, where: Partial<Region> }>(
-        '/region/list',
-        { all: true, where: params || {} },
-        true,
-        false,
-      )
-      if (data.value?.code === HttpCode.SUCCESS) {
-        return data.value.data.list
-      }
-      else {
-        return []
-      }
-    },
 
     // 创建区域
     async createRegion(req: Partial<Region>) {

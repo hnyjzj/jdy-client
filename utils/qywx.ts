@@ -97,6 +97,18 @@ class WxWork {
     return result
   }
 
+  // 选择通讯录成员
+  selectDepartment = async (options?: { selectedUserIds?: string[], selectedDepartmentIds?: string[] }) => {
+    const { result } = await wx.selectEnterpriseContact({
+      fromDepartmentId: 0,
+      mode: wx.SelectEnterpriseContactMode.single,
+      type: [wx.SelectEnterpriseContactType.user],
+      ...options,
+
+    })
+    return result
+  }
+
   /**
    * 判断用户是从哪个入口打开页面
    */

@@ -12,7 +12,7 @@ const emits = defineEmits<{
   submit: []
   upload: [val: any, onFinish: () => void]
 }>()
-const { getOptionsStafflist } = useStaff()
+
 const { $toast } = useNuxtApp()
 const formlist = defineModel({ default: {
   phone: '',
@@ -21,6 +21,7 @@ const formlist = defineModel({ default: {
   password: '',
   avatar: '',
   email: '',
+  leader_name: '',
   gender: 0,
   is_disabled: false,
 } as addStaffForm })
@@ -70,7 +71,7 @@ const forRules = () => {
           required: true,
           trigger: ['blur', 'input', 'change'],
           message: `请选择${item.label}`,
-          type: 'number',
+          type: 'string',
         }
       }
       if (item.input === 'upload') {
@@ -106,18 +107,25 @@ function handleValidateButtonClick(e: MouseEvent) {
     }
   })
 }
-const staffListOpt = ref<SelectOption[]>([])
-const GetStaffList = async (query: string) => {
-  const res = await getOptionsStafflist({ page: 1, limit: 10, where: { nickname: query } })
-  if (res.length) {
-    staffListOpt.value = res.map(item => ({
-      label: `${item.nickname}(${item.phone || '无手机号'})`,
-      value: item.id,
-    }))
-  }
-  else {
-    staffListOpt.value = []
-  }
+
+const options = ref<SelectOption[]>([])
+// 扫码
+const { useWxWork } = useWxworkStore()
+const selectPer = async () => {
+  const wx = await useWxWork()
+  wx?.selectDepartment().then((res) => {
+    if (res.userList.length) {
+      formlist.value.leader_name = res.userList[0].id
+      options.value = res.userList.map(item => ({
+        label: item.name,
+        value: item.id,
+      }))
+    }
+    else {
+      options.value = []
+      formlist.value.leader_name = ''
+    }
+  })
 }
 
 // 展示预览图
@@ -225,18 +233,8 @@ defineExpose({
                         </n-space>
                       </n-radio-group>
                     </template>
-                    <template v-if="item.input === 'select'">
-                      <n-select
-                        v-model:value="(formlist[item.name] as string)"
-                        filterable
-                        :placeholder="`请选择${item.label}`"
-                        round
-                        :options="staffListOpt"
-                        clearable
-                        remote
-                        @search="GetStaffList"
-                        @focus="GetStaffList('')"
-                      />
+                    <template v-if="item.input === 'select' && item.name === 'leader_name'">
+                      <n-select v-model:value="formlist[item.name]" clearable :options="options" placeholder="请选择上级" @click="selectPer" />
                     </template>
                     <template v-if="item.input === 'switch'">
                       <n-switch v-model:value="(formlist[item.name] as boolean)" size="medium" :style="{ 'border-radius': '20px' }" round />

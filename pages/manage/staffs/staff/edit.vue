@@ -8,24 +8,20 @@ const { uploadAvatar, getStaffWhere, EditStaff } = useStaff()
 const { filterListToArray } = storeToRefs(useStaff())
 const { getRoleWhere, getRoleList } = useAuthority()
 const { roleWhereList, roleList } = storeToRefs(useAuthority())
-const { staffGetStoreListAll } = useStores()
-const { staffGetRegionListAll } = useRegion()
-const getStoreList = async (query: string) => {
-  const res = await staffGetStoreListAll({ name: query })
-  return res || []
+const { getMyStore } = useStores()
+const { myStoreList } = storeToRefs(useStores())
+const { getMyRegion } = useRegion()
+const { myRegionList } = storeToRefs(useRegion())
+const getStoreList = async () => {
+  await getMyStore({ has_all: false })
+  return myStoreList.value || []
 }
-const searchStoresAll = async () => {
-  const res = await staffGetStoreListAll()
-  return res || []
+
+const getRegionList = async () => {
+  await getMyRegion({ has_all: false })
+  return myRegionList.value || []
 }
-const getRegionList = async (query: string) => {
-  const res = await staffGetRegionListAll({ name: query })
-  return res || []
-}
-const getRegionListAll = async () => {
-  const res = await staffGetRegionListAll()
-  return res || []
-}
+
 const route = useRoute()
 
 const dialogShow = ref(false)
@@ -232,9 +228,9 @@ const getroleListFn = async (data: number) => {
         v-model="storeForm"
         v-model:default-form="defaultform"
         :get-store-list="getStoreList"
-        :get-store-list-all="searchStoresAll"
+        :get-store-list-all="getStoreList"
         :get-region-list="getRegionList"
-        :get-region-list-all="getRegionListAll"
+        :get-region-list-all="getRegionList"
         @submit="submitEditStore"
       />
       <staff-manage-auth

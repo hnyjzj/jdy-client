@@ -4,9 +4,10 @@ import { NButton } from 'naive-ui'
 useSeoMeta({
   title: '员工列表',
 })
+const { $toast } = useNuxtApp()
 const { staffList, filterListToArray, total, filterList, showtype } = storeToRefs(useStaff())
 const { searchPage } = storeToRefs(usePages())
-const { getStaffWhere, getStaffList } = useStaff()
+const { getStaffWhere, getStaffList, deleteStaff } = useStaff()
 const { userinfo } = storeToRefs(useUser())
 const { myStore } = storeToRefs(useStores())
 const limits = ref(50)
@@ -24,6 +25,16 @@ const getList = async (where = {} as StaffWhere) => {
   }
   await getStaffList(params)
   tableLoading.value = false
+}
+const deleteFn = async (id: string) => {
+  const res = await deleteStaff({ id })
+  await getList(filterData.value as StaffWhere)
+  if (res) {
+    $toast.success('删除成功')
+  }
+  else {
+    $toast.error('删除失败')
+  }
 }
 
 // 获取筛选条件
@@ -200,7 +211,7 @@ const cols = [
       <common-layout-center>
         <div class="p-[16px]">
           <template v-if="staffList.length">
-            <staff-manage-card :list="staffList" :myidentity="userinfo.identity" :filter-data="filterList" />
+            <staff-manage-card :list="staffList" :delete-fn="deleteFn" :myidentity="userinfo.identity" :filter-data="filterList" />
             <common-page
               v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
           </template>

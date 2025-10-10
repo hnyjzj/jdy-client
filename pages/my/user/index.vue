@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useSeoMeta({
-  title: '个人中心',
+  title: '资料管理',
 })
 const { userinfo } = storeToRefs(useUser())
 const { getUserInfo } = useUser()

@@ -11,6 +11,7 @@ interface Staff {
   avatar: string
   email: string
   gender: number
+  leader_name?: string
   is_disabled?: boolean
   store_id?: string
   regions?: Region[]

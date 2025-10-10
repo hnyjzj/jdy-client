@@ -1,4 +1,7 @@
 <script lang="ts" setup>
+useSeoMeta({
+  title: '新增员工',
+})
 const { $toast } = useNuxtApp()
 
 const { createStaff, uploadAvatar, getStaffWhere } = useStaff()
@@ -21,6 +24,7 @@ const formlist = ref<addStaffForm>({
   password: '',
   avatar: '',
   email: '',
+  leader_name: '',
   gender: 0,
   is_disabled: false,
   store_ids: [],
@@ -55,6 +59,7 @@ const continueAdd = () => {
     avatar: '',
     email: '',
     gender: 0,
+    leader_name: '',
     is_disabled: false,
     store_ids: [],
     store_superior_ids: [],

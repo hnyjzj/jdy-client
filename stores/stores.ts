@@ -76,21 +76,6 @@ export const useStores = defineStore('Store', {
         return []
       }
     },
-    // 获取全部门店
-    async staffGetStoreListAll(params?: Partial<Stores>) {
-      const { data } = await https.post<ResList<Stores>, { all: true, where: Partial<Stores> }>(
-        '/store/list',
-        { all: true, where: params || {} },
-        true,
-        false,
-      )
-      if (data.value?.code === HttpCode.SUCCESS) {
-        return data.value.data.list
-      }
-      else {
-        return []
-      }
-    },
 
     // 创建门店
     async createStore(req: Partial<Stores>) {
