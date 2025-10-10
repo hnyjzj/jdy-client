@@ -7,7 +7,7 @@ const props = defineProps<{
   memberFiler: Where<Member>
   productFilter: Where<ProductFinisheds>
   oldFilter: Where<ProductOlds>
-  returnGoods: (req: ReturnGoods) => void
+  returnGoods: (req: ReturnGoods) => Promise<boolean>
   identity: number
   store: string
   partFilter: Where<ProductAccessories>
