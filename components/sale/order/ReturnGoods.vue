@@ -50,28 +50,49 @@ const addNewMethod = () => {
 const deleteMethod = (index: number) => {
   model.value.payments.splice(index, 1)
 }
+const tipsMessage = ref(false)
+const handleOk = async () => {
+  model.value.id = showReturnGoods.value?.id || ''
+  model.value.product_id = showReturnGoods.value?.goods?.id || ''
+  model.value.product_type = showReturnGoods.value?.goods?.type || 0
+
+  const res = await props.returnGoods(model.value)
+  if (res) {
+    showModel.value = false
+    model.value = {
+      id: '',
+      product_id: '',
+      method: undefined,
+      product_type: 0,
+      price: 0,
+      remark: '',
+      payments: [{ payment_method: 1, amount: 0 }],
+    }
+  }
+}
+const handleCancel = () => {
+  tipsMessage.value = false
+}
+
 const submit = async () => {
   formRef.value.validate(async (errors: any) => {
     if (errors) {
       $toast.error(errors[0][0].message)
     }
     else {
-      model.value.id = showReturnGoods.value?.id || ''
-      model.value.product_id = showReturnGoods.value?.goods?.id || ''
-      model.value.product_type = showReturnGoods.value?.goods?.type || 0
-
-      const res = await props.returnGoods(model.value)
-      if (res) {
-        showModel.value = false
-        model.value = {
-          id: '',
-          product_id: '',
-          method: undefined,
-          product_type: 0,
-          price: 0,
-          remark: '',
-          payments: [{ payment_method: 1, amount: 0 }],
-        }
+      if ((showReturnGoods.value?.goods?.type === GoodsType.ProductFinish) && (model.value.price !== Number(showReturnGoods.value?.goods?.finished?.price))) {
+        tipsMessage.value = true
+        return
+      }
+      if ((showReturnGoods.value?.goods?.type === GoodsType.ProductOld) && (model.value.price !== Number(showReturnGoods.value?.goods?.old?.recycle_price))) {
+        tipsMessage.value = true
+        return
+      }
+      if ((showReturnGoods.value?.goods?.type === GoodsType.ProductAccessories) && (model.value.price !== Number(showReturnGoods.value?.goods?.accessorie?.price))) {
+        tipsMessage.value = true
+      }
+      else {
+        handleOk()
       }
     }
   })
@@ -118,17 +139,17 @@ defineExpose({
         <template v-if="showReturnGoods?.goods?.type === GoodsType.ProductFinish">
           <common-cell label="成品名称" :value="showReturnGoods?.goods?.finished.product?.name" />
           <common-cell label="零售方式" :value="productFilter?.retail_type?.preset[showReturnGoods?.goods?.finished?.product?.retail_type!]" />
-          <common-cell :label="`条码:${showReturnGoods?.goods?.finished?.product?.code}`" :value="`应付金额:${showReturnGoods?.goods?.finished?.price}`" />
+          <common-cell :label="`条码:${showReturnGoods?.goods?.finished?.product?.code}`" :value="`收款金额:${showReturnGoods?.goods?.finished?.price}`" />
         </template>
         <template v-if="showReturnGoods?.goods?.type === GoodsType.ProductOld">
           <common-cell label="旧料编号" :value="showReturnGoods?.goods?.old?.product?.id" />
           <common-cell label="金重(g)" :value="showReturnGoods?.goods?.old?.weight_metal" />
-          <common-cell :label="`条码:${showReturnGoods?.goods?.old?.product?.code}`" :value="`应付金额:${showReturnGoods?.goods?.old?.recycle_price}`" />
+          <common-cell :label="`条码:${showReturnGoods?.goods?.old?.product?.code}`" :value="`收款金额:${showReturnGoods?.goods?.old?.recycle_price}`" />
         </template>
         <template v-if="showReturnGoods?.goods?.type === GoodsType.ProductAccessories">
           <common-cell label="配件名称" :value="showReturnGoods?.goods?.accessorie.product?.name" />
           <common-cell :label="`数量:${showReturnGoods?.goods?.accessorie?.quantity}`" />
-          <common-cell :label="`编号:${showReturnGoods?.goods?.accessorie?.id}`" :value="`应付金额:${showReturnGoods?.goods?.accessorie?.price}`" />
+          <common-cell :label="`编号:${showReturnGoods?.goods?.accessorie?.id}`" :value="`收款金额:${showReturnGoods?.goods?.accessorie?.price}`" />
         </template>
         <n-form
           ref="formRef"
@@ -200,6 +221,13 @@ defineExpose({
         </n-form>
       </div>
     </common-model>
+    <common-confirm
+      v-model:show="tipsMessage"
+      icon="warning"
+      text="收款金额与退款金额不一致"
+      @submit="handleOk"
+      @cancel="handleCancel"
+    />
   </div>
 </template>
 

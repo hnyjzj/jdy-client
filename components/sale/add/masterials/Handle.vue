@@ -63,39 +63,47 @@ const forRules = () => {
 }
 // 循环校验规则
 forRules()
+
+const tipsMessage = ref(false)
+const handleOk = async () => {
+  // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
+  const data = await props.checkOldClass({ material: nowOldMaster.value.material, quality: nowOldMaster.value.quality, gem: nowOldMaster.value.gem })
+  if (!data.res.value) {
+    return
+  }
+  nowOldMaster.value.class = data?.res.value
+  // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
+  if (nowOldMaster.value.recycle_price && data.rate && Number(data.rate) !== 0) {
+    nowOldMaster.value.integral = orderObject.value.has_integral
+      ? calc('(a / b)| =0 ~5, !n', {
+          a: nowOldMaster.value.recycle_price,
+          b: data.rate,
+        })
+      : 0
+  }
+  if (props.nowEditState !== undefined) {
+    // 编辑时
+    orderObject.value.showMasterialsList?.splice(props.nowEditState, 1, nowOldMaster.value)
+  }
+  else {
+    nowOldMaster.value.is_our = false
+    nowOldMaster.value.rate = data?.rate
+    if (!orderObject.value.showMasterialsList) {
+      orderObject.value.showMasterialsList = []
+    }
+    orderObject.value.showMasterialsList?.push(nowOldMaster.value)
+  }
+
+  showModal.value = false
+}
+const handleCancel = () => {
+  tipsMessage.value = false
+}
 // 手动添加旧料
 const submitMasterialsForm = async () => {
   MformRef.value?.validate(async (errors: any) => {
     if (!errors) {
-      // 获取旧料的积分比例  大类要有 , 积分有回收金额则计算，且比例不能等于 0 否则会NaN
-      const data = await props.checkOldClass({ material: nowOldMaster.value.material, quality: nowOldMaster.value.quality, gem: nowOldMaster.value.gem })
-      if (!data.res.value) {
-        return
-      }
-      nowOldMaster.value.class = data?.res.value
-      // 如果有回收金额则计算积分 并且 积分比例不能等于 0 否则会NaN
-      if (nowOldMaster.value.recycle_price && data.rate && Number(data.rate) !== 0) {
-        nowOldMaster.value.integral = orderObject.value.has_integral
-          ? calc('(a / b)| =0 ~5, !n', {
-              a: nowOldMaster.value.recycle_price,
-              b: data.rate,
-            })
-          : 0
-      }
-      if (props.nowEditState !== undefined) {
-        // 编辑时
-        orderObject.value.showMasterialsList?.splice(props.nowEditState, 1, nowOldMaster.value)
-      }
-      else {
-        nowOldMaster.value.is_our = false
-        nowOldMaster.value.rate = data?.rate
-        if (!orderObject.value.showMasterialsList) {
-          orderObject.value.showMasterialsList = []
-        }
-        orderObject.value.showMasterialsList?.push(nowOldMaster.value)
-      }
-
-      showModal.value = false
+      tipsMessage.value = true
     }
     else {
       $toast.error(errors[0][0].message)
@@ -254,6 +262,13 @@ const presetToSelect = (filter: FilterWhere<OrderMaterial>): { label: string, va
         </div>
       </div>
     </common-model>
+    <common-confirm
+      v-model:show="tipsMessage"
+      icon="warning"
+      :text="`确认回收金额为${nowOldMaster.recycle_price}吗？`"
+      @submit="handleOk"
+      @cancel="handleCancel"
+    />
   </div>
 </template>
 
