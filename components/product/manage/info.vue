@@ -37,7 +37,7 @@ const props = defineProps<{
         </template>
         <template v-for="(item, index) in props.filterListToArray" :key="index">
           <!-- 配件是使用 info 控制显示 -->
-          <template v-if="item.label && (productType === GoodsType.ProductAccessories ? item.info : item.find) && item.name !== 'recycle_source_id'">
+          <template v-if="item.label && item.info && item.name !== 'recycle_source_id'">
             <div class="flex justify-between text-sm font-normal">
               <div class="text-color-light whitespace-nowrap">
                 {{ item?.label }}
