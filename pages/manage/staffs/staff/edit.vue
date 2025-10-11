@@ -194,6 +194,18 @@ const changeRoleFn = () => {
   storeForm.value.region_superior_ids = []
   storeForm.value.store_admin_ids = []
   storeForm.value.region_admin_ids = []
+  authForm.value.store_ids = []
+  authForm.value.store_superior_ids = []
+  authForm.value.region_ids = []
+  authForm.value.region_superior_ids = []
+  authForm.value.store_admin_ids = []
+  authForm.value.region_admin_ids = []
+  formlist.value.store_ids = []
+  formlist.value.store_superior_ids = []
+  formlist.value.region_ids = []
+  formlist.value.region_superior_ids = []
+  formlist.value.store_admin_ids = []
+  formlist.value.region_admin_ids = []
 }
 
 const getroleListFn = async (data: number) => {
