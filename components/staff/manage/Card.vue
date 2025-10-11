@@ -31,13 +31,15 @@ const formatISODate = (isoString?: string) => {
 }
 
 const confirmShow = ref<boolean>(false)
-const delId = ref<string>('')
+const delId = ref<string | undefined>(undefined)
 const delTips = (id: string) => {
   delId.value = id
   confirmShow.value = true
 }
 // 确认删除
 const deleteConfirm = async () => {
+  if (!delId.value)
+    return
   await props.deleteFn(delId.value)
   confirmShow.value = false
 }

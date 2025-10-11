@@ -9,6 +9,7 @@ const addorUpdateForm = defineModel<Partial<Stores>>({ default: {
   region_id: undefined,
   sort: undefined,
   alias: undefined,
+  phone: undefined,
   name: undefined,
 } })
 const formRef = ref()
