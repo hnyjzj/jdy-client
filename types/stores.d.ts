@@ -16,6 +16,7 @@ interface Stores {
   searchPage?: number
   limits?: number
   region?: Region
+  region_id?: string
 }
 
 interface StoresStaff {

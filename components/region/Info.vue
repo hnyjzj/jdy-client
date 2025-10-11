@@ -18,6 +18,9 @@ const handleValidateButtonClick = async () => {
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('更新成功')
   }
+  else {
+    $toast.error(res?.message ?? '更新失败')
+  }
 }
 </script>
 

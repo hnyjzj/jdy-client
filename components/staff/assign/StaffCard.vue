@@ -10,11 +10,6 @@ const props = defineProps<{
   buttonType: 'staff' | 'admin' | 'superior'
 }>()
 
-const emits = defineEmits<{
-  deleteStoreStaff: [val: 'staff' | 'admin' | 'superior', id: string]
-  confirm: [val: string]
-}>()
-
 /**
  * 格式化性别显示
  * @param val 性别代码
@@ -22,21 +17,6 @@ const emits = defineEmits<{
  */
 const formatGender = (val: number): string => {
   return val === 0 ? '未知' : val === 1 ? '男' : '女'
-}
-
-/**
- * 处理删除员工事件
- * @param id 员工ID
- */
-const handleDelete = (id: string): void => {
-  emits('deleteStoreStaff', props.buttonType, id)
-}
-
-/**
- * 处理确认分配事件
- */
-const handleConfirm = (): void => {
-  emits('confirm', props.buttonType)
 }
 </script>
 
@@ -46,17 +26,12 @@ const handleConfirm = (): void => {
       <div class="text-[16px] font-semibold">
         {{ props.title }}
       </div>
-      <div>
-        <common-button-rounded
-          :content="props.buttonText"
-          @button-click="handleConfirm"
-        />
-      </div>
+      <div />
     </div>
     <div class="grid-12 gap-[16px] py-[16px] ">
       <template v-for="(item, index) in props.list" :key="index">
         <div
-          class=" rounded-[24px] w-full col-12 blur-bgc p-[1px]">
+          class=" rounded-[24px] w-full col-12 blur-bgc p-[1px]" @click="navigateTo(`/manage/staffs/staff/info?id=${item.id}`)">
           <div class="h-full flex-col-between">
             <div
               class="py-[8px] pl-[16px]
@@ -72,11 +47,7 @@ const handleConfirm = (): void => {
                 </div>
               </div>
               <div>
-                <div
-                  class="py-[8px] px-[16px] col-2 flex-center-row cursor-pointer"
-                  @click="handleDelete(item.id as string)">
-                  <icon name="i-svg:delete" :size="16" />
-                </div>
+                <!-- 删除按钮位置  handleDelete(item.id as string) -->
               </div>
             </div>
             <div class=" px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">

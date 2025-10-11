@@ -1,9 +1,18 @@
 <script setup lang="ts">
 const emits = defineEmits<{
   submit: []
+  changeRegion: []
 }>()
 const { $toast } = useNuxtApp()
-const { addorUpdateForm } = storeToRefs(useStores())
+
+const addorUpdateForm = defineModel<Partial<Stores>>({ default: {
+  id: undefined,
+  region_id: undefined,
+  sort: undefined,
+  alias: undefined,
+  phone: undefined,
+  name: undefined,
+} })
 const formRef = ref()
 // 表单验证
 const rules = {
@@ -48,6 +57,9 @@ const handleValidateButtonClick = (e: MouseEvent) => {
       label-placement="top">
       <div class=" flex-col justify-between">
         <div class="pb-[40px]">
+          <div class="w-fit pb-[12px]">
+            <region-change @change="emits('changeRegion')" />
+          </div>
           <n-form-item label="门店名称" path="name">
             <n-input v-model:value="addorUpdateForm.name" placeholder="请输入门店名称" round clearable @focus="focus" />
           </n-form-item>

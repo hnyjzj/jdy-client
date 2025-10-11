@@ -4,13 +4,7 @@ export const useStores = defineStore('Store', {
     storesList: [] as Stores[], // 门店列表
     total: 0,
     storeDetails: {} as Stores, //  门店详情
-    addorUpdateForm: {
-      id: undefined,
-      phone: '',
-      name: '',
-      alias: '',
-      sort: undefined,
-    } as Partial<Stores>,
+
     // 我的门店
     myStoreList: [] as Stores[],
     // 当前门店
@@ -82,21 +76,6 @@ export const useStores = defineStore('Store', {
         return []
       }
     },
-    // 获取全部门店
-    async staffGetStoreListAll(params?: Partial<Stores>) {
-      const { data } = await https.post<ResList<Stores>, { all: true, where: Partial<Stores> }>(
-        '/store/list',
-        { all: true, where: params || {} },
-        true,
-        false,
-      )
-      if (data.value?.code === HttpCode.SUCCESS) {
-        return data.value.data.list
-      }
-      else {
-        return []
-      }
-    },
 
     // 创建门店
     async createStore(req: Partial<Stores>) {
@@ -151,22 +130,12 @@ export const useStores = defineStore('Store', {
       )
     },
 
-    // 重置新增表单
-    async reastAddForm() {
-      this.addorUpdateForm = {
-        name: '',
-        phone: '',
-        contact: '',
-        sort: 0,
-      }
-    },
     // 我的门店
-    async getMyStore() {
+    async getMyStore(req: { has_all?: boolean } = { has_all: true }) {
       try {
-        const params = {}
         const { data } = await https.post<Stores[], any>(
           '/store/my',
-          params,
+          req,
         )
         if (data.value?.code === HttpCode.SUCCESS) {
           this.myStoreList = data.value.data

@@ -4,7 +4,7 @@ useSeoMeta({
 })
 const { $toast } = useNuxtApp()
 const route = useRoute()
-const { getStaffInfo } = useStaff()
+const { getStaffInfo, deleteStaff } = useStaff()
 const { staffInfo } = storeToRefs(useStaff())
 const { userinfo } = storeToRefs(useUser())
 if (route.query.id) {
@@ -23,6 +23,21 @@ const toEdit = () => {
     $toast.error('权限不足')
   }
 }
+const confirmShow = ref(false)
+const deleteConfirm = async () => {
+  const res = await deleteStaff({ id: route.query.id as string })
+  if (res) {
+    $toast.success('删除成功')
+  }
+  else {
+    $toast.error('删除失败')
+  }
+  router.back()
+}
+
+const delStaff = () => {
+  confirmShow.value = true
+}
 </script>
 
 <template>
@@ -31,8 +46,13 @@ const toEdit = () => {
       <div class="p-[1px]">
         <div class="text-[16px] py-[12px] px-[16px] bg-gradient-linear-[90deg,#FFF,#8AD4FB] rounded-t-[16px] flex-between">
           员工详情
-          <div class="px-[12px] py-[6px] bg-[#2B78EF] color-[#fff] rounded-[12px] text-[14px] cursor-pointer" @click="toEdit()">
-            编辑
+          <div class="flex items-center gap-[12px]">
+            <div class="cursor-pointer" @click="delStaff()">
+              <icon name="i-svg:delete" :size="16" />
+            </div>
+            <div class="px-[12px] py-[6px] bg-[#2B78EF] color-[#fff] rounded-[12px] text-[14px] cursor-pointer" @click="toEdit()">
+              编辑
+            </div>
           </div>
         </div>
       </div>
@@ -126,6 +146,14 @@ const toEdit = () => {
         </n-tabs>
       </div>
     </div>
+
+    <common-confirm
+      v-model:show="confirmShow"
+      title="删除提示"
+      text="是否删除此员工?"
+      icon="error"
+      @submit="deleteConfirm"
+    />
   </div>
 </template>
 

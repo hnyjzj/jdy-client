@@ -3,12 +3,13 @@ const props = defineProps<{
   list: Staff[]
   myidentity: number
   filterData: Where<Staff>
+  deleteFn: (id: string) => Promise<void>
 }>()
 const { $toast } = useNuxtApp()
 const router = useRouter()
 
 const toEdit = (id: string, identity: number) => {
-  if (props.myidentity > identity || props.myidentity === 6) {
+  if (props.myidentity > identity || props.myidentity === UserLevel.IdentitySuperAdmin) {
     router.push(`/manage/staffs/staff/edit?id=${id}`)
   }
   else {
@@ -27,6 +28,20 @@ const formatISODate = (isoString?: string) => {
   const minutes = String(date.getMinutes()).padStart(2, '0')
   const seconds = String(date.getSeconds()).padStart(2, '0')
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
+}
+
+const confirmShow = ref<boolean>(false)
+const delId = ref<string | undefined>(undefined)
+const delTips = (id: string) => {
+  delId.value = id
+  confirmShow.value = true
+}
+// 确认删除
+const deleteConfirm = async () => {
+  if (!delId.value)
+    return
+  await props.deleteFn(delId.value)
+  confirmShow.value = false
 }
 </script>
 
@@ -71,7 +86,15 @@ const formatISODate = (isoString?: string) => {
         </template>
         <template #footer>
           <div class="flex-between pl-[8px] bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
-            <div />
+            <template v-if="(props.myidentity > (item.identity as number)) || props.myidentity === UserLevel.IdentitySuperAdmin">
+              <div class="cursor-pointer" @click="delTips(item.id as string)">
+                <icon name="i-svg:delete" :size="16" />
+              </div>
+            </template>
+            <template v-else>
+              <div />
+            </template>
+
             <div class="flex-between">
               <div class="pr-[36px] color-[#1F6FEC] cursor-pointer" @click="router.push(`/manage/staffs/staff/info?id=${item.id}`)">
                 详情
@@ -82,6 +105,15 @@ const formatISODate = (isoString?: string) => {
         </template>
       </sale-cards>
     </template>
+
+    <common-confirm
+      v-model:show="confirmShow"
+      title="删除提示"
+      text="是否删除此员工?"
+      icon="error"
+      @submit="deleteConfirm"
+
+    />
   </div>
 </template>
 

@@ -6,6 +6,10 @@ const emits = defineEmits<{
 }>()
 const { storesList } = storeToRefs(useStores())
 // 转换省市区名字 toProvinces
+
+const delTips = (id: string) => {
+  emits('deleteStore', id)
+}
 </script>
 
 <template>
@@ -73,7 +77,9 @@ const { storesList } = storeToRefs(useStores())
             </div>
             <div class="bg-[#F3F5FE] dark:bg-[#F3F5FE1A] rounded-b-[24px] ">
               <div class="flex-between">
-                <div />
+                <div class="cursor-pointer pl-[16px]" @click="delTips(item.id as string)">
+                  <icon name="i-svg:delete" :size="16" />
+                </div>
                 <div class="text-size-[14px] col-6 offset-6" uno-sm="col-7 offset-5" uno-xl="col-7 offset-5">
                   <div @click="emits('getDetail', item.id)">
                     <common-button-irregular text="编辑" />

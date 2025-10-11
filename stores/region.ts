@@ -52,21 +52,6 @@ export const useRegion = defineStore('Region', {
         return []
       }
     },
-    // 获取全部区域列表
-    async staffGetRegionListAll(params?: Partial<Region>) {
-      const { data } = await https.post<ResList<Region>, { all: true, where: Partial<Region> }>(
-        '/region/list',
-        { all: true, where: params || {} },
-        true,
-        false,
-      )
-      if (data.value?.code === HttpCode.SUCCESS) {
-        return data.value.data.list
-      }
-      else {
-        return []
-      }
-    },
 
     // 创建区域
     async createRegion(req: Partial<Region>) {
@@ -115,9 +100,9 @@ export const useRegion = defineStore('Region', {
       }
     },
     // 我的区域
-    async getMyRegion(req: ReqList<Stores>) {
+    async getMyRegion(req: { has_all?: boolean } = { has_all: true }) {
       try {
-        const { data } = await https.post<Region[], ReqList<Region>>('/region/my', req)
+        const { data } = await https.post<Region[], { has_all?: boolean }>('/region/my', req)
         if (data.value?.code === HttpCode.SUCCESS) {
           this.myRegionList = data.value.data
           //   如果选择当前区域，则默认选中第一个

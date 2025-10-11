@@ -235,18 +235,6 @@ const beforeUpload = (data: any) => {
                 </div>
               </div>
             </template>
-            <template #password>
-              <div class="items ">
-                <div>密码</div>
-                <input v-model="userinfoForm.password" type="password" class="text-right border-none color-black py-[10px]" placeholder="请输入密码" @focus="focus">
-              </div>
-              <template v-if="userinfoForm.password">
-                <div class="items ">
-                  <div>确认密码</div>
-                  <input v-model="againPass" type="password" class="text-right border-none color-black py-[10px]" placeholder="请确认密码" @focus="focus">
-                </div>
-              </template>
-            </template>
 
             <template #actions="{ submit }">
               <div class="py-[32px] col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">

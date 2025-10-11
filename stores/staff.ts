@@ -67,6 +67,22 @@ export const useStaff = defineStore('staffStore', {
         throw error
       }
     },
+    // 删除员工
+    async deleteStaff(req: { id: string }) {
+      try {
+        const { data } = await https.delete<ResList<Staff>, { id: string }>('/staff/delete', req)
+        if (data.value?.code === HttpCode.SUCCESS) {
+          return true
+        }
+        else {
+          return false
+        }
+      }
+      catch (error) {
+        console.error('删除失败：', error)
+        throw error
+      }
+    },
     // 更新员工信息
     async EditStaff(req: updateStaffForm) {
       try {
