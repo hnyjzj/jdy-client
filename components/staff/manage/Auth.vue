@@ -14,7 +14,7 @@ const emits = defineEmits<{
 const auth = defineModel<Partial<updateAuthRole>>('authform', {
   default: {
     id: '',
-    identity: 0,
+    identity: UserLevel.IdentityClerk,
     role_id: '',
   },
 })

@@ -33,7 +33,7 @@ const formlist = ref<addStaffForm>({
   region_superior_ids: [],
   store_admin_ids: [],
   region_admin_ids: [],
-  identity: 1,
+  identity: UserLevel.IdentityClerk,
   role_id: '',
 } as addStaffForm)
 
@@ -67,7 +67,7 @@ const continueAdd = () => {
     region_superior_ids: [],
     store_admin_ids: [],
     region_admin_ids: [],
-    identity: 1,
+    identity: UserLevel.IdentityClerk,
     role_id: '',
   } as addStaffForm
   addRef.value.clearAvatar()

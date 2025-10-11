@@ -51,12 +51,12 @@ const storeForm = ref<updateRegion>({
   region_superior_ids: [],
   store_admin_ids: [],
   region_admin_ids: [],
-  identity: 1,
+  identity: UserLevel.IdentityClerk,
 })
 
 const authForm = ref<updateAuthRole>({
   id: '',
-  identity: 1,
+  identity: UserLevel.IdentityClerk,
   role_id: '',
   store_ids: [],
   store_superior_ids: [],

@@ -9,7 +9,7 @@ const { $toast } = useNuxtApp()
 const router = useRouter()
 
 const toEdit = (id: string, identity: number) => {
-  if (props.myidentity > identity || props.myidentity === 6) {
+  if (props.myidentity > identity || props.myidentity === UserLevel.IdentitySuperAdmin) {
     router.push(`/manage/staffs/staff/edit?id=${id}`)
   }
   else {
@@ -86,7 +86,7 @@ const deleteConfirm = async () => {
         </template>
         <template #footer>
           <div class="flex-between pl-[8px] bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
-            <template v-if="(props.myidentity > (item.identity as number)) || props.myidentity === 6">
+            <template v-if="(props.myidentity > (item.identity as number)) || props.myidentity === UserLevel.IdentitySuperAdmin">
               <div class="cursor-pointer" @click="delTips(item.id as string)">
                 <icon name="i-svg:delete" :size="16" />
               </div>
