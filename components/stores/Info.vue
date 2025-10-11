@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { $toast } = useNuxtApp()
-const { updateStore } = useStores()
+const { updateStore, deleteStore } = useStores()
 const { storeDetails } = storeToRefs(useStores())
 const modelRef = ref<Partial<Stores>>({
   id: storeDetails.value.id,
@@ -19,6 +19,25 @@ const handleValidateButtonClick = async () => {
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('更新成功')
   }
+  else {
+    $toast.error(res?.message ?? '更新失败')
+  }
+}
+const confirmShow = ref(false)
+const delStore = () => {
+  confirmShow.value = true
+}
+const router = useRouter()
+const deleteConfirm = async () => {
+  confirmShow.value = false
+  const res = await deleteStore(storeDetails.value.id)
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('删除成功')
+  }
+  else {
+    $toast.error(res?.message ?? '删除失败')
+  }
+  router.back()
 }
 </script>
 
@@ -27,6 +46,11 @@ const handleValidateButtonClick = async () => {
     <div class="w-auto bg-white blur-bga rounded-[24px] border-solid border-[#EFF0F6] col-12 overflow-hidden">
       <div class="rounded-[24px]">
         <common-gradient title="基本信息">
+          <template #right>
+            <div class="cursor-pointer" @click="delStore()">
+              <icon name="i-svg:delete" :size="16" />
+            </div>
+          </template>
           <template #body>
             <n-form ref="formRef" :model="modelRef" :rules="rules">
               <n-form-item path="name" label="门店名称">
@@ -49,5 +73,12 @@ const handleValidateButtonClick = async () => {
         </common-gradient>
       </div>
     </div>
+    <common-confirm
+      v-model:show="confirmShow"
+      title="删除提示"
+      text="是否删除此门店?"
+      icon="error"
+      @submit="deleteConfirm"
+    />
   </div>
 </template>

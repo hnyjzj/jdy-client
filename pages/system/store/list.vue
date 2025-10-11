@@ -120,7 +120,10 @@ const confirmDelete = async () => {
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('删除成功')
     storesList.value = []
-    await getStoreList({ page: searchPage.value, limit: 12 })
+    await getStoreList({ page: searchPage.value, limit: 12, where: { region_id: myRegion.value.id } })
+  }
+  else {
+    $toast.error(res?.message ?? '删除失败')
   }
 }
 

@@ -5,10 +5,6 @@ const props = defineProps<{
   list: Staff[]
   stores: Stores[]
 }>()
-const emits = defineEmits<{
-  deleteRegion: [val: 'staff' | 'super' | 'store' | 'admin', id: string]
-  confirm: [val: 'store' | 'super' | 'staff' | 'admin']
-}>()
 
 const sex = (val: number) => {
   return val === 0 ? '未知' : val === 1 ? '男' : '女'
@@ -21,14 +17,13 @@ const sex = (val: number) => {
       type="segment" animated>
       <n-tab-pane name="chap1" tab="门店">
         <div class="flex justify-center items-center">
-          <div class="w-[200px] mb-[12px]">
-            <common-button-rounded content="添加门店" @button-click="emits('confirm', 'store')" />
-          </div>
+          <div class="w-[200px] mb-[12px]" />
         </div>
         <div class="grid-12 gap-[8px]">
           <template v-for="(item, index) in props.stores" :key="index">
             <div
-              class="rounded-[24px] w-full col-12 blur-bgc p-[1px] mb-[12px]" uno-lg="col-6" uno-sm="col-12" uno-md="col-12">
+              class="rounded-[24px] w-full col-12 blur-bgc p-[1px] mb-[12px]"
+              uno-lg="col-6" uno-sm="col-12" uno-md="col-12" @click="navigateTo(`/system/store/info?id=${item.id}`)">
               <div class="h-full flex-col-between">
                 <div
                   class="py-[8px] pl-[16px]
@@ -40,16 +35,22 @@ const sex = (val: number) => {
                 ">
                   <div class="flex items-center">
                     <div class="ml-[8px] font-semibold line-height-[20px] text-size-[14px]">
-                      {{ item.name || '' }}
+                      {{ item.alias || '' }}
                     </div>
                   </div>
-                  <div>
-                    <div class="py-[8px] px-[16px] col-2 flex-center-row cursor-pointer" @click="emits('deleteRegion', 'store', item.id as string)">
-                      <icon name="i-svg:delete" :size="16" />
-                    </div>
-                  </div>
+                  <div />
                 </div>
                 <div class=" px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                  <div class=" p-[4px] grid-12">
+                    <div class="col-6">
+                      门店名称
+                    </div>
+                    <div class="text-align-end col-6">
+                      <div class="break-words">
+                        {{ item.name || '暂无' }}
+                      </div>
+                    </div>
+                  </div>
                   <div class=" p-[4px] grid-12">
                     <div class="col-6">
                       电话
@@ -71,14 +72,12 @@ const sex = (val: number) => {
       </n-tab-pane>
       <n-tab-pane name="chap2" tab="负责人">
         <div class="flex justify-center items-center">
-          <div class="w-[200px] mb-[12px]">
-            <common-button-rounded content="添加负责人" @button-click="emits('confirm', 'super')" />
-          </div>
+          <div class="w-[200px] mb-[12px]" />
         </div>
         <div class="grid-12 gap-[8px]">
           <template v-for="(item, index) in props.super" :key="index">
             <div
-              class="rounded-[24px] w-full col-12 blur-bgc p-[1px] mb-[12px]" uno-lg="col-6" uno-sm="col-12" uno-md="col-12">
+              class="rounded-[24px] w-full col-12 blur-bgc p-[1px] mb-[12px]" uno-lg="col-6" uno-sm="col-12" uno-md="col-12" @click="navigateTo(`/manage/staffs/staff/info?id=${item.id}`)">
               <div class="h-full flex-col-between">
                 <div
                   class="py-[8px] pl-[16px]
@@ -94,11 +93,7 @@ const sex = (val: number) => {
                       {{ item.nickname || '' }}
                     </div>
                   </div>
-                  <div>
-                    <div class="py-[8px] px-[16px] col-2 flex-center-row cursor-pointer" @click="emits('deleteRegion', 'super', item?.id as string)">
-                      <icon name="i-svg:delete" :size="16" />
-                    </div>
-                  </div>
+                  <div />
                 </div>
                 <div class=" px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
                   <div class="flex-between p-[4px] grid-12">
@@ -138,14 +133,13 @@ const sex = (val: number) => {
       </n-tab-pane>
       <n-tab-pane name="chap3" tab="员工">
         <div class="flex justify-center items-center">
-          <div class="w-[200px] mb-[12px]">
-            <common-button-rounded content="添加员工" @button-click="emits('confirm', 'staff')" />
-          </div>
+          <div class="w-[200px] mb-[12px]" />
         </div>
         <div class="grid-12 gap-[8px]">
           <template v-for="(item, index) in props.list" :key="index">
             <div
-              class="rounded-[24px] w-full col-12 blur-bgc p-[1px] mb-[12px]" uno-lg="col-6" uno-sm="col-12" uno-md="col-12">
+              class="rounded-[24px] w-full col-12 blur-bgc p-[1px] mb-[12px]"
+              uno-lg="col-6" uno-sm="col-12" uno-md="col-12" @click="navigateTo(`/manage/staffs/staff/info?id=${item.id}`)">
               <div class="h-full flex-col-between">
                 <div
                   class="py-[8px] pl-[16px]
@@ -161,11 +155,7 @@ const sex = (val: number) => {
                       {{ item.nickname || '' }}
                     </div>
                   </div>
-                  <div>
-                    <div class="py-[8px] px-[16px] col-2 flex-center-row cursor-pointer" @click="emits('deleteRegion', 'staff', item.id as string)">
-                      <icon name="i-svg:delete" :size="16" />
-                    </div>
-                  </div>
+                  <div />
                 </div>
                 <div class=" px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
                   <div class="flex-between p-[4px] grid-12">
@@ -205,14 +195,13 @@ const sex = (val: number) => {
       </n-tab-pane>
       <n-tab-pane name="chap4" tab="管理员">
         <div class="flex justify-center items-center">
-          <div class="w-[200px] mb-[12px]">
-            <common-button-rounded content="添加管理员" @button-click="emits('confirm', 'admin')" />
-          </div>
+          <div class="w-[200px] mb-[12px]" />
         </div>
         <div class="grid-12 gap-[8px]">
           <template v-for="(item, index) in props.admins" :key="index">
             <div
-              class="rounded-[24px] w-full col-12 blur-bgc p-[1px] mb-[12px]" uno-lg="col-6" uno-sm="col-12" uno-md="col-12">
+              class="rounded-[24px] w-full col-12 blur-bgc p-[1px] mb-[12px]"
+              uno-lg="col-6" uno-sm="col-12" uno-md="col-12" @click="navigateTo(`/manage/staffs/staff/info?id=${item.id}`)">
               <div class="h-full flex-col-between">
                 <div
                   class="py-[8px] pl-[16px]
@@ -228,11 +217,7 @@ const sex = (val: number) => {
                       {{ item.nickname || '' }}
                     </div>
                   </div>
-                  <div>
-                    <div class="py-[8px] px-[16px] col-2 flex-center-row cursor-pointer" @click="emits('deleteRegion', 'admin', item.id as string)">
-                      <icon name="i-svg:delete" :size="16" />
-                    </div>
-                  </div>
+                  <div />
                 </div>
                 <div class=" px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
                   <div class="flex-between p-[4px] grid-12">

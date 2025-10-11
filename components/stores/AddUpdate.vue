@@ -3,7 +3,7 @@ const emits = defineEmits<{
   submit: []
 }>()
 const { $toast } = useNuxtApp()
-
+const { myRegion } = storeToRefs(useRegion())
 const addorUpdateForm = defineModel<Partial<Stores>>({ default: {
   id: undefined,
   region_id: undefined,
@@ -56,6 +56,9 @@ const handleValidateButtonClick = (e: MouseEvent) => {
       label-placement="top">
       <div class=" flex-col justify-between">
         <div class="pb-[40px]">
+          <div class="pb-[12px]">
+            区域名称：{{ myRegion?.name }}
+          </div>
           <n-form-item label="门店名称" path="name">
             <n-input v-model:value="addorUpdateForm.name" placeholder="请输入门店名称" round clearable @focus="focus" />
           </n-form-item>

@@ -108,6 +108,9 @@ const confirmDelete = async () => {
     $toast.success('删除成功')
     listJump()
   }
+  else {
+    $toast.error(res?.message ?? '删除失败')
+  }
 }
 
 // 修改门店编辑按钮
