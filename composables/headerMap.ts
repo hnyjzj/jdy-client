@@ -52,6 +52,7 @@ export const oldHeaderMap: Record<string, string> = {
   '回收金价': 'recycle_price_gold',
   '回收工费': 'recycle_price_labor',
   '回收工费方式': 'recycle_price_labor_method',
+  '回收时间': 'created_at',
   '大类': 'class',
   '入网费': 'access_fee',
   '零售方式': 'retail_type',
