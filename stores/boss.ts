@@ -46,21 +46,21 @@ export const useBoss = defineStore('boss', {
       const result: StockTitle[] = []
 
       if (dataList.length > 0) {
-        const firstItem = dataList[0]
-        Object.keys(firstItem).forEach((key) => {
-          const title = key === 'name' ? '门店' : (key === 'total' ? '合计' : key)
-          if (!resultSet.has(title)) {
-            resultSet.add(title)
-            result.push({
-              title,
-              key,
-              width: '90px',
-              align: 'center',
-              fixed: (key === 'name') || (key === 'total') ? 'left' : '',
-            })
-          }
-        })
-
+        for (const item of dataList) {
+          Object.keys(item).forEach((key) => {
+            const title = key === 'name' ? '门店' : (key === 'total' ? '合计' : key)
+            if (!resultSet.has(title)) {
+              resultSet.add(title)
+              result.push({
+                title,
+                key,
+                width: '90px',
+                align: 'center',
+                fixed: (key === 'name') || (key === 'total') ? 'left' : '',
+              })
+            }
+          })
+        }
         // 对优先项进行排序：name优先级最高，total第二
         result.sort((a, b) => {
           if (a.key === 'name')
