@@ -92,7 +92,7 @@ const props = defineProps<{
             入库时间
           </div>
           <div class="info-val">
-            {{ formatIsoToDateTime(props.info.enter_time) }}
+            {{ props.info.enter_time ? formatIsoToDateTime(props.info.enter_time) : '' }}
           </div>
         </div>
         <div class="flex justify-between text-sm font-normal">
