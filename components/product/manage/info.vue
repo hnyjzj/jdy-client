@@ -24,7 +24,7 @@ const props = defineProps<{
           />
         </template>
       </div>
-      <div class="flex flex-col gap-3 px-4 py-3" uno-sm="grid grid-cols-[1fr_1fr] gap-x-8">
+      <div class="flex flex-col gap-3 px-4 py-3" uno-xl="grid grid-cols-[1fr_1fr] gap-x-8">
         <template v-if="productType !== GoodsType.ProductAccessories">
           <div class="flex justify-between text-sm font-normal">
             <div class="text-color-light">
@@ -87,6 +87,22 @@ const props = defineProps<{
             </div>
           </template>
         </template>
+        <div class="flex justify-between text-sm font-normal">
+          <div class="text-color-light whitespace-nowrap">
+            入库时间
+          </div>
+          <div class="info-val">
+            {{ props.info.enter_time ? formatIsoToDateTime(props.info.enter_time) : '' }}
+          </div>
+        </div>
+        <div class="flex justify-between text-sm font-normal">
+          <div class="text-color-light whitespace-nowrap">
+            库龄
+          </div>
+          <div class="info-val">
+            {{ getDaysFromToday(props.info.enter_time || '') }}
+          </div>
+        </div>
       </div>
     </template>
   </common-gradient>
