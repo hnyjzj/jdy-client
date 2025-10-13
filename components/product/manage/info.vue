@@ -100,7 +100,7 @@ const props = defineProps<{
             库龄
           </div>
           <div class="info-val">
-            22
+            {{ getDaysFromToday(props.info.enter_time || '') }}
           </div>
         </div>
       </div>
