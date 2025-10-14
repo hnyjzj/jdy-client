@@ -99,6 +99,7 @@ const openFilter = () => {
 const search = async (e: string) => {
   filterData.value.code = e
   filterData.value.searchPage = 1
+  isLoading.value = true
   listJump()
 }
 /** 关闭搜索 */
