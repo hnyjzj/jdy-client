@@ -101,9 +101,9 @@ export const useFinished = defineStore('Finished', {
      * 检索专用
      * @param code
      */
-    async getFinishedRetrieval(code: ProductFinisheds['code'], store_id: Stores['id']) {
+    async getFinishedRetrieval(code: ProductFinisheds['code'], store_id?: Stores['id']) {
       try {
-        const { data } = await https.post<ProductFinisheds, { code: ProductFinisheds['code'], store_id: Stores['id'] }>('/product/finished/retrieval', { code, store_id })
+        const { data } = await https.post<ProductFinisheds, { code: ProductFinisheds['code'], store_id?: Stores['id'] }>('/product/finished/retrieval', { code, store_id })
         if (data.value?.code === HttpCode.SUCCESS) {
           this.finishedInfo = data.value.data
         }
