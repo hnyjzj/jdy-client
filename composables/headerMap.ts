@@ -119,6 +119,7 @@ export const oldUnclassHeaderMap: Record<string, string> = {
 export const statementHeaderMap: Record<string, string> = {
   '门店': 'store',
   '关联销售单': 'order_id',
+  '开单时间': 'created_at',
   '本单实收': 'price_pay',
   '定金抵扣': 'price_deposit',
   '订单状态': 'status',
