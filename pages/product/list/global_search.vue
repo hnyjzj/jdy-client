@@ -10,7 +10,7 @@ const route = useRoute()
 
 // 成品列表详情
 useSeoMeta({
-  title: '成品检索',
+  title: '全域成品检索',
 })
 const statusCode = ref()
 const liveCode = ref()
