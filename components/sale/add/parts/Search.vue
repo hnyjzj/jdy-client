@@ -24,6 +24,7 @@ const searchParts = async (loadMore = false) => {
     const res = await getAccessorieList({
       page: loadMore ? currentPage.value : 1,
       limit: 20,
+      where: { store_id: Props.storeid },
     })
 
     if (res?.data?.list) {
