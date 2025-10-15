@@ -5,6 +5,7 @@ const Props = defineProps<{
   partFilter: Where<OrderPart>
   storeid: string
 }>()
+const { $toast } = useNuxtApp()
 const partslist = ref<ProductAccessories[]>([])
 const { getAccessorieList } = useAccessorie()
 // 搜索配件 - 支持分页加载
@@ -46,6 +47,11 @@ const searchParts = async (loadMore = false) => {
     }
     return []
   }
+  catch {
+    // 处理错误，例如显示错误提示
+    $toast.error('加载配件列表失败')
+    return []
+  }
   finally {
     // 无论成功失败，都需要将加载状态设置为false
     isLoading.value = false
@@ -67,7 +73,7 @@ const showModal = defineModel('show', { default: false })
 const prePartsList = ref<ProductAccessories[]>([])
 const orderObject = defineModel<Orders>('list', { default: {} as Orders })
 // 设置选中状态
-const { $toast } = useNuxtApp()
+
 const selectPart = (part: ProductAccessories) => {
   if (part.stock <= 0) {
     $toast.error('库存不足')
@@ -88,8 +94,7 @@ const searchPartsList = async () => {
   noMoreData.value = false
   isLoading.value = false
 
-  const data = await searchParts()
-  partslist.value = data
+  await searchParts()
   document.body.style.overflow = 'hidden'
 }
 
