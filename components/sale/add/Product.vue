@@ -163,6 +163,12 @@ const addProduct = async (products: ProductFinisheds[]) => {
     }
   })
 }
+
+const updateDelFn = () => {
+  handleAmountReduceBlur(orderObject.value.round_off || 0)
+  handleScoreReduceBlur(orderObject.value.integral_deduction || 0)
+  handleDiscountRateBlur(orderObject.value.discount_rate || 0)
+}
 </script>
 
 <template>
@@ -177,6 +183,7 @@ const addProduct = async (products: ProductFinisheds[]) => {
           v-model="orderObject"
           :billing-set="Props.billingSet"
           @update-score-deduction="updateDedution"
+          @del-porduct="updateDelFn"
         />
       </div>
       <template v-if="orderObject.showProductList && orderObject.showProductList.length">
