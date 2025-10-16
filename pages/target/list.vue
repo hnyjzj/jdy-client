@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { getTargetWhere } = useTarget()
+const { getTargetWhere, getTargetList } = useTarget()
 const { targetFilterListToArray } = storeToRefs(useTarget())
 useSeoMeta({
   title: '销售目标管理',
@@ -31,6 +31,7 @@ function changeMyStore() {
 }
 onMounted(() => {
   getTargetWhere()
+  getTargetList({ page: 1, limit: 10 })
 })
 </script>
 
@@ -44,7 +45,7 @@ onMounted(() => {
         <product-manage-company @change="changeMyStore" />
       </template>
     </product-filter>
-    <common-create @create="jump('/manage/staffs/target/add')" />
+    <common-create @create="jump('/target/add')" />
     <common-filter-where
       ref="filterRef"
       v-model:show="isFilter"
