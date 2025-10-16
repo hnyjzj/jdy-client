@@ -28,7 +28,7 @@ const datas = ref(props.data) as Ref<Record<string, any>>
 const rules = computed(() => {
   const r: Record<string, Array<any>> = {}
   props.filter.forEach((f) => {
-    if (f.required && f.input !== 'switch' && f.input !== 'radio') {
+    if (f.required && f.input !== 'switch' && f.input !== 'radio' && f.input !== 'select') {
       r[f.name as string] = [
         {
           required: true,
