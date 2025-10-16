@@ -125,6 +125,7 @@ export const statementHeaderMap: Record<string, string> = {
   '定金抵扣': 'price_deposit',
   '订单状态': 'status',
   '订单来源': 'source',
+  '订单备注': 'remark',
   '主销': 'mainSale',
   '会员': 'member_name',
   '会员手机号': 'member_phone',
@@ -157,12 +158,13 @@ export const statementHeaderMap: Record<string, string> = {
   '品牌': 'brand',
   '材质': 'material',
   '成色': 'quality',
+  '系列': 'series_product',
   '主石': 'gem',
   '品类': 'category',
   '工艺': 'craft',
   '金重(g)': 'weight_metal',
   '总重(g)': 'weight_total',
-  '备注': 'remark',
+  '备注': 'remark_product',
 }
 
 export const checkHeaderMap: Record<string, string> = {
