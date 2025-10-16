@@ -61,7 +61,12 @@ const getAvailableOptions = () => {
 }
 
 async function handleValidateButtonClick() {
-  formRef.value?.verify()
+  try {
+    await formRef.value?.verify()
+  }
+  catch {
+    return
+  }
 
   const params = { store_id: myStore.value.id, ...datas.value, groups: groupList.value, personals: personalDatas.value.flat() }
   const res = await createTarget(params)
@@ -76,7 +81,12 @@ async function handleValidateButtonClick() {
 function setRadioValues() {
   targetFilterListToArray.value.forEach((item) => {
     if (item.input === 'radio') {
-      datas.value[item.name] = Number(Object.keys(item.preset)[0])
+      const keys = Object.keys(item.preset ?? {})
+      if (!keys.length)
+        return
+
+      const firstKey = keys[0]
+      datas.value[item.name] = item.type === 'number' ? Number(firstKey) : firstKey
     }
   })
   groupList.value = [{ id: '1' }]
@@ -200,7 +210,6 @@ watchEffect(() => {
                                     size="large"
                                     remote
                                     @focus="(e) => {
-                                      focus(e)
                                       getStoreStaffListFun()
                                     }"
                                   />

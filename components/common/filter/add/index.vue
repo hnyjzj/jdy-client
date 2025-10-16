@@ -109,7 +109,7 @@ defineExpose({
                   <n-input v-model:value="datas[name as string]" size="large" clearable :placeholder="`输入${label}`" round />
                 </template>
                 <template v-if="input === 'number'">
-                  <n-input-number v-model:value="datas[name as string]" size="large" clearable :placeholder="`输入${label}`" round @focus="focus" />
+                  <n-input-number v-model:value="datas[name as string]" size="large" clearable :placeholder="`输入${label}`" round />
                 </template>
                 <template v-if="input === 'switch'">
                   <n-switch v-model:value="datas[name as string]" :style="{ 'border-radius': '20px' }" round />
