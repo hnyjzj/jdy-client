@@ -5,22 +5,81 @@ const Props = defineProps<{
   partFilter: Where<OrderPart>
   storeid: string
 }>()
+const { $toast } = useNuxtApp()
+const partslist = ref<ProductAccessories[]>([])
 const { getAccessorieList } = useAccessorie()
-// 搜索配件
-const searchParts = async (val: string) => {
-  const res = await getAccessorieList({ page: 1, limit: 10, where: { name: val, store_id: Props.storeid } })
-  if (res?.data?.list) {
-    return res.data.list || []
+// 搜索配件 - 支持分页加载
+const currentPage = ref(1)
+const isLoading = ref(false)
+const noMoreData = ref(false)
+
+const searchParts = async (loadMore = false) => {
+  // 如果正在加载中或没有更多数据，则不再请求
+  if (isLoading.value || (loadMore && noMoreData.value)) {
+    return []
   }
-  return []
+
+  isLoading.value = true
+  try {
+    const res = await getAccessorieList({
+      page: loadMore ? currentPage.value : 1,
+      limit: 20,
+      where: { store_id: Props.storeid },
+    })
+
+    if (res?.data?.list) {
+      // 如果是加载更多，则追加数据；否则替换数据
+      if (loadMore) {
+        partslist.value = [...partslist.value, ...res.data.list]
+      }
+      else {
+        partslist.value = res.data.list || []
+      }
+
+      // 判断是否还有更多数据
+      if (res.data.list.length < 20) {
+        noMoreData.value = true
+      }
+      else {
+        currentPage.value++
+      }
+
+      return res.data.list
+    }
+    return []
+  }
+  catch {
+    // 处理错误，例如显示错误提示
+    $toast.error('加载配件列表失败')
+    return []
+  }
+  finally {
+    // 无论成功失败，都需要将加载状态设置为false
+    isLoading.value = false
+  }
+}
+
+// 处理滚动事件，实现触底加载
+const handleScroll = (e: Event) => {
+  const el = e.target as HTMLElement
+  const { scrollHeight, scrollTop, clientHeight } = el
+  // 当滚动到底部50px以内，且不在加载中，且有更多数据时，加载下一页
+  if (scrollHeight - (scrollTop + clientHeight) < 50 && !isLoading.value && !noMoreData.value) {
+    searchParts(true)
+  }
 }
 const showModal = defineModel('show', { default: false })
-const searchPartsVal = ref('')
+
 // 预设选中状态的配置列表
 const prePartsList = ref<ProductAccessories[]>([])
 const orderObject = defineModel<Orders>('list', { default: {} as Orders })
 // 设置选中状态
+
 const selectPart = (part: ProductAccessories) => {
+  if (part.stock <= 0) {
+    $toast.error('库存不足')
+    return
+  }
   // 如果已经选中，则取消选中
   if (prePartsList.value.includes(part)) {
     prePartsList.value = prePartsList.value.filter(item => item !== part)
@@ -29,10 +88,14 @@ const selectPart = (part: ProductAccessories) => {
     prePartsList.value.push(part)
   }
 }
-const partslist = ref<ProductAccessories[]>([])
+
 const searchPartsList = async () => {
-  const data = await searchParts(searchPartsVal.value)
-  partslist.value = data
+  // 重置分页状态
+  currentPage.value = 1
+  noMoreData.value = false
+  isLoading.value = false
+
+  await searchParts()
   document.body.style.overflow = 'hidden'
 }
 
@@ -56,30 +119,24 @@ const confirmParts = async () => {
   prePartsList.value = []
   partslist.value = []
   showModal.value = false
-  searchPartsVal.value = ''
 }
+
+watch(showModal, (newVal) => {
+  if (newVal) {
+    searchPartsList()
+  }
+})
 </script>
 
 <template>
   <div>
     <common-model
       v-model="showModal" title="选择配件" :show-ok="true" :show-cancel="true" @confirm="confirmParts" @cancel=" () => {
-        searchPartsVal = ''
         partslist = []
       }">
-      <div class="flex items-center pb-[16px]">
-        <div class="flex-1">
-          <n-input v-model:value="searchPartsVal" type="text" clearable placeholder="搜索配件名称" size="large" @keydown.enter="searchPartsList" @focus="focus" />
-        </div>
-        <div class="pl-[16px] flex">
-          <n-button type="info" round @click="searchPartsList">
-            搜索
-          </n-button>
-        </div>
-      </div>
-      <div class="category-list max-h-[300px]">
+      <div class="category-list max-h-[300px]" @scroll="handleScroll">
         <table class="w-full">
-          <thead>
+          <thead class="bg-[#F1F5FE] sticky top-0">
             <tr>
               <th class="px-2 py-1 min-w-[80px]">
                 名称
@@ -101,9 +158,10 @@ const confirmParts = async () => {
           <tbody>
             <template v-for="(item, index) in partslist" :key="index">
               <tr
-                class="px-2 py-2 h-[36px] rounded-[12px]" :style="{
+                class="px-2 py-2 h-[36px] rounded-[12px]"
+                :style="{
                   'background-color': prePartsList.includes(item) ? 'white' : '',
-                  'color': prePartsList.includes(item) ? '#328AF1' : '#000',
+                  'color': prePartsList.includes(item) ? '#328AF1' : (item.stock ? '#000' : '#999'),
                 }" @click="selectPart(item)">
                 <td
                   class=" classRows max-w-[120px] ">
@@ -125,7 +183,23 @@ const confirmParts = async () => {
             </template>
           </tbody>
         </table>
-        <template v-if="partslist.length === 0">
+
+        <!-- 加载中状态 -->
+        <template v-if="isLoading && partslist.length > 0">
+          <div class="py-[12px] text-center text-gray-500">
+            加载中...
+          </div>
+        </template>
+
+        <!-- 无更多数据状态 -->
+        <template v-if="noMoreData && partslist.length > 0">
+          <div class="py-[12px] text-center text-gray-500">
+            没有更多数据了
+          </div>
+        </template>
+
+        <!-- 空数据状态 -->
+        <template v-if="partslist.length === 0 && !isLoading">
           <div class="py-[12px]">
             <common-emptys />
           </div>
@@ -137,7 +211,7 @@ const confirmParts = async () => {
 
 <style lang="scss" scoped>
 .category-list {
-  overflow: auto;
+  overflow-y: auto;
 }
 .category-list table {
   border-collapse: collapse;

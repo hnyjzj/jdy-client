@@ -44,6 +44,7 @@ function mapEnumValues(
       source: enumMap.source?.[order.source] ?? '',
       price_pay: order.price_pay ?? '',
       price_deposit: order.price_deposit ?? '',
+      created_at: formatTimestampToDateTime(order.created_at) ?? '',
       remark: order.remarks?.join(',') || '',
       mainSale: order.clerks?.[0]?.salesman?.nickname ?? '',
     })
