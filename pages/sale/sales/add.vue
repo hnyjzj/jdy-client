@@ -69,6 +69,7 @@ const ContinueAdd = async () => {
   if (!myStore.value?.id) {
     initObjForm()
     initOptions()
+    $toast.error('请先选择门店')
   }
   else {
     await getStaff()
