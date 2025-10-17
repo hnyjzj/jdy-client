@@ -63,6 +63,9 @@ function mapEnumValues(
     else if (key === 'enter_time') {
       newRow[key] = getDaysFromToday(row?.enter_time || '')
     }
+    else if (key === 'certificate') {
+      newRow[key] = row?.certificate?.map((item: string) => item).join('、') || ''
+    }
   }
   return newRow
 }

@@ -16,6 +16,7 @@ const dleId = ref(0)
 
 const delProduct = () => {
   orderObject.value.showProductList?.splice(dleId.value, 1)
+  emit('delPorduct')
   dleId.value = 0
   // 判断,如果成品列表为空, 设置 整单, 抹零,积分抵扣为undefined
   if (orderObject.value.showProductList?.length === 0) {

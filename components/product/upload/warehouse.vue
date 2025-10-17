@@ -84,6 +84,12 @@ async function transformData(data: any[][]) {
           row[index] = key
         }
 
+        if (filterItem?.input === 'list') {
+          if (row[index]) {
+            row[index] = splitOrSingle(row[index])
+          }
+        }
+
         // 数据类型转换 + 默认值处理
         switch (type) {
           case 'number':
@@ -147,11 +153,7 @@ async function transformData(data: any[][]) {
     })
     const transformedObj = {
       ...obj,
-      certificate: [String(obj.certificate1 ?? ''), String(obj.certificate2 ?? '')].filter(Boolean),
     }
-    // 删除不需要的字段
-    delete transformedObj.certificate1
-    delete transformedObj.certificate2
     return transformedObj
   })
 }

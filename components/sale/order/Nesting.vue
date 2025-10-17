@@ -3,8 +3,8 @@ const props = defineProps<{
   title: string
 }>()
 
-const folded = ref(true)
 const hasCheck = defineModel({ type: Boolean, default: false })
+const folded = defineModel('folded', { type: Boolean, default: true })
 
 const toggleFold = () => {
   folded.value = !folded.value

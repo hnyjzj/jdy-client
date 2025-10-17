@@ -71,6 +71,8 @@ function mapEnumValues(
           label_price: p.label_price ?? '',
           amount_price: f.price ?? '',
           class: enumMap.finished_class?.[p.class] ?? '',
+          series_product: p.series ?? '',
+          remark_product: p.remark ?? '',
         })
         fillProductFields(p, [
           'name',
@@ -104,6 +106,7 @@ function mapEnumValues(
           class: enumMap.class?.[p.class] ?? '',
           code_old: p.code ?? '',
           code: p.code_finished ?? '',
+          remark_product: p.remark ?? '',
         })
         fillProductFields(p, [
           'name',
@@ -130,6 +133,7 @@ function mapEnumValues(
           price_original: a.price_original ?? '',
           amount_price: a.price ?? '',
           label_price: p.price ?? '',
+          remark_product: p.remark ?? '',
         })
         newRow.accessory_type = (() => {
           switch (p.type) {
