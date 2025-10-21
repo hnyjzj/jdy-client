@@ -25,17 +25,38 @@ const datas = ref(props.data) as Ref<Record<string, any>>
 /**
  * 表单规则
  */
+/**
+ * 表单规则
+ */
 const rules = computed(() => {
-  const r: Record<string, Array<any>> = {}
+  const r: Record<string, any[]> = {}
   props.filter.forEach((f) => {
-    if (f.required && f.input !== 'switch' && f.input !== 'radio' && f.input !== 'select') {
-      r[f.name as string] = [
-        {
-          required: true,
-          message: `请输入${f.label}`,
-          trigger: ['blur', 'change'],
-        },
-      ]
+    if (f.required && f.input !== 'switch' && f.input !== 'radio') {
+      // 动态生成消息：选择类用“请选择”，其他用“请输入”
+      const isSelectType = ['select', 'multiple', 'radio', 'date', 'day'].includes(f.input as string)
+      const message = isSelectType ? `请选择${f.label}` : `请输入${f.label}`
+
+      const baseRule = {
+        required: true,
+        message,
+        trigger: ['blur', 'change'] as const,
+      }
+
+      if (f.input === 'multiple') {
+        // 自定义 validator 确保数组非空
+        r[f.name as string] = [{
+          ...baseRule,
+          validator: (rule: any, value: any[]) => {
+            if (!value || !Array.isArray(value) || value.length === 0) {
+              return new Error(message)
+            }
+            return Promise.resolve()
+          },
+        }]
+      }
+      else {
+        r[f.name as string] = [baseRule]
+      }
     }
   })
   return r
@@ -152,7 +173,6 @@ defineExpose({
                     multiple
                     :placeholder="`请选择${label}`"
                     :options="presetToSelect(props.filter[i]) "
-                    @focus="focus"
                     @clear="() => {
                       delete datas[name as string]
                     }"
