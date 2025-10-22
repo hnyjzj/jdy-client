@@ -67,17 +67,28 @@ async function handleValidateButtonClick() {
   catch {
     return
   }
-
-  const params = { store_id: myStore.value.id, ...datas.value, groups: groupList.value, personals: personalDatas.value.flat() }
+  let params
+  if (datas.value.object === 1) {
+    params = { store_id: myStore.value.id, ...datas.value, groups: groupList.value, personals: personalDatas.value.flat() }
+  }
+  else {
+    params = { store_id: myStore.value.id, ...datas.value, personals: personalDatas.value.flat() }
+  }
   const res = await createTarget(params)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('创建成功')
+    setTimeout(() => {
+      jump('/target/list')
+    }, 2000)
   }
   else {
     $toast.error(res?.message ?? '创建失败')
   }
 }
 
+/**
+ * 设置默认值
+ */
 function setRadioValues() {
   targetFilterListToArray.value.forEach((item) => {
     if (item.input === 'radio') {
@@ -181,7 +192,7 @@ watchEffect(() => {
                   </div>
                   <table class="w-full mt-2" style="border:1px solid #eee">
                     <thead>
-                      <tr class="bg-gray-200">
+                      <tr class="row bg-gray-200">
                         <template v-for="({ label, find }, index) in personalFilterListToArray" :key="index">
                           <template v-if="find">
                             <th class="px-4 py-2 text-left">
@@ -201,7 +212,6 @@ watchEffect(() => {
                             <template v-if="find">
                               <td class="px-1 py-2">
                                 <template v-if="input === 'search'">
-                                  <div class="w-[20%]" />
                                   <n-select
                                     v-model:value="personal[name as string]"
                                     :placeholder="`请输入${label}`"
@@ -259,5 +269,9 @@ watchEffect(() => {
 </template>
 
 <style lang="scss" scoped>
-
+.row {
+  :first-child {
+    min-width: 120px;
+  }
+}
 </style>

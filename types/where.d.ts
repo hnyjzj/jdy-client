@@ -25,6 +25,8 @@ interface FilterWhere<T, N = keyof T> {
   create: boolean
   /** 是否页面显示 */
   info: boolean
+  /** 是否列表显示 */
+  list: boolean
   /** 是否可以更新 */
   update: boolean
   /** 字段名 */

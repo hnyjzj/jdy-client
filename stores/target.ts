@@ -8,6 +8,7 @@ export const useTarget = defineStore('Target', {
     personalFilterListToArray: [] as FilterWhere<TargetPersonal>[],
     targetList: [] as Target[],
     targetListTotal: 0,
+    targetInfo: {} as TargetInfo,
   }),
   actions: {
     /** 销售目标筛选条件 */
@@ -51,5 +52,13 @@ export const useTarget = defineStore('Target', {
       const { data } = await https.post<any, any>('/target/create', params)
       return data.value
     },
+    // 销售目标详情
+    async getTargetInfo(id: string) {
+      const { data } = await https.post<TargetInfo, { id: string }>('/target/info', { id })
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.targetInfo = data.value.data
+      }
+    },
+
   },
 })
