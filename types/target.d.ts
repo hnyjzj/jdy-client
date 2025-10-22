@@ -2,17 +2,32 @@ interface Target {
   category: number
   class: number
   craft: number
-  end_time: string
   gem: number
   id: string
+  /**
+   * 是否默认
+   */
   is_default: boolean
   material: number
+  /**
+   * 统计方式
+   */
   method: number
   name: string
+  /**
+   * 统计对象
+   */
   object: number
   quality: number
   scope: number
+  /**
+   * 目标开始时间
+   */
   start_time: string
+  /**
+   * 目标结束时间
+   */
+  end_time: string
   store_id: string
   store: Stores
 }
@@ -37,6 +52,10 @@ interface TargetPersonal {
   is_leader: boolean
   /** 目标 */
   purpose: string
+  /**
+   * 达成
+   */
+  achieved: string
   /** 员工 */
   staff: Staff
   staff_id: Staff['id']

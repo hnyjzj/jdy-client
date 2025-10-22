@@ -125,6 +125,14 @@ onMounted(async () => {
               </div>
             </template>
           </template>
+          <div class="flex py-[4px] justify-between">
+            <div class="label">
+              状态
+            </div>
+            <div class="text-align-end">
+              {{ getTimeStatus(formatTimestampToDateTime(info.start_time), formatTimestampToDateTime(info.end_time)) }}
+            </div>
+          </div>
         </div>
       </template>
       <template #bottom="{ info }">
