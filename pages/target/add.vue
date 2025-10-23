@@ -109,12 +109,11 @@ async function getStoreStaffListFun() {
     $toast.error(res?.data.value?.message || '获取员工列表失败')
   }
 }
-onMounted(async () => {
-  await getTargetWhere()
-  await getGroupWhere()
-  await getPersonalWhere()
-  await setRadioValues()
-})
+
+await getTargetWhere()
+await getGroupWhere()
+await getPersonalWhere()
+await setRadioValues()
 
 watchEffect(() => {
   if (datas.value.object === 1) {
