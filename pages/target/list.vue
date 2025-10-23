@@ -73,8 +73,8 @@ const handleQueryParams = async () => {
 
 onMounted(async () => {
   await handleQueryParams()
-  getTargetWhere()
-  getList()
+  await getTargetWhere()
+  await getList()
 })
 </script>
 

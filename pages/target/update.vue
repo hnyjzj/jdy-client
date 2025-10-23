@@ -204,7 +204,7 @@ if (route.query.id) {
                 <common-button-rounded content="更新销售目标" @button-click="handleValidateButtonClick" />
               </template>
             </common-gradient>
-            <common-gradient title="编辑分组">
+            <common-gradient title="编辑员工目标">
               <template #body>
                 <template v-if="targetInfo.object === 1">
                   <div class="flex items-center my-2 gap-4">
