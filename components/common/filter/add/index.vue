@@ -199,6 +199,7 @@ defineExpose({
                     <n-radio v-for="item in presetToSelect(props.filter[i])" :key="item.value" :disabled="isDisabled({ update, find, create })" :value="item.value" :label="item.label" />
                   </n-radio-group>
                 </template>
+                <slot name="info" :info="{ name, label, create, find, input, condition, required, update }" />
               </slot>
             </n-form-item-gi>
           </template>

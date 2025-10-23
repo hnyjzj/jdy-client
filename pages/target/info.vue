@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 const { getTargetWhere, getTargetInfo, getPersonalWhere } = useTarget()
-const { targetInfo, targetFilterListToArray, personalFilterListToArray } = storeToRefs(useTarget())
-// const { $toast } = useNuxtApp()
+const { targetInfo, targetFilterListToArray } = storeToRefs(useTarget())
 const route = useRoute()
 useSeoMeta({
   title: '销售目标详情',
@@ -28,7 +27,7 @@ if (route.query.id) {
 <template>
   <div class="pb-20 pt-4 px-4">
     <common-layout>
-      <div class="rounded-6 bg-white w-auto blur-bga top">
+      <div class="top">
         <common-gradient title="基础信息">
           <template #body>
             <div class="flex flex-col gap-2">
@@ -74,102 +73,119 @@ if (route.query.id) {
                     </div>
                   </div>
                 </div>
-                <template v-if="targetInfo.object === 1">
-                  <div v-for="(group, gIndex) in targetInfo.groups" :key="gIndex" class="mb-6">
-                    <div class="flex items-center">
-                      <div class="font-bold text-xxl mb-2">
-                        {{ group.name }}
-                      </div>
-                    </div>
-
-                    <!-- 表格 -->
-                    <table class="w-full border border-gray-400" style="border:1px solid #eee;border-collapse: collapse;">
-                      <thead>
-                        <tr class="bg-gray-100">
-                          <template v-for="({ label, find }, index) in personalFilterListToArray" :key="index">
-                            <template v-if="find">
-                              <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
-                                {{ label }}
-                              </th>
-                            </template>
-                          </template>
-                        </tr>
-                      </thead>
-
-                      <tbody>
-                        <template v-for="(personal, pIndex) in targetInfo.personals" :key="pIndex">
-                          <template v-if="personal.group_id === group.id">
-                            <tr>
-                              <template v-for="({ name, find, input }, index) in personalFilterListToArray" :key="index">
-                                <template v-if="find">
-                                  <td class="px-4 py-2 border-b border-gray-100">
-                                    <template v-if="name === 'staff_id'">
-                                      {{ personal.staff.nickname }}
-                                    </template>
-                                    <template v-else>
-                                      <template v-if="input === 'switch'">
-                                        {{ personal[name] ? '是' : '否' }}
-                                      </template>
-                                      <template v-else>
-                                        {{ personal[name] }}
-                                      </template>
-                                    </template>
-                                  </td>
-                                </template>
-                              </template>
-                            </tr>
-                          </template>
-                        </template>
-                      </tbody>
-                    </table>
+              </div>
+            </div>
+          </template>
+        </common-gradient>
+        <common-gradient title="销售目标详情">
+          <template #body>
+            <template v-if="targetInfo.object === 1">
+              <div v-for="(group, gIndex) in targetInfo.groups" :key="gIndex" class="mb-6">
+                <div class="flex items-center">
+                  <div class="font-bold text-xxl mb-2">
+                    {{ group.name }}
                   </div>
-                </template>
-                <template v-else>
-                  <!-- 表格 -->
-                  <table class="w-full border border-gray-400" style="border:1px solid #eee;border-collapse: collapse;">
-                    <thead>
-                      <tr class="bg-gray-100">
-                        <template v-for="({ label, find, name }, index) in personalFilterListToArray" :key="index">
-                          <template v-if="find && name !== 'is_leader'">
-                            <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
-                              {{ label }}
-                            </th>
-                          </template>
-                        </template>
-                        <th>完成进度</th>
-                      </tr>
-                    </thead>
+                </div>
 
-                    <tbody>
-                      <template v-for="(personal, pIndex) in targetInfo.personals" :key="pIndex">
+                <!-- 表格 -->
+                <table class="w-full border border-gray-400" style="border:1px solid #eee;border-collapse: collapse;">
+                  <thead>
+                    <tr class="bg-gray-100">
+                      <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
+                        员工
+                      </th>
+                      <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
+                        目标
+                      </th>
+                      <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
+                        已完成
+                      </th>
+                      <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
+                        完成率
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <template v-for="(personal, pIndex) in targetInfo.personals" :key="pIndex">
+                      <template v-if="personal.group_id === group.id">
                         <tr>
-                          <template v-for="({ name, find, input }, index) in personalFilterListToArray" :key="index">
-                            <template v-if="find && name !== 'is_leader'">
-                              <td class="px-4 py-2 border-b border-gray-100">
-                                <template v-if="name === 'staff_id'">
+                          <td class="px-4 py-2 border-b border-gray-100">
+                            <div class="flex items-center">
+                              <img :src="personal.staff.avatar" alt="widthfix" width="26" class="rounded-full">
+                              <div class="ml-2">
+                                <div>
                                   {{ personal.staff.nickname }}
+                                </div>
+                                <template v-if="personal.is_leader">
+                                  <div class="text-xs text-blue-500">
+                                    组长
+                                  </div>
                                 </template>
-                                <template v-else>
-                                  <template v-if="input === 'switch'">
-                                    {{ personal[name] ? '是' : '否' }}
-                                  </template>
-                                  <template v-else>
-                                    {{ personal[name] }}
-                                  </template>
-                                </template>
-                              </td>
-                            </template>
-                          </template>
+                              </div>
+                            </div>
+                          </td>
+                          <td class="px-4 py-2 border-b border-gray-100">
+                            {{ personal.purpose }}
+                          </td>
+                          <td class="px-4 py-2 border-b border-gray-100">
+                            {{ personal.achieved }}
+                          </td>
                           <td class="px-4 py-2 border-b border-gray-100">
                             {{ ((Number(personal.achieved) / Number(personal.purpose)) * 100).toFixed(2) }}%
                           </td>
                         </tr>
                       </template>
-                    </tbody>
-                  </table>
-                </template>
+                    </template>
+                  </tbody>
+                </table>
               </div>
-            </div>
+            </template>
+            <template v-else>
+              <!-- 表格 -->
+              <table class="w-full border border-gray-400" style="border:1px solid #eee;border-collapse: collapse;">
+                <thead>
+                  <tr class="bg-gray-100">
+                    <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
+                      员工
+                    </th>
+                    <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
+                      目标
+                    </th>
+                    <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
+                      已完成
+                    </th>
+                    <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
+                      完成率
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <template v-for="(personal, pIndex) in targetInfo.personals" :key="pIndex">
+                    <tr>
+                      <td class="px-4 py-2 border-b border-gray-100">
+                        <div class="flex items-center">
+                          <img :src="personal.staff.avatar" alt="widthfix" width="26" class="rounded-full">
+                          <div class="ml-2">
+                            {{ personal.staff.nickname }}
+                          </div>
+                        </div>
+                      </td>
+                      <td class="px-4 py-2 border-b border-gray-100">
+                        {{ personal.purpose }}
+                      </td>
+                      <td class="px-4 py-2 border-b border-gray-100">
+                        {{ personal.achieved }}
+                      </td>
+                      <td class="px-4 py-2 border-b border-gray-100">
+                        {{ ((Number(personal.achieved) / Number(personal.purpose)) * 100).toFixed(2) }}%
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </template>
           </template>
         </common-gradient>
       </div>

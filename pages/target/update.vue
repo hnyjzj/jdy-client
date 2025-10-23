@@ -7,9 +7,7 @@ const {
   getTargetInfo,
   createTargetGroup,
   createTargetPersonal,
-  updateTargetGroup,
   updateTargetPersonal,
-  deleteTarget,
   deleteTargetGroup,
   deleteTargetPersonal,
 } = useTarget()
@@ -19,77 +17,25 @@ const { targetFilterListToArray, groupFilterListToArray, personalFilterListToArr
 
 const route = useRoute()
 const { $toast } = useNuxtApp()
-
+const isAddModel = ref(false)
 useSeoMeta({
   title: '编辑销售目标',
 })
 
 const datas = ref({} as Partial<ExpandPage<any>>)
-const groupList = ref<Record<string, any>[]>([])
-const personalDatas = ref()
+const personalDatas = ref({} as TargetPersonal)
+const personalList = ref([] as TargetPersonal[])
+/** 分组名称 */
+const groupName = ref()
+/** 新增分组员工 暂存分组id */
+const addGroupId = ref()
+/** 编辑 / 添加 */
+const isUpdate = ref(false)
 const formRef = ref()
-
-/** 新增分组 */
-const addGroup = () => {
-  groupList.value.push({ id: String(groupList.value.length + 1) })
-  personalDatas.value.push([])
-}
-
-/** 新增员工 */
-/** 新增员工（健壮版） */
-const addEmployee = (gIndex = 0) => {
-  // 确保 personalDatas 是二维数组
-  if (!Array.isArray(personalDatas.value)) {
-    personalDatas.value = []
-  }
-
-  // 确保该分组数组存在
-  if (!Array.isArray(personalDatas.value[gIndex])) {
-    // 如果 gIndex 超出当前长度，先补齐空数组
-    for (let i = personalDatas.value.length; i <= gIndex; i++) {
-      personalDatas.value[i] = []
-    }
-  }
-
-  // 如果是分组模式，确保分组名已填写（原有校验）
-  if (datas.value.object === 1 && groupList.value[gIndex] && !groupList.value[gIndex].name) {
-    return $toast.error('请先填写分组名称')
-  }
-
-  // 推入一个新的空人员对象，带 group_id
-  const groupId = (groupList.value[gIndex] && groupList.value[gIndex].id) ? String(groupList.value[gIndex].id) : String(gIndex + 1)
-  personalDatas.value[gIndex].push({
-    group_id: groupId,
-    // 其他默认字段可以在这里初始化，如 staff_id: null, is_leader: false,...
-  })
-}
-
-/** 删除员工 */
-const deleteEmployee = (gIndex: number, pIndex: number) => {
-  personalDatas.value[gIndex].splice(pIndex, 1)
-}
-
-/** 删除分组 */
-const deleteGroup = (gIndex: number) => {
-  groupList.value.splice(gIndex, 1)
-  personalDatas.value.splice(gIndex, 1)
-}
-
-/** 单选开关处理 */
-const handleSwitchChange = (gIndex: number, pIndex: number, fieldName: string, value: boolean) => {
-  if (value) {
-    personalDatas.value[gIndex].forEach((personal, idx) => {
-      if (idx !== pIndex)
-
-        personal[fieldName] = false
-    })
-  }
-  personalDatas.value[gIndex][pIndex][fieldName] = value
-}
 
 /** 获取可选员工 */
 const getAvailableOptions = () => {
-  const staffed = personalDatas.value.flat().map(v => v.staff_id)
+  const staffed = targetInfo.value.personals?.map(v => v.staff_id)
   return StoreStaffList.value.map(v => ({
     label: v.nickname,
     value: v.id,
@@ -107,16 +53,7 @@ const handleValidateButtonClick = async () => {
   }
 
   const params: any = { store_id: myStore.value.id, ...datas.value }
-
-  if (datas.value.object === 1) {
-    params.groups = groupList.value
-    params.personals = personalDatas.value.flat()
-  }
-  else {
-    params.personals = personalDatas.value.flat()
-  }
   params.id = route.query.id as string
-  console.log(111, params)
 
   const res = await updateTarget(params)
 
@@ -135,26 +72,108 @@ async function getStoreStaffListFun() {
   if (res)
     $toast.error(res?.data.value?.message || '获取员工列表失败')
 }
+
+/** 获取目标信息 回显 */
 function setDefault() {
-  if (targetInfo.value.object === 1) {
-  // 回显分组列表
-    groupList.value = targetInfo.value.groups?.length ? targetInfo.value.groups : [{ id: '1' }]
-
-    // 回显员工数据，按分组分配
-    personalDatas.value = groupList.value.map(g =>
-      targetInfo.value.personals?.filter((p: any) => p.group_id === g.id) || [],
-    )
-  }
-  else {
-    personalDatas.value = targetInfo.value.personals
-  }
-
-  // 回显 filter 表单项
   targetFilterListToArray.value.forEach((item) => {
     if (item.create) {
       datas.value[item.name] = targetInfo.value[item.name]
     }
   })
+}
+
+/**
+ * 添加员工
+ */
+function addStaffFun(group: TargetGroup) {
+  addGroupId.value = group.id
+  isAddModel.value = true
+  isUpdate.value = false
+  personalDatas.value = {} as TargetPersonal
+}
+function addOneStaffFun() {
+  isAddModel.value = true
+  isUpdate.value = false
+  personalDatas.value = {} as TargetPersonal
+}
+
+/** 新增分组 */
+const addGroup = async () => {
+  if (!groupName.value)
+    return $toast.error('请输入分组名称')
+  const params = { target_id: targetInfo.value.id, name: groupName.value } as TargetGroup
+  const res = await createTargetGroup(params)
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('新增分组成功')
+    await getTargetInfo(route.query.id as string)
+    await setDefault()
+  }
+  else {
+    $toast.error(res?.message ?? '新增分组失败')
+  }
+}
+
+/** 删除分组 */
+const deleteGroupFun = async (group: TargetGroup) => {
+  if (!group.id)
+    return
+  const res = await deleteTargetGroup(group.id)
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('删除成功')
+    await getTargetInfo(route.query.id as string)
+    await setDefault()
+  }
+  else {
+    $toast.error(res?.message ?? '删除失败')
+  }
+}
+
+/**
+ * 删除个人目标
+ */
+async function deleteStaff(personal: TargetPersonal) {
+  if (!personal.id)
+    return
+  const res = await deleteTargetPersonal(personal.id)
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('删除成功')
+    await getTargetInfo(route.query.id as string)
+    await setDefault()
+  }
+  else {
+    $toast.error(res?.message ?? '删除失败')
+  }
+}
+
+/** 更新员工个人目标 */
+async function updataPersonalFun(personal: TargetPersonal) {
+  personalDatas.value = personal
+  isAddModel.value = true
+  isUpdate.value = true
+}
+
+async function submitGoods() {
+  personalDatas.value.target_id = targetInfo.value.id
+  if (targetInfo.value.object === 1) {
+    personalDatas.value.group_id = addGroupId.value
+  }
+  let res
+  if (isUpdate.value) {
+    res = await updateTargetPersonal(personalDatas.value)
+  }
+  else {
+    res = await createTargetPersonal(personalDatas.value)
+  }
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success(isUpdate.value ? '更新成功' : '添加成功')
+    personalDatas.value = {} as TargetPersonal
+    isAddModel.value = false
+    await getTargetInfo(route.query.id as string)
+    await setDefault()
+  }
+  else {
+    $toast.error(res?.message ?? (isUpdate.value ? '更新失败' : '添加失败'))
+  }
 }
 
 /** 页面初始化 */
@@ -172,8 +191,8 @@ if (route.query.id) {
   <div>
     <common-layout-center>
       <div class="pt-4 pb-22">
-        <div class="flex flex-col gap-4">
-          <div class="rounded-6 bg-white w-auto blur-bga">
+        <div class="flex flex-col">
+          <div class="gap-2">
             <common-gradient title="编辑销售目标">
               <template #body>
                 <common-filter-add
@@ -182,42 +201,44 @@ if (route.query.id) {
                   :filter="targetFilterListToArray"
                   disable-conditions="update"
                 />
-                <template v-if="datas.object === 1">
-                  <n-button type="info" size="small" class="my-2" @click="addGroup">
-                    添加分组
-                  </n-button>
-                </template>
-
+                <common-button-rounded content="更新销售目标" @button-click="handleValidateButtonClick" />
+              </template>
+            </common-gradient>
+            <common-gradient title="编辑分组">
+              <template #body>
                 <template v-if="targetInfo.object === 1">
-                  <div v-for="(group, gIndex) in groupList" :key="group.id" class="mb-4">
+                  <div class="flex items-center my-2 gap-4">
+                    <div>
+                      <n-input v-model:value="groupName" clearable placeholder="输入分组名称" round />
+                    </div>
+                    <n-button tertiary type="success" size="small" @click="addGroup()">
+                      添加分组
+                    </n-button>
+                  </div>
+                  <div v-for="(group, gIndex) in targetInfo.groups" :key="gIndex" class="mb-4">
                     <div class="flex justify-between items-center">
                       <template v-if="datas.object === 1">
-                        <template v-for="({ label, input, name, find }, index) in groupFilterListToArray" :key="index">
+                        <template v-for="({ label, find }, index) in groupFilterListToArray" :key="index">
                           <template v-if="find">
                             <div class="flex items-center">
                               <div class="mr-2">
                                 {{ label }}
                               </div>
-                              <template v-if="input === 'text'">
-                                <div class="flex-1">
-                                  <n-input v-model:value="groupList[gIndex][name as string]" clearable :placeholder="`输入${label}`" round />
-                                </div>
-                              </template>
                             </div>
                           </template>
                         </template>
                         <div class="flex gap-2 pl-2">
-                          <n-button type="info" size="small" @click="addEmployee(gIndex)">
+                          <n-button tertiary type="info" size="small" @click="addStaffFun(group)">
                             添加员工
                           </n-button>
-                          <n-button type="error" size="small" @click="deleteGroup(gIndex)">
+                          <n-button tertiary type="error" size="small" @click="deleteGroupFun(group)">
                             删除分组
                           </n-button>
                         </div>
                       </template>
                     </div>
 
-                    <table class="w-full mt-2" style="border:1px solid #eee">
+                    <table class="table-center w-full mt-2" style="border:1px solid #eee;">
                       <thead>
                         <tr class="row bg-gray-200">
                           <template v-for="({ label, find }, index) in personalFilterListToArray" :key="index">
@@ -233,41 +254,38 @@ if (route.query.id) {
                         </tr>
                       </thead>
                       <tbody>
-                        <template v-if="personalDatas[gIndex]?.length">
-                          <tr v-for="(personal, pIndex) in personalDatas[gIndex]" :key="pIndex">
-                            <template v-for="({ name, label, input, find }, index) in personalFilterListToArray" :key="index">
-                              <template v-if="find">
-                                <td class="px-1 py-2">
-                                  <template v-if="input === 'search'">
-                                    <n-select
-                                      v-model:value="personal[name as string]"
-                                      :placeholder="`请输入${label}`"
-                                      :options="getAvailableOptions()"
-                                      clearable
-                                      size="large"
-                                      remote
-                                      @focus="getStoreStaffListFun"
-                                    />
+                        <template v-if="personalList">
+                          <template v-for="(personal, pIndex) in targetInfo.personals" :key="pIndex">
+                            <template v-if="personal.group_id === group.id">
+                              <tr>
+                                <template v-for="({ name, input, find }, index) in personalFilterListToArray" :key="index">
+                                  <template v-if="find">
+                                    <td class="px-1 py-2">
+                                      <template v-if="name === 'staff_id'">
+                                        {{ personal.staff.nickname }}
+                                      </template>
+                                      <template v-else>
+                                        <template v-if="input === 'text'">
+                                          {{ personal[name] }}
+                                        </template>
+                                        <template v-if="input === 'switch'">
+                                          {{ personal[name] ? '是' : '否' }}
+                                        </template>
+                                      </template>
+                                    </td>
                                   </template>
-                                  <template v-if="input === 'text'">
-                                    <n-input v-model:value="personal[name as string]" :placeholder="`${label}`" />
-                                  </template>
-                                  <template v-if="input === 'switch'">
-                                    <n-switch
-                                      :value="personal[name as string]"
-                                      round
-                                      @update:value="handleSwitchChange(gIndex, pIndex, name, $event)"
-                                    />
-                                  </template>
+                                </template>
+                                <td class="px-4 py-2 flex">
+                                  <n-button class="mr" type="warning" size="small" @click="updataPersonalFun(personal)">
+                                    编辑
+                                  </n-button>
+                                  <n-button type="error" size="small" @click="deleteStaff(personal)">
+                                    删除
+                                  </n-button>
                                 </td>
-                              </template>
+                              </tr>
                             </template>
-                            <td class="px-4 py-2">
-                              <n-button type="error" size="small" @click="deleteEmployee(gIndex, pIndex)">
-                                删除
-                              </n-button>
-                            </td>
-                          </tr>
+                          </template>
                         </template>
                         <template v-else>
                           <tr>
@@ -281,10 +299,10 @@ if (route.query.id) {
                   </div>
                 </template>
                 <template v-else>
-                  <n-button type="info" size="small" class="my-2" @click="personalDatas.push({} as any)">
+                  <n-button tertiary type="info" size="small" class="my-2" @click="addOneStaffFun">
                     添加员工
                   </n-button>
-                  <table class="w-full mt-2" style="border:1px solid #eee">
+                  <table class="table-center w-full mt-2" style="border:1px solid #eee">
                     <thead>
                       <tr class="row bg-gray-200">
                         <template v-for="({ label, find }, index) in personalFilterListToArray" :key="index">
@@ -300,37 +318,30 @@ if (route.query.id) {
                       </tr>
                     </thead>
                     <tbody>
-                      <template v-if="personalDatas?.length">
-                        <tr v-for="(personal, pIndex) in personalDatas" :key="pIndex">
-                          <template v-for="({ name, label, input, find }, index) in personalFilterListToArray" :key="index">
+                      <template v-if="targetInfo.personals?.length">
+                        <tr v-for="(personal, pIndex) in targetInfo.personals" :key="pIndex">
+                          <template v-for="({ name, input, find }, index) in personalFilterListToArray" :key="index">
                             <template v-if="find">
                               <td class="px-1 py-2">
-                                <template v-if="input === 'search'">
-                                  <n-select
-                                    v-model:value="personal[name as string]"
-                                    :placeholder="`请输入${label}`"
-                                    :options="getAvailableOptions()"
-                                    clearable
-                                    size="large"
-                                    remote
-                                    @focus="getStoreStaffListFun"
-                                  />
+                                <template v-if="name === 'staff_id'">
+                                  {{ personal.staff.nickname }}
                                 </template>
-                                <template v-if="input === 'text'">
-                                  <n-input v-model:value="personal[name as string]" :placeholder="`${label}`" />
-                                </template>
-                                <template v-if="input === 'switch'">
-                                  <n-switch
-                                    :value="personal[name as string]"
-                                    round
-                                    @update:value="handleSwitchChange(0, pIndex, name, $event)"
-                                  />
+                                <template v-else>
+                                  <template v-if="input === 'text'">
+                                    {{ personal[name] }}
+                                  </template>
+                                  <template v-if="input === 'switch'">
+                                    {{ personal[name] ? '是' : '否' }}
+                                  </template>
                                 </template>
                               </td>
                             </template>
                           </template>
                           <td class="px-4 py-2">
-                            <n-button type="error" size="small" @click="personalDatas.splice(pIndex, 1)">
+                            <n-button class="mr" type="warning" size="small" @click="updataPersonalFun(personal)">
+                              编辑
+                            </n-button>
+                            <n-button type="error" size="small" @click="deleteStaff(personal)">
                               删除
                             </n-button>
                           </td>
@@ -338,7 +349,7 @@ if (route.query.id) {
                       </template>
                       <template v-else>
                         <tr>
-                          <td :colspan="personalFilterListToArray.filter(item => item.find).length + 1" class="text-center py-6">
+                          <td :colspan="personalFilterListToArray.filter(item => item.find).length + 1" class="py-6">
                             暂无数据
                           </td>
                         </tr>
@@ -352,19 +363,39 @@ if (route.query.id) {
         </div>
       </div>
     </common-layout-center>
-
-    <div class="fixed bottom-0 left-0 w-full py-4 blur-bgc px-8" uno-sm="px-0">
-      <common-layout-center>
-        <common-button-rounded content="更新销售目标" @button-click="handleValidateButtonClick" />
-      </common-layout-center>
-    </div>
+    <common-model v-model="isAddModel" :title="isUpdate ? '更新' : '添加'" :show-ok="true" :confirm-text="isUpdate ? '确认更新' : '确认添加'" @confirm="submitGoods">
+      <div>
+        <common-filter-add
+          ref="formRef"
+          v-model:data="personalDatas"
+          :filter="personalFilterListToArray"
+        >
+          <template #info="{ info }">
+            <template v-if="info.name === 'staff_id'">
+              <n-select
+                v-model:value="personalDatas.staff_id"
+                placeholder="请选择员工"
+                clearable
+                :options="getAvailableOptions()"
+                size="large"
+                remote
+                :disabled="isUpdate"
+                @focus="getStoreStaffListFun"
+              />
+            </template>
+          </template>
+        </common-filter-add>
+      </div>
+    </common-model>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.row {
-  :first-child {
-    min-width: 120px;
+<style scoped lang="scss">
+.table-center {
+  th,
+  td {
+    text-align: center;
+    vertical-align: middle;
   }
 }
 </style>
