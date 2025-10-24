@@ -112,7 +112,7 @@ if (myStore.value.id || myStore.value.id === '') {
                     <template v-if="item.input === 'radio'">
                       {{ item.preset[String(info[item.name])] || '' }}
                     </template>
-                    <template v-else-if="item.input === 'date'">
+                    <template v-else-if="item.input === 'date' || item.input === 'datetime'">
                       {{ info[item.name] ? formatTimestampToDateTime(String(info[item.name])) : '' }}
                     </template>
                     <template v-else-if="item.input === 'switch'">

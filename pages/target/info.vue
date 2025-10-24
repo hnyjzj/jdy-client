@@ -76,7 +76,7 @@ function statistics(key: string, group?: TargetGroup): number {
                       {{ item.label }}
                     </div>
                     <div class="info-val">
-                      <div class="text-align-end">
+                      <div class="text-align-end" style="word-break:break-all;">
                         <template v-if="item.name === 'store_id'">
                           {{ targetInfo?.store?.name }}
                         </template>
@@ -84,7 +84,7 @@ function statistics(key: string, group?: TargetGroup): number {
                           <template v-if="item.input === 'radio'">
                             {{ item.preset[String(targetInfo[item.name])] || '' }}
                           </template>
-                          <template v-else-if="item.input === 'date'">
+                          <template v-else-if="item.input === 'date' || item.input === 'datetime'">
                             {{ targetInfo[item.name] ? formatTimestampToDateTime(String(targetInfo[item.name])) : '' }}
                           </template>
                           <template v-else-if="item.input === 'switch'">
