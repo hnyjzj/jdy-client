@@ -60,6 +60,12 @@ function statistics(key: string, group?: TargetGroup): number {
     return 0
   }
 }
+
+function isShowGoods(item: any) {
+  if (!Array.isArray(targetInfo.value[item.name as keyof TargetInfo]))
+    return false
+  return true
+}
 </script>
 
 <template>
@@ -71,35 +77,48 @@ function statistics(key: string, group?: TargetGroup): number {
             <div class="operation-information flex flex-col gap-1">
               <div class="other-information flex flex-col gap-1" uno-sm="grid grid-cols-[1fr_1fr] gap-x-10">
                 <template v-for="(item, index) in targetFilterListToArray" :key="index">
-                  <div class="info-row">
-                    <div class="info-title">
-                      {{ item.label }}
-                    </div>
-                    <div class="info-val">
-                      <div class="text-align-end" style="word-break:break-all;">
-                        <template v-if="item.name === 'store_id'">
-                          {{ targetInfo?.store?.name }}
-                        </template>
-                        <template v-else>
-                          <template v-if="item.input === 'radio'">
-                            {{ item.preset[String(targetInfo[item.name])] || '' }}
-                          </template>
-                          <template v-else-if="item.input === 'date' || item.input === 'datetime'">
-                            {{ targetInfo[item.name] ? formatTimestampToDateTime(String(targetInfo[item.name])) : '' }}
-                          </template>
-                          <template v-else-if="item.input === 'switch'">
-                            {{ targetInfo[item.name] ? '是' : '否' }}
-                          </template>
-                          <template v-else-if="item.input === 'multiple'">
+                  <template v-if="item.input === 'multiple'">
+                    <template v-if="isShowGoods(item)">
+                      <div class="info-row">
+                        <div class="info-title">
+                          {{ item.label }}
+                        </div>
+                        <div class="info-val">
+                          <div class="text-align-end" style="word-break:break-all;">
                             {{ getMultipleLabel(targetInfo[item.name], item.preset) }}
+                          </div>
+                        </div>
+                      </div>
+                    </template>
+                  </template>
+                  <template v-else>
+                    <div class="info-row">
+                      <div class="info-title">
+                        {{ item.label }}
+                      </div>
+                      <div class="info-val">
+                        <div class="text-align-end" style="word-break:break-all;">
+                          <template v-if="item.name === 'store_id'">
+                            {{ targetInfo?.store?.name }}
                           </template>
                           <template v-else>
-                            {{ targetInfo[item.name] }}
+                            <template v-if="item.input === 'radio'">
+                              {{ item.preset[String(targetInfo[item.name])] || '' }}
+                            </template>
+                            <template v-else-if="item.input === 'date' || item.input === 'datetime'">
+                              {{ targetInfo[item.name] ? formatTimestampToDateTime(String(targetInfo[item.name])) : '' }}
+                            </template>
+                            <template v-else-if="item.input === 'switch'">
+                              {{ targetInfo[item.name] ? '是' : '否' }}
+                            </template>
+                            <template v-else>
+                              {{ targetInfo[item.name] }}
+                            </template>
                           </template>
-                        </template>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </template>
                 </template>
                 <div class="info-row">
                   <div class="info-title">

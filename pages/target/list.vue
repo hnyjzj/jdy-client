@@ -19,10 +19,6 @@ const isFilter = ref(false)
 const openFilter = () => {
   isFilter.value = true
 }
-// 重置高级筛选
-const resetWhere = async () => {
-  filterData.value = {}
-}
 
 /** 跳转并刷新列表 */
 const listJump = () => {
@@ -49,8 +45,13 @@ function changeMyStore() {
   listJump()
 }
 
+// 重置高级筛选
+const resetWhere = async () => {
+  filterData.value = {}
+  listJump()
+}
 /** 提交筛选 */
-const submitWhere = async (f: Partial<ExpandPage<Check>>) => {
+const submitWhere = async (f: Partial<ExpandPage<Target>>) => {
   filterData.value = {
     ...f,
     searchPage: 1,
@@ -73,6 +74,18 @@ const handleQueryParams = async () => {
   await getList(filterData.value)
 }
 
+function getStatusClass(start_time: string, end_time: string) {
+  const status = getTimeStatus(formatTimestampToDateTime(start_time), formatTimestampToDateTime(end_time))
+  switch (status) {
+    case '进行中':
+      return 'running'
+    case '已结束':
+      return 'cancel'
+    default:
+      return 'notStarted'
+  }
+}
+
 if (myStore.value.id || myStore.value.id === '') {
   await getTargetWhere()
   await handleQueryParams()
@@ -82,7 +95,7 @@ if (myStore.value.id || myStore.value.id === '') {
 <template>
   <div>
     <product-filter
-      :is-export="true"
+      :is-export="false"
       :product-list-total="targetListTotal"
       @filter="openFilter"
     >
@@ -92,8 +105,13 @@ if (myStore.value.id || myStore.value.id === '') {
     </product-filter>
     <product-manage-card :list="targetList">
       <template #top="{ info }">
-        <div class="status-title">
-          {{ info.name }}
+        <div class="w-auto flex justify-between items-center flex-1">
+          <div class="status-title">
+            编号：{{ info.id }}
+          </div>
+          <div class="status-text" :class="getStatusClass(info.start_time, info.end_time)">
+            {{ getTimeStatus(formatTimestampToDateTime(info.start_time), formatTimestampToDateTime(info.end_time)) }}
+          </div>
         </div>
       </template>
       <template #info="{ info }">
@@ -155,5 +173,16 @@ if (myStore.value.id || myStore.value.id === '') {
 </template>
 
 <style lang="scss" scoped>
-
+.status-text {
+  --uno: 'px-2 rounded-[8px] text-#FFF';
+}
+.notStarted {
+  --uno: 'bg-[rgba(221,146,0,1)]';
+}
+.running {
+  --uno: 'bg-#1b6ceb';
+}
+.cancel {
+  --uno: 'bg-[#999]';
+}
 </style>

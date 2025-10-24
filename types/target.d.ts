@@ -64,18 +64,18 @@ interface TargetPersonal {
 
 interface TargetInfo {
   category: number
-  class: number
+  class: number[]
   craft: number
   end_time: string
   gem: number
   id: string
   is_default: boolean
-  material: number
-  method: number
+  material: number[]
+  method: number[]
   name: string
   object: number
-  quality: number
-  scope: number
+  quality: number[]
+  scope: number[]
   start_time: string
   store_id: string
   store: Stores
