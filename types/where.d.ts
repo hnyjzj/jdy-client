@@ -18,7 +18,7 @@ interface FilterWhere<T, N = keyof T> {
   /**
    * 筛选类型 选择或输入
    */
-  input: 'select' | 'text' | 'search' | 'switch' | 'number' | 'textarea' | 'date' | 'multiple' | 'list' | 'upload' | 'password' | 'day' | 'radio'
+  input: 'select' | 'text' | 'search' | 'switch' | 'number' | 'textarea' | 'date' | 'datetime' | 'multiple' | 'list' | 'upload' | 'password' | 'day' | 'radio'
   sort: number
   find: boolean
   /** 该字段是否可以添加上传 */

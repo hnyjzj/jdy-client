@@ -29,31 +29,36 @@ if (route.query.id) {
  * @param key 字段名
  */
 function statistics(key: string, group?: TargetGroup): number {
-  let relevantPersonals = targetInfo.value.personals // 默认整个数组
+  try {
+    let relevantPersonals = targetInfo.value.personals // 默认整个数组
 
-  // 如果 group 提供，才按组过滤
-  if (group) {
-    relevantPersonals = targetInfo.value.personals.filter((cur: any) => {
-      return cur.group.id === group.id
-    })
+    // 如果 group 提供，才按组过滤
+    if (group) {
+      relevantPersonals = targetInfo.value.personals.filter((cur: any) => {
+        return cur.group.id === group.id
+      })
+    }
+
+    // 如果没有项，直接返回 0
+    if (relevantPersonals.length === 0) {
+      return 0
+    }
+
+    // 累加计算指定 key 的值
+    const sum = relevantPersonals.reduce((pre: number, cur: any) => {
+      const value = cur[key]
+      if (value !== undefined && value !== null && !Number.isNaN(Number(value))) {
+        return pre + Number(value)
+      }
+      return pre
+    }, 0)
+
+    // 保留两位小数（四舍五入）
+    return Math.round(sum * 100) / 100
   }
-
-  // 如果没有项，直接返回 0
-  if (relevantPersonals.length === 0) {
+  catch {
     return 0
   }
-
-  // 累加计算指定 key 的值
-  const sum = relevantPersonals.reduce((pre: number, cur: any) => {
-    const value = cur[key]
-    if (value !== undefined && value !== null && !Number.isNaN(Number(value))) {
-      return pre + Number(value)
-    }
-    return pre
-  }, 0)
-
-  // 保留两位小数（四舍五入）
-  return Math.round(sum * 100) / 100
 }
 </script>
 
