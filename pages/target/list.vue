@@ -31,9 +31,9 @@ const listJump = () => {
 }
 
 /** 获取成品列表 */
-const getList = async (where = {} as Partial<ProductFinisheds>) => {
+const getList = async (where = {} as Partial<Target>) => {
   tableLoading.value = true
-  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<ProductFinisheds>
+  const params = { page: searchPage.value, limit: limits.value, where: { store_id: myStore.value.id } } as ReqList<Target>
   if (JSON.stringify(where) !== '{}') {
     params.where = { ...params.where, ...where }
   }
@@ -42,9 +42,11 @@ const getList = async (where = {} as Partial<ProductFinisheds>) => {
   tableLoading.value = false
   return res
 }
+
 /** 切换门店 */
 function changeMyStore() {
-
+  filterData.value.searchPage = 1
+  listJump()
 }
 
 /** 提交筛选 */
@@ -56,10 +58,10 @@ const submitWhere = async (f: Partial<ExpandPage<Check>>) => {
   }
   listJump()
 }
-/** 读取参数并初始化列表 */
+
 /** 读取参数并初始化列表 */
 const handleQueryParams = async () => {
-  const f = getQueryParams<ExpandPage<ProductFinisheds>>(route.fullPath, targetFilterList.value)
+  const f = getQueryParams<ExpandPage<Target>>(route.fullPath, targetFilterList.value)
   filterData.value = f
   if (f.searchPage)
     searchPage.value = Number(f.searchPage)
@@ -71,11 +73,10 @@ const handleQueryParams = async () => {
   await getList(filterData.value)
 }
 
-onMounted(async () => {
-  await handleQueryParams()
+if (myStore.value.id || myStore.value.id === '') {
   await getTargetWhere()
-  await getList()
-})
+  await handleQueryParams()
+}
 </script>
 
 <template>
