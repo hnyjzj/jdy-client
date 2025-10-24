@@ -22,6 +22,39 @@ if (route.query.id) {
   await getTargetWhere()
   await getPersonalWhere()
 }
+
+/**
+ * 统计
+ * @param group 目标组 不传时计算全部
+ * @param key 字段名
+ */
+function statistics(key: string, group?: TargetGroup): number {
+  let relevantPersonals = targetInfo.value.personals // 默认整个数组
+
+  // 如果 group 提供，才按组过滤
+  if (group) {
+    relevantPersonals = targetInfo.value.personals.filter((cur: any) => {
+      return cur.group.id === group.id
+    })
+  }
+
+  // 如果没有项，直接返回 0
+  if (relevantPersonals.length === 0) {
+    return 0
+  }
+
+  // 累加计算指定 key 的值
+  const sum = relevantPersonals.reduce((pre: number, cur: any) => {
+    const value = cur[key]
+    if (value !== undefined && value !== null && !Number.isNaN(Number(value))) {
+      return pre + Number(value)
+    }
+    return pre
+  }, 0)
+
+  // 保留两位小数（四舍五入）
+  return Math.round(sum * 100) / 100
+}
 </script>
 
 <template>
@@ -71,6 +104,30 @@ if (route.query.id) {
                     {{ getTimeStatus(targetInfo.start_time, targetInfo.end_time) }}
                   </div>
                 </div>
+                <div class="info-row">
+                  <div class="info-title">
+                    总目标
+                  </div>
+                  <div class="info-val">
+                    {{ statistics('purpose') }}
+                  </div>
+                </div>
+                <div class="info-row">
+                  <div class="info-title">
+                    总完成
+                  </div>
+                  <div class="info-val">
+                    {{ statistics('achieved') }}
+                  </div>
+                </div>
+                <div class="info-row">
+                  <div class="info-title">
+                    总完成率
+                  </div>
+                  <div class="info-val">
+                    {{ Math.round(statistics('achieved') / statistics('purpose') * 100) || 0 }}%
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -80,9 +137,18 @@ if (route.query.id) {
         <template #body>
           <template v-if="targetInfo.object === 1">
             <div v-for="(group, gIndex) in targetInfo.groups" :key="gIndex" class="mb-6">
-              <div class="flex items-center">
-                <div class="font-bold text-xxl mb-2">
+              <div class="flex items-center gap-2 text-wrap flex-wrap">
+                <div class="font-bold text-xxl mb-2 mr-1 whitespace-nowrap">
                   {{ group.name }}
+                </div>
+                <div class="text-xxl mb-2 whitespace-nowrap">
+                  总目标：{{ statistics('purpose', group) }}
+                </div>
+                <div class="text-xxl mb-2 whitespace-nowrap">
+                  总完成：{{ statistics('achieved', group) }}
+                </div>
+                <div class="text-xxl mb-2 whitespace-nowrap">
+                  完成率：{{ Math.round(statistics('achieved', group) / statistics('purpose', group) * 100) || 0 }}%
                 </div>
               </div>
 
