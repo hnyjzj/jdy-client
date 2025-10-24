@@ -165,6 +165,9 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                       <n-date-picker v-model:formatted-value="datas[name as string]" :is-date-disabled="dateDisabled" input-readonly value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" size="large" :placeholder="`选择${label}`" round clearable :disabled="disabled?.includes(name)" />
                     </template>
                   </template>
+                  <template v-if="input === 'datetime'">
+                    <n-date-picker v-model:formatted-value="datas[name as string]" default-time="23:59:59" input-readonly value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx" type="datetime" size="large" :placeholder="`选择${label}`" round clearable :disabled="disabled?.includes(name)" />
+                  </template>
                   <template v-if="input === 'day'">
                     <n-date-picker v-model:formatted-value="datas[name as string]" :is-date-disabled="dateDisabled" value-format="yyyy-MM-dd" type="date" size="large" :placeholder="`选择${label}`" round clearable :disabled="disabled?.includes(name)" />
                   </template>
@@ -182,6 +185,11 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                         delete datas[name as string]
                       }"
                     />
+                  </template>
+                  <template v-if="input === 'radio'">
+                    <n-radio-group v-model:value="datas[name as string]" name="radiogroup" @focus="focus">
+                      <n-radio v-for="item in presetToSelect(props.filter[i])" :key="item.value" :value="item.value" :label="item.label" />
+                    </n-radio-group>
                   </template>
                 </slot>
               </div>

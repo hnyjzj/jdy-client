@@ -133,3 +133,20 @@ export const dateDisabled = (ts: number) => {
   const now = new Date().getTime()
   return now < date
 }
+
+/**
+ * 当前时间是否在指定时间范围内
+ */
+export function getTimeStatus(startTime: string, endTime: string, now: Date = new Date()): '未开始' | '进行中' | '已结束' {
+  // 将 "YYYY-MM-DD HH:mm:ss" 转为标准 ISO 格式（浏览器安全）
+  const parseDate = (str: string) => new Date(str.replace(' ', 'T'))
+
+  const start = parseDate(startTime)
+  const end = parseDate(endTime)
+
+  if (now < start)
+    return '未开始'
+  if (now > end)
+    return '已结束'
+  return '进行中'
+}
