@@ -26,9 +26,9 @@ async function handleValidateButtonClick() {
     $toast.success('创建成功')
     setTimeout(() => {
       if (res.data.id) {
-        jump('/target/info', { id: res.data.id })
+        jump('/target/update', { id: res.data.id })
       }
-    }, 2000)
+    }, 1000)
   }
   else {
     $toast.error(res?.message ?? '创建失败')
