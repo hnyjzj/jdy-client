@@ -152,7 +152,7 @@ async function updataPersonalFun(personal: TargetPersonal) {
   isUpdate.value = true
 }
 
-async function submitGoods() {
+async function updateChange() {
   personalDatas.value.target_id = targetInfo.value.id
   if (targetInfo.value.object === 1) {
     personalDatas.value.group_id = addGroupId.value
@@ -363,7 +363,7 @@ if (route.query.id) {
         </div>
       </div>
     </common-layout-center>
-    <common-model v-model="isAddModel" :title="isUpdate ? '更新' : '添加'" :show-ok="true" :confirm-text="isUpdate ? '确认更新' : '确认添加'" @confirm="submitGoods">
+    <common-model v-model="isAddModel" :title="isUpdate ? '更新' : '添加'" :show-ok="true" :confirm-text="isUpdate ? '确认更新' : '确认添加'" @confirm="updateChange">
       <div>
         <common-filter-add
           ref="formRef"
