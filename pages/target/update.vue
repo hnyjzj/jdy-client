@@ -24,7 +24,6 @@ useSeoMeta({
 
 const datas = ref({} as Partial<ExpandPage<any>>)
 const personalDatas = ref({} as TargetPersonal)
-const personalList = ref([] as TargetPersonal[])
 /** 分组名称 */
 const groupName = ref()
 /** 新增分组员工 暂存分组id */
@@ -32,14 +31,20 @@ const addGroupId = ref()
 /** 编辑 / 添加 */
 const isUpdate = ref(false)
 const formRef = ref()
+const personalFormRef = ref()
+const delPersonalDialog = ref(false)
+const delGroupDialog = ref(false)
+/** 删除分组信息暂存 */
+const delGroupInfo = ref()
+const delPersonalInfo = ref()
 
 /** 获取可选员工 */
 const getAvailableOptions = () => {
-  const staffed = targetInfo.value.personals?.map(v => v.staff_id)
-  return StoreStaffList.value.map(v => ({
+  const staffed = new Set((targetInfo.value.personals ?? []).map(v => v.staff_id))
+  return (StoreStaffList.value ?? []).map(v => ({
     label: v.nickname,
     value: v.id,
-    disabled: !!staffed.includes(v.id),
+    disabled: staffed.has(v.id),
   }))
 }
 
@@ -114,10 +119,10 @@ const addGroup = async () => {
 }
 
 /** 删除分组 */
-const deleteGroupFun = async (group: TargetGroup) => {
-  if (!group.id)
+const deleteGroupFun = async () => {
+  if (!delGroupInfo.value.id)
     return
-  const res = await deleteTargetGroup(group.id)
+  const res = await deleteTargetGroup(delGroupInfo.value.id)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('删除成功')
     await getTargetInfo(route.query.id as string)
@@ -131,10 +136,10 @@ const deleteGroupFun = async (group: TargetGroup) => {
 /**
  * 删除个人目标
  */
-async function deleteStaff(personal: TargetPersonal) {
-  if (!personal.id)
+async function deleteStaff() {
+  if (!delPersonalInfo.value.id)
     return
-  const res = await deleteTargetPersonal(personal.id)
+  const res = await deleteTargetPersonal(delPersonalInfo.value.id)
   if (res?.code === HttpCode.SUCCESS) {
     $toast.success('删除成功')
     await getTargetInfo(route.query.id as string)
@@ -153,6 +158,17 @@ async function updataPersonalFun(personal: TargetPersonal) {
 }
 
 async function updateChange() {
+  try {
+    await personalFormRef.value?.verify()
+  }
+  catch {
+    if (!personalDatas.value.staff_id)
+      return $toast.error('请选择员工')
+
+    if (!personalDatas.value.purpose)
+      return $toast.error('请填写目标')
+  }
+
   personalDatas.value.target_id = targetInfo.value.id
   if (targetInfo.value.object === 1) {
     personalDatas.value.group_id = addGroupId.value
@@ -218,11 +234,11 @@ if (route.query.id) {
                   <div v-for="(group, gIndex) in targetInfo.groups" :key="gIndex" class="mb-4">
                     <div class="flex justify-between items-center">
                       <template v-if="datas.object === 1">
-                        <template v-for="({ label, find }, index) in groupFilterListToArray" :key="index">
+                        <template v-for="({ find }, index) in groupFilterListToArray" :key="index">
                           <template v-if="find">
                             <div class="flex items-center">
                               <div class="mr-2">
-                                {{ label }}
+                                分组名称：{{ group.name }}
                               </div>
                             </div>
                           </template>
@@ -231,7 +247,7 @@ if (route.query.id) {
                           <n-button tertiary type="info" size="small" @click="addStaffFun(group)">
                             添加员工
                           </n-button>
-                          <n-button tertiary type="error" size="small" @click="deleteGroupFun(group)">
+                          <n-button tertiary type="error" size="small" @click="delGroupInfo = group;delGroupDialog = true">
                             删除分组
                           </n-button>
                         </div>
@@ -254,7 +270,7 @@ if (route.query.id) {
                         </tr>
                       </thead>
                       <tbody>
-                        <template v-if="personalList">
+                        <template v-if="targetInfo.personals">
                           <template v-for="(personal, pIndex) in targetInfo.personals" :key="pIndex">
                             <template v-if="personal.group_id === group.id">
                               <tr>
@@ -275,11 +291,11 @@ if (route.query.id) {
                                     </td>
                                   </template>
                                 </template>
-                                <td class="px-4 py-2 flex">
+                                <td class="px-4 py-2 flex justify-center items-center">
                                   <n-button class="mr" type="warning" size="small" @click="updataPersonalFun(personal)">
                                     编辑
                                   </n-button>
-                                  <n-button type="error" size="small" @click="deleteStaff(personal)">
+                                  <n-button type="error" size="small" @click="delPersonalInfo = personal;delPersonalDialog = true">
                                     删除
                                   </n-button>
                                 </td>
@@ -337,13 +353,15 @@ if (route.query.id) {
                               </td>
                             </template>
                           </template>
-                          <td class="px-4 py-2">
-                            <n-button class="mr" type="warning" size="small" @click="updataPersonalFun(personal)">
-                              编辑
-                            </n-button>
-                            <n-button type="error" size="small" @click="deleteStaff(personal)">
-                              删除
-                            </n-button>
+                          <td class="px-4 py-2 flex justify-center items-center">
+                            <div>
+                              <n-button class="mr" type="warning" size="small" @click="updataPersonalFun(personal)">
+                                编辑
+                              </n-button>
+                              <n-button type="error" size="small" @click="delPersonalInfo = personal;delPersonalDialog = true">
+                                删除
+                              </n-button>
+                            </div>
                           </td>
                         </tr>
                       </template>
@@ -366,7 +384,7 @@ if (route.query.id) {
     <common-model v-model="isAddModel" :title="isUpdate ? '更新' : '添加'" :show-ok="true" :confirm-text="isUpdate ? '确认更新' : '确认添加'" @confirm="updateChange">
       <div>
         <common-filter-add
-          ref="formRef"
+          ref="personalFormRef"
           v-model:data="personalDatas"
           :filter="personalFilterListToArray"
         >
@@ -387,6 +405,14 @@ if (route.query.id) {
         </common-filter-add>
       </div>
     </common-model>
+    <common-confirm
+      v-model:show="delGroupDialog" icon="error" title="删除提醒" text="确认要删除该分组吗?" @submit="() => {
+        deleteGroupFun()
+      }" />
+    <common-confirm
+      v-model:show="delPersonalDialog" icon="error" title="删除提醒" text="确认要删除该员工吗?" @submit="() => {
+        deleteStaff()
+      }" />
   </div>
 </template>
 
