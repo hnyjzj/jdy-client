@@ -165,7 +165,7 @@ defineExpose({
                 <template v-if="input === 'textarea'">
                   <n-input v-model:value="datas[name as string]" :disabled="isDisabled({ update, find, create })" :placeholder="`输入${label}`" type="textarea" maxlength="255" size="large" round :autosize="{ minRows: 1, maxRows: 2 }" @focus="focus" />
                 </template>
-                <template v-if="input === 'date'">
+                <template v-if="input === 'date' || input === 'datetime'">
                   <template v-if="name.includes('start')">
                     <n-date-picker v-model:formatted-value="datas[name as string]" :disabled="isDisabled({ update })" default-time="00:00:00" input-readonly value-format="yyyy-MM-dd'T'HH:mm:ssxxx" type="datetime" size="large" :placeholder="`选择${label}`" round clearable />
                   </template>
