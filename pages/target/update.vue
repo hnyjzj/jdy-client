@@ -192,6 +192,18 @@ async function updateChange() {
   }
 }
 
+function setFilter() {
+  const filter = JSON.parse(JSON.stringify(personalFilterListToArray.value))
+
+  if (targetInfo.value.object !== 1) {
+    const groupItem = filter.find((item: FilterWhere<TargetPersonal>) => item.name === 'is_leader')
+    if (groupItem) {
+      groupItem.create = false
+    }
+  }
+  return filter
+}
+
 /** 页面初始化 */
 if (route.query.id) {
   await getTargetInfo(route.query.id as string)
@@ -321,8 +333,8 @@ if (route.query.id) {
                   <table class="table-center w-full mt-2" style="border:1px solid #eee">
                     <thead>
                       <tr class="row bg-gray-200">
-                        <template v-for="({ label, find }, index) in personalFilterListToArray" :key="index">
-                          <template v-if="find">
+                        <template v-for="({ label, find, name }, index) in personalFilterListToArray" :key="index">
+                          <template v-if="find && name !== 'is_leader'">
                             <th class="px-4 py-2 text-left">
                               {{ label }}
                             </th>
@@ -337,7 +349,7 @@ if (route.query.id) {
                       <template v-if="targetInfo.personals?.length">
                         <tr v-for="(personal, pIndex) in targetInfo.personals" :key="pIndex">
                           <template v-for="({ name, input, find }, index) in personalFilterListToArray" :key="index">
-                            <template v-if="find">
+                            <template v-if="find && name !== 'is_leader'">
                               <td class="px-1 py-2">
                                 <template v-if="name === 'staff_id'">
                                   {{ personal.staff.nickname }}
@@ -386,7 +398,7 @@ if (route.query.id) {
         <common-filter-add
           ref="personalFormRef"
           v-model:data="personalDatas"
-          :filter="personalFilterListToArray"
+          :filter="setFilter()"
         >
           <template #info="{ info }">
             <template v-if="info.name === 'staff_id'">
