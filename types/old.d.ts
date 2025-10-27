@@ -177,4 +177,6 @@ interface ProductOlds {
    * 成品条码
    */
   code_finished?: string
+
+  exchange_finisheds?: string[]
 }
