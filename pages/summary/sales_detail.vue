@@ -14,7 +14,7 @@ const formRef = ref()
 const model = ref<PrintSattementTotalReq>({
   start_time: '',
   end_time: '',
-  store_id: myStore.value.id,
+  store_id: '',
   salesman_id: '',
 })
 // 定义表单验证规则
@@ -115,6 +115,7 @@ const changeStore = () => {
     // 设置门店 ID 为空
     model.value.store_id = ''
   }
+  model.value.store_id = myStore.value.id
 }
 
 onMounted(() => {
