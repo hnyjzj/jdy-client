@@ -70,7 +70,7 @@ const deleteConfirm = () => {
                         <n-input-number
                           v-model:value="obj.price"
                           placeholder="请输入应付金额" round
-                          :min="1"
+                          :min="0"
                           :precision="0"
                           :show-button="false"
                           @focus="focus"
