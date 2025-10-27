@@ -116,6 +116,11 @@ const changeStore = () => {
     model.value.store_id = ''
   }
 }
+watch(() => myStore.value.id, async (newVal) => {
+  if (newVal) {
+    model.value.store_id = newVal
+  }
+})
 
 onMounted(() => {
   checkTime.value = new Date().toISOString()
