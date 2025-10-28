@@ -152,12 +152,7 @@ const scanCode = async () => {
   const wx = await useWxWork()
   const code = await wx?.scanQRCode()
   if (code) {
-    let processedCode = code.trim()
-    if (processedCode.includes('|')) {
-      // 如果有 |，只取前部分
-      processedCode = processedCode.split('|')[0]
-    }
-    goodCode.value = processedCode
+    goodCode.value = code.trim()
     await submitGoods(true)
   }
 }
