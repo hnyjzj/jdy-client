@@ -74,7 +74,17 @@ class WxWork {
       scanType: [wx.ScanQRCodeType.qrCode, wx.ScanQRCodeType.barCode],
     })
 
-    return resultStr
+    if (!resultStr)
+      return ''
+
+    let processedCode = resultStr.trim()
+
+    if (processedCode.includes('|')) {
+      // 如果有 |，只取前部分
+      processedCode = processedCode.split('|')[0]
+    }
+
+    return processedCode
   }
 
   /**
