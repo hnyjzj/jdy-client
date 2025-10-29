@@ -47,6 +47,10 @@ function mapEnumValues(
       created_at: formatTimestampToDateTime(order.created_at) ?? '',
       remark: order.remarks?.join(',') || '',
       mainSale: order.clerks?.[0]?.salesman?.nickname ?? '',
+      mainSale_ratio: `${order.clerks?.[0]?.performance_rate ?? ''}%`,
+      subSale_count: order.clerks.length - 1,
+      subSale: order.clerks.slice(1).map((c: OrderSalesClerks) => c.salesman?.nickname ?? '').join(','),
+      subSale_ratio: order.clerks.slice(1).map((c: OrderSalesClerks) => `${c.performance_rate ?? ''}%`).join(','),
     })
   }
   // 类型相关处理
