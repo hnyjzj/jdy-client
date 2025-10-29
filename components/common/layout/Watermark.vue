@@ -8,19 +8,21 @@ const watermark = ref<WatermarkProps | undefined>(undefined)
 onMounted(async () => {
   await nextTick()
   watermark.value = {
-    content: userinfo.value?.nickname + userinfo.value?.phone || undefined,
+    content: `${userinfo.value?.nickname}\n${userinfo.value?.phone}` || undefined,
     fontColor: 'rgba(128, 128, 128, .2)',
     selectable: false,
     fontSize: 14,
     lineHeight: 16,
-    width: 400,
-    height: 100,
-    xOffset: 100,
-    yOffset: 80,
-    rotate: -15,
-    xGap: 100,
-    yGap: 80,
+    width: 200,
+    height: 200,
+    xOffset: 6,
+    yOffset: 6,
+    rotate: 16,
+    xGap: 20,
+    yGap: 20,
     zIndex: 1,
+    textAlign: 'center',
+    cross: true,
   }
 })
 </script>
