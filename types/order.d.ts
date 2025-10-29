@@ -202,6 +202,7 @@ interface OrderMaterial extends ProductFinisheds {
   recycle_type?: number
   is_our?: boolean
   code_finished?: string
+  exchange_finisheds?: string[]
 }
 interface OrderPart extends ProductAccessories {
   /**

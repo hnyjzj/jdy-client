@@ -196,13 +196,28 @@ const presetToSelect = (filter: FilterWhere<OrderMaterial>): { label: string, va
                     <!-- input 输入框 -->
                     <template v-if="item.input === 'text'">
                       <!-- type 字符串输入框 -->
-                      <template v-if="item.type === 'string'">
+                      <template v-if="item.type === 'string' && item.name !== 'exchange_finisheds' ">
                         <n-input
                           v-model:value="(nowOldMaster[item.name] as string)"
                           size="large" round :placeholder="`输入${item.label}`"
                           @focus="focus"
                         />
                       </template>
+                      <template v-if="item.type === 'string' && item.name === 'exchange_finisheds'">
+                        <n-select
+                          v-model:value="(nowOldMaster[item.name] as string[])"
+                          multiple
+                          size="large"
+                          :placeholder="`选择${item.label}`"
+                          :options="orderObject.showProductList?.map((item) => ({
+                            label: `${item?.name}(${item?.code})` || '',
+                            value: item.code,
+                          }))"
+                          clearable
+                          @focus="focus"
+                        />
+                      </template>
+
                       <!-- type number 输入框 -->
                       <template v-if="item.type === 'float'">
                         <template

@@ -197,6 +197,7 @@ const onReturnProduct = async (index: number) => {
                 <common-cell label="本店货品" :value="obj.old.product?.is_our" />
                 <common-cell label="回收方式" :value="props.oldFilter.recycle_method?.preset[obj.old.product?.recycle_method!] " />
                 <common-cell label="回收类型" :value="props.oldFilter.recycle_type?.preset[obj.old.product?.recycle_type!] " />
+                <common-cell label="兑换成品" :value="obj.old?.product?.exchange_finisheds?.length ? obj.old?.product?.exchange_finisheds?.join(',') : '无'" />
                 <common-cell label="材质" :value="props.oldFilter.material?.preset[obj.old.product?.material!] " />
                 <common-cell label="成色" :value="props.oldFilter.quality?.preset[obj.old.product?.quality!] " />
                 <common-cell label="实际成色" :value="obj.old.quality_actual" />

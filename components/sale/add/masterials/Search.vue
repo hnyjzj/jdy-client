@@ -244,6 +244,21 @@ const scanCode = async () => {
                         @focus="focus"
                       />
                     </n-form-item-gi>
+                    <n-form-item-gi
+                      :span="12" label="兑换成品" path="exchange_finisheds">
+                      <n-select
+                        v-model:value="nowOldMaster.exchange_finisheds"
+                        menu-size="large"
+                        multiple
+                        placeholder="选择兑换成品"
+                        :options="orderObject.showProductList?.map((item) => ({
+                          label: `${item?.name}(${item?.code})` || '',
+                          value: item.code,
+                        }))"
+                        @focus="focus"
+                      />
+                    </n-form-item-gi>
+
                     <n-form-item-gi :span="12" label="回收方式" path="recycle_method">
                       <n-select
                         v-model:value="nowOldMaster.recycle_method"
