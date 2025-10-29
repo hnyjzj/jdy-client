@@ -158,15 +158,16 @@ async function updataPersonalFun(personal: TargetPersonal) {
 }
 
 async function updateChange() {
+  if (!personalDatas.value.staff_id)
+    return $toast.error('请选择员工')
+
+  if (!personalDatas.value.purpose)
+    return $toast.error('请填写目标')
   try {
     await personalFormRef.value?.verify()
   }
   catch {
-    if (!personalDatas.value.staff_id)
-      return $toast.error('请选择员工')
-
-    if (!personalDatas.value.purpose)
-      return $toast.error('请填写目标')
+    return
   }
 
   personalDatas.value.target_id = targetInfo.value.id
@@ -243,7 +244,7 @@ if (route.query.id) {
                       添加分组
                     </n-button>
                   </div>
-                  <div v-for="(group, gIndex) in targetInfo.groups" :key="gIndex" class="mb-4">
+                  <div v-for="(group, gIndex) in targetInfo.groups" :key="gIndex" class="mb-4 pb-4">
                     <div class="flex justify-between items-center">
                       <template v-if="datas.object === 1">
                         <template v-for="({ find }, index) in groupFilterListToArray" :key="index">
@@ -277,6 +278,9 @@ if (route.query.id) {
                             </template>
                           </template>
                           <th class="px-4 py-2 text-left">
+                            已完成
+                          </th>
+                          <th class="px-4 py-2 text-left">
                             操作
                           </th>
                         </tr>
@@ -303,8 +307,11 @@ if (route.query.id) {
                                     </td>
                                   </template>
                                 </template>
-                                <td class="px-4 py-2 flex justify-center items-center">
-                                  <n-button class="mr" type="warning" size="small" @click="updataPersonalFun(personal)">
+                                <td class="">
+                                  {{ personal.achieved }}
+                                </td>
+                                <td class="px-1 py-2 flex justify-center items-center">
+                                  <n-button class="mr-1" type="warning" size="small" @click="updataPersonalFun(personal)">
                                     编辑
                                   </n-button>
                                   <n-button type="error" size="small" @click="delPersonalInfo = personal;delPersonalDialog = true">

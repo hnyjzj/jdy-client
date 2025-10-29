@@ -66,6 +66,14 @@ function isShowGoods(item: any) {
     return false
   return true
 }
+
+function percent(achieved: any, purpose: any, digits = 0) {
+  const a = Number(achieved) || 0
+  const p = Number(purpose) || 0
+  if (p <= 0)
+    return (0).toFixed(digits)
+  return ((a / p) * 100).toFixed(digits)
+}
 </script>
 
 <template>
@@ -149,7 +157,7 @@ function isShowGoods(item: any) {
                     总完成率
                   </div>
                   <div class="info-val">
-                    {{ Math.round(statistics('achieved') / statistics('purpose') * 100) || 0 }}%
+                    {{ percent(statistics('achieved'), statistics('purpose'), 2) }}%
                   </div>
                 </div>
               </div>
@@ -172,7 +180,7 @@ function isShowGoods(item: any) {
                   总完成：{{ statistics('achieved', group) }}
                 </div>
                 <div class="text-xxl mb-2 whitespace-nowrap">
-                  完成率：{{ Math.round(statistics('achieved', group) / statistics('purpose', group) * 100) || 0 }}%
+                  完成率：{{ percent(statistics('achieved', group), statistics('purpose', group), 2) }}%
                 </div>
               </div>
 
@@ -221,7 +229,7 @@ function isShowGoods(item: any) {
                           {{ personal.achieved }}
                         </td>
                         <td class="px-4 py-2 border-b border-gray-100">
-                          {{ ((Number(personal.achieved) / Number(personal.purpose)) * 100).toFixed(2) }}%
+                          {{ percent(personal.achieved, personal.purpose, 2) }}%
                         </td>
                       </tr>
                     </template>
