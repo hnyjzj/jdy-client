@@ -9,7 +9,6 @@ onMounted(async () => {
   await nextTick()
   watermark.value = {
     content: `${userinfo.value?.nickname}\n${userinfo.value?.phone}` || undefined,
-    fontColor: 'rgba(128, 128, 128, .2)',
     selectable: false,
     fontSize: 14,
     lineHeight: 16,
