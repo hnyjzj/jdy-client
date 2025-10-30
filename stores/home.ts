@@ -3,10 +3,12 @@ export const homeDataStore = defineStore('homeDataStore', {
     todaySaleData?: Record<string, string> // 今日本店销售数据
     TodayInventory?: Record<string, string> // 今日库存数据
     Payments?: Record<string, string> // 今日收支数据
+    targetStatistic?: Record<string, string> // 目标统计
   } => ({
     todaySaleData: {} as Record<string, string>,
     TodayInventory: {} as Record<string, string>,
     Payments: {} as Record<string, string>,
+    targetStatistic: {} as Record<string, string>,
   }),
 
   getters: {
@@ -37,5 +39,14 @@ export const homeDataStore = defineStore('homeDataStore', {
         this.Payments = reorderObject(data.value.data)
       }
     },
+    /** 销售目标统计 */
+    async getTargetStatistic(req: { store_id: string }) {
+      this.targetStatistic = undefined
+      const { data } = await https.post<Record<string, string>, { store_id: string }>('/statistic/target', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        this.targetStatistic = data.value.data
+      }
+    },
+
   },
 })
