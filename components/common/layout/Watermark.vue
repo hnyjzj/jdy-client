@@ -14,7 +14,7 @@ onMounted(async () => {
     lineHeight: 16,
     width: 200,
     height: 200,
-    xOffset: 6,
+    xOffset: 16,
     yOffset: 6,
     rotate: 16,
     xGap: 20,
