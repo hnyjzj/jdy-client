@@ -163,6 +163,8 @@ async function updateChange() {
 
   if (!personalDatas.value.purpose)
     return $toast.error('请填写目标')
+  if (Number(personalDatas.value.purpose) <= 0)
+    return $toast.error('目标设置必须大于0')
   try {
     await personalFormRef.value?.verify()
   }
