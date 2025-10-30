@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+const { myStore } = storeToRefs(useStores())
+
 const { getTargetWhere, getTargetInfo, getPersonalWhere } = useTarget()
 const { targetInfo, targetFilterListToArray } = storeToRefs(useTarget())
 const route = useRoute()
@@ -286,11 +288,13 @@ function percent(achieved: any, purpose: any, digits = 0) {
         </template>
       </common-gradient>
     </common-layout-center>
-    <div class="fixed bottom-0 left-0 w-full py-4 blur-bgc px-8" uno-sm="px-0">
-      <common-layout-center>
-        <common-button-rounded content="编辑销售目标" @button-click="handleValidateButtonClick" />
-      </common-layout-center>
-    </div>
+    <template v-if="myStore.id">
+      <div class="fixed bottom-0 left-0 w-full py-4 blur-bgc px-8" uno-sm="px-0">
+        <common-layout-center>
+          <common-button-rounded content="编辑销售目标" @button-click="handleValidateButtonClick" />
+        </common-layout-center>
+      </div>
+    </template>
   </div>
 </template>
 

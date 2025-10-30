@@ -168,7 +168,9 @@ if (myStore.value.id || myStore.value.id === '') {
       @submit="submitWhere"
       @reset="resetWhere"
     />
-    <common-create @create="jump('/target/add')" />
+    <template v-if="myStore.id">
+      <common-create @create="jump('/target/add')" />
+    </template>
   </div>
 </template>
 

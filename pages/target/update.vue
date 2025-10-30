@@ -348,6 +348,9 @@ if (route.query.id) {
                           </template>
                         </template>
                         <th class="px-4 py-2 text-left">
+                          已完成
+                        </th>
+                        <th class="px-4 py-2 text-left">
                           操作
                         </th>
                       </tr>
@@ -372,6 +375,9 @@ if (route.query.id) {
                               </td>
                             </template>
                           </template>
+                          <td class="">
+                            {{ personal.achieved }}
+                          </td>
                           <td class="px-4 py-2 flex justify-center items-center">
                             <div>
                               <n-button class="mr" type="warning" size="small" @click="updataPersonalFun(personal)">
