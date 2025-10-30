@@ -230,3 +230,9 @@ interface CheckInfoParamsAll {
   id: string
   all: boolean
 }
+
+interface CheckdisposeAbnormal {
+  id: string
+  repair_reason: string
+  repair_images?: string[]
+}

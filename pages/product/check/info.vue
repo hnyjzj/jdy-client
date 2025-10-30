@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
+
 const { checkInfo, checkFilterList } = storeToRefs(useCheck())
-const { getCheckInfo, getCheckWhere, changeCheckStatus, addCheckProduct, batchCheckProduct, remove, getCheckInfoAll } = useCheck()
+const { getCheckInfo, getCheckWhere, changeCheckStatus, addCheckProduct, batchCheckProduct, remove, getCheckInfoAll, disposeAbnormal } = useCheck()
 const { userinfo } = useUser()
+const { uploadImg } = useUploadImg()
 const { $toast } = useNuxtApp()
 const { useWxWork } = useWxworkStore()
 const { myStore } = storeToRefs(useStores())
@@ -30,10 +33,14 @@ const uploadModel = ref(false)
 const importModel = ref(false)
 const confirmShow = ref(false)
 const loading = ref(false)
-
+/** 处理异常 */
+const abnormalModel = ref(false)
+/** 处理异常原因 */
+const repair_reason = ref()
 /** 上传组件引用 */
 const uploadRef = ref()
-
+/** 图片列表 */
+const previewFileList = ref<Array<UploadFileInfo>>([])
 /** 单个添加盘点的货品code */
 const goodCode = ref('')
 // **先声明并初始化 funbtns**
@@ -51,7 +58,7 @@ function getFunBtn() {
     funbtns.value.push({ status: CheckStatus.ToBeVerified, text: '结束盘点', finish: true })
     funbtns.value.push({ status: CheckStatus.ToBeVerified, text: '添加产品', add: true })
   }
-  if (checkInfo.value.inspector_id?.indexOf(userinfo.id) !== -1 && checkInfo.value.status === CheckStatus.ToBeVerified) {
+  if (checkInfo.value.inspector_id === userinfo.id && checkInfo.value.status === CheckStatus.ToBeVerified) {
     funbtns.value.push({ status: CheckStatus.Abnormal, text: '异常' })
     funbtns.value.push({ status: CheckStatus.Checked, text: '验证通过' })
   }
@@ -183,6 +190,29 @@ async function addCheckGood(params: AddCheckProductOne, isClose = true, isScan =
     inputModel.value = isClose
     importModel.value = false
     uploadRef.value?.clearData()
+  }
+}
+
+/**
+ * 处理异常
+ */
+async function submitAbnormal() {
+  const params = {
+    id: checkInfo.value.id,
+    repair_reason: repair_reason.value,
+  } as CheckdisposeAbnormal
+  if (previewFileList.value?.length) {
+    const img = previewFileList.value.map((item: any) => item.url)
+    params.repair_images = img
+  }
+  const res = await disposeAbnormal(params)
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('处理成功')
+    abnormalModel.value = false
+    await getInfo()
+  }
+  else {
+    $toast.error(res?.message || '处理失败', 5000)
   }
 }
 
@@ -352,6 +382,53 @@ async function downloadLocalFile(status: 'extra' | 'loss') {
   finally {
     loading.value = false
   }
+}
+
+/**
+ * 上传详情图
+ */
+const customRequest = useDebounceFn(async ({ file }: UploadCustomRequestOptions) => {
+  if (!file?.file)
+    return
+
+  const params = {
+    image: file.file,
+  }
+
+  try {
+    const res = await uploadImg(params)
+
+    if (res?.code === HttpCode.SUCCESS) {
+      // 将图片添加到照片墙
+      previewFileList.value.push({
+        id: `${previewFileList.value.length}`,
+        name: '图片',
+        status: 'finished',
+        url: ImageUrl(res?.data.url),
+      })
+    }
+    else {
+      $toast.error(res?.message || '图片上传失败')
+    }
+  }
+  catch (error) {
+    throw new Error(`图片上传失败: ${error || '未知错误'}`)
+  }
+}, 300)
+
+// 校验上传文件
+const beforeUpload = (data: any) => {
+  if (data.file.file?.type !== 'image/png' && data.file.file?.type !== 'image/jpeg') {
+    $toast.error('只能上传png,jpeg格式的图片文件,请重新上传')
+    return false
+  }
+}
+
+/** 删除照片墙图片 */
+function removeImg(data: { index: number }) {
+  const tempList = JSON.parse(JSON.stringify(previewFileList.value))
+  tempList.splice(data.index, 1)
+  previewFileList.value = tempList
 }
 </script>
 
@@ -608,6 +685,33 @@ async function downloadLocalFile(status: 'extra' | 'loss') {
         </template>
       </div>
     </template>
+    <template v-if="checkInfo.status === CheckStatus.Abnormal && checkInfo.store_id === myStore.id && checkInfo.inspector_id === userinfo.id">
+      <common-button-one text="处理异常" @confirm="abnormalModel = true" />
+    </template>
+
+    <common-model v-model="abnormalModel" :show-ok="true" title="处理异常" @confirm="submitAbnormal" @cancel="repair_reason = ''">
+      <div class="mb-8 relative min-h-[200px]">
+        <div class="flex items-center">
+          <div class="shrink-0 mr-4">
+            原因
+          </div>
+          <n-input v-model:value="repair_reason" type="textarea" placeholder="请输入处理异常原因" />
+        </div>
+        <div class="flex items-center mt-4">
+          <div class="shrink-0 mr-4">
+            凭证
+          </div>
+          <n-upload
+            action="#"
+            list-type="image-card"
+            :default-file-list="previewFileList"
+            :custom-request="customRequest"
+            @before-upload="beforeUpload"
+            @remove="(file) => removeImg(file)"
+          />
+        </div>
+      </div>
+    </common-model>
     <product-upload-choose
       v-model:is-model="uploadModel" title="正在盘点" @go-add="uploadModel = false;inputModel = true" @batch="importModel = true" />
     <common-model v-model="inputModel" title="正在盘点" :show-ok="true" @confirm="submitGoods" @cancel="goodCode = ''">
