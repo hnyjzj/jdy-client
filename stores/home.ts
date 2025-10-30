@@ -41,7 +41,7 @@ export const homeDataStore = defineStore('homeDataStore', {
     },
     /** 销售目标统计 */
     async getTargetStatistic(req: { store_id: string }) {
-      this.targetStatistic = undefined
+      this.targetStatistic = {}
       const { data } = await https.post<Record<string, string>, { store_id: string }>('/statistic/target', req)
       if (data.value?.code === HttpCode.SUCCESS) {
         this.targetStatistic = data.value.data

@@ -2,7 +2,6 @@
 const props = withDefaults(defineProps<{
   rbText?: string
   marginBottom?: string
-  goldPrice?: string
   data: Record<string, string>
 }>(), {
   rbText: '查看',
@@ -88,12 +87,6 @@ onBeforeUnmount(() => {
         <div>
           {{ formatTimestampToDateTime(data.start_time) }} ~ {{ formatTimestampToDateTime(data.end_time) }}
         </div>
-        <!-- <div class="color-[#333]  dark:color-[#fff] text-[12px] line-height-[24px] flex">
-          <span>
-            {{ rbText }}
-          </span>
-          <icon name="i-icon:left" :size="12" />
-        </div> -->
       </div>
     </div>
   </div>
