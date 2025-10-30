@@ -152,7 +152,7 @@ async function deleteStaff() {
 
 /** 更新员工个人目标 */
 async function updataPersonalFun(personal: TargetPersonal) {
-  personalDatas.value = personal
+  personalDatas.value = JSON.parse(JSON.stringify(personal))
   isAddModel.value = true
   isUpdate.value = true
 }
