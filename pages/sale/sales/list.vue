@@ -12,7 +12,7 @@ const { getFinishedList } = useFinished()
 const { finishedList } = storeToRefs(useFinished())
 const { filterListToArray, OrdersList, total, filterList, showtype } = storeToRefs(useOrder())
 const { searchPage } = storeToRefs(usePages())
-const { getSaleWhere, getOrderList, revokedOrder, payOrder } = useOrder()
+const { getSaleWhere, getOrderList, revokedOrder, payOrder, getOrderListAll } = useOrder()
 const filterData = ref({} as Partial<OrderWhere>)
 const filterShow = ref(false)
 
@@ -241,6 +241,13 @@ const cols = [
     },
   },
 ]
+
+const exportExcel = async () => {
+  const res = await getOrderListAll({ all: true, where: filterData.value })
+  exportSalesOrderListToXlsx(res, [
+    ...filterListToArray.value,
+  ], '销售明细报表', [])
+}
 </script>
 
 <template>
@@ -249,7 +256,9 @@ const cols = [
       v-model:showtype="showtype"
       v-model:search-key="searchKey"
       :product-list-total="total"
-      placeholder="搜索订单号" @change-card="changeCard" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
+      placeholder="搜索订单号"
+      :is-export="true"
+      @export="exportExcel" @change-card="changeCard" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
       <template #company>
         <product-manage-company @change="changeStores" />
       </template>

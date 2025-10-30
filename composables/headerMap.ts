@@ -171,6 +171,30 @@ export const statementHeaderMap: Record<string, string> = {
   '备注': 'remark_product',
 }
 
+export const saleHeaderMap: Record<string, string> = {
+  门店: 'store',
+  销售单号: 'id',
+  开单时间: 'created_at',
+  本单实收: 'price_pay',
+  定金抵扣: 'price_deposit',
+  订单状态: 'status',
+  订单来源: 'source',
+  订单备注: 'remark',
+  主销: 'mainSale',
+  主销比例: 'mainSale_ratio',
+  辅销人数: 'subSale_count',
+  辅销: 'subSale',
+  辅销比例: 'subSale_ratio',
+  会员: 'member_name',
+  会员手机号: 'member_phone',
+  成品: 'product_finisheds',
+  成品金额: 'product_finisheds_amount',
+  旧料: 'product_olds',
+  旧料金额: 'product_olds_amount',
+  配件: 'product_accessories',
+  配件金额: 'product_accessories_amount',
+}
+
 export const checkHeaderMap: Record<string, string> = {
   调出门店: 'from_store_id',
   调入门店: 'to_store_id',
