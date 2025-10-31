@@ -21,7 +21,6 @@ onMounted(async () => {
     yGap: 20,
     zIndex: 1,
     textAlign: 'center',
-    cross: true,
   }
 })
 </script>
