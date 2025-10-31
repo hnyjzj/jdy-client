@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { FormRules } from 'naive-ui'
-import { calc } from 'a-calc'
 
 const props = defineProps<{
   productFilter: Where<ProductFinisheds>
@@ -97,23 +96,15 @@ const submit = async () => {
     }
   })
 }
-const PartAmout = (quantity?: number, price?: number) => {
-  if (quantity && price) {
-    return calc('(a * b ) | =3,!n', {
-      a: quantity,
-      b: price,
-    })
-  }
-}
 
 const titleText = computed(() => {
-  return showReturnGoods.value?.goods?.type === 1 ? '成品退货' : showReturnGoods.value?.goods?.type === 2 ? '旧料退货' : '配给退货'
+  return showReturnGoods.value?.goods?.type === 1 ? '成品退货' : showReturnGoods.value?.goods?.type === 2 ? '旧料退货' : '配件退货'
 })
 const setPrice = (index: number) => {
   showModel.value = true
   showReturnGoods.value.goods = props.orders.products[index]
   showReturnGoods.value.id = props.orders.id
-  model.value.price = PartAmout(props.orders.products[index].accessorie.quantity, props.orders.products[index].accessorie.price) || 0
+  model.value.price = Number(props.orders.products[index].accessorie.price) || 0
 }
 defineExpose({
   setPrice,
