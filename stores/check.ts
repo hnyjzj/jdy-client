@@ -123,7 +123,7 @@ export const useCheck = defineStore('check', {
         return data.value
       }
       catch (error) {
-        throw new Error(`添加盘点货品失败: ${error || '未知错误'}`)
+        throw new Error(`处理盘点异常失败: ${error || '未知错误'}`)
       }
     },
   },

@@ -404,7 +404,7 @@ const customRequest = useDebounceFn(async ({ file }: UploadCustomRequestOptions)
         id: `${previewFileList.value.length}`,
         name: '图片',
         status: 'finished',
-        url: ImageUrl(res?.data.url),
+        url: res?.data.url,
       })
     }
     else {
@@ -508,6 +508,34 @@ function removeImg(data: { index: number }) {
                       <common-tags :type="getStateColor()" :text="getRadioVal('status', checkInfo.status)" />
                     </div>
                   </div>
+                  <template v-if="checkInfo.status === CheckStatus.repair">
+                    <div class="part">
+                      <div class="left">
+                        原因
+                      </div>
+                      <div class="right">
+                        {{ checkInfo.repair_reason || '--' }}
+                      </div>
+                    </div>
+                    <div class="part items-center">
+                      <div class="left">
+                        凭证
+                      </div>
+                      <div class="right">
+                        <template v-for="(item, index) in checkInfo.repair_images" :key="index">
+                          <n-image
+                            :src="ImageUrl(item)"
+                            class="mr-2"
+                            width="80"
+                            height="80"
+                            :style="{
+                              borderRadius: `${20}px`,
+                            }"
+                          />
+                        </template>
+                      </div>
+                    </div>
+                  </template>
                 </div>
                 <div class="h-0.5 bg-[#E6E6E8]" />
                 <div class="product-information flex flex-col gap-1">

@@ -54,6 +54,8 @@ export enum CheckStatus {
   Abnormal,
   /** 盘点取消 */
   Cancel,
+  /** 异常修复 */
+  repair,
 }
 
 /**
@@ -66,4 +68,5 @@ export const CheckStatusColorMap: Record<CheckStatus, string> = {
   [CheckStatus.Checked]: '#059669',
   [CheckStatus.Abnormal]: '#DC2626',
   [CheckStatus.Cancel]: '#374151',
+  [CheckStatus.repair]: 'rgb(153, 153, 153)',
 }
