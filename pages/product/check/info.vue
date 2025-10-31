@@ -290,21 +290,6 @@ const infoTotal = computed(() => {
   }
 })
 
-function getStateColor() {
-  switch (checkInfo.value.status) {
-    case CheckStatus.Draft:
-      return 'orange'
-    case CheckStatus.Checking:
-      return 'blue'
-    case CheckStatus.ToBeVerified:
-      return 'lake'
-    case CheckStatus.Abnormal:
-      return 'red'
-    default:
-      return 'ash'
-  }
-}
-
 async function pull() {
   await getInfo()
 }
@@ -505,7 +490,7 @@ function removeImg(data: { index: number }) {
                       状态
                     </div>
                     <div class="right">
-                      <common-tags :type="getStateColor()" :text="getRadioVal('status', checkInfo.status)" />
+                      <common-tags :status-map="CheckStatusColorMap" :status="checkInfo.status" :text="getRadioVal('status', checkInfo.status)" />
                     </div>
                   </div>
                   <template v-if="checkInfo.status === CheckStatus.Repair">
