@@ -27,8 +27,8 @@ if (route.query.id) {
 
 /**
  * 统计
- * @param group 目标组 不传时计算全部
  * @param key 字段名
+ * @param group 目标组 不传时计算全部
  */
 function statistics(key: string, group?: TargetGroup): number {
   try {

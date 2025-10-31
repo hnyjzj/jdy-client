@@ -116,5 +116,15 @@ export const useCheck = defineStore('check', {
         throw new Error(`删除失败: ${error || '未知错误'}`)
       }
     },
+    /** 处理异常 */
+    async disposeAbnormal(params: CheckdisposeAbnormal) {
+      try {
+        const { data } = await https.put<any, CheckdisposeAbnormal>('/product/inventory/repair', params)
+        return data.value
+      }
+      catch (error) {
+        throw new Error(`处理盘点异常失败: ${error || '未知错误'}`)
+      }
+    },
   },
 })
