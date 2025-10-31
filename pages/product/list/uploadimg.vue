@@ -35,7 +35,7 @@ function initImgWall() {
           id: `${index}`,
           name: '图片',
           status: 'finished',
-          url: item,
+          url: ImageUrl(item),
         },
       )
     })

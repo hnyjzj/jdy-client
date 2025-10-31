@@ -84,7 +84,7 @@ const updateBench = (bench: WorkBench, type: number = 1) => {
     previewFileList.value = [{
       id: bench.id,
       status: 'finished',
-      url: bench.icon,
+      url: ImageUrl(bench.icon),
       name: 'avatar',
     }]
   }
