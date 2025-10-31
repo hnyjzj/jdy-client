@@ -4,6 +4,7 @@ const props = defineProps<{
   info: OrderInfo[]
   where: Where<OrderWhere>
 }>()
+
 const handleClick = (id?: string) => {
   if (!id) {
     return
@@ -36,7 +37,7 @@ const handleClick = (id?: string) => {
         </template>
         <template #footer>
           <div class="flex-between bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
-            <div class="" />
+            <div />
             <common-button-irregular text="查看详情" @click="handleClick(item.id)" />
           </div>
         </template>

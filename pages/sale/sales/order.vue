@@ -12,7 +12,7 @@ const { printList, PrintTemplate } = storeToRefs(useSystemPrint())
 const { searchPage } = storeToRefs(usePages())
 const { filterList: memberFiler } = storeToRefs(useMemberManage())
 const { OrderDetail, filterList } = storeToRefs(useOrder())
-const { getOrderDetail, getSaleWhere, returnOrderGoods, revokedOrder, payOrder } = useOrder()
+const { getOrderDetail, getSaleWhere, returnOrderGoods, revokedOrder, payOrder, retreatOrder } = useOrder()
 const { getFinishedWhere } = useFinished()
 const { finishedFilterList } = storeToRefs(useFinished())
 const { getOldWhere } = useOld()
@@ -34,7 +34,6 @@ if (route.query.id) {
   await getAccessorieWhere()
 }
 const showModel = ref(false)
-const isSelectModel = ref(false)
 const mustSelect = ref<any[]>([])
 
 const returnGoods = async (req: ReturnGoods) => {
@@ -88,11 +87,13 @@ const getSpecificInfo = async () => {
   }
 }
 // 是否批量打印  false整单打印  true 批量打印
-const printPile = ref(false)
+// 判断当前环境
+const isMobile = ref(false)
+const tabActive = ref<'p' | 'd'>('p')
 const printPre = () => {
   const printDetail = ref<OrderInfo>({} as OrderInfo)
   printDetail.value = JSON.parse(JSON.stringify(OrderDetail.value))
-  if (printPile.value) {
+  if (tabActive.value === 'p') {
     printDetail.value.products = []
     OrderDetail.value.products.forEach((item: any) => {
       if (mustSelect.value.find(i => i === item.id)) {
@@ -111,10 +112,6 @@ const printPre = () => {
 }
 
 const isModel = ref(false)
-
-const jumpPre = () => {
-  isModel.value = true
-}
 
 const clear = () => {
   chosen.value = null
@@ -170,8 +167,104 @@ const laberComputed = (item: orderInfoProducts) => {
   }
   return ''
 }
-// 判断当前环境
-const isMobile = ref(false)
+const ReturnOrderShow = ref(false)
+const secondAddShow = ref(false)
+// 退单
+const retreatOrderConfirm = async () => {
+  const res = await retreatOrder({ id: route.query.id as string })
+  if (res.code === HttpCode.SUCCESS) {
+    $toast.success('退单成功')
+    if (OrderDetail.value?.order_deposits?.length) {
+      secondAddShow.value = false
+    }
+    else {
+      secondAddShow.value = true
+    }
+    await getOrderDetail({ id: route.query.id as string })
+  }
+  else {
+    $toast.error(res.message || '退单失败')
+  }
+}
+const { orderObject } = storeToRefs(useOrder())
+const handleCancel = (info: OrderInfo) => {
+  orderObject.value = {} as Orders
+  orderObject.value.source = info.source
+  orderObject.value.cashier_id = info.cashier_id
+  orderObject.value.clerks = []
+  orderObject.value.remarks = info.remarks || []
+  orderObject.value.round_off = Number(info.round_off) || 0
+  orderObject.value.integral_deduction = Number(info.integral_deduction) || 0
+  orderObject.value.discount_rate = Number(info.discount_rate) || 100
+  orderObject.value.payments = []
+  orderObject.value.member = info.member
+  orderObject.value.member_id = info.member_id
+  orderObject.value.showProductList = []
+  orderObject.value.showMasterialsList = []
+  orderObject.value.showPartsList = []
+  info.payments.forEach((item) => {
+    orderObject.value.payments.push({
+      payment_method: item.payment_method,
+      amount: Number(item.amount) || 0,
+    })
+  })
+  info.clerks.forEach((item) => {
+    orderObject.value.clerks.push({
+      performance_rate: Number(item.performance_rate) || 0,
+      is_main: item.is_main,
+      salesman_id: item.salesman_id,
+    })
+  })
+  info.products.forEach((item) => {
+    if (item.type === GoodsType.ProductFinish) {
+      orderObject.value.showProductList?.push({
+        ...item.finished.product!,
+        labor_fee: Number(item.finished.labor_fee) || 0,
+        price_gold: Number(item.finished.price_gold) || 0,
+        product_id: item.finished.product_id,
+      })
+    }
+    if (item.type === GoodsType.ProductOld) {
+      orderObject.value.showMasterialsList?.push({
+        ...item.old.product as any,
+        quality_actual: Number(item.old.product?.quality_actual) || undefined,
+        weight_metal: Number(item.old.product?.weight_metal) || 0,
+        recycle_price_gold: Number(item.old.product?.recycle_price_gold) || undefined,
+        recycle_price_labor: Number(item.old.product?.recycle_price_labor) || undefined,
+        weight_gem: Number(item.old.product?.weight_gem) || undefined,
+        weight_other: Number(item.old.product?.weight_other) || undefined,
+        weight_total: Number(item.old.product?.weight_total) || undefined,
+        recycle_price: Number(item.old.product?.recycle_price) || undefined,
+        label_price: Number(item.old.product?.label_price) || undefined,
+        product_id: item.old.product?.is_our ? item.old.product_id : undefined,
+      })
+    }
+    if (item.type === GoodsType.ProductAccessories) {
+      orderObject.value.showPartsList?.push({
+        ...item.accessorie.product!,
+        quantity: item.accessorie.quantity,
+        price: Number(item.accessorie.product?.price) || 0,
+        product_id: item.accessorie.product_id,
+      })
+    }
+  })
+}
+// 跳转添加订单页面
+const containAdd = () => {
+  handleCancel(OrderDetail.value)
+  navigateTo('/sale/sales/add', { external: true, replace: true, redirectCode: 200 })
+}
+
+// 打印订单
+const printOrder = async () => {
+  if (myStore?.value.id === OrderDetail.value.store_id) {
+    isModel.value = true
+  }
+  else {
+    $toast.error('当前门店与操作门店不匹配,无法操作')
+  }
+}
+
 onMounted(() => {
   isMobile.value = checkEnv()
 })
@@ -188,64 +281,61 @@ onMounted(() => {
         clear()
       }"
     >
-      <div class="flex flex-col gap-[16px] px-[12px]">
-        <div class="describe font-size-[16px] text-color-[#333] pt-[32px]">
-          请先选择打印模板。
-        </div>
-        <div class="pb-[32px]">
-          <n-space vertical>
-            <n-select
-              v-model:value="chosen"
-              :options="tempList"
-              @focus="getList()"
-              @blur="() => {
-                const loc = tempList.findIndex(item => item.value === chosen)
-                sign = loc === -1 ? false : true
-              }"
-            />
-          </n-space>
-        </div>
-      </div>
-    </common-model>
-    <common-model
-      v-model="isSelectModel"
-      :show-ok="true"
-      title="批量打印设置"
-      @confirm="modelConfirm"
-      @cancel="() => {
-        clear()
-      }"
-    >
-      <div class="flex flex-col gap-[16px] px-[12px]">
-        <div class="describe font-size-[16px] text-color-[#333]">
-          请先选择打印模板。
-        </div>
-        <div class="">
-          <n-space vertical>
-            <n-select
-              v-model:value="chosen"
-              :options="tempList"
-              @focus="getList()"
-              @blur="() => {
-                const loc = tempList.findIndex(item => item.value === chosen)
-                sign = loc === -1 ? false : true
-              }"
-            />
-          </n-space>
-        </div>
-        <div class="flex flex-col">
-          <div class="font-size-[16px] pb-[6px]">
-            选择要打印的货品
+      <n-tabs v-model:value="tabActive" type="line" animated>
+        <n-tab-pane name="p" tab="批量打印">
+          <div class="flex flex-col gap-[16px] p-[12px]">
+            <div class="describe font-size-[16px] text-color-[#333]">
+              请先选择打印模板。
+            </div>
+            <div class="">
+              <n-space vertical>
+                <n-select
+                  v-model:value="chosen"
+                  :options="tempList"
+                  @focus="getList()"
+                  @blur="() => {
+                    const loc = tempList.findIndex(item => item.value === chosen)
+                    sign = loc === -1 ? false : true
+                  }"
+                />
+              </n-space>
+            </div>
+            <div class="flex flex-col">
+              <div class="font-size-[16px] pb-[6px]">
+                选择要打印的货品
+              </div>
+              <div>
+                <n-select
+                  v-model:value="mustSelect" multiple :options="OrderDetail.products.map(v => ({
+                    label: laberComputed(v),
+                    value: v.id,
+                  }))" />
+              </div>
+            </div>
           </div>
-          <div>
-            <n-select
-              v-model:value="mustSelect" multiple :options="OrderDetail.products.map(v => ({
-                label: laberComputed(v),
-                value: v.id,
-              }))" />
+          <div />
+        </n-tab-pane>
+        <n-tab-pane name="d" tab="打印">
+          <div class="flex flex-col gap-[16px] px-[12px]">
+            <div class="describe font-size-[16px] text-color-[#333] pt-[32px]">
+              请先选择打印模板。
+            </div>
+            <div class="pb-[32px]">
+              <n-space vertical>
+                <n-select
+                  v-model:value="chosen"
+                  :options="tempList"
+                  @focus="getList()"
+                  @blur="() => {
+                    const loc = tempList.findIndex(item => item.value === chosen)
+                    sign = loc === -1 ? false : true
+                  }"
+                />
+              </n-space>
+            </div>
           </div>
-        </div>
-      </div>
+        </n-tab-pane>
+      </n-tabs>
     </common-model>
 
     <div class="p-[16px] pb-[80px]">
@@ -289,33 +379,41 @@ onMounted(() => {
     </div>
 
     <template v-if="!route?.query?.embedded">
-      <template v-if="OrderDetail?.status === 3 || OrderDetail?.status === 4">
-        <template v-if="!isMobile">
-          <common-button-bottom
-            confirm-text="打印"
-            cancel-text="批量打印"
-            @confirm="() => {
-              if (myStore?.id === OrderDetail.store_id){
-                jumpPre()
-                printPile = false
-              }
-              else {
-                $toast.error('当前门店与操作门店不匹配,无法操作')
-              }
-            }"
-            @cancel="() => {
-              if (myStore?.id === OrderDetail.store_id){
-                isSelectModel = true
-                printPile = true
-              }
-              else {
-                $toast.error('当前门店与操作门店不匹配,无法操作')
-              }
-            }"
-          />
-        </template>
-      </template>
+      <div class="bg-[#fff] fixed bottom-0 w-full grid-12">
+        <div class="flex-around col-10 offset-1 gap-[12px]" uno-sm="col-6 offset-3">
+          <template v-if="OrderDetail.status === OrderStatusText.OrderSalesProductStatusComplete">
+            <template v-if="OrderDetail.cashier_id === userinfo.id || OrderDetail.operator_id === userinfo.id">
+              <button
+                class="btn-left flex-1" @click="ReturnOrderShow = true">
+                退单
+              </button>
+            </template>
+          </template>
+          <template v-if="OrderDetail?.status === OrderStatusText.OrderSalesProductStatusComplete || OrderDetail?.status === OrderStatusText.OrderSalesProductStatusWaitPay">
+            <template v-if="!isMobile">
+              <button
+                class="btn-right flex-1" @click="printOrder">
+                打印
+              </button>
+            </template>
+          </template>
+        </div>
+      </div>
     </template>
+
+    <common-confirm
+      v-model:show="ReturnOrderShow"
+      icon="warning"
+      text="确认要退单吗？"
+      @submit="retreatOrderConfirm()"
+    />
+
+    <common-confirm
+      v-model:show="secondAddShow"
+      text="是否重新新增订单？"
+      @submit="containAdd()"
+    />
+
     <correspond-store :correspond-ids="[OrderDetail.store_id]" />
   </div>
 </template>
@@ -333,5 +431,19 @@ onMounted(() => {
 }
 .info {
   --uno: 'bg-[#fff] dark:bg-[rgb(245,245,245,0.1)] border-solid border-1 border-[#EFF0F6] dark:border-[rgb(239,240,246,0.1)] rounded-[24px] overflow-hidden';
+}
+.btn {
+  --uno: 'fixed bottom-0 left-0 right-0 blur-bgc p-[12px_16px] text-[16px] font-bold';
+  border-top: rgba(230, 230, 232, 1) solid 1px;
+  &-left {
+    box-shadow: 0px 6px 6px rgba(110, 166, 255, 0.3);
+    --uno: 'text-[16px] py-[8px] my-[16px] border-none flex-1 text-center rounded-[36px]  bg-#F24E4D color-#fff';
+  }
+
+  &-right {
+    background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
+    box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
+    --uno: 'text-[16px] py-[8px] my-[16px] border-none flex-1 rounded-[36px] text-[#FFFFFF]';
+  }
 }
 </style>

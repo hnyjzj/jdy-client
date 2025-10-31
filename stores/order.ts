@@ -173,6 +173,19 @@ export const useOrder = defineStore('Order', {
         return { code: data.value?.code, message: data.value?.message || '退货失败' }
       }
     },
+    /**
+     * 退单接口 put   /order/sales/retreat
+     */
+    async retreatOrder(req: { id: string }) {
+      const { data } = await https.put<any, { id: string }>('/order/sales/retreat', req)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return { code: data.value?.code, message: '退单成功' }
+      }
+      else {
+        return { code: data.value?.code, message: data.value?.message || '退单失败' }
+      }
+    },
+
     async initObjForm() {
       this.orderObject = {} as Orders
     },

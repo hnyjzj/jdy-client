@@ -7,6 +7,21 @@ const emits = defineEmits<{
 // 设置整单积分抵扣
 const formData = defineModel({ default: { } as Orders })
 const hasCheck = ref(false)
+watch(() => formData.value.discount_rate, (val) => {
+  if (val) {
+    emits('setDiscountRate', val)
+  }
+}, { immediate: true })
+watch(() => formData.value.integral_deduction, (val) => {
+  if (val) {
+    emits('setScoreDeduct', val)
+  }
+}, { immediate: true })
+watch(() => formData.value.round_off, (val) => {
+  if (val) {
+    emits('setAmountReduce', val)
+  }
+}, { immediate: true })
 </script>
 
 <template>
