@@ -508,7 +508,7 @@ function removeImg(data: { index: number }) {
                       <common-tags :type="getStateColor()" :text="getRadioVal('status', checkInfo.status)" />
                     </div>
                   </div>
-                  <template v-if="checkInfo.status === CheckStatus.repair">
+                  <template v-if="checkInfo.status === CheckStatus.Repair">
                     <div class="part">
                       <div class="left">
                         原因
