@@ -361,7 +361,7 @@ onMounted(() => {
                 <!-- 订单门店 为 当前门店id -->
                 <template v-if="[OrderDetail.store_id].includes(myStore.id)">
                   <common-button-rounded margin="16px 0px" bgc="#F24E4D" content="撤销" @button-click="cancelOrder" />
-                  <common-button-rounded margin="16px 0px" content="支付" @button-click="payOrderConfirm" />
+                  <common-button-rounded margin="16px 0px" bgc="#059669" content="支付" @button-click="payOrderConfirm" />
                 </template>
               </template>
             </template>
@@ -369,7 +369,7 @@ onMounted(() => {
             <template v-if="[OrderStatusText.OrderSalesProductStatusComplete].includes(OrderDetail.status)">
               <!-- 订单操作人 或 订单收银员 为 当前用户id -->
               <template v-if="[OrderDetail.operator_id, OrderDetail.cashier_id].includes(userinfo.id)">
-                <common-button-rounded margin="16px 0px" bgc="#F24E4D" content="退单" @button-click="ReturnOrderShow = true" />
+                <common-button-rounded margin="16px 0px" bgc="#D97706" content="退单" @button-click="ReturnOrderShow = true" />
               </template>
             </template>
             <!-- 订单状态 为 已完成 或 已退单 -->
