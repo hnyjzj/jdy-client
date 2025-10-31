@@ -352,7 +352,7 @@ onMounted(() => {
         :part-filter="accessorieFilterList"
       />
       <template v-if="!route?.query?.embedded">
-        <template v-if=" OrderDetail.status === OrderStatusText.OrderSalesProductStatusWaitPay">
+        <template v-if="OrderDetail.status === OrderStatusText.OrderSalesProductStatusWaitPay">
           <template v-if="OrderDetail.cashier_id === userinfo.id ">
             <template v-if=" OrderDetail.store_id === myStore.id">
               <common-button-bottom
@@ -375,31 +375,30 @@ onMounted(() => {
             </template>
           </template>
         </template>
+        <template v-else>
+          <div class="bg-[#fff] fixed bottom-0 left-0 z-1 w-full grid-12">
+            <div class="flex-around col-10 offset-1 gap-[12px]" uno-sm="col-6 offset-3">
+              <template v-if="OrderDetail.status === OrderStatusText.OrderSalesProductStatusComplete">
+                <template v-if="OrderDetail.cashier_id === userinfo.id || OrderDetail.operator_id === userinfo.id">
+                  <button
+                    class="btn-left flex-1" @click="ReturnOrderShow = true">
+                    退单
+                  </button>
+                </template>
+              </template>
+              <template v-if="OrderDetail?.status === OrderStatusText.OrderSalesProductStatusComplete || OrderDetail?.status === OrderStatusText.OrderSalesProductStatusWaitPay">
+                <template v-if="!isMobile">
+                  <button
+                    class="btn-right flex-1" @click="printOrder">
+                    打印
+                  </button>
+                </template>
+              </template>
+            </div>
+          </div>
+        </template>
       </template>
     </div>
-
-    <template v-if="!route?.query?.embedded">
-      <div class="bg-[#fff] fixed bottom-0 w-full grid-12">
-        <div class="flex-around col-10 offset-1 gap-[12px]" uno-sm="col-6 offset-3">
-          <template v-if="OrderDetail.status === OrderStatusText.OrderSalesProductStatusComplete">
-            <template v-if="OrderDetail.cashier_id === userinfo.id || OrderDetail.operator_id === userinfo.id">
-              <button
-                class="btn-left flex-1" @click="ReturnOrderShow = true">
-                退单
-              </button>
-            </template>
-          </template>
-          <template v-if="OrderDetail?.status === OrderStatusText.OrderSalesProductStatusComplete || OrderDetail?.status === OrderStatusText.OrderSalesProductStatusWaitPay">
-            <template v-if="!isMobile">
-              <button
-                class="btn-right flex-1" @click="printOrder">
-                打印
-              </button>
-            </template>
-          </template>
-        </div>
-      </div>
-    </template>
 
     <common-confirm
       v-model:show="ReturnOrderShow"
