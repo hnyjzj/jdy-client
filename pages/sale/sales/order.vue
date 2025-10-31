@@ -86,10 +86,9 @@ const getSpecificInfo = async () => {
     tempInfo.value = JSON.parse(JSON.stringify(printList.value[0]))
   }
 }
-// 是否批量打印  false整单打印  true 批量打印
 // 判断当前环境
 const isMobile = ref(false)
-const tabActive = ref<'p' | 'd'>('p')
+const tabActive = ref<'p' | 'd'>('d')
 const printPre = () => {
   const printDetail = ref<OrderInfo>({} as OrderInfo)
   printDetail.value = JSON.parse(JSON.stringify(OrderDetail.value))
@@ -168,6 +167,8 @@ const laberComputed = (item: orderInfoProducts) => {
   return ''
 }
 const ReturnOrderShow = ref(false)
+const cancelOrderShow = ref(false)
+const payOrderShow = ref(false)
 const secondAddShow = ref(false)
 // 退单
 const retreatOrderConfirm = async () => {
@@ -282,9 +283,29 @@ onMounted(() => {
       }"
     >
       <n-tabs v-model:value="tabActive" type="line" animated>
+        <n-tab-pane name="d" tab="打印">
+          <div class="flex flex-col gap-[16px] p-[12px]">
+            <div class="font-size-[16px] text-color-[#333]">
+              请先选择打印模板。
+            </div>
+            <div class="pb-[32px]">
+              <n-space vertical>
+                <n-select
+                  v-model:value="chosen"
+                  :options="tempList"
+                  @focus="getList()"
+                  @blur="() => {
+                    const loc = tempList.findIndex(item => item.value === chosen)
+                    sign = loc === -1 ? false : true
+                  }"
+                />
+              </n-space>
+            </div>
+          </div>
+        </n-tab-pane>
         <n-tab-pane name="p" tab="批量打印">
           <div class="flex flex-col gap-[16px] p-[12px]">
-            <div class="describe font-size-[16px] text-color-[#333]">
+            <div class="font-size-[16px] text-color-[#333]">
               请先选择打印模板。
             </div>
             <div class="">
@@ -315,26 +336,6 @@ onMounted(() => {
           </div>
           <div />
         </n-tab-pane>
-        <n-tab-pane name="d" tab="打印">
-          <div class="flex flex-col gap-[16px] px-[12px]">
-            <div class="describe font-size-[16px] text-color-[#333] pt-[32px]">
-              请先选择打印模板。
-            </div>
-            <div class="pb-[32px]">
-              <n-space vertical>
-                <n-select
-                  v-model:value="chosen"
-                  :options="tempList"
-                  @focus="getList()"
-                  @blur="() => {
-                    const loc = tempList.findIndex(item => item.value === chosen)
-                    sign = loc === -1 ? false : true
-                  }"
-                />
-              </n-space>
-            </div>
-          </div>
-        </n-tab-pane>
       </n-tabs>
     </common-model>
 
@@ -352,54 +353,54 @@ onMounted(() => {
         :part-filter="accessorieFilterList"
       />
       <template v-if="!route?.query?.embedded">
-        <template v-if=" OrderDetail.status === OrderStatusText.OrderSalesProductStatusWaitPay">
-          <template v-if="OrderDetail.cashier_id === userinfo.id ">
-            <template v-if=" OrderDetail.store_id === myStore.id">
-              <common-button-bottom
-                confirm-text="支付"
-                cancel-text="撤销"
-                @confirm="payOrderConfirm"
-                @cancel="cancelOrder"
-              >
-                <template #cancel>
-                  <div class="color-[rgba(255,47,47,1)]">
-                    <span>撤销</span>
-                  </div>
+        <div class="bg-[#fff] fixed bottom-0 left-0 z-1 w-full grid-12">
+          <div class="flex col-10 offset-1 gap-[12px]" uno-sm="col-6 offset-3">
+            <!--  订单状态 为 待付款 -->
+            <template v-if="[OrderStatusText.OrderSalesProductStatusWaitPay].includes(OrderDetail.status)">
+              <!-- 订单门店 为 当前门店id -->
+              <template v-if="[OrderDetail.store_id].includes(myStore.id)">
+                <!-- 订单收银员 为 当前用户id -->
+                <template v-if="[OrderDetail.cashier_id].includes(userinfo.id)">
+                  <common-button-rounded margin="16px 0px" bgc="#374151" content="撤销" @button-click="cancelOrderShow = true" />
+                  <common-button-rounded margin="16px 0px" bgc="#059669" content="支付" @button-click="payOrderShow = true" />
                 </template>
-                <template #confirm>
-                  <span>
-                    支付
-                  </span>
-                </template>
-              </common-button-bottom>
+              </template>
             </template>
-          </template>
-        </template>
+            <!-- 订单状态 为 已完成 -->
+            <template v-if="[OrderStatusText.OrderSalesProductStatusComplete].includes(OrderDetail.status)">
+              <!-- 订单门店 为 当前门店id -->
+              <template v-if="[OrderDetail.store_id].includes(myStore.id)">
+                <!-- 订单操作人 或 订单收银员 为 当前用户id -->
+                <template v-if="[OrderDetail.operator_id, OrderDetail.cashier_id].includes(userinfo.id)">
+                  <common-button-rounded margin="16px 0px" bgc="#F24E4D" content="退单" @button-click="ReturnOrderShow = true" />
+                </template>
+              </template>
+            </template>
+            <!-- 订单状态 为 已完成 或 已退单 -->
+            <template
+              v-if="[OrderStatusText.OrderSalesProductStatusComplete, OrderStatusText.OrderSalesProductStatusRefund].includes(OrderDetail.status)">
+              <template v-if="!isMobile">
+                <common-button-rounded margin="16px 0px" content="打印" @button-click="printOrder" />
+              </template>
+            </template>
+          </div>
+        </div>
       </template>
     </div>
 
-    <template v-if="!route?.query?.embedded">
-      <div class="bg-[#fff] fixed bottom-0 w-full grid-12">
-        <div class="flex-around col-10 offset-1 gap-[12px]" uno-sm="col-6 offset-3">
-          <template v-if="OrderDetail.status === OrderStatusText.OrderSalesProductStatusComplete">
-            <template v-if="OrderDetail.cashier_id === userinfo.id || OrderDetail.operator_id === userinfo.id">
-              <button
-                class="btn-left flex-1" @click="ReturnOrderShow = true">
-                退单
-              </button>
-            </template>
-          </template>
-          <template v-if="OrderDetail?.status === OrderStatusText.OrderSalesProductStatusComplete || OrderDetail?.status === OrderStatusText.OrderSalesProductStatusWaitPay">
-            <template v-if="!isMobile">
-              <button
-                class="btn-right flex-1" @click="printOrder">
-                打印
-              </button>
-            </template>
-          </template>
-        </div>
-      </div>
-    </template>
+    <common-confirm
+      v-model:show="payOrderShow"
+      icon="warning"
+      text="确认要支付吗？"
+      @submit="payOrderConfirm()"
+    />
+
+    <common-confirm
+      v-model:show="cancelOrderShow"
+      icon="warning"
+      text="确认要撤销吗？"
+      @submit="cancelOrder()"
+    />
 
     <common-confirm
       v-model:show="ReturnOrderShow"
@@ -421,29 +422,5 @@ onMounted(() => {
 <style>
 .n-base-selection {
   border-radius: 8px;
-}
-</style>
-
-<style lang="scss" scoped>
-.footer {
-  border-top: 1px solid #e6e6e8;
-  --uno: 'fixed bottom-0 left-0 block w-full bg-[#F1F5FE] dark:bg-[rgba(0,0,0,0.6)] blur-8px py-3';
-}
-.info {
-  --uno: 'bg-[#fff] dark:bg-[rgb(245,245,245,0.1)] border-solid border-1 border-[#EFF0F6] dark:border-[rgb(239,240,246,0.1)] rounded-[24px] overflow-hidden';
-}
-.btn {
-  --uno: 'fixed bottom-0 left-0 right-0 blur-bgc p-[12px_16px] text-[16px] font-bold';
-  border-top: rgba(230, 230, 232, 1) solid 1px;
-  &-left {
-    box-shadow: 0px 6px 6px rgba(110, 166, 255, 0.3);
-    --uno: 'text-[16px] py-[8px] my-[16px] border-none flex-1 text-center rounded-[36px]  bg-#F24E4D color-#fff';
-  }
-
-  &-right {
-    background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-    box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
-    --uno: 'text-[16px] py-[8px] my-[16px] border-none flex-1 rounded-[36px] text-[#FFFFFF]';
-  }
 }
 </style>
