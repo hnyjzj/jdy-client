@@ -4,54 +4,12 @@ const props = defineProps<{
   info: OrderInfo[]
   where: Where<OrderWhere>
 }>()
-const { orderObject } = storeToRefs(useOrder())
+
 const handleClick = (id?: string) => {
   if (!id) {
     return
   }
   navigateTo(`/sale/sales/order?id=${id}`)
-}
-
-const handleCancel = (info: OrderInfo) => {
-  console.log(info)
-  orderObject.value = {} as Orders
-  orderObject.value.source = info.source
-  orderObject.value.cashier_id = info.cashier_id
-  orderObject.value.clerks = []
-  orderObject.value.remarks = info.remarks || []
-  orderObject.value.round_off = Number(info.round_off) || 0
-  orderObject.value.integral_deduction = Number(info.integral_deduction) || 0
-  orderObject.value.discount_rate = Number(info.discount_rate) || 100
-  orderObject.value.payments = []
-  orderObject.value.member = info.member
-  orderObject.value.member_id = info.member_id
-  orderObject.value.showProductList = []
-  orderObject.value.showMasterialsList = []
-  orderObject.value.showPartsList = []
-  info.payments.forEach((item) => {
-    orderObject.value.payments.push({
-      payment_method: item.payment_method,
-      amount: Number(item.amount) || 0,
-    })
-  })
-  info.clerks.forEach((item) => {
-    orderObject.value.clerks.push({
-      performance_rate: Number(item.performance_rate) || 0,
-      is_main: item.is_main,
-      salesman_id: item.salesman_id,
-    })
-  })
-  info.products.forEach((item) => {
-    if (item.type === GoodsType.ProductFinish) {
-      orderObject.value.showProductList?.push({ ...item.finished.product!, labor_fee: Number(item.finished.labor_fee) || 0, price_gold: Number(item.finished.price_gold) || 0 })
-    }
-    if (item.type === GoodsType.ProductOld) {
-      orderObject.value.showMasterialsList?.push(item.old!)
-    }
-    if (item.type === GoodsType.ProductAccessories) {
-      orderObject.value.showPartsList?.push({ ...item.accessorie.product!, quantity: item.accessorie.quantity, price: Number(item.accessorie.product?.price) || 0 })
-    }
-  })
 }
 </script>
 
@@ -79,9 +37,7 @@ const handleCancel = (info: OrderInfo) => {
         </template>
         <template #footer>
           <div class="flex-between bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
-            <div class="cursor-pointer" @click="handleCancel(item)">
-              撤销
-            </div>
+            <div />
             <common-button-irregular text="查看详情" @click="handleClick(item.id)" />
           </div>
         </template>

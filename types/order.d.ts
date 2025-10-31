@@ -346,7 +346,7 @@ interface OrderInfo extends Orders {
   order_deposits: DepositOrderInfo[]
 
   products: orderInfoProducts[]
-
+  operator_id: string
 }
 
 interface orderInfoProducts {
