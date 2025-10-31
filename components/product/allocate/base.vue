@@ -68,7 +68,9 @@ const props = defineProps<{
                     状态
                   </div>
                   <div class="info-val">
-                    {{ props.filterList.status?.preset[props.info.status] }}
+                    <div class="flex justify-end">
+                      <common-tags :status-map="AllocateStatusColorMap" :status="props.info.status" :text="props.filterList.status?.preset[props.info.status]" />
+                    </div>
                   </div>
                 </div>
               </div>

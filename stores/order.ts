@@ -83,6 +83,18 @@ export const useOrder = defineStore('Order', {
       }
     },
 
+    /*
+    获取所有订单列表
+    */
+    async getOrderListAll(pamars: AllFinished<OrderInfo>) {
+      pamars = { ...pamars, where: { ...pamars.where, store_id: useStores().myStore.id } }
+      const { data } = await https.post<ResList<OrderInfo>, AllFinished<OrderInfo>>('/order/sales/list', pamars)
+      if (data.value?.code === HttpCode.SUCCESS) {
+        return data.value.data.list
+      }
+      return []
+    },
+
     // 获取今日金价
     async getTodayPrice() {
       const { data } = await https.get<any, null>('/setting/gold_price/get')

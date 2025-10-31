@@ -53,7 +53,7 @@ const rules = ref<Rules<Staff>>({
 
 })
 // 初始化头像
-fileList.value = [{ url: ImageUrl(avatar), isImage: true }]
+fileList.value = [{ url: avatar, isImage: true }]
 
 onMounted(() => {
   // 其他授权方式 判断是否有微信企业微信授权
@@ -123,7 +123,7 @@ if (userinfo.value.avatar) {
   previewFileList.value = [{
     id: userinfo.value.avatar,
     status: 'finished',
-    url: ImageUrl(userinfo.value.avatar),
+    url: userinfo.value.avatar,
     name: 'avatar',
     type: 'image/png',
   }]
@@ -145,7 +145,7 @@ const customRequest = useDebounceFn(async ({ file }: UploadCustomRequestOptions)
     const res = await staff.uploadAvatar({ avatar: file.file })
     if (res.data?.value?.data?.url) {
       userinfoForm.value.avatar = res.data.value?.data.url as string
-      fileList.value = [{ url: ImageUrl(res.data.value?.data.url), isImage: true }]
+      fileList.value = [{ url: res.data.value?.data.url, isImage: true }]
     }
   }
   catch (error) {

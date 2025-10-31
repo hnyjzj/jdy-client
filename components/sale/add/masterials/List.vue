@@ -43,6 +43,11 @@ const deleteConfirm = () => {
                           {{ item.label }}: {{ item.preset[obj[item.name] as string ] ? item.preset[obj[item.name] as string ] : '无' }}
                         </n-grid-item>
                       </template>
+                      <template v-else-if="item.input === 'text' && item.name === 'exchange_finisheds'">
+                        <n-grid-item :span="12">
+                          {{ item.label }}: {{ obj[item.name]?.length ? obj[item.name]?.join(',') : '无' }}
+                        </n-grid-item>
+                      </template>
                       <template v-else>
                         <n-grid-item :span="12">
                           {{ item.label }}: {{ obj[item.name] ? obj[item.name] : '无' }}

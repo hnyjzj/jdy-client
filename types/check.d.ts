@@ -201,6 +201,10 @@ interface CheckInfo {
   extra_count: number
   /** 盘亏数量 */
   loss_count: number
+  /** 修复原因 */
+  repair_reason: string
+  /** 修复凭证图片 */
+  repair_images: string[]
 }
 
 interface CheckProduct {
@@ -229,4 +233,10 @@ interface CheckInfoParams {
 interface CheckInfoParamsAll {
   id: string
   all: boolean
+}
+
+interface CheckdisposeAbnormal {
+  id: string
+  repair_reason: string
+  repair_images?: string[]
 }
