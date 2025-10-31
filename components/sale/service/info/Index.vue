@@ -50,7 +50,7 @@ if (props.detail.images?.length) {
       id: useId(),
       name: item,
       status: 'finished',
-      url: ImageUrl(item),
+      url: item,
     })
   })
 }

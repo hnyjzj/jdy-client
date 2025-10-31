@@ -27,7 +27,7 @@ const customRequest = async ({ file, onFinish }: UploadCustomRequestOptions) => 
       id: useId(),
       name: res,
       status: 'finished',
-      url: ImageUrl(res),
+      url: res,
     })
   }
   onFinish?.()

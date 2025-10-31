@@ -36,7 +36,7 @@ function initImgWall() {
           id: `${index}`,
           name: '图片',
           status: 'finished',
-          url: ImageUrl(item),
+          url: item,
         },
       )
     })
@@ -133,7 +133,7 @@ const customRequest = useDebounceFn(async ({ file }: UploadCustomRequestOptions)
         id: `${previewFileList.value.length}`,
         name: '图片',
         status: 'finished',
-        url: ImageUrl(res?.data.url),
+        url: res?.data.url,
       })
     //   await updateFinishedInfo(productParams.value)
     }
