@@ -4,9 +4,11 @@ const props = withDefaults(defineProps<{
   dark?: `dark:${string}`
   color?: string
   size?: number | string
+  position?: string
 }>(), {
   color: 'currentColor',
   size: 16,
+  position: 'center',
 })
 
 const attrs = useAttrs()
@@ -18,6 +20,7 @@ const attrs = useAttrs()
     :style="{
       '--color': props.color,
       '--size': props.size ? `${props.size}px` : '16px',
+      'justify-content': props.position,
     }">
     <div
       :class="[props.name, props.dark]" class="i" v-bind="attrs" />
