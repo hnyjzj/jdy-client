@@ -211,7 +211,7 @@ function percent(achieved: any, purpose: any, digits = 0) {
                       <tr>
                         <td class="px-4 py-2 border-b border-gray-100">
                           <div class="flex items-center">
-                            <img :src="personal.staff.avatar" alt="widthfix" width="26" class="rounded-full">
+                            <img :src="ImageUrl(personal.staff.avatar)" alt="widthfix" width="26" class="rounded-full">
                             <div class="ml-2">
                               <div>
                                 {{ personal.staff.nickname }}
@@ -265,7 +265,7 @@ function percent(achieved: any, purpose: any, digits = 0) {
                   <tr>
                     <td class="px-4 py-2 border-b border-gray-100">
                       <div class="flex items-center">
-                        <img :src="personal.staff.avatar" alt="widthfix" width="26" class="rounded-full">
+                        <img :src="ImageUrl(personal.staff.avatar)" alt="widthfix" width="26" class="rounded-full">
                         <div class="ml-2">
                           {{ personal.staff.nickname }}
                         </div>

@@ -222,7 +222,7 @@ const cols = [
     return getTarget(rowData, 'status', 'status') || '--'
   } },
   { title: '入会门店', render: (rowData: Member) => {
-    return rowData.store?.name || '--'
+    return rowData.store?.alias || '--'
   } },
   {
     title: '操作',

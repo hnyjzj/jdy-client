@@ -138,7 +138,7 @@ const processDate = (date: string) => {
                   入会门店
                 </div>
                 <div class="item-right">
-                  {{ props.data.store?.name || PERCH }}
+                  {{ props.data.store?.alias || PERCH }}
                 </div>
               </div>
               <div class="item">
