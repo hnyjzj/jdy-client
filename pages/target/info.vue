@@ -191,6 +191,9 @@ function percent(achieved: any, purpose: any, digits = 0) {
                 <thead>
                   <tr class="bg-gray-100">
                     <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
+                      排名
+                    </th>
+                    <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
                       员工
                     </th>
                     <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
@@ -210,19 +213,23 @@ function percent(achieved: any, purpose: any, digits = 0) {
                     <template v-if="personal.group_id === group.id">
                       <tr>
                         <td class="px-4 py-2 border-b border-gray-100">
-                          <div class="flex items-center">
-                            <img :src="ImageUrl(personal.staff.avatar)" alt="widthfix" width="26" class="rounded-full">
-                            <div class="ml-2">
-                              <div>
-                                {{ personal.staff.nickname }}
-                              </div>
-                              <template v-if="personal.is_leader">
-                                <div class="text-xs text-blue-500">
-                                  组长
-                                </div>
-                              </template>
+                          <template v-if="pIndex === 0">
+                            <icon position="start" name="i-svg:first-place" :size="22" />
+                          </template>
+                          <template v-else-if="pIndex === 1">
+                            <icon position="start" name="i-svg:second-place" :size="22" />
+                          </template>
+                          <template v-else-if="pIndex === 2">
+                            <icon position="start" name="i-svg:third-place" :size="22" />
+                          </template>
+                          <template v-else>
+                            <div class="pl-[6px]">
+                              {{ pIndex + 1 }}
                             </div>
-                          </div>
+                          </template>
+                        </td>
+                        <td class="px-4 py-2 border-b border-gray-100">
+                          {{ personal.staff.nickname }}
                         </td>
                         <td class="px-4 py-2 border-b border-gray-100">
                           {{ personal.purpose }}
@@ -231,7 +238,12 @@ function percent(achieved: any, purpose: any, digits = 0) {
                           {{ personal.achieved }}
                         </td>
                         <td class="px-4 py-2 border-b border-gray-100">
-                          {{ percent(personal.achieved, personal.purpose, 2) }}%
+                          <template v-if="Number(personal.purpose) > 0">
+                            {{ percent(personal.achieved, personal.purpose, 2) }}%
+                          </template>
+                          <template v-else>
+                            0%
+                          </template>
                         </td>
                       </tr>
                     </template>
@@ -245,6 +257,9 @@ function percent(achieved: any, purpose: any, digits = 0) {
             <table class="w-full border border-gray-400" style="border:1px solid #eee;border-collapse: collapse;">
               <thead>
                 <tr class="bg-gray-100">
+                  <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
+                    排名
+                  </th>
                   <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
                     员工
                   </th>
@@ -264,12 +279,23 @@ function percent(achieved: any, purpose: any, digits = 0) {
                 <template v-for="(personal, pIndex) in targetInfo.personals" :key="pIndex">
                   <tr>
                     <td class="px-4 py-2 border-b border-gray-100">
-                      <div class="flex items-center">
-                        <img :src="ImageUrl(personal.staff.avatar)" alt="widthfix" width="26" class="rounded-full">
-                        <div class="ml-2">
-                          {{ personal.staff.nickname }}
+                      <template v-if="pIndex === 0">
+                        <icon position="start" name="i-svg:first-place" :size="22" />
+                      </template>
+                      <template v-else-if="pIndex === 1">
+                        <icon position="start" name="i-svg:second-place" :size="22" />
+                      </template>
+                      <template v-else-if="pIndex === 2">
+                        <icon position="start" name="i-svg:third-place" :size="22" />
+                      </template>
+                      <template v-else>
+                        <div class="pl-[6px]">
+                          {{ pIndex + 1 }}
                         </div>
-                      </div>
+                      </template>
+                    </td>
+                    <td class="px-4 py-2 border-b border-gray-100">
+                      {{ personal.staff.nickname }}
                     </td>
                     <td class="px-4 py-2 border-b border-gray-100">
                       {{ personal.purpose }}
@@ -278,7 +304,12 @@ function percent(achieved: any, purpose: any, digits = 0) {
                       {{ personal.achieved }}
                     </td>
                     <td class="px-4 py-2 border-b border-gray-100">
-                      {{ ((Number(personal.achieved) / Number(personal.purpose)) * 100).toFixed(2) }}%
+                      <template v-if="Number(personal.purpose) > 0">
+                        {{ ((Number(personal.achieved) / Number(personal.purpose)) * 100).toFixed(2) || 0 }}%
+                      </template>
+                      <template v-else>
+                        0%
+                      </template>
                     </td>
                   </tr>
                 </template>
