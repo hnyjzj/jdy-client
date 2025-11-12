@@ -22,7 +22,7 @@ const searchStores = useDebounceFn(async (query) => {
   const res = await staffGetStoreList({ page: 1, limit: 20, where: { name: query } })
   if (res.length) {
     StoresList.value = res.map(item => ({
-      label: item.name,
+      label: item.alias,
       value: item.id,
     }))
   }
