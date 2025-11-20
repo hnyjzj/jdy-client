@@ -2,7 +2,6 @@
 const props = defineProps<{
   title: any[]
   list?: BossSalesList[]
-  total?: BossSalesList
   cardTitle: string
   where?: Where<BossWhere>
   loading: boolean
@@ -18,7 +17,7 @@ const toggleChart = ref<'list' | 'chart'>('list')
 
 <template>
   <div>
-    <summary-table v-model="toggleChart" :loading="props.loading" :title="props.title" :list="props.list" :total="props.total" @click-title="emits('clickTitle')">
+    <summary-table v-model="toggleChart" :loading="props.loading" :title="props.title" :list="props.list" @click-title="emits('clickTitle')">
       <template #header-title>
         {{ props.cardTitle }}
       </template>

@@ -2,7 +2,6 @@
 const props = withDefaults(defineProps<{
   title: any[]
   list?: BossSalesList[]
-  total?: BossSalesList
   loading?: boolean
   chart?: any
   isToggle?: boolean
@@ -181,14 +180,6 @@ const option = computed(() => {
             return value
           }"
         />
-
-        <!-- <div class="p-[16px]">
-          <div class="flex justify-around items-center">
-            <template v-for="value in props.total" :key="value">
-              <span class="text-[14px] font-normal text-[#666666]">{{ value }}</span>
-            </template>
-          </div>
-        </div> -->
       </div>
       <div v-if="toggleChart === 'chart'">
         <VChart class="chart" :option="option" />

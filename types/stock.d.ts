@@ -8,8 +8,11 @@ interface StockTitle {
   children?: PerformanceTotal[]
 }
 interface PerformanceTotal {
-  total?: string
-  [key: string]: string
+  title: string
+  key: string
+  width: string
+  align: string
+  fixed: string
 }
 interface BossWhere {
   type?: number
@@ -21,7 +24,7 @@ interface BossWhere {
 interface BossSalesList {
   name: string
   total?: string
-  [key]: string
+  [key: string]: string
 }
 
 /** 门店库存 */
