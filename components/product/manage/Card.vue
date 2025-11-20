@@ -31,7 +31,7 @@ const props = defineProps<{
           <template #info>
             <slot name="info" :info="item" />
           </template>
-          <template #bottom>
+          <template #footer>
             <slot name="bottom" :info="item" />
           </template>
         </common-card-list>
