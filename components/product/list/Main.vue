@@ -23,8 +23,8 @@ const jumpInfo = (info: T) => {
   <div>
     <product-manage-card :list="props.productList" @edit="edit">
       <template #info="{ info }">
-        <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-          <div class="flex-between">
+        <div class="py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+          <div class="row">
             <div>
               条码
             </div>
@@ -32,7 +32,7 @@ const jumpInfo = (info: T) => {
               {{ info.code }}
             </div>
           </div>
-          <div class="flex-between">
+          <div class="row">
             <div>
               所属大类
             </div>
@@ -40,7 +40,7 @@ const jumpInfo = (info: T) => {
               {{ filterList.class?.preset[info.class] || '' }}
             </div>
           </div>
-          <div class="flex-between">
+          <div class="row">
             <div>
               货品名称
             </div>
@@ -48,7 +48,7 @@ const jumpInfo = (info: T) => {
               {{ info.name }}
             </div>
           </div>
-          <div class="flex-between">
+          <div class="row">
             <div>
               货品品牌
             </div>
@@ -56,7 +56,7 @@ const jumpInfo = (info: T) => {
               {{ filterList.brand?.preset[info.brand] || '' }}
             </div>
           </div>
-          <div class="flex-between">
+          <div class="row">
             <div>
               供应商
             </div>
@@ -64,7 +64,7 @@ const jumpInfo = (info: T) => {
               {{ filterList.supplier?.preset[info.supplier] || '' }}
             </div>
           </div>
-          <div class="flex-between">
+          <div class="row">
             <div>
               材质
             </div>
@@ -72,7 +72,7 @@ const jumpInfo = (info: T) => {
               {{ filterList.material?.preset[info.material] || '' }}
             </div>
           </div>
-          <div class="flex-between">
+          <div class="row">
             <div>
               成色
             </div>
@@ -80,7 +80,7 @@ const jumpInfo = (info: T) => {
               {{ filterList.quality?.preset[info.quality] || '' }}
             </div>
           </div>
-          <div class="flex-between">
+          <div class="row">
             <div>
               宝石
             </div>
@@ -88,7 +88,7 @@ const jumpInfo = (info: T) => {
               {{ filterList.gem?.preset[info.gem] || '' }}
             </div>
           </div>
-          <div class="flex-between">
+          <div class="row">
             <div>
               品类
             </div>
@@ -96,7 +96,7 @@ const jumpInfo = (info: T) => {
               {{ filterList.category?.preset[info.category] || '' }}
             </div>
           </div>
-          <div class="flex-between">
+          <div class="row">
             <div>
               工艺
             </div>
@@ -105,7 +105,7 @@ const jumpInfo = (info: T) => {
             </div>
           </div>
           <template v-if="isFinished">
-            <div class="flex-between">
+            <div class="row">
               <div>
                 库龄
               </div>
@@ -118,7 +118,12 @@ const jumpInfo = (info: T) => {
       </template>
       <template #bottom="{ info }">
         <div class="flex-end text-size-[14px]">
-          <common-button-irregular text="详情" @click="jumpInfo(info)" />
+          <div>
+            <common-button-rounded
+              padding="4px 36px"
+              content="详情" @click="jumpInfo(info)"
+            />
+          </div>
         </div>
       </template>
     </product-manage-card>
@@ -126,6 +131,9 @@ const jumpInfo = (info: T) => {
 </template>
 
 <style lang="scss" scoped>
+.row {
+  --uno: 'flex-between py-4px';
+}
 .val {
   width: 66%;
   overflow: hidden;

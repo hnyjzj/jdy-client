@@ -234,49 +234,56 @@ const cols = [
       </template>
     </product-filter>
     <!-- 列表 -->
-    <div class="pb-10">
+    <div class="px-[16px] pb-10">
       <template v-if="productRocordList?.length">
         <template v-if="showtype === 'list'">
-          <product-manage-card :list="productRocordList">
-            <template #top="{ info }">
-              <div>{{ historyFilterList.action?.preset[info.action] }}</div>
-            </template>
-            <template #info="{ info }">
-              <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                <div class="flex-between">
-                  <div>
-                    操作时间
+          <template v-for="(info, index) in productRocordList" :key="index">
+            <common-card-list>
+              <template #top>
+                <div>{{ historyFilterList.action?.preset[info.action] }}</div>
+              </template>
+              <template #info>
+                <div class="py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                  <div class="flex-between">
+                    <div>
+                      操作时间
+                    </div>
+                    <div class="text-align-end">
+                      {{ formatTimestampToDateTime(info.updated_at) }}
+                    </div>
                   </div>
-                  <div class="text-align-end">
-                    {{ formatTimestampToDateTime(info.updated_at) }}
+                  <div class="flex-between">
+                    <div>
+                      原因
+                    </div>
+                    <div class="text-align-end">
+                      {{ info?.reason }}
+                    </div>
                   </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    原因
+                  <div class="flex-between">
+                    <div>
+                      关联单号
+                    </div>
+                    <div class="text-align-end">
+                      {{ info.source_id }}
+                    </div>
                   </div>
-                  <div class="text-align-end">
-                    {{ info?.reason }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    关联单号
-                  </div>
-                  <div class="text-align-end">
-                    {{ info.source_id }}
-                  </div>
-                </div>
 
-                <accessorie-record-card :filter-list="accessorieFilterListToArray" :accessories="info.new_value?.product ? info.new_value?.product : info.new_value" />
-              </div>
-            </template>
-            <template #bottom="{ info }">
-              <div class="flex-end text-size-[14px]">
-                <common-button-irregular text="详情" @click="jump('/product/accessorie/record/info', { id: info?.id })" />
-              </div>
-            </template>
-          </product-manage-card>
+                  <accessorie-record-card :filter-list="accessorieFilterListToArray" :accessories="info.new_value?.product ? info.new_value?.product : info.new_value" />
+                </div>
+              </template>
+              <template #footer>
+                <div class="flex-end text-size-[14px]">
+                  <div>
+                    <common-button-rounded
+                      padding="4px 36px"
+                      content="详情" @click="jump('/product/accessorie/record/info', { id: info?.id })"
+                    />
+                  </div>
+                </div>
+              </template>
+            </common-card-list>
+          </template>
           <common-page
             v-model:page="searchPage" :total="historyListTotal" :limit="limits" @update:page="updatePage" />
         </template>

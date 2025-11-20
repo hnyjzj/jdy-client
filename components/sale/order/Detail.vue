@@ -71,7 +71,7 @@ const onReturnProduct = async (index: number) => {
 <template>
   <div class="grid-12 gap-[12px]">
     <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
-      <sale-cards title="基本信息">
+      <common-card-list title="基本信息">
         <template #info>
           <div class="info">
             <common-cell label="门店" :value="props.orders?.store?.name" rcol="col-8" lcol="col-4" />
@@ -97,10 +97,10 @@ const onReturnProduct = async (index: number) => {
             </template>
           </div>
         </template>
-      </sale-cards>
+      </common-card-list>
     </div>
     <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
-      <sale-cards title="店员信息">
+      <common-card-list title="店员信息">
         <template #info>
           <div class="info">
             <common-cell label="收银员" :value="props.orders.cashier?.nickname" />
@@ -114,12 +114,12 @@ const onReturnProduct = async (index: number) => {
             </template>
           </div>
         </template>
-      </sale-cards>
+      </common-card-list>
     </div>
     <template v-for="(obj, i) in props.orders.products" :key="i">
       <template v-if="obj.type === 1">
         <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
-          <sale-cards title="成品信息">
+          <common-card-list title="成品信息">
             <template #info>
               <div class="info">
                 <template v-if="obj.finished.product?.images?.length">
@@ -168,13 +168,13 @@ const onReturnProduct = async (index: number) => {
                 <div class="line" />
               </div>
             </template>
-          </sale-cards>
+          </common-card-list>
         </div>
       </template>
 
       <template v-if="obj.type === 2">
         <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
-          <sale-cards title="旧料信息">
+          <common-card-list title="旧料信息">
             <template #info>
               <div class="info">
                 <template v-if="obj.old?.product?.images?.length">
@@ -223,12 +223,12 @@ const onReturnProduct = async (index: number) => {
                 <div class="line" />
               </div>
             </template>
-          </sale-cards>
+          </common-card-list>
         </div>
       </template>
       <template v-if="obj.type === 3">
         <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
-          <sale-cards title="配件信息">
+          <common-card-list title="配件信息">
             <template #info>
               <div class="grid grid-cols-1 gap-[12px]">
                 <div class="info">
@@ -250,13 +250,13 @@ const onReturnProduct = async (index: number) => {
                 </div>
               </div>
             </template>
-          </sale-cards>
+          </common-card-list>
         </div>
       </template>
     </template>
 
     <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
-      <sale-cards title="结算信息">
+      <common-card-list title="结算信息">
         <template #info>
           <div class="info">
             <common-cell label="货品金额" format="￥" :value="props.orders.product_finished_price" />
@@ -289,7 +289,7 @@ const onReturnProduct = async (index: number) => {
             </div>
           </div>
         </template>
-      </sale-cards>
+      </common-card-list>
     </div>
     <sale-order-return-goods ref="returnGoodsRef" :where="props.orderWhere" :product-filter="productFilter" :orders="props.orders" :return-goods="props.returnGoods" />
   </div>
@@ -297,7 +297,7 @@ const onReturnProduct = async (index: number) => {
 
 <style lang="scss" scoped>
  .info {
-  --uno: 'flex flex-col gap-[3px] px-[16px] pb-[16px]';
+  --uno: 'flex flex-col gap-[3px] pb-[16px]';
 }
 .line {
   --uno: 'h-[1px] w-full bg-[#E0E0E0] my-[8px]';
