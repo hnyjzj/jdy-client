@@ -35,11 +35,19 @@ const props = defineProps<{
     <div class="py-2">
       <slot name="info" />
     </div>
+      class="flex justify-between py-[8px] text-color"
+      style="border-bottom:1px solid #E6E6E8;"
+    >
+      <slot name="top" />
+      <slot name="status" />
+    </div>
+    <slot name="info" />
     <div
       class="py-2"
       style="border-top:1px solid #E6E6E8;"
     >
       <slot name="footer" />
+      <slot name="bottom" />
     </div>
   </div>
 </template>
