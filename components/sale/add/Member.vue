@@ -74,8 +74,7 @@ const searchMember = async (val: string) => {
       return
     }
     await props.getStaffs()
-
-    memberParams.value.consultant_id = userinfo.value.id
+    memberParams.value.consultant_id = orderObject.value.clerks[0]?.salesman_id || userinfo.value.id
     memberParams.value.phone = val
     tipAdd.value = true
   }
