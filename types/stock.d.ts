@@ -5,8 +5,12 @@ interface StockTitle {
   fixed?: string
   className?: string
   align?: 'right' | 'left' | 'center' | undefined
+  children?: PerformanceTotal[]
 }
-
+interface PerformanceTotal {
+  total?: string
+  [key: string]: string
+}
 interface BossWhere {
   type?: number
   duration?: number

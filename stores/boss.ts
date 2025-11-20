@@ -29,6 +29,7 @@ export const useBoss = defineStore('boss', {
     performanceWhere: {} as Where<BossWhere>,
     performanceTitle: [] as StockTitle[],
     performanceList: [] as BossSalesList[],
+    performanceTotal: {} as BossSalesList,
     // 时间where
     timeWhere: {} as Where<BossWhere>,
   }),
@@ -61,6 +62,7 @@ export const useBoss = defineStore('boss', {
             }
           })
         }
+
         // 对优先项进行排序：name优先级最高，total第二
         result.sort((a, b) => {
           if (a.key === 'name')
@@ -235,10 +237,11 @@ export const useBoss = defineStore('boss', {
       this.performanceList = []
       const { data } = await https.post<any, BossWhere>('/statistic/boos/performance/data', params, true, false)
       if (data.value?.code === HttpCode.SUCCESS) {
-        this.performanceList = data.value?.data
+        this.performanceList = data.value?.data.list
+        this.performanceTotal = data.value?.data.total
         this.performanceTitle = this.generateTableTitle(this.performanceList)
       }
-      return { list: this.performanceList, title: this.performanceTitle }
+      return { list: this.performanceList, total: this.performanceTotal, title: this.performanceTitle }
     },
 
   },

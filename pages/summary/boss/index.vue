@@ -145,11 +145,13 @@ const getOldStockReq = async () => {
 const PerformanceLoading = ref<boolean>(false)
 const performanceTitle = ref<StockTitle[]>([])
 const performanceList = ref<BossSalesList[]>([])
+const performanceTotal = ref<BossSalesList>()
 PerformanceLoading.value = true
 const getPerformanceListFn = async () => {
   const res = await getPerformanceList({ ...params.value })
   performanceTitle.value = res?.title || []
   performanceList.value = res?.list || []
+  performanceTotal.value = res?.total || {}
   PerformanceLoading.value = false
 }
 const getPerformanceReq = async () => {
@@ -184,6 +186,7 @@ onMounted(async () => {
           card-title="业绩统计"
           :title="performanceTitle"
           :list="performanceList"
+          :total="performanceTotal"
           :loading="PerformanceLoading"
           @getlist="getPerformanceListFn" />
         <!-- 收支统计 -->
