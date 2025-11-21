@@ -36,18 +36,22 @@ const searchKey = defineModel<string>('searchKey', { required: false, default: '
 
 <template>
   <div class="bg-[#F4F9FD] sticky top-0 z-9">
-    <common-layout-center>
-      <div class="flex flex-col pt-5 px-[16px] w-full">
+    <div class=" bg-[#fff]">
+      <common-layout-center>
         <div class="flex flex-row gap-2">
           <template v-if="showCompany">
             <slot name="company" />
           </template>
-          <template v-if="showInput">
-            <div class="flex-1">
-              <product-filter-search v-model:search-key="searchKey" :placeholder="placeholder" @submit="search" @clear="clearSearch" />
-            </div>
-          </template>
         </div>
+      </common-layout-center>
+    </div>
+    <common-layout-center>
+      <div class="flex flex-col px-[16px] w-full">
+        <template v-if="showInput">
+          <div class="flex-1">
+            <product-filter-search v-model:search-key="searchKey" :placeholder="placeholder" @submit="search" @clear="clearSearch" />
+          </div>
+        </template>
         <common-tool-list v-model:showtype="showtype" :is-export="isExport" :total="props.productListTotal" @export="emits('export')" @height="filter" @change-card="emits('changeCard')" />
       </div>
     </common-layout-center>

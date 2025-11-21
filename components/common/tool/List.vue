@@ -34,15 +34,15 @@ const railStyle = ({
 <template>
   <div class="flex-center-between gap-2 py-[16px]">
     <div class="flex items-center gap-[12px]">
-      <div class="text-size-[14px]">
+      <div class="text-size-[14px] color-[#91929E] font-semibold">
         共 {{ props.total }} 条
       </div>
       <template v-if="isExport">
         <div class="flex items-center cursor-pointer" @click="emits('export')">
           <span class="underline">
-            <icon name="i-icon:download" :size="14" />
+            <icon name="i-icon:download" :size="14" color="#3971F3" />
           </span>
-          <span class="px-[8px]">
+          <span class="px-[3px] color-[#3971F3]">
             导出
           </span>
         </div>

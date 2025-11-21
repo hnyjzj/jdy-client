@@ -2,11 +2,11 @@
 const props = withDefaults(defineProps<{
   confirm?: boolean
   maxHeight?: string
-  bg?: boolean
+  isWhite?: boolean
 }>(), {
   confirm: false,
   maxHeight: '400px',
-  bg: true,
+  isWhite: false,
 })
 
 const emits = defineEmits(['change'])
@@ -80,14 +80,12 @@ const renderLabel = (option: any) => {
     <n-dropdown trigger="click" placement="bottom-start" :render-label="renderLabel" :options="columns" :style="{ maxHeight: props.maxHeight, overflowY: 'auto' }" @select="handleSelect">
       <div
         class="py-[6px] px-[12px]  border-rd-full h-full flex-center-row  cursor-pointer"
-        :class="{ 'shadow-lg': props.bg }"
-        :style="{ background: props.bg ? '#FFFFFF66' : 'transparent' }" @click="changeStoer">
-        <client-only>
-          <div class="store-name font-bold text-size-[14px] mr-[4px]">
-            {{ myStore.alias }}
-          </div>
-        </client-only>
-        <icon name="i-icon:product-toggle" :size="24" />
+        :style="{ background: 'transparent', color: props.isWhite ? '#fff' : '#000' }" @click="changeStoer">
+        <icon name="i-icon:location" :size="24" class="mr-[4px]" />
+        <div class="store-name font-bold text-size-[14px] mr-[4px]">
+          {{ myStore.alias }}
+        </div>
+        <icon name="i-icon:product-toggle" :size="18" />
       </div>
     </n-dropdown>
     <common-confirm
