@@ -176,7 +176,6 @@ const cols = [
     title: '所属门店',
     key: 'store.name',
   },
-
   {
     title: '会员手机号',
     key: 'member.phone',
@@ -246,7 +245,7 @@ const exportExcel = async () => {
   const res = await getOrderListAll({ all: true, where: filterData.value })
   exportSalesOrderListToXlsx(res, [
     ...filterListToArray.value,
-  ], '销售明细报表', [])
+  ], '销售单列表', [])
 }
 </script>
 
@@ -334,7 +333,7 @@ const exportExcel = async () => {
         />
       </template>
     </common-filter-where>
-    <common-create @create="newAdd()" />
+    <common-create @create="newAdd" />
   </div>
 </template>
 
