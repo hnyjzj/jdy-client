@@ -26,52 +26,38 @@ const toTodayPrice = () => {
 </script>
 
 <template>
-  <div class="bg-[#DEEBFD] dark:bg-[rgba(0,0,0,0.3)]  rounded-[16px]  cursor-pointer" :style="{ marginBottom: props.marginBottom }">
-    <div class="grid-12">
-      <div
-        class="skew col-6" uno-md="col-4" @click="emit('clickTitle')">
-        <div class="skew-right" />
-        <div class="skew-text pl-[15px] text-[16px] font-semibold">
-          <div class="flex-center-row h-full">
-            今日销售
-          </div>
+  <div>
+    <summary-card-layout title="今日销售" @title-click="emit('clickTitle')">
+      <template #gold>
+        <div class="px-[8px] py-[2px] cursor-pointer bg-[#fff] color-[#3971F3] rounded-[16px]" @click.stop="toTodayPrice">
+          今日金价: ￥{{ props.todaySaleData['金价'] || 0 }}/g
         </div>
-      </div>
-    </div>
-
-    <div class="p-[16px] ">
-      <div :id="id" class="flex overflow-x-scroll gap-[20px]">
-        <template v-for="(item, key) in todaySaleData" :key="key">
-          <template v-if="key !== '金价'">
-            <div class="flex-grow-1 flex-shrink-0">
-              <div class="flex-start">
-                <div class="w-[4px] h-[10px] bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] rounded-[2px]" />
-                <div class="color-[#333] dark:color-[#fff] ml-[4px] text-[12px]  line-height-[24px]">
-                  {{ key }}
+      </template>
+      <template #default>
+        <div :id="id" class="flex overflow-x-scroll gap-[20px] pb-[16px]">
+          <template v-for="(item, key) in props.todaySaleData" :key="item">
+            <template v-if="key !== '成品金额' && key !== '退货金额' && key !== '金价'">
+              <div class="flex-grow-1 flex-shrink-0 h-[68px] flex justify-between flex-col">
+                <div class="text-center">
+                  <div class="color-[#808089] dark:color-[#fff] ml-[4px] text-[14px] font-semibold line-height-[24px]">
+                    {{ key }}
+                  </div>
+                </div>
+                <div class="color-[#333] dark:color-[#fff] font-semibold pb-[6px] line-height-[24px] text-center">
+                  <span class="text-[20px]">{{ item }}</span>
                 </div>
               </div>
-              <div class="color-[#3971F3] dark:color-[#fff] font-semibold  line-height-[24px]">
-                <span class="text-[16px]">{{ item }}</span>
-              </div>
-            </div>
+            </template>
           </template>
-        </template>
-      </div>
-      <div class="bg-[#c7dafF] dark:opacity-[0.5] h-[1px] w-full mt-[8px]" />
-      <div class="mt-[12px] flex-between">
-        <div class="color-[#4B576D] bg-[#C7DAFF] text-[12px] line-height-[24px] px-[10px] rounded-[60px]" @click="toTodayPrice">
-          <div>
-            金价: ￥{{ props.todaySaleData['金价'] || 0 }}/g
-          </div>
         </div>
-        <div class="color-[#333]  dark:color-[#fff] text-[12px] line-height-[24px] flex">
-          <!-- <span>
-            {{ rbText }}
-          </span>
-          <icon name="i-icon:left" :size="12" /> -->
+        <div class="flex-grow-1 flex finished px-[16px] py-[12px] rounded-[8px] my-[16px]">
+          <!-- <img src="/images/icon/finished-sales-money.png" alt=""> -->
         </div>
-      </div>
-    </div>
+        <div class="flex-grow-1 flex return px-[16px] py-[12px] rounded-[8px]">
+          <!-- <img src="/images/icon/return-good-money.png" alt=""> -->
+        </div>
+      </template>
+    </summary-card-layout>
   </div>
 </template>
 
@@ -83,5 +69,11 @@ const toTodayPrice = () => {
 .skew-text {
   display: flex;
   align-items: flex-start;
+}
+.finished {
+  background: linear-gradient(92.3deg, #fefbff 49.62%, #f5e0ff 103.48%);
+}
+.return {
+  background: linear-gradient(92.27deg, #ffffff 44.01%, #fff8f2 99.46%);
 }
 </style>
