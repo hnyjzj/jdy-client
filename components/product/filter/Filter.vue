@@ -48,8 +48,10 @@ const searchKey = defineModel<string>('searchKey', { required: false, default: '
     <common-layout-center>
       <div class="flex flex-col px-[16px] w-full">
         <template v-if="showInput">
-          <div class="flex-1">
-            <product-filter-search v-model:search-key="searchKey" :placeholder="placeholder" @submit="search" @clear="clearSearch" />
+          <div class="grid-12">
+            <div class="col-12" uno-sm="col-8 offset-2">
+              <product-filter-search v-model:search-key="searchKey" :placeholder="placeholder" @submit="search" @clear="clearSearch" />
+            </div>
           </div>
         </template>
         <common-tool-list v-model:showtype="showtype" :is-export="isExport" :total="props.productListTotal" @export="emits('export')" @height="filter" @change-card="emits('changeCard')" />

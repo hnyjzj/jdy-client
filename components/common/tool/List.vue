@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import type { CSSProperties } from 'vue'
-
 const props = withDefaults(defineProps<{
   total?: number
   isExport?: boolean
@@ -14,20 +12,9 @@ const emits = defineEmits<{
   export: []
 }>()
 const showtype = defineModel<'table' | 'list'>('showtype')
-const railStyle = ({
-  checked,
-}: {
-  focused: boolean
-  checked: boolean
-}) => {
-  const style: CSSProperties = {}
-  if (checked) {
-    style.background = '#DBDBDB'
-  }
-  else {
-    style.background = '#DBDBDB'
-  }
-  return style
+const changeListType = (type: 'list' | 'table') => {
+  showtype.value = type
+  emits('changeCard')
 }
 </script>
 
@@ -56,19 +43,24 @@ const railStyle = ({
         <product-filter-senior />
       </div>
       <template v-if="showtype">
-        <n-switch
-          v-model:value="showtype"
-          :rail-style="railStyle"
-          size="medium" checked-value="table"
-          unchecked-value="list"
-          @update:value="emits('changeCard')">
-          <template #checked-icon>
-            <icon name="i-icon:data" :size="14" color="#666" />
-          </template>
-          <template #unchecked-icon>
-            <icon name="i-icon:list" :size="14" color="#666" />
-          </template>
-        </n-switch>
+        <div class="flex rounded-[2px] overflow-hidden cursor-pointer">
+          <div
+            class="wh-[24px] flex-center-row"
+            :style="{
+              background: showtype === 'list' ? '#3971F3' : '#fff',
+              border: showtype === 'list' ? 'none' : '1px solid #DBDBDB',
+            }" @click="changeListType('list')">
+            <icon name="i-icon:view-list" :size="16" :color="showtype === 'list' ? '#fff' : '#666'" />
+          </div>
+          <div
+            class="wh-[24px] flex-center-row"
+            :style="{
+              background: showtype === 'table' ? '#3971F3' : '#fff',
+              border: showtype === 'table' ? 'none' : '1px solid #DBDBDB',
+            }" @click="changeListType('table')">
+            <icon name="i-icon:view-icon" :size="16" :color="showtype === 'table' ? '#fff' : '#666'" />
+          </div>
+        </div>
       </template>
     </div>
   </div>
