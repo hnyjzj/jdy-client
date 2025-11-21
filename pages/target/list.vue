@@ -158,12 +158,12 @@ if (myStore.value.id || myStore.value.id === '') {
               </div>
             </div>
           </template>
-          <template #bottom>
+          <template #footer>
             <div class="flex-end text-size-[14px]">
               <div>
                 <common-button-rounded
                   padding="4px 36px"
-                  content="详情" @click="jump('/target/info', { id: info.id })"
+                  content="详情" @button-click="jump('/target/info', { id: info.id })"
                 />
               </div>
             </div>

@@ -23,7 +23,7 @@ const jumpInfo = (info: T) => {
   <div>
     <product-manage-card :list="props.productList" @edit="edit">
       <template #info="{ info }">
-        <div class="py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+        <div class="text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
           <div class="row">
             <div>
               条码
@@ -121,7 +121,7 @@ const jumpInfo = (info: T) => {
           <div>
             <common-button-rounded
               padding="4px 36px"
-              content="详情" @click="jumpInfo(info)"
+              content="详情" @button-click="jumpInfo(info)"
             />
           </div>
         </div>
