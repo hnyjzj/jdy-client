@@ -251,75 +251,77 @@ const cols = [
       </template>
     </product-filter>
     <!-- 小卡片组件 -->
-    <div class="pb-20 px-[16px]">
-      <template v-if="EnterList?.length">
-        <template v-if="showtype === 'list'">
-          <template v-for="(info, index) in EnterList" :key="index">
-            <common-card-list>
-              <template #status>
-                <common-button-status :bg-color="getStatusStyle(info.status, EnterStatusColorMap).backgroundColor" :text="enterStatus[info.status]" />
-              </template>
-              <template #info>
-                <div class=" text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                  <div class="py-[4px] flex justify-between">
-                    <div>入库单号</div>
-                    <div class="text-align-end">
-                      {{ info.id }}
+    <common-layout-center>
+      <div class="pb-20 px-[16px]" uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+        <template v-if="EnterList?.length">
+          <template v-if="showtype === 'list'">
+            <template v-for="(info, index) in EnterList" :key="index">
+              <common-card-list>
+                <template #status>
+                  <common-button-status :bg-color="getStatusStyle(info.status, EnterStatusColorMap).backgroundColor" :text="enterStatus[info.status]" />
+                </template>
+                <template #info>
+                  <div class=" text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                    <div class="py-[4px] flex justify-between">
+                      <div>入库单号</div>
+                      <div class="text-align-end">
+                        {{ info.id }}
+                      </div>
+                    </div>
+                    <div class="py-[4px] flex justify-between">
+                      <div>备注</div>
+                      <div class="text-align-end">
+                        {{ info?.remark }}
+                      </div>
+                    </div>
+                    <div class="py-[4px] flex justify-between">
+                      <div>所属门店</div>
+                      <div class="text-align-end">
+                        {{ info.store?.name || '未知门店' }}
+                      </div>
+                    </div>
+                    <div class="py-[4px] flex justify-between">
+                      <div>入库数量</div>
+                      <div class="text-align-end">
+                        {{ info?.product_total }}
+                      </div>
+                    </div>
+                    <div class="py-[4px] flex justify-between">
+                      <div>操作人</div>
+                      <div class="text-align-end">
+                        {{ info?.operator?.nickname }}
+                      </div>
+                    </div>
+                    <div class="py-[4px] flex justify-between">
+                      <div>入库时间</div>
+                      <div class="text-align-end">
+                        {{ formatTimestampToDateTime(info?.created_at) }}
+                      </div>
                     </div>
                   </div>
-                  <div class="py-[4px] flex justify-between">
-                    <div>备注</div>
-                    <div class="text-align-end">
-                      {{ info?.remark }}
-                    </div>
+                </template>
+                <template #footer>
+                  <div class="flex-end">
+                    <common-button-rounded
+                      padding="4px 36px"
+                      content="详情" @button-click="jump('/product/accessorie/enter/info', { id: info.id })"
+                    />
                   </div>
-                  <div class="py-[4px] flex justify-between">
-                    <div>所属门店</div>
-                    <div class="text-align-end">
-                      {{ info.store?.name || '未知门店' }}
-                    </div>
-                  </div>
-                  <div class="py-[4px] flex justify-between">
-                    <div>入库数量</div>
-                    <div class="text-align-end">
-                      {{ info?.product_total }}
-                    </div>
-                  </div>
-                  <div class="py-[4px] flex justify-between">
-                    <div>操作人</div>
-                    <div class="text-align-end">
-                      {{ info?.operator?.nickname }}
-                    </div>
-                  </div>
-                  <div class="py-[4px] flex justify-between">
-                    <div>入库时间</div>
-                    <div class="text-align-end">
-                      {{ formatTimestampToDateTime(info?.created_at) }}
-                    </div>
-                  </div>
-                </div>
-              </template>
-              <template #footer>
-                <div class="flex-end">
-                  <common-button-rounded
-                    padding="4px 36px"
-                    content="详情" @click="jump('/product/accessorie/enter/info', { id: info.id })"
-                  />
-                </div>
-              </template>
-            </common-card-list>
+                </template>
+              </common-card-list>
+            </template>
+            <common-page
+              v-model:page="searchPage" :total="EnterListTotal" :limit="limits" @update:page="updatePage" />
           </template>
-          <common-page
-            v-model:page="searchPage" :total="EnterListTotal" :limit="limits" @update:page="updatePage" />
+          <template v-else>
+            <common-datatable :columns="cols" :list="EnterList" :page-option="pageOption" :loading="tableLoading" />
+          </template>
         </template>
         <template v-else>
-          <common-datatable :columns="cols" :list="EnterList" :page-option="pageOption" :loading="tableLoading" />
+          <common-empty width="100px" />
         </template>
-      </template>
-      <template v-else>
-        <common-empty width="100px" />
-      </template>
-    </div>
+      </div>
+    </common-layout-center>
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="EnterToArray" @submit="submitWhere" @reset="resetWhere" />
 
     <template v-if="myStore.id">

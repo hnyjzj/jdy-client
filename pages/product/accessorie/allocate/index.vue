@@ -306,7 +306,7 @@ async function focus() {
                   <div class="text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
                     <template v-for="(item, index) in accessorieAllocateFilterListToArray" :key="index">
                       <template v-if="item.info">
-                        <div class="flex py-[4px] justify-between">
+                        <div class="flex py-[2px] justify-between">
                           <div>
                             {{ item.label }}
                           </div>
