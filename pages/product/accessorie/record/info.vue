@@ -27,8 +27,8 @@ if (route.query.id) {
 <template>
   <div class="py-6 px-4">
     <div class="rounded-6 bg-white w-auto blur-bga top">
-      <common-gradient title="基础信息">
-        <template #body>
+      <common-card-info title="基础信息">
+        <template #info>
           <div class="flex flex-col gap-4">
             <div class="operation-information flex flex-col gap-1">
               <div class="info-row">
@@ -70,7 +70,7 @@ if (route.query.id) {
             </div>
           </div>
         </template>
-      </common-gradient>
+      </common-card-info>
     </div>
   </div>
 </template>

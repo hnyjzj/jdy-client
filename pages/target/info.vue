@@ -81,8 +81,8 @@ function percent(achieved: any, purpose: any, digits = 0) {
 <template>
   <div class="pb-20 pt-4 px-4">
     <common-layout-center>
-      <common-gradient title="基础信息">
-        <template #body>
+      <common-card-info title="基础信息">
+        <template #info>
           <div class="flex flex-col gap-2">
             <div class="operation-information flex flex-col gap-1">
               <div class="other-information flex flex-col gap-1" uno-sm="grid grid-cols-[1fr_1fr] gap-x-10">
@@ -166,9 +166,9 @@ function percent(achieved: any, purpose: any, digits = 0) {
             </div>
           </div>
         </template>
-      </common-gradient>
-      <common-gradient title="销售目标详情">
-        <template #body>
+      </common-card-info>
+      <common-card-info title="销售目标详情">
+        <template #info>
           <template v-if="targetInfo.object === 1">
             <div v-for="(group, gIndex) in targetInfo.groups" :key="gIndex" class="mb-6">
               <div class="flex items-center gap-2 text-wrap flex-wrap">
@@ -317,7 +317,7 @@ function percent(achieved: any, purpose: any, digits = 0) {
             </table>
           </template>
         </template>
-      </common-gradient>
+      </common-card-info>
     </common-layout-center>
     <template v-if="myStore.id">
       <div class="fixed bottom-0 left-0 w-full py-4 blur-bgc px-8" uno-sm="px-0">
