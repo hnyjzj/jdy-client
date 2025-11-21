@@ -100,11 +100,32 @@ const submit = async () => {
 const titleText = computed(() => {
   return showReturnGoods.value?.goods?.type === 1 ? '成品退货' : showReturnGoods.value?.goods?.type === 2 ? '旧料退货' : '配件退货'
 })
+/**
+ * 设置退货商品价格
+ * @param index 商品索引
+ */
 const setPrice = (index: number) => {
   showModel.value = true
   showReturnGoods.value.goods = props.orders.products[index]
   showReturnGoods.value.id = props.orders.id
-  model.value.price = Number(props.orders.products[index].accessorie.price) || 0
+  const goods = showReturnGoods.value?.goods
+  if (!goods)
+    return
+  // 使用switch语句优化多重条件判断
+  switch (goods.type) {
+    case GoodsType.ProductFinish:
+      model.value.price = Number(goods.finished?.price) || 0
+      break
+    case GoodsType.ProductOld:
+      model.value.price = Number(goods.old?.recycle_price) || 0
+      break
+    case GoodsType.ProductAccessories:
+      model.value.price = Number(goods.accessorie?.price) || 0
+      break
+    default:
+      model.value.price = 0
+      break
+  }
 }
 defineExpose({
   setPrice,
