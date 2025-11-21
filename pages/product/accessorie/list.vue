@@ -210,54 +210,62 @@ const cols = [
       </template>
     </product-filter>
     <!-- 列表 -->
-    <div class="pb-20">
+    <div class="pb-20 px-[16px]">
       <template v-if="accessorieList?.length">
         <template v-if="showtype === 'list'">
-          <product-manage-card :list="accessorieList">
-            <template #status="info">
-              <span>{{ accessorieFilterList.status?.preset[info.info] }}</span>
-            </template>
-            <template #info="{ info }">
-              <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                <template v-for="(item, index) in accessorieFilterListToArray" :key="index">
-                  <template v-if="item.info">
-                    <div class="flex-between">
-                      <div>
-                        {{ item.label }}
-                      </div>
-                      <template v-if="item.name === 'store'">
-                        <div class="text-align-end val">
-                          {{ info[item.name].name }}
+          <template v-for="(info, index) in accessorieList" :key="index">
+            <common-card-list>
+              <template #status>
+                <common-button-status
+                  :bg-color="getStatusStyle(info.status, AllocateStatusColorMap).backgroundColor"
+                  :text="accessorieFilterList.status?.preset[info.status]"
+                />
+              </template>
+              <template #info>
+                <div class="py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                  <template v-for="(item, index) in accessorieFilterListToArray" :key="index">
+                    <template v-if="item.info">
+                      <div class="flex-between">
+                        <div>
+                          {{ item.label }}
                         </div>
-                      </template>
-                      <template v-else>
-                        <template v-if="item.type === 'date'">
+                        <template v-if="item.name === 'store'">
                           <div class="text-align-end val">
-                            {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
+                            {{ info[item.name].name }}
                           </div>
                         </template>
                         <template v-else>
-                          <template v-if="item.input === 'select'">
+                          <template v-if="item.type === 'date'">
                             <div class="text-align-end val">
-                              {{ item.preset[info[item.name] || 0] || '' }}
+                              {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
                             </div>
                           </template>
                           <template v-else>
-                            {{ info[item.name] }}
+                            <template v-if="item.input === 'select'">
+                              <div class="text-align-end val">
+                                {{ item.preset[info[item.name] || 0] || '' }}
+                              </div>
+                            </template>
+                            <template v-else>
+                              {{ info[item.name] }}
+                            </template>
                           </template>
                         </template>
-                      </template>
-                    </div>
+                      </div>
+                    </template>
                   </template>
-                </template>
-              </div>
-            </template>
-            <template #bottom="{ info }">
-              <div class="flex-end text-size-[14px]">
-                <common-button-irregular text="详情" @click="jump(`/product/accessorie/info`, { id: info.id })" />
-              </div>
-            </template>
-          </product-manage-card>
+                </div>
+              </template>
+              <template #footer>
+                <div class="flex-end">
+                  <common-button-rounded
+                    padding="4px 36px"
+                    content="详情" @click="jump('/product/accessorie/info', { id: info.id })"
+                  />
+                </div>
+              </template>
+            </common-card-list>
+          </template>
           <common-page
             v-model:page="searchPage" :total="accessorieListTotal" :limit="limits" @update:page="updatePage" />
         </template>

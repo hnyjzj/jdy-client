@@ -29,7 +29,7 @@ const returnGoods = (val: number) => {
 <template>
   <div class="grid-12 gap-[12px]">
     <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
-      <sale-cards title="订单信息">
+      <common-card-list title="订单信息">
         <template #info>
           <div class="info">
             <common-cell label="门店" :value="props.orders.store?.name" />
@@ -61,10 +61,10 @@ const returnGoods = (val: number) => {
             </template>
           </div>
         </template>
-      </sale-cards>
+      </common-card-list>
     </div>
     <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
-      <sale-cards title="店员信息">
+      <common-card-list title="店员信息">
         <template #info>
           <div class="info">
             <common-cell label="收银员" :value="props.orders.cashier?.nickname" />
@@ -73,11 +73,11 @@ const returnGoods = (val: number) => {
             <common-cell label="手机号" :value="props.orders.clerk?.phone" />
           </div>
         </template>
-      </sale-cards>
+      </common-card-list>
     </div>
     <template v-if="props.orders.products?.length > 0 || false">
       <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
-        <sale-cards title="成品信息">
+        <common-card-list title="成品信息">
           <template #info>
             <div class="info">
               <template v-for="(item, index) in props.orders.products" :key="index">
@@ -118,7 +118,7 @@ const returnGoods = (val: number) => {
               </template>
             </div>
           </template>
-        </sale-cards>
+        </common-card-list>
       </div>
     </template>
 

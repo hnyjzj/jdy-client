@@ -290,100 +290,104 @@ async function focus() {
         <product-manage-company @change="changeStore" />
       </template>
     </product-filter>
-    <div class="pb-20">
-      <template v-if="accessorieAllocateList?.length">
-        <template v-if="showtype === 'list'">
-          <product-manage-card :list="accessorieAllocateList">
-            <template #top="{ info }">
-              <div class="status-title" :style="getStatusStyle(info.status, AllocateStatusColorMap)">
-                {{ accessorieAllocateFilterList.status?.preset[info.status] }}
-              </div>
-            </template>
-            <template #info="{ info }">
-              <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                <template v-for="(item, index) in accessorieAllocateFilterListToArray" :key="index">
-                  <template v-if="item.info">
-                    <div class="flex py-[4px] justify-between">
-                      <div>
-                        {{ item.label }}
-                      </div>
-                      <template v-if="item.type === 'date'">
-                        <div class="val">
-                          {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
-                        </div>
-                      </template>
-                      <template v-else-if="item.name === 'product_count'">
-                        <div class="val">
-                          {{ info?.product_count }}
-                        </div>
-                      </template>
-                      <template v-else-if="item.name === 'product_total'">
-                        <div class="val">
-                          {{ info?.product_total }}
-                        </div>
-                      </template>
-                      <template v-else>
-                        <template v-if="item.input === 'text'">
-                          <div class="val">
-                            {{ info[item.name] }}
-                          </div>
-                        </template>
-                        <template v-else-if="item.input === 'select'">
-                          <div class="val">
-                            {{ accessorieAllocateFilterList[item.name]?.preset[info[item.name] as number] }}
-                          </div>
-                        </template>
-                        <template v-else-if="item.input === 'search'">
-                          <template v-if="item.name === 'to_region_id'">
-                            <div class="val">
-                              {{ info?.to_region?.name || '' }}
-                            </div>
-                          </template>
-                          <template v-if="item.name === 'to_store_id'">
-                            <div class="val">
-                              {{ info?.to_store?.alias || '' }}
-                            </div>
-                          </template>
-                          <template v-if="item.name === 'from_store_id'">
-                            <div class="val">
-                              {{ info?.from_store?.alias || '' }}
-                            </div>
-                          </template>
-                          <template v-if="item.name === 'receiver_id'">
-                            <div class="val">
-                              {{ info?.receiver?.nickname || '' }}
-                            </div>
-                          </template>
-                          <template v-if="item.name === 'initiator_id'">
-                            <div class="val">
-                              {{ info?.initiator?.nickname || '' }}
-                            </div>
-                          </template>
-                        </template>
-                      </template>
-                    </div>
-                  </template>
+    <common-layout-center>
+      <div class="pb-20 px-4" uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+        <template v-if="accessorieAllocateList?.length">
+          <template v-if="showtype === 'list'">
+            <template v-for="(info, index) in accessorieAllocateList" :key="index">
+              <common-card-list>
+                <template #top />
+                <template #status>
+                  <div class="status-title" :style="getStatusStyle(info.status, AllocateStatusColorMap)">
+                    {{ accessorieAllocateFilterList.status?.preset[info.status] }}
+                  </div>
                 </template>
-              </div>
+                <template #info>
+                  <div class="text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                    <template v-for="(item, index) in accessorieAllocateFilterListToArray" :key="index">
+                      <template v-if="item.info">
+                        <div class="flex py-[4px] justify-between">
+                          <div>
+                            {{ item.label }}
+                          </div>
+                          <template v-if="item.type === 'date'">
+                            <div class="val">
+                              {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
+                            </div>
+                          </template>
+                          <template v-else-if="item.name === 'product_count'">
+                            <div class="val">
+                              {{ info?.product_count }}
+                            </div>
+                          </template>
+                          <template v-else-if="item.name === 'product_total'">
+                            <div class="val">
+                              {{ info?.product_total }}
+                            </div>
+                          </template>
+                          <template v-else>
+                            <template v-if="item.input === 'text'">
+                              <div class="val">
+                                {{ info[item.name] }}
+                              </div>
+                            </template>
+                            <template v-else-if="item.input === 'select'">
+                              <div class="val">
+                                {{ accessorieAllocateFilterList[item.name]?.preset[info[item.name] as number] }}
+                              </div>
+                            </template>
+                            <template v-else-if="item.input === 'search'">
+                              <template v-if="item.name === 'to_region_id'">
+                                <div class="val">
+                                  {{ info?.to_region?.name || '' }}
+                                </div>
+                              </template>
+                              <template v-if="item.name === 'to_store_id'">
+                                <div class="val">
+                                  {{ info?.to_store?.alias || '' }}
+                                </div>
+                              </template>
+                              <template v-if="item.name === 'from_store_id'">
+                                <div class="val">
+                                  {{ info?.from_store?.alias || '' }}
+                                </div>
+                              </template>
+                              <template v-if="item.name === 'receiver_id'">
+                                <div class="val">
+                                  {{ info?.receiver?.nickname || '' }}
+                                </div>
+                              </template>
+                              <template v-if="item.name === 'initiator_id'">
+                                <div class="val">
+                                  {{ info?.initiator?.nickname || '' }}
+                                </div>
+                              </template>
+                            </template>
+                          </template>
+                        </div>
+                      </template>
+                    </template>
+                  </div>
+                </template>
+                <template #footer>
+                  <div class="flex-end">
+                    <common-button-rounded padding="4px 36px" content="详情" @button-click="jump('/product/accessorie/allocate/info', { id: info.id })" />
+                  </div>
+                </template>
+              </common-card-list>
             </template>
-            <template #bottom="{ info }">
-              <div class="flex-end text-size-[14px]">
-                <common-button-irregular text="详情" @click="jump('/product/accessorie/allocate/info', { id: info.id })" />
-              </div>
-            </template>
-          </product-manage-card>
-          <common-page
-            v-model:page="searchPage" :total="accessorieAllocateTotal" :limit="limits" @update:page="updatePage" />
+            <common-page
+              v-model:page="searchPage" :total="accessorieAllocateTotal" :limit="limits" @update:page="updatePage" />
+          </template>
+          <template v-else>
+            <common-datatable :columns="cols" :list="accessorieAllocateList" :page-option="pageOption" :loading="tableLoading" />
+          </template>
         </template>
         <template v-else>
-          <common-datatable :columns="cols" :list="accessorieAllocateList" :page-option="pageOption" :loading="tableLoading" />
+          <common-empty width="100px" />
         </template>
-      </template>
-      <template v-else>
-        <common-empty width="100px" />
-      </template>
-    </div>
-
+      </div>
+    </common-layout-center>
     <template v-if="myStore.id">
       <common-create @click="jump('/product/accessorie/allocate/add')" />
     </template>
@@ -464,7 +468,7 @@ async function focus() {
   text-overflow: ellipsis;
 }
 .status-title {
-  --uno: 'px-2 rounded-[8px] text-#FFF';
+  --uno: 'px-2 py-1 rounded-[8px] text-#FFF';
 }
 .orange {
   --uno: 'bg-[rgba(221,146,0,1)]';

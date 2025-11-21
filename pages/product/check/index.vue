@@ -310,119 +310,125 @@ const cols = [
       </product-filter>
     </div>
     <!-- 小卡片组件 -->
-    <div class="pb-20">
+    <div class="px-[16px] pb-20">
       <template v-if="checkList?.length">
         <template v-if="showtype === 'list'">
-          <product-manage-card :list="checkList">
-            <template #top="{ info }">
-              <div class="status-title" :style="getStatusStyle(info.status, CheckStatusColorMap)">
-                {{ checkFilterList.status?.preset[info.status] }}
-              </div>
-            </template>
-            <template #info="{ info }">
-              <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                <div class="flex py-[4px] justify-between">
-                  <div class="label">
-                    盘点门店
+          <template v-for="(info, index) in checkList" :key="index">
+            <common-card-list>
+              <template #status>
+                <common-button-status
+                  :bg-color="getStatusStyle(info.status, AllocateStatusColorMap).backgroundColor"
+                  :text="checkFilterList.status?.preset[info.status]"
+                />
+              </template>
+              <template #info>
+                <div class="text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                  <div class="flex py-[4px] justify-between">
+                    <div class="label">
+                      盘点门店
+                    </div>
+                    <div class="text-align-end">
+                      {{ info?.store?.name || '' }}
+                    </div>
                   </div>
-                  <div class="text-align-end">
-                    {{ info?.store?.name || '' }}
-                  </div>
-                </div>
-                <template v-for="(item, index) in checkFilterListToArray" :key="index">
-                  <template v-if="item.find">
-                    <template v-if="item.name === 'class_finished' || item.name === 'class_old'">
-                      <template v-if="info.type === GoodsType.ProductFinish && item.name === 'class_finished'">
-                        <div class="flex py-[4px] justify-between">
-                          <div class="label">
-                            {{ item.label }}
-                          </div>
-                          <div class="text-align-end">
-                            {{ getMultipleVal(item?.preset, info[item.name]) }}
-                          </div>
-                        </div>
-                      </template>
-                      <template v-if="info.type === GoodsType.ProductOld && item.name === 'class_old'">
-                        <div class="flex py-[4px] justify-between">
-                          <div class="label">
-                            {{ item.label }}
-                          </div>
-                          <div class="text-align-end">
-                            {{ getMultipleVal(item?.preset, info[item.name]) }}
-                          </div>
-                        </div>
-                      </template>
-                    </template>
-                    <template v-else>
-                      <template v-if="item.input === 'text'">
-                        <div class="flex py-[4px] justify-between">
-                          <div class="label">
-                            {{ item.label === 'ID' ? '盘点单号' : item.label }}
-                          </div>
-                          <div class="text-align-end">
-                            {{ info[item.name] }}
-                          </div>
-                        </div>
-                      </template>
-                      <template v-if="item.input === 'select'">
-                        <div class="flex py-[4px] justify-between">
-                          <div class="label">
-                            {{ item.label }}
-                          </div>
-                          <div class="text-align-end">
-                            {{ getRadioVal(item.preset, info[item.name]) }}
-                          </div>
-                        </div>
-                      </template>
-                      <template v-if="item.input === 'multiple'">
-                        <div class="flex py-[4px] justify-between">
-                          <div class="label">
-                            {{ item.label }}
-                          </div>
-                          <template v-if="item.name === 'inventory_person_ids'">
-                            <div class="text-align-end w-[60%]">
-                              <span
-                                v-for="(person) in info.inventory_persons.slice(0, 2)" :key="person.id"
-                                class="mr-[4px]"
-                              >
-                                <n-tag size="small">
-                                  {{ person.nickname }}
-                                </n-tag>
-                              </span>
-
-                              <template v-if="info.inventory_persons.length > 2">
-                                <n-tag size="small">
-                                  +{{ info.inventory_persons.length - 2 }}
-                                </n-tag>
-                              </template>
+                  <template v-for="(item, index) in checkFilterListToArray" :key="index">
+                    <template v-if="item.find">
+                      <template v-if="item.name === 'class_finished' || item.name === 'class_old'">
+                        <template v-if="info.type === GoodsType.ProductFinish && item.name === 'class_finished'">
+                          <div class="flex py-[4px] justify-between">
+                            <div class="label">
+                              {{ item.label }}
                             </div>
-                          </template>
-                          <template v-else>
                             <div class="text-align-end">
                               {{ getMultipleVal(item?.preset, info[item.name]) }}
                             </div>
-                          </template>
-                        </div>
+                          </div>
+                        </template>
+                        <template v-if="info.type === GoodsType.ProductOld && item.name === 'class_old'">
+                          <div class="flex py-[4px] justify-between">
+                            <div class="label">
+                              {{ item.label }}
+                            </div>
+                            <div class="text-align-end">
+                              {{ getMultipleVal(item?.preset, info[item.name]) }}
+                            </div>
+                          </div>
+                        </template>
+                      </template>
+                      <template v-else>
+                        <template v-if="item.input === 'text'">
+                          <div class="flex py-[4px] justify-between">
+                            <div class="label">
+                              {{ item.label === 'ID' ? '盘点单号' : item.label }}
+                            </div>
+                            <div class="text-align-end">
+                              {{ info[item.name] }}
+                            </div>
+                          </div>
+                        </template>
+                        <template v-if="item.input === 'select'">
+                          <div class="flex py-[4px] justify-between">
+                            <div class="label">
+                              {{ item.label }}
+                            </div>
+                            <div class="text-align-end">
+                              {{ getRadioVal(item.preset, info[item.name]) }}
+                            </div>
+                          </div>
+                        </template>
+                        <template v-if="item.input === 'multiple'">
+                          <div class="flex py-[4px] justify-between">
+                            <div class="label">
+                              {{ item.label }}
+                            </div>
+                            <template v-if="item.name === 'inventory_person_ids'">
+                              <div class="text-align-end w-[60%]">
+                                <span
+                                  v-for="(person) in info.inventory_persons.slice(0, 2)" :key="person.id"
+                                  class="mr-[4px]"
+                                >
+                                  <n-tag size="small">
+                                    {{ person.nickname }}
+                                  </n-tag>
+                                </span>
+
+                                <template v-if="info.inventory_persons.length > 2">
+                                  <n-tag size="small">
+                                    +{{ info.inventory_persons.length - 2 }}
+                                  </n-tag>
+                                </template>
+                              </div>
+                            </template>
+                            <template v-else>
+                              <div class="text-align-end">
+                                {{ getMultipleVal(item?.preset, info[item.name]) }}
+                              </div>
+                            </template>
+                          </div>
+                        </template>
                       </template>
                     </template>
                   </template>
-                </template>
-                <div class="flex py-[4px] justify-between">
-                  <div class="label">
-                    创建时间
-                  </div>
-                  <div class="text-align-end">
-                    {{ formatTimestampToDateTime(info.created_at) }}
+                  <div class="flex py-[4px] justify-between">
+                    <div class="label">
+                      创建时间
+                    </div>
+                    <div class="text-align-end">
+                      {{ formatTimestampToDateTime(info.created_at) }}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </template>
-            <template #bottom="{ info }">
-              <div class="flex-end text-size-[14px]">
-                <common-button-irregular text="详情" @click="jump('/product/check/info', { id: info.id })" />
-              </div>
-            </template>
-          </product-manage-card>
+              </template>
+              <template #footer>
+                <div class="flex-end">
+                  <common-button-rounded
+                    padding="4px 36px"
+                    content="详情" @click="jump('/product/check/info', { id: info.id })"
+                  />
+                </div>
+              </template>
+            </common-card-list>
+          </template>
           <common-page
             v-model:page="searchPage" :total="checkTotal" :limit="limits" @update:page="updatePage" />
         </template>

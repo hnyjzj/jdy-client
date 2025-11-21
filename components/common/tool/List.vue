@@ -34,13 +34,13 @@ const railStyle = ({
 <template>
   <div class="flex-center-between gap-2 py-[16px]">
     <div class="flex items-center gap-[12px]">
-      <div class="text-size-[14px] color-[#fff]">
+      <div class="text-size-[14px]">
         共 {{ props.total }} 条
       </div>
       <template v-if="isExport">
         <div class="flex items-center cursor-pointer" @click="emits('export')">
           <span class="underline">
-            <icon name="i-icon:download" :size="14" color="#FFF" />
+            <icon name="i-icon:download" :size="14" />
           </span>
           <span class="px-[8px]">
             导出
@@ -53,7 +53,7 @@ const railStyle = ({
         <slot />
       </span>
       <div @click="emits('height')">
-        <product-filter-senior class="color-[#fff]" />
+        <product-filter-senior />
       </div>
       <template v-if="showtype">
         <n-switch
