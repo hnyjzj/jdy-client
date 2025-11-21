@@ -16,6 +16,6 @@
 @use '@/assets/css/main';
 
 .body {
-  --uno: 'bg-[linear-gradient(180deg,#3875C5_0%,#3875C5_160px,#F1F5FE_100%)] dark:bg-[linear-gradient(180deg,#3875C5_0%,#3875C5_160px,#07111F_100%)]';
+  --uno: 'bg-[#F4F9FD] dark:bg-[#1D2C60]';
 }
 </style>

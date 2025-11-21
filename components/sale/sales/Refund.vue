@@ -13,7 +13,7 @@ const handleClick = () => {
 <template>
   <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
-      <sale-cards :title="item.num" :tag-text="item.openType" :info="item">
+      <common-card-list :title="item.num" :tag-text="item.openType" :info="item">
         <template #info>
           <div class="grid grid-cols-1 gap-[12px]">
             <div class="info">
@@ -41,7 +41,7 @@ const handleClick = () => {
             <common-button-irregular text="查看详情" @click="handleClick" />
           </div>
         </template>
-      </sale-cards>
+      </common-card-list>
     </template>
   </div>
 </template>

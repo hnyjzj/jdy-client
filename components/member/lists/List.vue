@@ -31,15 +31,15 @@ const getStatusType = (status: number) => {
     <template v-if="props.info.length">
       <div class="grid grid-cols-1 gap-[16px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
         <template v-for="(item, index) in props.info" :key="index">
-          <common-gradient :title="item.name || '--'" theme="theme">
-            <template #right>
+          <common-card-list :title="item.name || '--'" theme="theme">
+            <template #status>
               <common-tags
                 :text="getTarget(item, 'status', 'status')"
                 :type="getStatusType(item.status || 1)"
               />
             </template>
 
-            <template #body>
+            <template #info>
               <div class="body">
                 <div class="part">
                   <div class="part-left">
@@ -88,11 +88,11 @@ const getStatusType = (status: number) => {
                   </div>
                 </div>
                 <div>
-                  <common-button-irregular text="查看详情" @click="emits('goInfo', item.id)" />
+                  <common-button-rounded content="详情" @click="emits('goInfo', item.id)" />
                 </div>
               </div>
             </template>
-          </common-gradient>
+          </common-card-list>
         </template>
       </div>
     </template>
@@ -120,7 +120,7 @@ const getStatusType = (status: number) => {
 }
 
 .footer {
-  --uno: 'flex-end bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]';
+  --uno: 'flex-end';
 
   .accidental {
     --uno: 'color-[#3971F3] font-semibold font-size-[14px] dark:color-[#fff] text-nowrap';

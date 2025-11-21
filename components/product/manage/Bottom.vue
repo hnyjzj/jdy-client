@@ -7,7 +7,7 @@ const props = defineProps<{
 <template>
   <div class="fixed bottom-0 left-0 right-0 z-9">
     <div
-      class="text-black dark:text-[#FFF] px-[16px] py-[10px] blur-bgc dark:border-[#0000001A] b-t-solid border-color-[#E6E6E8] b-t-[1px]">
+      class="text-[#FFF] px-[16px] py-[10px] bg-[#2B2C43]">
       <common-layout-center>
         <div class="flex">
           <div class="item">
