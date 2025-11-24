@@ -55,9 +55,9 @@ const returnGoods = (val: number) => {
             <common-cell label="会员等级" :value="props.orders.member?.level" />
             <div class="border-b-solid border-b-[#E0E0E0] border" />
             <common-cell label="实付金额" format="￥" :value="props.orders.price_pay" />
-            <common-cell label="支付方式" value="" label-color="#4C8DF6" />
+            <common-cell label="支付方式" value=" " />
             <template v-for="(item, index) in props.orders.payments" :key="index">
-              <common-cell :label="payMethods(item.payment_method as number) " label-color="#4C8DF6" val-color="#4C8DF6" format="￥" :value="item.amount" />
+              <common-cell :label="payMethods(item.payment_method as number) " format="￥" :value="item.amount" />
             </template>
           </div>
         </template>
@@ -86,7 +86,7 @@ const returnGoods = (val: number) => {
                 </template>
                 <template v-if="item.is_our">
                   <common-cell label="商品条码" :value="item.product_finished?.code" />
-                  <common-cell label="商品名称" :value="item.product_finished?.name" val-color="#4C8DF6" />
+                  <common-cell label="商品名称" :value="item.product_finished?.name" />
                   <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[item.product_finished?.retail_type] " />
                   <common-cell label="主石重(ct)" :value="item.product_finished?.weight_gem" />
                   <common-cell label="颜色" :value="props.productFilter.color_gem?.preset[item.product_finished?.color_gem] " />
@@ -96,7 +96,7 @@ const returnGoods = (val: number) => {
                   <common-cell label="标签价" format="￥" :value="item.product_finished?.label_price" />
                 </template>
                 <template v-else>
-                  <common-cell label="商品名称" :value="item.product_demand?.name" val-color="#4C8DF6" />
+                  <common-cell label="商品名称" :value="item.product_demand?.name" />
                   <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[item.product_demand?.retail_type as number] " />
                   <common-cell label="主石重(ct)" :value="item.product_demand?.weight_gem" />
                   <common-cell label="颜色" :value="props.productFilter.color_gem?.preset[item.product_demand?.color_gem as number] " />
@@ -109,6 +109,15 @@ const returnGoods = (val: number) => {
                 <common-cell label="定金金额" format="￥" :value="item.price" />
                 <template v-if="item.status === DepositOrderStatus.Returned">
                   <common-cell label="货品状态" value="已退款" val-color="#FF9900" />
+                  <div class="line" />
+                  <template v-for="(refund, i) in props.orders.order_refunds" :key="i">
+                    <template v-if="refund.code === item.product_finished.code">
+                      <common-cell label="退款单号" :value="refund.id" />
+                      <common-cell label="退款金额" format="￥" :value="refund?.price" />
+                      <common-cell label="退货数量" :value="refund?.quantity" />
+                      <common-cell label="备注" :value="refund?.remark" />
+                    </template>
+                  </template>
                 </template>
                 <div class="flex-end">
                   <template v-if="item.status === DepositOrderStatus.Booking && props?.identity > 1 && props.store === orders.store_id">
@@ -129,5 +138,8 @@ const returnGoods = (val: number) => {
 <style lang="scss" scoped>
  .info {
   --uno: 'flex flex-col gap-[3px] px-[16px] pb-[16px]';
+}
+.line {
+  --uno: 'h-[1px] w-full bg-[#E0E0E0] my-[8px]';
 }
 </style>
