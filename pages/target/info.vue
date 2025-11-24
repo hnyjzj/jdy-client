@@ -3,6 +3,7 @@ const { myStore } = storeToRefs(useStores())
 
 const { getTargetWhere, getTargetInfo, getPersonalWhere } = useTarget()
 const { targetInfo, targetFilterListToArray } = storeToRefs(useTarget())
+const { userinfo } = storeToRefs(useUser())
 const route = useRoute()
 useSeoMeta({
   title: '销售目标详情',
@@ -76,6 +77,29 @@ function percent(achieved: any, purpose: any, digits = 0) {
     return (0).toFixed(digits)
   return ((a / p) * 100).toFixed(digits)
 }
+
+function getAuthority(str: any) {
+  // 身份小于店长隐藏真实数据
+  if (userinfo.value.identity < UserLevel.IdentityShopkeeper)
+    return '***'
+  return str
+}
+
+/**
+ * 根据权限判断是否显示目标进度
+ * @param str 显示的字符串
+ * @param person 目标人员信息
+ */
+function getPersonAuthority(str: any, person: TargetPersonal) {
+  // 身份为店长和高于店长正常显示
+  if (userinfo.value.identity >= UserLevel.IdentityShopkeeper)
+    return str
+
+  // 低于店长 判断是否为本人 只显示本人
+  if (person.id === userinfo.value.id)
+    return str
+  return '***'
+}
 </script>
 
 <template>
@@ -143,7 +167,7 @@ function percent(achieved: any, purpose: any, digits = 0) {
                     总目标
                   </div>
                   <div class="info-val">
-                    {{ statistics('purpose') }}
+                    {{ getAuthority(statistics('purpose')) }}
                   </div>
                 </div>
                 <div class="info-row">
@@ -151,7 +175,7 @@ function percent(achieved: any, purpose: any, digits = 0) {
                     总完成
                   </div>
                   <div class="info-val">
-                    {{ statistics('achieved') }}
+                    {{ getAuthority(statistics('achieved')) }}
                   </div>
                 </div>
                 <div class="info-row">
@@ -159,7 +183,7 @@ function percent(achieved: any, purpose: any, digits = 0) {
                     总完成率
                   </div>
                   <div class="info-val">
-                    {{ percent(statistics('achieved'), statistics('purpose'), 2) }}%
+                    {{ getAuthority(`${percent(statistics('achieved'), statistics('purpose'), 2)}%`) }}
                   </div>
                 </div>
               </div>
@@ -232,17 +256,17 @@ function percent(achieved: any, purpose: any, digits = 0) {
                           {{ personal.staff.nickname }}
                         </td>
                         <td class="px-4 py-2 border-b border-gray-100">
-                          {{ personal.purpose }}
+                          {{ getPersonAuthority(personal.purpose, personal) }}
                         </td>
                         <td class="px-4 py-2 border-b border-gray-100">
-                          {{ personal.achieved }}
+                          {{ getPersonAuthority(personal.achieved, personal) }}
                         </td>
                         <td class="px-4 py-2 border-b border-gray-100">
                           <template v-if="Number(personal.purpose) > 0">
-                            {{ percent(personal.achieved, personal.purpose, 2) }}%
+                            {{ getPersonAuthority(`${percent(personal.achieved, personal.purpose, 2)}%`, personal) }}
                           </template>
                           <template v-else>
-                            0%
+                            {{ getPersonAuthority('0%', personal) }}
                           </template>
                         </td>
                       </tr>
@@ -298,17 +322,17 @@ function percent(achieved: any, purpose: any, digits = 0) {
                       {{ personal.staff.nickname }}
                     </td>
                     <td class="px-4 py-2 border-b border-gray-100">
-                      {{ personal.purpose }}
+                      {{ getPersonAuthority(personal.purpose, personal) }}
                     </td>
                     <td class="px-4 py-2 border-b border-gray-100">
-                      {{ personal.achieved }}
+                      {{ getPersonAuthority(personal.achieved, personal) }}
                     </td>
                     <td class="px-4 py-2 border-b border-gray-100">
                       <template v-if="Number(personal.purpose) > 0">
-                        {{ ((Number(personal.achieved) / Number(personal.purpose)) * 100).toFixed(2) || 0 }}%
+                        {{ getPersonAuthority(`${((Number(personal.achieved) / Number(personal.purpose)) * 100).toFixed(2) || 0}%`, personal) }}
                       </template>
                       <template v-else>
-                        0%
+                        {{ getPersonAuthority('0%', personal) }}
                       </template>
                     </td>
                   </tr>
