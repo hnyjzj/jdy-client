@@ -190,6 +190,8 @@ interface DepositOrderInfo {
   products: DepositOrderInfoProducts[]
 
   order_sales: ProductFinisheds[]
+
+  order_refunds?: ReturnGoods[]
 }
 /**
  * 定金单详情的产品
@@ -263,4 +265,12 @@ interface DepositReturnGoods {
    * 备注
    */
   remark: string
+
+  code?: string
+  name?: string
+
+  quantity?: number
+
+  price?: number | string
+
 }

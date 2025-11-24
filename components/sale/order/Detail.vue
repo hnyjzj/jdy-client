@@ -82,13 +82,13 @@ const onReturnProduct = async (index: number) => {
             <div class="line" />
             <common-cell label="会员姓名" :value="props.orders.member?.name || ''" />
             <common-cell label="会员昵称" :value="props.orders.member?.nickname || ''" />
-            <common-cell label="手机号" :value="props.orders.member?.phone" />
+            <common-cell label="手机号" :value="props.orders.member?.phone" val-color="#4C8DF6" class="cursor-pointer" @click="jump(`/member/search`, { phone: props.orders.member?.phone })" />
             <common-cell label="会员等级" :value="props.orders.member?.level" />
             <template v-if="props.orders?.order_deposits?.length">
               <div class="line" />
-              <common-cell label="关联订金单" value="" label-color="#4C8DF6" />
               <template v-for="(deposit, ix) in props.orders.order_deposits" :key="ix">
-                <common-cell label="订金单号" :value="deposit.id" label-color="#4C8DF6" />
+                <common-cell label="关联订金单" value=" " />
+                <common-cell label="订金单号" :value="deposit.id" val-color="#4C8DF6" class="cursor-pointer" @click="jump(`/sale/deposit/order`, { id: deposit.id })" />
                 <common-cell label="订金金额" :value="deposit.price" />
                 <template v-for="(p, index) in deposit.products" :key="index">
                   <common-cell :label="`商品${index + 1}`" :value="p.product_finished.name" />
@@ -136,16 +136,12 @@ const onReturnProduct = async (index: number) => {
                     </n-image-group>
                   </div>
                 </template>
-                <common-cell label="商品条码" :value="obj.finished.product?.code" />
-                <common-cell label="商品名称" :value="obj.finished.product?.name" val-color="#4C8DF6" />
-                <common-cell label="零售方式" :value="props.productFilter.retail_type?.preset[(obj.finished.product?.retail_type as number)]" />
-                <common-cell label="材质" :value="props.productFilter.material?.preset[(obj.finished.product?.material as number)]" />
+                <common-cell label="商品条码" :value="obj.finished.product?.code" val-color="#4C8DF6" class="cursor-pointer" @click="jump(`/product/manage/finished/info`, { code: obj.finished.product?.code })" />
+                <common-cell label="商品名称" :value="obj.finished.product?.name" />
+                <common-cell label="大类" :value="props.productFilter.class?.preset[obj.finished.product?.class!] " />
                 <common-cell label="成色" :value="props.productFilter.quality?.preset[(obj.finished.product?.quality as number)]" />
                 <common-cell label="主石" :value="props.productFilter.gem?.preset[(obj.finished.product?.gem as number)]" />
-                <common-cell label="主石重(ct)" :value="obj.finished.product?.weight_gem" />
                 <common-cell label="品类" :value="props.productFilter.category?.preset[obj.finished.product?.category!] " />
-                <common-cell label="品牌" :value="props.productFilter.brand?.preset[obj.finished.product?.brand!] " />
-                <common-cell label="工艺" :value="props.productFilter.craft?.preset[(obj.finished.product?.craft as number)]" />
                 <common-cell label="金重(g)" :value="obj.finished.product?.weight_metal" />
                 <common-cell label="金价(元/g)" format="￥" :value="obj.finished.price_gold" />
                 <common-cell label="工费" format="￥" :value="obj.finished.labor_fee" />
@@ -159,13 +155,20 @@ const onReturnProduct = async (index: number) => {
                 <common-cell label="应付金额" format="￥" :value="obj.finished.price" />
                 <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusReturn">
                   <common-cell label="成品状态" value="已退货" val-color="#FF9900" />
+                  <div class="line" />
+                  <template v-for="(item, index) in orders.order_refunds" :key="index">
+                    <template v-if="obj.finished.product?.code === item.code">
+                      <common-cell label="退款单号" :value="item.id" />
+                      <common-cell label="退货退款金额" format="￥" :value="item?.price" />
+                      <common-cell label="备注" :value="item?.remark" />
+                    </template>
+                  </template>
                 </template>
                 <div class="flex-end">
                   <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > UserLevel.IdentityClerk && props.store === orders.store_id && !route.query.embedded">
                     <common-button-rounded content="退货" @button-click="onReturnProduct(i)" />
                   </template>
                 </div>
-                <div class="line" />
               </div>
             </template>
           </sale-cards>
@@ -214,13 +217,20 @@ const onReturnProduct = async (index: number) => {
                 <common-cell label="回收金重(g)" :value="obj.old.weight_metal" />
                 <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusReturn">
                   <common-cell label="状态" value="已退货" val-color="#FF9900" />
+                  <div class="line" />
+                  <template v-for="(item, index) in orders.order_refunds" :key="index">
+                    <template v-if="obj.old.product?.code === item.code">
+                      <common-cell label="退款单号" :value="item.id" />
+                      <common-cell label="退货退款金额" format="￥" :value="item?.price" />
+                      <common-cell label="备注" :value="item?.remark" />
+                    </template>
+                  </template>
                 </template>
                 <div class="flex-end">
                   <template v-if="obj?.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > UserLevel.IdentityClerk && props.store === orders.store_id && !route.query.embedded">
                     <common-button-rounded content="退货" @button-click="onReturnProduct(i)" />
                   </template>
                 </div>
-                <div class="line" />
               </div>
             </template>
           </sale-cards>
@@ -232,21 +242,29 @@ const onReturnProduct = async (index: number) => {
             <template #info>
               <div class="grid grid-cols-1 gap-[12px]">
                 <div class="info">
-                  <common-cell label="配件名称" :value="obj.accessorie?.product?.name" val-color="#4C8DF6" />
-                  <common-cell label="配件类型" :value="props.partFilter.type?.preset[obj.accessorie.product?.type!]" val-color="#4C8DF6" />
+                  <common-cell label="配件名称" :value="obj.accessorie?.product?.name" />
+                  <common-cell label="配件类型" :value="props.partFilter.type?.preset[obj.accessorie.product?.type!]" />
                   <common-cell label="零售方式" :value="props.partFilter.retail_type?.preset[obj.accessorie.product?.retail_type!]" />
                   <common-cell label="积分" :value="obj.accessorie?.integral" />
                   <common-cell label="应付金额" format="￥" :value="obj.accessorie?.price" />
                   <common-cell label="数量" :value="obj.accessorie.quantity" />
                   <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusReturn">
                     <common-cell label="状态" value="已退货" val-color="#FF9900" />
+                    <div class="line" />
+                    <template v-for="(item, index) in orders.order_refunds" :key="index">
+                      <template v-if="obj.accessorie.product?.name === item.name ">
+                        <common-cell label="退款单号" :value="item.id" />
+                        <common-cell label="退货退款金额" format="￥" :value="item?.price" />
+                        <common-cell label="退货数量" :value="item?.quantity" />
+                        <common-cell label="备注" :value="item?.remark" />
+                      </template>
+                    </template>
                   </template>
                   <div class="flex-end">
                     <template v-if="obj?.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > UserLevel.IdentityClerk && props.store === orders.store_id && !route.query.embedded">
                       <common-button-rounded content="退货" @button-click="onReturnProduct(i)" />
                     </template>
                   </div>
-                  <div class="line" />
                 </div>
               </div>
             </template>
@@ -266,15 +284,15 @@ const onReturnProduct = async (index: number) => {
             <common-cell label="实付金额" format="￥" :value="props.orders.price_pay" />
             <common-cell label="积分抵扣" :value="props.orders.integral_deduction" />
             <div class="line" />
-            <common-cell label="支付方式" value="" label-color="#4C8DF6" />
+            <common-cell label="支付方式" value=" " />
             <template v-for="(item, index) in props.orders.payments" :key="index">
-              <common-cell :label="payMethods(item.payment_method) " label-color="#4C8DF6" val-color="#4C8DF6" format="￥" :value="item.amount" />
+              <common-cell :label="payMethods(item.payment_method) " format="￥" :value="item.amount" />
             </template>
             <div class="line" />
-            <common-cell label="成品积分" format="+" :value="productListScore" label-color="#4C8DF6" val-color="#4C8DF6" />
-            <common-cell label="旧料积分" format="-" :value="masterListScore" label-color="#4C8DF6" val-color="#4C8DF6" />
-            <common-cell label="配件积分" format="+" :value="PartsListScore" label-color="#4C8DF6" val-color="#4C8DF6" />
-            <common-cell label="积分合计" :value="totalScore || props.orders.integral" label-color="#4C8DF6" val-color="#4C8DF6" />
+            <common-cell label="成品积分" format="+" :value="productListScore" />
+            <common-cell label="旧料积分" format="-" :value="masterListScore" />
+            <common-cell label="配件积分" format="+" :value="PartsListScore" />
+            <common-cell label="积分合计" :value="totalScore || props.orders.integral" />
             <div class="flex flex-row justify-between">
               <div class="text-size-[14px] color-[#666] dark:color-[#CBCDD1] dark:color-[#fff]">
                 订单备注
