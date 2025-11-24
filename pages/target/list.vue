@@ -4,6 +4,7 @@ const { myStore } = storeToRefs(useStores())
 const { getTargetWhere, getTargetList, deleteTarget } = useTarget()
 const { targetFilterListToArray, targetFilterList, targetList, targetListTotal } = storeToRefs(useTarget())
 const { searchPage, showtype } = storeToRefs(usePages())
+const { userinfo } = storeToRefs(useUser())
 
 useSeoMeta({
   title: '销售目标管理',
@@ -177,9 +178,14 @@ async function delTarget() {
       </template>
       <template #bottom="{ info }">
         <div class="flex justify-between items-center">
-          <div class="cursor-pointer pl-[16px]" @click="delDialog = true;comingDelId = info.id">
-            <icon name="i-svg:delete" :size="16" />
-          </div>
+          <template v-if="userinfo.identity < UserLevel.IdentityShopkeeper">
+            <div />
+          </template>
+          <template v-else>
+            <div class="cursor-pointer pl-[16px]" @click="delDialog = true;comingDelId = info.id">
+              <icon name="i-svg:delete" :size="16" />
+            </div>
+          </template>
           <div class="flex-end text-size-[14px]">
             <common-button-irregular text="详情" @click="jump('/target/info', { id: info.id })" />
           </div>
