@@ -296,7 +296,7 @@ interface ReturnGoods {
   /**
    * 退款时间
    */
-  created_at: string
+  created_at?: string
 }
 /**
  * 销售单详情

@@ -158,7 +158,7 @@ const onReturnProduct = async (index: number) => {
                   <div class="line" />
                   <template v-for="(item, index) in props.orders.order_refunds" :key="index">
                     <template v-if="obj.finished.product?.code === item.code">
-                      <common-cell label="退款时间" :value="formatTimestampToDateTime(item.created_at)" />
+                      <common-cell label="退款时间" :value="formatTimestampToDateTime(item.created_at || '')" />
                       <common-cell label="退款单号" :value="item.id" />
                       <common-cell label="退款金额" format="￥" :value="item?.price" />
                       <common-cell label="备注" :value="item?.remark" />
