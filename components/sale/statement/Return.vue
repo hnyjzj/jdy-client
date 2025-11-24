@@ -19,6 +19,7 @@ const handleClick = (id?: string) => {
       <sale-cards :title="`退货单编号:${item.id}`">
         <template #info>
           <div class="info">
+            <common-cell label="退货时间" :value="formatTimestampToDateTime(item.created_at) || '--'" />
             <common-cell label="关联销售单" :value="item.order_id || '--'" />
             <common-cell label="门店" :value="item.store.name || '--'" />
             <common-cell label="产品类型" :value="returnType(item.type) || '--'" />
