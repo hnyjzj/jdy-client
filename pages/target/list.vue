@@ -1,13 +1,15 @@
 <script lang="ts" setup>
 const { myStore } = storeToRefs(useStores())
 
-const { getTargetWhere, getTargetList } = useTarget()
+const { getTargetWhere, getTargetList, deleteTarget } = useTarget()
 const { targetFilterListToArray, targetFilterList, targetList, targetListTotal } = storeToRefs(useTarget())
 const { searchPage, showtype } = storeToRefs(usePages())
 
 useSeoMeta({
   title: '销售目标管理',
 })
+const { $toast } = useNuxtApp()
+
 const route = useRoute()
 const limits = ref(20)
 const filterData = ref({} as Partial<ExpandPage<any>>)
@@ -90,6 +92,21 @@ if (myStore.value.id || myStore.value.id === '') {
   await getTargetWhere()
   await handleQueryParams()
 }
+
+/** 删除销售目标 */
+async function delTarget(id: string) {
+  const res = await deleteTarget(id)
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('删除成功')
+    setTimeout(() => {
+      filterData.value.searchPage = 1
+      listJump()
+    }, 1000)
+  }
+  else {
+    $toast.error(res?.message ?? '删除失败')
+  }
+}
 </script>
 
 <template>
@@ -155,8 +172,13 @@ if (myStore.value.id || myStore.value.id === '') {
         </div>
       </template>
       <template #bottom="{ info }">
-        <div class="flex-end text-size-[14px]">
-          <common-button-irregular text="详情" @click="jump('/target/info', { id: info.id })" />
+        <div class="flex justify-between items-center">
+          <div class="cursor-pointer pl-[16px]" @click="delTarget(info.id)">
+            <icon name="i-svg:delete" :size="16" />
+          </div>
+          <div class="flex-end text-size-[14px]">
+            <common-button-irregular text="详情" @click="jump('/target/info', { id: info.id })" />
+          </div>
         </div>
       </template>
     </product-manage-card>
