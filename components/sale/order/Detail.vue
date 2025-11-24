@@ -156,7 +156,7 @@ const onReturnProduct = async (index: number) => {
                 <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusReturn">
                   <common-cell label="成品状态" value="已退货" val-color="#FF9900" />
                   <div class="line" />
-                  <template v-for="(item, index) in orders.order_refunds" :key="index">
+                  <template v-for="(item, index) in props.orders.order_refunds" :key="index">
                     <template v-if="obj.finished.product?.code === item.code">
                       <common-cell label="退款单号" :value="item.id" />
                       <common-cell label="退款金额" format="￥" :value="item?.price" />
@@ -218,7 +218,7 @@ const onReturnProduct = async (index: number) => {
                 <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusReturn">
                   <common-cell label="状态" value="已退货" val-color="#FF9900" />
                   <div class="line" />
-                  <template v-for="(item, index) in orders.order_refunds" :key="index">
+                  <template v-for="(item, index) in props.orders.order_refunds" :key="index">
                     <template v-if="obj.old.product?.code === item.code">
                       <common-cell label="退款单号" :value="item.id" />
                       <common-cell label="退款金额" format="￥" :value="item?.price" />
@@ -251,7 +251,7 @@ const onReturnProduct = async (index: number) => {
                   <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusReturn">
                     <common-cell label="状态" value="已退货" val-color="#FF9900" />
                     <div class="line" />
-                    <template v-for="(item, index) in orders.order_refunds" :key="index">
+                    <template v-for="(item, index) in props.orders.order_refunds" :key="index">
                       <template v-if="obj.accessorie.product?.name === item.name ">
                         <common-cell label="退款单号" :value="item.id" />
                         <common-cell label="退款金额" format="￥" :value="item?.price" />
