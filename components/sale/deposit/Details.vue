@@ -113,7 +113,7 @@ const returnGoods = (val: number) => {
                   <template v-for="(refund, i) in props.orders.order_refunds" :key="i">
                     <template v-if="refund.code === item.product_finished.code">
                       <common-cell label="退款单号" :value="refund.id" />
-                      <common-cell label="退货退款金额" format="￥" :value="refund?.price" />
+                      <common-cell label="退款金额" format="￥" :value="refund?.price" />
                       <common-cell label="退货数量" :value="refund?.quantity" />
                       <common-cell label="备注" :value="refund?.remark" />
                     </template>

@@ -159,7 +159,7 @@ const onReturnProduct = async (index: number) => {
                   <template v-for="(item, index) in orders.order_refunds" :key="index">
                     <template v-if="obj.finished.product?.code === item.code">
                       <common-cell label="退款单号" :value="item.id" />
-                      <common-cell label="退货退款金额" format="￥" :value="item?.price" />
+                      <common-cell label="退款金额" format="￥" :value="item?.price" />
                       <common-cell label="备注" :value="item?.remark" />
                     </template>
                   </template>
@@ -221,7 +221,7 @@ const onReturnProduct = async (index: number) => {
                   <template v-for="(item, index) in orders.order_refunds" :key="index">
                     <template v-if="obj.old.product?.code === item.code">
                       <common-cell label="退款单号" :value="item.id" />
-                      <common-cell label="退货退款金额" format="￥" :value="item?.price" />
+                      <common-cell label="退款金额" format="￥" :value="item?.price" />
                       <common-cell label="备注" :value="item?.remark" />
                     </template>
                   </template>
@@ -254,7 +254,7 @@ const onReturnProduct = async (index: number) => {
                     <template v-for="(item, index) in orders.order_refunds" :key="index">
                       <template v-if="obj.accessorie.product?.name === item.name ">
                         <common-cell label="退款单号" :value="item.id" />
-                        <common-cell label="退货退款金额" format="￥" :value="item?.price" />
+                        <common-cell label="退款金额" format="￥" :value="item?.price" />
                         <common-cell label="退货数量" :value="item?.quantity" />
                         <common-cell label="备注" :value="item?.remark" />
                       </template>
