@@ -293,6 +293,10 @@ interface ReturnGoods {
    * 退货数量
    */
   quantity?: number
+  /**
+   * 退款时间
+   */
+  created_at?: string
 }
 /**
  * 销售单详情
