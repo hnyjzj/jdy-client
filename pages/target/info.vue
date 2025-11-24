@@ -96,7 +96,7 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
     return str
 
   // 低于店长 判断是否为本人 只显示本人
-  if (person.id === userinfo.value.id)
+  if (person.staff.id === userinfo.value.id)
     return str
   return '***'
 }
