@@ -9,6 +9,8 @@ const props = defineProps<{
   billingSet: BillingSet
 }>()
 const { $toast } = useNuxtApp()
+const hold = holdFunction(props.billingSet.decimal_point)
+const rounding = roundFunction(props.billingSet.rounding)
 const orderObject = defineModel<Orders>({ default: {} as Orders })
 const nowOldMaster = defineModel('nowOldMaster', { default: {} as OrderMaterial })
 const showModal = defineModel<boolean>('show', { default: false })
@@ -157,6 +159,16 @@ const presetToSelect = (filter: FilterWhere<OrderMaterial>): { label: string, va
     }
   })
 }
+
+const calcPrice = () => {
+  if (nowOldMaster.value.recycle_price) {
+    // 计算应付金额
+    const price = Number((nowOldMaster.value.recycle_price as number) ?? 0)
+    nowOldMaster.value.recycle_price = calc(`(a) | =${hold} ~${rounding}, !n`, {
+      a: price,
+    })
+  }
+}
 </script>
 
 <template>
@@ -245,8 +257,11 @@ const presetToSelect = (filter: FilterWhere<OrderMaterial>): { label: string, va
                             v-model:value="(nowOldMaster[item.name] as number)"
                             size="large"
                             :min="0"
+                            :precision="hold"
                             round :placeholder="`输入${item.label}`" :show-button="false"
-                            @focus="focus" />
+                            @focus="focus"
+                            @blur="calcPrice()"
+                          />
                         </template>
                         <template v-else>
                           <n-input-number

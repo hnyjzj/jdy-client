@@ -279,6 +279,24 @@ interface ReturnGoods {
    * 备注
    */
   remark: string
+  /**
+   * 退货商品名称
+   */
+  name?: string
+
+  /**
+   * 商品编码
+   */
+  code?: string
+
+  /**
+   * 退货数量
+   */
+  quantity?: number
+  /**
+   * 退款时间
+   */
+  created_at?: string
 }
 /**
  * 销售单详情
@@ -343,11 +361,10 @@ interface OrderInfo extends Orders {
    *旧料抵扣金额
    */
   product_old_price: string
-
   order_deposits: DepositOrderInfo[]
-
   products: orderInfoProducts[]
   operator_id: string
+  order_refunds?: ReturnGoods[]
 }
 
 interface orderInfoProducts {

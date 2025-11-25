@@ -21,7 +21,7 @@ export default defineNuxtConfig({
   typescript: {
     typeCheck: true,
   },
-  ssr: false,
+  ssr: true,
   modules: [
     '@pinia/nuxt',
     'pinia-plugin-persistedstate',

@@ -65,19 +65,25 @@ function mapEnumValues(
       if (row.finished) {
         const f = row.finished
         const p = f.product || {}
-        Object.assign(newRow, {
+        const data = {
           discount_member: f.discount_member ?? '',
           discount_final: f.discount_final ?? '',
-          labor_fee_product: f.labor_fee ?? '',
-          price: f.price ?? '',
           product_price_gold: f.price_gold ?? '',
+          price: f.price ?? '',
+          labor_fee_product: Number(f.product?.labor_fee) ?? 0,
+          labor_fee_product_actual: Number(f.labor_fee) ?? 0, // 实收工费
+          labor_fee_product_ratio: '', // 工费比例
           price_original: f.price_original ?? '',
           label_price: p.label_price ?? '',
           amount_price: f.price ?? '',
           class: enumMap.finished_class?.[p.class] ?? '',
           series_product: p.series ?? '',
           remark_product: p.remark ?? '',
-        })
+        }
+        if (data.labor_fee_product !== 0 && data.labor_fee_product_actual !== 0) {
+          data.labor_fee_product_ratio = `${(data.labor_fee_product_actual / data.labor_fee_product * 100).toFixed(2) || ''}%` // 工费比例
+        }
+        Object.assign(newRow, data)
         fillProductFields(p, [
           'name',
           'code',

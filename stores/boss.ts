@@ -41,23 +41,32 @@ export const useBoss = defineStore('boss', {
      * @param dataList 数据列表
      * @returns 去重后的标题配置数组
      */
-    generateTableTitle(dataList: BossSalesList[]): StockTitle[] {
+    generateTableTitle(dataList: BossSalesList[], totalList?: BossSalesList): StockTitle[] {
       const resultSet = new Set<string>()
       const result: StockTitle[] = []
-
       if (dataList.length > 0) {
         for (const item of dataList) {
-          Object.keys(item).forEach((key) => {
+          Object.keys(item).forEach((key: string) => {
             const title = key === 'name' ? '门店' : (key === 'total' ? '合计' : key)
             if (!resultSet.has(title)) {
               resultSet.add(title)
-              result.push({
+              const data: StockTitle = {
                 title,
                 key,
                 width: '90px',
                 align: 'center',
                 fixed: (key === 'name') || (key === 'total') ? 'left' : '',
-              })
+              }
+              if (totalList && Object.keys(totalList).length > 0) {
+                data.children = [{
+                  title: totalList[key]?.toString() || '',
+                  key,
+                  width: '90px',
+                  align: 'center',
+                  fixed: (key === 'name') || (key === 'total') ? 'left' : '',
+                }]
+              }
+              result.push(data)
             }
           })
         }
@@ -235,8 +244,8 @@ export const useBoss = defineStore('boss', {
       this.performanceList = []
       const { data } = await https.post<any, BossWhere>('/statistic/boos/performance/data', params, true, false)
       if (data.value?.code === HttpCode.SUCCESS) {
-        this.performanceList = data.value?.data
-        this.performanceTitle = this.generateTableTitle(this.performanceList)
+        this.performanceList = data.value?.data.list
+        this.performanceTitle = this.generateTableTitle(this.performanceList, data.value?.data.total)
       }
       return { list: this.performanceList, title: this.performanceTitle }
     },

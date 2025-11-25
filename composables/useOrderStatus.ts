@@ -168,3 +168,43 @@ export enum OrderProductType {
    */
   Parts = 3,
 }
+
+export enum OrderTypeSales {
+  /**
+   * 销售单
+   */
+  OrderTypeSale = 1,
+  /**
+   * 订金单
+   */
+  OrderTypeDeposit = 2,
+  /**
+   * 维修单
+   */
+  OrderTypeRepair = 3,
+  /**
+   * 其他收支单
+   */
+  OrderTypeOthers = 4,
+  /**
+   * 退货单
+   */
+  OrderTypeReturn = 5,
+
+}
+
+export const showOrderTypeMap = {
+  [OrderTypeSales.OrderTypeSale]: '销售单',
+  [OrderTypeSales.OrderTypeDeposit]: '订金单',
+  [OrderTypeSales.OrderTypeRepair]: '维修单',
+  [OrderTypeSales.OrderTypeOthers]: '其他收支单',
+  [OrderTypeSales.OrderTypeReturn]: '退货单',
+}
+
+export const OrderTypeColorMap: Record<OrderTypeSales, string> = {
+  [OrderTypeSales.OrderTypeSale]: '#8B5CF6',
+  [OrderTypeSales.OrderTypeDeposit]: '#059669',
+  [OrderTypeSales.OrderTypeRepair]: '#DC2626',
+  [OrderTypeSales.OrderTypeOthers]: '#D97706',
+  [OrderTypeSales.OrderTypeReturn]: '#4F46E5',
+}
