@@ -192,3 +192,19 @@ export enum OrderTypeSales {
   OrderTypeReturn = 5,
 
 }
+
+export const showOrderTypeMap = {
+  [OrderTypeSales.OrderTypeSale]: '销售单',
+  [OrderTypeSales.OrderTypeDeposit]: '订金单',
+  [OrderTypeSales.OrderTypeRepair]: '维修单',
+  [OrderTypeSales.OrderTypeOthers]: '其他收支单',
+  [OrderTypeSales.OrderTypeReturn]: '退货单',
+}
+
+export const OrderTypeColorMap: Record<OrderTypeSales, string> = {
+  [OrderTypeSales.OrderTypeSale]: '#8B5CF6',
+  [OrderTypeSales.OrderTypeDeposit]: '#059669',
+  [OrderTypeSales.OrderTypeRepair]: '#DC2626',
+  [OrderTypeSales.OrderTypeOthers]: '#D97706',
+  [OrderTypeSales.OrderTypeReturn]: '#4F46E5',
+}

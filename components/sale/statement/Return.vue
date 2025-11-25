@@ -33,21 +33,24 @@ const handleClick = (id?: string, type?: StatementRefundInfo['order_type']) => {
 <template>
   <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
-      <sale-cards :title="`退货单编号:${item.id}`">
+      <sale-cards :title="`退货单号:${item.id}`">
+        <template #avatar>
+          <common-tags :status="item.order_type" :status-map="OrderTypeColorMap" :text="showOrderTypeMap[item.order_type as OrderTypeSales]" :is-oval="true" />
+        </template>
         <template #info>
           <div class="info">
             <common-cell label="退货时间" :value="formatTimestampToDateTime(item.created_at) || '--'" />
-            <common-cell label="关联销售单" :value="item.order_id || '--'" />
+            <common-cell label="关联单号" :value="item.order_id || '--'" />
             <common-cell label="门店" :value="item.store.name || '--'" />
-            <common-cell label="产品类型" :value="returnType(item.type) || '--'" />
-            <common-cell label="产品条码" :value="item.code || '--'" />
             <common-cell label="会员" :value="item.member?.name || '--'" />
             <common-cell label="会员手机号" :value="item.member?.phone || '--'" />
+            <common-cell label="产品类型" :value="returnType(item.type) || '--'" />
+            <common-cell label="产品条码" :value="item.code || '--'" />
             <common-cell label="货品名称" :value="item.name || '--'" />
             <common-cell label="退货备注" :value="item.remark || '--'" />
             <common-cell label="数量" :value="item.quantity || '--'" />
-            <common-cell label="实退金额" :value="item.price || '--'" />
             <common-cell label="应退金额" :value="item.price_original || '--'" />
+            <common-cell label="实退金额" :value="item.price || '--'" />
           </div>
         </template>
         <template #footer>

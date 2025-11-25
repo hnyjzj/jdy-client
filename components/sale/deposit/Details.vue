@@ -109,6 +109,7 @@ const returnGoods = (val: number) => {
                   <div class="line" />
                   <template v-for="(refund, i) in props.orders.order_refunds" :key="i">
                     <template v-if="refund.code === item.product_finished.code">
+                      <common-cell label="退款时间" :value="formatTimestampToDateTime(item.created_at || '')" />
                       <common-cell label="退款单号" :value="refund.id" />
                       <common-cell label="退款金额" format="￥" :value="refund?.price" />
                       <common-cell label="退货数量" :value="refund?.quantity" />
