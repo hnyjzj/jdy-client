@@ -11,7 +11,7 @@ const handleClick = (id?: string, type?: StatementRefundInfo['order_type']) => {
   }
   switch (type) {
     // 普通订单
-    case OrderTypeSales.OrderType:
+    case OrderTypeSales.OrderTypeSale:
       navigateTo(`/sale/sales/order?id=${id}`)
       break
     // 订金单
@@ -52,7 +52,9 @@ const handleClick = (id?: string, type?: StatementRefundInfo['order_type']) => {
         <template #footer>
           <div class="flex-between bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
             <div class="color-[#4287F4] cursor-pointer flex justify-center items-center" />
-            <common-button-irregular text="查看详情" @click="handleClick(item.order_id, item.order_type)" />
+            <template v-if="item.order_type !== OrderTypeSales.OrderTypeReturn">
+              <common-button-irregular text="查看详情" @click="handleClick(item.order_id, item.order_type)" />
+            </template>
           </div>
         </template>
       </sale-cards>

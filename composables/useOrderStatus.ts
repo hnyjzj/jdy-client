@@ -173,7 +173,7 @@ export enum OrderTypeSales {
   /**
    * 普通订单
    */
-  OrderType = 1,
+  OrderTypeSale = 1,
   /**
    * 订金订单
    */
