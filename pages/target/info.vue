@@ -80,7 +80,7 @@ function percent(achieved: any, purpose: any, digits = 0) {
 
 function getAuthority(str: any) {
   // 身份小于店长隐藏真实数据
-  if (userinfo.value.identity < UserLevel.IdentityShopkeeper)
+  if (userinfo.value.identity > UserLevel.IdentityShopkeeper)
     return '***'
   return str
 }
@@ -92,7 +92,7 @@ function getAuthority(str: any) {
  */
 function getPersonAuthority(str: any, person: TargetPersonal) {
   // 身份为店长和高于店长正常显示
-  if (userinfo.value.identity >= UserLevel.IdentityShopkeeper)
+  if (userinfo.value.identity < UserLevel.IdentityShopkeeper)
     return str
 
   // 低于店长 判断是否为本人 只显示本人
