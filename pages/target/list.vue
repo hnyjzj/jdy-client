@@ -1,18 +1,25 @@
 <script lang="ts" setup>
 const { myStore } = storeToRefs(useStores())
 
-const { getTargetWhere, getTargetList } = useTarget()
+const { getTargetWhere, getTargetList, deleteTarget } = useTarget()
 const { targetFilterListToArray, targetFilterList, targetList, targetListTotal } = storeToRefs(useTarget())
 const { searchPage, showtype } = storeToRefs(usePages())
+const { userinfo } = storeToRefs(useUser())
 
 useSeoMeta({
   title: '销售目标管理',
 })
+const { $toast } = useNuxtApp()
+
 const route = useRoute()
 const limits = ref(20)
 const filterData = ref({} as Partial<ExpandPage<any>>)
 const filterRef = ref()
 const tableLoading = ref(false)
+/** 删除确认框 */
+const delDialog = ref(false)
+/** 要删除的销售单id */
+const comingDelId = ref()
 // 筛选框显示隐藏
 const isFilter = ref(false)
 /** 打开高级筛选 */
@@ -90,6 +97,21 @@ if (myStore.value.id || myStore.value.id === '') {
   await getTargetWhere()
   await handleQueryParams()
 }
+
+/** 删除销售目标 */
+async function delTarget() {
+  const res = await deleteTarget(comingDelId.value)
+  if (res?.code === HttpCode.SUCCESS) {
+    $toast.success('删除成功')
+    setTimeout(() => {
+      filterData.value.searchPage = 1
+      listJump()
+    }, 1000)
+  }
+  else {
+    $toast.error(res?.message ?? '删除失败')
+  }
+}
 </script>
 
 <template>
@@ -158,12 +180,12 @@ if (myStore.value.id || myStore.value.id === '') {
               </div>
             </div>
           </template>
-          <template #bottom>
+          <template #footer>
             <div class="flex-end text-size-[14px]">
               <div>
                 <common-button-rounded
                   padding="4px 36px"
-                  content="详情" @click="jump('/target/info', { id: info.id })"
+                  content="详情" @button-click="jump('/target/info', { id: info.id })"
                 />
               </div>
             </div>
@@ -182,6 +204,10 @@ if (myStore.value.id || myStore.value.id === '') {
     <template v-if="myStore.id">
       <common-create @create="jump('/target/add')" />
     </template>
+    <common-confirm
+      v-model:show="delDialog" icon="error" title="删除提醒" text="确认要删除此销售目标吗?" @submit="() => {
+        delTarget()
+      }" />
   </div>
 </template>
 

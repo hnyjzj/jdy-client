@@ -145,6 +145,8 @@ export const statementHeaderMap: Record<string, string> = {
   '折扣': 'discount_final',
   '成品金价': 'product_price_gold',
   '成品工费': 'labor_fee_product',
+  '实收工费': 'labor_fee_product_actual',
+  '工费比例': 'labor_fee_product_ratio',
   '零售方式': 'retail_type',
   '旧料抵扣': 'price_old',
   '回收方式': 'recycle_method',

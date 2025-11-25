@@ -27,6 +27,16 @@ const changeQuantity = (obj: OrderPart) => {
     })
   }
 }
+const changePrice = (obj: OrderPart) => {
+  if (obj.price) {
+    // 计算应付金额
+    const price = Number(obj.price ?? 0)
+    obj.price = calc(`(a) | =${props.hold} ~${props.rounding}, !n`, {
+      a: price,
+    })
+  }
+}
+
 const deleteConfirm = () => {
   orderObject.value.showPartsList?.splice(delId.value, 1)
   delId.value = 0
@@ -71,9 +81,9 @@ const deleteConfirm = () => {
                           v-model:value="obj.price"
                           placeholder="请输入应付金额" round
                           :min="0"
-                          :precision="0"
                           :show-button="false"
                           @focus="focus"
+                          @blur="changePrice(obj)"
                         />
                       </div>
                     </div>
