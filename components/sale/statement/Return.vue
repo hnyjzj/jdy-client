@@ -5,11 +5,28 @@ const props = defineProps<{
   where: Where<StatementRefundWhere>
 }>()
 
-const handleClick = (id?: string) => {
+const handleClick = (id?: string, type?: StatementRefundInfo['order_type']) => {
   if (!id) {
     return
   }
-  navigateTo(`/sale/sales/order?id=${id}`)
+  switch (type) {
+    // 普通订单
+    case OrderTypeSales.OrderTypeSale:
+      navigateTo(`/sale/sales/order?id=${id}`)
+      break
+    // 订金单
+    case OrderTypeSales.OrderTypeDeposit:
+      navigateTo(`/sale/deposit/order?id=${id}`)
+      break
+    // 维修单
+    case OrderTypeSales.OrderTypeRepair:
+      navigateTo(`/sale/service/info?id=${id}`)
+      break
+    // 其他订单
+    case OrderTypeSales.OrderTypeOthers:
+      navigateTo(`/sale/other/add?id=${id}`)
+      break
+  }
 }
 </script>
 
@@ -36,7 +53,9 @@ const handleClick = (id?: string) => {
         <template #footer>
           <div class="flex-between bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
             <div class="color-[#4287F4] cursor-pointer flex justify-center items-center" />
-            <common-button-irregular text="查看详情" @click="handleClick(item.order_id)" />
+            <template v-if="item.order_type !== OrderTypeSales.OrderTypeReturn">
+              <common-button-irregular text="查看详情" @click="handleClick(item.order_id, item.order_type)" />
+            </template>
           </div>
         </template>
       </sale-cards>

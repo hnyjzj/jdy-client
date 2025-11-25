@@ -63,7 +63,7 @@ const returnGoods = (val: number) => {
         </template>
       </sale-cards>
     </div>
-    <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
+    <div class="col-12 " uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
       <sale-cards title="店员信息">
         <template #info>
           <div class="info">
@@ -76,14 +76,11 @@ const returnGoods = (val: number) => {
       </sale-cards>
     </div>
     <template v-if="props.orders.products?.length > 0 || false">
-      <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
-        <sale-cards title="成品信息">
-          <template #info>
-            <div class="info">
-              <template v-for="(item, index) in props.orders.products" :key="index">
-                <template v-if="index !== 0">
-                  <div class="border-b-solid border-b-[#E0E0E0] border" />
-                </template>
+      <template v-for="(item, index) in props.orders.products" :key="index">
+        <div class="col-12 " uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
+          <sale-cards title="成品信息">
+            <template #info>
+              <div class="info">
                 <template v-if="item.is_our">
                   <common-cell label="商品条码" :value="item.product_finished?.code" />
                   <common-cell label="商品名称" :value="item.product_finished?.name" />
@@ -124,11 +121,11 @@ const returnGoods = (val: number) => {
                     <common-button-rounded content="退款" @button-click="returnGoods(index)" />
                   </template>
                 </div>
-              </template>
-            </div>
-          </template>
-        </sale-cards>
-      </div>
+              </div>
+            </template>
+          </sale-cards>
+        </div>
+      </template>
     </template>
 
     <sale-deposit-return-goods v-model:show="showModel" :where="props.where" :product-filter="props.productFilter" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
