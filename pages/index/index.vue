@@ -62,7 +62,7 @@ onMounted(async () => {
     </div>
     <div>
       <common-layout-center>
-        <div class="flex flex-col gap-[20px]">
+        <div class="flex flex-col gap-[20px] px-[16px]">
           <template v-if="myStore.id || myStore.id === ''">
             <template v-if="Payments">
               <summary-card-payment :payments="Payments" @click-title="jump('/summary/cashflow')" />

@@ -34,7 +34,7 @@ onBeforeUnmount(() => {
                 <span class="text-[20px]">{{ item }}</span>
               </div>
               <div class="text-center">
-                <div class="color-[#808089] dark:color-[#fff] ml-[4px] text-[12px]  line-height-[24px] ">
+                <div class="color-[#808089] dark:color-[#fff]  text-[12px]  line-height-[24px] ">
                   {{ key }}
                 </div>
               </div>

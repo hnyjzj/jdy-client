@@ -37,7 +37,7 @@ const toTodayPrice = () => {
         <div :id="id" class="flex overflow-x-scroll gap-[20px] pb-[16px]">
           <template v-for="(item, key) in props.todaySaleData" :key="item">
             <template v-if="key !== '成品金额' && key !== '退货金额' && key !== '金价'">
-              <div class="flex-grow-1 flex-shrink-0 h-[68px] flex justify-between flex-col">
+              <div class="flex-grow-1 flex-shrink-0 h-[68px] flex justify-between flex-col  py-[8px]">
                 <div class="text-center">
                   <div class="color-[#808089] dark:color-[#fff] ml-[4px] text-[14px] font-semibold line-height-[24px]">
                     {{ key }}
@@ -50,11 +50,27 @@ const toTodayPrice = () => {
             </template>
           </template>
         </div>
-        <div class="flex-grow-1 flex finished px-[16px] py-[12px] rounded-[8px] my-[16px]">
-          <!-- <img src="/images/icon/finished-sales-money.png" alt=""> -->
+        <div class="flex-grow-1 flex finished gap-[16px]  px-[16px] py-[8px] rounded-[8px] my-[16px]">
+          <icon name="i-svg:finished-salesmoney" class="wh-[46px] " />
+          <div>
+            <div class="color-[#808089] text-[14px] line-height-[24px] pb-[4px]">
+              成品金额
+            </div>
+            <div class="text-[20px] font-semibold line-height-[24px] color-[#333]">
+              {{ props.todaySaleData['成品金额'] || 0 }}
+            </div>
+          </div>
         </div>
-        <div class="flex-grow-1 flex return px-[16px] py-[12px] rounded-[8px]">
-          <!-- <img src="/images/icon/return-good-money.png" alt=""> -->
+        <div class="flex-grow-1 flex gap-[16px] return px-[16px] py-[8px] rounded-[8px]">
+          <icon name="i-svg:return-goodmoney" class="wh-[46px]" />
+          <div>
+            <div class="color-[#808089] text-[14px] line-height-[24px] pb-[4px]">
+              退货金额
+            </div>
+            <div class="text-[20px] font-semibold line-height-[24px] color-[#333]">
+              {{ props.todaySaleData['退货金额'] || 0 }}
+            </div>
+          </div>
         </div>
       </template>
     </summary-card-layout>
