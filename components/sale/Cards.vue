@@ -10,7 +10,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class="card">
+  <div class="card h-full">
     <!-- header -->
     <div class="flex-center-between shrink-0 px-[16px] h-[44px] py-[8px] bg-[linear-gradient(90deg,#477ef500,#82d0faf2)]">
       <div class="flex-center-between gap-2 flex-1">

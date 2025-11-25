@@ -168,3 +168,27 @@ export enum OrderProductType {
    */
   Parts = 3,
 }
+
+export enum OrderTypeSales {
+  /**
+   * 普通订单
+   */
+  OrderType = 1,
+  /**
+   * 订金订单
+   */
+  OrderTypeDeposit = 2,
+  /**
+   * 维修订单
+   */
+  OrderTypeRepair = 3,
+  /**
+   * 其他订单
+   */
+  OrderTypeOthers = 4,
+  /**
+   * 退回订单
+   */
+  OrderTypeReturn = 5,
+
+}
