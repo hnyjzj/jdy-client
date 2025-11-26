@@ -182,12 +182,22 @@ async function delTarget() {
               </div>
             </template>
             <template #footer>
-              <div class="flex-end text-size-[14px]">
-                <div>
-                  <common-button-rounded
-                    padding="4px 36px"
-                    content="详情" @button-click="jump('/target/info', { id: info.id })"
-                  />
+              <div class="flex justify-between items-center">
+                <template v-if="userinfo.identity < UserLevel.IdentityShopkeeper">
+                  <div />
+                </template>
+                <template v-else>
+                  <div class="cursor-pointer pl-[16px]" @click="delDialog = true;comingDelId = info.id">
+                    <icon name="i-svg:delete" :size="16" />
+                  </div>
+                </template>
+                <div class="flex-end text-size-[14px]">
+                  <div>
+                    <common-button-rounded
+                      padding="4px 36px"
+                      content="详情" @button-click="jump('/target/info', { id: info.id })"
+                    />
+                  </div>
                 </div>
               </div>
             </template>
