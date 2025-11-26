@@ -80,12 +80,6 @@ watch(() => params.value, (newVal) => {
 </template>
 
 <style lang="scss" scoped>
-:deep(.n-base-selection .n-base-selection-label) {
-  background-color: #ffffff3b;
-}
-:deep(.n-base-selection .n-base-selection-label .n-base-selection-input) {
-  color: #fff;
-}
 :deep(.n-base-selection:not(.n-base-selection--disabled).n-base-selection--active .n-base-selection-label) {
   background-color: #ffffff3b;
 }

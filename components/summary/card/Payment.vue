@@ -1,12 +1,10 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
-  rbText?: string
-  marginBottom?: string
+  title?: string
   goldPrice?: string
   payments: Record<string, string>
 }>(), {
-  rbText: '查看排行',
-  marginBottom: '16px',
+  title: '',
 })
 
 const emit = defineEmits<{
@@ -25,11 +23,11 @@ onBeforeUnmount(() => {
 
 <template>
   <div>
-    <summary-card-layout title="今日收支" @title-click="emit('clickTitle')">
+    <summary-card-layout :title="props.title" @title-click="emit('clickTitle')">
       <template #default>
-        <div :id="id" class="flex overflow-x-scroll gap-[20px]">
-          <template v-for="(item, key) in props.payments" :key="item">
-            <div class="flex-grow-1 flex-shrink-0">
+        <div :id="id" class="grid-12 gap-[12px]">
+          <template v-for="(item, key) in props.payments" :key="key">
+            <div class="w-[1/4] col-3">
               <div class="color-[#333] dark:color-[#fff] font-semibold pb-[6px] line-height-[24px] text-center">
                 <span class="text-[20px]">{{ item }}</span>
               </div>
@@ -49,9 +47,5 @@ onBeforeUnmount(() => {
 <style lang="scss" scoped>
 ::-webkit-scrollbar {
   display: none;
-}
-.skew-text {
-  display: flex;
-  align-items: flex-start;
 }
 </style>

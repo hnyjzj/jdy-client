@@ -62,10 +62,10 @@ onMounted(async () => {
     </div>
     <div>
       <common-layout-center>
-        <div class="flex flex-col gap-[20px] px-[16px]">
+        <div class="flex flex-col gap-[20px] px-[16px] pb-[120px]">
           <template v-if="myStore.id || myStore.id === ''">
             <template v-if="Payments">
-              <summary-card-payment :payments="Payments" @click-title="jump('/summary/cashflow')" />
+              <summary-card-payment title="今日收支" :payments="Payments" @click-title="jump('/summary/cashflow')" />
             </template>
             <template v-if="todaySaleData">
               <summary-card-sale :today-sale-data="todaySaleData" @click-title="jump('/summary/sale')" />

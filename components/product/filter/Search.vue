@@ -20,7 +20,7 @@ const clear = () => {
 
 <template>
   <div class="py-[16px]">
-    <div class="bg-[#E6EDF5] px-[12px] border-rd-full text-size-[20px] shadow-lg flex items-center">
+    <div class="bg-[#E6EDF5] px-[18px] border-rd-full text-size-[20px] shadow-lg flex items-center">
       <div class="left-[10px] top-[6px]" @click="subsearch()">
         <icon name="i-icon:search" size="12" color="#808089" />
       </div>

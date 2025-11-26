@@ -14,7 +14,7 @@ const CARD_CONFIGS = [
 
 const getIconUrl = (title: string): string => {
   const config = CARD_CONFIGS.find(item => item.title === title)
-  return config?.icon || ''
+  return config?.icon || '/images/icon/today-sale.png'
 }
 </script>
 
@@ -22,7 +22,7 @@ const getIconUrl = (title: string): string => {
   <div class="rounded-[8px] px-[16px] py-[12px] bg">
     <div class="flex flex-row justify-between items-center pb-[16px] ">
       <div class="flex gap-[6px]" @click="emit('titleClick')">
-        <img :src="getIconUrl(props.title)" :alt="props.title" class="wh-[24px]">
+        <img :src="getIconUrl(props.title)" class="wh-[24px]">
         <div class="font-bold text-[#1A6DD8] text-[16px]">
           {{ props.title }}
         </div>
