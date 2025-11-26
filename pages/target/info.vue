@@ -200,13 +200,13 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
                   {{ group.name }}
                 </div>
                 <div class="text-xxl mb-2 whitespace-nowrap">
-                  总目标：{{ statistics('purpose', group) }}
+                  总目标：{{ getAuthority(statistics('purpose', group)) }}
                 </div>
                 <div class="text-xxl mb-2 whitespace-nowrap">
-                  总完成：{{ statistics('achieved', group) }}
+                  总完成：{{ getAuthority(statistics('achieved', group)) }}
                 </div>
                 <div class="text-xxl mb-2 whitespace-nowrap">
-                  完成率：{{ percent(statistics('achieved', group), statistics('purpose', group), 2) }}%
+                  完成率：{{ getAuthority(percent(statistics('achieved', group), `${statistics('purpose', group)}%`, 2)) }}
                 </div>
               </div>
 
