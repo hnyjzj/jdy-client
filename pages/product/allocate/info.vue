@@ -9,6 +9,7 @@ const { oldList, oldFilterListToArray } = storeToRefs(useOld())
 
 const { getOldList } = useOld()
 const { myStore } = storeToRefs(useStores())
+const { getMyStore } = useStores()
 useSeoMeta({
   title: '调拨单详情',
 })
@@ -60,6 +61,7 @@ if (route.query.id) {
   type.value = allocateInfo.value.type
   await getAllocateWhere()
   await getWhere()
+  await getMyStore()
 }
 
 async function cancel() {
@@ -524,7 +526,6 @@ const printFun = async () => {
     </template>
     <product-upload-choose v-model:is-model="isChooseModel" title="调拨" @go-add="isChooseModel = false; isAddModel = true" @batch="isImportModel = true" />
     <product-allocate-force ref="uploadRef" v-model="isImportModel" @upload="submitGoods" />
-    <correspond-store :correspond-ids="[allocateInfo.from_store_id, allocateInfo.to_store_id]" />
     <common-loading v-model="loading" title="正在处理中" />
   </div>
 </template>
