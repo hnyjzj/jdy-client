@@ -222,7 +222,7 @@ const beforeUpload = (data: any) => {
       </common-layout-center>
     </div>
     <common-layout-center>
-      <div class="pb-10 px-4">
+      <div class="pb-10 px-2">
         <!-- 工作台入口 -->
         <div class="mt-2 mb-14 col-12">
           <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="(id) => { deleteDialog = true;deleteId = id }" @update="updateBench" @fold="fold" @change-page="changePage" />
