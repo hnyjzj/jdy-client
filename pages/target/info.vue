@@ -253,7 +253,7 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
                           </template>
                         </td>
                         <td class="px-4 py-2 border-b border-gray-100">
-                          {{ personal.staff.nickname }}
+                          {{ personal.staff?.nickname }}
                         </td>
                         <td class="px-4 py-2 border-b border-gray-100">
                           {{ getPersonAuthority(personal.purpose, personal) }}
@@ -319,7 +319,7 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
                       </template>
                     </td>
                     <td class="px-4 py-2 border-b border-gray-100">
-                      {{ personal.staff.nickname }}
+                      {{ personal.staff?.nickname }}
                     </td>
                     <td class="px-4 py-2 border-b border-gray-100">
                       {{ getPersonAuthority(personal.purpose, personal) }}
