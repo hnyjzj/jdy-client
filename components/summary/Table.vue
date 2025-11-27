@@ -119,27 +119,40 @@ const option = computed(() => {
     ],
   }
 })
+/**
+ * 设置表格表头背景色
+ */
+const setTableHeaderBackground = (backgroundColor: string): void => {
+  const tableHeader = document.querySelector<HTMLElement>('.n-data-table-thead')
+  const firstRow = tableHeader?.children[0] as HTMLElement | undefined
+  const secondRow = tableHeader?.children[1] as HTMLElement | undefined
+  if (firstRow) {
+    firstRow.style.backgroundColor = backgroundColor
+  }
+  if (secondRow) {
+    secondRow.style.backgroundColor = '#fff'
+  }
+}
+
+onMounted(() => {
+  // 设置表头背景色为浅灰色
+  setTableHeaderBackground('#f3f3f3')
+})
 </script>
 
 <template>
   <n-spin :show="props.loading" stroke="#fff" size="large">
-    <div class="bg-[#DEEBFD] dark:bg-[rgba(0,0,0,0.3)]  rounded-[16px]  overflow-hidden mb-[16px]" data-allow-mismatch="style">
-      <div class=" rounded-[4px]">
-        <div class="grid-12 pb-[16px]">
-          <div
-            class="skew col-6 cursor-pointer"
-            uno-md="col-4" @click="emits('clickTitle')">
-            <div class="skew-right" />
-            <div class="skew-text pl-[15px] text-[16px] font-semibold">
-              <div class="flex-center-row h-full">
-                <slot name="header-title" />
-              </div>
-            </div>
+    <div class="bg pb-[16px] rounded-[16px] overflow-hidden mb-[16px]" data-allow-mismatch="style">
+      <div>
+        <div class="flex justify-between items-center pt-[12px] pb-[16px] px-[16px]">
+          <div class="color-[#1A6DD8] flex gap-[6px] text-[16px] font-semibold line-height-[24px]" @click="emits('clickTitle')">
+            <img src="/images/icon/today-sale.png" class="wh-[24px]">
+            <slot name="header-title" />
           </div>
           <div class="col-6 flex-end" uno-md="col-4 offset-8">
             <template v-if="props.isToggle">
               <div
-                class="w-[80px] text-[14px] font-normal text-[#666666]  px-[12px] py-[3px] rounded-[4px] cursor-pointer"
+                class="text-[14px] font-normal text-[#666666]  py-[3px] rounded-[4px] cursor-pointer"
                 @click="toggleChart = toggleChart === 'list' ? 'chart' : 'list'">
                 <template v-if="toggleChart === 'list'">
                   <div class="flex gap-[6px]">
@@ -149,7 +162,7 @@ const option = computed(() => {
                 </template>
                 <template v-else>
                   <div class="flex gap-[6px]">
-                    <icon name="i-icon:table-boss" color="#0068FF" :size="16" />
+                    <icon name="i-icon:view-list" color="#0068FF" :size="16" />
                     <span class="text-[12px]">表格</span>
                   </div>
                 </template>
@@ -157,16 +170,15 @@ const option = computed(() => {
             </template>
           </div>
         </div>
-
         <slot name="select" />
       </div>
 
-      <div v-if="toggleChart === 'list'">
+      <div v-if="toggleChart === 'list'" class="px-[16px]">
         <n-data-table
           :style="{
-            '--n-merged-th-color': $colorMode.value === 'light' ? '#C7DAFF' : '#1A6BEB',
-            '--n-merged-td-color': $colorMode.value === 'light' ? '#DEEBFD' : '#224879',
-            '--n-merged-border-color': 'rgba(57,113,243,0.08)',
+            '--n-merged-td-color-hover': '#DAEAFF',
+            '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#224879',
+            '--n-merged-border-color': 'rgba(57,113,243,0.0)',
           }"
           :columns="props.title"
           :data="props.list"
@@ -179,6 +191,7 @@ const option = computed(() => {
             }
             return value
           }"
+
         />
       </div>
       <div v-if="toggleChart === 'chart'">
@@ -206,5 +219,12 @@ const option = computed(() => {
 .chart {
   width: 100%;
   height: 530px;
+}
+.bg {
+  background: linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%);
+  box-shadow: 0px 5px 20px 0px #0000000a;
+}
+:deep(.n-data-table .n-data-table-th) {
+  background-color: rgba(0, 0, 0, 0) !important;
 }
 </style>
