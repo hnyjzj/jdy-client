@@ -45,13 +45,13 @@ const deleteConfirm = async () => {
   <div class="w-full">
     <div class="w-auto bg-white blur-bga rounded-[24px] border-solid border-[#EFF0F6] col-12 overflow-hidden">
       <div class="rounded-[24px]">
-        <common-gradient title="基本信息">
-          <template #right>
+        <common-card-info title="基本信息">
+          <template #status>
             <div class="cursor-pointer" @click="delStore()">
               <icon name="i-svg:delete" :size="16" />
             </div>
           </template>
-          <template #body>
+          <template #info>
             <n-form ref="formRef" :model="modelRef" :rules="rules">
               <n-form-item path="name" label="门店名称">
                 <n-input v-model:value="modelRef.name" @keydown.enter.prevent />
@@ -70,7 +70,7 @@ const deleteConfirm = async () => {
               </div>
             </n-form>
           </template>
-        </common-gradient>
+        </common-card-info>
       </div>
     </div>
     <common-confirm

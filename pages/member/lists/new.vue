@@ -55,11 +55,11 @@ const execute = async () => {
       <div class="col-12 px-[16px] py-[16px]" uno-lg="col-8 offset-2">
         <div class="flex flex-col gap-[16px]">
           <div class="primary">
-            <common-gradient title="会员归属" theme="gradient" :italic="true">
-              <template #body>
+            <common-card-info title="会员归属">
+              <template #info>
                 <member-lists-new v-model:rely="memberParams" :staff-list="StoreStaffList" :get-staff-list="getStaff" />
               </template>
-            </common-gradient>
+            </common-card-info>
           </div>
         </div>
       </div>

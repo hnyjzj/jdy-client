@@ -422,8 +422,11 @@ function removeImg(data: { index: number }) {
     <div class="grid-12 pb-10">
       <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <div class="rounded-6 w-auto top">
-          <common-gradient title="基础信息">
-            <template #body>
+          <common-card-info title="基础信息">
+            <template #status>
+              <common-button-status :bg-color="getStatusStyle(checkInfo.status, CheckStatusColorMap).backgroundColor" :text="getRadioVal('status', checkInfo.status)" />
+            </template>
+            <template #info>
               <div class="flex flex-col gap-4">
                 <div class="operation-information flex flex-col gap-1">
                   <div class="part">
@@ -483,14 +486,6 @@ function removeImg(data: { index: number }) {
                     </div>
                     <div class="right">
                       {{ checkInfo.remark || '--' }}
-                    </div>
-                  </div>
-                  <div class="part">
-                    <div class="left">
-                      状态
-                    </div>
-                    <div class="right">
-                      <common-tags :status-map="CheckStatusColorMap" :status="checkInfo.status" :text="getRadioVal('status', checkInfo.status)" />
                     </div>
                   </div>
                   <template v-if="checkInfo.status === CheckStatus.Repair">
@@ -631,7 +626,7 @@ function removeImg(data: { index: number }) {
                 </div>
               </div>
             </template>
-          </common-gradient>
+          </common-card-info>
         </div>
         <div class="info flex flex-col gap-4 rounded-6 blur-bga w-auto px-4 py-4 mb-6">
           <div class="flex flex-col gap-3">

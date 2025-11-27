@@ -215,8 +215,8 @@ const getroleListFn = async (data: number) => {
 </script>
 
 <template>
-  <div class="grid-12 gap-[16px] p-[16px]">
-    <div class="col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
+  <div class="p-[16px]">
+    <common-layout-center>
       <staff-manage-edit
         v-model="formlist"
         :filed="filterListToArray"
@@ -240,7 +240,7 @@ const getroleListFn = async (data: number) => {
         :get-region-list-all="getRegionList"
         @submit="submitEditStore"
       />
-    </div>
+    </common-layout-center>
   </div>
 </template>
 

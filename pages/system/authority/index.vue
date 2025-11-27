@@ -246,8 +246,8 @@ function GetModelStatusText() {
   <div>
     <common-layout-center>
       <div class="px-4 pt-6">
-        <common-gradient :title="`权限组（${roleList.length}）`">
-          <template #body>
+        <common-card-info :title="`权限组（${roleList.length}）`">
+          <template #info>
             <n-tabs v-model:value="activeTab" type="line" animated @update:value="handleTabChange">
               <template v-for="(item, id, t) in roleWhereList" :key="t">
                 <n-tab-pane :name="id" :tab="item">
@@ -296,11 +296,11 @@ function GetModelStatusText() {
               + 添加用户组
             </div>
           </template>
-        </common-gradient>
+        </common-card-info>
         <div class="h-4" />
         <div class="pb-20">
-          <common-gradient :title="roleList[selectRole]?.name || ''">
-            <template #body>
+          <common-card-info :title="roleList[selectRole]?.name || ''">
+            <template #info>
               <div class="nav mb-4">
                 <div
                   v-for="(item, index) in navItems"
@@ -319,7 +319,7 @@ function GetModelStatusText() {
                 <authority-transfer v-model="apiSelectIds" :list="apiList" />
               </template>
             </template>
-          </common-gradient>
+          </common-card-info>
         </div>
         <common-button-one @confirm="updataFun" />
       </div>

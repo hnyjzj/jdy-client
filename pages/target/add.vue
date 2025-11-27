@@ -62,15 +62,15 @@ await setRadioValues()
       <div class="pt-4 pb-22">
         <div class="flex flex-col gap-4">
           <div class="rounded-6 bg-white w-auto blur-bga">
-            <common-gradient title="新增销售目标">
-              <template #body>
+            <common-card-info title="新增销售目标">
+              <template #info>
                 <common-filter-add
                   ref="formRef"
                   v-model:data="datas"
                   :filter="targetFilterListToArray"
                 />
               </template>
-            </common-gradient>
+            </common-card-info>
           </div>
         </div>
       </div>

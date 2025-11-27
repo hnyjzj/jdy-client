@@ -312,13 +312,7 @@ onMounted(async () => {
             :storeid="myStore.id"
             :billing-set="billingSet"
           />
-          <div class="h-[80px] bg-[#fff] fixed z-1">
-            <div class="btn grid-12 px-[16px]">
-              <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
-                <common-button-rounded content="开单" />
-              </div>
-            </div>
-          </div>
+          <common-button-bottom :cancle-show="false" confirm-text="开单" @confirm="handleValidateButtonClick" />
         </n-form>
       </div>
     </template>

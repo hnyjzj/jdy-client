@@ -11,8 +11,8 @@ if (route.query.id) {
 </script>
 
 <template>
-  <div class="grid-12 p-[16px]">
-    <div class="col-12" uno-md="col-6 offset-3" uno-lg="col-6 offset-3" uno-xl="col-4 offset-4">
+  <div class="pt-4">
+    <common-layout-center>
       <region-info />
       <region-assign-super
         :stores="regionDetails.stores"
@@ -20,6 +20,6 @@ if (route.query.id) {
         :super="regionDetails.superiors"
         :admins="regionDetails.admins"
       />
-    </div>
+    </common-layout-center>
   </div>
 </template>

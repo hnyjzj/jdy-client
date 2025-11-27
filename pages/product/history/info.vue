@@ -35,11 +35,11 @@ function isUpdate(key: ProductKey) {
 
 <template>
   <div class="py-6 px-4">
-    <div class="rounded-6 bg-white w-auto blur-bga top">
-      <common-gradient title="基础信息">
-        <template #body>
+    <div class="rounded-6 bg-white w-auto blur-bga">
+      <common-card-info title="基础信息">
+        <template #info>
           <div class="flex flex-col gap-4">
-            <div class="operation-information flex flex-col gap-1">
+            <div class="flex flex-col">
               <div class="info-row">
                 <div class="info-title">
                   操作
@@ -73,7 +73,7 @@ function isUpdate(key: ProductKey) {
                 </div>
               </div>
               <div class="h-0.5 bg-[#E6E6E8]" />
-              <div v-if="historyInfo?.new_value" class="other-information flex flex-col" uno-sm="grid grid-cols-[1fr_1fr] gap-x-10">
+              <div v-if="historyInfo?.new_value" class="flex flex-col" uno-sm="grid grid-cols-[1fr_1fr] gap-x-10">
                 <template v-for="(item, index) in finishedFilterListToArray" :key="index">
                   <template v-if="item.info">
                     <div class="info-row">
@@ -111,7 +111,7 @@ function isUpdate(key: ProductKey) {
             </div>
           </div>
         </template>
-      </common-gradient>
+      </common-card-info>
     </div>
   </div>
 </template>
@@ -127,7 +127,7 @@ function isUpdate(key: ProductKey) {
   overflow: hidden;
 }
 .info-row {
-  --uno: 'flex justify-between mb-2';
+  --uno: 'flex justify-between py-[2px]';
   .info-title {
     --uno: 'text-color';
   }

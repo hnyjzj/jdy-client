@@ -10,8 +10,11 @@ const props = defineProps<{
 <template>
   <div>
     <div class="rounded-6 bg-white w-auto blur-bga top">
-      <common-gradient title="基础信息">
-        <template #body>
+      <common-card-info title="基础信息">
+        <template #status>
+          <common-button-status :bg-color="getStatusStyle(props.info.status, AllocateStatusColorMap).backgroundColor" :text="props.filterList.status?.preset[props.info.status]" />
+        </template>
+        <template #info>
           <div class="flex flex-col gap-4">
             <div class="operation-information flex flex-col gap-1">
               <div class="other-information flex flex-col gap-1">
@@ -63,16 +66,6 @@ const props = defineProps<{
                     </div>
                   </template>
                 </template>
-                <div class="info-row">
-                  <div class="info-title">
-                    状态
-                  </div>
-                  <div class="info-val">
-                    <div class="flex justify-end">
-                      <common-tags :status-map="AllocateStatusColorMap" :status="props.info.status" :text="props.filterList.status?.preset[props.info.status]" />
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
             <div class="h-0.5 bg-[#E6E6E8]" />
@@ -112,7 +105,7 @@ const props = defineProps<{
             </div>
           </div>
         </template>
-      </common-gradient>
+      </common-card-info>
     </div>
   </div>
 </template>
