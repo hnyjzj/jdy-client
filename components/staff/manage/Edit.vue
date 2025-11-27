@@ -130,107 +130,109 @@ defineExpose({
 <template>
   <div>
     <div class="mb-[12px]">
-      <common-fold title="编辑员工" from-color="#9EBAF9" to-color="#fff">
-        <div class="p-[16px]">
-          <n-form
-            ref="formRef"
-            :model="formlist"
-            :rules="rules"
-            label-placement="top"
-            size="medium"
-          >
-            <n-grid :cols="24" :x-gap="8">
-              <n-form-item-gi
-                :span="12"
-                label="头像">
-                <n-upload
-                  :key="keyUpload"
-                  :style="{ '--n-dragger-border-hover': '#0068ff' }"
-                  action="#"
-                  :custom-request="customRequest"
-                  :default-file-list="previewFileList"
-                  list-type="image-card"
-                  :max="1"
-                  @before-upload="beforeUpload"
-                  @preview="showModalRef = true"
-                />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="手机号" path="phone">
-                <n-input
-                  v-model:value="formlist.phone"
-                  placeholder="请输入手机号"
-                  :disabled="formlist.phone !== ''"
-                  round
-                  @focus="focus"
-                />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="用户名" path="username">
-                <n-input
-                  v-model:value="formlist.username"
-                  placeholder="请输入用户名"
-                  round
-                  :disabled="formlist.username !== ''"
-                  @focus="focus"
+      <common-card-info title="编辑员工">
+        <template #info>
+          <div>
+            <n-form
+              ref="formRef"
+              :model="formlist"
+              :rules="rules"
+              label-placement="top"
+              size="medium"
+            >
+              <n-grid :cols="24" :x-gap="8">
+                <n-form-item-gi
+                  :span="12"
+                  label="头像">
+                  <n-upload
+                    :key="keyUpload"
+                    :style="{ '--n-dragger-border-hover': '#0068ff' }"
+                    action="#"
+                    :custom-request="customRequest"
+                    :default-file-list="previewFileList"
+                    list-type="image-card"
+                    :max="1"
+                    @before-upload="beforeUpload"
+                    @preview="showModalRef = true"
+                  />
+                </n-form-item-gi>
+                <n-form-item-gi :span="12" label="手机号" path="phone">
+                  <n-input
+                    v-model:value="formlist.phone"
+                    placeholder="请输入手机号"
+                    :disabled="formlist.phone !== ''"
+                    round
+                    @focus="focus"
+                  />
+                </n-form-item-gi>
+                <n-form-item-gi :span="12" label="用户名" path="username">
+                  <n-input
+                    v-model:value="formlist.username"
+                    placeholder="请输入用户名"
+                    round
+                    :disabled="formlist.username !== ''"
+                    @focus="focus"
 
-                />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="姓名" path="nickname">
-                <n-input
-                  v-model:value="formlist.nickname"
-                  placeholder="请输入姓名"
-                  :disabled="formlist.nickname !== ''"
-                  round
-                  @focus="focus"
-                  @blur="toPinyin"
-                />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="email" path="email">
-                <n-input
-                  v-model:value="formlist.email"
-                  placeholder="请输入email"
-                  round
-                  @focus="focus"
-                />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="上级" path="leader_name">
-                <n-select v-model:value="formlist.leader_name" clearable :options="options" placeholder="请选择上级" @click="selectPer" />
-              </n-form-item-gi>
-              <n-form-item-gi :span="12" label="性别" path="gender">
-                <n-radio-group v-model:value="formlist.gender">
-                  <n-space>
-                    <template v-for="(item, index) in genderList" :key="index">
-                      <n-radio
-                        :value="item.value" :style="{
-                          '--n-box-shadow-hover': 'inset 0 0 0 1px #0068ff',
-                          '--n-box-shadow-active': 'inset 0 0 0 1px #0068ff',
-                          '--n-dot-color-active': '#0068ff',
-                          '--n-box-shadow-focus': 'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)' }">
-                        {{ item.text }}
-                      </n-radio>
-                    </template>
-                  </n-space>
-                </n-radio-group>
-              </n-form-item-gi>
-            </n-grid>
+                  />
+                </n-form-item-gi>
+                <n-form-item-gi :span="12" label="姓名" path="nickname">
+                  <n-input
+                    v-model:value="formlist.nickname"
+                    placeholder="请输入姓名"
+                    :disabled="formlist.nickname !== ''"
+                    round
+                    @focus="focus"
+                    @blur="toPinyin"
+                  />
+                </n-form-item-gi>
+                <n-form-item-gi :span="12" label="email" path="email">
+                  <n-input
+                    v-model:value="formlist.email"
+                    placeholder="请输入email"
+                    round
+                    @focus="focus"
+                  />
+                </n-form-item-gi>
+                <n-form-item-gi :span="12" label="上级" path="leader_name">
+                  <n-select v-model:value="formlist.leader_name" clearable :options="options" placeholder="请选择上级" @click="selectPer" />
+                </n-form-item-gi>
+                <n-form-item-gi :span="12" label="性别" path="gender">
+                  <n-radio-group v-model:value="formlist.gender">
+                    <n-space>
+                      <template v-for="(item, index) in genderList" :key="index">
+                        <n-radio
+                          :value="item.value" :style="{
+                            '--n-box-shadow-hover': 'inset 0 0 0 1px #0068ff',
+                            '--n-box-shadow-active': 'inset 0 0 0 1px #0068ff',
+                            '--n-dot-color-active': '#0068ff',
+                            '--n-box-shadow-focus': 'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)' }">
+                          {{ item.text }}
+                        </n-radio>
+                      </template>
+                    </n-space>
+                  </n-radio-group>
+                </n-form-item-gi>
+              </n-grid>
 
-            <div class="grid-12 px-[26px]">
-              <div
-                class="font-semibold pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
-                <div @click="handleValidateButtonClick">
-                  <common-button-rounded content="确定" />
+              <div class="grid-12 px-[26px]">
+                <div
+                  class="font-semibold cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
+                  <div @click="handleValidateButtonClick">
+                    <common-button-rounded content="确定" />
+                  </div>
                 </div>
               </div>
-            </div>
-          </n-form>
-          <n-modal
-            v-model:show="showModalRef"
-            preset="card"
-            style="width: 600px"
-          >
-            <img :src="ImageUrl(formlist.avatar as string)" style="width: 100%;">
-          </n-modal>
-        </div>
-      </common-fold>
+            </n-form>
+            <n-modal
+              v-model:show="showModalRef"
+              preset="card"
+              style="width: 600px"
+            >
+              <img :src="ImageUrl(formlist.avatar as string)" style="width: 100%;">
+            </n-modal>
+          </div>
+        </template>
+      </common-card-info>
     </div>
   </div>
 </template>

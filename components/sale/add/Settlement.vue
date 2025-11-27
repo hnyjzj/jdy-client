@@ -148,8 +148,8 @@ const searchRmk = async (query: string) => {
 </script>
 
 <template>
-  <common-fold title="结算信息" :is-collapse="false">
-    <div class="p-[16px]">
+  <common-card-info title="结算信息">
+    <template #info>
       <div>
         <div>
           <n-grid :cols="24">
@@ -264,8 +264,8 @@ const searchRmk = async (query: string) => {
           </div>
         </n-form-item>
       </div>
-    </div>
-  </common-fold>
+    </template>
+  </common-card-info>
 </template>
 
 <style>
