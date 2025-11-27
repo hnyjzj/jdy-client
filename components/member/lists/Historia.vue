@@ -3,8 +3,8 @@
 
 <template>
   <div class="grid grid-cols-1 gap-[20px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
-    <common-gradient title="顾客通知" theme="gradient" :italic="true">
-      <template #body>
+    <common-card-info title="顾客通知">
+      <template #info>
         <div class="box flex flex-col gap-[12px]">
           <div class="item">
             <div class="left">
@@ -47,10 +47,10 @@
           </div>
         </div>
       </template>
-    </common-gradient>
+    </common-card-info>
 
-    <common-gradient title="顾客通知" theme="gradient" :italic="true">
-      <template #body>
+    <common-card-info title="顾客通知">
+      <template #info>
         <div class="box flex flex-col gap-[12px]">
           <div class="item">
             <div class="left">
@@ -93,7 +93,7 @@
           </div>
         </div>
       </template>
-    </common-gradient>
+    </common-card-info>
   </div>
 </template>
 

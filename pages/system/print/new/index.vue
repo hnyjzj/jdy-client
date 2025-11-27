@@ -175,8 +175,8 @@ onMounted(() => {
   <div class="grid-12">
     <div class="col-12 px-[16px] py-[16px] pb-[120px]" uno-lg="col-8 offset-2">
       <div class="flex flex-col gap-[16px]">
-        <common-gradient title="模板基础设置" theme="theme">
-          <template #body>
+        <common-card-info title="模板基础设置">
+          <template #info>
             <div class="flex flex-col gap-[20px]">
               <n-form
                 ref="formRef"
@@ -203,7 +203,7 @@ onMounted(() => {
               </n-form>
             </div>
           </template>
-        </common-gradient>
+        </common-card-info>
 
         <div class="bg-[#fff] dark:bg-[rgba(0,0,0,.3)] rounded-[16px] shadow-2xl px-[16px] py-[16px] grid col-12 gap-[12px]">
           <div class="w-auto h-auto col-12">
