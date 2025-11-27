@@ -119,25 +119,6 @@ const option = computed(() => {
     ],
   }
 })
-/**
- * 设置表格表头背景色
- */
-const setTableHeaderBackground = (backgroundColor: string): void => {
-  const tableHeader = document.querySelector<HTMLElement>('.n-data-table-thead')
-  const firstRow = tableHeader?.children[0] as HTMLElement | undefined
-  const secondRow = tableHeader?.children[1] as HTMLElement | undefined
-  if (firstRow) {
-    firstRow.style.backgroundColor = backgroundColor
-  }
-  if (secondRow) {
-    secondRow.style.backgroundColor = '#fff'
-  }
-}
-
-onMounted(() => {
-  // 设置表头背景色为浅灰色
-  setTableHeaderBackground('#f3f3f3')
-})
 </script>
 
 <template>
@@ -162,7 +143,7 @@ onMounted(() => {
                 </template>
                 <template v-else>
                   <div class="flex gap-[6px]">
-                    <icon name="i-icon:view-list" color="#0068FF" :size="16" />
+                    <icon name="i-icon:table-boss" color="#0068FF" :size="16" />
                     <span class="text-[12px]">表格</span>
                   </div>
                 </template>
@@ -178,6 +159,7 @@ onMounted(() => {
           :style="{
             '--n-merged-td-color-hover': '#DAEAFF',
             '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#224879',
+            '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#224879',
             '--n-merged-border-color': 'rgba(57,113,243,0.0)',
           }"
           :columns="props.title"
