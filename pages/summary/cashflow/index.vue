@@ -76,7 +76,7 @@ await getcashflowListFn()
         <!-- 时间选择器 -->
         <summary-boss-select-time v-model="params" :time-where="timeWhere" @update-time="updateTimeFn" />
         <div class="pb-[12px]">
-          <summary-total :data="overview" title="数据总览" />
+          <summary-card-payment title="数据总览" :payments="overview" />
         </div>
         <summary-cashflow-card
           card-title="收支统计"

@@ -61,34 +61,36 @@ const editOld = (item: OrderMaterial, index: number) => {
 
 <template>
   <div class="pb-[16px]">
-    <common-fold title="旧料" :is-collapse="false">
-      <sale-add-masterials-button
-        @handle-add="handleAdd"
-        @search-ql="searchQl" />
-      <sale-add-masterials-list
-        v-model="orderObject"
-        :old-filter-list-to-array="oldFilterListToArray"
-        @edit="editOld" />
-      <sale-add-masterials-search
-        v-model="orderObject"
-        v-model:show="searchShow"
-        v-model:now-old-master="nowOldMaster"
-        :old-filter-list="props.oldFilterList"
-        :price="props.price"
-        :check-old-class="CheckOldClass"
-        :now-edit-state="nowEditState"
-        :billing-set="props.billingSet"
-        :storeid="props.storeid"
-      />
-      <sale-add-masterials-handle
-        v-model="orderObject"
-        v-model:now-old-master="nowOldMaster"
-        v-model:show="showModal"
-        :old-filter-list-to-array="props.oldFilterListToArray"
-        :check-old-class="CheckOldClass"
-        :now-edit-state="nowEditState"
-        :billing-set="props.billingSet"
-      />
-    </common-fold>
+    <common-card-info title="旧料">
+      <template #info>
+        <sale-add-masterials-button
+          @handle-add="handleAdd"
+          @search-ql="searchQl" />
+        <sale-add-masterials-list
+          v-model="orderObject"
+          :old-filter-list-to-array="oldFilterListToArray"
+          @edit="editOld" />
+        <sale-add-masterials-search
+          v-model="orderObject"
+          v-model:show="searchShow"
+          v-model:now-old-master="nowOldMaster"
+          :old-filter-list="props.oldFilterList"
+          :price="props.price"
+          :check-old-class="CheckOldClass"
+          :now-edit-state="nowEditState"
+          :billing-set="props.billingSet"
+          :storeid="props.storeid"
+        />
+        <sale-add-masterials-handle
+          v-model="orderObject"
+          v-model:now-old-master="nowOldMaster"
+          v-model:show="showModal"
+          :old-filter-list-to-array="props.oldFilterListToArray"
+          :check-old-class="CheckOldClass"
+          :now-edit-state="nowEditState"
+          :billing-set="props.billingSet"
+        />
+      </template>
+    </common-card-info>
   </div>
 </template>

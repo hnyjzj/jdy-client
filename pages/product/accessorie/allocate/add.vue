@@ -134,11 +134,11 @@ const getStoreFun = useDebounceFn(async (isAlias: boolean) => {
 <template>
   <div>
     <common-layout-center>
-      <div class="pt-4 pb-20">
+      <div class="pt-4 pb-20 px-4">
         <div class="flex flex-col gap-4">
           <div class="rounded-6 bg-white w-auto blur-bga top">
-            <common-gradient title="新增调拨单">
-              <template #body>
+            <common-card-info title="新增调拨单">
+              <template #info>
                 <n-form ref="formRef" :model="params" :rules="rules">
                   <n-grid :cols="24" :x-gap="8">
                     <template v-for="(item, index) in accessorieAllocateFilterListToArray" :key="index">
@@ -214,7 +214,7 @@ const getStoreFun = useDebounceFn(async (isAlias: boolean) => {
                   </n-grid>
                 </n-form>
               </template>
-            </common-gradient>
+            </common-card-info>
           </div>
         </div>
       </div>

@@ -47,7 +47,7 @@ async function changeStores() {
       <summary-boss-select-time v-model="params" :time-where="salesWhere" @update-time="fetchData" />
 
       <!-- 数据汇总 -->
-      <summary-total :data="salesData.overview" title="数据汇总" />
+      <summary-card-payment title="数据汇总" :payments="salesData.overview" />
       <summary-stock-line-chart
         title="销售趋势"
         :date="salesData.trend"

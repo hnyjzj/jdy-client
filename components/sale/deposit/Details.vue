@@ -29,7 +29,7 @@ const returnGoods = (val: number) => {
 <template>
   <div class="grid-12 gap-[12px]">
     <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
-      <sale-cards title="订单信息">
+      <common-card-info title="订单信息">
         <template #info>
           <div class="info">
             <common-cell label="门店" :value="props.orders.store?.name" />
@@ -61,10 +61,10 @@ const returnGoods = (val: number) => {
             </template>
           </div>
         </template>
-      </sale-cards>
+      </common-card-info>
     </div>
-    <div class="col-12 " uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
-      <sale-cards title="店员信息">
+    <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
+      <common-card-info title="店员信息">
         <template #info>
           <div class="info">
             <common-cell label="收银员" :value="props.orders.cashier?.nickname" />
@@ -73,14 +73,17 @@ const returnGoods = (val: number) => {
             <common-cell label="手机号" :value="props.orders.clerk?.phone" />
           </div>
         </template>
-      </sale-cards>
+      </common-card-info>
     </div>
     <template v-if="props.orders.products?.length > 0 || false">
-      <template v-for="(item, index) in props.orders.products" :key="index">
-        <div class="col-12 " uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
-          <sale-cards title="成品信息">
-            <template #info>
-              <div class="info">
+      <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
+        <common-card-info title="成品信息">
+          <template #info>
+            <div class="info">
+              <template v-for="(item, index) in props.orders.products" :key="index">
+                <template v-if="index !== 0">
+                  <div class="border-b-solid border-b-[#E0E0E0] border" />
+                </template>
                 <template v-if="item.is_our">
                   <common-cell label="商品条码" :value="item.product_finished?.code" />
                   <common-cell label="商品名称" :value="item.product_finished?.name" />
@@ -122,11 +125,11 @@ const returnGoods = (val: number) => {
                     <common-button-rounded content="退款" @button-click="returnGoods(index)" />
                   </template>
                 </div>
-              </div>
-            </template>
-          </sale-cards>
-        </div>
-      </template>
+              </template>
+            </div>
+          </template>
+        </common-card-info>
+      </div>
     </template>
 
     <sale-deposit-return-goods v-model:show="showModel" :where="props.where" :product-filter="props.productFilter" :show-return-goods="showReturnGoods" :return-goods="props.returnGoods" />
@@ -135,7 +138,7 @@ const returnGoods = (val: number) => {
 
 <style lang="scss" scoped>
  .info {
-  --uno: 'flex flex-col gap-[3px] px-[16px] pb-[16px]';
+  --uno: 'flex flex-col gap-[3px] pb-[16px]';
 }
 .line {
   --uno: 'h-[1px] w-full bg-[#E0E0E0] my-[8px]';

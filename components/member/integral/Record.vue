@@ -71,8 +71,8 @@ const absoluteValue = (value: number) => {
       <template v-if="props.data.length">
         <div class="grid grid-cols-1 gap-[16px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
           <template v-for="(item, index) in props.data" :key="index">
-            <common-gradient :title="cutOut(item.created_at)" theme="gradient">
-              <template #body>
+            <common-card-info :title="cutOut(item.created_at)">
+              <template #info>
                 <div>
                   <div class="mod">
                     <div class="flex flex-col gap-[8px]">
@@ -151,7 +151,7 @@ const absoluteValue = (value: number) => {
                   </div>
                 </div>
               </template>
-            </common-gradient>
+            </common-card-info>
           </template>
         </div>
       </template>

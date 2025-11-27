@@ -48,28 +48,37 @@ const data = computed(() => {
 
 <template>
   <n-spin :show="props.loading" stroke="#fff" size="large">
-    <div class="my-[16px] overflow-hidden">
-      <common-fold :is-collapse="false" from-color="rgba(71,126,245,0.6)" to-color="rgba(243,245,254,0.6)">
-        <template #title>
-          <div class="w-[100%] flex justify-between items-center">
-            <div class="text-[14px]">
-              {{ props.title }}
-            </div>
-          </div>
-        </template>
-        <n-data-table
-          :style="{
-            '--n-merged-th-color': $colorMode.value === 'light' ? '#C7DAFF' : 'rgba(71, 126, 245, 0.6)',
-            '--n-merged-td-color': $colorMode.value === 'light' ? '#DEEBFD' : '#224879',
-            '--n-merged-border-color': 'rgba(57,113,243,0.08)',
-          }"
-          :columns="columns"
-          :data="data"
-          :scroll-x="scrollX"
-          :max-height="350"
-          bordered
-        />
-      </common-fold>
+    <div class="my-[16px] overflow-hidden bg">
+      <div class="w-[100%] flex justify-between items-center pb-[16px]">
+        <div class="flex items-center gap-[6px] color-[#1A6DD8] font-semibold line-height-[24px] text-[16px]">
+          <img src="/images/icon/today-sale.png" class="wh-[24px]">
+          <span>{{ props.title }}</span>
+        </div>
+      </div>
+      <n-data-table
+        :style="{
+          '--n-merged-td-color-hover': '#DAEAFF',
+          '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#224879',
+          '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#224879',
+          '--n-merged-border-color': 'rgba(57,113,243,0.0)',
+          '--n-th-text-color': $colorMode.value === 'light' ? '#808089' : '#fff',
+          '--n-td-text-color': '600',
+        }"
+        :columns="columns"
+        :data="data"
+        :scroll-x="scrollX"
+        :max-height="350"
+        bordered
+      />
     </div>
   </n-spin>
 </template>
+
+<style lang="scss" scoped>
+.bg {
+  background: linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%);
+  box-shadow: 0px 5px 20px 0px #0000000a;
+  padding: 12px 16px;
+  border-radius: 8px;
+}
+</style>

@@ -11,8 +11,8 @@ const filter = () => {
       <div class="mr-[4px]">
         <icon name="i-icon:filter" size="12" />
       </div>
-      <div class="text-size-[14px] font-semibold line-height-[20px]">
-        高级筛选
+      <div class="text-size-[14px] font-semibold line-height-[20px] color-[#808089]">
+        筛选
       </div>
     </div>
   </div>

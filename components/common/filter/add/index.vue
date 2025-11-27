@@ -135,7 +135,7 @@ defineExpose({
 <template>
   <div>
     <NForm ref="formRef" :model="datas" :rules="rules">
-      <n-grid :cols="24" :x-gap="16">
+      <n-grid :cols="24" :x-gap="12">
         <template v-for="({ name, label, create, find, input, condition, required, update }, i) in props.filter" :key="i">
           <template v-if="canShowFilter({ create, condition } as FilterWhere<T>)">
             <n-form-item-gi :span="12" :path="name" :label="label" :required="required">

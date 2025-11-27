@@ -143,11 +143,11 @@ async function getStoreStaffListFun() {
 <template>
   <div>
     <common-layout-center>
-      <div class="pt-4 pb-20">
+      <div class="pt-4 px-4 pb-20">
         <div class="flex flex-col gap-4">
           <div :id="Key" :key="Key" class="rounded-6 bg-white w-auto blur-bga">
-            <common-gradient title="新增盘点单">
-              <template #body>
+            <common-card-info title="新增盘点单">
+              <template #info>
                 <n-form ref="formRef" :model="params" :rules="rules">
                   <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-8">
                     <template v-for="(item, index) in checkFilterListToArray" :key="index">
@@ -293,7 +293,7 @@ async function getStoreStaffListFun() {
                   </div>
                 </n-form>
               </template>
-            </common-gradient>
+            </common-card-info>
           </div>
         </div>
       </div>

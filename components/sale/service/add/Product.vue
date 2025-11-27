@@ -53,27 +53,29 @@ const editOld = (item: serviceGoods, index: number) => {
 </script>
 
 <template>
-  <common-fold title="添加维修货品" :is-collapse="false">
-    <sale-service-add-select-button
-      @handle-add="handleAdd"
-      @search-ql="searchQl" />
-    <sale-service-add-select-list
-      v-model:list="showServiceGoods"
-      :repair-goods-filter-list="props.repairGoodsFilterList"
-      @edit="editOld" />
-    <sale-service-add-select-search
-      v-model:list="showServiceGoods"
-      v-model:show="searchShow"
-      v-model:now-service-goods="nowServiceGoods"
-      :now-edit-state="nowEditState"
-      :search-service-goods="props.searchServiceGoods"
-    />
-    <sale-service-add-select-handle
-      v-model:params="params"
-      v-model:show="showModal"
-      v-model:list="showServiceGoods"
-      :repair-goods-filter-list="props.repairGoodsFilterList"
-      :now-edit-state="nowEditState"
-    />
-  </common-fold>
+  <common-card-info title="添加维修货品">
+    <template #info>
+      <sale-service-add-select-button
+        @handle-add="handleAdd"
+        @search-ql="searchQl" />
+      <sale-service-add-select-list
+        v-model:list="showServiceGoods"
+        :repair-goods-filter-list="props.repairGoodsFilterList"
+        @edit="editOld" />
+      <sale-service-add-select-search
+        v-model:list="showServiceGoods"
+        v-model:show="searchShow"
+        v-model:now-service-goods="nowServiceGoods"
+        :now-edit-state="nowEditState"
+        :search-service-goods="props.searchServiceGoods"
+      />
+      <sale-service-add-select-handle
+        v-model:params="params"
+        v-model:show="showModal"
+        v-model:list="showServiceGoods"
+        :repair-goods-filter-list="props.repairGoodsFilterList"
+        :now-edit-state="nowEditState"
+      />
+    </template>
+  </common-card-info>
 </template>

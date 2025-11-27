@@ -173,27 +173,29 @@ const updateDelFn = () => {
 
 <template>
   <div class="pb-[16px]">
-    <common-fold title="成品" :is-collapse="false">
-      <sale-add-product-button
-        @add-product="addProduct" />
-      <!-- 整单折扣设置 -->
-      <div class="px-[16px] py-[8px]">
-        <!-- 成品列表 -->
-        <sale-add-product-list
-          v-model="orderObject"
-          :billing-set="Props.billingSet"
-          @update-score-deduction="updateDedution"
-          @del-porduct="updateDelFn"
-        />
-      </div>
-      <template v-if="orderObject.showProductList && orderObject.showProductList.length">
-        <sale-add-product-deduction
-          v-model="orderObject"
-          @set-amount-reduce="handleAmountReduceBlur"
-          @set-score-deduct="handleScoreReduceBlur"
-          @set-discount-rate="handleDiscountRateBlur"
-        />
+    <common-card-info title="成品">
+      <template #info>
+        <sale-add-product-button
+          @add-product="addProduct" />
+        <!-- 整单折扣设置 -->
+        <div class="px-[16px] py-[8px]">
+          <!-- 成品列表 -->
+          <sale-add-product-list
+            v-model="orderObject"
+            :billing-set="Props.billingSet"
+            @update-score-deduction="updateDedution"
+            @del-porduct="updateDelFn"
+          />
+        </div>
+        <template v-if="orderObject.showProductList && orderObject.showProductList.length">
+          <sale-add-product-deduction
+            v-model="orderObject"
+            @set-amount-reduce="handleAmountReduceBlur"
+            @set-score-deduct="handleScoreReduceBlur"
+            @set-discount-rate="handleDiscountRateBlur"
+          />
+        </template>
       </template>
-    </common-fold>
+    </common-card-info>
   </div>
 </template>

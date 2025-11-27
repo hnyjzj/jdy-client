@@ -2,11 +2,11 @@
 const props = withDefaults(defineProps<{
   confirm?: boolean
   maxHeight?: string
-  bg?: boolean
+  isWhite?: boolean
 }>(), {
   confirm: false,
   maxHeight: '400px',
-  bg: true,
+  isWhite: false,
 })
 
 const emits = defineEmits(['change'])
@@ -16,8 +16,19 @@ const { $toast } = useNuxtApp()
 const { getMyStore, switchStore } = useStores()
 const { myStoreList, myStore } = storeToRefs(useStores())
 const { initObjForm } = useOrder()
-const columns = ref()
+const columns = ref<{ label: string, key: string }[]>([])
 const confirmShow = ref(false)
+
+const mask = ref<boolean>(false)
+
+const searchKeyword = ref('') // 搜索关键词
+const filteredColumns = computed(() => {
+  if (!searchKeyword.value)
+    return columns.value || []
+  return (columns.value || []).filter((item: { label: string }) =>
+    item.label.toLowerCase().includes(searchKeyword.value.toLowerCase()),
+  )
+})
 const getList = async () => await getMyStore()
 
 if (!myStore.value || !Object.keys(myStoreList.value).length) {
@@ -68,28 +79,70 @@ function handleSelect(id: Stores['id']) {
     initObjForm()
     emits('change')
   }
+  mask.value = false
 }
 
-const renderLabel = (option: any) => {
-  return h('span', { style: 'color: #000' }, option.label)
+const clickChange = async () => {
+  await changeStoer()
+  mask.value = true
 }
 </script>
 
 <template>
-  <div>
-    <n-dropdown trigger="click" placement="bottom-start" :render-label="renderLabel" :options="columns" :style="{ maxHeight: props.maxHeight, overflowY: 'auto' }" @select="handleSelect">
-      <div
-        class="py-[6px] px-[12px]  border-rd-full h-full flex-center-row  cursor-pointer"
-        :class="{ 'shadow-lg': props.bg }"
-        :style="{ background: props.bg ? '#FFFFFF66' : 'transparent' }" @click="changeStoer">
-        <client-only>
-          <div class="store-name font-bold text-size-[14px] mr-[4px]">
-            {{ myStore.alias }}
-          </div>
-        </client-only>
-        <icon name="i-icon:product-toggle" :size="24" />
+  <div class="">
+    <div
+      class="py-[6px] px-[12px]  border-rd-full h-full flex-center-row  cursor-pointer"
+      :style="{ background: 'transparent', color: props.isWhite ? '#fff' : '#000' }" @click="clickChange">
+      <icon name="i-icon:location" :size="24" class="mr-[4px]" />
+      <div class="store-name font-bold text-size-[14px] mr-[4px]">
+        {{ myStore.alias }}
       </div>
-    </n-dropdown>
+      <icon name="i-icon:product-toggle" :size="18" />
+    </div>
+    <template v-if="mask">
+      <div class="mask" uno-sm="flex justify-center items-center">
+        <div class="content w-full py-[12px] px-[16px] fixed bottom-0" uno-sm="w-394px relative">
+          <div class=" flex justify-between items-center">
+            <div class="flex-center-row gap-[6px]">
+              <div class="w-[4px] h-[16px] rounded-2xl bg-[#1A6DD8]" />
+              <div class="color-[#1A6DD8] text-[16px] line-height-[24px] font-bold">
+                切换门店
+              </div>
+            </div>
+            <div class="color-[#333] hover:color-[#1A6DD8] cursor-pointer" @click.stop="mask = false">
+              <icon name="i-icon:close" :size="24" />
+            </div>
+          </div>
+          <div class="py-[16px]">
+            <n-input
+              v-model:value="searchKeyword"
+              placeholder="搜索门店名称"
+              clearable
+            >
+              <template #prefix>
+                <icon name="i-icon:search" :size="16" />
+              </template>
+            </n-input>
+          </div>
+
+          <div class="h-[270px] overflow-y-auto">
+            <template v-if="filteredColumns.length">
+              <template v-for="item in filteredColumns" :key="item.key">
+                <div
+                  class="py-[12px] px-[16px] color-[#333]  border-b border-b-[#e5e5e5] border-b-solid cursor-pointer hover:bg-[#f5f5f5] hover:rounded-[8px]"
+                  @click="handleSelect(item.key)">
+                  {{ item.label }}
+                </div>
+              </template>
+            </template>
+            <div v-else class="py-[40px] text-center color-[#999] text-[14px]">
+              暂无匹配的门店
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
     <common-confirm
       v-model:show="confirmShow"
       title="提示"
@@ -124,5 +177,21 @@ const renderLabel = (option: any) => {
 .n-dropdown-option-body__label {
   display: flex;
   align-items: center;
+}
+
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  z-index: 4;
+  .content {
+    --uno: 'bg-#fff rounded-[8px]';
+  }
 }
 </style>

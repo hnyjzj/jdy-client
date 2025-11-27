@@ -124,77 +124,73 @@ watch(chartMode, (val) => {
 
 <template>
   <n-spin :show="props.loading" stroke="#fff" size="large">
-    <div class="mt-[16px] overflow-hidden">
-      <common-fold
-        :is-collapse="false"
-        from-color="rgba(71,126,245,0.6)"
-        to-color="rgba(243,245,254,0.6)"
-      >
-        <template #title>
-          <div class="w-[100%] flex justify-between items-center">
-            <div class="flex items-center">
-              <div class="text-[14px] pr-2">
-                {{ props.title }}
-              </div>
-              <div class="flex my-2">
-                <n-select
-                  v-model:value="bigCategory"
-                  :options="Object.keys(props.stockCategoryDate || {}).map(key => ({ label: key, value: key }))"
-                  class="min-w-[120px]"
-                  placeholder="请选择"
-                />
-              </div>
-            </div>
-            <div>
-              <summary-Toggle v-model="chartMode" />
-            </div>
+    <div class="mt-[16px] overflow-hidden bg">
+      <div class="pb-[16px] w-[100%] flex justify-between items-center">
+        <div class="flex items-center">
+          <div class="flex pr-[6px] items-center gap-[6px] color-[#1A6DD8] font-semibold line-height-[24px] text-[16px]">
+            <img src="/images/icon/today-sale.png" class="wh-[24px]">
+            <span>{{ props.title }}</span>
           </div>
-        </template>
+          <div class="flex my-2">
+            <n-select
+              v-model:value="bigCategory"
+              :options="Object.keys(props.stockCategoryDate || {}).map(key => ({ label: key, value: key }))"
+              class="min-w-[120px]"
+              placeholder="请选择"
+            />
+          </div>
+        </div>
+        <div>
+          <summary-Toggle v-model="chartMode" />
+        </div>
+      </div>
 
-        <!-- 图表模式 -->
-        <template v-if="chartMode === 'chart'">
-          <!-- 大类选择 -->
-          <div class="flex justify-center items-center gap-6">
-            <!-- 维度选择 -->
-            <div class="flex justify-center gap-2 my-4 flex-wrap">
-              <template
-                v-for="(key, idx) in Object.keys(props.stockCategoryDate?.[bigCategory] || {})"
-                :key="idx"
+      <!-- 图表模式 -->
+      <template v-if="chartMode === 'chart'">
+        <!-- 大类选择 -->
+        <div class="flex justify-center items-center gap-6">
+          <!-- 维度选择 -->
+          <div class="flex justify-center gap-2 my-4 flex-wrap">
+            <template
+              v-for="(key, idx) in Object.keys(props.stockCategoryDate?.[bigCategory] || {})"
+              :key="idx"
+            >
+              <div
+                class="px-4 py-1 text-sm rounded-full cursor-pointer"
+                :class="chartBar === key ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'"
+                @click="chartBar = key"
               >
-                <div
-                  class="px-4 py-1 text-sm rounded-full cursor-pointer"
-                  :class="chartBar === key ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'"
-                  @click="chartBar = key"
-                >
-                  {{ key }}
-                </div>
-              </template>
-            </div>
+                {{ key }}
+              </div>
+            </template>
           </div>
+        </div>
 
-          <!-- 饼图容器 -->
-          <div class="chart-wrapper p-2">
-            <ClientOnly fallback-tag="div" fallback="加载中...">
-              <VChart class="chart" :option="option" autoresize />
-            </ClientOnly>
-          </div>
-        </template>
+        <!-- 饼图容器 -->
+        <div class="chart-wrapper p-2">
+          <ClientOnly fallback-tag="div" fallback="加载中...">
+            <VChart class="chart" :option="option" autoresize />
+          </ClientOnly>
+        </div>
+      </template>
 
-        <!-- 列表模式 -->
-        <template v-else>
-          <!-- 表格 -->
-          <n-data-table
-            :columns="columns"
-            :data="data"
-            :style="{
-              '--n-merged-th-color': $colorMode.value === 'light' ? '#C7DAFF' : 'rgba(71, 126, 245, 0.6)',
-              '--n-merged-td-color': $colorMode.value === 'light' ? '#DEEBFD' : '#224879',
-              '--n-merged-border-color': 'rgba(57,113,243,0.08)',
-            }"
-            :max-height="350"
-            bordered />
-        </template>
-      </common-fold>
+      <!-- 列表模式 -->
+      <template v-else>
+        <!-- 表格 -->
+        <n-data-table
+          :columns="columns"
+          :data="data"
+          :style="{
+            '--n-merged-td-color-hover': '#DAEAFF',
+            '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#224879',
+            '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#224879',
+            '--n-merged-border-color': 'rgba(57,113,243,0.0)',
+            '--n-th-text-color': $colorMode.value === 'light' ? '#808089' : '#fff',
+            '--n-td-text-color': '600',
+          }"
+          :max-height="350"
+          bordered />
+      </template>
     </div>
   </n-spin>
 </template>
@@ -208,5 +204,12 @@ watch(chartMode, (val) => {
 .chart {
   width: 100%;
   height: 300px;
+}
+
+.bg {
+  background: linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%);
+  box-shadow: 0px 5px 20px 0px #0000000a;
+  padding: 12px 16px;
+  border-radius: 8px;
 }
 </style>

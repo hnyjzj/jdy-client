@@ -28,8 +28,8 @@ const handleValidateButtonClick = async () => {
   <div class="w-full">
     <div class="w-auto bg-white blur-bga rounded-[24px] border-solid border-[#EFF0F6] col-12 overflow-hidden">
       <div class="rounded-[24px]">
-        <common-gradient title="基本信息">
-          <template #body>
+        <common-card-info title="基本信息">
+          <template #info>
             <n-form ref="formRef" :model="modelRef" :rules="rules">
               <n-form-item path="name" label="区域名称">
                 <n-input v-model:value="modelRef.name" @keydown.enter.prevent />
@@ -44,7 +44,7 @@ const handleValidateButtonClick = async () => {
               </div>
             </n-form>
           </template>
-        </common-gradient>
+        </common-card-info>
       </div>
     </div>
   </div>

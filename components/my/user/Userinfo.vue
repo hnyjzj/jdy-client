@@ -10,7 +10,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="color-[#fff] flex-between">
+  <div class="flex-between bg-[#fff] p-[16px] rounded-[8px]">
     <div class="flex-start ">
       <div class="cursor-pointer">
         <template v-if="!porps.userinfo?.avatar">

@@ -14,8 +14,8 @@ const enterStatus = {
 <template>
   <div>
     <div class="rounded-6 bg-white w-auto blur-bga top">
-      <common-gradient title="基础信息">
-        <template #body>
+      <common-card-info title="基础信息">
+        <template #info>
           <div class="flex flex-col gap-4">
             <div class="operation-information flex flex-col gap-1">
               <div class="info-row">
@@ -98,14 +98,14 @@ const enterStatus = {
             </div>
           </div>
         </template>
-      </common-gradient>
+      </common-card-info>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .info-row {
-  --uno: 'flex justify-between mb-2';
+  --uno: 'flex justify-between py-[2px]';
   .info-title {
     --uno: 'text-color';
   }

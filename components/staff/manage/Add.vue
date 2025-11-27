@@ -162,106 +162,108 @@ defineExpose({
 <template>
   <div>
     <div class="pb-[12px]">
-      <common-fold title="新增员工" from-color="#9EBAF9" to-color="#fff">
-        <div class="p-[16px]">
-          <n-form
-            ref="formRef"
-            :model="formlist"
-            :rules="rules"
-            label-placement="top"
-            size="medium"
-          >
-            <n-grid :cols="24" :x-gap="8">
-              <template v-for="(item, index) in props.filed" :key="index">
-                <template v-if="item.create">
-                  <n-form-item-gi
-                    :span="12"
-                    :path="item.name"
-                    :label="item.label">
-                    <template v-if="item.input === 'text' && item.name !== 'nickname'">
-                      <n-input
-                        v-model:value="(formlist[item.name] as string)"
-                        :placeholder="`请输入${item.label}`"
-                        round
-                        @focus="focus"
-                      />
-                    </template>
-                    <template v-if="item.name === 'nickname'">
-                      <n-input
-                        v-model:value="(formlist[item.name] as string)"
-                        :placeholder="`请输入${item.label}`"
-                        round
-                        @focus="focus"
-                        @blur="changeNickname()"
-                      />
-                    </template>
-                    <template v-if="item.input === 'password'">
-                      <n-input
-                        v-model:value="(formlist[item.name] as string)"
-                        :placeholder="`请输入${item.label}`"
-                        round
-                        @focus="focus"
-                      />
-                    </template>
-                    <template v-if="item.input === 'upload'">
-                      <n-upload
-                        :key="keyUpload"
-                        :style="{ '--n-dragger-border-hover': '#0068ff' }"
-                        action="#"
-                        :custom-request="customRequest"
-                        :default-file-list="previewFileList"
-                        list-type="image-card"
-                        :max="1"
-                        @before-upload="beforeUpload"
-                        @preview="showModalRef = true"
-                      />
-                    </template>
-                    <template v-if="item.input === 'radio'">
-                      <n-radio-group v-model:value="(formlist[item.name] as number)">
-                        <n-space>
-                          <template v-for="(obj, i) in genderList" :key="i">
-                            <n-radio
-                              :value="obj.value" :style="{
-                                '--n-box-shadow-hover': 'inset 0 0 0 1px #0068ff',
-                                '--n-box-shadow-active': 'inset 0 0 0 1px #0068ff',
-                                '--n-dot-color-active': '#0068ff',
-                                '--n-box-shadow-focus': 'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)' }">
-                              {{ obj.text }}
-                            </n-radio>
-                          </template>
-                        </n-space>
-                      </n-radio-group>
-                    </template>
-                    <template v-if="item.input === 'select' && item.name === 'leader_name'">
-                      <n-select v-model:value="formlist[item.name]" clearable :options="options" placeholder="请选择上级" @click="selectPer" />
-                    </template>
-                    <template v-if="item.input === 'switch'">
-                      <n-switch v-model:value="(formlist[item.name] as boolean)" size="medium" :style="{ 'border-radius': '20px' }" round />
-                    </template>
-                  </n-form-item-gi>
+      <common-card-info title="新增员工">
+        <template #info>
+          <div>
+            <n-form
+              ref="formRef"
+              :model="formlist"
+              :rules="rules"
+              label-placement="top"
+              size="medium"
+            >
+              <n-grid :cols="24" :x-gap="8">
+                <template v-for="(item, index) in props.filed" :key="index">
+                  <template v-if="item.create">
+                    <n-form-item-gi
+                      :span="12"
+                      :path="item.name"
+                      :label="item.label">
+                      <template v-if="item.input === 'text' && item.name !== 'nickname'">
+                        <n-input
+                          v-model:value="(formlist[item.name] as string)"
+                          :placeholder="`请输入${item.label}`"
+                          round
+                          @focus="focus"
+                        />
+                      </template>
+                      <template v-if="item.name === 'nickname'">
+                        <n-input
+                          v-model:value="(formlist[item.name] as string)"
+                          :placeholder="`请输入${item.label}`"
+                          round
+                          @focus="focus"
+                          @blur="changeNickname()"
+                        />
+                      </template>
+                      <template v-if="item.input === 'password'">
+                        <n-input
+                          v-model:value="(formlist[item.name] as string)"
+                          :placeholder="`请输入${item.label}`"
+                          round
+                          @focus="focus"
+                        />
+                      </template>
+                      <template v-if="item.input === 'upload'">
+                        <n-upload
+                          :key="keyUpload"
+                          :style="{ '--n-dragger-border-hover': '#0068ff' }"
+                          action="#"
+                          :custom-request="customRequest"
+                          :default-file-list="previewFileList"
+                          list-type="image-card"
+                          :max="1"
+                          @before-upload="beforeUpload"
+                          @preview="showModalRef = true"
+                        />
+                      </template>
+                      <template v-if="item.input === 'radio'">
+                        <n-radio-group v-model:value="(formlist[item.name] as number)">
+                          <n-space>
+                            <template v-for="(obj, i) in genderList" :key="i">
+                              <n-radio
+                                :value="obj.value" :style="{
+                                  '--n-box-shadow-hover': 'inset 0 0 0 1px #0068ff',
+                                  '--n-box-shadow-active': 'inset 0 0 0 1px #0068ff',
+                                  '--n-dot-color-active': '#0068ff',
+                                  '--n-box-shadow-focus': 'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)' }">
+                                {{ obj.text }}
+                              </n-radio>
+                            </template>
+                          </n-space>
+                        </n-radio-group>
+                      </template>
+                      <template v-if="item.input === 'select' && item.name === 'leader_name'">
+                        <n-select v-model:value="formlist[item.name]" clearable :options="options" placeholder="请选择上级" @click="selectPer" />
+                      </template>
+                      <template v-if="item.input === 'switch'">
+                        <n-switch v-model:value="(formlist[item.name] as boolean)" size="medium" :style="{ 'border-radius': '20px' }" round />
+                      </template>
+                    </n-form-item-gi>
+                  </template>
                 </template>
-              </template>
-            </n-grid>
-            <template v-if="props.showBotton">
-              <div class="grid-12 px-[26px]">
-                <div
-                  class="font-semibold pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
-                  <div @click="handleValidateButtonClick">
-                    <common-button-rounded content="确定" />
+              </n-grid>
+              <template v-if="props.showBotton">
+                <div class="grid-12 px-[26px]">
+                  <div
+                    class="font-semibold pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
+                    <div @click="handleValidateButtonClick">
+                      <common-button-rounded content="确定" />
+                    </div>
                   </div>
                 </div>
-              </div>
-            </template>
-          </n-form>
-          <n-modal
-            v-model:show="showModalRef"
-            preset="card"
-            style="width: 600px"
-          >
-            <img :src="ImageUrl(formlist.avatar as string)" style="width: 100%;">
-          </n-modal>
-        </div>
-      </common-fold>
+              </template>
+            </n-form>
+            <n-modal
+              v-model:show="showModalRef"
+              preset="card"
+              style="width: 600px"
+            >
+              <img :src="ImageUrl(formlist.avatar as string)" style="width: 100%;">
+            </n-modal>
+          </div>
+        </template>
+      </common-card-info>
     </div>
   </div>
 </template>

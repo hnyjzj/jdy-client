@@ -142,49 +142,36 @@ if (import.meta.client) {
 </script>
 
 <template>
-  <div class="grid-12 gap-[16px] p-[16px]">
-    <div class="col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
-      <staff-manage-add
-        ref="addRef"
-        v-model:form="formRef"
-        v-model="formlist"
-        :filed="filterListToArray"
-        :show-botton="false"
-        @upload="uploadFile"
-      />
-      <staff-manage-auth
-        v-model:authform="formlist"
-        :role-where-list="roleWhereList"
-        :getrole-list-fn="getroleListFn"
-        :showbutton="false"
-        @change-role="updateRole"
-      />
-      <staff-manage-stores
-        ref="manageStores"
-        v-model="formlist"
-        :get-store-list="getStoreList"
-        :get-store-list-all="getStoreList"
-        :get-region-list="getRegionList"
-        :get-region-list-all="getRegionList"
-        :show-button="false"
-      />
-
+  <div class="pb-20 p-[16px]">
+    <common-layout-center>
       <div>
-        <common-fold title="提交保存" from-color="#9EBAF9" to-color="#fff" :is-collapse="false">
-          <div class="p-[16px]">
-            <div class="grid-12 px-[26px]">
-              <div
-                class="font-semibold cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
-                <div @click="handleValidateButtonClick">
-                  <common-button-rounded content="确定" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </common-fold>
+        <staff-manage-add
+          ref="addRef"
+          v-model:form="formRef"
+          v-model="formlist"
+          :filed="filterListToArray"
+          :show-botton="false"
+          @upload="uploadFile"
+        />
+        <staff-manage-auth
+          v-model:authform="formlist"
+          :role-where-list="roleWhereList"
+          :getrole-list-fn="getroleListFn"
+          :showbutton="false"
+          @change-role="updateRole"
+        />
+        <staff-manage-stores
+          ref="manageStores"
+          v-model="formlist"
+          :get-store-list="getStoreList"
+          :get-store-list-all="getStoreList"
+          :get-region-list="getRegionList"
+          :get-region-list-all="getRegionList"
+          :show-button="false"
+        />
       </div>
-    </div>
-
+      <common-button-bottom confirm-text="提交保存" :cancle-show="false" @confirm="handleValidateButtonClick" />
+    </common-layout-center>
     <common-confirm
       v-model:show="dialogShow"
       title="创建成功"

@@ -12,41 +12,34 @@ for (let i = 0; i < props.title.length; ++i) {
 </script>
 
 <template>
-  <div class="bg-[#DEEBFD] dark:bg-[rgba(0,0,0,0.3)]  rounded-[16px]  overflow-hidden mb-[16px]" data-allow-mismatch="style">
-    <div class=" rounded-[4px]">
-      <div class="grid-12 pb-[16px]">
-        <div
-          class="skew col-6 cursor-pointer"
-          uno-md="col-4">
-          <div class="skew-right" />
-          <div class="skew-text pl-[15px] text-[16px] font-semibold">
-            <div class="flex-center-row h-full">
-              <slot name="header-title" />
-            </div>
-          </div>
-        </div>
-        <div class="col-6 flex-end" uno-md="col-4 offset-8" />
+  <div class="bg   rounded-[16px]  overflow-hidden mb-[16px]" data-allow-mismatch="style">
+    <div class="flex justify-between items-center pt-[12px] pb-[16px] px-[16px]">
+      <div class="color-[#1A6DD8] flex gap-[6px] text-[16px] font-semibold line-height-[24px]">
+        <img src="/images/icon/today-sale.png" class="wh-[24px]">
+        <slot name="header-title" />
       </div>
     </div>
 
-    <n-data-table
-      :style="{
-        '--n-merged-th-color': $colorMode.value === 'light' ? '#C7DAFF' : '#1A6BEB',
-        '--n-merged-td-color': $colorMode.value === 'light' ? '#DEEBFD' : '#224879',
-        '--n-merged-border-color': 'rgba(57,113,243,0.08)',
-      }"
-      :columns="props.title"
-      :data="props.list"
-      :scroll-x="scrollX"
-      :max-height="350"
-      :bordered="true"
-      :render-cell="(value: any) => {
-        if (!value){
-          return 0
-        }
-        return value
-      }"
-    />
+    <div class="px-[16px]">
+      <n-data-table
+        :style="{
+          '--n-merged-td-color-hover': '#DAEAFF',
+          '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#224879',
+          '--n-merged-border-color': 'rgba(57,113,243,0.0)',
+        }"
+        :columns="props.title"
+        :data="props.list"
+        :scroll-x="scrollX"
+        :max-height="350"
+        :bordered="true"
+        :render-cell="(value: any) => {
+          if (!value){
+            return 0
+          }
+          return value
+        }"
+      />
+    </div>
   </div>
 
   <div />
@@ -70,5 +63,12 @@ for (let i = 0; i < props.title.length; ++i) {
 .chart {
   width: 100%;
   height: 530px;
+}
+.bg {
+  background: linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%);
+  box-shadow: 0px 5px 20px 0px #0000000a;
+}
+:deep(.n-data-table .n-data-table-th) {
+  background-color: #f3f3f3 !important;
 }
 </style>

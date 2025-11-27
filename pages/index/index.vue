@@ -5,23 +5,19 @@ useSeoMeta({
 
 const { myStoreTodaySale, myStoreTodayInventory, myStoreTodayPayment, getTargetStatistic } = homeDataStore()
 const { TodayInventory, todaySaleData, Payments, targetStatistic } = storeToRefs(homeDataStore())
-const { myStore, myStoreList } = storeToRefs(useStores())
-const { getMyStore, switchStore } = useStores()
+const { myStore } = storeToRefs(useStores())
+const { getMyStore } = useStores()
 const { getPerformanceList } = useBoss()
 if (!myStore.value.id) {
   await getMyStore()
 }
 
 // 切换门店
-const handleSelectFn = async (id: Stores['id']) => {
-  const stored = myStoreList.value.find(item => item.id === id)
-  if (stored) {
-    await switchStore(stored)
-    await myStoreTodaySale({ store_id: myStore.value.id })
-    await myStoreTodayInventory({ store_id: myStore.value.id })
-    await myStoreTodayPayment({ store_id: myStore.value.id })
-    await getTargetStatistic({ store_id: myStore.value.id })
-  }
+const handleSelectFn = async () => {
+  await myStoreTodaySale({ store_id: myStore.value.id })
+  await myStoreTodayInventory({ store_id: myStore.value.id })
+  await myStoreTodayPayment({ store_id: myStore.value.id })
+  await getTargetStatistic({ store_id: myStore.value.id })
 }
 
 await myStoreTodayInventory({ store_id: myStore.value.id })
@@ -49,53 +45,54 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="grid-12 pb-[120px]!">
-    <div class="col-12  px-[16px] pt-[48px] pos-relative" uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
-      <div class="absolute right-0 top-[-10px] ">
-        <img src="/images/banner/work.png" class="w-[200px]">
-      </div>
-      <home-greet />
-      <common-dark />
-      <!-- 判断门店是否存在，id为空字符串则是管理员权限，也显示 -->
-      <template v-if="myStore.id || myStore.id === ''">
-        <home-store
-          v-model:store="myStore"
-          :store-list="myStoreList"
-          @handle-select="handleSelectFn"
-          @get-store-list="() => {
-            getMyStore()
-          }" />
-
-        <!-- <home-action /> -->
-        <template v-if="Payments">
-          <summary-card-payment :payments="Payments" @click-title="jump('/summary/cashflow')" />
-        </template>
-        <template v-if="todaySaleData">
-          <summary-card-sale :today-sale-data="todaySaleData" @click-title="jump('/summary/sale')" />
-        </template>
-        <template v-if="TodayInventory">
-          <summary-card-inventory :today-inventory="TodayInventory" @click-title="jump('/summary/stock')" />
-        </template>
-        <template v-if="targetStatistic?.target_id">
-          <summary-card-target :data="targetStatistic" @click-title="jump('/target/info', { id: targetStatistic.target_id })" />
-        </template>
-
-        <template v-if="performanceList.length > 0">
-          <summary-boss-card
-            card-title="跨门店实时业绩"
-            :title="performanceTitle"
-            :list="performanceList"
-            :loading="PerformanceLoading"
-            @getlist="getPerformanceListFn"
-            @click-title="jump('/summary/boss')" />
-        </template>
-      </template>
-      <template v-else>
-        <common-emptys text="暂未分配门店" />
-      </template>
+  <div>
+    <div class="p-[16px] bg-[#3875C5]">
+      <common-layout-center>
+        <div>
+          <div class="flex items-center justify-between mb-[16px]">
+            <product-manage-company :is-white="true" @change="handleSelectFn" />
+            <common-dark />
+          </div>
+          <div class="pl-[16px]">
+            <home-greet />
+          </div>
+        </div>
+      </common-layout-center>
+      <common-tabbar text="todo" />
     </div>
+    <div>
+      <common-layout-center>
+        <div class="flex flex-col gap-[20px] px-[16px] pb-[120px]">
+          <template v-if="myStore.id || myStore.id === ''">
+            <template v-if="Payments">
+              <summary-card-payment title="今日收支" :payments="Payments" @click-title="jump('/summary/cashflow')" />
+            </template>
+            <template v-if="todaySaleData">
+              <summary-card-sale :today-sale-data="todaySaleData" @click-title="jump('/summary/sale')" />
+            </template>
+            <template v-if="TodayInventory">
+              <summary-card-inventory :today-inventory="TodayInventory" @click-title="jump('/summary/stock')" />
+            </template>
+            <template v-if="targetStatistic?.target_id">
+              <summary-card-target :data="targetStatistic" @click-title="jump('/target/info', { id: targetStatistic.target_id })" />
+            </template>
 
-    <common-tabbar text="todo" />
+            <template v-if="performanceList.length > 0">
+              <summary-boss-card
+                card-title="跨门店实时业绩"
+                :title="performanceTitle"
+                :list="performanceList"
+                :loading="PerformanceLoading"
+                @getlist="getPerformanceListFn"
+                @click-title="jump('/summary/boss')" />
+            </template>
+          </template>
+          <template v-else>
+            <common-emptys text="暂未分配门店" />
+          </template>
+        </div>
+      </common-layout-center>
+    </div>
   </div>
 </template>
 

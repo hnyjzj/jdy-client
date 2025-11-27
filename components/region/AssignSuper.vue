@@ -19,28 +19,11 @@ const sex = (val: number) => {
         <div class="flex justify-center items-center">
           <div class="w-[200px] mb-[12px]" />
         </div>
-        <div class="grid-12 gap-[8px]">
+        <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
           <template v-for="(item, index) in props.stores" :key="index">
-            <div
-              class="rounded-[24px] w-full col-12 blur-bgc p-[1px] mb-[12px]"
-              uno-lg="col-6" uno-sm="col-12" uno-md="col-12" @click="navigateTo(`/system/store/info?id=${item.id}`)">
-              <div class="h-full flex-col-between">
-                <div
-                  class="py-[8px] pl-[16px]
-               bg-gradient-linear-[90deg,#E9F1FE,#95D5FB]
-               dark:bg-gradient-linear-[90deg,#23324B01,#2A3E5F01,#70B8E8]
-               text-black dark:text-[#FFF]
-                rounded-t-[24px]
-                flex-between
-                ">
-                  <div class="flex items-center">
-                    <div class="ml-[8px] font-semibold line-height-[20px] text-size-[14px]">
-                      {{ item.alias || '' }}
-                    </div>
-                  </div>
-                  <div />
-                </div>
-                <div class=" px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+            <common-card-info :title=" item.alias || ''">
+              <template #info>
+                <div>
                   <div class=" p-[4px] grid-12">
                     <div class="col-6">
                       门店名称
@@ -62,8 +45,8 @@ const sex = (val: number) => {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              </template>
+            </common-card-info>
           </template>
         </div>
         <template v-if="props.stores.length === 0">

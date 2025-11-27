@@ -18,7 +18,7 @@ const handleClick = (id?: string) => {
 <template>
   <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
-      <sale-cards
+      <common-card-list
         :title="`编号:${item.id}`"
         :tag-text="props.where.status?.preset[item.status]"
         :status="item.status"
@@ -65,19 +65,18 @@ const handleClick = (id?: string) => {
           </div>
         </template>
         <template #footer>
-          <div class="flex-between bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
-            <div class="color-[#4287F4] cursor-pointer flex justify-center items-center" />
-            <common-button-irregular text="查看详情" @click="handleClick(item.order_id)" />
+          <div class="flex-end">
+            <common-button-rounded padding="4px 36px" content="详情" @button-click="handleClick(item.order_id)" />
           </div>
         </template>
-      </sale-cards>
+      </common-card-list>
     </template>
   </div>
 </template>
 
 <style scoped lang="scss">
   .info {
-  --uno: 'flex flex-col gap-[3px] px-[16px]';
+  --uno: 'flex flex-col gap-[3px]';
 
   .part {
     --uno: 'flex-center-between';

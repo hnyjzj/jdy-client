@@ -12,38 +12,40 @@ if (route.query.id) {
 </script>
 
 <template>
-  <div class="grid-12 p-[16px]">
-    <div class="col-12" uno-md="col-8 offset-2" uno-lg="col-6 offset-3">
-      <stores-info />
-      <div class="mt-[12px]">
-        <n-tabs type="segment" animated>
-          <n-tab-pane name="chap1" tab="分配员工">
-            <staff-assign-staff-card
-              :list="storeDetails.staffs"
-              title="员工"
-              button-text="分配员工"
-              button-type="staff"
-            />
-          </n-tab-pane>
-          <n-tab-pane name="chap2" tab="分配负责人">
-            <staff-assign-staff-card
-              :list="storeDetails.superiors"
-              title="负责人"
-              button-text="分配负责人"
-              button-type="superior"
-            />
-          </n-tab-pane>
-          <n-tab-pane name="chap3" tab="分配管理员">
-            <staff-assign-staff-card
-              :list="storeDetails.admins"
-              title="管理员"
-              button-text="分配管理员"
-              button-type="admin"
-            />
-          </n-tab-pane>
-        </n-tabs>
+  <div class="p-[16px]">
+    <common-layout-center>
+      <div>
+        <stores-info />
+        <div class="mt-[12px]">
+          <n-tabs type="segment" animated>
+            <n-tab-pane name="chap1" tab="分配员工">
+              <staff-assign-staff-card
+                :list="storeDetails.staffs"
+                title="员工"
+                button-text="分配员工"
+                button-type="staff"
+              />
+            </n-tab-pane>
+            <n-tab-pane name="chap2" tab="分配负责人">
+              <staff-assign-staff-card
+                :list="storeDetails.superiors"
+                title="负责人"
+                button-text="分配负责人"
+                button-type="superior"
+              />
+            </n-tab-pane>
+            <n-tab-pane name="chap3" tab="分配管理员">
+              <staff-assign-staff-card
+                :list="storeDetails.admins"
+                title="管理员"
+                button-text="分配管理员"
+                button-type="admin"
+              />
+            </n-tab-pane>
+          </n-tabs>
+        </div>
       </div>
-    </div>
+    </common-layout-center>
   </div>
 </template>
 
