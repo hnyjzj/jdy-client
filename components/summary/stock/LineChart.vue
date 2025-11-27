@@ -77,66 +77,62 @@ watch([() => props.date, trendKey], updateChart, { deep: true, immediate: true }
 
 <template>
   <n-spin :show="props.loading" stroke="#fff" size="large">
-    <div class="mt-[16px] overflow-hidden">
-      <common-fold
-        :is-collapse="false"
-        from-color="rgba(71,126,245,0.6)"
-        to-color="rgba(243,245,254,0.6)"
-      >
-        <template #title>
-          <div class="w-[100%] flex justify-between items-center">
-            <div class="text-[14px]">
-              {{ props.title }}
-            </div>
-            <div>
-              <summary-Toggle v-model="chartMode" />
-            </div>
-          </div>
-        </template>
+    <div class="bg py-[12px] px-[16px] rounded-[8px] mt-[16px] overflow-hidden">
+      <div class="w-[100%] flex justify-between items-center  pb-[16px]">
+        <div class="flex items-center gap-[6px] color-[#1A6DD8] font-semibold line-height-[24px] text-[16px]">
+          <img src="/images/icon/today-sale.png" class="wh-[24px]">
+          <span>{{ props.title }}</span>
+        </div>
+        <div>
+          <summary-Toggle v-model="chartMode" />
+        </div>
+      </div>
 
-        <!-- 图表模式 -->
-        <template v-if="chartMode === 'chart'">
-          <!-- 趋势维度切换 -->
-          <div class="flex justify-center gap-2 my-4 flex-wrap">
-            <div
-              class="px-4 py-1 text-sm rounded-full cursor-pointer"
-              :class="trendKey === '件数' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'"
-              @click="trendKey = '件数'"
-            >
-              件数
-            </div>
-            <div
-              class="px-4 py-1 text-sm rounded-full cursor-pointer"
-              :class="trendKey === '销售额' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'"
-              @click="trendKey = '销售额'"
-            >
-              销售额
-            </div>
+      <!-- 图表模式 -->
+      <template v-if="chartMode === 'chart'">
+        <!-- 趋势维度切换 -->
+        <div class="flex justify-center gap-2 my-4 flex-wrap">
+          <div
+            class="px-4 py-1 text-sm rounded-full cursor-pointer"
+            :class="trendKey === '件数' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'"
+            @click="trendKey = '件数'"
+          >
+            件数
           </div>
-
-          <!-- 折线图容器 -->
-          <div class="chart-wrapper p-2">
-            <ClientOnly fallback-tag="div" fallback="加载中...">
-              <VChart class="chart" :option="option" autoresize />
-            </ClientOnly>
+          <div
+            class="px-4 py-1 text-sm rounded-full cursor-pointer"
+            :class="trendKey === '销售额' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'"
+            @click="trendKey = '销售额'"
+          >
+            销售额
           </div>
-        </template>
+        </div>
 
-        <!-- 列表模式 -->
-        <template v-else>
-          <n-data-table
-            :style="{
-              '--n-merged-th-color': $colorMode.value === 'light' ? '#C7DAFF' : 'rgba(71, 126, 245, 0.6)',
-              '--n-merged-td-color': $colorMode.value === 'light' ? '#DEEBFD' : '#224879',
-              '--n-merged-border-color': 'rgba(57,113,243,0.08)',
-            }"
-            :columns="columns"
-            :data="data"
-            bordered
-            :max-height="350"
-          />
-        </template>
-      </common-fold>
+        <!-- 折线图容器 -->
+        <div class="chart-wrapper p-2">
+          <ClientOnly fallback-tag="div" fallback="加载中...">
+            <VChart class="chart" :option="option" autoresize />
+          </ClientOnly>
+        </div>
+      </template>
+
+      <!-- 列表模式 -->
+      <template v-else>
+        <n-data-table
+          :style="{
+            '--n-merged-td-color-hover': '#DAEAFF',
+            '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#224879',
+            '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#224879',
+            '--n-merged-border-color': 'rgba(57,113,243,0.0)',
+            '--n-th-text-color': $colorMode.value === 'light' ? '#808089' : '#fff',
+            '--n-td-text-color': '600',
+          }"
+          :columns="columns"
+          :data="data"
+          bordered
+          :max-height="350"
+        />
+      </template>
     </div>
   </n-spin>
 </template>
@@ -150,5 +146,9 @@ watch([() => props.date, trendKey], updateChart, { deep: true, immediate: true }
 .chart {
   width: 100%;
   height: 300px;
+}
+.bg {
+  background: linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%);
+  box-shadow: 0px 5px 20px 0px #0000000a;
 }
 </style>
