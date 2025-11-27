@@ -201,7 +201,7 @@ const beforeUpload = (data: any) => {
 
 <template>
   <div class="">
-    <div class="sticky top-0 z-3 bg-[#3875C5]">
+    <div class="sticky top-0 z-4 bg-[#3875C5]">
       <common-layout-center>
         <div class="color-[#fff] py-[12px] flex justify-between px-4">
           <product-manage-company />

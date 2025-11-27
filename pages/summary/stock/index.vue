@@ -89,7 +89,7 @@ async function changeStores() {
       </div>
 
       <!-- 数据汇总 -->
-      <summary-total :data="stockDate.overview" title="数据汇总" />
+      <summary-card-payment title="数据汇总" :payments="stockDate.overview" />
       <!-- 封装后的饼图/表格组件 -->
       <summary-stock-chart
         title="成品大类"
