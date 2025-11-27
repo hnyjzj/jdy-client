@@ -112,11 +112,11 @@ const presetToSelect = (key: keyof ProductFinisheds) => {
 <template>
   <div>
     <common-layout-center>
-      <div class="pt-4 pb-22">
+      <div class="pt-4 px-4 pb-22">
         <div class="flex flex-col gap-4">
           <div class="rounded-6 bg-white w-auto blur-bga">
-            <common-gradient title="新增入库">
-              <template #body>
+            <common-card-info title="新增入库">
+              <template #info>
                 <n-form ref="formRef" :model="params" :rules="rules">
                   <n-grid :cols="24" :x-gap="8">
                     <template v-for="(item, index) in finishedFilterListToArray" :key="index">
@@ -163,7 +163,7 @@ const presetToSelect = (key: keyof ProductFinisheds) => {
                   </n-grid>
                 </n-form>
               </template>
-            </common-gradient>
+            </common-card-info>
           </div>
         </div>
       </div>

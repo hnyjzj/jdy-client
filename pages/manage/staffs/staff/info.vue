@@ -41,7 +41,7 @@ const delStaff = () => {
 </script>
 
 <template>
-  <div class="pt-6">
+  <div class="pt-6 px-4">
     <common-layout-center>
       <common-card-info title="员工详情">
         <template #status>

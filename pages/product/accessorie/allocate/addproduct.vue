@@ -138,8 +138,8 @@ function toggleCategory(id: string) {
   <div>
     <common-layout-center>
       <div class="pt-6 pb-18 px-4">
-        <common-gradient title="选择配件礼品" theme="gradient">
-          <template #body>
+        <common-card-info title="选择配件礼品">
+          <template #info>
             <template v-if="selectProduct?.length">
               <div class="text-[14px] pb-4 text-color">
                 共 {{ selectProduct.length }}
@@ -189,7 +189,7 @@ function toggleCategory(id: string) {
               <common-empty size="100" />
             </template>
           </template>
-        </common-gradient>
+        </common-card-info>
       </div>
     </common-layout-center>
     <common-model v-model="isAddSingle" title="添加配件" :show-ok="true" @confirm="addCategory">
