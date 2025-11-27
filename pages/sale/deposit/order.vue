@@ -12,12 +12,16 @@ const { OrderDetail, filterList } = storeToRefs(useDepositOrder())
 const { getOrderDetail, getSaleWhere, returnGoodsDepositOrder, payDepositOrder, rovkeDepositOrder } = useDepositOrder()
 const { userinfo } = storeToRefs(useUser())
 const { myStore } = storeToRefs(useStores())
+const { hasStored } = useStores()
 const route = useRoute()
+const hasStore = ref(false)
 if (route?.query?.id) {
   await getOrderDetail({ id: route.query.id as string })
   await getMemberWhere()
   await getSaleWhere()
   await getFinishedWhere()
+
+  hasStore.value = await hasStored(OrderDetail.value.store_id)
 }
 
 const returnGoods = async (req: DepositReturnGoods) => {
@@ -65,7 +69,7 @@ const submitCancel = async () => {
 
       <template v-if=" OrderDetail.status === DepositOrderStatus.PendingPayment">
         <template v-if="OrderDetail.cashier_id === userinfo.id ">
-          <template v-if=" OrderDetail.store_id === myStore.id">
+          <template v-if="hasStore">
             <common-button-bottom
               confirm-text="支付"
               cancel-text="撤销"
@@ -87,7 +91,6 @@ const submitCancel = async () => {
         </template>
       </template>
     </div>
-    <correspond-store :correspond-ids="[OrderDetail.store_id]" />
   </div>
 </template>
 

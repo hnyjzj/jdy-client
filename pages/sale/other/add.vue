@@ -192,9 +192,6 @@ const orderObject = ref<Orders>({} as Orders)
         </n-form>
       </div>
     </div>
-    <template v-if="otherOrderDetail.store_id && otherOrderDetail.store_id !== '' && route.query.id">
-      <correspond-store :correspond-ids="[otherOrderDetail.store_id]" />
-    </template>
     <common-loading v-model="layoutLoading" />
   </div>
 </template>

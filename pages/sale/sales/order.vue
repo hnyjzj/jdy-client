@@ -414,8 +414,6 @@ onMounted(() => {
       text="是否重新新增订单？"
       @submit="containAdd()"
     />
-
-    <correspond-store :correspond-ids="[OrderDetail.store_id]" />
   </div>
 </template>
 

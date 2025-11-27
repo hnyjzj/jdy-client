@@ -5,6 +5,7 @@ const { enterInfo } = storeToRefs(useFinishedEnter())
 const { finishedFilterList, finishedFilterListToArray } = storeToRefs(useFinished())
 const { getFinishedWhere } = useFinished()
 const { myStore } = storeToRefs(useStores())
+const { hasStored } = useStores()
 
 useSeoMeta({
   title: '入库单详情',
@@ -27,6 +28,7 @@ const cancelDialog = ref(false)
 const finishDialog = ref(false)
 const loading = ref(false)
 const productParams = ref({} as Partial<ProductFinisheds>)
+const hasStore = ref(false)
 /** 要删除的产品code */
 const deleteId = ref('')
 const enterId = ref('')
@@ -34,6 +36,8 @@ if (route.query.id) {
   enterId.value = route.query.id as string
   await getInfo()
   await getFinishedWhere()
+
+  hasStore.value = await hasStored(enterInfo.value.store_id)
 }
 async function getInfo() {
   const params = {
@@ -438,7 +442,7 @@ async function downloadLocalFile() {
         </template>
       </common-button-bottom>
     </template>
-    <template v-if="enterInfo.status === EnterStatus.Completed && myStore.id === enterInfo.store_id">
+    <template v-if="enterInfo.status === EnterStatus.Completed && hasStore">
       <common-button-bottom confirm-text="整单调拨" cancel-text="撤销入库" @cancel="cancelDialog = true" @confirm="jump('/product/allocate/add', { enter_id: enterInfo.id })" />
     </template>
     <common-confirm v-model:show="deleteDialog" icon="error" title="删除产品" text="确认要删除此产品吗?" @submit="delProduct" />
@@ -521,7 +525,6 @@ async function downloadLocalFile() {
         </template>
       </div>
     </common-model>
-    <correspond-store :correspond-ids="[enterInfo.store_id]" />
   </div>
 </template>
 
