@@ -140,14 +140,14 @@ function handleValidateButtonClick() {
 <template>
   <div>
     <common-layout-center>
-      <div class="pt-4 pb-20">
+      <div class="pt-4 pb-20 px-4">
         <div class="mb-4 w-[40%]">
           <product-manage-company class="text-[#FFF]" />
         </div>
         <div class="flex flex-col gap-4">
           <div class="rounded-6 bg-white w-auto blur-bga top">
-            <common-gradient title="新增调拨单">
-              <template #body>
+            <common-card-info title="新增调拨单">
+              <template #info>
                 <n-form ref="formRef" :model="params" :rules="rules">
                   <n-grid :cols="24" :x-gap="8">
                     <n-form-item-gi :span="12" path="method" required :label="allocateFilterList.method?.label">
@@ -212,7 +212,7 @@ function handleValidateButtonClick() {
                   </n-grid>
                 </n-form>
               </template>
-            </common-gradient>
+            </common-card-info>
           </div>
         </div>
       </div>

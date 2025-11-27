@@ -179,8 +179,8 @@ async function uploadImg() {
         </div>
 
         <template v-if="finishedInfo && statusCode === 200">
-          <common-gradient theme="theme" title="上传图片">
-            <template #body>
+          <common-card-info title="上传图片">
+            <template #info>
               <div class="flex items-center">
                 <n-upload
                   action="#"
@@ -200,7 +200,7 @@ async function uploadImg() {
                 </button>
               </div>
             </template>
-          </common-gradient>
+          </common-card-info>
           <div class="h-4" />
           <product-manage-info :info="finishedInfo" :filter-list="finishedFilterList" :filter-list-to-array="finishedFilterListToArray" />
         </template>
