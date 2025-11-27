@@ -92,7 +92,7 @@ function changePageBench(bench: WorkBench) {
             </template>
           </div>
           <div :class="!work.is_fold ? 'block1' : 'hidden1'">
-            <div class="pt-[24px] pb-[8px] text-size-[14px]" :class="!work.is_fold ? 'block2' : 'hidden2'">
+            <div class="pt-[20px] text-size-[14px]" :class="!work.is_fold ? 'block2' : 'hidden2'">
               <template v-if="isSetup">
                 <button style="all: unset;" @click="addBench(work.id, 2)">
                   <div class="flex items-center mb-3 cursor-pointer text-color-light">
