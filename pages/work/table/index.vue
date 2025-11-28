@@ -2,6 +2,10 @@
 import type { Rules } from 'common-form'
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 
+definePageMeta({
+  layout: 'nav',
+})
+
 const { $toast } = useNuxtApp()
 const { addWorkbench, getWorkbenchList, delWorkbench, updateWorkbench, uploadIcon } = useWorkbenche()
 const { workBenchList } = storeToRefs(useWorkbenche())
@@ -201,7 +205,7 @@ const beforeUpload = (data: any) => {
 
 <template>
   <div class="">
-    <div class="sticky top-0 z-4 bg-[#3875C5]">
+    <div class="sticky top-0 z-4 search-bg bg-[#3875C5]">
       <common-layout-center>
         <div class="color-[#fff] py-[12px] flex justify-between px-4">
           <product-manage-company />
@@ -298,5 +302,20 @@ const beforeUpload = (data: any) => {
 }
 .add-row {
   --uno: 'grid grid-cols-[1fr_2fr] items-center border-t-[#E6E6E8] border-t-solid border-t-[1px] pt-[16px]';
+}
+
+.search-bg {
+  overflow: hidden;
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 180px;
+    top: 0;
+    right: 0;
+    background-image: url('@/assets/icons/index-six.svg');
+    background-repeat: no-repeat;
+    background-position: right;
+  }
 }
 </style>
