@@ -50,20 +50,20 @@ const execute = async () => {
 
 <template>
   <div>
-    <div class="grid-12 pb-[80px]">
-      <product-manage-company class="color-[#fff] col-4 px-[16px] pt-[16px]" uno-lg="offset-2" />
-      <div class="col-12 px-[16px] py-[16px]" uno-lg="col-8 offset-2">
-        <div class="flex flex-col gap-[16px]">
-          <div class="primary">
-            <common-card-info title="会员归属">
-              <template #info>
-                <member-lists-new v-model:rely="memberParams" :staff-list="StoreStaffList" :get-staff-list="getStaff" />
-              </template>
-            </common-card-info>
-          </div>
+    <common-layout-center>
+      <div
+        class="grid-12 py-[12px]">
+        <div class="col-4" uno-sm="col-3" uno-lg="col-2">
+          <product-manage-company />
         </div>
       </div>
-    </div>
+      <common-card-info title="会员归属">
+        <template #info>
+          <member-lists-new v-model:rely="memberParams" :staff-list="StoreStaffList" :get-staff-list="getStaff" />
+        </template>
+      </common-card-info>
+    </common-layout-center>
+
     <common-button-bottom confirm-text="确认新增" cancel-text="取消" @confirm="execute" @cancel="backtrack" />
   </div>
 </template>

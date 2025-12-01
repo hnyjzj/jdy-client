@@ -68,7 +68,7 @@ function handleSelect(id: Stores['id']) {
   <div>
     <n-dropdown trigger="click" placement="bottom-start" :options="columns" :style="{ maxHeight: props.maxHeight, overflowY: 'auto' }" @select="handleSelect">
       <div
-        class="py-[6px] px-[12px] bg-[#FFFFFF66] border-rd-full h-full flex-center-row shadow-lg cursor-pointer  "
+        class="py-[6px] px-[12px] bg-[#FFFFFF66] border-rd-full h-full flex-center-row  cursor-pointer  "
         @click="changeRegion">
         <client-only>
           <div class="store-name font-bold text-size-[14px] mr-[4px]">
