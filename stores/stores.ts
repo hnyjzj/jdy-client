@@ -76,6 +76,21 @@ export const useStores = defineStore('Store', {
         return []
       }
     },
+    /**
+     * 判断当前门店与所需门店是否一致 否则需要切换
+     * @param id 门店
+     * @returns 是否需要切换
+     */
+    async hasStored(id?: string) {
+      if (!id)
+        return false
+
+      if (!this.myStoreList?.length)
+        await this.getMyStore()
+
+      /** 不相同 且所需门店在当前门店列表中 */
+      return id === this.myStore.id
+    },
 
     // 创建门店
     async createStore(req: Partial<Stores>) {

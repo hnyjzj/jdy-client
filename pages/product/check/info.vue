@@ -8,6 +8,7 @@ const { uploadImg } = useUploadImg()
 const { $toast } = useNuxtApp()
 const { useWxWork } = useWxworkStore()
 const { myStore } = storeToRefs(useStores())
+const { hasStored } = useStores()
 const route = useRoute()
 
 const { finishedFilterListToArray } = storeToRefs(useFinished())
@@ -46,7 +47,7 @@ const previewFileList = ref<Array<UploadFileInfo>>([])
 const goodCode = ref('')
 // **先声明并初始化 funbtns**
 const funbtns = ref<funBtn[]>([])
-
+const hasStore = ref(false)
 // 获取按钮列表的函数
 function getFunBtn() {
   funbtns.value = [] // 清空按钮数组
@@ -149,6 +150,8 @@ if (route.query.id) {
   await getFinishedWhere()
   await getOldWhere()
   await getInfo()
+
+  hasStore.value = await hasStored(checkInfo.value.store_id)
 }
 
 function handleClick(item: funBtn) {
@@ -702,7 +705,7 @@ function removeImg(data: { index: number }) {
         </div>
       </div>
     </div>
-    <template v-if="funbtns?.length && myStore.id === checkInfo.store_id">
+    <template v-if="funbtns?.length && hasStore">
       <div class="btn">
         <template v-for="(item, index) in funbtns" :key="index">
           <button class="btntext cursor-pointer" :style="item.disabled ? { background: '#CCCCCC' } : {}" @click="handleClick(item)">
@@ -765,7 +768,6 @@ function removeImg(data: { index: number }) {
     <common-loading v-model="loading" text="正在处理中" />
 
     <product-check-warehouse ref="uploadRef" v-model="importModel" @upload="bulkupload" />
-    <correspond-store :correspond-ids="[checkInfo.store_id]" />
   </div>
 </template>
 
