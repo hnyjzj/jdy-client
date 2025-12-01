@@ -165,35 +165,50 @@ const cols = [
   {
     title: '操作',
     key: 'action',
-    width: 250,
+    fixed: 'right',
     render: (rowData: Region) => {
       return [h(
-        NButton,
+        'sapn',
         {
           type: 'primary',
           size: 'small',
           class: 'mr-[4px]',
+          style: {
+            color: '#0D6CE4',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           onClick: () => {
             getStoreInfo(rowData.id)
           },
         },
-        { default: () => '查看详情' },
+        { default: () => '详情' },
       ), h(
-        NButton,
+        'span',
         {
           type: 'info',
           size: 'small',
           class: 'mr-[4px]',
+          style: {
+            color: '#41CF84',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           onClick: () => {
             edit(rowData.id)
           },
         },
         { default: () => '编辑' },
       ), h(
-        NButton,
+        'span',
         {
           type: 'error',
           size: 'small',
+          style: {
+            color: '#D03050',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           onClick: () => {
             deleteStoreFn(rowData.id)
           },
@@ -210,18 +225,17 @@ const cols = [
     <product-filter
       v-model:showtype="showtype" :product-list-total="total" placeholder="搜索条码" :show-input="false" @filter="heightSearchFn()" />
 
-    <template v-if="showtype === 'list'">
-      <common-layout-center>
-        <div class="p-[16px]">
+    <common-layout-center>
+      <div class="p-[16px]">
+        <template v-if="showtype === 'list'">
           <region-card @get-detail="getStoreInfo" @edit-region="edit" @delete-region="deleteStoreFn" />
           <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
-        </div>
-      </common-layout-center>
-    </template>
-    <template v-else>
-      <common-datatable :columns="cols" :list="regionList" :page-option="pageOption" :loading="tableLoading" />
-    </template>
-
+        </template>
+        <template v-else>
+          <common-datatable :columns="cols" :list="regionList" :page-option="pageOption" :loading="tableLoading" />
+        </template>
+      </div>
+    </common-layout-center>
     <!-- 新增或更新门店弹窗 -->
     <common-model v-model="addOrUpdateShow" :show-cancel="false" title="新增区域">
       <region-add-update

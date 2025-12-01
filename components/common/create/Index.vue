@@ -6,7 +6,7 @@ const create = () => {
 </script>
 
 <template>
-  <div class="createbox cursor-pointer" @click="create">
+  <div class="createbox cursor-pointer z-9" @click="create">
     <slot name="content">
       <div
         class="create2">

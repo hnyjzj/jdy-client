@@ -245,18 +245,16 @@ const cols = [
       </template>
     </product-filter>
 
-    <div class="px-4">
+    <div class="p-4">
       <common-layout-center>
         <template v-if="showtype === 'list'">
-          <div class="p-[16px] ">
-            <template v-if="OrdersList.length">
-              <sale-deposit-list :info="OrdersList" :where="filterList" :is-store-staff="isStaff" />
-              <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
-            </template>
-            <template v-else>
-              <common-emptys text="暂无数据" />
-            </template>
-          </div>
+          <template v-if="OrdersList.length">
+            <sale-deposit-list :info="OrdersList" :where="filterList" :is-store-staff="isStaff" />
+            <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
+          </template>
+          <template v-else>
+            <common-emptys text="暂无数据" />
+          </template>
         </template>
         <template v-else>
           <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" :loading="tableLoading" />

@@ -268,9 +268,9 @@ const exportExcel = async () => {
         <product-manage-company @change="changeStores" />
       </template>
     </product-filter>
-    <div class="px-4">
-      <template v-if="showtype === 'list'">
-        <common-layout-center>
+    <common-layout-center>
+      <div class="p-4">
+        <template v-if="showtype === 'list'">
           <div>
             <template v-if="OrdersList.length">
               <sale-sales-list :info="OrdersList" :where="filterList" @cancle="cancelOrder" @pay="payOrderConfirm" />
@@ -281,18 +281,17 @@ const exportExcel = async () => {
               <common-emptys text="暂无数据" />
             </template>
           </div>
-        </common-layout-center>
-      </template>
-      <template v-if="showtype === 'table'">
-        <template v-if="OrdersList.length">
-          <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" :loading="tableLoading" />
         </template>
-        <template v-else>
-          <common-emptys text="暂无数据" />
+        <template v-if="showtype === 'table'">
+          <template v-if="OrdersList.length">
+            <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" :loading="tableLoading" />
+          </template>
+          <template v-else>
+            <common-emptys text="暂无数据" />
+          </template>
         </template>
-      </template>
-    </div>
-
+      </div>
+    </common-layout-center>
     <!-- filter -->
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #cashier_id>

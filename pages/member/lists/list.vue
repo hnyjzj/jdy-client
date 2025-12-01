@@ -226,36 +226,51 @@ const cols = [
   } },
   {
     title: '操作',
-    width: 300,
     key: 'action',
+    fixed: 'right',
     render: (rowData: Member) => {
       return [h(
-        NButton,
+        'span',
         {
           type: 'primary',
           size: 'small',
           class: 'mr-[4px]',
+          style: {
+            color: '#0D6CE4',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           onClick: () => {
             userJump(rowData.id)
           },
         },
-        { default: () => '查看详情' },
+        { default: () => '详情' },
       ), h(
-        NButton,
+        'span',
         {
           type: 'info',
           size: 'small',
           class: 'mr-[4px]',
+          style: {
+            color: '#41CF84',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           onClick: () => {
             goIntegral(rowData.id)
           },
         },
         { default: () => '查看积分' },
       ), h(
-        NButton,
+        'span',
         {
           type: 'info',
           size: 'small',
+          style: {
+            color: '#DD9200',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           onClick: () => {
             adjustment(rowData.id)
           },
@@ -364,9 +379,9 @@ const cols = [
         <product-manage-company @change="changeStores" />
       </template>
     </product-filter>
-    <template v-if="showtype === 'list'">
+    <div class="p-[16px]">
       <common-layout-center>
-        <div class="p-[16px]">
+        <template v-if="showtype === 'list'">
           <template v-if="memberList.length">
             <member-lists-list :info="memberList" @go-info="userJump" @view-integral="goIntegral" @change-integral="adjustment" />
             <common-page v-model:page="searchPage" :total="memberListTotal" :limit="limits" @update:page="updatePage" />
@@ -374,12 +389,12 @@ const cols = [
           <template v-else>
             <common-emptys text="暂无数据" />
           </template>
-        </div>
+        </template>
+        <template v-else>
+          <common-datatable :columns="cols" :list="memberList" :page-option="pageOption" :loading="tableLoading" />
+        </template>
       </common-layout-center>
-    </template>
-    <template v-else>
-      <common-datatable :columns="cols" :list="memberList" :page-option="pageOption" :loading="tableLoading" />
-    </template>
+    </div>
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #consultant_id>
         <n-select

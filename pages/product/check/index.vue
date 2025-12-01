@@ -319,8 +319,8 @@ const cols = [
       <div class="px-[16px] pb-20 pt-4">
         <template v-if="checkList?.length">
           <template v-if="showtype === 'list'">
-            <template v-for="(info, index) in checkList" :key="index">
-              <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+            <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+              <template v-for="(info, index) in checkList" :key="index">
                 <common-card-list>
                   <template #status>
                     <common-button-status
@@ -435,8 +435,8 @@ const cols = [
                     </div>
                   </template>
                 </common-card-list>
-              </div>
-            </template>
+              </template>
+            </div>
             <common-page
               v-model:page="searchPage" :total="checkTotal" :limit="limits" @update:page="updatePage" />
           </template>

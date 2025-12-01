@@ -161,20 +161,25 @@ const cols = [
   {
     title: '操作',
     key: 'action',
+    fixed: 'right',
     render: (rowData: otherOrderInfo) => {
       return [h(
-        NButton,
+        'span',
         {
           type: 'info',
           size: 'small',
-          class: 'mr-[4px]',
+          style: {
+            color: '#0D6CE4',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           onClick: () => {
             if (!rowData.id)
               return
             navigateTo(`/sale/other/add?id=${rowData.id}`)
           },
         },
-        { default: () => '查看详情' },
+        { default: () => '详情' },
       )]
     },
   },
@@ -192,9 +197,9 @@ const cols = [
         <product-manage-company @change="changeStores" />
       </template>
     </product-filter>
-    <template v-if="showtype === 'list'">
+    <div class="p-[16px]">
       <common-layout-center>
-        <div class="p-[16px]">
+        <template v-if="showtype === 'list'">
           <template v-if="orderList.length">
             <sale-other-list :info="orderList" :where="filterList" />
             <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
@@ -202,13 +207,12 @@ const cols = [
           <template v-else>
             <common-emptys text="暂无数据" />
           </template>
-        </div>
+        </template>
+        <template v-else>
+          <common-datatable :columns="cols" :list="orderList" :page-option="pageOption" :loading="tableLoading" />
+        </template>
       </common-layout-center>
-    </template>
-    <template v-else>
-      <common-datatable :columns="cols" :list="orderList" :page-option="pageOption" :loading="tableLoading" />
-    </template>
-
+    </div>
     <common-create @create="newAdd()" />
 
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere" />

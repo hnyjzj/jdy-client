@@ -126,7 +126,7 @@ async function delTarget() {
       </template>
     </product-filter>
     <common-layout-center>
-      <div class="px-[16px]" uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+      <div class="p-4" uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
         <template v-for="(info, index) in targetList" :key="index">
           <common-card-list>
             <template #top>

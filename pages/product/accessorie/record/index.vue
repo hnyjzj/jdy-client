@@ -203,8 +203,13 @@ const cols = [
     fixed: 'right',
     render(row: AccessorieRecord) {
       return h(
-        NButton,
+        'span',
         {
+          style: {
+            color: '#0D6CE4',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           type: 'info',
           size: 'small',
           onClick: () => jump('/product/accessorie/record/info', { id: row.id }),
@@ -235,56 +240,58 @@ const cols = [
     </product-filter>
     <!-- 列表 -->
     <common-layout-center>
-      <div class="px-[16px] pb-10" uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+      <div class="px-[16px] pb-10 pt-4">
         <template v-if="productRocordList?.length">
           <template v-if="showtype === 'list'">
-            <template v-for="(info, index) in productRocordList" :key="index">
-              <common-card-list>
-                <template #top>
-                  <div>{{ historyFilterList.action?.preset[info.action] }}</div>
-                </template>
-                <template #info>
-                  <div class="text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                    <div class="flex-between">
-                      <div>
-                        操作时间
+            <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+              <template v-for="(info, index) in productRocordList" :key="index">
+                <common-card-list>
+                  <template #top>
+                    <div>{{ historyFilterList.action?.preset[info.action] }}</div>
+                  </template>
+                  <template #info>
+                    <div class="text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                      <div class="flex-between">
+                        <div>
+                          操作时间
+                        </div>
+                        <div class="text-align-end">
+                          {{ formatTimestampToDateTime(info.updated_at) }}
+                        </div>
                       </div>
-                      <div class="text-align-end">
-                        {{ formatTimestampToDateTime(info.updated_at) }}
+                      <div class="flex-between">
+                        <div>
+                          原因
+                        </div>
+                        <div class="text-align-end">
+                          {{ info?.reason }}
+                        </div>
                       </div>
-                    </div>
-                    <div class="flex-between">
-                      <div>
-                        原因
+                      <div class="flex-between">
+                        <div>
+                          关联单号
+                        </div>
+                        <div class="text-align-end">
+                          {{ info.source_id }}
+                        </div>
                       </div>
-                      <div class="text-align-end">
-                        {{ info?.reason }}
-                      </div>
-                    </div>
-                    <div class="flex-between">
-                      <div>
-                        关联单号
-                      </div>
-                      <div class="text-align-end">
-                        {{ info.source_id }}
-                      </div>
-                    </div>
 
-                    <accessorie-record-card :filter-list="accessorieFilterListToArray" :accessories="info.new_value?.product ? info.new_value?.product : info.new_value" />
-                  </div>
-                </template>
-                <template #footer>
-                  <div class="flex-end text-size-[14px]">
-                    <div>
-                      <common-button-rounded
-                        padding="4px 36px"
-                        content="详情" @click="jump('/product/accessorie/record/info', { id: info?.id })"
-                      />
+                      <accessorie-record-card :filter-list="accessorieFilterListToArray" :accessories="info.new_value?.product ? info.new_value?.product : info.new_value" />
                     </div>
-                  </div>
-                </template>
-              </common-card-list>
-            </template>
+                  </template>
+                  <template #footer>
+                    <div class="flex-end text-size-[14px]">
+                      <div>
+                        <common-button-rounded
+                          padding="4px 36px"
+                          content="详情" @click="jump('/product/accessorie/record/info', { id: info?.id })"
+                        />
+                      </div>
+                    </div>
+                  </template>
+                </common-card-list>
+              </template>
+            </div>
             <common-page
               v-model:page="searchPage" :total="historyListTotal" :limit="limits" @update:page="updatePage" />
           </template>
