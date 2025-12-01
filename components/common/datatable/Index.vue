@@ -9,27 +9,24 @@ const props = withDefaults(defineProps<{
 }>(), {
   loading: false,
 })
-
 let scrollX = 0
-
 for (let i = 0; i < props.columns.length; ++i) {
   scrollX += 120
 }
 </script>
 
 <template>
-  <common-layout-center>
-    <div class="p-[16px]">
+  <div class="font-[12px]">
+    <div class="p-3 blur-bgc rounded-3">
       <n-data-table
         :loading="props.loading"
-        striped
         :style="{
           '--n-item-text-color-active': '#4678B9',
           '--n-item-border-active': '1px solid #2976EF',
           '--n-item-text-color-hover': '#333',
           '--n-loading-color': 'orange',
         }"
-        size="large"
+        size="small"
         remote
         :bordered="false"
         :single-line="false"
@@ -40,12 +37,18 @@ for (let i = 0; i < props.columns.length; ++i) {
         :max-height="600"
       />
     </div>
-  </common-layout-center>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-:deep(.n-pagination .n-pagination-item:not(.n-pagination-item--disabled).n-pagination-item--active) {
-  border: 1px solid #2976ef !important;
-  color: #2976ef !important;
+// 移除所有边框
+:deep(.n-data-table) {
+  border: none !important;
+}
+:deep(.n-data-table-th) {
+  border: none !important;
+}
+:deep(.n-data-table-td) {
+  border: none !important;
 }
 </style>

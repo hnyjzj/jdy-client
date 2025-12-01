@@ -35,17 +35,13 @@ const searchKey = defineModel<string>('searchKey', { required: false, default: '
 </script>
 
 <template>
-  <div class="bg-[#F4F9FD] sticky top-0 z-9">
-    <div class=" bg-[#fff]">
-      <common-layout-center>
-        <div class="flex flex-row gap-2">
-          <template v-if="showCompany">
-            <slot name="company" />
-          </template>
-        </div>
-      </common-layout-center>
-    </div>
+  <div class="blur-bgc text-color sticky top-0 z-9">
     <common-layout-center>
+      <div class="flex flex-row gap-2">
+        <template v-if="showCompany">
+          <slot name="company" />
+        </template>
+      </div>
       <div class="flex flex-col px-[16px] w-full">
         <template v-if="showInput">
           <div class="grid-12">

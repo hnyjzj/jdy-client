@@ -177,29 +177,27 @@ const cols = [
   {
     title: '操作',
     key: 'action',
-    width: 220,
+    fixed: 'right',
     render: (rowData: DepositOrderInfo) => {
       const result = [h(
-        NButton,
+        'span',
         {
-          type: 'info',
           size: 'small',
-          class: 'mr-[4px]',
+          class: 'text-#0D6CE4 pr-4',
           onClick: () => {
             if (!rowData.id)
               return
             navigateTo(`/sale/deposit/order?id=${rowData.id}`)
           },
         },
-        { default: () => '查看详情' },
+        { default: () => '详情' },
       )]
       if (rowData.status === DepositOrderStatus.Booking) {
         result.push(h(
-          NButton,
+          'span',
           {
-            type: 'info',
             size: 'small',
-            class: 'mr-[4px]',
+            class: 'text-#41CF84',
             onClick: async () => {
               if (!rowData.id) {
                 return
@@ -217,11 +215,10 @@ const cols = [
       }
       if (rowData?.order_sales?.length) {
         result.push(h(
-          NButton,
+          'span',
           {
-            type: 'primary',
             size: 'small',
-            class: 'mr-[4px]',
+            class: 'text-#41CF84',
             onClick: () => {
               if (!rowData.id)
                 return
@@ -248,22 +245,24 @@ const cols = [
       </template>
     </product-filter>
 
-    <template v-if="showtype === 'list'">
+    <div class="px-4">
       <common-layout-center>
-        <div class="p-[16px] ">
-          <template v-if="OrdersList.length">
-            <sale-deposit-list :info="OrdersList" :where="filterList" :is-store-staff="isStaff" />
-            <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
-          </template>
-          <template v-else>
-            <common-emptys text="暂无数据" />
-          </template>
-        </div>
+        <template v-if="showtype === 'list'">
+          <div class="p-[16px] ">
+            <template v-if="OrdersList.length">
+              <sale-deposit-list :info="OrdersList" :where="filterList" :is-store-staff="isStaff" />
+              <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
+            </template>
+            <template v-else>
+              <common-emptys text="暂无数据" />
+            </template>
+          </div>
+        </template>
+        <template v-else>
+          <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" :loading="tableLoading" />
+        </template>
       </common-layout-center>
-    </template>
-    <template v-else>
-      <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" :loading="tableLoading" />
-    </template>
+    </div>
     <!-- filter -->
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #cashier_id>

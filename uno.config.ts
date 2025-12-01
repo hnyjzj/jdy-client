@@ -71,7 +71,7 @@ export default defineConfig({
     'flex-col-between': 'flex flex-col justify-between',
     'grid-12': 'grid grid-cols-12',
     'blur-bgc': 'light:bg-[#FFF] dark:bg-[#0A113C] blur-5px', // 毛玻璃背景色
-    'blur-bga': 'light:bg-[rgb(255,255,255)] dark:bg-[rgba(0,0,0,0.3)] blur-5px',
+    'blur-bga': 'light:bg-#FFF dark:bg-[#0A113C] blur-5px',
     'text-color': 'text-[rgb(0,0,0)] dark:text-[rgb(255,255,255)]',
     'text-color-light': 'text-[#666666] dark:text-[#CBCDD1]',
     /** 单行超出隐藏 */

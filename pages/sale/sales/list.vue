@@ -223,10 +223,16 @@ const cols = [
   {
     title: '操作',
     key: 'action',
+    fixed: 'right',
     render: (rowData: OrderInfo) => {
       return h(
-        NButton,
+        'span',
         {
+          style: {
+            color: '#0D6CE4',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           type: 'info',
           size: 'small',
           onClick: () => {
@@ -262,28 +268,30 @@ const exportExcel = async () => {
         <product-manage-company @change="changeStores" />
       </template>
     </product-filter>
-    <template v-if="showtype === 'list'">
-      <common-layout-center>
-        <div class="p-[16px]">
-          <template v-if="OrdersList.length">
-            <sale-sales-list :info="OrdersList" :where="filterList" @cancle="cancelOrder" @pay="payOrderConfirm" />
-            <common-page
-              v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
-          </template>
-          <template v-else>
-            <common-emptys text="暂无数据" />
-          </template>
-        </div>
-      </common-layout-center>
-    </template>
-    <template v-if="showtype === 'table'">
-      <template v-if="OrdersList.length">
-        <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" :loading="tableLoading" />
+    <div class="px-4">
+      <template v-if="showtype === 'list'">
+        <common-layout-center>
+          <div>
+            <template v-if="OrdersList.length">
+              <sale-sales-list :info="OrdersList" :where="filterList" @cancle="cancelOrder" @pay="payOrderConfirm" />
+              <common-page
+                v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
+            </template>
+            <template v-else>
+              <common-emptys text="暂无数据" />
+            </template>
+          </div>
+        </common-layout-center>
       </template>
-      <template v-else>
-        <common-emptys text="暂无数据" />
+      <template v-if="showtype === 'table'">
+        <template v-if="OrdersList.length">
+          <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" :loading="tableLoading" />
+        </template>
+        <template v-else>
+          <common-emptys text="暂无数据" />
+        </template>
       </template>
-    </template>
+    </div>
 
     <!-- filter -->
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere">

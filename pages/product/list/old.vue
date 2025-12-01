@@ -202,13 +202,22 @@ const cols = [
     render: (rowData: ProductOlds) => {
       return h(
         'div',
-        { style: 'display: flex; gap: 8px;' },
+        {
+          style: {
+            display: 'flex',
+            gap: '10px',
+            fontWeight: 'bold',
+          },
+        },
         [
           h(
-            NButton,
+            'span',
             {
-              type: 'primary',
-              size: 'small',
+              style: {
+                color: '#0D6CE4',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+              },
               onClick: () => {
                 edit(rowData.code)
               },
@@ -216,10 +225,13 @@ const cols = [
             { default: () => '编辑' },
           ),
           h(
-            NButton,
+            'span',
             {
-              type: 'info',
-              size: 'small',
+              style: {
+                color: '#41CF84',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+              },
               onClick: () => {
                 goInfo(rowData)
               },
@@ -278,7 +290,7 @@ async function downloadLocalFile() {
       </template>
     </product-filter>
     <!-- 列表 -->
-    <div class="pb-20">
+    <div class="pb-20 px-4">
       <template v-if="oldList?.length">
         <template v-if="showtype === 'list'">
           <product-list-main :product-list="oldList" :filter-list="oldFilterList" @edit="edit" @go-info="goInfo" />
