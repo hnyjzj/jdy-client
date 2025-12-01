@@ -82,7 +82,6 @@ export const useStores = defineStore('Store', {
      * @returns 是否需要切换
      */
     async hasStored(id?: string) {
-      console.log(this.myStore.id)
       if (!id)
         return false
 
