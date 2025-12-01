@@ -2,6 +2,10 @@
 useSeoMeta({
   title: '个人中心',
 })
+definePageMeta({
+  layout: 'nav',
+})
+
 const { userinfo } = storeToRefs(useUser())
 const { getUserInfo } = useUser()
 const { getStaffWhere } = useStaff()
@@ -23,19 +27,14 @@ const Logout = () => {
 
 <template>
   <div>
-    <div class="bg-[#3875C5]">
-      <common-layout-center>
-        <div class="p-[16px] ">
-          <my-user-userinfo :userinfo="userinfo" :filter-list="filterList" @logout="Logout()" />
-        </div>
-      </common-layout-center>
-    </div>
     <common-layout-center>
+      <div class="p-[16px] ">
+        <my-user-userinfo :userinfo="userinfo" :filter-list="filterList" @logout="Logout()" />
+      </div>
       <div class="px-[16px] ">
         <my-user-option :opt-list="optionsList" />
       </div>
     </common-layout-center>
-
     <common-tabbar text="userinfo" />
   </div>
 </template>

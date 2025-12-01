@@ -89,7 +89,7 @@ const clickChange = async () => {
 </script>
 
 <template>
-  <div class="">
+  <div class="z-3">
     <div
       class="py-[6px] px-[12px]  border-rd-full h-full flex-center-row  cursor-pointer"
       :style="{ background: 'transparent', color: props.isWhite ? '#fff' : '#000' }" @click="clickChange">
