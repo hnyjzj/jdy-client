@@ -7,10 +7,12 @@ const props = withDefaults(defineProps<{
   padding?: string
   bgc?: string
   margin?: string
+  full?: boolean
 }>(), {
   color: '',
   padding: '',
   margin: '0',
+  full: false,
 })
 
 const emits = defineEmits(['buttonClick'])
@@ -20,7 +22,7 @@ const handleClick = () => {
 </script>
 
 <template>
-  <div>
+  <div :style="props.full ? 'flex:1;' : ''">
     <div
       class="flex-center-row font-bold text-3 rounded-3xl cursor-pointer flex-1"
       :style="{

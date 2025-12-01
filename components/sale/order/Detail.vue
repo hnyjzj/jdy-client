@@ -165,9 +165,11 @@ const onReturnProduct = async (index: number) => {
                     </template>
                   </template>
                 </template>
-                <div class="flex-end">
+                <div class="flex justify-end">
                   <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > UserLevel.IdentityClerk && props.store === orders.store_id && !route.query.embedded">
-                    <common-button-rounded content="退货" @button-click="onReturnProduct(i)" />
+                    <div class="w-[80px]">
+                      <common-button-rounded content="退货" @button-click="onReturnProduct(i)" />
+                    </div>
                   </template>
                 </div>
               </div>
@@ -228,7 +230,8 @@ const onReturnProduct = async (index: number) => {
                     </template>
                   </template>
                 </template>
-                <div class="flex-end">
+                <div class="flex justify-end">
+                  <div />
                   <template v-if="obj?.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > UserLevel.IdentityClerk && props.store === orders.store_id && !route.query.embedded">
                     <common-button-rounded content="退货" @button-click="onReturnProduct(i)" />
                   </template>
@@ -263,7 +266,8 @@ const onReturnProduct = async (index: number) => {
                       </template>
                     </template>
                   </template>
-                  <div class="flex-end">
+                  <div class="flex justify-end">
+                    <div />
                     <template v-if="obj?.status === OrderStatusText.OrderSalesProductStatusComplete && props?.identity > UserLevel.IdentityClerk && props.store === orders.store_id && !route.query.embedded">
                       <common-button-rounded content="退货" @button-click="onReturnProduct(i)" />
                     </template>
