@@ -743,11 +743,13 @@ function removeImg(data: { index: number }) {
     <common-model v-model="inputModel" title="正在盘点" :show-ok="true" @confirm="submitGoods" @cancel="goodCode = ''">
       <div class="mb-8 relative min-h-[200px]">
         <div class="uploadInp cursor-pointer">
-          <div
-            class="flex items-center justify-center cursor-pointer p-10"
-            @click="scanCode()">
-            <icon class="ml-2" name="i-icon:scanit" :size="36" />
-          </div>
+          <template v-if="checkEnv()">
+            <div
+              class="flex items-center justify-center cursor-pointer p-10"
+              @click="scanCode()">
+              <icon class="ml-2" name="i-icon:scanit" :size="36" />
+            </div>
+          </template>
           <n-input v-model:value="goodCode" placeholder="请输入条码" />
         </div>
       </div>
