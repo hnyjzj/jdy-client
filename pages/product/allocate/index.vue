@@ -258,8 +258,13 @@ const cols = [
         { style: 'display: flex; gap: 8px;' },
         [
           h(
-            NButton,
+            'span',
             {
+              style: {
+                color: '#0D6CE4',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+              },
               type: 'info',
               size: 'small',
               onClick: () => jump('/product/allocate/info', { id: row.id, type: row.type }),
@@ -410,7 +415,7 @@ async function downloadDetails() {
       </template>
     </product-filter>
     <!-- 小卡片组件 -->
-    <div class="pb-20 px-4">
+    <div class="pb-20 px-4 pt-4">
       <common-layout-center>
         <template v-if="allocateList?.length">
           <template v-if="showtype === 'list'">

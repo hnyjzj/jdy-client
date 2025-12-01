@@ -194,7 +194,7 @@ const cols = [
             'span',
             {
               style: {
-                color: '#0D6CE4',
+                color: '#41CF84',
                 cursor: 'pointer',
                 fontWeight: 'bold',
               },
@@ -208,7 +208,7 @@ const cols = [
             'span',
             {
               style: {
-                color: '#41CF84',
+                color: '#0D6CE4',
                 cursor: 'pointer',
                 fontWeight: 'bold',
               },
@@ -379,7 +379,7 @@ async function downloadEmptyImage() {
       </template>
     </product-filter>
     <!-- 列表 -->
-    <div class="pb-20 px-4">
+    <div class="pb-20 px-4 pt-4">
       <common-layout-center>
         <template v-if="finishedList?.length">
           <template v-if="showtype === 'list'">

@@ -245,7 +245,7 @@ const cols = [
       </template>
     </product-filter>
     <!-- 小卡片组件 -->
-    <div class="pb-20 px-4">
+    <div class="pb-20 px-4 pt-4">
       <common-layout-center>
         <template v-if="lossList?.length">
           <template v-if="showtype === 'list'">

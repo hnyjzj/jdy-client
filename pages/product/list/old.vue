@@ -214,7 +214,7 @@ const cols = [
             'span',
             {
               style: {
-                color: '#0D6CE4',
+                color: '#41CF84',
                 cursor: 'pointer',
                 fontWeight: 'bold',
               },
@@ -228,7 +228,7 @@ const cols = [
             'span',
             {
               style: {
-                color: '#41CF84',
+                color: '#0D6CE4',
                 cursor: 'pointer',
                 fontWeight: 'bold',
               },
@@ -290,20 +290,22 @@ async function downloadLocalFile() {
       </template>
     </product-filter>
     <!-- 列表 -->
-    <div class="pb-20 px-4">
-      <template v-if="oldList?.length">
-        <template v-if="showtype === 'list'">
-          <product-list-main :product-list="oldList" :filter-list="oldFilterList" @edit="edit" @go-info="goInfo" />
-          <common-page
-            v-model:page="searchPage" :total="oldListTotal" :limit="limits" @update:page="updatePage" />
+    <div class="pb-20 px-4 pt-4">
+      <common-layout-center>
+        <template v-if="oldList?.length">
+          <template v-if="showtype === 'list'">
+            <product-list-main :product-list="oldList" :filter-list="oldFilterList" @edit="edit" @go-info="goInfo" />
+            <common-page
+              v-model:page="searchPage" :total="oldListTotal" :limit="limits" @update:page="updatePage" />
+          </template>
+          <template v-else>
+            <common-datatable :columns="cols" :list="oldList" :page-option="pageOption" :loading="tableLoading" />
+          </template>
         </template>
         <template v-else>
-          <common-datatable :columns="cols" :list="oldList" :page-option="pageOption" :loading="tableLoading" />
+          <common-empty width="100px" />
         </template>
-      </template>
-      <template v-else>
-        <common-empty width="100px" />
-      </template>
+      </common-layout-center>
     </div>
     <common-loading v-model="loading" text="正在处理中" />
     <product-upload-choose v-model:is-model="isModel" @go-add="goAdd" @batch="isBatchImportModel = true" />
