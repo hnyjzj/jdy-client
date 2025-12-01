@@ -66,12 +66,10 @@ const rules = ref<Rules<AccountReq>>({
         validate,
       }">
       <div class="pb-[32px]">
-        <div class="pb-[8px] text-[14px] dark:color-[#fff]">
-          手机号
-        </div>
-        <div class="">
+        <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
+          <icon name="i-icon:login-user" size="24" />
           <input
-            v-model="form.phone" class="input " type="text" placeholder="请输入手机号" :maxlength="11" @change="validate()" @focus="focus">
+            v-model="form.phone" class="input " type="text" placeholder="请输入手机号" :maxlength="11" @change="validate()">
           <div class="error">
             {{ error }}
           </div>
@@ -83,14 +81,12 @@ const rules = ref<Rules<AccountReq>>({
         error,
         validate }">
       <div class="pb-[32px]">
-        <div class="pb-[8px]  text-[14px] dark:color-[#fff]">
-          密码
-        </div>
-        <div class="">
+        <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
+          <icon name="i-icon:login-password" size="24" />
           <input
             v-model="form.password"
             class="input "
-            type="password" placeholder="请输入密码" @change="validate()" @blur="validate()" @focus="focus">
+            type="password" placeholder="请输入密码" @change="validate()" @blur="validate()">
           <div class="error">
             {{ error }}
           </div>
@@ -103,18 +99,16 @@ const rules = ref<Rules<AccountReq>>({
         error,
         validate }">
       <div class="pb-[32px]">
-        <div class="pb-[8px]  text-[14px] dark:color-[#fff]">
-          验证码
-        </div>
-        <div class="relative">
+        <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
+          <icon name="i-icon:login-code" size="24" />
           <input
             v-model="form.captcha"
             :maxlength="5"
             class="input"
             type="text" placeholder="请输入验证码"
             @change="validate()">
-          <div class="absolute right-0 top-0 h-full" @click="emits('getCode')">
-            <img :src="props.imageCaptcha.code" class="h-[100%] rounded-r-[8px]">
+          <div class="h-full" @click="emits('getCode')">
+            <img :src="props.imageCaptcha.code" class="h-[40px] rounded-r-[8px]">
           </div>
         </div>
         <div class="error">
@@ -124,7 +118,7 @@ const rules = ref<Rules<AccountReq>>({
     </template>
     <template #actions="{ submit }">
       <div
-        class="text-size-[16px] font-semibold pb-[112px]" @click="submit">
+        class="text-size-[16px] font-semibold" @click="submit">
         <div class="ok">
           登录
         </div>
@@ -138,7 +132,8 @@ const rules = ref<Rules<AccountReq>>({
   --uno: 'color-[red] text-size-[14px] line-height-[20px] mt-10px';
 }
 .input {
-  --uno: 'px-[12px] py-[10px] bg-[#fff] rounded-[8px] border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none';
+  background: transparent;
+  --uno: 'px-[12px] py-[10px]  rounded-[8px] border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none';
 }
 
 .ok {

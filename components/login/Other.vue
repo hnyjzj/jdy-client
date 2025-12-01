@@ -2,12 +2,13 @@
 const props = withDefaults(defineProps<{
   list: { name: string, icon: string, title: string }[]
   text?: string
+  status?: 'wxwork' | 'phone'
 }>(), {
   text: '其他登录方式',
+  status: 'wxwork',
 })
-
 const emits = defineEmits<{
-  other: [val: string]
+  other: [val: 'wxwork' | 'phone']
 }>()
 </script>
 
@@ -20,13 +21,17 @@ const emits = defineEmits<{
       </div>
       <div class="h-[1px] w-[58px]  color-[#9E9E9E] dark:color-[#fff] bg-gradient-linear-[270deg,#CCCCCC00,#CCCCCC] " />
     </div>
-    <template v-for="(item, index) in props.list" :key="index">
+    <template v-if="props.status === 'wxwork'">
       <div class="flex-center-col py-[24px] cursor-pointer">
-        <div class="wh-[32px] rounded-full flex-center-row" @click="emits('other', item.name)">
-          <icon :name="item.icon" :size="32" />
+        <div class="wh-[32px] rounded-full flex-center-row" @click.stop="emits('other', 'phone')">
+          <icon name="i-icon:phone-icon" :size="32" />
         </div>
-        <div class="dark:color-[#fff] text-[12px]">
-          {{ item.title }}
+      </div>
+    </template>
+    <template v-if="props.status === 'phone'">
+      <div class="flex-center-col py-[24px] cursor-pointer">
+        <div class="wh-[32px] rounded-full flex-center-row" @click.stop="emits('other', 'wxwork')">
+          <icon name="i-svg:qwicon" :size="32" />
         </div>
       </div>
     </template>

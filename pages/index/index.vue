@@ -2,7 +2,9 @@
 useSeoMeta({
   title: '待办',
 })
-
+definePageMeta({
+  layout: 'nav',
+})
 const { myStoreTodaySale, myStoreTodayInventory, myStoreTodayPayment, getTargetStatistic } = homeDataStore()
 const { TodayInventory, todaySaleData, Payments, targetStatistic } = storeToRefs(homeDataStore())
 const { myStore } = storeToRefs(useStores())
@@ -46,7 +48,7 @@ onMounted(async () => {
 
 <template>
   <div>
-    <div class="p-[16px] bg-[#3875C5]">
+    <div class="p-[16px]">
       <common-layout-center>
         <div>
           <div class="flex items-center justify-between mb-[16px]">
@@ -64,11 +66,11 @@ onMounted(async () => {
       <common-layout-center>
         <div class="flex flex-col gap-[20px] px-[16px] pb-[120px]">
           <template v-if="myStore.id || myStore.id === ''">
-            <template v-if="Payments">
-              <summary-card-payment title="今日收支" :payments="Payments" @click-title="jump('/summary/cashflow')" />
-            </template>
             <template v-if="todaySaleData">
               <summary-card-sale :today-sale-data="todaySaleData" @click-title="jump('/summary/sale')" />
+            </template>
+            <template v-if="Payments">
+              <summary-card-payment title="今日收支" :payments="Payments" @click-title="jump('/summary/cashflow')" />
             </template>
             <template v-if="TodayInventory">
               <summary-card-inventory :today-inventory="TodayInventory" @click-title="jump('/summary/stock')" />

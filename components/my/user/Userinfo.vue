@@ -30,7 +30,7 @@ const emit = defineEmits<{
       </div>
     </div>
     <div class="cursor-pointer" @click="emit('logout')">
-      <icon name="i-svg:logout" :size="32" />
+      <icon name="i-icon:logout" :size="32" color="#3875C5" />
     </div>
   </div>
 </template>
