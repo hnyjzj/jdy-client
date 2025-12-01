@@ -400,7 +400,9 @@ const printFun = async () => {
         <template v-if="type === GoodsTypePure.ProductFinish">
           <div class="flex justify-center items-center mb-6">
             <n-input v-model:value="pCode" placeholder="输入成品条码" round @focus="focus" />
-            <icon class="ml-2" name="i-icon:scanit" :size="18" @click="scanit" />
+            <template v-if="checkEnv()">
+              <icon class="ml-2" name="i-icon:scanit" :size="18" @click="scanit" />
+            </template>
           </div>
         </template>
         <template v-else-if="type === GoodsTypePure.ProductOld">

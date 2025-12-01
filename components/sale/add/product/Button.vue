@@ -114,11 +114,13 @@ const openSearch = () => {
               <n-button type="info" round @click="search()">
                 搜索
               </n-button>
-              <div class="pl-[8px]">
-                <n-button strong secondary type="info" round @click="scanCode()">
-                  扫码
-                </n-button>
-              </div>
+              <template v-if="checkEnv()">
+                <div class="pl-[8px]">
+                  <n-button strong secondary type="info" round @click="scanCode()">
+                    扫码
+                  </n-button>
+                </div>
+              </template>
             </div>
           </div>
           <div class="grid-12 color-[#333] font-semibold !text-[14px]">
