@@ -82,7 +82,7 @@ const handleValidateButtonClick = async () => {
     <common-layout-center>
       <div>
         <div class="grid-12 color-[#fff]">
-          <div class="col-5 pb-[16px]">
+          <div class="col-5 pb-[16px]" uno-sm="col-3" uno-lg="col-2">
             <product-manage-company />
           </div>
         </div>

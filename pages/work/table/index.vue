@@ -208,7 +208,7 @@ const beforeUpload = (data: any) => {
     <div class="sticky top-0 z-4 search-bg bg-[#3875C5]">
       <common-layout-center>
         <div class="color-[#fff] py-[12px] flex justify-between px-4">
-          <product-manage-company />
+          <product-manage-company :is-white="true" />
           <div class="flex-1 px-2 sm:px-4 z-4">
             <product-filter-search @submit="searchListFn" />
           </div>
