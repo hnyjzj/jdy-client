@@ -209,12 +209,12 @@ const beforeUpload = (data: any) => {
       <common-layout-center>
         <div class="color-[#fff] py-[12px] flex justify-between px-4">
           <product-manage-company />
-          <div class="flex-1 px-2 sm:px-4">
+          <div class="flex-1 px-2 sm:px-4 z-4">
             <product-filter-search @submit="searchListFn" />
           </div>
           <auth-verify :min="UserLevel.IdentitySuperAdmin">
             <div
-              class="flex items-center justify-end cursor-pointer"
+              class="flex items-center justify-end cursor-pointer z-4"
               @click="set">
               <icon name="i-svg:setup" :size="14" color="#FFF" />
               <div class="text-[#fff] text-[14px] pl-1">
