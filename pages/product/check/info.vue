@@ -26,6 +26,7 @@ interface funBtn {
   text: string
   add?: boolean
   finish?: boolean
+  disabled?: boolean
 }
 
 const inputModel = ref(false)
@@ -49,18 +50,26 @@ const funbtns = ref<funBtn[]>([])
 // 获取按钮列表的函数
 function getFunBtn() {
   funbtns.value = [] // 清空按钮数组
-  // 根据状态添加按钮
+  // 如果当前用户在盘点人员列表中且状态为草稿，则添加取消盘点和开始盘点按钮
   if (checkInfo.value.inventory_person_ids?.indexOf(userinfo.id) !== -1 && checkInfo.value.status === CheckStatus.Draft) {
     funbtns.value.push({ status: CheckStatus.Cancel, text: '取消盘点' })
     funbtns.value.push({ status: CheckStatus.Checking, text: '开始盘点' })
   }
+  // 如果当前用户在盘点人员列表中且状态为盘点中，则添加结束盘点和添加产品按钮
   if (checkInfo.value.inventory_person_ids?.indexOf(userinfo.id) !== -1 && checkInfo.value.status === CheckStatus.Checking) {
     funbtns.value.push({ status: CheckStatus.ToBeVerified, text: '结束盘点', finish: true })
     funbtns.value.push({ status: CheckStatus.ToBeVerified, text: '添加产品', add: true })
   }
+  // 如果当前用户为审核人且状态为待验证，则添加异常和验证通过按钮
   if (checkInfo.value.inspector_id === userinfo.id && checkInfo.value.status === CheckStatus.ToBeVerified) {
     funbtns.value.push({ status: CheckStatus.Abnormal, text: '异常' })
-    funbtns.value.push({ status: CheckStatus.Checked, text: '验证通过' })
+    /** 盘亏大于0 只能设置异常状态 */
+    if ((checkInfo.value.loss_count ?? 0) > 0) {
+      funbtns.value.push({ status: CheckStatus.Checked, text: '验证通过', disabled: true })
+    }
+    else {
+      funbtns.value.push({ status: CheckStatus.Checked, text: '验证通过' })
+    }
   }
 }
 
@@ -151,6 +160,10 @@ function handleClick(item: funBtn) {
     confirmShow.value = true
     return
   }
+
+  if (item.status === CheckStatus.Checked && (checkInfo.value.loss_count ?? 0) > 0)
+    return $toast.error(`当前存在${checkInfo.value?.loss_count}个盘亏产品，请异常处理`)
+
   submitChange(item.status)
 }
 
@@ -692,7 +705,7 @@ function removeImg(data: { index: number }) {
     <template v-if="funbtns?.length && myStore.id === checkInfo.store_id">
       <div class="btn">
         <template v-for="(item, index) in funbtns" :key="index">
-          <button class="btntext cursor-pointer" @click="handleClick(item)">
+          <button class="btntext cursor-pointer" :style="item.disabled ? { background: '#CCCCCC' } : {}" @click="handleClick(item)">
             {{ item.text }}
           </button>
         </template>
