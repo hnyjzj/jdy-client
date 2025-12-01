@@ -220,8 +220,13 @@ const cols = [
     fixed: 'right',
     render(row: any) {
       return h(
-        NButton,
+        'span',
         {
+          style: {
+            color: '#0D6CE4',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           type: 'info',
           size: 'small',
           onClick: () => jump('/product/accessorie/enter/info', { id: row.id }),
@@ -252,64 +257,66 @@ const cols = [
     </product-filter>
     <!-- 小卡片组件 -->
     <common-layout-center>
-      <div class="pb-20 px-[16px]" uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+      <div class="pb-20 px-[16px] pt-4">
         <template v-if="EnterList?.length">
           <template v-if="showtype === 'list'">
-            <template v-for="(info, index) in EnterList" :key="index">
-              <common-card-list>
-                <template #status>
-                  <common-button-status :bg-color="getStatusStyle(info.status, EnterStatusColorMap).backgroundColor" :text="enterStatus[info.status]" />
-                </template>
-                <template #info>
-                  <div class=" text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                    <div class="py-[4px] flex justify-between">
-                      <div>入库单号</div>
-                      <div class="text-align-end">
-                        {{ info.id }}
+            <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+              <template v-for="(info, index) in EnterList" :key="index">
+                <common-card-list>
+                  <template #status>
+                    <common-button-status :bg-color="getStatusStyle(info.status, EnterStatusColorMap).backgroundColor" :text="enterStatus[info.status]" />
+                  </template>
+                  <template #info>
+                    <div class=" text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                      <div class="py-[4px] flex justify-between">
+                        <div>入库单号</div>
+                        <div class="text-align-end">
+                          {{ info.id }}
+                        </div>
+                      </div>
+                      <div class="py-[4px] flex justify-between">
+                        <div>备注</div>
+                        <div class="text-align-end">
+                          {{ info?.remark }}
+                        </div>
+                      </div>
+                      <div class="py-[4px] flex justify-between">
+                        <div>所属门店</div>
+                        <div class="text-align-end">
+                          {{ info.store?.name || '未知门店' }}
+                        </div>
+                      </div>
+                      <div class="py-[4px] flex justify-between">
+                        <div>入库数量</div>
+                        <div class="text-align-end">
+                          {{ info?.product_total }}
+                        </div>
+                      </div>
+                      <div class="py-[4px] flex justify-between">
+                        <div>操作人</div>
+                        <div class="text-align-end">
+                          {{ info?.operator?.nickname }}
+                        </div>
+                      </div>
+                      <div class="py-[4px] flex justify-between">
+                        <div>入库时间</div>
+                        <div class="text-align-end">
+                          {{ formatTimestampToDateTime(info?.created_at) }}
+                        </div>
                       </div>
                     </div>
-                    <div class="py-[4px] flex justify-between">
-                      <div>备注</div>
-                      <div class="text-align-end">
-                        {{ info?.remark }}
-                      </div>
+                  </template>
+                  <template #footer>
+                    <div class="flex-end">
+                      <common-button-rounded
+                        padding="4px 36px"
+                        content="详情" @button-click="jump('/product/accessorie/enter/info', { id: info.id })"
+                      />
                     </div>
-                    <div class="py-[4px] flex justify-between">
-                      <div>所属门店</div>
-                      <div class="text-align-end">
-                        {{ info.store?.name || '未知门店' }}
-                      </div>
-                    </div>
-                    <div class="py-[4px] flex justify-between">
-                      <div>入库数量</div>
-                      <div class="text-align-end">
-                        {{ info?.product_total }}
-                      </div>
-                    </div>
-                    <div class="py-[4px] flex justify-between">
-                      <div>操作人</div>
-                      <div class="text-align-end">
-                        {{ info?.operator?.nickname }}
-                      </div>
-                    </div>
-                    <div class="py-[4px] flex justify-between">
-                      <div>入库时间</div>
-                      <div class="text-align-end">
-                        {{ formatTimestampToDateTime(info?.created_at) }}
-                      </div>
-                    </div>
-                  </div>
-                </template>
-                <template #footer>
-                  <div class="flex-end">
-                    <common-button-rounded
-                      padding="4px 36px"
-                      content="详情" @button-click="jump('/product/accessorie/enter/info', { id: info.id })"
-                    />
-                  </div>
-                </template>
-              </common-card-list>
-            </template>
+                  </template>
+                </common-card-list>
+              </template>
+            </div>
             <common-page
               v-model:page="searchPage" :total="EnterListTotal" :limit="limits" @update:page="updatePage" />
           </template>

@@ -163,10 +163,16 @@ const cols = [
   {
     title: '操作',
     key: 'action',
+    fixed: 'right',
     render: (rowData: StatementRefundInfo) => {
       return h(
-        NButton,
+        'span',
         {
+          style: {
+            color: '#0D6CE4',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           type: 'info',
           size: 'small',
           onClick: () => {
@@ -175,7 +181,7 @@ const cols = [
             navigateTo(`/sale/sales/order?id=${rowData.order_id}`)
           },
         },
-        { default: () => '查看详情' },
+        { default: () => '详情' },
       )
     },
   },
@@ -193,9 +199,9 @@ const cols = [
         <product-manage-company @change="changeStores" />
       </template>
     </product-filter>
-    <template v-if="showtype === 'list'">
-      <common-layout-center>
-        <div class="p-[16px]">
+    <common-layout-center>
+      <div class="p-[16px]">
+        <template v-if="showtype === 'list'">
           <template v-if="statementReturnList.length">
             <sale-statement-return :info="statementReturnList" :where="ReturnfilterList" />
             <common-page v-model:page="searchPage" :total="statementRetrunListTotal" :limit="limits" @update:page="updatePage" />
@@ -203,18 +209,17 @@ const cols = [
           <template v-else>
             <common-emptys text="暂无数据" />
           </template>
-        </div>
-      </common-layout-center>
-    </template>
-    <template v-if="showtype === 'table'">
-      <template v-if="statementReturnList.length">
-        <common-datatable :columns="cols" :list="statementReturnList" :page-option="pageOption" :loading="tableLoading" />
-      </template>
-      <template v-else>
-        <common-emptys text="暂无数据" />
-      </template>
-    </template>
-
+        </template>
+        <template v-if="showtype === 'table'">
+          <template v-if="statementReturnList.length">
+            <common-datatable :columns="cols" :list="statementReturnList" :page-option="pageOption" :loading="tableLoading" />
+          </template>
+          <template v-else>
+            <common-emptys text="暂无数据" />
+          </template>
+        </template>
+      </div>
+    </common-layout-center>
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="ReturnfilterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #order_id>
         <n-input v-model:value="filterData.order_id" placeholder="请输入订单号" clearable size="large" />

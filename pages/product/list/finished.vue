@@ -185,32 +185,38 @@ const cols = [
         {
           style: {
             display: 'flex',
-            gap: '8px',
-            backgroundColor: '#fff',
+            gap: '10px',
+            fontWeight: 'bold',
           },
         },
         [
           h(
-            NButton,
+            'span',
             {
-              type: 'primary',
-              size: 'small',
+              style: {
+                color: '#41CF84',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+              },
               onClick: () => {
                 edit(rowData.code)
               },
             },
-            { default: () => '编辑' },
+            '编辑',
           ),
           h(
-            NButton,
+            'span',
             {
-              type: 'info',
-              size: 'small',
+              style: {
+                color: '#0D6CE4',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+              },
               onClick: () => {
                 goInfo(rowData)
               },
             },
-            { default: () => '详情' },
+            '详情',
           ),
         ],
       )
@@ -373,20 +379,22 @@ async function downloadEmptyImage() {
       </template>
     </product-filter>
     <!-- 列表 -->
-    <div class="pb-20">
-      <template v-if="finishedList?.length">
-        <template v-if="showtype === 'list'">
-          <product-list-main :is-finished="true" :product-list="finishedList" :filter-list="finishedFilterList" @edit="edit" @go-info="goInfo" />
-          <common-page
-            v-model:page="searchPage" :total="finishedListTotal" :limit="limits" @update:page="updatePage" />
+    <div class="pb-20 px-4 pt-4">
+      <common-layout-center>
+        <template v-if="finishedList?.length">
+          <template v-if="showtype === 'list'">
+            <product-list-main :is-finished="true" :product-list="finishedList" :filter-list="finishedFilterList" @edit="(code: any) => edit(code)" @go-info="(info: any) => goInfo(info)" />
+            <common-page
+              v-model:page="searchPage" :total="finishedListTotal" :limit="limits" @update:page="updatePage" />
+          </template>
+          <template v-else>
+            <common-datatable :columns="cols" :list="finishedList" :page-option="pageOption" :loading="tableLoading" />
+          </template>
         </template>
         <template v-else>
-          <common-datatable :columns="cols" :list="finishedList" :page-option="pageOption" :loading="tableLoading" />
+          <common-empty width="100px" />
         </template>
-      </template>
-      <template v-else>
-        <common-empty width="100px" />
-      </template>
+      </common-layout-center>
     </div>
     <common-loading v-model="isLoading" />
     <div class="z-9">

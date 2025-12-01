@@ -174,11 +174,15 @@ const cols = [
     render(row: any) {
       return h(
         'div',
-        { style: 'display: flex; justify-content: flex-end;' },
         [
           h(
-            NButton,
+            'span',
             {
+              style: {
+                color: '#0D6CE4',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+              },
               type: 'info',
               size: 'small',
               onClick: () => jump('/product/accessorie/info', { id: row.id }),
@@ -211,62 +215,64 @@ const cols = [
     </product-filter>
     <!-- 列表 -->
     <common-layout-center>
-      <div class="pb-20 px-[16px]" uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+      <div class="pb-20 px-[16px] pt-4">
         <template v-if="accessorieList?.length">
           <template v-if="showtype === 'list'">
-            <template v-for="(info, index) in accessorieList" :key="index">
-              <common-card-list>
-                <template #status>
-                  <common-button-status
-                    :bg-color="getStatusStyle(info.status, AllocateStatusColorMap).backgroundColor"
-                    :text="accessorieFilterList.status?.preset[info.status]"
-                  />
-                </template>
-                <template #info>
-                  <div class="text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                    <template v-for="(item, index) in accessorieFilterListToArray" :key="index">
-                      <template v-if="item.info">
-                        <div class="flex-between">
-                          <div>
-                            {{ item.label }}
-                          </div>
-                          <template v-if="item.name === 'store'">
-                            <div class="text-align-end val">
-                              {{ info[item.name].name }}
+            <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+              <template v-for="(info, index) in accessorieList" :key="index">
+                <common-card-list>
+                  <template #status>
+                    <common-button-status
+                      :bg-color="getStatusStyle(info.status, AllocateStatusColorMap).backgroundColor"
+                      :text="accessorieFilterList.status?.preset[info.status]"
+                    />
+                  </template>
+                  <template #info>
+                    <div class="text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                      <template v-for="(item, index) in accessorieFilterListToArray" :key="index">
+                        <template v-if="item.info">
+                          <div class="flex-between">
+                            <div>
+                              {{ item.label }}
                             </div>
-                          </template>
-                          <template v-else>
-                            <template v-if="item.type === 'date'">
+                            <template v-if="item.name === 'store'">
                               <div class="text-align-end val">
-                                {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
+                                {{ info[item.name].name }}
                               </div>
                             </template>
                             <template v-else>
-                              <template v-if="item.input === 'select'">
+                              <template v-if="item.type === 'date'">
                                 <div class="text-align-end val">
-                                  {{ item.preset[info[item.name] || 0] || '' }}
+                                  {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
                                 </div>
                               </template>
                               <template v-else>
-                                {{ info[item.name] }}
+                                <template v-if="item.input === 'select'">
+                                  <div class="text-align-end val">
+                                    {{ item.preset[info[item.name] || 0] || '' }}
+                                  </div>
+                                </template>
+                                <template v-else>
+                                  {{ info[item.name] }}
+                                </template>
                               </template>
                             </template>
-                          </template>
-                        </div>
+                          </div>
+                        </template>
                       </template>
-                    </template>
-                  </div>
-                </template>
-                <template #footer>
-                  <div class="flex-end">
-                    <common-button-rounded
-                      padding="4px 36px"
-                      content="详情" @button-click="jump('/product/accessorie/info', { id: info.id })"
-                    />
-                  </div>
-                </template>
-              </common-card-list>
-            </template>
+                    </div>
+                  </template>
+                  <template #footer>
+                    <div class="flex-end">
+                      <common-button-rounded
+                        padding="4px 36px"
+                        content="详情" @button-click="jump('/product/accessorie/info', { id: info.id })"
+                      />
+                    </div>
+                  </template>
+                </common-card-list>
+              </template>
+            </div>
             <common-page
               v-model:page="searchPage" :total="accessorieListTotal" :limit="limits" @update:page="updatePage" />
           </template>
