@@ -24,12 +24,12 @@ const props = withDefaults(defineProps<{
       <template v-if="props.labelColor">
         <div
           :style="{ color: props.labelColor, fontSize: props.font }"
-          class="dark:color-[#fff]">
+          class=" dark:color-[#fff]">
           {{ props.label }}
         </div>
       </template>
       <template v-else>
-        <div class="dark:color-[#fff]">
+        <div class="light:color-[#000] dark:color-[#fff]">
           {{ props.label }}
         </div>
       </template>

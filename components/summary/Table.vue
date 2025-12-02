@@ -162,7 +162,7 @@ const option = computed(() => {
         <n-data-table
           :style="{
             '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#224879',
-            '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#224879',
+            '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#09428b',
             '--n-merged-border-color': 'rgba(57,113,243,0.0)',
           }"
           :columns="props.title"
@@ -204,8 +204,5 @@ const option = computed(() => {
 }
 .bg {
   box-shadow: 0px 5px 20px 0px #0000000a;
-}
-:deep(.n-data-table .n-data-table-th) {
-  background-color: rgba(0, 0, 0, 0) !important;
 }
 </style>
