@@ -19,9 +19,9 @@ const delTips = (id: string) => {
         <common-card-list :title="item.name">
           <template #info>
             <div class="flex-1 py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-              <common-cell label-color="#000" label="别名" :value="item.alias" />
-              <common-cell label-color="#000" label="所属区域" :value="item.region?.name" />
-              <common-cell label-color="#000" label="联系电话" :value="item.phone" />
+              <common-cell label="别名" :value="item.alias" />
+              <common-cell label="所属区域" :value="item.region?.name" />
+              <common-cell label="联系电话" :value="item.phone" />
               <template v-if="item.staffs.length > 0">
                 <div class="flex-between min-h-[28px] pb-[4px]">
                   <div>

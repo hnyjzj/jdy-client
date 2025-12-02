@@ -17,7 +17,7 @@
 
 .body {
   position: relative;
-  --uno: 'bg-[#F4F9FD] dark:bg-[#1D2C60]';
+  --uno: 'bg-[#F4F9FD] dark:bg-[#0A113C]';
 
   &::after {
     content: '';

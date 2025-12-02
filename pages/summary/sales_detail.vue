@@ -40,11 +40,6 @@ model.value.end_time = time.end
 // 调用打印报表汇总数据的方法
 await PrintSattementTotal(model.value)
 
-StoreStaffList.value.unshift({
-  nickname: '全部',
-  id: '',
-} as StoresStaff)
-
 // 定义获取门店员工列表的方法
 const getStaff = async () => {
   // 调用获取门店员工列表的方法
@@ -124,16 +119,20 @@ watch(() => myStore.value.id, async (newVal) => {
 
 onMounted(() => {
   checkTime.value = new Date().toISOString()
+  StoreStaffList.value.unshift({
+    nickname: '全部',
+    id: '',
+  } as StoresStaff)
 })
 </script>
 
 <template>
   <div class="py-[20px] sm:grid-12">
     <div uno-sm="col-10 offset-1">
-      <div class="w-fit color-[#fff] pb-[12px]">
+      <div class="w-fit pb-[12px]">
         <product-manage-company @change="changeStore" />
       </div>
-      <div class="bg-[#fff] p-[12px] rounded-[12px]">
+      <div class="blur-bga text-color p-[12px] rounded-[12px]">
         <div style="border: 1px dashed #ccc;" class="p-[12px]  rounded-[12px]">
           <div>
             <n-form
@@ -171,7 +170,7 @@ onMounted(() => {
                   </n-form-item>
                 </div>
 
-                <div class="col-12" uno-sm="col-6" uno-lg="col-3">
+                <div class="col-12 " uno-sm="col-6" uno-lg="col-3">
                   <n-form-item>
                     <div class="flex justify-end  w-full">
                       <div class="bg-[#208AFF] hover:bg-[#0B57D0] color-[#fff] p-[6px] rounded-[6px] cursor-pointer mr-[20px]" @click="SearchResult">
@@ -194,7 +193,7 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-    .n-date-picker {
+.n-date-picker {
   width: 100%;
 }
 </style>

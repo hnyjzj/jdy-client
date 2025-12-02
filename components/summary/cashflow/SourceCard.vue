@@ -12,7 +12,10 @@ for (let i = 0; i < props.title.length; ++i) {
 </script>
 
 <template>
-  <div class="bg   rounded-[16px]  overflow-hidden mb-[16px]" data-allow-mismatch="style">
+  <div
+    :style="{
+      background: $colorMode.value === 'dark' ? '#1D2C60' : 'linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%)',
+    }" class="bg rounded-[16px]  overflow-hidden mb-[16px]" data-allow-mismatch="style">
     <div class="flex justify-between items-center pt-[12px] pb-[16px] px-[16px]">
       <div class="color-[#1A6DD8] flex gap-[6px] text-[16px] font-semibold line-height-[24px]">
         <img src="/images/icon/today-sale.png" class="wh-[24px]">
@@ -56,16 +59,12 @@ for (let i = 0; i < props.title.length; ++i) {
   /* 隐藏Webkit浏览器的滚动条 */
   display: none;
 }
-.skew-text {
-  display: flex;
-  align-items: flex-start;
-}
+
 .chart {
   width: 100%;
   height: 530px;
 }
 .bg {
-  background: linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%);
   box-shadow: 0px 5px 20px 0px #0000000a;
 }
 :deep(.n-data-table .n-data-table-th) {

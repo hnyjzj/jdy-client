@@ -93,7 +93,11 @@ watch([() => props.stockCategoryDate, chartBar, chartMode], updateChart)
 
 <template>
   <n-spin :show="props.loading" stroke="#fff" size="large">
-    <div class="mt-[16px] overflow-hidden bg">
+    <div
+      class="mt-[16px] overflow-hidden bg"
+      :style="{
+        background: $colorMode.value === 'dark' ? '#1D2C60' : 'linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%)',
+      }">
       <div class="w-[100%] flex justify-between items-center pb-[16px]">
         <div class="flex items-center gap-[6px] color-[#1A6DD8] font-semibold line-height-[24px] text-[16px]">
           <img src="/images/icon/today-sale.png" class="wh-[24px]">
@@ -131,7 +135,6 @@ watch([() => props.stockCategoryDate, chartBar, chartMode], updateChart)
       <template v-else>
         <n-data-table
           :style="{
-            '--n-merged-td-color-hover': '#DAEAFF',
             '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#224879',
             '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#224879',
             '--n-merged-border-color': 'rgba(57,113,243,0.0)',
