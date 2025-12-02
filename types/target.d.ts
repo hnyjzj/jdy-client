@@ -38,6 +38,7 @@ interface TargetGroup {
   id: string
   target_id: string
   update_at: string
+  personals: TargetPersonal[]
 }
 
 interface TargetPersonal {

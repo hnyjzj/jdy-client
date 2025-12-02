@@ -193,6 +193,7 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
       </common-gradient>
       <common-gradient title="销售目标详情">
         <template #body>
+          <!-- 分组 -->
           <template v-if="targetInfo.object === 1">
             <div v-for="(group, gIndex) in targetInfo.groups" :key="gIndex" class="mb-6">
               <div class="flex items-center gap-2 text-wrap flex-wrap">
@@ -206,7 +207,7 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
                   总完成：{{ getAuthority(statistics('achieved', group)) }}
                 </div>
                 <div class="text-xxl mb-2 whitespace-nowrap">
-                  完成率：{{ getAuthority(percent(statistics('achieved', group), `${statistics('purpose', group)}%`, 2)) }}
+                  完成率：{{ getAuthority(`${percent(statistics('achieved', group), statistics('purpose', group), 2)}%`) }}
                 </div>
               </div>
 
@@ -233,7 +234,7 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
                 </thead>
 
                 <tbody>
-                  <template v-for="(personal, pIndex) in targetInfo.personals" :key="pIndex">
+                  <template v-for="(personal, pIndex) in group.personals" :key="pIndex">
                     <template v-if="personal.group_id === group.id">
                       <tr>
                         <td class="px-4 py-2 border-b border-gray-100">
