@@ -47,7 +47,7 @@ function batchFun() {
 
 <style lang="scss" scoped>
 .box {
-  --uno: 'flex flex-col items-center w-[104px] h-[82px] rounded-[18px] bg-[rgba(255,255,255,1)] dark:bg-[rgba(0,0,0,0.3)]';
+  --uno: 'flex flex-col items-center w-[104px] h-[82px] rounded-[18px] bg-#F5F8FD dark:bg-[rgba(0,0,0,0.3)]';
 }
 .batch {
   --uno: 'flex justify-center items-center w-36px h-36px rounded-full mt-3';

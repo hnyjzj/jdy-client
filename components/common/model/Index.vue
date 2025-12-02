@@ -42,42 +42,43 @@ onBeforeUnmount (() => {
 
 <template>
   <div v-if="show" class="popup">
-    <div class="content">
-      <div class="top">
-        <div class="close" @click="close">
-          <icon name="i-icon:error" color="#fff" />
-        </div>
-        <div class="title">
-          <img class="title-img1" src="/images/model/title1.png" width="80">
-          <img class="title-img2" src="/images/model/title2.png" width="170">
-          <div class="title-content">
+    <div class="content border-rd-[12px_12px_0_0] blur-bgc">
+      <div class="flex justify-between items-center p-4">
+        <div class="flex items-center">
+          <div class="w-1 h-4 bg-[#1A6DD8] rounded-[4px] mr-2" />
+          <div class="text-[16px] font-bold text-[#1A6DD8]">
             {{ props.title }}
           </div>
         </div>
+        <div class="close text-color" @click="close">
+          <icon name="i-icon:error" />
+        </div>
       </div>
-      <div class="center">
+      <div class="center px-4">
         <div class="box">
           <slot />
-          <slot name="footer">
-            <div v-if="props.showCancel || props.showOk" class="bottom-fun">
-              <template v-if="props.showCancel">
-                <div
-                  class="cursor-pointer"
-                  :class="[props.showOk ? 'cancel-btn' : 'ok']"
-                  :style="{ marginRight: props.showOk ? '10px' : '0' }"
-                  @click="close"
-                >
-                  {{ props.cancelText }}
-                </div>
-              </template>
-              <template v-if="props.showOk">
-                <div class="ok cursor-pointer" @click="emits('confirm')">
-                  {{ props.confirmText }}
-                </div>
-              </template>
-            </div>
-          </slot>
         </div>
+      </div>
+      <div class="bottom">
+        <slot name="footer">
+          <div v-if="props.showCancel || props.showOk" class="bottom-fun">
+            <template v-if="props.showCancel">
+              <div
+                class="cursor-pointer"
+                :class="[props.showOk ? 'cancel-btn' : 'ok']"
+                :style="{ marginRight: props.showOk ? '10px' : '0' }"
+                @click="close"
+              >
+                {{ props.cancelText }}
+              </div>
+            </template>
+            <template v-if="props.showOk">
+              <div class="ok cursor-pointer" @click="emits('confirm')">
+                {{ props.confirmText }}
+              </div>
+            </template>
+          </div>
+        </slot>
       </div>
     </div>
   </div>
@@ -89,56 +90,24 @@ onBeforeUnmount (() => {
   background: rgba($color: #000, $alpha: 0.3);
   top: calc(0 - var(--navbar-height, 0px));
 
-  .center {
-    background: linear-gradient(to bottom, rgba(147, 211, 245, 1), transparent);
-  }
-
   .content {
     --uno: 'fixed left-0 right-0 bottom-0 sm:w-426px sm:translate-x-[-50%] sm:translate-y-[50%] sm:bottom-[50%] sm:left-[50%] ';
-
-    .top {
-      --uno: 'relative h-34px border-rd-[20px_20px_0_0]';
-      background: linear-gradient(to right, rgba(147, 211, 245, 1), rgba(56, 101, 252, 1));
-
-      .close {
-        --uno: 'absolute top-[10px] right-[20px] cursor-pointer';
-      }
-
-      .title {
-        &-img1 {
-          --uno: 'absolute bottom-0 z-[3]';
-        }
-
-        &-img2 {
-          --uno: 'z-[2] pl-[58px] absolute bottom-4px';
-        }
-
-        &-content {
-          --uno: 'absolute left-[82px] top-[6px] z-[9] text-[rgba(255,255,255,1)] font-bold';
-          transform: skewY(-4deg);
-          transform-origin: bottom left;
-        }
-      }
-    }
-
-    .box {
-      --uno: 'border-rd-[16px_0_0_0] dark:bg-[rgba(0,0,0,0.8)] sm:border-rd-[16px_0_16px_16px] px-[16px] py-[20px] bg-[#F1F5FE]';
-      margin-top: 0;
-      .bottom-fun {
-        --uno: 'flex-between pt-4';
-        border-top: rgba(230, 230, 232, 1) solid 1px;
-      }
-      .ok {
-        --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#fff] font-bold ';
-        background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-        box-shadow: rgba(57, 113, 243, 0.24) 0px 8px 8px 0;
-      }
-      .cancel-btn {
-        --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#1a6beb] font-bold';
-        background: #fff;
-        box-shadow: rgba(82, 130, 241, 0.24) 0px 8px 8px 0;
-      }
-    }
   }
+}
+.ok {
+  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#fff] font-bold ';
+  background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
+}
+.bottom-fun {
+  --uno: 'flex-between';
+}
+.cancel-btn {
+  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#1a6beb] font-bold';
+  border: 1px solid #3971f3;
+}
+
+.bottom {
+  --uno: 'px-4 py-3';
+  box-shadow: 0px -1px 15px 0px #0000001a;
 }
 </style>
