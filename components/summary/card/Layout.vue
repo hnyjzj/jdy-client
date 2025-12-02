@@ -5,7 +5,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   titleClick: []
 }>()
-
+const { $colorMode } = useNuxtApp()
 const CARD_CONFIGS = [
   { title: '今日销售', icon: '/images/icon/today-sale.png' },
   { title: '今日收支', icon: '/images/icon/today-receive.png' },
@@ -19,7 +19,12 @@ const getIconUrl = (title: string): string => {
 </script>
 
 <template>
-  <div class="rounded-[8px] px-[16px] py-[12px] bg">
+  <div
+    class="rounded-[8px] px-[16px] py-[12px] bg"
+    :style="{
+      background: $colorMode.value === 'dark' ? '#1D2C60' : 'linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%)',
+    }"
+  >
     <div class="flex flex-row justify-between items-center pb-[16px] ">
       <div class="flex gap-[6px]" @click="emit('titleClick')">
         <img :src="getIconUrl(props.title)" class="wh-[24px]">
@@ -38,7 +43,6 @@ const getIconUrl = (title: string): string => {
 
 <style lang="scss" scoped>
 .bg {
-  background: linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%);
   box-shadow: 0px 5px 20px 0px #0000000a;
 }
 </style>

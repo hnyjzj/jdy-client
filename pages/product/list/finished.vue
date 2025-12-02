@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { NButton } from 'naive-ui'
-
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 const { getFinishedList, getFinishedWhere, getFinishedListAll, updateFinishedCode, updateFinishedUpdata, findFinishedCode, getFinishedEmptyImage } = useFinished()
@@ -392,7 +390,7 @@ async function downloadEmptyImage() {
           </template>
         </template>
         <template v-else>
-          <common-empty width="100px" />
+          <common-empty width="100px" text="暂无数据" />
         </template>
       </common-layout-center>
     </div>

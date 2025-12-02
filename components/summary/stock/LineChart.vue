@@ -6,7 +6,6 @@ const props = defineProps<{
   title: string
   loading: boolean
 }>()
-
 // 图表 / 列表切换
 const chartMode = ref<'list' | 'chart'>('chart')
 
@@ -77,7 +76,11 @@ watch([() => props.date, trendKey], updateChart, { deep: true, immediate: true }
 
 <template>
   <n-spin :show="props.loading" stroke="#fff" size="large">
-    <div class="bg py-[12px] px-[16px] rounded-[8px] mt-[16px] overflow-hidden">
+    <div
+      :style="{
+        background: $colorMode.value === 'dark' ? '#1D2C60' : 'linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%)',
+      }"
+      class="bg py-[12px] px-[16px] rounded-[8px] mt-[16px] overflow-hidden">
       <div class="w-[100%] flex justify-between items-center  pb-[16px]">
         <div class="flex items-center gap-[6px] color-[#1A6DD8] font-semibold line-height-[24px] text-[16px]">
           <img src="/images/icon/today-sale.png" class="wh-[24px]">
@@ -148,7 +151,6 @@ watch([() => props.date, trendKey], updateChart, { deep: true, immediate: true }
   height: 300px;
 }
 .bg {
-  background: linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%);
   box-shadow: 0px 5px 20px 0px #0000000a;
 }
 </style>

@@ -124,7 +124,10 @@ watch(chartMode, (val) => {
 
 <template>
   <n-spin :show="props.loading" stroke="#fff" size="large">
-    <div class="mt-[16px] overflow-hidden bg">
+    <div
+      class="mt-[16px] overflow-hidden bg" :style="{
+        background: $colorMode.value === 'dark' ? '#1D2C60' : 'linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%)',
+      }">
       <div class="pb-[16px] w-[100%] flex justify-between items-center">
         <div class="flex items-center">
           <div class="flex pr-[6px] items-center gap-[6px] color-[#1A6DD8] font-semibold line-height-[24px] text-[16px]">
@@ -207,7 +210,6 @@ watch(chartMode, (val) => {
 }
 
 .bg {
-  background: linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%);
   box-shadow: 0px 5px 20px 0px #0000000a;
   padding: 12px 16px;
   border-radius: 8px;

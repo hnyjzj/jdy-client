@@ -123,7 +123,11 @@ const option = computed(() => {
 
 <template>
   <n-spin :show="props.loading" stroke="#fff" size="large">
-    <div class="bg pb-[16px] rounded-[16px] overflow-hidden mb-[16px]" data-allow-mismatch="style">
+    <div
+      :style="{
+        background: $colorMode.value === 'dark' ? '#1D2C60' : 'linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%)',
+      }"
+      class="bg pb-[16px] rounded-[16px] overflow-hidden mb-[16px]" data-allow-mismatch="style">
       <div>
         <div class="flex justify-between items-center pt-[12px] pb-[16px] px-[16px]">
           <div class="color-[#1A6DD8] flex gap-[6px] text-[16px] font-semibold line-height-[24px]" @click="emits('clickTitle')">
@@ -157,7 +161,6 @@ const option = computed(() => {
       <div v-if="toggleChart === 'list'" class="px-[16px]">
         <n-data-table
           :style="{
-            '--n-merged-td-color-hover': '#DAEAFF',
             '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#224879',
             '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#224879',
             '--n-merged-border-color': 'rgba(57,113,243,0.0)',
@@ -194,16 +197,12 @@ const option = computed(() => {
   /* 隐藏Webkit浏览器的滚动条 */
   display: none;
 }
-.skew-text {
-  display: flex;
-  align-items: flex-start;
-}
+
 .chart {
   width: 100%;
   height: 530px;
 }
 .bg {
-  background: linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%);
   box-shadow: 0px 5px 20px 0px #0000000a;
 }
 :deep(.n-data-table .n-data-table-th) {

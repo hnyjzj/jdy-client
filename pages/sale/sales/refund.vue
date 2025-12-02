@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { NButton } from 'naive-ui'
 // 销售明细列表
 useSeoMeta({
   title: '退货明细',
@@ -207,7 +206,7 @@ const cols = [
             <common-page v-model:page="searchPage" :total="statementRetrunListTotal" :limit="limits" @update:page="updatePage" />
           </template>
           <template v-else>
-            <common-emptys text="暂无数据" />
+            <common-empty text="暂无数据" />
           </template>
         </template>
         <template v-if="showtype === 'table'">
@@ -215,7 +214,7 @@ const cols = [
             <common-datatable :columns="cols" :list="statementReturnList" :page-option="pageOption" :loading="tableLoading" />
           </template>
           <template v-else>
-            <common-emptys text="暂无数据" />
+            <common-empty text="暂无数据" />
           </template>
         </template>
       </div>

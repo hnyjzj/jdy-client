@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { NButton } from 'naive-ui'
-
 useSeoMeta({
   title: '员工列表',
 })
@@ -222,7 +220,7 @@ const cols = [
               v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
           </template>
           <template v-else>
-            <common-emptys text="暂无数据" />
+            <common-empty text="暂无数据" />
           </template>
         </template>
         <template v-else>

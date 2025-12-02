@@ -13,8 +13,8 @@ const { regionList } = storeToRefs(useRegion())
       <common-card-list :title="item.name">
         <template #info>
           <div class="py-[8px]">
-            <common-cell label-color="#000" label="别名" :value="item.alias" />
-            <div class="flex-1 text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+            <common-cell label="别名" :value="item.alias" />
+            <div class="flex-1 text-size-[14px] line-height-[20px] light:text-black dark:text-[#FFF]">
               <template v-if="item.stores.length > 0">
                 <div class="flex-between min-h-[28px]">
                   <div>

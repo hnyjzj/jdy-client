@@ -118,14 +118,14 @@ const refundData = computed(() =>
 </script>
 
 <template>
-  <div>
+  <div class=" ">
     <div class="text-center text-[18px] font-semibold">
       销售报表
     </div>
     <div>
-      <common-cell :font="props.font" :label="`门店: ${props.store || '全部'}`" label-color="#000" :value="`开始时间: ${formatIsoToDateTime(props.start ?? '') || ''}`" val-color="#000" lcol="col-5" rcol="col-7" />
-      <common-cell :font="props.font" :label="`销售员: ${props.salesman || '全部'}`" label-color="#000" :value="`结束时间: ${formatIsoToDateTime(props.end ?? '') || ''}`" lcol="col-5" rcol="col-7" val-color="#000" />
-      <common-cell :font="props.font" :label="`打印人: ${userinfo.nickname || ''}${userinfo.phone || ''}`" label-color="#000" :value="`打印时间: ${formatIsoToDateTime(props.time ?? '')}`" lcol="col-5" rcol="col-7" val-color="#000" />
+      <common-cell :font="props.font" :label="`门店: ${props.store || '全部'}`" :value="`开始时间: ${formatIsoToDateTime(props.start ?? '') || ''}`" lcol="col-5" rcol="col-7" />
+      <common-cell :font="props.font" :label="`销售员: ${props.salesman || '全部'}`" :value="`结束时间: ${formatIsoToDateTime(props.end ?? '') || ''}`" lcol="col-5" rcol="col-7" />
+      <common-cell :font="props.font" :label="`打印人: ${userinfo.nickname || ''}${userinfo.phone || ''}`" :value="`打印时间: ${formatIsoToDateTime(props.time ?? '')}`" lcol="col-5" rcol="col-7" />
     </div>
     <div>
       <table class="w-full fixed-table" :style="{ 'font-size': props.font }">
@@ -409,8 +409,8 @@ const refundData = computed(() =>
   thead {
     tr {
       th {
-        border-top: 1px solid #000;
-        border-bottom: 1px solid #000;
+        --uno: 'border-t-1 light:border-t-solid light:border-t-black dark:border-t-solid dark:border-t-white';
+        --uno: 'border-b-1 light:border-b-solid light:border-b-black dark:border-b-solid dark:border-b-white';
         font-weight: normal;
       }
     }

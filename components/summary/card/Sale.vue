@@ -50,7 +50,9 @@ const toTodayPrice = () => {
             </template>
           </template>
         </div>
-        <div class="flex-grow-1 flex finished gap-[16px]  px-[16px] py-[8px] rounded-[8px] my-[16px]">
+        <div
+
+          class="flex-grow-1 flex finished gap-[16px]  px-[16px] py-[8px] rounded-[8px] my-[16px]">
           <icon name="i-svg:finished-salesmoney" class="wh-[46px] " />
           <div>
             <div class="color-[#808089] text-[14px] line-height-[24px] pb-[4px]">
@@ -81,10 +83,6 @@ const toTodayPrice = () => {
 ::-webkit-scrollbar {
   /* 隐藏Webkit浏览器的滚动条 */
   display: none;
-}
-.skew-text {
-  display: flex;
-  align-items: flex-start;
 }
 .finished {
   background: linear-gradient(92.3deg, #fefbff 49.62%, #f5e0ff 103.48%);
