@@ -91,7 +91,7 @@ const clickChange = async () => {
 <template>
   <div class="z-3">
     <div
-      class="py-[6px] px-[12px]  border-rd-full h-full flex-center-row  cursor-pointer"
+      class="py-[6px] px-[16px]  border-rd-full h-full flex-center-row  cursor-pointer"
       :style="{ background: 'transparent', color: props.isWhite ? '#fff' : '#000' }" @click="clickChange">
       <icon name="i-icon:location" :size="24" class="mr-[4px]" />
       <div class="store-name font-bold text-size-[14px] mr-[4px]">

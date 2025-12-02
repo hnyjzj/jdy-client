@@ -59,7 +59,7 @@ await setRadioValues()
 <template>
   <div>
     <common-layout-center>
-      <div class="pt-4 pb-22">
+      <div class="pt-4 pb-22 px-4">
         <div class="flex flex-col gap-4">
           <div class="rounded-6 bg-white w-auto blur-bga">
             <common-card-info title="新增销售目标">

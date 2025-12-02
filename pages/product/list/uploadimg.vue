@@ -165,19 +165,26 @@ async function uploadImg() {
 <template>
   <div>
     <common-layout-center>
+      <div class="blur-bgc">
+        <common-layout-center>
+          <div class="py-[12px] pr-4 flex justify-between">
+            <product-manage-company />
+            <div class="flex">
+              <div class="flex-1 px-2 sm:px-4">
+                <product-filter-search v-model:search-key="liveCode" placeholder="搜索条码" @submit="searchFun" />
+              </div>
+              <div
+                class="flex items-center justify-end cursor-pointer"
+                @click="scanCode()">
+                <icon class="ml-2" name="i-icon:scanit" :size="18" />
+              </div>
+            </div>
+          </div>
+        </common-layout-center>
+      </div>
+    </common-layout-center>
+    <common-layout-center>
       <div class="p-4">
-        <div class="color-[#fff] py-[12px] flex justify-between">
-          <product-manage-company />
-          <div class="flex-1 px-2 sm:px-4">
-            <product-filter-search v-model:search-key="liveCode" placeholder="搜索条码" @submit="searchFun" />
-          </div>
-          <div
-            class="flex items-center justify-end cursor-pointer"
-            @click="scanCode()">
-            <icon class="ml-2" name="i-icon:scanit" :size="18" />
-          </div>
-        </div>
-
         <template v-if="finishedInfo && statusCode === 200">
           <common-card-info title="上传图片">
             <template #info>

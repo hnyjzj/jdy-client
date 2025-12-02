@@ -102,11 +102,17 @@ function subtract(i: number, id: GoldPrices['id']) {
 
 <template>
   <div>
+    <div class="blur-bgc">
+      <common-layout-center>
+        <div class="grid-12 color-[#fff]">
+          <div class="col-5" uno-sm="col-3" uno-lg="col-2">
+            <product-manage-company />
+          </div>
+        </div>
+      </common-layout-center>
+    </div>
     <common-layout-center>
       <div class="mx-4 pt-4 pb-20">
-        <div class="mb-4 text-[#fff] max-w-[200px]">
-          <product-manage-company @change="getGoldPrice(myStore.id)" />
-        </div>
         <common-card-info title="金价历史">
           <template #info>
             <div class="blur-bgc rounded-[16px] cursor-pointer">
