@@ -11,14 +11,17 @@ const props = withDefaults(defineProps<{
   showRT: true,
   size: '100%',
   isShadow: true,
-  text: '',
+  text: '暂无数据~',
 })
 </script>
 
 <template>
   <div class="flex flex-col justify-center items-center py-[16px]">
     <div class="empty" :style="{ boxShadow: isShadow ? 'rgba(239, 242, 255, 1) 0 5px 20px 0' : 'none' }">
-      <img class="block h-auto" :src="props.img" :width="props.size">
+      <icon
+        name="i-svg:empty-list"
+        size="128"
+      />
     </div>
     <template v-if="props.text">
       <div class="font-size-[14px] color-[#606266] pt-[24px]">

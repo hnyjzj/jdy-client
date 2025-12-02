@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // 销售明细列表
-import { NButton } from 'naive-ui'
 
 useSeoMeta({
   title: '销售明细',
@@ -357,7 +356,7 @@ const exportExcel = async () => {
             <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
           </template>
           <template v-else>
-            <common-emptys text="暂无数据" />
+            <common-empty text="暂无数据" />
           </template>
         </template>
         <template v-else>

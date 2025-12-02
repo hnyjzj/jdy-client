@@ -157,7 +157,7 @@ const openSearch = () => {
               </div>
             </template>
             <template v-if="productList.length === 0">
-              <common-emptys text="暂无数据" />
+              <common-empty text="暂无数据" />
             </template>
           </div>
         </div>

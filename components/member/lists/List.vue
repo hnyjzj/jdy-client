@@ -97,7 +97,7 @@ const getStatusType = (status: number) => {
       </div>
     </template>
     <template v-else>
-      <common-emptys text="暂无数据" />
+      <common-empty text="暂无数据" />
     </template>
   </div>
 </template>

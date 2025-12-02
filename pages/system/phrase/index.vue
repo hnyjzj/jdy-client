@@ -174,7 +174,7 @@ const clearFn = async () => {
                   </div>
                 </template>
                 <template v-if="List.length === 0">
-                  <common-emptys />
+                  <common-empty />
                 </template>
                 <common-page v-model:page="page" :total="total" :limit="12" @update:page="updatePage" />
               </div>

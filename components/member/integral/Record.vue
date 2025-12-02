@@ -158,7 +158,7 @@ const absoluteValue = (value: number) => {
 
       <template v-else>
         <div class="pt-[160px] py-[32px]">
-          <common-emptys text="暂无数据" />
+          <common-empty text="暂无数据" />
         </div>
       </template>
     </div>

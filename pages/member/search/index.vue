@@ -76,7 +76,7 @@ onMounted(async () => {
             <member-lists-info :data="memberList[0]" :consumes="memberConsume" :showbottom="false" :show-detail="false" />
           </template>
           <template v-else>
-            <common-emptys />
+            <common-empty />
           </template>
         </div>
       </div>

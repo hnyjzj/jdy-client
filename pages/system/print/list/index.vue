@@ -193,7 +193,7 @@ const confirm = () => {
         </template>
 
         <template v-else>
-          <common-emptys />
+          <common-empty />
         </template>
       </div>
     </div>

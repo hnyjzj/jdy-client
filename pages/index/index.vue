@@ -90,7 +90,7 @@ onMounted(async () => {
             </template>
           </template>
           <template v-else>
-            <common-emptys text="暂未分配门店" />
+            <common-empty text="暂未分配门店" />
           </template>
         </div>
       </common-layout-center>

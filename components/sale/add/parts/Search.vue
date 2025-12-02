@@ -201,7 +201,7 @@ watch(showModal, (newVal) => {
         <!-- 空数据状态 -->
         <template v-if="partslist.length === 0 && !isLoading">
           <div class="py-[12px]">
-            <common-emptys />
+            <common-empty />
           </div>
         </template>
       </div>

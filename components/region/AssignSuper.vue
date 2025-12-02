@@ -50,7 +50,7 @@ const sex = (val: number) => {
           </template>
         </div>
         <template v-if="props.stores.length === 0">
-          <common-emptys text="暂未分配门店" />
+          <common-empty text="暂未分配门店" />
         </template>
       </n-tab-pane>
       <n-tab-pane name="chap2" tab="负责人">
@@ -111,7 +111,7 @@ const sex = (val: number) => {
           </template>
         </div>
         <template v-if="props.super.length === 0">
-          <common-emptys text="暂未分配负责人" />
+          <common-empty text="暂未分配负责人" />
         </template>
       </n-tab-pane>
       <n-tab-pane name="chap3" tab="员工">
@@ -173,7 +173,7 @@ const sex = (val: number) => {
           </template>
         </div>
         <template v-if="props.list.length === 0">
-          <common-emptys text="暂未分配员工" />
+          <common-empty text="暂未分配员工" />
         </template>
       </n-tab-pane>
       <n-tab-pane name="chap4" tab="管理员">
@@ -235,7 +235,7 @@ const sex = (val: number) => {
           </template>
         </div>
         <template v-if="props.admins.length === 0">
-          <common-emptys text="暂未分配管理员" />
+          <common-empty text="暂未分配管理员" />
         </template>
       </n-tab-pane>
     </n-tabs>

@@ -81,7 +81,7 @@ const formatGender = (val: number): string => {
       </template>
     </div>
     <template v-if="props.list.length === 0">
-      <common-emptys :text="`暂未分配${props.title}`" />
+      <common-empty :text="`暂未分配${props.title}`" />
     </template>
   </div>
 </template>

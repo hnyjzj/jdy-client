@@ -353,7 +353,7 @@ const processDate = (date: string) => {
           </template>
 
           <template v-else>
-            <common-emptys text="暂无消费记录" />
+            <common-empty text="暂无消费记录" />
           </template>
         </template>
       </common-card-info>
@@ -361,7 +361,7 @@ const processDate = (date: string) => {
   </template>
   <template v-else>
     <div class="col-12 flex flex-col gap-[16px] pt-[100px] py-[16px]" uno-lg="col-8 offset-2 pt-[200px]">
-      <common-emptys text="该会员信息有缺失！请前往编辑完善" />
+      <common-empty text="该会员信息有缺失！请前往编辑完善" />
     </div>
   </template>
   <template v-if="props.showbottom">

@@ -170,7 +170,7 @@ const complate = ref(0)
       </div>
     </template>
     <template v-else>
-      <common-emptys text="暂无数据" />
+      <common-empty text="暂无数据" />
     </template>
     <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
     <!-- 新增或更新门店弹窗 -->
