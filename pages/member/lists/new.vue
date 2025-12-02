@@ -50,19 +50,24 @@ const execute = async () => {
 
 <template>
   <div>
-    <common-layout-center>
-      <div
-        class="grid-12 py-[12px]">
-        <div class="col-4" uno-sm="col-3" uno-lg="col-2">
-          <product-manage-company />
+    <div class="blur-bgc">
+      <common-layout-center>
+        <div class="grid-12 color-[#fff]">
+          <div class="col-5" uno-sm="col-3" uno-lg="col-2">
+            <product-manage-company />
+          </div>
         </div>
-      </div>
-      <common-card-info title="会员归属">
-        <template #info>
-          <member-lists-new v-model:rely="memberParams" :staff-list="StoreStaffList" :get-staff-list="getStaff" />
-        </template>
-      </common-card-info>
-    </common-layout-center>
+      </common-layout-center>
+    </div>
+    <div class="p-4">
+      <common-layout-center>
+        <common-card-info title="会员归属">
+          <template #info>
+            <member-lists-new v-model:rely="memberParams" :staff-list="StoreStaffList" :get-staff-list="getStaff" />
+          </template>
+        </common-card-info>
+      </common-layout-center>
+    </div>
 
     <common-button-bottom confirm-text="确认新增" cancel-text="取消" @confirm="execute" @cancel="backtrack" />
   </div>
