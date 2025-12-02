@@ -65,14 +65,14 @@ const rules = ref<Rules<AccountReq>>({
         error,
         validate,
       }">
-      <div class="pb-[32px]">
+      <div class="pb-[48px]">
         <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
           <icon name="i-icon:login-user" size="24" />
           <input
             v-model="form.phone" class="input " type="text" placeholder="请输入手机号" :maxlength="11" @change="validate()">
-          <div class="error">
-            {{ error }}
-          </div>
+        </div>
+        <div class="error">
+          {{ error }}
         </div>
       </div>
     </template>
@@ -80,16 +80,16 @@ const rules = ref<Rules<AccountReq>>({
       #password="{
         error,
         validate }">
-      <div class="pb-[32px]">
+      <div class="pb-[48px]">
         <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
           <icon name="i-icon:login-password" size="24" />
           <input
             v-model="form.password"
             class="input "
             type="password" placeholder="请输入密码" @change="validate()" @blur="validate()">
-          <div class="error">
-            {{ error }}
-          </div>
+        </div>
+        <div class="error">
+          {{ error }}
         </div>
       </div>
     </template>
@@ -98,7 +98,7 @@ const rules = ref<Rules<AccountReq>>({
       #captcha="{
         error,
         validate }">
-      <div class="pb-[32px]">
+      <div class="pb-[48px]">
         <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
           <icon name="i-icon:login-code" size="24" />
           <input
