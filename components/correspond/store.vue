@@ -35,6 +35,7 @@ async function change(store: Stores) {
 
 async function confirm() {
   if (!changeStore.value) {
+    isGoChangestore.value = false
     return
   }
   try {

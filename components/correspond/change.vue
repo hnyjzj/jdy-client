@@ -24,7 +24,7 @@ async function changeStoer() {
     $toast.error('暂未分配门店')
   }
   myStoreList.value.forEach((item: Stores) => {
-    columns.value.push({ label: item.name, key: item.id })
+    columns.value.push({ label: `${item.name}  ${item.alias}`, key: item.id })
   })
 }
 const selectStore = ref()
@@ -48,7 +48,7 @@ function handleSelect(id: Stores['id']) {
         @click="changeStoer">
         <client-only>
           <div class="store-name font-bold text-size-[14px] mr-[4px]">
-            {{ selectStore?.name || myStore.name || '选择门店' }}
+            {{ `${myStore.name, myStore.alias}` || '选择门店' }}
           </div>
         </client-only>
         <icon name="i-icon:product-toggle" :size="24" />
