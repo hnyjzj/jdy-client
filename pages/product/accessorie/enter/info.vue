@@ -8,7 +8,6 @@ const { enterInfo, addProductEnterFilterList } = storeToRefs(useAccessorieEnter(
 const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
 const { myStore } = storeToRefs(useStores())
-const { hasStored } = useStores()
 
 useSeoMeta({ title: '入库单详情' })
 
@@ -28,14 +27,11 @@ const cancelDialog = ref(false)
 const finishDialog = ref(false)
 const loading = ref(false)
 const page = ref(1)
-const hasStore = ref(false)
 if (route.query.id) {
   enterId.value = route.query.id as string
   await fetchEnterInfo(true)
   await getAccessorieWhere()
   await getAccessorieEnterAddProductWhere()
-
-  hasStore.value = await hasStored(enterInfo.value.store_id)
 }
 
 /** 获取入库单详细信息 */
@@ -208,7 +204,7 @@ const updatePage = async (e: number) => {
         </template>
       </common-button-bottom>
     </template>
-    <template v-if="enterInfo.status === EnterStatus.Completed && hasStore">
+    <template v-if="enterInfo.status === EnterStatus.Completed && enterInfo.store_id === myStore.id">
       <common-button-one text="撤销入库" @confirm="cancelDialog = true" />
     </template>
     <common-loading v-model="loading" title="正在处理中" />
@@ -216,6 +212,7 @@ const updatePage = async (e: number) => {
     <common-confirm v-model:show="clearDialog" icon="error" title="清空列表" text="确认要清空所有入库的产品吗?" @submit="clearProduct" />
     <common-confirm v-model:show="cancelDialog" icon="error" title="撤销" text="确认要撤销入库单吗? 撤销后将不可进行其他操作" @submit="cancel" />
     <common-confirm v-model:show="finishDialog" icon="success" title="完成入库" text="确认要完成此入库单吗?" @submit="finish" />
+    <correspond-store :correspond-ids="[enterInfo.store_id]" />
   </div>
 </template>
 

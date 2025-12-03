@@ -387,7 +387,7 @@ onMounted(() => {
         </div>
       </template>
     </div>
-
+    <correspond-store :correspond-ids="[OrderDetail.store_id]" />
     <common-confirm
       v-model:show="payOrderShow"
       icon="warning"

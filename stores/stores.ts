@@ -77,19 +77,18 @@ export const useStores = defineStore('Store', {
       }
     },
     /**
-     * 判断当前门店与所需门店是否一致 否则需要切换
-     * @param id 门店
-     * @returns 是否需要切换
+     * 检查是否有权限操作指定门店ID数组中的任意一个门店。
      */
-    async hasStored(id?: string) {
-      if (!id)
-        return false
-
+    async hasStored(idArr: string[]) {
       if (!this.myStoreList?.length)
         await this.getMyStore()
-
-      /** 不相同 且所需门店在当前门店列表中 */
-      return id === this.myStore.id
+      if (idArr.length) {
+        // 用户所有门店的ID列表
+        const myStoreIds = this.myStoreList.map(store => store.id)
+        // 操作门店是否有任意一个门店在用户门店列表中
+        return idArr.some(storeId => myStoreIds.includes(storeId))
+      }
+      return false
     },
 
     // 创建门店
