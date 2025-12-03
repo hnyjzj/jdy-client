@@ -11,7 +11,7 @@ const emits = defineEmits<{
 const { $toast } = useNuxtApp()
 
 const { getMyStore } = useStores()
-const { myStoreList } = storeToRefs(useStores())
+const { myStoreList, myStore } = storeToRefs(useStores())
 const columns = ref()
 const getList = async () => await getMyStore()
 
@@ -48,7 +48,7 @@ function handleSelect(id: Stores['id']) {
         @click="changeStoer">
         <client-only>
           <div class="store-name font-bold text-size-[14px] mr-[4px]">
-            {{ `${selectStore.alias}` || '选择门店' }}
+            {{ `${selectStore.alias || myStore.alias}` || '选择门店' }}
           </div>
         </client-only>
         <icon name="i-icon:product-toggle" :size="24" />
