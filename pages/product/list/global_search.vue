@@ -70,18 +70,21 @@ onMounted(async () => {
     <common-layout-center>
       <div class="p-4">
         <div class="color-[#fff] py-[12px] flex justify-between">
-          <div class="flex-1 px-2 sm:px-4">
+          <div class="flex-1 sm:px-4">
             <product-filter-search v-model:search-key="liveCode" placeholder="搜索条码" @submit="searchFun" />
           </div>
           <div
-            class="flex items-center justify-end cursor-pointer"
+            class="flex items-center justify-end cursor-pointer text-[#1A6DD8]"
             @click="scanCode()">
-            <icon class="ml-2" name="i-icon:scanit" :size="18" />
+            <icon class="ml-2" name="i-icon:scanit" :size="24" />
           </div>
         </div>
 
         <template v-if="finishedInfo && statusCode === 200">
           <product-manage-info :info="finishedInfo" :filter-list="finishedFilterList" :filter-list-to-array="finishedFilterListToArray" />
+        </template>
+        <template v-else>
+          <common-empty text="暂无数据" />
         </template>
       </div>
     </common-layout-center>

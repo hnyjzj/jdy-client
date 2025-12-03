@@ -373,7 +373,9 @@ async function downloadEmptyImage() {
       @export="isExportModel = true"
     >
       <template #company>
-        <product-manage-company @change="changeStore" />
+        <div class="text-color">
+          <product-manage-company @change="changeStore" />
+        </div>
       </template>
     </product-filter>
     <!-- 列表 -->

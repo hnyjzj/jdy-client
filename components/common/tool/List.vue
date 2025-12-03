@@ -19,7 +19,7 @@ const changeListType = (type: 'list' | 'table') => {
 </script>
 
 <template>
-  <div class="flex-center-between gap-2 py-[16px]">
+  <div class="flex-center-between gap-2 pb-[16px]">
     <div class="flex items-center gap-[12px]">
       <div class="text-size-[14px] color-[#91929E] font-semibold">
         共 {{ props.total }} 条
