@@ -134,7 +134,7 @@ watch(showModal, (newVal) => {
       v-model="showModal" title="选择配件" :show-ok="true" :show-cancel="true" @confirm="confirmParts" @cancel=" () => {
         partslist = []
       }">
-      <div class="category-list max-h-[300px]" @scroll="handleScroll">
+      <div class="category-list max-h-[400px]" @scroll="handleScroll">
         <table class="w-full">
           <thead class="bg-[#F1F5FE] sticky top-0">
             <tr>

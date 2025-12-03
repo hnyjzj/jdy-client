@@ -311,7 +311,7 @@ const beforeUpload = (data: any) => {
     position: absolute;
     width: 100%;
     height: 180px;
-    top: 0;
+    top: -14px;
     right: 0;
     background-image: url('@/assets/icons/index-six.svg');
     background-repeat: no-repeat;

@@ -18,7 +18,6 @@
 .body {
   position: relative;
   --uno: 'bg-[#F4F9FD] dark:bg-[#0A113C]';
-
   &::after {
     content: '';
     position: absolute;
@@ -30,6 +29,7 @@
     // transform: translateX(-10%);
 
     background-color: #3875c5;
+
     clip-path: polygon(
       100% 0%,
       0% 0%,
@@ -64,7 +64,7 @@
     position: absolute;
     width: 100%;
     height: 180px;
-    top: 0;
+    top: -14px;
     right: 0;
     background-image: url('@/assets/icons/index-six.svg');
     background-repeat: no-repeat;
