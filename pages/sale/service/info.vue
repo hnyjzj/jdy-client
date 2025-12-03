@@ -10,10 +10,8 @@ const { getRepairOrderDetail, updateRepairOrder, uploadRepairOrderImg, refundRep
 const { repairOrderDetail, repairFilterList } = storeToRefs(useRepair())
 const { userinfo } = storeToRefs(useUser())
 const { myStore } = storeToRefs(useStores())
-const { hasStored } = useStores()
 const { $toast } = useNuxtApp()
 const route = useRoute()
-const hasStore = ref(false)
 
 const getDetail = async (val?: string) => {
   await getRepairOrderDetail({ id: val || (route.query.id as string) })
@@ -22,8 +20,6 @@ if (route.query.id) {
   await getDetail(route.query.id as string)
   await getMemberWhere()
   await getFinishedWhere()
-
-  hasStore.value = await hasStored(repairOrderDetail.value.store_id)
 }
 await getRepairOrderWhere()
 
@@ -91,7 +87,7 @@ const payOrder = async () => {
 
       <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === repairOrderDetail.status ">
         <template v-if="repairOrderDetail.cashier_id === userinfo.id">
-          <template v-if="hasStore">
+          <template v-if="repairOrderDetail.store_id === myStore.id">
             <common-button-bottom
               confirm-text="支付"
               cancel-text="撤销"
@@ -113,6 +109,9 @@ const payOrder = async () => {
         </template>
       </template>
     </div>
+    <template v-if="repairOrderDetail.store_id">
+      <correspond-store :correspond-ids="[repairOrderDetail.store_id]" />
+    </template>
   </div>
 </template>
 
