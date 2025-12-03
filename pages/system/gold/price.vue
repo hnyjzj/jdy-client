@@ -212,7 +212,6 @@ function subtract(i: number, id: GoldPrices['id']) {
 </template>
 
 <style>
-.no-radius .n-base-selection,
 .no-radius .n-base-tag {
   border-radius: 16px !important;
 }

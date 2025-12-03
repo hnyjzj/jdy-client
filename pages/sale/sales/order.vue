@@ -420,7 +420,5 @@ onMounted(() => {
 </template>
 
 <style>
-.n-base-selection {
-  border-radius: 8px;
-}
+
 </style>

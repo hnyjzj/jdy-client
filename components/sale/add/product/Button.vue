@@ -84,7 +84,7 @@ const openSearch = () => {
     </div>
     <common-model
       v-model="showModal" title="选择成品" :show-ok="true" :show-cancel="true" @confirm="confirm" @cancel="clearData()">
-      <div class="grid-12 h-[300px] overflow-y-scroll">
+      <div class="grid-12 h-[400px] overflow-y-scroll">
         <div class="col-12">
           <div>
             <div class="flex justify-start py-[12px]">

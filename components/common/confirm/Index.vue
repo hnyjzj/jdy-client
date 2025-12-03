@@ -110,7 +110,7 @@ const cancle = () => {
           </div>
         </template>
       </div>
-      <div class="flex gap-[16px] px-[16px] py-[12px] shadow-[0px_-1px_15px_0px_rgba(0,0,0,0.1)]">
+      <div class="flex justify-around gap-[16px] px-[16px] py-[12px] shadow-[0px_-1px_15px_0px_rgba(0,0,0,0.1)]">
         <div class="base cancle" @click="cancle">
           {{ props.cancelText }}
         </div>

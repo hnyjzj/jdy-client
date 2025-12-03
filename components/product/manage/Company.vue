@@ -100,8 +100,8 @@ const clickChange = async () => {
       <icon name="i-icon:product-toggle" :size="18" />
     </div>
     <template v-if="mask">
-      <div class="mask" uno-sm="flex justify-center items-center">
-        <div class="content w-full py-[12px] px-[16px] fixed bottom-0" uno-sm="w-394px relative">
+      <div class="mask " uno-sm="flex justify-center items-center">
+        <div class="content text-color blur-bgc w-full py-[12px] px-[16px] fixed bottom-0" uno-sm="w-394px relative">
           <div class=" flex justify-between items-center">
             <div class="flex-center-row gap-[6px]">
               <div class="w-[4px] h-[16px] rounded-2xl bg-[#1A6DD8]" />
@@ -109,7 +109,7 @@ const clickChange = async () => {
                 切换门店
               </div>
             </div>
-            <div class="color-[#333] hover:color-[#1A6DD8] cursor-pointer" @click.stop="mask = false">
+            <div class=" hover:color-[#1A6DD8] cursor-pointer" @click.stop="mask = false">
               <icon name="i-icon:close" :size="24" />
             </div>
           </div>
@@ -130,7 +130,12 @@ const clickChange = async () => {
             <template v-if="filteredColumns.length">
               <template v-for="item in filteredColumns" :key="item.key">
                 <div
-                  class="py-[12px] px-[16px] color-[#333]  border-b border-b-[#e5e5e5] border-b-solid cursor-pointer hover:bg-[#f5f5f5] hover:rounded-[8px]"
+                  class="py-[12px] px-[16px]
+                   border-b border-b-[#e5e5e5]
+                   border-b-solid cursor-pointer
+                    light:hover:bg-[#f5f5f5]
+                    dark:hover:bg-[#1C3A62]
+                    hover:rounded-[4px]"
                   @click="handleSelect(item.key)">
                   {{ item.label }}
                 </div>
@@ -192,7 +197,7 @@ const clickChange = async () => {
 
   z-index: 4;
   .content {
-    --uno: 'bg-#fff rounded-[8px]';
+    --uno: ' rounded-[8px]';
   }
 }
 </style>
