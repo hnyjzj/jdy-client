@@ -275,7 +275,7 @@ const cols = [
         { style: 'display: flex; gap: 8px;' },
         [
           h(
-            'sapn',
+            'span',
             {
               style: {
                 color: '#0D6CE4',
@@ -298,22 +298,20 @@ const cols = [
 <template>
   <div>
     <!-- 筛选 -->
-    <div id="header" class="sticky top-0 bg-[#3875C5] z-1">
-      <product-filter
-        v-model:search-key="searchKey"
-        v-model:showtype="showtype"
-        :product-list-total="checkTotal"
-        placeholder="搜索盘点单号"
-        @filter="openFilter"
-        @change-card="changeCard"
-        @search="search"
-        @clear-search="clearSearch"
-      >
-        <template #company>
-          <product-manage-company @change="changeMyStore" />
-        </template>
-      </product-filter>
-    </div>
+    <product-filter
+      v-model:search-key="searchKey"
+      v-model:showtype="showtype"
+      :product-list-total="checkTotal"
+      placeholder="搜索盘点单号"
+      @filter="openFilter"
+      @change-card="changeCard"
+      @search="search"
+      @clear-search="clearSearch"
+    >
+      <template #company>
+        <product-manage-company @change="changeMyStore" />
+      </template>
+    </product-filter>
     <!-- 小卡片组件 -->
     <common-layout-center>
       <div class="px-[16px] pb-20 pt-4">
