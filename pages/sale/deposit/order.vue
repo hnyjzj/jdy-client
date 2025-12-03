@@ -65,7 +65,7 @@ const submitCancel = async () => {
 
       <template v-if=" OrderDetail.status === DepositOrderStatus.PendingPayment">
         <template v-if="OrderDetail.cashier_id === userinfo.id ">
-          <template v-if="OrderDetail.store_id === myStore.id">
+          <template v-if="OrderDetail.store_id === myStore?.id">
             <common-button-bottom
               confirm-text="支付"
               cancel-text="撤销"

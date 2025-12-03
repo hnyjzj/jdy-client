@@ -8,17 +8,24 @@ const { myStoreList, myStore } = storeToRefs(useStores())
 /** 是否要切换选择门店 */
 const isGoChangestore = ref(false)
 
-if (props.correspondIds?.length) {
-  // 是否有该门店的权限
-  const isPermissions = await hasStored(props.correspondIds)
-  /**
-   * 单门店不参与切换门店的操作 因为默认第一个门店会自动切换到该门店
-   * 有权限并且当前门店不是需操作的门店
-   */
-  if (myStoreList.value.length !== 1 && isPermissions && !props.correspondIds.filter(Boolean).includes(myStore?.value?.id)) {
-    isGoChangestore.value = true
+onMounted(async () => {
+  if (props.correspondIds?.length) {
+    try {
+      // 是否有该门店的权限
+      const isPermissions = await hasStored(props.correspondIds)
+      /**
+       * 单门店不参与切换门店的操作 因为默认第一个门店会自动切换到该门店
+       * 有权限并且当前门店不是需操作的门店
+       */
+      if (myStoreList.value.length !== 1 && isPermissions && !props.correspondIds.filter(Boolean).includes(myStore?.value?.id)) {
+        isGoChangestore.value = true
+      }
+    }
+    catch (error) {
+      console.error('切换门店失败:', error)
+    }
   }
-}
+})
 
 const changeStore = ref()
 
@@ -27,10 +34,16 @@ async function change(store: Stores) {
 }
 
 async function confirm() {
-  if (changeStore.value) {
-    await switchStore(changeStore.value)
+  if (!changeStore.value) {
+    return
   }
-  isGoChangestore.value = false
+  try {
+    await switchStore(changeStore.value)
+    isGoChangestore.value = false
+  }
+  catch (error) {
+    console.error('切换门店失败:', error)
+  }
 }
 </script>
 
