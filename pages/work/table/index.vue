@@ -205,11 +205,14 @@ const beforeUpload = (data: any) => {
 
 <template>
   <div class="">
-    <div class="sticky top-0 z-4 search-bg bg-[#3875C5]">
+    <div class="sticky top-0 z-4 search-bg bg-[#3875C5] pb-2">
       <common-layout-center>
-        <div class="color-[#fff] py-[12px] flex justify-between px-4">
+        <div class="flex justify-between">
           <product-manage-company :is-white="true" />
-          <div class="flex-1 px-2 sm:px-4 z-4">
+          <div />
+        </div>
+        <div class="color-[#fff] flex justify-between px-4">
+          <div class="flex-1 pr-3 sm:px-4 z-1">
             <product-filter-search @submit="searchListFn" />
           </div>
           <auth-verify :min="UserLevel.IdentitySuperAdmin">
@@ -228,7 +231,7 @@ const beforeUpload = (data: any) => {
     <common-layout-center>
       <div class="pb-10 px-2">
         <!-- 工作台入口 -->
-        <div class="mt-2 mb-14 col-12">
+        <div class="mb-14 col-12">
           <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="(id) => { deleteDialog = true;deleteId = id }" @update="updateBench" @fold="fold" @change-page="changePage" />
           <template v-if="isSetup">
             <button style="all: unset;">
