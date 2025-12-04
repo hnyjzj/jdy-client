@@ -55,15 +55,14 @@ const confirm = () => {
 <style lang="scss" scoped>
 .btn {
   --uno: 'fixed bottom-0 left-0 right-0 blur-bgc p-[12px_16px] text-[16px] font-bold ';
-  border-top: rgba(230, 230, 232, 1) solid 1px;
+  box-shadow: 0px -1px 15px 0px #0000001a;
   &-left {
-    box-shadow: 0px 6px 6px rgba(110, 166, 255, 0.3);
-    --uno: 'text-[16px]  py-[8px] border-none flex-1 text-center rounded-[36px] mr-[8px]';
+    --uno: 'text-[16px]  bg-transparent  py-[8px] border-none flex-1 text-center rounded-[36px] mr-[8px] text-#3971f3';
+    border: 1px solid #3971f3;
   }
 
   &-right {
     background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-    box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
     --uno: 'text-[16px] py-[8px] border-none flex-1 rounded-[36px] ml-[8px] text-[#FFFFFF]';
   }
 }

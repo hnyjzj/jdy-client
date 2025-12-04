@@ -16,7 +16,7 @@ const confirm = () => {
 <template>
   <div class="bottom">
     <common-layout-center>
-      <button class="btn cursor-pointer w-100%" @click="confirm">
+      <button class="btn cursor-pointer w-[100%]" @click="confirm">
         {{ props.text }}
       </button>
     </common-layout-center>
@@ -26,10 +26,10 @@ const confirm = () => {
 <style lang="scss" scoped>
 .bottom {
   --uno: 'fixed bottom-0 left-0 right-0 blur-bga p-[12px_16px] text-[16px] font-bold';
+  box-shadow: 0px -1px 15px 0px #0000001a;
 
   .btn {
     background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-    box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
     --uno: 'text-[16px] py-[8px] border-none flex-1 rounded-[36px] text-[#FFFFFF]';
   }
 }

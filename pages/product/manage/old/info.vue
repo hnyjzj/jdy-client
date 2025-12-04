@@ -78,5 +78,6 @@ async function convert(type: ProductFinisheds['type']) {
 
 .bottom {
   --uno: 'fixed bottom-0 left-0 right-0 blur-bgc';
+  box-shadow: 0px -1px 15px 0px #0000001a;
 }
 </style>
