@@ -8,6 +8,7 @@ const props = withDefaults(defineProps<{
   bgc?: string
   margin?: string
   full?: boolean
+  border?: string
 }>(), {
   color: '',
   padding: '',
@@ -30,6 +31,7 @@ const handleClick = () => {
         background: props.bgc ? props.bgc : 'linear-gradient(#1A6BEB, #6EA6FF)',
         padding: props.padding ? props.padding : '8px 16px',
         margin: props.margin,
+        border: props.border,
       }"
       @click="handleClick"
     >
