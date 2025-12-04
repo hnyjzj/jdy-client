@@ -207,7 +207,7 @@ const beforeUpload = (data: any) => {
   <div class="">
     <div class="sticky top-0 z-4 search-bg bg-[#3875C5] pb-2">
       <common-layout-center>
-        <div class="flex justify-between">
+        <div class="flex justify-between pt-2">
           <product-manage-company :is-white="true" />
           <div />
         </div>
