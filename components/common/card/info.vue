@@ -35,7 +35,7 @@ const props = defineProps<{
       </div>
     </div>
 
-    <div class="py-2">
+    <div class="py-2" style="">
       <slot name="info" />
     </div>
 

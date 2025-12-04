@@ -224,7 +224,7 @@ const canShowFilter = (item: FilterWhere<Check>) => {
 <style lang="scss" scoped>
 .footer {
   .left {
-    --uno: 'text-[16px] bg-transparent py-[10px] border-none text-center rounded-[36px] mr-[8px] text-color';
+    --uno: 'text-[16px] bg-transparent py-[6px] border-none text-center rounded-[36px] mr-[8px] text-#3971f3';
     border: 1px solid #3971f3;
   }
 
