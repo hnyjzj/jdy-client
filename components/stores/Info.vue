@@ -43,7 +43,7 @@ const deleteConfirm = async () => {
 
 <template>
   <div class="w-full">
-    <div class="w-auto bg-white blur-bga rounded-[24px] border-solid border-[#EFF0F6] col-12 overflow-hidden">
+    <div class="w-auto blur-bga rounded-[24px] col-12 overflow-hidden">
       <div class="rounded-[24px]">
         <common-card-info title="基本信息">
           <template #info>
@@ -57,14 +57,13 @@ const deleteConfirm = async () => {
               <n-form-item path="phone" label="联系电话">
                 <n-input v-model:value="modelRef.phone" @keydown.enter.prevent />
               </n-form-item>
-
               <div class="flex items-center justify-between">
                 <div class="cursor-pointer flex gap-[6px]" @click="delStore()">
                   <icon name="i-svg:delete" :size="16" />
                   <span class="color-[#F82F2F]">删除</span>
                 </div>
                 <div class="cursor-pointer flex gap-[6px] light:color-[#1A6DD8] dark:color-[#fff]" @click="handleValidateButtonClick">
-                  <icon name="i-svg:save-btn" :size="16" class="light:fill-[#1A6DD8] dark:fill-[#fff]" />
+                  <icon name="i-icon:save-btn" :size="18" class="light:color-[#1A6DD8] dark:color-[#fff]" />
                   保存
                 </div>
               </div>

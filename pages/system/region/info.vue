@@ -11,15 +11,17 @@ if (route.query.id) {
 </script>
 
 <template>
-  <div class="pt-4">
+  <div class="p-[16px]">
     <common-layout-center>
-      <region-info />
-      <region-assign-super
-        :stores="regionDetails.stores"
-        :list="regionDetails.staffs"
-        :super="regionDetails.superiors"
-        :admins="regionDetails.admins"
-      />
+      <div>
+        <region-info />
+        <region-assign-super
+          :stores="regionDetails.stores"
+          :list="regionDetails.staffs"
+          :super="regionDetails.superiors"
+          :admins="regionDetails.admins"
+        />
+      </div>
     </common-layout-center>
   </div>
 </template>
