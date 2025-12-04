@@ -13,7 +13,7 @@ const props = defineProps<{
   <div
     class="px-[16px] mb-4 rounded-2 blur-bgc card-shaow">
     <div
-      class="flex justify-between items-center py-[8px] text-color line-color-b"
+      class="flex justify-between items-center py-3 text-color line-color-b"
     >
       <div>
         <slot name="avatar" />
