@@ -42,7 +42,7 @@ onBeforeUnmount (() => {
 
 <template>
   <div v-if="show" class="popup">
-    <div class="content border-rd-[12px_12px_0_0] blur-bgc">
+    <div class="content border-rd-[12px_12px_0_0] sm:rounded-[12px] blur-bgc">
       <div class="flex justify-between items-center p-4">
         <div class="flex items-center">
           <div class="w-1 h-4 bg-[#1A6DD8] rounded-[4px] mr-2" />
