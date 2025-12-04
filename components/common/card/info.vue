@@ -11,7 +11,7 @@ const props = defineProps<{
 
 <template>
   <div
-    class="p-3 rounded-2 blur-bgc">
+    class="p-3 pb-2 mb-4 rounded-2 blur-bgc">
     <div
       class="flex justify-between items-center pb-2"
     >
@@ -35,7 +35,7 @@ const props = defineProps<{
       </div>
     </div>
 
-    <div class="py-2" style="">
+    <div class="pt-2" :style="{ paddingBottom: $slots.footer ? '8px' : '0' }">
       <slot name="info" />
     </div>
 
