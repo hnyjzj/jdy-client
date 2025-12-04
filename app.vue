@@ -100,9 +100,13 @@ const themeOverrides: GlobalThemeOverrides = {
     borderChecked: '1px solid #3971F3',
   },
   Tabs: {
-    tabTextColorActiveLine: '#0068ff', // 激活标签颜色
-    barColor: '#0068ff', // 激活标签条颜色
-    tabTextColorHoverLine: '#0068ff', // 悬停标签颜色
+    tabBorderRadius: '26px', // 标签圆角
+    colorSegment: '#E6EDF5', // 标签背景颜色
+    tabTextColorActiveSegment: '#fff', // 激活标签颜色
+    tabTextColorHoverSegment: '#000', // 悬停标签颜色
+    tabColorSegment: '#1A6DD8', // 激活标签颜色
+    tabTextColorActiveBar: '#fff', // 激活标签颜色
+    tabTextColorActiveCard: '#fff', // 悬停标签颜色
   },
   Table: {
     position: 'relative',
@@ -167,9 +171,13 @@ const darkThemeOverrides: GlobalThemeOverrides = {
     borderChecked: '1px solid #3971F3',
   },
   Tabs: {
-    tabTextColorActiveLine: '#0068ff', // 激活标签颜色
-    barColor: '#0068ff', // 激活标签条颜色
-    tabTextColorHoverLine: '#0068ff', // 悬停标签颜色
+    tabBorderRadius: '26px', // 标签圆角
+    colorSegment: '#1D2C60', // 标签背景颜色
+    tabTextColorActiveSegment: '#fff', // 激活标签颜色
+    tabTextColorHoverSegment: '#fff', // 悬停标签颜色
+    tabColorSegment: '#1A6DD8', // 激活标签颜色
+    tabTextColorActiveBar: '#fff', // 激活标签颜色
+    tabTextColorHoverCard: '#fff', // 悬停标签颜色
   },
   Table: {
     position: 'relative',

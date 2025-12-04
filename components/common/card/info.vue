@@ -41,8 +41,7 @@ const props = defineProps<{
 
     <template v-if="$slots.footer">
       <div
-        class="pt-2"
-        style="border-top:1px solid #E6E6E8;"
+        class="pt-2 line-color-t"
       >
         <slot name="footer" />
       </div>
