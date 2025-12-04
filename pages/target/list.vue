@@ -187,8 +187,9 @@ async function delTarget() {
                   <div />
                 </template>
                 <template v-else>
-                  <div class="cursor-pointer pl-[16px]" @click="delDialog = true;comingDelId = info.id">
+                  <div class="cursor-pointer flex items-center gap-[6px]" @click="delDialog = true;comingDelId = info.id">
                     <icon name="i-svg:delete" :size="16" />
+                    <span class="color-[#F82F2F]">删除</span>
                   </div>
                 </template>
                 <div class="flex-end text-size-[14px]">

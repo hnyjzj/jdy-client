@@ -19,6 +19,21 @@ onMounted(() => {
 onBeforeUnmount(() => {
   stop()
 })
+
+const unit = (value: string) => {
+  if (value.includes('件数')) {
+    return '件'
+  }
+  if (value.includes('金额')) {
+    return '元'
+  }
+  if (value.includes('笔数')) {
+    return '笔'
+  }
+  if (value.includes('金重')) {
+    return 'g'
+  }
+}
 </script>
 
 <template>
@@ -29,7 +44,7 @@ onBeforeUnmount(() => {
           <template v-for="(item, key) in props.payments" :key="key">
             <div class="w-[1/4] col-3">
               <div class="color-[#333] dark:color-[#fff] font-semibold pb-[6px] line-height-[24px] text-center">
-                <span class="text-[20px]">{{ item }}</span>
+                <span class="text-[20px]">{{ item }} <span class="text-[12px] font-normal">{{ unit(key) }}</span> </span>
               </div>
               <div class="text-center">
                 <div class="color-[#808089] dark:color-[#fff]  text-[12px]  line-height-[24px] ">

@@ -162,13 +162,14 @@ const clearFn = async () => {
                   </div>
                 </template>
                 <template v-for="(item, index) in List" :key="index">
-                  <div class="py-[6px] px-[6px] bg-[rgb(247,247,247)] mb-[12px] rounded-[8px] relative cursor-pointer" @click="editText(item)">
+                  <div class="flex justify-between  py-[6px] px-[6px] bg-[rgb(247,247,247)] mb-[12px] rounded-[8px] relative cursor-pointer" @click="editText(item)">
                     <div>
                       {{ item.content }}
                     </div>
                     <template v-if="editStatus">
-                      <div class="wh-[30px] flex justify-center items-center cursor-pointer absolute right-0 bottom-0">
-                        <icon name="i-svg:delete" :size="16" @click.stop="delProduct(item)" />
+                      <div class="flex justify-center items-center gap-[6px] cursor-pointer" @click.stop="delProduct(item)">
+                        <icon name="i-svg:delete" :size="16" />
+                        <span class="color-[#F82F2F]">删除</span>
                       </div>
                     </template>
                   </div>

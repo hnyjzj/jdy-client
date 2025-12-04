@@ -70,10 +70,12 @@ export default defineConfig({
     'flex-center-between': 'flex flex-row items-center justify-between',
     'flex-col-between': 'flex flex-col justify-between',
     'grid-12': 'grid grid-cols-12',
-    'blur-bgc': 'light:bg-[#FFF] dark:bg-[#1D2C60]', // 毛玻璃背景色
-    'blur-bga': 'light:bg-#FFF dark:bg-[#1D2C60]',
+    'blur-bgc': 'light:bg-[#FDFDFD] dark:bg-[#1D2C60]', // 毛玻璃背景色
+    'blur-bga': 'light:bg-#FDFDFD dark:bg-[#1D2C60]',
     'text-color': 'text-[rgb(0,0,0)] dark:text-[rgb(255,255,255)]',
     'text-color-light': 'text-[#666666] dark:text-[#CBCDD1]',
+    'line-color-b': 'border-b light:border-b-[#e5e5e5] dark:border-b-[#808089] border-b-solid',
+    'line-color-t': 'border-t light:border-t-[#e5e5e5] dark:border-t-[#808089] border-t-solid',
     /** 单行超出隐藏 */
     'text-row-hide': 'whitespace-nowrap overflow-hidden text-ellipsis',
   },

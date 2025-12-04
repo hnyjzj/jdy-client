@@ -91,9 +91,10 @@ const deleteConfirm = () => {
                 </n-grid>
                 <div class="flex justify-between items-center">
                   <div
-                    class="p-[8px] col-2 flex-center-row cursor-pointer"
+                    class="p-[8px] col-2 flex-center-row cursor-pointer gap-[6px]"
                     @click="deleteParts(ix)">
                     <icon name="i-svg:delete" :size="16" />
+                    <span class="color-[#F82F2F]">删除</span>
                   </div>
                 </div>
               </div>

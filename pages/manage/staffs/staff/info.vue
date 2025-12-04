@@ -46,8 +46,9 @@ const delStaff = () => {
       <common-card-info title="员工详情">
         <template #status>
           <div class="flex items-center gap-[12px]">
-            <div class="cursor-pointer" @click="delStaff()">
+            <div class="cursor-pointer flex gap-[6px]" @click="delStaff()">
               <icon name="i-svg:delete" :size="16" />
+              <span class="color-[#F82F2F]">删除</span>
             </div>
             <div class="px-[12px] py-[6px] bg-[#2B78EF] color-[#fff] rounded-[12px] text-[14px] cursor-pointer" @click="toEdit()">
               编辑

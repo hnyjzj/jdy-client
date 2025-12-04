@@ -69,7 +69,7 @@ const absoluteValue = (value: number) => {
   <div class="grid-12">
     <div class="col-12 gap-[20px]" uno-lg="col-8 offset-2">
       <template v-if="props.data.length">
-        <div class="grid grid-cols-1 gap-[16px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
+        <div class="grid grid-cols-1 gap-x-[16px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
           <template v-for="(item, index) in props.data" :key="index">
             <common-card-info :title="cutOut(item.created_at)">
               <template #info>

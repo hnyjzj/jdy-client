@@ -17,7 +17,7 @@
 
 .body {
   position: relative;
-  --uno: 'bg-[#F4F9FD] dark:bg-[#0A113C]';
+  --uno: 'bg-[#F5F6F9] dark:bg-[#0A113C]';
   &::after {
     content: '';
     position: absolute;
@@ -25,11 +25,7 @@
     height: 180px;
     top: 0;
     left: 0;
-    // border-radius: 0 0 22% 22%;
-    // transform: translateX(-10%);
-
     background-color: #3875c5;
-
     clip-path: polygon(
       100% 0%,
       0% 0%,

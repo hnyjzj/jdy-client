@@ -8,7 +8,7 @@ const { regionList } = storeToRefs(useRegion())
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
+  <div class="grid grid-cols-1 gap-x-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in regionList" :key="index">
       <common-card-list :title="item.name">
         <template #info>
@@ -134,8 +134,9 @@ const { regionList } = storeToRefs(useRegion())
         </template>
         <template #footer>
           <div class="flex-between">
-            <div class="cursor-pointer pl-[16px]" @click="emits('deleteRegion', item.id)">
+            <div class="cursor-pointer flex gap-[6px]" @click="emits('deleteRegion', item.id)">
               <icon name="i-svg:delete" :size="16" />
+              <span class="color-[#F82F2F]">删除</span>
             </div>
             <div class="text-size-[14px] col-6 offset-6" uno-sm="col-7 offset-5" uno-xl="col-7 offset-5">
               <common-button-rounded content="编辑" padding="4px 36px" @button-click="emits('getDetail', item.id)" />

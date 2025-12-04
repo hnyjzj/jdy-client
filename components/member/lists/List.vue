@@ -29,7 +29,7 @@ const getStatusType = (status: number) => {
 <template>
   <div class="col-2 gap-[20px]">
     <template v-if="props.info.length">
-      <div class="grid grid-cols-1 gap-[16px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
+      <div class="grid grid-cols-1 gap-x-[16px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
         <template v-for="(item, index) in props.info" :key="index">
           <common-card-list :title="item.name || '--'" theme="theme">
             <template #status>

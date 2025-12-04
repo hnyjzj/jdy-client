@@ -22,7 +22,7 @@ const getIconUrl = (title: string): string => {
   <div
     class="rounded-[8px] px-[16px] py-[12px] bg"
     :style="{
-      background: $colorMode.value === 'dark' ? '#1D2C60' : 'linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%)',
+      background: $colorMode.value === 'dark' ? '#1D2C60' : 'linear-gradient(180deg, #A1C9FF 0%, #FFFFFF 33.17%, #FFFFFF 71.15%)',
     }"
   >
     <div class="flex flex-row justify-between items-center pb-[16px] ">
@@ -43,6 +43,6 @@ const getIconUrl = (title: string): string => {
 
 <style lang="scss" scoped>
 .bg {
-  box-shadow: 0px 5px 20px 0px #0000000a;
+  box-shadow: 4px 4px 10px 4px #0000000f;
 }
 </style>

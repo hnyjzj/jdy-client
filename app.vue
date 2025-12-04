@@ -50,6 +50,7 @@ const themeOverrides: GlobalThemeOverrides = {
     BackgroundColor: 'transparent',
   },
   Input: {
+    color: '#F1F5FE',
     caretColor: '#0068ff',
     borderHover: '1px solid #0068ff',
     borderFocus: '1px solid #0068ff',
@@ -78,6 +79,19 @@ const themeOverrides: GlobalThemeOverrides = {
     railHeightLarge: '36px',
     railWidthLarge: '60px',
   },
+  Select: {
+    peers: {
+      InternalSelectMenu: {
+        optionTextColorActive: '#3971F3',
+        optionCheckColor: '#3971F3',
+        color: '#fff',
+      },
+      InternalSelection: {
+        color: '#F1F5FE',
+      },
+    },
+
+  },
   Checkbox: {
     colorChecked: '#3971F3',
     colorCheckedHover: '#3971F3',
@@ -90,14 +104,90 @@ const themeOverrides: GlobalThemeOverrides = {
     barColor: '#0068ff', // 激活标签条颜色
     tabTextColorHoverLine: '#0068ff', // 悬停标签颜色
   },
+  Table: {
+    position: 'relative',
+    zIndex: 0,
+  },
+  DataTable: {
+    position: 'relative',
+    zIndex: 0,
+  },
 }
+const darkThemeOverrides: GlobalThemeOverrides = {
+  Drawer: {
+    BackgroundColor: 'transparent',
+  },
+  Input: {
+    color: '#243F69',
+    caretColor: '#0068ff',
+    borderHover: '1px solid #0068ff',
+    borderFocus: '1px solid #0068ff',
+    borderRadius: '20px',
+    boxShadowFocus: '0 0 0 2px rgba(0, 104, 255, 0.2)',
+    boxShadowActive: '0 0 0 2px rgba(0, 104, 255, 0.2)',
+  },
+  InternalSelection: {
+    borderHover: '1px solid #0068ff',
+    borderFocus: '1px solid #0068ff',
+    borderActive: '1px solid #0068ff',
+    borderRadius: '60px',
+    boxShadowFocus: '0 0 0 2px rgba(0, 104, 255, 0.2)',
+    boxShadowActive: '0 0 0 2px rgba(0, 104, 255, 0.2)',
+  },
+  DatePicker: {
+    borderRadius: '20px',
+  },
+  Switch: {
+    railColorActive: '#0068ff',
+    borderColor: '#0068ff',
+    caretColor: '#0068ff',
+    borderHover: '1px solid #0068ff',
+    borderFocus: '1px solid #0068ff',
+    boxShadowFocus: '#0068ff',
+    railHeightLarge: '36px',
+    railWidthLarge: '60px',
+  },
+  Select: {
+    peers: {
+      InternalSelectMenu: {
+        optionTextColorActive: '#3971F3',
+        optionCheckColor: '#3971F3',
+        color: '#0F1E52',
+      },
+      InternalSelection: {
+        color: '#243F69',
+      },
+    },
+  },
+  Checkbox: {
+    colorChecked: '#3971F3',
+    colorCheckedHover: '#3971F3',
+    colorCheckedPressed: '#2f5fd0',
+    border: '1px solid #3971F3',
+    borderChecked: '1px solid #3971F3',
+  },
+  Tabs: {
+    tabTextColorActiveLine: '#0068ff', // 激活标签颜色
+    barColor: '#0068ff', // 激活标签条颜色
+    tabTextColorHoverLine: '#0068ff', // 悬停标签颜色
+  },
+  Table: {
+    position: 'relative',
+    zIndex: 0,
+  },
+  DataTable: {
+    position: 'relative',
+    zIndex: 0,
+  },
+}
+const theme = computed(() => $colorMode.value === 'light' ? themeOverrides : darkThemeOverrides)
 </script>
 
 <template>
   <div>
     <common-loading v-model="isLoading" />
     <n-config-provider
-      :theme-overrides="themeOverrides"
+      :theme-overrides="theme"
       :theme="$colorMode.value === 'light' ? null : darkTheme"
       :locale="locale"
       :date-locale="dateLocale">

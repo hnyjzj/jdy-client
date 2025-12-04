@@ -89,7 +89,7 @@ const clickChange = async () => {
 </script>
 
 <template>
-  <div class="z-3">
+  <div class="">
     <div
       class="py-[6px] px-[16px] border-rd-full h-full flex-center-row cursor-pointer text-color"
       :style="{ background: 'transparent', color: isWhite ? '#fff' : '' }" @click="clickChange">
@@ -100,7 +100,7 @@ const clickChange = async () => {
       <icon name="i-icon:product-toggle" :size="18" />
     </div>
     <template v-if="mask">
-      <div class="mask " uno-sm="flex justify-center items-center">
+      <div class="mask" uno-sm="flex justify-center items-center">
         <div class="content text-color blur-bgc w-full py-[12px] px-[16px] fixed bottom-0" uno-sm="w-394px relative">
           <div class=" flex justify-between items-center">
             <div class="flex-center-row gap-[6px]">
@@ -131,8 +131,7 @@ const clickChange = async () => {
               <template v-for="item in filteredColumns" :key="item.key">
                 <div
                   class="py-[12px] px-[16px]
-                   border-b border-b-[#e5e5e5]
-                   border-b-solid cursor-pointer
+                    line-color-b cursor-pointer
                     light:hover:bg-[#f5f5f5]
                     dark:hover:bg-[#1C3A62]
                     hover:rounded-[4px]"
@@ -194,8 +193,6 @@ const clickChange = async () => {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-
-  z-index: 4;
   .content {
     --uno: ' rounded-[8px]';
   }

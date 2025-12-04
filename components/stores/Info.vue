@@ -46,11 +46,6 @@ const deleteConfirm = async () => {
     <div class="w-auto bg-white blur-bga rounded-[24px] border-solid border-[#EFF0F6] col-12 overflow-hidden">
       <div class="rounded-[24px]">
         <common-card-info title="基本信息">
-          <template #status>
-            <div class="cursor-pointer" @click="delStore()">
-              <icon name="i-svg:delete" :size="16" />
-            </div>
-          </template>
           <template #info>
             <n-form ref="formRef" :model="modelRef" :rules="rules">
               <n-form-item path="name" label="门店名称">
@@ -63,10 +58,15 @@ const deleteConfirm = async () => {
                 <n-input v-model:value="modelRef.phone" @keydown.enter.prevent />
               </n-form-item>
 
-              <div style="display: flex; justify-content: flex-end">
-                <n-button round type="info" @click="handleValidateButtonClick">
+              <div class="flex items-center justify-between">
+                <div class="cursor-pointer flex gap-[6px]" @click="delStore()">
+                  <icon name="i-svg:delete" :size="16" />
+                  <span class="color-[#F82F2F]">删除</span>
+                </div>
+                <div class="cursor-pointer flex gap-[6px] light:color-[#1A6DD8] dark:color-[#fff]" @click="handleValidateButtonClick">
+                  <icon name="i-svg:save-btn" :size="16" class="light:fill-[#1A6DD8] dark:fill-[#fff]" />
                   保存
-                </n-button>
+                </div>
               </div>
             </n-form>
           </template>

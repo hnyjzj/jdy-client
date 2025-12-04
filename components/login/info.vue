@@ -65,7 +65,7 @@ const rules = ref<Rules<AccountReq>>({
         error,
         validate,
       }">
-      <div class="pb-[48px]">
+      <div class="pb-[32px]">
         <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
           <icon name="i-icon:login-user" size="24" />
           <input
@@ -80,7 +80,7 @@ const rules = ref<Rules<AccountReq>>({
       #password="{
         error,
         validate }">
-      <div class="pb-[48px]">
+      <div class="pb-[32px]">
         <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
           <icon name="i-icon:login-password" size="24" />
           <input
@@ -98,7 +98,7 @@ const rules = ref<Rules<AccountReq>>({
       #captcha="{
         error,
         validate }">
-      <div class="pb-[48px]">
+      <div class="pb-[32px]">
         <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
           <icon name="i-icon:login-code" size="24" />
           <input
@@ -137,6 +137,6 @@ const rules = ref<Rules<AccountReq>>({
 }
 
 .ok {
-  --uno: 'bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] line-height-[24px] px-[77px] py-[6px] text-center rounded-[36px] color-[#fff] shadow-[0_8px_8px_0px_#3971F33D]';
+  --uno: 'bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] line-height-[24px] px-[77px] py-[8px] text-center rounded-[36px] color-[#fff] shadow-[0_8px_8px_0px_#3971F33D]';
 }
 </style>
