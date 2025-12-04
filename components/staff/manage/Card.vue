@@ -46,7 +46,7 @@ const deleteConfirm = async () => {
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
+  <div class="grid grid-cols-1 gap-x-[16px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.list" :key="index">
       <common-card-list>
         <template #status>
@@ -87,8 +87,9 @@ const deleteConfirm = async () => {
         <template #footer>
           <div class="flex-between pl-[8px]">
             <template v-if="(props.myidentity > (item.identity as number)) || props.myidentity === UserLevel.IdentitySuperAdmin">
-              <div class="cursor-pointer" @click="delTips(item.id as string)">
+              <div class="cursor-pointer flex gap-[6px]" @click="delTips(item.id as string)">
                 <icon name="i-svg:delete" :size="16" />
+                <span class="color-[#F82F2F]">删除</span>
               </div>
             </template>
             <template v-else>

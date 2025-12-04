@@ -71,8 +71,9 @@ const delTips = (id: string) => {
           </template>
           <template #footer>
             <div class="flex-between">
-              <div class="cursor-pointer pl-[16px]" @click="delTips(item.id as string)">
+              <div class="cursor-pointer flex gap-[6px]" @click="delTips(item.id as string)">
                 <icon name="i-svg:delete" :size="16" />
+                <span class="color-[#F82F2F]">删除</span>
               </div>
               <div class="text-size-[14px] col-6 offset-6" uno-sm="col-7 offset-5" uno-xl="col-7 offset-5">
                 <common-button-rounded content="编辑" padding="4px 36px" @button-click="emits('getDetail', item.id)" />

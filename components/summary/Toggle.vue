@@ -31,11 +31,11 @@ watch(toggleChart, (val) => {
     class="w-[80px] text-[14px] font-normal text-[#666666] px-[12px] py-[3px] rounded-[4px] cursor-pointer"
     @click="toggleChart = toggleChart === 'list' ? 'chart' : 'list'">
     <div v-if="toggleChart === 'list'" class="flex gap-[2px]">
-      <icon name="i-icon:chart-boss" color="#0068FF" :size="16" />
+      <icon name="i-icon:data-bar-chart" color="#0068FF" :size="16" />
       <span class="text-[14px]">图表</span>
     </div>
     <div v-else class="flex gap-[2px]">
-      <icon name="i-icon:table-boss" color="#0068FF" :size="16" />
+      <icon name="i-icon:data-table-chart" color="#0068FF" :size="16" />
       <span class="text-[14px]">表格</span>
     </div>
   </div>

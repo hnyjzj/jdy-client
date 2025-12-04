@@ -90,8 +90,8 @@ const checkRatio = () => {
   <div class="pb-[16px]">
     <common-card-info :title="props.title">
       <template #info>
-        <div class="w-auto flex flex-col" uno-lg="grid grid-cols-1 gap-[16px] grid-cols-0">
-          <n-grid :cols="24" :x-gap="8">
+        <div class="w-auto flex flex-col" uno-lg="grid grid-cols-1 gap-x-[16px] grid-cols-0">
+          <n-grid :cols="24" :x-gap="12" responsive="screen">
             <n-form-item-gi :span="12" label="收银员" path="cashier_id" class="">
               <n-select
                 v-model:value="orderObject.cashier_id"
@@ -107,7 +107,6 @@ const checkRatio = () => {
                 }"
               />
             </n-form-item-gi>
-
             <n-form-item-gi :span="12" label="来源" path="source" class="">
               <n-select
                 v-model:value="orderObject.source"

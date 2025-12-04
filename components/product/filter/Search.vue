@@ -19,15 +19,14 @@ const clear = () => {
 </script>
 
 <template>
-  <div class="py-[16px]">
-    <div class="bg-[#E6EDF5] px-[18px] border-rd-full text-size-[20px] shadow-lg flex items-center">
+  <div class="pt-[16px]">
+    <div class="bg-[#F1F5FE] px-[18px] border-rd-full text-size-[20px] shadow-lg flex items-center">
       <div class="left-[10px] top-[6px]" @click="subsearch()">
         <icon name="i-icon:search" size="12" color="#808089" />
       </div>
       <div class="text-size-[14px] line-height-[20px] flex-1">
         <input
-          v-model="searchKey" type="search" autocomplete="off" class="bg-[#E6EDF5] text-[#808089] w-full border-0 placeholder-text-[#808089] flex-1 py-[6px] pl-[4px] line-height-[24px]" :placeholder="props.placeholder"
-          @focus="focus"
+          v-model="searchKey" type="search" autocomplete="off" class="bg-[#F1F5FE] text-[#808089] w-full border-0 placeholder-text-[#808089] flex-1 py-[6px] pl-[4px] line-height-[24px]" :placeholder="props.placeholder"
           @keyup.enter="subsearch()">
       </div>
       <div v-if="searchKey" @click="clear()">

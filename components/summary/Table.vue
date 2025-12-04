@@ -119,6 +119,9 @@ const option = computed(() => {
     ],
   }
 })
+const tdColor = computed(() => {
+  return $colorMode.value === 'light' ? '#1A6DD8' : '#fff'
+})
 </script>
 
 <template>
@@ -141,14 +144,14 @@ const option = computed(() => {
                 @click="toggleChart = toggleChart === 'list' ? 'chart' : 'list'">
                 <template v-if="toggleChart === 'list'">
                   <div class="flex gap-[6px]">
-                    <icon name="i-icon:chart-boss" color="#0068FF" :size="16" />
-                    <span class="text-[12px]">图表</span>
+                    <icon name="i-icon:data-bar-chart" color="#0068FF" :size="16" />
+                    <span class="text-[14px]">图表</span>
                   </div>
                 </template>
                 <template v-else>
                   <div class="flex gap-[6px]">
-                    <icon name="i-icon:table-boss" color="#0068FF" :size="16" />
-                    <span class="text-[12px]">表格</span>
+                    <icon name="i-icon:data-table-chart" color="#0068FF" :size="16" />
+                    <span class="text-[14px]">表格</span>
                   </div>
                 </template>
               </div>
@@ -161,9 +164,12 @@ const option = computed(() => {
       <div v-if="toggleChart === 'list'" class="px-[16px]">
         <n-data-table
           :style="{
-            '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#224879',
-            '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#09428b',
+            '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#1D2C60',
+            '--n-merged-td-text-color': $colorMode.value === 'light' ? '#1A6DD8' : '#fff',
+            '--n-merged-td-color-hover': $colorMode.value === 'light' ? '#DAEAFF' : '#0050B8',
+            '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#0F1E52',
             '--n-merged-border-color': 'rgba(57,113,243,0.0)',
+            '--td-color': tdColor,
           }"
           :columns="props.title"
           :data="props.list"
@@ -204,5 +210,11 @@ const option = computed(() => {
 }
 .bg {
   box-shadow: 0px 5px 20px 0px #0000000a;
+}
+:deep(.n-data-table .n-data-table-base-table-header) {
+  border-radius: 8px;
+}
+:deep(.n-data-table-tr:hover .n-data-table-td) {
+  color: var(--td-color);
 }
 </style>

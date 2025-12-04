@@ -327,10 +327,8 @@ defineExpose({
                     :options="Stores"
                     :loading="loadingStores"
                     clearable
-                    remote
                     :max-tag-count="1"
                     :clear-filter-after-select="false"
-                    @search="searchStores"
                     @focus="() => {
                       loadingStores = true
                       searchStores('')
@@ -351,10 +349,8 @@ defineExpose({
                     :options="Regions"
                     :loading="loadingRegions"
                     clearable
-                    remote
                     :max-tag-count="1"
                     :clear-filter-after-select="false"
-                    @search="searchRegions"
                     @focus="() => {
                       loadingRegions = true
                       searchRegions('')
@@ -375,10 +371,8 @@ defineExpose({
                     :options="Stores_sup"
                     :loading="loadingStores_sup"
                     clearable
-                    remote
                     :max-tag-count="1"
                     :clear-filter-after-select="false"
-                    @search="searchStores_sup"
                     @focus="() => {
                       loadingStores_sup = true
                       searchStores_sup('')
@@ -399,10 +393,8 @@ defineExpose({
                     :options="Regions_sup"
                     :loading="loadingRegions_sup"
                     clearable
-                    remote
                     :max-tag-count="1"
                     :clear-filter-after-select="false"
-                    @search="searchRegions_sup"
                     @focus="() => {
                       loadingRegions_sup = true
                       searchRegions_sup('')
@@ -416,7 +408,6 @@ defineExpose({
                     <span class="color-[#4B576D]">全选 </span>
                     <n-switch
                       v-model:value="storeAdminAllswitch"
-
                       @update:value="searchStoresAdminAll" />
                   </div>
                   <n-select
@@ -427,10 +418,8 @@ defineExpose({
                     :options="StoresAdmin"
                     :loading="loadingStoresAdmin"
                     clearable
-                    remote
                     :max-tag-count="1"
                     :clear-filter-after-select="false"
-                    @search="searchStoresAdmin"
                     @focus="() => {
                       loadingStoresAdmin = true
                       searchStoresAdmin('')
@@ -454,10 +443,8 @@ defineExpose({
                     :options="RegionsAdmin"
                     :loading="loadingRegionsAdmin"
                     clearable
-                    remote
                     :max-tag-count="1"
                     :clear-filter-after-select="false"
-                    @search="searchRegionsAdmin"
                     @focus="() => {
                       loadingRegionsAdmin = true
                       searchRegionsAdmin('')

@@ -104,7 +104,7 @@ onMounted(() => {
       </div>
     </div>
     <div
-      class="py-[32px] px-[16px] bg-[#fff] bottom-0 w-full h-full grid-12 flex-1 rounded-t-[8px]"
+      class="py-[48px] px-[16px] bg-[#fff] bottom-0 w-full h-full grid-12 flex-1 rounded-t-[8px]"
       style="{height:calc(100vh - 157px)}">
       <div class="col-12 flex flex-col justify-around" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" uno-lg="col-4 offset-4">
         <template v-if="status === 'phone'">

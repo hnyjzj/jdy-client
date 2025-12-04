@@ -11,7 +11,7 @@ const props = defineProps<{
 
 <template>
   <div
-    class="p-3 mb-4 rounded-2 blur-bgc">
+    class="p-3 rounded-2 blur-bgc">
     <div
       class="flex justify-between items-center pb-2"
     >

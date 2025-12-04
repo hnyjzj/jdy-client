@@ -19,7 +19,7 @@ const changeListType = (type: 'list' | 'table') => {
 </script>
 
 <template>
-  <div class="flex-center-between gap-2 pb-[16px]">
+  <div class="flex-center-between gap-2 pt-[16px]">
     <div class="flex items-center gap-[12px]">
       <div class="text-size-[14px] color-[#91929E] font-semibold">
         共 {{ props.total }} 条
@@ -27,9 +27,9 @@ const changeListType = (type: 'list' | 'table') => {
       <template v-if="isExport">
         <div class="flex items-center cursor-pointer" @click="emits('export')">
           <span class="underline">
-            <icon name="i-icon:download" :size="14" color="#3971F3" />
+            <icon name="i-icon:download" :size="16" color="#3971F3" />
           </span>
-          <span class="px-[3px] color-[#3971F3]">
+          <span class="px-[3px] color-[#3971F3] text-[14px] font-normal">
             导出
           </span>
         </div>

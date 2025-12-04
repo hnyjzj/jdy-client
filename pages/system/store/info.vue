@@ -17,7 +17,12 @@ if (route.query.id) {
       <div>
         <stores-info />
         <div class="mt-[12px]">
-          <n-tabs type="segment" animated>
+          <n-tabs
+            type="segment" animated
+            :style="{
+              '--n-tab-border-radius': '26px',
+              '--n-color-segment': '#E6EDF5',
+            }">
             <n-tab-pane name="chap1" tab="分配员工">
               <staff-assign-staff-card
                 :list="storeDetails.staffs"

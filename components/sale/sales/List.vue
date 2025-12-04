@@ -14,7 +14,7 @@ const handleClick = (id?: string) => {
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
+  <div class="grid grid-cols-1 gap-x-[16px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
       <common-card-list :title="`销售单号:${item.id}`" :status-map="OrderStatusColor" :tag-text="props.where.status?.preset[item.status]" :status="item.status">
         <template #info>

@@ -67,7 +67,7 @@ const processDate = (date: string) => {
 
 <template>
   <template v-if="props.data.id">
-    <div class="pb-[80px] px-4">
+    <div class="pb-[80px] px-4 flex flex-col gap-[16px]">
       <common-card-info title="基础信息">
         <template #info>
           <div class="grid grid-cols-1 gap-[12px]" uno-md="grid-cols-2" uno-lg="grid-cols-2">
