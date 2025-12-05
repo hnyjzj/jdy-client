@@ -69,7 +69,7 @@ onMounted(async () => {
   <div>
     <div class="blur-bgc">
       <common-layout-center>
-        <div class="py-[12px] pr-4 flex justify-between">
+        <div class=" pr-4 flex justify-between">
           <product-manage-company />
         </div>
       </common-layout-center>
