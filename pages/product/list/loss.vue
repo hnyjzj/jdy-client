@@ -336,7 +336,7 @@ const cols = [
               </template>
               <template #bottom="{ info }">
                 <div class="flex-end text-size-[14px]">
-                  <common-button-irregular text="详情" @click="jump('/product/manage/loss/info', { code: info.code })" />
+                  <common-button-rounded padding="4px 36px" content="详情" @button-click="jump('/product/manage/loss/info', { code: info.code })" />
                 </div>
               </template>
             </product-manage-card>
