@@ -87,7 +87,7 @@ const checkRatio = () => {
 </script>
 
 <template>
-  <div class="pb-[16px]">
+  <div>
     <common-card-info :title="props.title">
       <template #info>
         <div class="w-auto flex flex-col" uno-lg="grid grid-cols-1 gap-x-[16px] grid-cols-0">

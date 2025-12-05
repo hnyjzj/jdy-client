@@ -60,7 +60,7 @@ const editOld = (item: OrderMaterial, index: number) => {
 </script>
 
 <template>
-  <div class="pb-[16px]">
+  <div>
     <common-card-info title="旧料">
       <template #info>
         <sale-add-masterials-button

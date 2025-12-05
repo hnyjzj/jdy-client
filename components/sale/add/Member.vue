@@ -113,7 +113,7 @@ const submitNewMember = async () => {
 </script>
 
 <template>
-  <div class="pb-[16px]">
+  <div>
     <common-card-info title="会员信息">
       <template #info>
         <div :key="Key" class="p-[16px] pb-0">

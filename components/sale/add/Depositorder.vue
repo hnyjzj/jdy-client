@@ -28,7 +28,7 @@ const showProductName = (products: DepositOrderInfo['products']) => {
 </script>
 
 <template>
-  <div class="pb-[16px]">
+  <div>
     <common-card-info title="订金单">
       <div class="p-[16px]">
         <div class="grid-12">
