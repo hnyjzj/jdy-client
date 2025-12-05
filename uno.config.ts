@@ -74,8 +74,9 @@ export default defineConfig({
     'blur-bga': 'light:bg-#FDFDFD dark:bg-[#1D2C60]',
     'text-color': 'text-[rgb(0,0,0)] dark:text-[rgb(255,255,255)]',
     'text-color-light': 'text-[#666666] dark:text-[#CBCDD1]',
-    'line-color-b': 'border-b light:border-b-[#e5e5e5] dark:border-b-[#808089] border-b-solid',
-    'line-color-t': 'border-t light:border-t-[#e5e5e5] dark:border-t-[#808089] border-t-solid',
+    'line-color-b': 'border-b light:border-b-[#e5e5e5] dark:border-b-[#444D71] border-b-solid',
+    'line-color-t': 'border-t light:border-t-[#e5e5e5] dark:border-t-[#444D71] border-t-solid',
+    'line-space': 'w-full h-[1px] bg-[#e5e5e5] dark:bg-[#444D71]',
     /** 单行超出隐藏 */
     'text-row-hide': 'whitespace-nowrap overflow-hidden text-ellipsis',
   },

@@ -80,13 +80,13 @@ const onReturnProduct = async (index: number) => {
               <common-cell label="订单状态" :value="props.orderWhere.status?.preset[props.orders.status]" val-color="#FF9900" />
               <common-cell label="订单来源" :value="props.orderWhere.source?.preset[props.orders.source]" />
               <common-cell label="销售时间" :value="formatISODate(props.orders.created_at)" />
-              <div class="line" />
+              <div class="line-space" />
               <common-cell label="会员姓名" :value="props.orders.member?.name || ''" />
               <common-cell label="会员昵称" :value="props.orders.member?.nickname || ''" />
               <common-cell label="手机号" :value="props.orders.member?.phone" val-color="#4C8DF6" class="cursor-pointer" @click="jump(`/member/search`, { phone: props.orders.member?.phone })" />
               <common-cell label="会员等级" :value="props.orders.member?.level" />
               <template v-if="props.orders?.order_deposits?.length">
-                <div class="line" />
+                <div class="line-space" />
                 <template v-for="(deposit, ix) in props.orders.order_deposits" :key="ix">
                   <common-cell label="关联订金单" value=" " />
                   <common-cell label="订金单号" :value="deposit.id" val-color="#4C8DF6" class="cursor-pointer" @click="jump(`/sale/deposit/order`, { id: deposit.id })" />
@@ -107,7 +107,7 @@ const onReturnProduct = async (index: number) => {
               <common-cell label="收银员" :value="props.orders.cashier?.nickname" />
               <common-cell label="手机号" :value="props.orders.cashier?.phone" />
               <template v-for="(item, index) in props.orders.clerks" :key="index">
-                <div class="line" />
+                <div class="line-space" />
                 <common-cell label="导购员" :value="item.salesman?.nickname || ''" />
                 <common-cell label="手机号" :value="item.salesman?.phone" />
                 <common-cell label="业绩比例" :value="item.performance_rate || ''" right="%" />
@@ -156,7 +156,7 @@ const onReturnProduct = async (index: number) => {
                   <common-cell label="应付金额" format="￥" :value="obj.finished.price" />
                   <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusReturn">
                     <common-cell label="成品状态" value="已退货" val-color="#FF9900" />
-                    <div class="line" />
+                    <div class="line-space" />
                     <template v-for="(item, index) in props.orders.order_refunds" :key="index">
                       <template v-if="obj.finished.product?.code === item.code">
                         <common-cell label="退款时间" :value="formatTimestampToDateTime(item.created_at || '')" />
@@ -221,7 +221,7 @@ const onReturnProduct = async (index: number) => {
                   <common-cell label="回收金重(g)" :value="obj.old.weight_metal" />
                   <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusReturn">
                     <common-cell label="状态" value="已退货" val-color="#FF9900" />
-                    <div class="line" />
+                    <div class="line-space" />
                     <template v-for="(item, index) in props.orders.order_refunds" :key="index">
                       <template v-if="obj.old.product?.code === item.code">
                         <common-cell label="退款时间" :value="formatTimestampToDateTime(item.created_at || '')" />
@@ -256,7 +256,7 @@ const onReturnProduct = async (index: number) => {
                     <common-cell label="数量" :value="obj.accessorie.quantity" />
                     <template v-if="obj.status === OrderStatusText.OrderSalesProductStatusReturn">
                       <common-cell label="状态" value="已退货" val-color="#FF9900" />
-                      <div class="line" />
+                      <div class="line-space" />
                       <template v-for="(item, index) in props.orders.order_refunds" :key="index">
                         <template v-if="obj.accessorie.product?.name === item.name ">
                           <common-cell label="退款时间" :value="formatTimestampToDateTime(item.created_at || '')" />
@@ -291,12 +291,12 @@ const onReturnProduct = async (index: number) => {
               <common-cell label="优惠金额" format="￥" :value="props.orders.price_discount" />
               <common-cell label="实付金额" format="￥" :value="props.orders.price_pay" />
               <common-cell label="积分抵扣" :value="props.orders.integral_deduction" />
-              <div class="line" />
+              <div class="line-space" />
               <common-cell label="支付方式" value=" " />
               <template v-for="(item, index) in props.orders.payments" :key="index">
                 <common-cell :label="payMethods(item.payment_method) " format="￥" :value="item.amount" />
               </template>
-              <div class="line" />
+              <div class="line-space" />
               <common-cell label="成品积分" format="+" :value="productListScore" />
               <common-cell label="旧料积分" format="-" :value="masterListScore" />
               <common-cell label="配件积分" format="+" :value="PartsListScore" />

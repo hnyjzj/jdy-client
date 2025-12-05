@@ -46,7 +46,7 @@ const jumpSaleOreder = (id: string) => {
             <common-cell label="会员手机" :value="item.member?.phone || '--'" />
             <common-cell label="主销" :value="item.clerk?.nickname || '--'" />
             <common-cell label="定金金额" :value="item.price || '--'" />
-            <div class="border-b-solid border-b-[#E0E0E0] border" />
+            <div class="line-color-b" />
             <common-cell label="货品" value="" />
             <template v-for="(ele, i) in item.products" :key="i">
               <template v-if="ele.is_our">
