@@ -172,7 +172,7 @@ const updateDelFn = () => {
 </script>
 
 <template>
-  <div class="pb-[16px]">
+  <div>
     <common-card-info title="成品">
       <template #info>
         <sale-add-product-button

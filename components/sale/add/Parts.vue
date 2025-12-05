@@ -16,7 +16,7 @@ const rounding = roundFunction(Props.billingSet.rounding)
 </script>
 
 <template>
-  <div class="pb-[16px]">
+  <div>
     <common-card-info title="配件礼品">
       <template #info>
         <div class="grid-12 p-[16px]">
