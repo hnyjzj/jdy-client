@@ -205,12 +205,14 @@ const beforeUpload = (data: any) => {
 
 <template>
   <div class="">
-    <div class="sticky top-0 z-4 search-bg bg-[#3875C5] pb-2">
+    <common-layout-center>
+      <div class="flex justify-between pt-2">
+        <product-manage-company :is-white="true" />
+        <div />
+      </div>
+    </common-layout-center>
+    <div class="top-0 z-4 search-bg bg-[#3875C5] pb-2">
       <common-layout-center>
-        <div class="flex justify-between pt-2">
-          <product-manage-company :is-white="true" />
-          <div />
-        </div>
         <div class="color-[#fff] flex justify-between items-center px-4">
           <div class="flex-1 pr-3">
             <product-filter-search @submit="searchListFn" />

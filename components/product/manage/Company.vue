@@ -101,38 +101,36 @@ const clickChange = async () => {
       <icon name="i-icon:product-toggle" :size="18" />
     </div>
     <common-model v-model="mask" title="批量入库" :show-cancel="false">
-      <div uno-sm="flex justify-center items-center">
-        <div class="content text-color blur-bgc w-full fixed bottom-0" uno-sm="w-394px relative">
-          <div class="py-[16px]">
-            <n-input
-              v-model:value="searchKeyword"
-              placeholder="搜索门店名称"
-              clearable
-              :item-style="{ backgroud: '#333' }"
-            >
-              <template #prefix>
-                <icon name="i-icon:search" :size="16" />
-              </template>
-            </n-input>
-          </div>
+      <div>
+        <div class="py-[16px]">
+          <n-input
+            v-model:value="searchKeyword"
+            placeholder="搜索门店名称"
+            clearable
+            :item-style="{ background: '#333' }"
+          >
+            <template #prefix>
+              <icon name="i-icon:search" :size="16" />
+            </template>
+          </n-input>
+        </div>
 
-          <div class="h-[270px] overflow-y-auto">
-            <template v-if="filteredColumns.length">
-              <template v-for="item in filteredColumns" :key="item.key">
-                <div
-                  class="py-[12px] px-[16px]
+        <div class="h-[270px] overflow-y-auto">
+          <template v-if="filteredColumns.length">
+            <template v-for="item in filteredColumns" :key="item.key">
+              <div
+                class="py-[12px] px-[16px]
                     line-color-b cursor-pointer
                     light:hover:bg-[#f5f5f5]
                     dark:hover:bg-[#1C3A62]
                     hover:rounded-[4px]"
-                  @click="handleSelect(item.key)">
-                  {{ item.label }}
-                </div>
-              </template>
+                @click="handleSelect(item.key)">
+                {{ item.label }}
+              </div>
             </template>
-            <div v-else class="py-[40px] text-center color-[#999] text-[14px]">
-              暂无匹配的门店
-            </div>
+          </template>
+          <div v-else class="py-[40px] text-center color-[#999] text-[14px]">
+            暂无匹配的门店
           </div>
         </div>
       </div>
