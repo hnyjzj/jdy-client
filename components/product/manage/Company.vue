@@ -100,20 +100,9 @@ const clickChange = async () => {
       </div>
       <icon name="i-icon:product-toggle" :size="18" />
     </div>
-    <template v-if="mask">
-      <div class="mask" uno-sm="flex justify-center items-center">
-        <div class="content text-color blur-bgc w-full py-[12px] px-[16px] fixed bottom-0" uno-sm="w-394px relative">
-          <div class=" flex justify-between items-center">
-            <div class="flex-center-row gap-[6px]">
-              <div class="w-[4px] h-[16px] rounded-2xl bg-[#1A6DD8]" />
-              <div class="color-[#1A6DD8] text-[16px] line-height-[24px] font-bold">
-                切换门店
-              </div>
-            </div>
-            <div class=" hover:color-[#1A6DD8] cursor-pointer" @click.stop="mask = false">
-              <icon name="i-icon:close" :size="24" />
-            </div>
-          </div>
+    <common-model v-model="mask" title="批量入库" :show-cancel="false">
+      <div uno-sm="flex justify-center items-center">
+        <div class="content text-color blur-bgc w-full fixed bottom-0" uno-sm="w-394px relative">
           <div class="py-[16px]">
             <n-input
               v-model:value="searchKeyword"
@@ -147,7 +136,7 @@ const clickChange = async () => {
           </div>
         </div>
       </div>
-    </template>
+    </common-model>
 
     <common-confirm
       v-model:show="confirmShow"
@@ -183,20 +172,5 @@ const clickChange = async () => {
 .n-dropdown-option-body__label {
   display: flex;
   align-items: center;
-}
-
-.mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  .content {
-    --uno: ' rounded-[8px]';
-  }
 }
 </style>
