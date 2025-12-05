@@ -211,13 +211,13 @@ const beforeUpload = (data: any) => {
           <product-manage-company :is-white="true" />
           <div />
         </div>
-        <div class="color-[#fff] flex justify-between px-4">
-          <div class="flex-1 pr-3 sm:px-4 z-1">
+        <div class="color-[#fff] flex justify-between items-center px-4">
+          <div class="flex-1 pr-3">
             <product-filter-search @submit="searchListFn" />
           </div>
           <auth-verify :min="UserLevel.IdentitySuperAdmin">
             <div
-              class="flex items-center justify-end cursor-pointer z-4"
+              class="flex items-center justify-end cursor-pointer mt-2"
               @click="set">
               <icon name="i-svg:setup" :size="14" color="#FFF" />
               <div class="text-[#fff] text-[14px] pl-1">
@@ -231,7 +231,7 @@ const beforeUpload = (data: any) => {
     <common-layout-center>
       <div class="pb-10 px-2">
         <!-- 工作台入口 -->
-        <div class="mb-14 col-12">
+        <div class="mt-2 mb-14 col-12">
           <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="(id) => { deleteDialog = true;deleteId = id }" @update="updateBench" @fold="fold" @change-page="changePage" />
           <template v-if="isSetup">
             <button style="all: unset;">
@@ -309,6 +309,8 @@ const beforeUpload = (data: any) => {
 
 .search-bg {
   overflow: hidden;
+  position: relative;
+
   &::before {
     content: '';
     position: absolute;
@@ -319,6 +321,7 @@ const beforeUpload = (data: any) => {
     background-image: url('@/assets/icons/index-six.svg');
     background-repeat: no-repeat;
     background-position: right;
+    pointer-events: none;
   }
 }
 </style>
