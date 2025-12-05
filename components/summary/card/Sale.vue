@@ -51,32 +51,36 @@ const toTodayPrice = () => {
             </template>
           </template>
         </div>
-        <div
-          class="flex-grow-1 flex finished gap-[16px] px-[16px] py-[8px] rounded-[8px] mb-[16px]"
-          :style="{ background: $colorMode.value === 'light'
-            ? 'linear-gradient(92.3deg, #fefbff 49.62%, #f5e0ff 103.48%)' : 'linear-gradient(96.41deg, #0F1E52 76.65%, #672580 102.56%)' }"
-        >
-          <icon name="i-svg:finished-salesmoney" class="wh-[46px] " />
-          <div>
-            <div class="color-[#808089] text-[14px] line-height-[24px] pb-[4px]">
-              成品金额
-            </div>
-            <div class="text-[20px] font-semibold line-height-[24px]  text-color">
-              {{ props.todaySaleData['成品金额'] || 0 }}
+        <div class="grid-12 gap-[16px]">
+          <div
+            class="flex-grow-1 flex finished gap-[16px] px-[16px] py-[8px] rounded-[8px] col-12 "
+            uno-sm="col-6"
+            :style="{ background: $colorMode.value === 'light'
+              ? 'linear-gradient(92.3deg, #fefbff 49.62%, #f5e0ff 103.48%)' : 'linear-gradient(96.41deg, #0F1E52 76.65%, #672580 102.56%)' }"
+          >
+            <icon name="i-svg:finished-salesmoney" class="wh-[46px] " />
+            <div>
+              <div class="color-[#808089] text-[14px] line-height-[24px] pb-[4px]">
+                成品金额
+              </div>
+              <div class="text-[20px] font-semibold line-height-[24px]  text-color">
+                {{ props.todaySaleData['成品金额'] || 0 }}
+              </div>
             </div>
           </div>
-        </div>
-        <div
-          class="flex-grow-1 flex gap-[16px] return px-[16px] py-[8px] rounded-[8px]"
-          :style="{ background: $colorMode.value === 'light'
-            ? 'linear-gradient(92.3deg, #fefbff 49.62%, #f5e0ff 103.48%)' : 'linear-gradient(96.41deg, #0F1E52 76.65%, #672580 102.56%)' }">
-          <icon name="i-svg:return-goodmoney" class="wh-[46px]" />
-          <div>
-            <div class="color-[#808089] text-[14px] line-height-[24px] pb-[4px]">
-              退货金额
-            </div>
-            <div class="text-[20px] font-semibold line-height-[24px] text-color">
-              {{ props.todaySaleData['退货金额'] || 0 }}
+          <div
+            class="flex-grow-1 flex gap-[16px] return px-[16px] py-[8px] rounded-[8px] col-12"
+            uno-sm="col-6"
+            :style="{ background: $colorMode.value === 'light'
+              ? 'linear-gradient(91.88deg, #FFFFFF 5.12%, #FFEFE2 99.55%)' : 'linear-gradient(96deg,  #0F1E52 76.65%, #633A16 101.86%)' }">
+            <icon name="i-svg:return-goodmoney" class="wh-[46px]" />
+            <div>
+              <div class="color-[#808089] text-[14px] line-height-[24px] pb-[4px]">
+                退货金额
+              </div>
+              <div class="text-[20px] font-semibold line-height-[24px] text-color">
+                {{ props.todaySaleData['退货金额'] || 0 }}
+              </div>
             </div>
           </div>
         </div>
