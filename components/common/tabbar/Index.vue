@@ -63,8 +63,9 @@ const modeFun = () => {
   color: #3971f3;
 }
 .tabbar {
-  --uno: 'w-full  bg-[#fff] dark:bg-[#515862] text-[12px] pt-[12px] pb-[18px] flex-between';
+  --uno: 'w-full  text-[12px] pt-[12px] pb-[18px] flex-between';
   backdrop-filter: blur(24px);
+  background-color: rgba(255, 255, 255, 0.3);
   box-shadow: 0px 4px 24px 0px #0000001a;
 }
 </style>
