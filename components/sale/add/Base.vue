@@ -91,8 +91,8 @@ const checkRatio = () => {
     <common-card-info :title="props.title" padding-bottom="0">
       <template #info>
         <div class="w-auto flex flex-col" uno-lg="grid grid-cols-1 gap-x-[16px] grid-cols-0">
-          <n-grid :cols="24" :x-gap="12" responsive="screen">
-            <n-form-item-gi :span="12" label="收银员" path="cashier_id" class="">
+          <common-layout-form>
+            <n-form-item class="col-6" label="收银员" path="cashier_id">
               <n-select
                 v-model:value="orderObject.cashier_id"
                 placeholder="请输入收银员"
@@ -106,71 +106,66 @@ const checkRatio = () => {
                   props.getStaff()
                 }"
               />
-            </n-form-item-gi>
-            <n-form-item-gi :span="12" label="来源" path="source" class="">
+            </n-form-item>
+            <n-form-item class="col-6" label="来源" path="source">
               <n-select
                 v-model:value="orderObject.source"
                 placeholder="请选择"
                 :options="sourceOptions"
               />
-            </n-form-item-gi>
-          </n-grid>
-
+            </n-form-item>
+          </common-layout-form>
           <template v-for="(item, index) in orderObject.clerks" :key="index">
-            <div class="">
-              <n-grid :cols="24" :x-gap="8">
-                <n-form-item-gi
-                  :span="12"
-                  :label="item.is_main ? '主销' : '辅销'" label-placement="top" class=""
-                  :path="`clerks[${index}].salesman_id`"
-                  :rule="{
-                    required: true,
-                    message: `请选择导购员`,
-                    trigger: ['change', 'blur'],
-                  }">
-                  <n-select
-                    v-model:value="item.salesman_id"
-                    placeholder="请选择"
-                    :options="props.storeStaff.map(v => ({
-                      label: v.nickname,
-                      value: v.id,
-                    }))"
-                    clearable
-                    remote
-                    @focus="() => {
-                      props.getStaff()
-                    }"
-                  />
-                </n-form-item-gi>
-                <n-form-item-gi :span="12" label="业绩比例" path="performance_rate" label-placement="top">
-                  <div class="w-full">
-                    <n-input-number v-model:value="item.performance_rate" :min="0" :max="100" :show-button="false" @focus="focus" @blur="checkRatio()">
-                      <template #suffix>
-                        %
-                      </template>
-                    </n-input-number>
-                  </div>
-                  <div>
-                    <template v-if="index === 0">
-                      <div class="wh-[32px] ml-[5px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3] text-[26px]" @click="addNewSale()">
-                        +
-                      </div>
+            <common-layout-form>
+              <n-form-item
+                class="col-6"
+                :label="item.is_main ? '主销' : '辅销'" label-placement="top"
+                :path="`clerks[${index}].salesman_id`"
+                :rule="{
+                  required: true,
+                  message: `请选择导购员`,
+                  trigger: ['change', 'blur'],
+                }">
+                <n-select
+                  v-model:value="item.salesman_id"
+                  placeholder="请选择"
+                  :options="props.storeStaff.map(v => ({
+                    label: v.nickname,
+                    value: v.id,
+                  }))"
+                  clearable
+                  remote
+                  @focus="() => {
+                    props.getStaff()
+                  }"
+                />
+              </n-form-item>
+              <n-form-item class="col-6" label="业绩比例" path="performance_rate" label-placement="top">
+                <div class="w-full">
+                  <n-input-number v-model:value="item.performance_rate" :min="0" :max="100" :show-button="false" @focus="focus" @blur="checkRatio()">
+                    <template #suffix>
+                      %
                     </template>
-                    <template v-if="index !== 0">
-                      <div class="wh-[32px] ml-[5px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3]  text-[26px]" @click="deleteSale(index)">
-                        <div class="w-[10px] h-[2px] bg-[#3971F3]" />
-                      </div>
-                    </template>
-                  </div>
-                </n-form-item-gi>
-              </n-grid>
-
-              <div />
-            </div>
+                  </n-input-number>
+                </div>
+                <div>
+                  <template v-if="index === 0">
+                    <div class="wh-[32px] ml-[5px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3] text-[26px]" @click="addNewSale()">
+                      +
+                    </div>
+                  </template>
+                  <template v-if="index !== 0">
+                    <div class="wh-[32px] ml-[5px] bg-[#F1F5FE] rounded-[24px] flex-center-row color-[#3971F3]  text-[26px]" @click="deleteSale(index)">
+                      <div class="w-[10px] h-[2px] bg-[#3971F3]" />
+                    </div>
+                  </template>
+                </div>
+              </n-form-item>
+            </common-layout-form>
           </template>
-          <n-grid :cols="24" :x-gap="8">
-            <n-form-item-gi
-              :span="12"
+          <common-layout-form>
+            <n-form-item
+              class="col-6"
               label="是否积分" label-placement="top"
             >
               <n-radio-group v-model:value="orderObject.has_integral" name="radiogroup" @update:value="handleIsInterChange()">
@@ -185,8 +180,8 @@ const checkRatio = () => {
                   </n-radio>
                 </n-space>
               </n-radio-group>
-            </n-form-item-gi>
-          </n-grid>
+            </n-form-item>
+          </common-layout-form>
         </div>
       </template>
     </common-card-info>

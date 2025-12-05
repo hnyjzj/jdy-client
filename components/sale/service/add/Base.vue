@@ -13,9 +13,9 @@ const region = defineModel('region', { default: {} })
     <common-card-info title="基础信息" :is-collapse="false">
       <template #info>
         <div class="relative">
-          <n-grid :cols="24" :x-gap="8">
-            <n-form-item-gi
-              :span="12"
+          <common-layout-form>
+            <n-form-item
+              class="col-6"
               label="收银员" label-placement="top"
               path="cashier_id"
             >
@@ -32,9 +32,9 @@ const region = defineModel('region', { default: {} })
                   props.getStaff()
                 }"
               />
-            </n-form-item-gi>
-            <n-form-item-gi
-              :span="12"
+            </n-form-item>
+            <n-form-item
+              class="col-6"
               label="接待人" label-placement="top"
               path="receptionist_id"
             >
@@ -51,37 +51,37 @@ const region = defineModel('region', { default: {} })
                   props.getStaff()
                 }"
               />
-            </n-form-item-gi>
-            <n-form-item-gi
-              :span="24"
+            </n-form-item>
+            <n-form-item
+              class="col-12"
               label="维修项目" label-placement="top"
               path="name"
             >
               <n-input v-model:value="formData.name" @focus="focus" />
-            </n-form-item-gi>
-            <n-form-item-gi
-              :span="24"
+            </n-form-item>
+            <n-form-item
+              class="col-12"
               label="问题描述" label-placement="top"
               path="desc"
             >
               <n-input v-model:value="formData.desc" @focus="focus" />
-            </n-form-item-gi>
-            <n-form-item-gi
-              :span="12"
+            </n-form-item>
+            <n-form-item
+              class="col-6"
               label="维修费用" label-placement="top"
 
             >
               <n-input-number v-model:value="formData.expense" min="0" :show-button="false" @focus="focus" />
-            </n-form-item-gi>
-            <n-form-item-gi
-              :span="12"
+            </n-form-item>
+            <n-form-item
+              class="col-6"
               label="维修成本" label-placement="top"
 
             >
               <n-input-number v-model:value="formData.cost" min="0" :show-button="false" @focus="focus" />
-            </n-form-item-gi>
-            <n-form-item-gi
-              :span="12"
+            </n-form-item>
+            <n-form-item
+              class="col-6"
               label="取货方式" label-placement="top"
             >
               <n-radio-group v-model:value="formData.delivery_method" name="radiogroup">
@@ -96,23 +96,23 @@ const region = defineModel('region', { default: {} })
                   </n-radio>
                 </n-space>
               </n-radio-group>
-            </n-form-item-gi>
+            </n-form-item>
 
             <template v-if="formData.delivery_method === 2">
-              <n-form-item-gi
-                :span="24"
+              <n-form-item
+                class="col-12"
                 label="收货地址" label-placement="top"
               >
                 <common-area-select :border="props.areaBorder" :is-required="false" :showtitle="false" :form="region" />
-              </n-form-item-gi>
-              <n-form-item-gi
-                :span="24"
+              </n-form-item>
+              <n-form-item
+                class="col-12"
                 label="详细地址" label-placement="top"
               >
                 <n-input v-model:value="formData.address" @focus="focus" />
-              </n-form-item-gi>
+              </n-form-item>
             </template>
-          </n-grid>
+          </common-layout-form>
         </div>
       </template>
     </common-card-info>

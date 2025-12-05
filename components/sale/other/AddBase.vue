@@ -14,8 +14,8 @@ const formData = defineModel<otherOrderCreate>('form', { default: {} })
     <common-card-info title="收支信息">
       <template #info>
         <div>
-          <n-grid :cols="24" :x-gap="8">
-            <n-form-item-gi :span="12" label="收支类型" path="type">
+          <common-layout-form>
+            <n-form-item class="col-6" label="收支类型" path="type">
               <n-radio-group v-model:value="formData.type" name="radiogroup">
                 <n-space>
                   <n-radio
@@ -28,10 +28,10 @@ const formData = defineModel<otherOrderCreate>('form', { default: {} })
                   </n-radio>
                 </n-space>
               </n-radio-group>
-            </n-form-item-gi>
-            <n-form-item-gi
-              :span="12"
-              label="主销导购" label-placement="top" class=""
+            </n-form-item>
+            <n-form-item
+              class="col-6"
+              label="主销导购" label-placement="top"
               path="clerk_id"
               :rule="{
                 required: true,
@@ -51,12 +51,12 @@ const formData = defineModel<otherOrderCreate>('form', { default: {} })
                   props.getStaff()
                 }"
               />
-            </n-form-item-gi>
-            <n-form-item-gi :span="12" label="收支内容" path="content">
+            </n-form-item>
+            <n-form-item class="col-6" label="收支内容" path="content">
               <n-input v-model:value="formData.content" placeholder="请输入收支内容" @focus="focus" />
-            </n-form-item-gi>
+            </n-form-item>
 
-            <n-form-item-gi :span="12" label="收支来源" path="source">
+            <n-form-item class="col-6" label="收支来源" path="source">
               <n-select
                 v-model:value="formData.source"
                 placeholder="请选择收支来源"
@@ -64,11 +64,11 @@ const formData = defineModel<otherOrderCreate>('form', { default: {} })
                 clearable
                 remote
               />
-            </n-form-item-gi>
-            <n-form-item-gi :span="24" label="关联销售单">
+            </n-form-item>
+            <n-form-item class="col-12" label="关联销售单">
               <n-input v-model:value="formData.order_id" placeholder="请输入销售单号" @focus="focus" />
-            </n-form-item-gi>
-          </n-grid>
+            </n-form-item>
+          </common-layout-form>
         </div>
       </template>
     </common-card-info>

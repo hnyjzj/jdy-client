@@ -135,10 +135,10 @@ defineExpose({
 <template>
   <div>
     <NForm ref="formRef" :model="datas" :rules="rules">
-      <n-grid :cols="24" :x-gap="12">
+      <common-layout-form>
         <template v-for="({ name, label, create, find, input, condition, required, update }, i) in props.filter" :key="i">
           <template v-if="canShowFilter({ create, condition } as FilterWhere<T>)">
-            <n-form-item-gi :span="12" :path="name" :label="label" :required="required">
+            <n-form-item class="col-6" :path="name" :label="label" :required="required">
               <slot :name="name" :filter="props.filter[i]">
                 <template v-if="input === 'text'">
                   <n-input v-model:value="datas[name as string]" :disabled="isDisabled({ update, find, create })" size="large" clearable :placeholder="`输入${label}`" round />
@@ -201,10 +201,10 @@ defineExpose({
                 </template>
                 <slot name="info" :info="{ name, label, create, find, input, condition, required, update }" />
               </slot>
-            </n-form-item-gi>
+            </n-form-item>
           </template>
         </template>
-      </n-grid>
+      </common-layout-form>
     </NForm>
   </div>
 </template>

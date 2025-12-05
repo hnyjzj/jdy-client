@@ -57,9 +57,9 @@ const searchRmk = async (query: string) => {
           <div class="pt-[16px]">
             <template v-for="(item, index) in formData.payments" :key="index">
               <div>
-                <n-grid :cols="24" :x-gap="8">
-                  <n-form-item-gi
-                    :span="12"
+                <common-layout-form>
+                  <n-form-item
+                    class="col-6"
                     label="支付方式" label-placement="top"
                     :path="`payments[${index}].payment_method`"
                     :rule="{
@@ -72,9 +72,9 @@ const searchRmk = async (query: string) => {
                     <n-select
                       v-model:value="item.payment_method"
                       :options="payMethods" />
-                  </n-form-item-gi>
-                  <n-form-item-gi
-                    :span="12"
+                  </n-form-item>
+                  <n-form-item
+                    class="col-6"
                     label="金额" label-placement="top"
                   >
                     <div class="w-full">
@@ -99,8 +99,8 @@ const searchRmk = async (query: string) => {
                         </div>
                       </template>
                     </div>
-                  </n-form-item-gi>
-                </n-grid>
+                  </n-form-item>
+                </common-layout-form>
               </div>
             </template>
           </div>

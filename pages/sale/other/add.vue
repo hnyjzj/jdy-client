@@ -150,54 +150,46 @@ const orderObject = ref<Orders>({} as Orders)
 
 <template>
   <div :key="Key">
-    <div class="blur-bgc">
-      <common-layout-center>
-        <div class="grid-12 color-[#fff]">
-          <div class="col-5" uno-sm="col-3" uno-lg="col-2">
+    <common-layout-center>
+      <div class="pb-[100px]">
+        <n-form
+          ref="formRef"
+          :model="formData"
+          :rules="rules"
+          label-align="left"
+          size="large"
+        >
+          <div class="w-[120px] color-[#fff] pb-[12px]">
             <product-manage-company />
           </div>
-        </div>
-      </common-layout-center>
-    </div>
-    <common-layout-center>
-      <div class="grid-12 pb-[16px]">
-        <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] pb-[80px] col-12">
-          <n-form
-            ref="formRef"
-            :model="formData"
-            :rules="rules"
-            label-align="left"
-            size="large"
-          >
-            <div>
-              <sale-other-add-base
-                v-model:form="formData"
-                :store-staff="StoreStaffList"
-                :filter-list="filterList"
-                :get-staff="getStaff" />
-            </div>
+          <div>
+            <sale-other-add-base
+              v-model:form="formData"
+              :store-staff="StoreStaffList"
+              :filter-list="filterList"
+              :get-staff="getStaff" />
+          </div>
 
-            <sale-add-member
-              ref="addMemberRef"
-              v-model="orderObject"
-              :get-member="getMember"
-              :store="myStore"
-              :staffs="StoreStaffList"
-              :get-staffs="getStaff"
-              :add-new-member="addNewMember"
-              @set-member-id="formData.member_id = $event"
-            />
+          <sale-add-member
+            ref="addMemberRef"
+            v-model="orderObject"
+            :get-member="getMember"
+            :store="myStore"
+            :staffs="StoreStaffList"
+            :get-staffs="getStaff"
+            :add-new-member="addNewMember"
+            @set-member-id="formData.member_id = $event"
+          />
 
-            <sale-other-balance v-model:form="formData" :filter-list="salewhere" />
-            <div class="h-[80px] bg-[#fff] fixed z-1">
-              <div class="btn grid-12 px-[16px]">
-                <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
-                  <common-button-rounded :content="`${!route.query.id ? '新增' : '更新'}`" />
-                </div>
+          <sale-other-balance v-model:form="formData" :filter-list="salewhere" />
+          <div class="h-[80px] bg-[#fff] fixed z-1">
+            <div class="btn grid-12 px-[16px]">
+              <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
+                <common-button-rounded :content="`${!route.query.id ? '新增' : '更新'}`" />
               </div>
             </div>
-          </n-form>
-        </div>
+          </div>
+        </n-form>
       </div>
     </common-layout-center>
     <template v-if="otherOrderDetail.store_id && otherOrderDetail.store_id !== '' && route.query.id">

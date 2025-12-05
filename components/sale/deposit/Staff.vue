@@ -12,9 +12,9 @@ const formData = defineModel<DepositOrder>('formData', { default: {} })
       <common-card-info title="基础信息">
         <template #info>
           <div>
-            <n-grid :cols="24" :x-gap="8">
-              <n-form-item-gi
-                :span="12"
+            <common-layout-form>
+              <n-form-item
+                class="col-6"
                 label="收银员" label-placement="top" path="cashier_id"
               >
                 <n-select
@@ -30,10 +30,10 @@ const formData = defineModel<DepositOrder>('formData', { default: {} })
                     props.getStaffs()
                   }"
                 />
-              </n-form-item-gi>
+              </n-form-item>
 
-              <n-form-item-gi
-                :span="12"
+              <n-form-item
+                class="col-6"
                 label="主销导购" label-placement="top"
                 path="clerk_id"
                 :rule="{
@@ -55,8 +55,8 @@ const formData = defineModel<DepositOrder>('formData', { default: {} })
                     props.getStaffs()
                   }"
                 />
-              </n-form-item-gi>
-            </n-grid>
+              </n-form-item>
+            </common-layout-form>
           </div>
         </template>
       </common-card-info>

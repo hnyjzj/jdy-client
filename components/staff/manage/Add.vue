@@ -172,11 +172,11 @@ defineExpose({
               label-placement="top"
               size="medium"
             >
-              <n-grid :cols="24" :x-gap="8">
+              <common-layout-form>
                 <template v-for="(item, index) in props.filed" :key="index">
                   <template v-if="item.create">
-                    <n-form-item-gi
-                      :span="12"
+                    <n-form-item
+                      class="col-6"
                       :path="item.name"
                       :label="item.label">
                       <template v-if="item.input === 'text' && item.name !== 'nickname'">
@@ -239,10 +239,10 @@ defineExpose({
                       <template v-if="item.input === 'switch'">
                         <n-switch v-model:value="(formlist[item.name] as boolean)" size="medium" :style="{ 'border-radius': '20px' }" round />
                       </template>
-                    </n-form-item-gi>
+                    </n-form-item>
                   </template>
                 </template>
-              </n-grid>
+              </common-layout-form>
               <template v-if="props.showBotton">
                 <div class="grid-12 px-[26px]">
                   <div

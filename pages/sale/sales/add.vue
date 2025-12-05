@@ -245,10 +245,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div :key="Key" class="grid-12 pb-[16px]">
+  <div :key="Key" class="pb-[100px]">
     <template
       v-if="initFinished">
-      <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] pb-[80px] col-12" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3">
+      <common-layout-center>
         <n-form
           ref="formRef"
           :model="orderObject"
@@ -314,7 +314,7 @@ onMounted(async () => {
           />
           <common-button-bottom :cancle-show="false" confirm-text="开单" @confirm="handleValidateButtonClick" />
         </n-form>
-      </div>
+      </common-layout-center>
     </template>
     <common-confirm
       v-model:show="tipForm" icon="warning" title="提醒" text="检测到有未完成的新增订单,是否继续填写?" @cancel="() => {
