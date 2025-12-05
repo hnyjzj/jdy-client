@@ -130,7 +130,7 @@ const submitNewMember = async () => {
             </n-form-item-gi>
             <n-form-item-gi :span="6">
               <div class="w-full">
-                <common-button-rounded content="搜索" @button-click="searchMember(searchPhone)" />
+                <common-button-rounded content="搜索" size="16px" :is-blod="false" @button-click="searchMember(searchPhone)" />
               </div>
             </n-form-item-gi>
 

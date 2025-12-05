@@ -9,11 +9,15 @@ const props = withDefaults(defineProps<{
   margin?: string
   full?: boolean
   border?: string
+  size?: string
+  isBlod?: boolean
 }>(), {
   color: '',
   padding: '',
   margin: '0',
   full: false,
+  size: '14px',
+  isBlod: true,
 })
 
 const emits = defineEmits(['buttonClick'])
@@ -25,13 +29,15 @@ const handleClick = () => {
 <template>
   <div :style="props.full ? 'flex:1;' : ''">
     <div
-      class="flex-center-row font-bold text-3 rounded-3xl cursor-pointer flex-1"
+      class="flex-center-row  rounded-3xl cursor-pointer flex-1"
       :style="{
         color: props.color ? props.color : '#fff',
         background: props.bgc ? props.bgc : 'linear-gradient(#1A6BEB, #6EA6FF)',
         padding: props.padding ? props.padding : '8px 16px',
         margin: props.margin,
         border: props.border,
+        fontSize: props.size,
+        fontWeight: props.isBlod ? 'bold' : 'normal',
       }"
       @click="handleClick"
     >

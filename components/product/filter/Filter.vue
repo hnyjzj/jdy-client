@@ -35,7 +35,7 @@ const searchKey = defineModel<string>('searchKey', { required: false, default: '
 </script>
 
 <template>
-  <div class="text-color sticky top-0 z-1 ">
+  <div class="text-color sticky top-0 z-10 ">
     <div class="blur-bgc">
       <common-layout-center>
         <div class="flex flex-row gap-2">

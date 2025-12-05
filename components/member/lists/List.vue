@@ -88,7 +88,7 @@ const getStatusType = (status: number) => {
                   </div>
                 </div>
                 <div>
-                  <common-button-rounded padding="2px 16px" content="详情" @click="emits('goInfo', item.id)" />
+                  <common-button-rounded padding="4px 36px" content="详情" @click="emits('goInfo', item.id)" />
                 </div>
               </div>
             </template>
