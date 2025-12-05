@@ -112,7 +112,7 @@ const props = defineProps<{
 
 <style lang="scss" scoped>
 .info-row {
-  --uno: 'flex justify-between mb-2';
+  --uno: 'flex justify-between my-1';
   .info-title {
     --uno: 'text-color';
   }

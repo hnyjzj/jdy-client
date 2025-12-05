@@ -628,7 +628,7 @@ function removeImg(data: { index: number }) {
             </template>
           </common-card-info>
         </div>
-        <div class="info flex flex-col gap-4 rounded-6 blur-bga w-auto px-4 py-4 mb-6">
+        <div class="info flex flex-col rounded-6 blur-bga w-auto px-4 py-4 mb-6">
           <div class="flex flex-col gap-3">
             <common-tab-secondary :current-selected="product_status" :options="inventoryOptions" :info="checkInfo" @change-status="changeStatus" />
             <common-step :description="step" :active-index="checkInfo.status" />

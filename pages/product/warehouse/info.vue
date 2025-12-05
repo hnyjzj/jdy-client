@@ -227,7 +227,7 @@ async function downloadLocalFile() {
     <common-layout-center>
       <div class="pt-4">
         <div class="flex flex-col gap-4">
-          <div class="rounded-6 bg-white w-auto blur-bga top">
+          <div class="rounded-6 w-auto top">
             <common-card-info title="基础信息">
               <template #info>
                 <div class="flex flex-col gap-4">

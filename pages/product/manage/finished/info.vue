@@ -88,7 +88,7 @@ async function loss() {
         <div class="title">
           原因
         </div>
-        <textarea v-model="reason" resize="none" class="area" rows="4" cols="36" name="" />
+        <n-input v-model:value="reason" type="textarea" round placeholder="输入备注" />
       </div>
     </common-model>
   </div>

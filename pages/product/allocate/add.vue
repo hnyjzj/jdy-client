@@ -145,7 +145,7 @@ function handleValidateButtonClick() {
           <product-manage-company class="text-[#FFF]" />
         </div>
         <div class="flex flex-col gap-4">
-          <div class="rounded-6 bg-white w-auto blur-bga top">
+          <div class="rounded-6 w-auto top">
             <common-card-info title="新增调拨单">
               <template #info>
                 <n-form ref="formRef" :model="params" :rules="rules">
