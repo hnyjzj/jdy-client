@@ -256,7 +256,7 @@ onMounted(async () => {
           label-align="left"
           size="large"
         >
-          <div class="w-[120px] color-[#fff] pb-[12px]">
+          <div class="w-fit color-[#fff] pb-[12px]">
             <product-manage-company :confirm="true" @change="changeStore" />
           </div>
           <sale-add-base

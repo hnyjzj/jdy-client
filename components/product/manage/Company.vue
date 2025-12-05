@@ -67,6 +67,7 @@ async function changeStoer() {
 
 function handleSelect(id: Stores['id']) {
   saveStoreId.value = id
+  mask.value = false
   if (props.confirm) {
     columns.value = []
     useConfirmFunction()
@@ -89,7 +90,7 @@ const clickChange = async () => {
 </script>
 
 <template>
-  <div class="">
+  <div class="z-10">
     <div
       class="py-[6px] px-[16px] border-rd-full h-full flex-center-row cursor-pointer text-color"
       :style="{ background: 'transparent', color: isWhite ? '#fff' : '' }" @click="clickChange">
@@ -193,6 +194,7 @@ const clickChange = async () => {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
   .content {
     --uno: ' rounded-[8px]';
   }

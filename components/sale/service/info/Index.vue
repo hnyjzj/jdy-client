@@ -161,8 +161,8 @@ const confirmChange = async () => {
 </script>
 
 <template>
-  <div class="grid-12 gap-[12px]">
-    <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
+  <div class=" gap-[12px]">
+    <common-layout-center>
       <common-card-info title="基础信息">
         <template #info>
           <div class="info">
@@ -177,20 +177,20 @@ const confirmChange = async () => {
             <common-cell label="维修成本" :value="props.detail.cost" rcol="col-8" lcol="col-4" />
             <n-grid x-gap="12" :cols="2" :y-gap="12">
               <n-grid-item>
-                <div class="pb-[8px]">
+                <div class="pb-[8px] text-color">
                   维修项目
                 </div>
                 <n-input v-model:value="form.name" type="text" placeholder="维修项目" :disabled="props.detail.status === serviceOrderStatus.Completed" @focus="focus" />
               </n-grid-item>
               <n-grid-item>
-                <div class="pb-[8px]">
+                <div class="pb-[8px] text-color">
                   问题描述
                 </div>
                 <n-input v-model:value="form.desc" type="text" placeholder="问题描述" :disabled="props.detail.status === serviceOrderStatus.Completed" @focus="focus" />
               </n-grid-item>
 
               <n-grid-item>
-                <div class="pb-[8px]">
+                <div class="pb-[8px] text-color">
                   取货方式
                 </div>
                 <div>
@@ -210,14 +210,14 @@ const confirmChange = async () => {
               </n-grid-item>
               <template v-if="form.delivery_method === 2">
                 <n-grid-item :span="2">
-                  <div class="pb-[8px]">
+                  <div class="pb-[8px] text-color">
                     省市区选择
                   </div>
                   <common-area-select :disabled="props.detail.status === serviceOrderStatus.Completed" :border="areaBorder" :is-required="false" :showtitle="false" :form="region" />
                 </n-grid-item>
 
                 <n-grid-item :span="2">
-                  <div class="pb-[8px]">
+                  <div class="pb-[8px] text-color">
                     详细地址
                   </div>
                   <n-input v-model:value="form.address" type="text" placeholder="详细地址" :disabled="props.detail.status === serviceOrderStatus.Completed" @focus="focus" />
@@ -262,7 +262,8 @@ const confirmChange = async () => {
       <div class="pt-[16px]">
         <sale-service-add-pictures v-model:pictures="previewFileList" :detail="props.detail" :upload-file="uploadFile" />
       </div>
-    </div>
+    </common-layout-center>
+
     <div class="footer">
       <div class="grid-12 gap-[12px] px-[16px]">
         <div class="col-6 offset-3" uno-sm="col-4 offset-4">
