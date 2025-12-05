@@ -26,7 +26,7 @@ const handleValidateButtonClick = async () => {
 
 <template>
   <div class="w-full">
-    <div class="w-auto blur-bga rounded-[24px]  col-12 overflow-hidden">
+    <div class="w-auto  rounded-[24px]  col-12 overflow-hidden">
       <div class="rounded-[24px]">
         <common-card-info title="基本信息">
           <template #info>

@@ -12,16 +12,13 @@ const sex = (val: number) => {
 </script>
 
 <template>
-  <div class="mt-[24px]">
+  <div class="">
     <n-tabs
       type="segment" animated>
       <n-tab-pane name="chap1" tab="门店">
-        <div class="flex justify-center items-center">
-          <div class="w-[200px] mb-[12px]" />
-        </div>
         <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
           <template v-for="(item, index) in props.stores" :key="index">
-            <common-card-info :title=" item.alias || ''">
+            <common-card-info :title=" item.alias || ''" padding="12px">
               <template #info>
                 <div>
                   <div class=" p-[4px] grid-12">
@@ -54,14 +51,11 @@ const sex = (val: number) => {
         </template>
       </n-tab-pane>
       <n-tab-pane name="chap2" tab="负责人">
-        <div class="flex justify-center items-center">
-          <div class="w-[200px] mb-[12px]" />
-        </div>
-        <div class="grid-12 gap-[8px]">
+        <div class="grid-12 gap-x-[12px]">
           <template v-for="(item, index) in props.super" :key="index">
             <div
-              class="rounded-[24px] w-full col-12 blur-bgc p-[1px] mb-[12px]" uno-lg="col-6" uno-sm="col-12" uno-md="col-12" @click="navigateTo(`/manage/staffs/staff/info?id=${item.id}`)">
-              <common-card-info>
+              class="rounded-[24px] w-full col-12 p-[1px] " uno-lg="col-6" uno-sm="col-12" uno-md="col-12" @click="navigateTo(`/manage/staffs/staff/info?id=${item.id}`)">
+              <common-card-info padding="12px" padding-bottom="12px">
                 <template #avatar>
                   <div class="flex items-center" @click="navigateTo(`/manage/staffs/staff/info?id=${item.id}`)">
                     <common-avatar :size="24" rounded="4px" :img="ImageUrl(item.avatar)" />
@@ -109,14 +103,11 @@ const sex = (val: number) => {
         </template>
       </n-tab-pane>
       <n-tab-pane name="chap3" tab="员工">
-        <div class="flex justify-center items-center">
-          <div class="w-[200px] mb-[12px]" />
-        </div>
-        <div class="grid-12 gap-[8px]">
+        <div class="grid-12 gap-x-[12px]">
           <template v-for="(item, index) in props.list" :key="index">
             <div
-              class="rounded-[24px] w-full col-12 blur-bgc p-[1px] mb-[12px]" uno-lg="col-6" uno-sm="col-12" uno-md="col-12" @click="navigateTo(`/manage/staffs/staff/info?id=${item.id}`)">
-              <common-card-info>
+              class="rounded-[24px] w-full col-12  p-[1px] " uno-lg="col-6" uno-sm="col-12" uno-md="col-12" @click="navigateTo(`/manage/staffs/staff/info?id=${item.id}`)">
+              <common-card-info padding="12px" padding-bottom="12px">
                 <template #avatar>
                   <div class="flex items-center" @click="navigateTo(`/manage/staffs/staff/info?id=${item.id}`)">
                     <common-avatar :size="24" rounded="4px" :img="ImageUrl(item.avatar)" />
@@ -164,14 +155,11 @@ const sex = (val: number) => {
         </template>
       </n-tab-pane>
       <n-tab-pane name="chap4" tab="管理员">
-        <div class="flex justify-center items-center">
-          <div class="w-[200px] mb-[12px]" />
-        </div>
-        <div class="grid-12 gap-[8px]">
+        <div class="grid-12 gap-x-[12px]">
           <template v-for="(item, index) in props.admins" :key="index">
             <div
-              class="rounded-[24px] w-full col-12 blur-bgc p-[1px] mb-[12px]" uno-lg="col-6" uno-sm="col-12" uno-md="col-12" @click="navigateTo(`/manage/staffs/staff/info?id=${item.id}`)">
-              <common-card-info>
+              class="rounded-[24px] w-full col-12 p-[1px] " uno-lg="col-6" uno-sm="col-12" uno-md="col-12" @click="navigateTo(`/manage/staffs/staff/info?id=${item.id}`)">
+              <common-card-info padding="12px" padding-bottom="12px">
                 <template #avatar>
                   <div class="flex items-center" @click="navigateTo(`/manage/staffs/staff/info?id=${item.id}`)">
                     <common-avatar :size="24" rounded="4px" :img="ImageUrl(item.avatar)" />

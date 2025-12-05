@@ -22,18 +22,12 @@ const formatGender = (val: number): string => {
 
 <template>
   <div>
-    <div class="pb-4 flex-between">
-      <div class="text-[16px] font-semibold">
-        {{ props.title }}
-      </div>
-      <div />
-    </div>
     <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
       <template v-for="(item, index) in props.list" :key="index">
-        <div class="pb-[16px]">
-          <common-card-info>
+        <div class="">
+          <common-card-info padding="12px" padding-bottom="12px">
             <template #top>
-              <div class="flex items-center">
+              <div class="flex items-center h-full">
                 <common-avatar :size="24" rounded="4px" :img="ImageUrl(item.avatar)" />
                 <div class="ml-[8px] font-semibold text-size-[14px]">
                   {{ item.nickname || '' }}

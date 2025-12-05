@@ -16,7 +16,7 @@ if (route.query.id) {
     <common-layout-center>
       <div>
         <stores-info />
-        <div class="mt-[24px]">
+        <div class="">
           <n-tabs
             type="segment" animated
           >
