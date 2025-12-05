@@ -49,12 +49,12 @@ const returnGoods = (val: number) => {
                   </template>
                 </div>
               </div>
-              <div class="border-b-solid border-b-[#E0E0E0] border" />
+              <div class="line-space" />
               <common-cell label="会员姓名" :value="props.orders.member?.name || ''" />
               <common-cell label="会员昵称" :value="props.orders.member?.nickname || ''" />
               <common-cell label="手机号" :value="props.orders.member?.phone" />
               <common-cell label="会员等级" :value="props.orders.member?.level" />
-              <div class="border-b-solid border-b-[#E0E0E0] border" />
+              <div class="line-space" />
               <common-cell label="实付金额" format="￥" :value="props.orders.price_pay" />
               <common-cell label="支付方式" value=" " />
               <template v-for="(item, index) in props.orders.payments" :key="index">
@@ -83,7 +83,7 @@ const returnGoods = (val: number) => {
               <div class="info">
                 <template v-for="(item, index) in props.orders.products" :key="index">
                   <template v-if="index !== 0">
-                    <div class="border-b-solid border-b-[#E0E0E0] border" />
+                    <div class="line-space" />
                   </template>
                   <template v-if="item.is_our">
                     <common-cell label="商品条码" :value="item.product_finished?.code" />
@@ -110,7 +110,7 @@ const returnGoods = (val: number) => {
                   <common-cell label="定金金额" format="￥" :value="item.price" />
                   <template v-if="item.status === DepositOrderStatus.Returned">
                     <common-cell label="货品状态" value="已退款" val-color="#FF9900" />
-                    <div class="line" />
+                    <div class="line-space" />
                     <template v-for="(refund, i) in props.orders.order_refunds" :key="i">
                       <template v-if="refund.code === item.product_finished.code">
                         <common-cell label="退款时间" :value="formatTimestampToDateTime(item.created_at || '')" />

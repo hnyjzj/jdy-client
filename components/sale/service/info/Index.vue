@@ -247,7 +247,7 @@ const confirmChange = async () => {
                 <common-cell label="总重" :value="item.weight_total" rcol="col-8" lcol="col-4" />
                 <common-cell label="标签价" :value="item.label_price" rcol="col-8" lcol="col-4" />
                 <common-cell label="备注" :value="item.remark" rcol="col-8" lcol="col-4" />
-                <div class="line" />
+                <div class="line-space" />
                 <template
                   v-if="item.status === serviceOrderStatus.StoreReceived && props?.identity > 1 && props.store === props.detail.store_id">
                   <div class="flex-end">
