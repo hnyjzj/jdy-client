@@ -88,7 +88,7 @@ const checkRatio = () => {
 
 <template>
   <div>
-    <common-card-info :title="props.title">
+    <common-card-info :title="props.title" padding-bottom="0">
       <template #info>
         <div class="w-auto flex flex-col" uno-lg="grid grid-cols-1 gap-x-[16px] grid-cols-0">
           <n-grid :cols="24" :x-gap="12" responsive="screen">

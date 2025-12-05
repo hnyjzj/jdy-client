@@ -6,12 +6,17 @@ const props = defineProps<{
   tagText?: string | number
   status?: number
   statusMap?: { [key: number]: string }
+  paddingBottom?: string
 }>()
 </script>
 
 <template>
   <div
-    class="p-3 pb-2 mb-4 md:p-[24px] rounded-2 blur-bgc">
+    class="p-3 pb-2 mb-4 md:p-[24px] rounded-2 blur-bgc"
+    :style="{
+      paddingBottom: props.paddingBottom || '',
+    }"
+  >
     <div
       class="flex justify-between items-center pb-2"
     >
