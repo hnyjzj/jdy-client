@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<{
       />
     </div>
     <template v-if="props.text">
-      <div class="font-size-[14px] color-[#606266] pt-[24px]">
+      <div class="font-size-[14px] color-[#606266] pt-[8px]">
         {{ props.text }}
       </div>
     </template>

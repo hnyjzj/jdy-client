@@ -7,13 +7,15 @@ const props = defineProps<{
   status?: number
   statusMap?: { [key: number]: string }
   paddingBottom?: string
+  padding?: string
 }>()
 </script>
 
 <template>
   <div
-    class="p-3 pb-2 mb-4 md:p-[24px] rounded-2 blur-bgc"
+    class="p-3 mb-4 md:p-[24px] rounded-2 blur-bgc "
     :style="{
+      padding: props.padding || '',
       paddingBottom: props.paddingBottom || '',
     }"
   >
