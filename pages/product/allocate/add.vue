@@ -149,8 +149,8 @@ function handleValidateButtonClick() {
             <common-card-info title="新增调拨单">
               <template #info>
                 <n-form ref="formRef" :model="params" :rules="rules">
-                  <n-grid :cols="24" :x-gap="8">
-                    <n-form-item-gi :span="12" path="method" required :label="allocateFilterList.method?.label">
+                  <common-layout-form>
+                    <n-form-item class="col-6" path="method" required :label="allocateFilterList.method?.label">
                       <n-select
                         v-model:value="params.method"
                         menu-size="large"
@@ -161,8 +161,8 @@ function handleValidateButtonClick() {
                           storeCol = []
                         }"
                       />
-                    </n-form-item-gi>
-                    <n-form-item-gi :span="12" path="type" required label="仓库类型">
+                    </n-form-item>
+                    <n-form-item class="col-6" path="type" required label="仓库类型">
                       <n-select
                         v-model:value="params.type"
                         menu-size="large"
@@ -171,9 +171,9 @@ function handleValidateButtonClick() {
                         clearable
                         :disabled="type"
                       />
-                    </n-form-item-gi>
+                    </n-form-item>
                     <template v-if="params.method === 1">
-                      <n-form-item-gi :span="12" path="to_store_id" label="调入门店" required>
+                      <n-form-item class="col-6" path="to_store_id" label="调入门店" required>
                         <n-select
                           v-model:value="params.to_store_id"
                           menu-size="large"
@@ -183,10 +183,10 @@ function handleValidateButtonClick() {
                           filterable
                           @focus="getStoreFun(false)"
                         />
-                      </n-form-item-gi>
+                      </n-form-item>
                     </template>
                     <template v-if="params.method === 2">
-                      <n-form-item-gi :span="12" path="to_headquarters_id" label="调入总部" required>
+                      <n-form-item class="col-6" path="to_headquarters_id" label="调入总部" required>
                         <n-select
                           v-model:value="params.to_headquarters_id"
                           menu-size="large"
@@ -195,9 +195,9 @@ function handleValidateButtonClick() {
                           clearable
                           @focus="getStoreFun(true)"
                         />
-                      </n-form-item-gi>
+                      </n-form-item>
                     </template>
-                    <n-form-item-gi :span="12" path="reason" required label="调拨原因">
+                    <n-form-item class="col-6" path="reason" required label="调拨原因">
                       <n-select
                         v-model:value="params.reason"
                         menu-size="large"
@@ -205,11 +205,11 @@ function handleValidateButtonClick() {
                         :options="presetToSelect('reason') "
                         clearable
                       />
-                    </n-form-item-gi>
-                    <n-form-item-gi :span="12" path="remark" label="备注">
+                    </n-form-item>
+                    <n-form-item class="col-6" path="remark" label="备注">
                       <n-input v-model:value="params.remark" type="textarea" round placeholder="输入备注" />
-                    </n-form-item-gi>
-                  </n-grid>
+                    </n-form-item>
+                  </common-layout-form>
                 </n-form>
               </template>
             </common-card-info>

@@ -149,12 +149,12 @@ async function getStoreStaffListFun() {
             <common-card-info title="新增盘点单">
               <template #info>
                 <n-form ref="formRef" :model="params" :rules="rules">
-                  <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-8">
+                  <common-layout-form>
                     <template v-for="(item, index) in checkFilterListToArray" :key="index">
                       <!-- 大类 -->
                       <template v-if="item.name === 'class_finished' || item.name === 'class_old'">
                         <template v-if="item.name === isClass()">
-                          <n-form-item v-if="canShowFilter(item)" :path="item.name" :required="true" :label="item.label">
+                          <n-form-item v-if="canShowFilter(item)" class="col-6" :path="item.name" :required="true" :label="item.label">
                             <n-select
                               v-model:value="params[item.name]"
                               multiple
@@ -183,7 +183,7 @@ async function getStoreStaffListFun() {
                         </template>
                       </template>
                       <template v-else>
-                        <n-form-item v-if="canShowFilter(item)" :path="item.name" :required="item.required" :label="item.label">
+                        <n-form-item v-if="canShowFilter(item)" class="col-6" :path="item.name" :required="item.required" :label="item.label">
                           <template v-if="item.input === 'select'">
                             <template v-if="item.name === 'type'">
                               <n-select
@@ -290,7 +290,7 @@ async function getStoreStaffListFun() {
                         </n-form-item>
                       </template>
                     </template>
-                  </div>
+                  </common-layout-form>
                 </n-form>
               </template>
             </common-card-info>

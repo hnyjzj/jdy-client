@@ -124,52 +124,50 @@ const changeStore = () => {
 </script>
 
 <template>
-  <div :key="Key">
-    <div class="grid-12">
-      <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] pb-[80px] col-12" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3">
-        <n-form
-          ref="formRef"
-          :model="formData"
-          :rules="rules"
-          label-align="left"
-          size="large"
-        >
-          <div class="w-[120px] color-[#fff] pb-[12px]">
-            <product-manage-company :confirm="true" @change="changeStore" />
-          </div>
-          <sale-deposit-staff v-model:form-data="formData" :staffs="StoreStaffList" :get-staffs="getStaff" />
-          <sale-add-member
-            v-model="orderObject"
-            :get-member="getMember"
-            :store="myStore"
-            :staffs="StoreStaffList"
-            :get-staffs="getStaff"
-            :add-new-member="addNewMember"
-            @set-member-id="formData.member_id = $event"
+  <div :key="Key" class="pb-[100px]">
+    <common-layout-center>
+      <n-form
+        ref="formRef"
+        :model="formData"
+        :rules="rules"
+        label-align="left"
+        size="large"
+      >
+        <div class="w-[120px] color-[#fff] pb-[12px]">
+          <product-manage-company :confirm="true" @change="changeStore" />
+        </div>
+        <sale-deposit-staff v-model:form-data="formData" :staffs="StoreStaffList" :get-staffs="getStaff" />
+        <sale-add-member
+          v-model="orderObject"
+          :get-member="getMember"
+          :store="myStore"
+          :staffs="StoreStaffList"
+          :get-staffs="getStaff"
+          :add-new-member="addNewMember"
+          @set-member-id="formData.member_id = $event"
+        />
+
+        <div class="pb-[16px]">
+          <sale-deposit-product
+            v-model="showProductList"
+            :search-product-list="searchProductList"
+            :filter-list="finishedFilterList"
           />
+        </div>
 
-          <div class="pb-[16px]">
-            <sale-deposit-product
-              v-model="showProductList"
-              :search-product-list="searchProductList"
-              :filter-list="finishedFilterList"
-            />
-          </div>
+        <div class="pb-[16px]">
+          <sale-deposit-balance v-model:userremark="userremark" v-model="formData" v-model:list="showProductList" :filter-list="filterList" :get-search-phrase="getSearchPhrase" />
+        </div>
 
-          <div class="pb-[16px]">
-            <sale-deposit-balance v-model:userremark="userremark" v-model="formData" v-model:list="showProductList" :filter-list="filterList" :get-search-phrase="getSearchPhrase" />
-          </div>
-
-          <div class="h-[80px] bg-[#fff] fixed z-1">
-            <div class="btn grid-12 px-[16px]">
-              <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
-                <common-button-rounded content="开单" />
-              </div>
+        <div class="h-[80px] bg-[#fff] fixed z-1">
+          <div class="btn grid-12 px-[16px]">
+            <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
+              <common-button-rounded content="开单" />
             </div>
           </div>
-        </n-form>
-      </div>
-    </div>
+        </div>
+      </n-form>
+    </common-layout-center>
     <common-loading v-model="layoutLoading" />
   </div>
 </template>

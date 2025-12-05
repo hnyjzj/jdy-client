@@ -21,8 +21,8 @@ const formlist = defineModel({ default: {
   is_disabled: false,
   store_ids: [],
   store_superior_ids: [],
-  region_ids: [],
-  region_superior_ids: [],
+  ron_ids: [],
+  ron_superior_ids: [],
 } as updateStaffForm })
 
 const toPinyin = () => {
@@ -140,9 +140,9 @@ defineExpose({
               label-placement="top"
               size="medium"
             >
-              <n-grid :cols="24" :x-gap="8">
-                <n-form-item-gi
-                  :span="12"
+              <common-layout-form>
+                <n-form-item
+                  class="col-6"
                   label="头像">
                   <n-upload
                     :key="keyUpload"
@@ -155,8 +155,8 @@ defineExpose({
                     @before-upload="beforeUpload"
                     @preview="showModalRef = true"
                   />
-                </n-form-item-gi>
-                <n-form-item-gi :span="12" label="手机号" path="phone">
+                </n-form-item>
+                <n-form-item class="col-6" label="手机号" path="phone">
                   <n-input
                     v-model:value="formlist.phone"
                     placeholder="请输入手机号"
@@ -164,8 +164,8 @@ defineExpose({
                     round
                     @focus="focus"
                   />
-                </n-form-item-gi>
-                <n-form-item-gi :span="12" label="用户名" path="username">
+                </n-form-item>
+                <n-form-item class="col-6" label="用户名" path="username">
                   <n-input
                     v-model:value="formlist.username"
                     placeholder="请输入用户名"
@@ -174,8 +174,8 @@ defineExpose({
                     @focus="focus"
 
                   />
-                </n-form-item-gi>
-                <n-form-item-gi :span="12" label="姓名" path="nickname">
+                </n-form-item>
+                <n-form-item class="col-6" label="姓名" path="nickname">
                   <n-input
                     v-model:value="formlist.nickname"
                     placeholder="请输入姓名"
@@ -184,19 +184,19 @@ defineExpose({
                     @focus="focus"
                     @blur="toPinyin"
                   />
-                </n-form-item-gi>
-                <n-form-item-gi :span="12" label="email" path="email">
+                </n-form-item>
+                <n-form-item class="col-6" label="email" path="email">
                   <n-input
                     v-model:value="formlist.email"
                     placeholder="请输入email"
                     round
                     @focus="focus"
                   />
-                </n-form-item-gi>
-                <n-form-item-gi :span="12" label="上级" path="leader_name">
+                </n-form-item>
+                <n-form-item class="col-6" label="上级" path="leader_name">
                   <n-select v-model:value="formlist.leader_name" clearable :options="options" placeholder="请选择上级" @click="selectPer" />
-                </n-form-item-gi>
-                <n-form-item-gi :span="12" label="性别" path="gender">
+                </n-form-item>
+                <n-form-item class="col-6" label="性别" path="gender">
                   <n-radio-group v-model:value="formlist.gender">
                     <n-space>
                       <template v-for="(item, index) in genderList" :key="index">
@@ -211,9 +211,8 @@ defineExpose({
                       </template>
                     </n-space>
                   </n-radio-group>
-                </n-form-item-gi>
-              </n-grid>
-
+                </n-form-item>
+              </common-layout-form>
               <div class="grid-12 px-[26px]">
                 <div
                   class="font-semibold cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">

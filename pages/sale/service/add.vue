@@ -179,8 +179,8 @@ const orderObject = ref<Orders>({} as Orders)
 
 <template>
   <div>
-    <div :key="Key" class="grid-12">
-      <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] pb-[80px] col-12" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3">
+    <div :key="Key" class="pb-[100px]">
+      <common-layout-center>
         <n-form
           ref="formRef"
           :model="formData"
@@ -233,7 +233,7 @@ const orderObject = ref<Orders>({} as Orders)
             </div>
           </div>
         </n-form>
-      </div>
+      </common-layout-center>
     </div>
     <common-loading v-model="layoutLoading" />
   </div>

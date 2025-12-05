@@ -153,7 +153,7 @@ const searchRmk = async (query: string) => {
       <div>
         <div>
           <n-grid :cols="24">
-            <n-form-item-gi
+            <n-form-item
               :span="16"
               label="积分抵扣" label-placement="left"
             >
@@ -164,7 +164,7 @@ const searchRmk = async (query: string) => {
                 placeholder="抵扣积分值"
                 @focus="focus"
               />
-            </n-form-item-gi>
+            </n-form-item>
           </n-grid>
 
           <div class="text-[12px] color-[#666] dark:color-[#fff]">
@@ -187,9 +187,9 @@ const searchRmk = async (query: string) => {
         <div class=" ">
           <template v-for="(item, index) in orderObject.payments" :key="index">
             <div>
-              <n-grid :cols="24" :x-gap="8">
-                <n-form-item-gi
-                  :span="12"
+              <common-layout-form>
+                <n-form-item
+                  class="col-6"
                   label="支付方式" label-placement="top"
                   :path="`payments[${index}].payment_method`"
                   :rule="{
@@ -203,9 +203,9 @@ const searchRmk = async (query: string) => {
                     v-model:value="item.payment_method"
                     :options="payMethods"
                   />
-                </n-form-item-gi>
-                <n-form-item-gi
-                  :span="12"
+                </n-form-item>
+                <n-form-item
+                  class="col-6"
                   label="金额" label-placement="top"
                 >
                   <div class="w-full">
@@ -229,8 +229,8 @@ const searchRmk = async (query: string) => {
                       </div>
                     </template>
                   </div>
-                </n-form-item-gi>
-              </n-grid>
+                </n-form-item>
+              </common-layout-form>
             </div>
           </template>
         </div>
