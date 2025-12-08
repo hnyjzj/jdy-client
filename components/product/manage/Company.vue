@@ -120,6 +120,7 @@ const clickChange = async () => {
             <template v-for="item in filteredColumns" :key="item.key">
               <div
                 class="py-[12px] px-[16px]
+                    text-color
                     line-color-b cursor-pointer
                     light:hover:bg-[#f5f5f5]
                     dark:hover:bg-[#1C3A62]

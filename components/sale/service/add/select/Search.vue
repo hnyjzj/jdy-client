@@ -84,24 +84,13 @@ const scanCode = async () => {
 <template>
   <div>
     <common-model
-      v-model="searchShow" title="搜索" :show-ok="true" :show-cancel="true" @confirm="searchConfirm()" @cancel="() => {
+      v-model="searchShow" title="条码搜索" :show-ok="true" :show-cancel="true" @confirm="searchConfirm()" @cancel="() => {
         searchCode = ''
         nowServiceGoods = {}
         searchShow = false
       }">
-      <div class="grid-12 h-[300px] overflow-y-scroll">
+      <div class="grid-12 h-[400px] overflow-y-auto">
         <div class="col-12">
-          <div>
-            <div class="flex  py-[12px]">
-              <div
-                class="flex-center-col">
-                <div class="text-[16px] pb-[2px] font-semibold line-height-[24px]" :style="{ color: '#333' }">
-                  条码搜索
-                </div>
-                <div class="w-[32px] h-[4px] rounded" :style="{ background: '#2080F0' }" />
-              </div>
-            </div>
-          </div>
           <div class="flex items-center pb-[16px]">
             <div class="flex-1">
               <n-input
@@ -115,11 +104,13 @@ const scanCode = async () => {
               <n-button type="info" round @click="search()">
                 搜索
               </n-button>
-              <div class="pl-[8px]">
-                <n-button strong secondary type="info" round @click="scanCode()">
-                  扫码
-                </n-button>
-              </div>
+              <template v-if="checkEnv()">
+                <div class="pl-[8px]">
+                  <n-button strong secondary type="info" round @click="scanCode()">
+                    扫码
+                  </n-button>
+                </div>
+              </template>
             </div>
           </div>
           <div class=" py-[16px]">
