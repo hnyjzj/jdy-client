@@ -531,9 +531,7 @@ const printFun = async () => {
     <product-upload-choose v-model:is-model="isChooseModel" title="调拨" @go-add="isChooseModel = false; isAddModel = true" @batch="isImportModel = true" />
     <product-allocate-force ref="uploadRef" v-model="isImportModel" @upload="submitGoods" />
     <common-loading v-model="loading" title="正在处理中" />
-    <template v-if="allocateInfo.from_store_id && allocateInfo.to_store_id">
-      <correspond-store :correspond-ids="[allocateInfo.from_store_id, allocateInfo.to_store_id]" />
-    </template>
+    <correspond-store :correspond-ids="[allocateInfo.from_store_id || '', allocateInfo.to_store_id || '']" />
   </div>
 </template>
 

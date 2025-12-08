@@ -762,9 +762,7 @@ function removeImg(data: { index: number }) {
       @cancel="confirmShow = false"
     />
     <common-loading v-model="loading" text="正在处理中" />
-    <template v-if="checkInfo.store_id">
-      <correspond-store :correspond-ids="[checkInfo.store_id]" />
-    </template>
+    <correspond-store :correspond-ids="[checkInfo.store_id]" />
     <product-check-warehouse ref="uploadRef" v-model="importModel" @upload="bulkupload" />
   </div>
 </template>
