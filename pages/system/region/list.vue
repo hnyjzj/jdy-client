@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { NButton } from 'naive-ui'
-
 useSeoMeta({
   title: '区域',
 })
@@ -242,7 +240,7 @@ const cols = [
         @submit="newRegion"
       />
     </common-model>
-    <common-confirm v-model:show="deleteDialog" text="确认删除此区域吗?" @submit="confirmDelete" />
+    <common-confirm v-model:show="deleteDialog" icon="error" text="确认删除此区域吗?" @submit="confirmDelete" />
     <common-create @create="newAdd()" />
     <common-filter-where v-model:show="show" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetwhere" />
   </div>

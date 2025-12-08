@@ -178,7 +178,7 @@ const complate = ref(0)
       <stores-add-update
         v-model="addorUpdateForm" @submit="newStore" @change-region="getList" />
     </common-model>
-    <common-confirm v-model:show="deleteDialog" text="确认删除此门店吗?" @submit="confirmDelete" />
+    <common-confirm v-model:show="deleteDialog" icon="error" text="确认删除此门店吗?" @submit="confirmDelete" />
 
     <common-create @create="newAdd()" />
 
