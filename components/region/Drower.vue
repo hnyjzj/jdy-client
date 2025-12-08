@@ -36,17 +36,8 @@ const ConfirmUse = async () => {
     saveRegionId.value = ''
   }
 }
-const searchKeyword = ref<string>('')
-const filteredColumns = computed(() => {
-  if (!searchKeyword.value)
-    return columns.value || []
-  return (columns.value || []).filter((item: { label: string }) =>
-    item.label.toLowerCase().includes(searchKeyword.value.toLowerCase()),
-  )
-})
-const show = ref<boolean>(false)
+
 async function changeRegion() {
-  show.value = true
   await getList()
   columns.value = []
   if (!myRegionList.value.length) {
@@ -74,46 +65,20 @@ function handleSelect(id: Stores['id']) {
 </script>
 
 <template>
-  <div class="">
-    <div
-      class="py-[8px] px-[12px] border-rd-full h-full flex-center-row  cursor-pointer"
-      @click="changeRegion">
-      <client-only>
-        <div class="store-name font-bold text-size-[14px] mr-[4px]">
-          {{ myRegion.name || '选择区域' }}
-        </div>
-      </client-only>
-      <icon name="i-icon:product-toggle" :size="18" />
-    </div>
-    <common-model v-model="show" title="切换区域" :show-cancel="false">
-      <div>
-        <div class="py-[16px]">
-          <n-input
-            v-model:value="searchKeyword"
-            placeholder="搜索区域名称"
-            clearable
-            :item-style="{ background: '#333' }"
-          >
-            <template #prefix>
-              <icon name="i-icon:search" :size="16" />
-            </template>
-          </n-input>
-        </div>
-        <div class="h-[270px] overflow-y-auto">
-          <template v-for="value in filteredColumns" :key="value.key">
-            <div
-              class="py-[12px] px-[16px]
-                    text-color
-                    line-color-b cursor-pointer
-                    light:hover:bg-[#f5f5f5]
-                    dark:hover:bg-[#1C3A62]
-                    hover:rounded-[4px]" @click="handleSelect(value.key)">
-              {{ value.label }}
-            </div>
-          </template>
-        </div>
+  <div>
+    <n-dropdown trigger="click" placement="bottom-start" :options="columns" :style="{ maxHeight: props.maxHeight, overflowY: 'auto' }" @select="handleSelect">
+      <div
+        class="py-[6px] px-[12px] border-[1px] border-solid border-[#D8DAE3] border dark:border-[#243F69] dark:color-[#D7DCE4] light:bg-[#F1F5FE] dark:bg-[#243F69] border-rd-full h-full flex-center-row cursor-pointer"
+        @click="changeRegion">
+        <client-only>
+          <div class="store-name font-bold text-size-[14px] mr-[4px]">
+            {{ myRegion.name || '选择区域' }}
+          </div>
+        </client-only>
+        <icon name="i-icon:product-toggle" :size="24" />
       </div>
-    </common-model>
+    </n-dropdown>
+
     <common-confirm
       v-model:show="confirmShow"
       title="提示"
@@ -130,9 +95,17 @@ function handleSelect(id: Stores['id']) {
 
 <style lang="scss" scoped>
 .store-name {
+  width: 80%;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   word-break: break-all;
+}
+</style>
+
+<style lang="scss">
+.n-dropdown-option-body__label {
+  display: flex;
+  align-items: center;
 }
 </style>

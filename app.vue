@@ -121,6 +121,17 @@ const darkThemeOverrides: GlobalThemeOverrides = {
   Drawer: {
     BackgroundColor: 'transparent',
   },
+  Dropdown: {
+    // 下拉菜单背景色
+    color: '#0F1E52',
+    // 选项文字颜色
+    optionTextColor: '#D8DAE3',
+    optionTextColorHover: '#D8DAE3',
+    // 选项背景色
+    optionColor: '#253262',
+    optionColorActive: '#253262',
+    optionColorHover: '#253262',
+  },
   Input: {
     color: '#243F69',
     caretColor: '#0068ff',

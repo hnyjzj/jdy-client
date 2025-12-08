@@ -58,7 +58,7 @@ const handleValidateButtonClick = (e: MouseEvent) => {
       <div class=" flex-col justify-between">
         <div class="pb-[40px]">
           <div class="w-fit pb-[12px]">
-            <region-change @change="emits('changeRegion')" />
+            <region-drower @change="emits('changeRegion')" />
           </div>
           <n-form-item label="门店名称" path="name">
             <n-input v-model:value="addorUpdateForm.name" placeholder="请输入门店名称" round clearable @focus="focus" />
@@ -70,7 +70,6 @@ const handleValidateButtonClick = (e: MouseEvent) => {
             <n-input v-model:value="addorUpdateForm.phone" placeholder="请输入联系电话" round clearable @focus="focus" />
           </n-form-item>
         </div>
-
         <div @click="handleValidateButtonClick">
           <common-button-rounded content="确定" />
         </div>

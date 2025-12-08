@@ -174,7 +174,7 @@ const searchRmk = async (query: string) => {
             2.设置了开单积分抵扣比例的，这里不能填写积分，会根据积分抵扣金额自动算积分
           </div>
         </div>
-        <div class="border-y-[#E6E6E8] border border-b-solid py-[12px] mb-[12px]">
+        <div class="line-color-b py-[12px] mb-[12px]">
           <common-cell label="货品金额" :value="productMoney" />
           <common-cell label="配件礼品" :value="PartsListMoney" />
           <common-cell label="旧料抵扣" :value="masterMoney" />
@@ -234,7 +234,7 @@ const searchRmk = async (query: string) => {
             </div>
           </template>
         </div>
-        <div class="border-t-[#E6E6E8] border border-t-solid py-[12px] mb-[12px]">
+        <div class="line-color-t py-[12px] mb-[12px]">
           <div class="text-[16px] color-[#3971F3] line-height-[24px] text-right font-semibold">
             剩余未支付:{{ unPayMoney }}
           </div>

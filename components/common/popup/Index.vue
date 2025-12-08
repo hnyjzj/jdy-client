@@ -84,7 +84,7 @@ function close() {
   box-shadow: 0px -1px 15px 0px #0000001a;
 }
 .top {
-  --uno: 'p-3 flex justify-between items-center border-rd-[20px_0_0_0] blur-bga';
+  --uno: 'p-3 flex justify-between items-center  blur-bga';
 }
 .title-content {
   --uno: 'absolute left-24 top-6 z-3 text-#fff font-bold';

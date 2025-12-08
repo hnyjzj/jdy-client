@@ -102,7 +102,7 @@ onBeforeUnmount (() => {
   --uno: 'flex-between';
 }
 .cancel-btn {
-  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#1a6beb] font-bold';
+  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#1a6beb] font-bold dark:bg-#ededed dark:border-none';
   border: 1px solid #3971f3;
 }
 
