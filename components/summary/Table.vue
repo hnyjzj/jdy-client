@@ -145,13 +145,13 @@ const tdColor = computed(() => {
                 <template v-if="toggleChart === 'list'">
                   <div class="flex gap-[6px]">
                     <icon name="i-icon:data-bar-chart" color="#0068FF" :size="16" />
-                    <span class="text-[14px]">图表</span>
+                    <span class="text-[14px] text-color">图表</span>
                   </div>
                 </template>
                 <template v-else>
                   <div class="flex gap-[6px]">
                     <icon name="i-icon:data-table-chart" color="#0068FF" :size="16" />
-                    <span class="text-[14px]">表格</span>
+                    <span class="text-[14px] text-color">表格</span>
                   </div>
                 </template>
               </div>
