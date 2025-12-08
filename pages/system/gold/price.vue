@@ -246,17 +246,14 @@ function subtract(i: number, id: GoldPrices['id']) {
   --uno: 'bg-[rgba(199,218,255,1)] py-[4px] px-4 text-[rgba(75,87,109,1)] rounded-full';
 }
 .confirm-btn {
-  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#fff] font-bold ';
+  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#FFF] font-bold';
   background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-  box-shadow: rgba(57, 113, 243, 0.24) 0px 8px 8px 0;
 }
 .cancel-btn {
-  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#1a6beb] font-bold';
-  background: #fff;
-  box-shadow: rgba(82, 130, 241, 0.24) 0px 8px 8px 0;
+  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#3971F3] font-bold';
+  border: 1px solid #3971f3;
 }
 .bottom-fun {
-  --uno: 'flex-between pt-4';
-  border-top: rgba(230, 230, 232, 1) solid 1px;
+  --uno: 'flex-between';
 }
 </style>
