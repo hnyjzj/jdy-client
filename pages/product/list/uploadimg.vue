@@ -196,6 +196,9 @@ async function uploadImg() {
                   :on-change="handleFileChange"
                   show-download-button
                   :show-progress="true"
+                  :theme-overrides="{
+                    draggerBorderHover: '1px dashed #0068ff',
+                  }"
                   @remove="(file) => removeImg(file)"
                 />
               </div>
