@@ -1,10 +1,8 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
   confirm?: boolean
-  maxHeight?: string
 }>(), {
   confirm: false,
-  maxHeight: '400px',
 })
 
 const emits = defineEmits(['change'])

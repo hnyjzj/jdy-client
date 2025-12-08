@@ -51,7 +51,7 @@ const searchRmk = async (query: string) => {
     <common-card-info title="结算信息">
       <template #info>
         <div>
-          <div class="border-b-[#E6E6E8] border border-b-solid pb-[16px]">
+          <div class="line-color-b text-color pb-[16px]">
             订金金额:￥{{ depositAmount }}
           </div>
           <div class="pt-[16px]">
@@ -104,7 +104,7 @@ const searchRmk = async (query: string) => {
               </div>
             </template>
           </div>
-          <div class="border-b-[#E6E6E8] border border-b-solid py-[12px] mb-[12px]">
+          <div class="line-color-b py-[12px] mb-[12px]">
             <div class="text-[16px] color-[#3971F3] line-height-[24px] text-right font-semibold">
               剩余未支付:{{ unPayMoney }}
             </div>

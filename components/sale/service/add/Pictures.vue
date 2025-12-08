@@ -43,9 +43,12 @@ const removeFile = (options: { file: UploadFileInfo, fileList: Array<UploadFileI
   <div>
     <common-card-info title="添加维修相关图片">
       <template #info>
-        <div class="p-[16px]">
+        <div class="p-[16px] color-[#0068FF] dark:color-[#fff]">
           <n-upload
             action="#"
+            :style="{
+              '--n-dragger-border-hover': '#0068FF',
+            }"
             :custom-request="customRequest"
             :default-file-list="previewFileList"
             list-type="image-card"

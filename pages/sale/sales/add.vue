@@ -330,12 +330,4 @@ onMounted(async () => {
 .n-input-number {
   width: 100%;
 }
-.btn {
-  --uno: 'fixed bottom-0 left-0 right-0 blur-bga pt-20px pb-[28px] text-[16px] font-bold border-t-[1px] border-t-solid border-[#E0E0E0]';
-  &-right {
-    background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-    box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
-    --uno: 'text-[16px] py-[8px] border-none flex-1 rounded-[36px] ml-[8px] text-[#FFFFFF]';
-  }
-}
 </style>

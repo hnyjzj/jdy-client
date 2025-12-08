@@ -54,7 +54,7 @@ const confirm = () => {
 
 <style lang="scss" scoped>
 .btn {
-  --uno: 'fixed bottom-0 left-0 right-0 blur-bgc p-[12px_16px] text-[16px] font-bold ';
+  --uno: 'fixed bottom-0 left-0 right-0 blur-bgc p-[12px_16px] text-[16px] font-bold z-3';
   box-shadow: 0px -1px 15px 0px #0000001a;
   &-left {
     --uno: 'text-[16px]  bg-transparent  py-[8px] border-none flex-1 text-center rounded-[36px] mr-[8px] text-#3971f3';

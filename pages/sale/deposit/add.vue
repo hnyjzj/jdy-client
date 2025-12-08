@@ -159,26 +159,9 @@ const changeStore = () => {
           <sale-deposit-balance v-model:userremark="userremark" v-model="formData" v-model:list="showProductList" :filter-list="filterList" :get-search-phrase="getSearchPhrase" />
         </div>
 
-        <div class="h-[80px] bg-[#fff] fixed z-1">
-          <div class="btn grid-12 px-[16px]">
-            <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
-              <common-button-rounded content="开单" />
-            </div>
-          </div>
-        </div>
+        <common-button-bottom content="开单" :cancle-show="false" @click="handleValidateButtonClick" />
       </n-form>
     </common-layout-center>
     <common-loading v-model="layoutLoading" />
   </div>
 </template>
-
-<style lang="scss" scoped>
-.btn {
-  --uno: 'fixed bottom-0 left-0 right-0 blur-bga pt-20px pb-[28px] text-[16px] font-bold border-t-[1px] border-t-solid border-[#E0E0E0]';
-  &-right {
-    background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-    box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
-    --uno: 'text-[16px] py-[8px] border-none flex-1 rounded-[36px] ml-[8px] text-[#FFFFFF]';
-  }
-}
-</style>
