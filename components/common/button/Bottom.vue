@@ -57,13 +57,13 @@ const confirm = () => {
   --uno: 'fixed bottom-0 left-0 right-0 blur-bgc p-[12px_16px] text-[16px] font-bold z-3';
   box-shadow: 0px -1px 15px 0px #0000001a;
   &-left {
-    --uno: 'text-[16px]  bg-transparent  py-[8px] border-none flex-1 text-center rounded-[36px] mr-[8px] text-#3971f3';
+    --uno: 'text-[16px]  bg-transparent  py-[7px] border-none flex-1 text-center rounded-[36px] mr-[8px] text-#3971f3';
     border: 1px solid #3971f3;
   }
 
   &-right {
     background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-    --uno: 'text-[16px] py-[8px] border-none flex-1 rounded-[36px] ml-[8px] text-[#FFFFFF]';
+    --uno: 'text-[16px] py-[7px] border-none flex-1 rounded-[36px] ml-[8px] text-[#FFFFFF]';
   }
 }
 </style>

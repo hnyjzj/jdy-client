@@ -69,7 +69,7 @@ const execute = async () => {
       </common-layout-center>
     </div>
 
-    <common-button-bottom confirm-text="确认新增" cancel-text="取消" @confirm="execute" @cancel="backtrack" />
+    <common-button-bottom confirm-text="提交新增" :cancle-show="false" @confirm="execute" @cancel="backtrack" />
   </div>
 </template>
 
