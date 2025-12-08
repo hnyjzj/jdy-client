@@ -104,7 +104,7 @@ const themeOverrides: GlobalThemeOverrides = {
     colorSegment: '#E6EDF5', // 标签背景颜色
     tabTextColorActiveSegment: '#fff', // 激活标签颜色
     tabTextColorHoverSegment: '#000', // 悬停标签颜色
-    tabColorSegment: '#1A6DD8', // 激活标签颜色
+    tabColorSegment: '#3F8CFF', // 激活标签颜色
     tabTextColorActiveBar: '#fff', // 激活标签颜色
     tabTextColorActiveCard: '#fff', // 悬停标签颜色
   },
@@ -186,7 +186,7 @@ const darkThemeOverrides: GlobalThemeOverrides = {
     colorSegment: '#1D2C60', // 标签背景颜色
     tabTextColorActiveSegment: '#fff', // 激活标签颜色
     tabTextColorHoverSegment: '#fff', // 悬停标签颜色
-    tabColorSegment: '#1A6DD8', // 激活标签颜色
+    tabColorSegment: '#3F8CFF', // 激活标签颜色
     tabTextColorActiveBar: '#fff', // 激活标签颜色
     tabTextColorHoverCard: '#fff', // 悬停标签颜色
   },

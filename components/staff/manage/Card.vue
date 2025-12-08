@@ -96,10 +96,8 @@ const deleteConfirm = async () => {
               <div />
             </template>
 
-            <div class="flex-between">
-              <div class="pr-[36px] color-[#1F6FEC] cursor-pointer" @click="router.push(`/manage/staffs/staff/info?id=${item.id}`)">
-                详情
-              </div>
+            <div class="flex-between gap-[8px]">
+              <common-button-rounded color="#0068FF" border="1px solid #0068FF" content="详情" bgc="#fff" padding="3px 36px" @button-click="router.push(`/manage/staffs/staff/info?id=${item.id}`)" />
               <common-button-rounded content="编辑" padding="4px 36px" @button-click="toEdit(item.id as string, item.identity as number)" />
             </div>
           </div>

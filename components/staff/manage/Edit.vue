@@ -142,7 +142,7 @@ defineExpose({
             >
               <common-layout-form>
                 <n-form-item
-                  class="col-6"
+                  class="col-12"
                   label="头像">
                   <n-upload
                     :key="keyUpload"
@@ -246,5 +246,9 @@ defineExpose({
 
 .n-radio .n-radio__dot.n-radio__dot--checked {
   box-shadow: inset 0 0 0 1px #0068ff;
+}
+:deep(.n-upload-trigger.n-upload-trigger--image-card) {
+  width: 60px;
+  height: 60px;
 }
 </style>

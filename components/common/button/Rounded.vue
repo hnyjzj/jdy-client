@@ -29,7 +29,7 @@ const handleClick = () => {
 <template>
   <div :style="props.full ? 'flex:1;' : ''">
     <div
-      class="flex-center-row  rounded-3xl cursor-pointer flex-1"
+      class="flex-center-row  rounded-3xl cursor-pointer flex-1 box-border"
       :style="{
         color: props.color ? props.color : '#fff',
         background: props.bgc ? props.bgc : 'linear-gradient(#1A6BEB, #6EA6FF)',
