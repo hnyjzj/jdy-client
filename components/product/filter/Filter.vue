@@ -46,7 +46,7 @@ const searchKey = defineModel<string>('searchKey', { required: false, default: '
       </common-layout-center>
     </div>
     <common-layout-center>
-      <div class="bg-[#F5F6F9] dark:bg-[#0A113C] flex flex-col px-[16px] w-full">
+      <div class="bg-[#F5F6F9] dark:bg-[#0A113C] flex flex-col px-[16px] w-full pt-[16px]">
         <template v-if="showInput">
           <div class="grid-12">
             <div class="col-12" uno-sm="col-8 offset-2">

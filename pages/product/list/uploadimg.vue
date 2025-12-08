@@ -172,14 +172,16 @@ async function uploadImg() {
       </common-layout-center>
     </div>
     <common-layout-center>
-      <div class="flex">
-        <div class="flex-1 px-2 sm:px-4">
-          <product-filter-search v-model:search-key="liveCode" placeholder="搜索条码" @submit="searchFun" />
-        </div>
-        <div
-          class="flex items-center justify-end cursor-pointer"
-          @click="scanCode()">
-          <icon class="text-[#1A6BEB]" name="i-icon:scanit" :size="18" />
+      <div class="grid-12">
+        <div class="flex px-4 col-12 pt-4" uno-sm="col-8 offset-2">
+          <div class="flex-1 pr-4 sm:px-4">
+            <product-filter-search v-model:search-key="liveCode" placeholder="搜索条码" @submit="searchFun" />
+          </div>
+          <div
+            class="flex items-center justify-end cursor-pointer"
+            @click="scanCode()">
+            <icon class="text-[#1A6BEB]" name="i-icon:scanit" :size="24" />
+          </div>
         </div>
       </div>
       <div class="p-4">

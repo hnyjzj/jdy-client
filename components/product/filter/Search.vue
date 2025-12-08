@@ -19,7 +19,7 @@ const clear = () => {
 </script>
 
 <template>
-  <div class="pt-[12px]">
+  <div>
     <div class="bg-[#F1F5FE] px-[18px] border-rd-full text-size-[20px] shadow-lg flex items-center">
       <div class="left-[10px] top-[6px]" @click="subsearch()">
         <icon name="i-icon:search" size="12" color="#808089" />

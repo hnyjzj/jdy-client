@@ -211,7 +211,7 @@ const beforeUpload = (data: any) => {
         <div />
       </div>
     </common-layout-center>
-    <div class="sticky top-0 z-4 search-bg bg-[#3875C5] pb-2">
+    <div class="sticky top-0 z-4 search-bg bg-[#3875C5] pb-2 mt-2">
       <common-layout-center>
         <div class="color-[#fff] flex justify-between items-center px-4">
           <div class="flex-1 pr-3">
@@ -219,7 +219,7 @@ const beforeUpload = (data: any) => {
           </div>
           <auth-verify :min="UserLevel.IdentitySuperAdmin">
             <div
-              class="flex items-center justify-end cursor-pointer mt-2"
+              class="flex items-center justify-end cursor-pointer"
               @click="set">
               <icon name="i-svg:setup" :size="14" color="#FFF" />
               <div class="text-[#fff] text-[14px] pl-1">
