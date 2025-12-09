@@ -24,11 +24,11 @@ const counts = ['should_count', 'actual_count', 'extra_count', 'loss_count'] as 
 </script>
 
 <template>
-  <div class="flex-center-between gap-1 bg-[#f1f5fe] border-solid border border-[#E6E6E8] rounded-[24px] overflow-auto">
+  <div class="flex-center-between gap-1 bg-[#E6EDF5] border-solid border-[3px] border border-[#E6EDF5] rounded-[24px] overflow-auto">
     <template v-for="(item, index) in props.options" :key="item.value">
       <div
-        class="flex-center-row flex-1 px-4 py-2 w-auto text-3.5 text-[#666666] font-medium rounded-[24px]"
-        :style="{ color: item.value === currentSelected ? '#3971F3' : '#666666', background: item.value === currentSelected ? '#FFFFFF' : '', fontWeight: item.value === currentSelected ? 'bold' : 'normal' }"
+        class="flex-center-row flex-1 px-4 py-[6px] w-auto text-3.5 text-[#FFF] font-medium rounded-[24px]"
+        :style="{ color: item.value === currentSelected ? '#FFF' : '#666666', background: item.value === currentSelected ? '#3F8CFF' : '', fontWeight: item.value === currentSelected ? 'bold' : 'normal' }"
         @click="change(item.value)"
       >
         <span class="whitespace-nowrap">
