@@ -281,9 +281,6 @@ function GetModelStatusText() {
                             </template>
                           </div>
                           <div class="flex items-center">
-                            <!-- <div class="text-[12px] text-[#666666] bg-[rgba(230,230,232,1)] px-1 rounded-[2px] mr-2" @click.stop="copyFun(role)">
-                              复制
-                            </div> -->
                             <div class="cursor-pointer flex items-center pr-2" @click.stop="copyFun(role)">
                               <Icon name="i-icon:copy" color="#333333" :size="14" />
                               <span class="text-[#333333] pl-1">复制</span>
