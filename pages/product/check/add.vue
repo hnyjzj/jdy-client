@@ -305,9 +305,3 @@ async function getStoreStaffListFun() {
     </div>
   </div>
 </template>
-
-<style>
-.n-base-selection-label {
-  height: 40px !important;
-}
-</style>
