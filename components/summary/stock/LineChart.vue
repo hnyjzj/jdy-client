@@ -16,10 +16,15 @@ const trendKey = ref<'件数' | '销售额'>('件数')
 // 折线图配置
 const option = ref<any>({
   tooltip: { trigger: 'axis' },
-  legend: { data: [] },
+  legend: { data: [], textStyle: { color: '#CBCDD1' } },
   grid: { left: '3%', right: '3%', bottom: '10%', containLabel: true },
   xAxis: { type: 'category', boundaryGap: false, data: [] },
-  yAxis: { type: 'value' },
+  yAxis: { type: 'value', splitLine: {
+    lineStyle: {
+      // 使用深浅的间隔色
+      color: '#CBCDD1',
+    },
+  } },
   series: [],
   // ✅ 添加缩放交互
   dataZoom: [
@@ -72,6 +77,10 @@ const data = computed(() => {
 
 // 监听数据 & 维度变化
 watch([() => props.date, trendKey], updateChart, { deep: true, immediate: true })
+const { $colorMode } = useNuxtApp()
+const tdColor = computed(() => {
+  return $colorMode.value === 'light' ? '#1A6DD8' : '#fff'
+})
 </script>
 
 <template>
@@ -123,12 +132,12 @@ watch([() => props.date, trendKey], updateChart, { deep: true, immediate: true }
       <template v-else>
         <n-data-table
           :style="{
-            '--n-merged-td-color-hover': '#DAEAFF',
-            '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#224879',
-            '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#224879',
+            '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#1D2C60',
+            '--n-merged-td-text-color': $colorMode.value === 'light' ? '#1A6DD8' : '#fff',
+            '--n-merged-td-color-hover': $colorMode.value === 'light' ? '#DAEAFF' : '#0050B8',
+            '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#0F1E52',
             '--n-merged-border-color': 'rgba(57,113,243,0.0)',
-            '--n-th-text-color': $colorMode.value === 'light' ? '#808089' : '#fff',
-            '--n-td-text-color': '600',
+            '--td-color': tdColor,
           }"
           :columns="columns"
           :data="data"
@@ -152,5 +161,11 @@ watch([() => props.date, trendKey], updateChart, { deep: true, immediate: true }
 }
 .bg {
   box-shadow: 0px 5px 20px 0px #0000000a;
+}
+:deep(.n-data-table .n-data-table-base-table-header) {
+  border-radius: 8px;
+}
+:deep(.n-data-table-tr:hover .n-data-table-td) {
+  color: var(--td-color);
 }
 </style>

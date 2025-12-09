@@ -89,6 +89,11 @@ const data = computed(() => {
 
 // 监听数据和维度变化更新图表
 watch([() => props.stockCategoryDate, chartBar, chartMode], updateChart)
+
+const { $colorMode } = useNuxtApp()
+const tdColor = computed(() => {
+  return $colorMode.value === 'light' ? '#1A6DD8' : '#fff'
+})
 </script>
 
 <template>
@@ -135,11 +140,12 @@ watch([() => props.stockCategoryDate, chartBar, chartMode], updateChart)
       <template v-else>
         <n-data-table
           :style="{
-            '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#224879',
-            '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#224879',
+            '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#1D2C60',
+            '--n-merged-td-text-color': $colorMode.value === 'light' ? '#1A6DD8' : '#fff',
+            '--n-merged-td-color-hover': $colorMode.value === 'light' ? '#DAEAFF' : '#0050B8',
+            '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#0F1E52',
             '--n-merged-border-color': 'rgba(57,113,243,0.0)',
-            '--n-th-text-color': $colorMode.value === 'light' ? '#808089' : '#fff',
-            '--n-td-text-color': '600',
+            '--td-color': tdColor,
           }"
           :max-height="350"
           :columns="columns"
@@ -166,5 +172,11 @@ watch([() => props.stockCategoryDate, chartBar, chartMode], updateChart)
   box-shadow: 0px 5px 20px 0px #0000000a;
   padding: 12px 16px;
   border-radius: 8px;
+}
+:deep(.n-data-table .n-data-table-base-table-header) {
+  border-radius: 8px;
+}
+:deep(.n-data-table-tr:hover .n-data-table-td) {
+  color: var(--td-color);
 }
 </style>
