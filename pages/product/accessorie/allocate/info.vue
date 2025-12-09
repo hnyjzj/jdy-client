@@ -346,12 +346,9 @@ const printFn = async () => {
   overflow: hidden;
 }
 .info-row {
-  --uno: 'flex justify-between mb-2';
-  .info-title {
-    --uno: 'text-color';
-  }
+  --uno: 'flex justify-between mb-2 text-color';
   .info-val {
-    --uno: 'text-color-light w-70% text-right';
+    --uno: 'w-70% text-right';
   }
 }
 .tabel-text {
