@@ -56,8 +56,8 @@ function changePageBench(bench: WorkBench) {
               <div class="flex items-center">
                 <button style="all: unset;" @click="updateBench(work, 1)">
                   <div class="flex items-center cursor-pointer">
-                    <icon name="i-svg:edit" :size="12" color="#3970F3" />
-                    <div class="text-[12px] text-[#3970F3] pl-1">
+                    <icon name="i-svg:edit" :size="16" color="#3970F3" />
+                    <div class="text-[14px] text-[#3970F3] pl-1">
                       编辑
                     </div>
                   </div>
@@ -117,8 +117,8 @@ function changePageBench(bench: WorkBench) {
                         <div class="flex items-center">
                           <button style="all: unset;" @click="updateBench(child, 2)">
                             <div class="flex items-center cursor-pointer">
-                              <icon name="i-svg:edit" :size="12" color="#3970F3" />
-                              <div class="text-[12px] text-[#3970F3] pl-1">
+                              <icon name="i-svg:edit" :size="16" color="#3970F3" />
+                              <div class="text-[14px] text-[#3970F3] pl-1">
                                 编辑
                               </div>
                             </div>
