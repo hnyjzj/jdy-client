@@ -68,8 +68,8 @@ const props = defineProps<{
                 </template>
               </div>
             </div>
-            <div class="h-0.5 bg-[#E6E6E8]" />
-            <div class="product-information flex flex-col gap-1">
+
+            <div class="product-information line-color-t flex flex-col gap-1">
               <div class="info-row">
                 <div class="info-title">
                   调拨件数
