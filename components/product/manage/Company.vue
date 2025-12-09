@@ -90,7 +90,7 @@ const clickChange = async () => {
 </script>
 
 <template>
-  <div class="z-10">
+  <div>
     <div
       class="py-[6px] px-[16px] border-rd-full h-full flex-center-row cursor-pointer text-color"
       :style="{ background: 'transparent', color: isWhite ? '#fff' : '' }" @click="clickChange">

@@ -22,7 +22,7 @@ const props = defineProps<{
             :src="ImageUrl(img)"
             width="100"
             height="100"
-            class="shrink-0"
+            class="shrink-0 mb-4"
           />
         </template>
       </div>

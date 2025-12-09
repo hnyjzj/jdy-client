@@ -235,9 +235,9 @@ const beforeUpload = (data: any) => {
           <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="(id) => { deleteDialog = true;deleteId = id }" @update="updateBench" @fold="fold" @change-page="changePage" />
           <template v-if="isSetup">
             <button style="all: unset;">
-              <div class="flex items-center mb-4 cursor-pointer" @click="resetForm(true);show = true;modelType = 1 ">
-                <icon name="i-icon:addsth" :size="26" color="#000" />
-                <div class="text-[14px] text-[#000] pl-1">
+              <div class="flex items-center mb-4 cursor-pointer text-color" @click="resetForm(true);show = true;modelType = 1 ">
+                <icon name="i-icon:addsth" :size="26" />
+                <div class="text-[14px] pl-1">
                   添加模块
                 </div>
               </div>
@@ -247,13 +247,15 @@ const beforeUpload = (data: any) => {
       </div>
     </common-layout-center>
     <common-model v-model:model-value="show" :title="getModelTitle()" :show-ok="true" @confirm="() => addWorkbenchform?.submit()">
-      <div class="py-[16px] text-color">
+      <div class="py-[16px] text-color min-h-[240px]">
         <common-form ref="addWorkbenchform" v-model="params" :rules="rules" @submit="(val: AddWorkbencheReq) => submit(val)">
           <template #title="{ label, error }">
             <div class="pb-[16px]">
               <div class="add-row-noline">
-                <div>标题</div>
-                <input v-model="params[label]" type="text" class="border-none bg-transparent outline-none focus:ring-0 focus:outline-none text-color" placeholder="输入标题" @focus="focus">
+                <div class="pb-2">
+                  标题
+                </div>
+                <n-input v-model:value="params[label]" type="text" round placeholder="输入标题" />
                 <div class="text-[#FF2F2F] text-[12px] pt-2">
                   {{ error }}
                 </div>
@@ -263,27 +265,29 @@ const beforeUpload = (data: any) => {
           <template v-if="modelType === 3" #icon>
             <div class="pb-[16px]">
               <div class="add-row">
-                <div>图标</div>
-                <div>
-                  <n-upload
-                    action="#"
-                    list-type="image-card"
-                    :default-file-list="previewFileList"
-                    :custom-request="customRequest"
-                    :max="1"
-                    class="circle-upload"
-                    @before-upload="beforeUpload"
-                    @remove="(file) => removeImg(file)"
-                  />
+                <div class="pb-2">
+                  图标
                 </div>
+                <n-upload
+                  action="#"
+                  list-type="image-card"
+                  :default-file-list="previewFileList"
+                  :custom-request="customRequest"
+                  :max="1"
+                  class="circle-upload"
+                  @before-upload="beforeUpload"
+                  @remove="(file) => removeImg(file)"
+                />
               </div>
             </div>
           </template>
           <template v-if="modelType === 3" #path="{ label, error }">
             <div class="pb-[16px]">
               <div class="add-row">
-                <div>跳转地址</div>
-                <input v-model="params[label]" type="text" class="border-none bg-transparent outline-none focus:ring-0 focus:outline-none text-color" placeholder="输入跳转地址" @focus="focus">
+                <div class="pb-2">
+                  跳转地址
+                </div>
+                <n-input v-model:value="params[label]" type="text" round placeholder="输入跳转地址" />
                 <div class="text-[#FF2F2F] text-[12px] pt-2">
                   {{ error }}
                 </div>
@@ -301,10 +305,10 @@ const beforeUpload = (data: any) => {
 
 <style lang="scss" scoped>
 .add-row-noline {
-  --uno: 'grid grid-cols-[1fr_2fr] items-center';
+  --uno: 'gap-2';
 }
 .add-row {
-  --uno: 'grid grid-cols-[1fr_2fr] items-center border-t-[#E6E6E8] border-t-solid border-t-[1px] pt-[16px]';
+  --uno: '';
 }
 
 .search-bg {

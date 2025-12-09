@@ -179,7 +179,7 @@ function removeImg(data: { index: number }) {
             />
           </div>
         </div>
-        <div class="mt-4 p-4 rounded-3 blur-bgc">
+        <div class="mt-4 p-4 rounded-3 blur-bgc text-color">
           <div class="flex-1 text-[14px]">
             <div class="flex justify-between pb-2">
               <div>状态</div>
