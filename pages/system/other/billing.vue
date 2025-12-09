@@ -81,10 +81,8 @@ const handleValidateButtonClick = async () => {
   <div>
     <div class="blur-bgc">
       <common-layout-center>
-        <div class="grid-12 color-[#fff]">
-          <div class="col-5" uno-sm="col-3" uno-lg="col-2">
-            <product-manage-company />
-          </div>
+        <div class="w-fit">
+          <product-manage-company />
         </div>
       </common-layout-center>
     </div>
@@ -126,7 +124,7 @@ const handleValidateButtonClick = async () => {
                   </template>
 
                   <div class="flex justify-center">
-                    <common-button-rounded content="保存" padding="10px 100px" @button-click="handleValidateButtonClick" />
+                    <common-button-bottom :cancle-show="false" confirm-text="保存" @confirm="handleValidateButtonClick" />
                   </div>
                 </n-form>
               </div>
