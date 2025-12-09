@@ -9,6 +9,10 @@ const scrollX = ref(0)
 for (let i = 0; i < props.title.length; ++i) {
   scrollX.value += 100
 }
+const { $colorMode } = useNuxtApp()
+const tdColor = computed(() => {
+  return $colorMode.value === 'light' ? '#1A6DD8' : '#fff'
+})
 </script>
 
 <template>
@@ -26,9 +30,12 @@ for (let i = 0; i < props.title.length; ++i) {
     <div class="px-[16px]">
       <n-data-table
         :style="{
-          '--n-merged-td-color-hover': '#DAEAFF',
-          '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#224879',
+          '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#1D2C60',
+          '--n-merged-td-text-color': $colorMode.value === 'light' ? '#1A6DD8' : '#fff',
+          '--n-merged-td-color-hover': $colorMode.value === 'light' ? '#DAEAFF' : '#0050B8',
+          '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#0F1E52',
           '--n-merged-border-color': 'rgba(57,113,243,0.0)',
+          '--td-color': tdColor,
         }"
         :columns="props.title"
         :data="props.list"
@@ -67,7 +74,11 @@ for (let i = 0; i < props.title.length; ++i) {
 .bg {
   box-shadow: 0px 5px 20px 0px #0000000a;
 }
-:deep(.n-data-table .n-data-table-th) {
-  background-color: #f3f3f3 !important;
+
+:deep(.n-data-table .n-data-table-base-table-header) {
+  border-radius: 8px;
+}
+:deep(.n-data-table-tr:hover .n-data-table-td) {
+  color: var(--td-color);
 }
 </style>

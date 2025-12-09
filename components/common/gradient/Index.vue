@@ -103,7 +103,7 @@ const toggleFold = () => {
     </div>
 
     <div v-show="isFold">
-      <div class="px-[16px] py-[16px] blur-bga">
+      <div class="px-[40px] py-[16px] blur-bga">
         <slot name="body" />
       </div>
       <slot name="footer" />

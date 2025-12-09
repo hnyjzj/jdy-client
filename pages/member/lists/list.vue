@@ -211,6 +211,7 @@ const cols = [
     title: '操作',
     key: 'action',
     fixed: 'right',
+    width: 170,
     render: (rowData: Member) => {
       return [h(
         'span',

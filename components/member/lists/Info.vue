@@ -298,7 +298,7 @@ const processDate = (date: string) => {
           <template v-if="props.consumes.length > 0">
             <div class="flex flex-col gap-[12px]">
               <template v-for="(item, index) in props.consumes" :key="index">
-                <common-card-info :title="`订单号：${item.order_id}`" theme="solid" :foldable="true" font-size="14px">
+                <common-card-info padding="0 24px" :title="`订单号：${item.order_id}`" theme="solid" :foldable="true" font-size="14px">
                   <template #right>
                     <template v-if="props.showDetail">
                       <div class="butt" @click="emits('showDetail', item.order_id)">

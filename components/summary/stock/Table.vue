@@ -44,11 +44,19 @@ const data = computed(() => {
     return row
   })
 })
+
+const { $colorMode } = useNuxtApp()
+const tdColor = computed(() => {
+  return $colorMode.value === 'light' ? '#1A6DD8' : '#fff'
+})
 </script>
 
 <template>
   <n-spin :show="props.loading" stroke="#fff" size="large">
-    <div class="my-[16px] overflow-hidden bg">
+    <div
+      class="my-[16px] overflow-hidden bg" :style="{
+        background: $colorMode.value === 'dark' ? '#1D2C60' : 'linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%)',
+      }">
       <div class="w-[100%] flex justify-between items-center pb-[16px]">
         <div class="flex items-center gap-[6px] color-[#1A6DD8] font-semibold line-height-[24px] text-[16px]">
           <img src="/images/icon/today-sale.png" class="wh-[24px]">
@@ -57,12 +65,12 @@ const data = computed(() => {
       </div>
       <n-data-table
         :style="{
-          '--n-merged-td-color-hover': '#DAEAFF',
-          '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#224879',
-          '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#224879',
+          '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#1D2C60',
+          '--n-merged-td-text-color': $colorMode.value === 'light' ? '#1A6DD8' : '#fff',
+          '--n-merged-td-color-hover': $colorMode.value === 'light' ? '#DAEAFF' : '#0050B8',
+          '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#0F1E52',
           '--n-merged-border-color': 'rgba(57,113,243,0.0)',
-          '--n-th-text-color': $colorMode.value === 'light' ? '#808089' : '#fff',
-          '--n-td-text-color': '600',
+          '--td-color': tdColor,
         }"
         :columns="columns"
         :data="data"
@@ -80,5 +88,12 @@ const data = computed(() => {
   box-shadow: 0px 5px 20px 0px #0000000a;
   padding: 12px 16px;
   border-radius: 8px;
+}
+
+:deep(.n-data-table .n-data-table-base-table-header) {
+  border-radius: 8px;
+}
+:deep(.n-data-table-tr:hover .n-data-table-td) {
+  color: var(--td-color);
 }
 </style>
