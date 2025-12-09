@@ -344,7 +344,9 @@ async function downloadLocalFile() {
                   <template #top>
                     <div class="flex items-center">
                       <template v-if="info?.new_value?.images?.length">
-                        <common-avatar :size="24" :img="info?.new_value?.images[0]" />
+                        <div class="pr-2">
+                          <common-avatar :size="24" :img="info?.new_value?.images[0]" />
+                        </div>
                       </template>
                       <div>
                         {{ historyFilterList.action?.preset[info.action] }}

@@ -9,7 +9,7 @@ const props = defineProps<{
     <template v-for="(item, index) in props.list" :key="index">
       <common-card-list>
         <template #top>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center">
             <div v-if="item?.images?.length" class="pr-2">
               <common-avatar :size="24" :img="item?.images[0]" />
             </div>
