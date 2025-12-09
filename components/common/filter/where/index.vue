@@ -188,7 +188,16 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                   </template>
                   <template v-if="input === 'radio'">
                     <n-radio-group v-model:value="datas[name as string]" name="radiogroup" @focus="focus">
-                      <n-radio v-for="item in presetToSelect(props.filter[i])" :key="item.value" :value="item.value" :label="item.label" />
+                      <n-radio
+                        v-for="item in presetToSelect(props.filter[i])"
+                        :key="item.value"
+                        :style="{
+                          '--n-box-shadow-hover': 'inset 0 0 0 1px #0068ff',
+                          '--n-box-shadow-active': 'inset 0 0 0 1px #0068ff',
+                          '--n-dot-color-active': '#0068ff',
+                          '--n-box-shadow-focus': 'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)' }"
+                        :value="item.value"
+                        :label="item.label" />
                     </n-radio-group>
                   </template>
                 </slot>

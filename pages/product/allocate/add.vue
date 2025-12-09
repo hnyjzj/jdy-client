@@ -207,7 +207,7 @@ function handleValidateButtonClick() {
                       />
                     </n-form-item>
                     <n-form-item class="col-6" path="remark" label="备注">
-                      <n-input v-model:value="params.remark" type="textarea" round placeholder="输入备注" />
+                      <n-input v-model:value="params.remark" type="textarea" round placeholder="输入备注" :autosize="{ minRows: 1, maxRows: 1 }" />
                     </n-form-item>
                   </common-layout-form>
                 </n-form>
