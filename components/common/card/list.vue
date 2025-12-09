@@ -11,9 +11,9 @@ const props = defineProps<{
 
 <template>
   <div
-    class="px-[16px] mb-4 rounded-2 blur-bgc card-shaow">
+    class="px-[16px] mb-4 rounded-2 blur-bgc card-shaow flex flex-col">
     <div
-      class="flex justify-between items-center py-3 text-color line-color-b"
+      class="flex justify-between items-center py-3 text-color line-color-b shrink-0"
     >
       <div>
         <slot name="avatar" />
@@ -31,12 +31,12 @@ const props = defineProps<{
         <slot name="status" />
       </div>
     </div>
-    <div class="py-2">
+    <div class="py-2 flex-1">
       <slot name="info" />
     </div>
     <template v-if="$slots.footer">
       <div
-        class="py-2 line-color-t"
+        class="py-2 line-color-t shrink-0"
       >
         <slot name="footer" />
       </div>
@@ -44,8 +44,8 @@ const props = defineProps<{
   </div>
 </template>
 
-<style lang="scss" scoped>
-.card-shaow {
+    <style lang="scss" scoped>
+    .card-shaow {
   box-shadow: 4px 4px 10px 4px #0000000f;
 }
 </style>
