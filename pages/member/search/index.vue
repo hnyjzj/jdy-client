@@ -64,8 +64,8 @@ onMounted(async () => {
 <template>
   <div>
     <common-layout-center>
-      <div class="color-[#fff] flex justify-between">
-        <div class="flex-1 px-2 sm:px-4">
+      <div class="color-[#fff] pt-[16px] grid-12">
+        <div class="col-12" uno-sm="col-8 offset-2">
           <product-filter-search v-model:search-key="livePhone" placeholder="搜索会员手机号进行检索" @submit="searchFun" @clear="clearFn" />
         </div>
       </div>
