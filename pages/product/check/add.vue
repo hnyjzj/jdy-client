@@ -217,7 +217,7 @@ async function getStoreStaffListFun() {
                             </div>
                           </template>
                           <template v-if="item.input === 'textarea'">
-                            <n-input v-model:value="params[item.name] as string" round :placeholder="`输入${item.label}`" @focus="focus" />
+                            <n-input v-model:value="params[item.name]" :autosize="{ minRows: 2, maxRows: 2 }" type="textarea" round :placeholder="`输入${item.label}`" @focus="focus" />
                           </template>
                           <template v-if="item.input === 'search'">
                             <template v-if="item.name === 'inspector_id'">

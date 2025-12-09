@@ -321,10 +321,7 @@ const cols = [
               <template v-for="(info, index) in checkList" :key="index">
                 <common-card-list>
                   <template #status>
-                    <common-button-status
-                      :bg-color="getStatusStyle(info.status, AllocateStatusColorMap).backgroundColor"
-                      :text="checkFilterList.status?.preset[info.status]"
-                    />
+                    <common-button-status :bg-color="getStatusStyle(info.status, CheckStatusColorMap).backgroundColor" :text="checkFilterList.status?.preset[info.status]" />
                   </template>
                   <template #info>
                     <div class="text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
