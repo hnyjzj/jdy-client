@@ -30,7 +30,7 @@ async function confirm() {
   <div>
     <template v-if="isGoChangestore">
       <div class="fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.5)] flex-center-row z-[999]">
-        <div class="w-[327px] rounded-[24px] px-[16px] py-[24px]  bg-[#f3f3f3]">
+        <div class="w-[327px] rounded-[24px] px-[16px] py-[24px]  blur-bgc">
           <div class="flex-center-row">
             <div class="font-semibold line-height-[20px] color-[#333] dark:color-[#fff] text-[14px] text-center text-[14px]">
               提醒
@@ -39,7 +39,7 @@ async function confirm() {
           <div class="line-height-[20px] color-[#333] dark:color-[#fff] py-[16px] text-center">
             当前门店与操作门店不匹配，是否切换门店?
           </div>
-          <div class="flex pb-4 items-center justify-center">
+          <div class="flex pb-4 items-center justify-center text-color">
             <div class="pr-2">
               切换门店
             </div>
