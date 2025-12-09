@@ -215,10 +215,6 @@ const canShowFilter = (item: FilterWhere<Check>) => {
 .n-base-selection {
   border-radius: 20px;
 }
-
-.n-input-wrapper {
-  border-radius: 20px !important;
-}
 </style>
 
 <style lang="scss" scoped>

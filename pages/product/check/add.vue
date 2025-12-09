@@ -310,7 +310,4 @@ async function getStoreStaffListFun() {
 .n-base-selection-label {
   height: 40px !important;
 }
-.n-input-wrapper {
-  border-radius: 20px !important;
-}
 </style>
