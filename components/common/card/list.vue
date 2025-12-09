@@ -44,8 +44,8 @@ const props = defineProps<{
   </div>
 </template>
 
-    <style lang="scss" scoped>
-    .card-shaow {
+<style lang="scss" scoped>
+.card-shaow {
   box-shadow: 4px 4px 10px 4px #0000000f;
 }
 </style>
