@@ -248,10 +248,10 @@ function GetModelStatusText() {
       <div class="px-4 pt-6">
         <common-card-info :title="`权限组（${roleList.length}）`">
           <template #info>
-            <n-tabs v-model:value="activeTab" type="line" animated @update:value="handleTabChange">
+            <n-tabs v-model:value="activeTab" :theme-overrides="{ barColor: '#1A6DD8' }" type="line" animated @update:value="handleTabChange">
               <template v-for="(item, id, t) in roleWhereList" :key="t">
                 <n-tab-pane :name="id" :tab="item">
-                  <div class="grid grid-cols-2 gap-4">
+                  <div class="grid sm:grid-cols-2 gap-4">
                     <template v-for="(role, index) in roleList" :key="index">
                       <div class="user-box mb-3 flex flex-col justify-between" :class="selectRole === index ? 'select-role' : ''" @click="selectRole = index;getInfo()">
                         <div class="flex justify-between">
@@ -265,26 +265,34 @@ function GetModelStatusText() {
                           </div>
                           <template v-if="role.is_default">
                             <div class="shrink-1">
-                              <div class="text-[12px] text-[#666666] bg-[rgba(230,230,232,1)] px-1 rounded-[2px]">
+                              <div class="text-[12px] text-[#FFFFFF] bg-[#979797] px-2 py-[2px] rounded-[8px]">
                                 默认
                               </div>
                             </div>
                           </template>
                         </div>
                         <div class="mt-4 flex justify-between items-center">
+                          <div>
+                            <template v-if="!role.is_default">
+                              <div class="cursor-pointer flex items-center" @click.stop="delRoleFun(role.id, role.name)">
+                                <Icon name="i-icon:delete" color="#FF2F2F" :size="14" />
+                                <span class="text-[#FF2F2F] pl-1">删除</span>
+                              </div>
+                            </template>
+                          </div>
                           <div class="flex items-center">
-                            <div class="text-[12px] text-[#666666] bg-[rgba(230,230,232,1)] px-1 rounded-[2px] mr-2" @click.stop="copyFun(role)">
+                            <!-- <div class="text-[12px] text-[#666666] bg-[rgba(230,230,232,1)] px-1 rounded-[2px] mr-2" @click.stop="copyFun(role)">
                               复制
+                            </div> -->
+                            <div class="cursor-pointer flex items-center pr-2" @click.stop="copyFun(role)">
+                              <Icon name="i-icon:copy" color="#333333" :size="14" />
+                              <span class="text-[#333333] pl-1">复制</span>
                             </div>
-                            <div class="cursor-pointer" @click.stop="edit(role)">
-                              <Icon name="i-icon:edit" color="" :size="16" />
+                            <div class="cursor-pointer flex items-center" @click.stop="edit(role)">
+                              <Icon name="i-icon:edit" color="#1A6DD8" :size="16" />
+                              <span class="text-[#1A6DD8] pl-1">编辑</span>
                             </div>
                           </div>
-                          <template v-if="!role.is_default">
-                            <div class="cursor-pointer" @click.stop="delRoleFun(role.id, role.name)">
-                              <Icon name="i-icon:delete" color="red" :size="14" />
-                            </div>
-                          </template>
                         </div>
                       </div>
                     </template>
@@ -292,8 +300,10 @@ function GetModelStatusText() {
                 </n-tab-pane>
               </template>
             </n-tabs>
-            <div class="text-center cursor-pointer pt-4" @click="oppeAddRole('add')">
-              + 添加用户组
+            <div class="flex justify-center">
+              <div class="w-[120px] sm:w-[240px]">
+                <common-button-rounded content="添加角色" @button-click="oppeAddRole('add')" />
+              </div>
             </div>
           </template>
         </common-card-info>
@@ -444,6 +454,16 @@ function GetModelStatusText() {
 }
 
 .select-role {
-  background-color: rgba(243, 245, 254, 1);
+  background-color: #f4f9fd;
+}
+
+:deep(.n-tabs .n-tabs-tab--active) {
+  color: #1a6dd8 !important;
+}
+:deep(.n-tabs .n-tabs-tab--active .n-tabs-tab__bar) {
+  background-color: #1a6dd8 !important;
+}
+:deep(.n-tabs.n-tabs--line-type .n-tabs-tab:hover) {
+  color: #1a6dd8 !important;
 }
 </style>
