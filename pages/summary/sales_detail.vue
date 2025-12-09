@@ -127,11 +127,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="py-[20px] sm:grid-12">
-    <div uno-sm="col-10 offset-1">
-      <div class="w-fit pb-[12px]">
-        <product-manage-company @change="changeStore" />
-      </div>
+  <div>
+    <div class="blur-bgc mb-[16px] text-[#FFF]">
+      <common-layout-center>
+        <div class="w-fit ">
+          <product-manage-company @change="changeStore" />
+        </div>
+      </common-layout-center>
+    </div>
+    <common-layout-center>
       <div class="blur-bga text-color p-[12px] rounded-[12px]">
         <div style="border: 1px dashed #ccc;" class="p-[12px]  rounded-[12px]">
           <div>
@@ -188,7 +192,7 @@ onMounted(() => {
           <PrintStatement :store="myStore.name" :time="checkTime" :start="model.start_time" :end="model.end_time" :salesman="salesman" />
         </div>
       </div>
-    </div>
+    </common-layout-center>
   </div>
 </template>
 

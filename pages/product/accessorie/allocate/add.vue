@@ -228,9 +228,7 @@ const getStoreFun = useDebounceFn(async (isAlias: boolean) => {
 </template>
 
 <style>
-.n-base-selection-label {
-  height: 40px !important;
-}
+
 </style>
 
 <style lang="scss" scoped>

@@ -38,53 +38,50 @@ async function changeStores() {
 </script>
 
 <template>
-  <common-layout-center>
-    <div class="px-[16px] pb-4">
-      <div class="flex justify-between items-center py-[12px] text-[#FFF]">
-        <product-manage-company @change="changeStores" />
+  <div>
+    <summary-boss-select-time v-model="params" :time-where="salesWhere" @change-stores="changeStores" @update-time="fetchData" />
+    <common-layout-center>
+      <div class=" px-[16px] pb-4">
+        <!-- 数据汇总 -->
+        <summary-card-payment title="数据汇总" :payments="salesData.overview" />
+        <summary-stock-line-chart
+          title="销售趋势"
+          :date="salesData.trend"
+          :loading="isLoading"
+        />
+        <!-- 封装后的饼图/表格组件 -->
+        <summary-stock-chart
+          title="成品大类"
+          :stock-category-date="salesData.finished_class"
+          :loading="isLoading"
+        />
+        <summary-stock-chartnested
+          title="成品品类"
+          :stock-category-date="salesData.finished_category"
+          :loading="isLoading"
+        />
+        <summary-stock-chart
+          title="旧料兑换"
+          :stock-category-date="salesData.old_exchange"
+          :loading="isLoading"
+        />
+        <summary-stock-chart
+          title="旧料回收"
+          :stock-category-date="salesData.old_recycle"
+          :loading="isLoading"
+        />
+        <summary-stock-chart
+          title="配件统计"
+          :stock-category-date="salesData.accessorie"
+          :loading="isLoading"
+        />
+        <summary-stock-table
+          title="个人统计"
+          :date="salesPersonalStatistics"
+          :loading="isLoading"
+          classify="姓名"
+        />
       </div>
-
-      <summary-boss-select-time v-model="params" :time-where="salesWhere" @update-time="fetchData" />
-
-      <!-- 数据汇总 -->
-      <summary-card-payment title="数据汇总" :payments="salesData.overview" />
-      <summary-stock-line-chart
-        title="销售趋势"
-        :date="salesData.trend"
-        :loading="isLoading"
-      />
-      <!-- 封装后的饼图/表格组件 -->
-      <summary-stock-chart
-        title="成品大类"
-        :stock-category-date="salesData.finished_class"
-        :loading="isLoading"
-      />
-      <summary-stock-chartnested
-        title="成品品类"
-        :stock-category-date="salesData.finished_category"
-        :loading="isLoading"
-      />
-      <summary-stock-chart
-        title="旧料兑换"
-        :stock-category-date="salesData.old_exchange"
-        :loading="isLoading"
-      />
-      <summary-stock-chart
-        title="旧料回收"
-        :stock-category-date="salesData.old_recycle"
-        :loading="isLoading"
-      />
-      <summary-stock-chart
-        title="配件统计"
-        :stock-category-date="salesData.accessorie"
-        :loading="isLoading"
-      />
-      <summary-stock-table
-        title="个人统计"
-        :date="salesPersonalStatistics"
-        :loading="isLoading"
-        classify="姓名"
-      />
-    </div>
-  </common-layout-center>
+    </common-layout-center>
+  </div>
 </template>

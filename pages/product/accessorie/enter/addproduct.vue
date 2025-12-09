@@ -150,9 +150,7 @@ const presetToSelect = (key: keyof ProductAccessories) => {
 </template>
 
 <style>
-.n-base-selection-label {
-  height: 40px !important;
-}
+
 </style>
 
 <style lang="scss" scoped>
