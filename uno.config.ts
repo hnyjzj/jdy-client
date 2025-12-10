@@ -72,6 +72,7 @@ export default defineConfig({
     'grid-12': 'grid grid-cols-12',
     'blur-bgc': 'light:bg-[#FDFDFD] dark:bg-[#1D2C60]', // 毛玻璃背景色
     'blur-bga': 'light:bg-#FDFDFD dark:bg-[#1D2C60]',
+    'bottom-bgc': 'light:bg-[#FDFDFD] dark:bg-[#081A59]', // 底栏背景色
     'text-color': 'text-[rgb(0,0,0)] dark:text-[rgb(255,255,255)]',
     'text-color-light': 'text-[#666666] dark:text-[#CBCDD1]',
     'line-color-b': 'border-b light:border-b-[#e5e5e5] dark:border-b-[#444D71] border-b-solid',
