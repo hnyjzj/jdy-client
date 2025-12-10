@@ -95,7 +95,7 @@ const clickChange = async () => {
       class="py-[6px] px-[16px] border-rd-full h-full flex-center-row cursor-pointer text-color"
       :style="{ background: 'transparent', color: isWhite ? '#fff' : '' }" @click="clickChange">
       <icon name="i-icon:location" :size="24" class="mr-[4px]" />
-      <div class="store-name font-bold text-size-[14px] mr-[4px]">
+      <div class="store-name font-bold text-size-[14px] mr-[4px] z-1">
         {{ myStore.alias }}
       </div>
       <icon name="i-icon:product-toggle" :size="18" />
