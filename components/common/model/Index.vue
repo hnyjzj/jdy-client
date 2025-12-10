@@ -25,18 +25,13 @@ function close() {
 }
 
 watch(show, (val) => {
-  if (val) {
-    document.body.style.overflow = 'hidden'// 禁止滚动
-  }
-  else {
-    document.body.style.overflow = ''
-  }
+  document.documentElement.style.overflow = val ? 'hidden' : ''
 })
 
 /** 销毁时 */
 onBeforeUnmount (() => {
   show.value = false
-  document.body.style.overflow = ''
+  document.documentElement.style.overflow = ''
 })
 </script>
 
