@@ -247,7 +247,7 @@ const cols = [
               <template v-for="(info, index) in productRocordList" :key="index">
                 <common-card-list>
                   <template #top>
-                    <div>{{ historyFilterList.action?.preset[info.action] }}</div>
+                    <div>{{ historyFilterList.action?.preset?.[info.action] ?? '' }}</div>
                   </template>
                   <template #info>
                     <div class="text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">

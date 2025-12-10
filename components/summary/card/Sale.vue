@@ -36,7 +36,7 @@ const toTodayPrice = () => {
       </template>
       <template #default>
         <div :id="id" class="flex overflow-x-scroll gap-[20px] pb-[16px]">
-          <template v-for="(item, key) in props.todaySaleData" :key="item">
+          <template v-for="(item, key) in props.todaySaleData" :key="key">
             <template v-if="key !== '成品金额' && key !== '退货金额' && key !== '金价'">
               <div class="flex-grow-1 flex-shrink-0 h-[68px] flex justify-around flex-col ">
                 <div class="text-center">

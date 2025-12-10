@@ -79,7 +79,7 @@ function isUpdate(key: ProductKey) {
                   <template v-else>
                     <template v-if="item.input === 'select'">
                       <div class="text-align-end">
-                        {{ item.preset[props.newAccessories[item.name] as number] }}
+                        {{ item?.preset[props.newAccessories[item.name] as number] }}
                       </div>
                     </template>
                     <template v-else>

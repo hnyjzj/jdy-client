@@ -149,7 +149,7 @@ async function getStoreStaffListFun() {
             <common-card-info title="新增盘点单">
               <template #info>
                 <n-form ref="formRef" :model="params" :rules="rules">
-                  <div class="sm:grid-12 sm:gap-x-[8px] sm:gap-x-[24px]">
+                  <div class="gap-x-[8px] sm:grid-12 md:gap-x-[24px]">
                     <template v-for="(item, index) in checkFilterListToArray" :key="index">
                       <!-- 大类 -->
                       <template v-if="item.name === 'class_finished' || item.name === 'class_old'">
@@ -306,7 +306,7 @@ async function getStoreStaffListFun() {
   </div>
 </template>
 
-<style scoped scss>
+<style scoped lang="scss">
 .n-form-item {
   align-items: flex-start !important;
 }

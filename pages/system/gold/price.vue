@@ -116,7 +116,7 @@ function subtract(i: number, id: GoldPrices['id']) {
         <common-card-info title="金价历史">
           <template #info>
             <div class="blur-bgc rounded-[16px] cursor-pointer">
-              <div class="col-8 flex pb-1">
+              <div v-if="goldList.length" class="col-8 flex pb-1">
                 <div class="updata-time">
                   最近更新：
                   {{ formatTimestampToDateTime(goldList[0]?.updated_at ?? '') }}

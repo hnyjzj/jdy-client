@@ -46,7 +46,7 @@ function isUpdate(key: ProductKey) {
                     操作
                   </div>
                   <div class="info-val">
-                    {{ historyFilterList.action?.preset[historyInfo.action] || '' }}
+                    {{ historyFilterList.action?.preset[historyInfo?.action] || '' }}
                   </div>
                 </div>
                 <div class="info-row">
@@ -62,7 +62,7 @@ function isUpdate(key: ProductKey) {
                     操作时间
                   </div>
                   <div class="info-val">
-                    {{ formatTimestampToDateTime(historyInfo.updated_at) }}
+                    {{ formatTimestampToDateTime(historyInfo?.updated_at) || '' }}
                   </div>
                 </div>
                 <div class="info-row">
@@ -70,7 +70,7 @@ function isUpdate(key: ProductKey) {
                     所属门店
                   </div>
                   <div class="info-val">
-                    {{ historyInfo.new_value?.store.name || '' }}
+                    {{ historyInfo.new_value?.store?.name || '' }}
                   </div>
                 </div>
                 <div class="h-0.5 bg-[#E6E6E8] my-4" />
@@ -90,12 +90,12 @@ function isUpdate(key: ProductKey) {
                           <template v-else>
                             <template v-if="item.input === 'text' || item.input === 'number' || item.input === 'textarea'">
                               <div class="info-val">
-                                {{ historyInfo?.new_value[item.name] || '' }}
+                                {{ historyInfo?.new_value?.[item.name] || '' }}
                               </div>
                             </template>
                             <template v-else-if="item.input === 'select'">
                               <div class="info-val">
-                                {{ item.preset[historyInfo?.new_value[item.name]] || '' }}
+                                {{ item.preset[historyInfo?.new_value?.[item.name]] || '' }}
                               </div>
                             </template>
                             <template v-else-if="item.input === 'list'">
