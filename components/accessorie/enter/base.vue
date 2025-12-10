@@ -77,7 +77,7 @@ const enterStatus = {
                 </div>
               </div>
             </div>
-            <div class="h-0.5 bg-[#E6E6E8]" />
+            <div class="line-space" />
             <div class="product-information flex flex-col gap-1">
               <div class="info-row">
                 <div class="info-title">

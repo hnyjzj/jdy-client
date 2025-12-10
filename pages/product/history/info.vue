@@ -73,7 +73,7 @@ function isUpdate(key: ProductKey) {
                     {{ historyInfo.new_value?.store?.name || '' }}
                   </div>
                 </div>
-                <div class="h-0.5 bg-[#E6E6E8] my-4" />
+                <div class="line-space my-4" />
                 <div v-if="historyInfo?.new_value" class="flex flex-col" uno-sm="grid grid-cols-[1fr_1fr] gap-x-10">
                   <template v-for="(item, index) in finishedFilterListToArray" :key="index">
                     <template v-if="item.info">

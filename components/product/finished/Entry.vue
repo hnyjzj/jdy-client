@@ -53,7 +53,7 @@ const statusDesc = {
                   </div>
                 </div>
               </div>
-              <div class="h-0.5 bg-[#E6E6E8]" />
+              <div class="line-space" />
               <div class="product-information flex flex-col gap-1">
                 <div class="flex-start gap-3 text-sm font-normal">
                   <div class="color-[#666666]">
@@ -88,7 +88,7 @@ const statusDesc = {
                   </div>
                 </div>
               </div>
-              <div class="h-0.5 bg-[#E6E6E8]" />
+              <div class="line-space" />
               <div class="other-information flex flex-col gap-1">
                 <div class="flex-start gap-3 text-sm font-normal">
                   <div class="color-[#666666]">

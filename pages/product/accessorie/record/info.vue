@@ -64,7 +64,7 @@ if (route.query.id) {
                     {{ formatTimestampToDateTime(historyInfo.updated_at) }}
                   </div>
                 </div>
-                <div class="h-0.5 bg-[#E6E6E8]" />
+                <div class="line-space" />
                 <div class="other-information flex flex-col">
                   <accessorie-record-table :filter-list="accessorieFilterListToArray" :new-accessories="historyInfo?.new_value?.product ? historyInfo.new_value.product : historyInfo.new_value" :old-accessories="historyInfo?.old_value?.product ? historyInfo.old_value.product : historyInfo.old_value" />
                 </div>
