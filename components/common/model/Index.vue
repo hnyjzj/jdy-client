@@ -25,12 +25,8 @@ function close() {
 }
 
 watch(show, (val) => {
-  if (val) {
-    document.body.style.overflow = 'hidden'// 禁止滚动
-  }
-  else {
-    document.body.style.overflow = ''
-  }
+  const root = document.documentElement
+  root.style.overflow = val ? 'hidden' : ''
 })
 
 /** 销毁时 */
