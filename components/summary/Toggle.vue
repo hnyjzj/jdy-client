@@ -28,7 +28,7 @@ watch(toggleChart, (val) => {
 
 <template>
   <div
-    class="w-[80px] text-[14px] font-normal text-[#666666] px-[12px] py-[3px] rounded-[4px] cursor-pointer"
+    class=" text-[14px] font-normal text-[#666666] py-[3px] rounded-[4px] cursor-pointer"
     @click="toggleChart = toggleChart === 'list' ? 'chart' : 'list'">
     <div v-if="toggleChart === 'list'" class="flex gap-[2px]">
       <icon name="i-icon:data-bar-chart" color="#0068FF" :size="16" />
