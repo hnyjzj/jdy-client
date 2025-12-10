@@ -41,7 +41,7 @@ const unit = (value: string) => {
     <summary-card-layout title="今日库存" @title-click="emit('clickTitle')">
       <template #default>
         <div :id="id" class="flex overflow-x-scroll gap-[20px] ">
-          <template v-for="(item, key) in props.todayInventory" :key="item">
+          <template v-for="(item, key) in props.todayInventory" :key="key">
             <div class="flex-grow-1 flex-shrink-0 ">
               <div class="color-[#333] dark:color-[#fff] font-semibold pb-[6px] line-height-[24px] text-center">
                 <span class="text-[20px]">{{ item }} <span class="text-[12px] font-normal">{{ unit(key) }}</span> </span>

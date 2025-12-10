@@ -82,7 +82,7 @@ const searchRmk = async (query: string) => {
                         v-model:value="item.amount"
                         placeholder="支付金额"
                         round
-                        min="0"
+                        :min="0"
                         :show-button="false"
                         @focus="focus"
                       />

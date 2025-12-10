@@ -317,7 +317,7 @@ const onReturnProduct = async (index: number) => {
           </template>
         </common-card-info>
       </div>
-      <sale-order-return-goods ref="returnGoodsRef" :where="props.orderWhere" :product-filter="productFilter" :orders="props.orders" :return-goods="props.returnGoods" />
+      <sale-order-return-goods ref="returnGoodsRef" :where="props.orderWhere" :product-filter="props.productFilter" :orders="props.orders" :return-goods="props.returnGoods" />
     </common-layout-center>
   </div>
 </template>

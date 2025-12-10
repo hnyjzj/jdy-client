@@ -71,14 +71,14 @@ const region = defineModel('region', { default: {} })
               label="维修费用" label-placement="top"
 
             >
-              <n-input-number v-model:value="formData.expense" min="0" :show-button="false" @focus="focus" />
+              <n-input-number v-model:value="formData.expense" :min="0" :show-button="false" @focus="focus" />
             </n-form-item>
             <n-form-item
               class="col-6"
               label="维修成本" label-placement="top"
 
             >
-              <n-input-number v-model:value="formData.cost" min="0" :show-button="false" @focus="focus" />
+              <n-input-number v-model:value="formData.cost" :min="0" :show-button="false" @focus="focus" />
             </n-form-item>
             <n-form-item
               class="col-6"

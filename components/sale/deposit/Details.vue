@@ -113,7 +113,7 @@ const returnGoods = (val: number) => {
                     <div class="line-space" />
                     <template v-for="(refund, i) in props.orders.order_refunds" :key="i">
                       <template v-if="refund.code === item.product_finished.code">
-                        <common-cell label="退款时间" :value="formatTimestampToDateTime(item.created_at || '')" />
+                        <common-cell label="退款时间" :value="formatTimestampToDateTime(refund.created_at || '')" />
                         <common-cell label="退款单号" :value="refund.id" />
                         <common-cell label="退款金额" format="￥" :value="refund?.price" />
                         <common-cell label="退货数量" :value="refund?.quantity" />
@@ -122,7 +122,7 @@ const returnGoods = (val: number) => {
                     </template>
                   </template>
                   <div class="flex-end">
-                    <template v-if="item.status === DepositOrderStatus.Booking && props?.identity > 1 && props.store === orders.store_id">
+                    <template v-if="item.status === DepositOrderStatus.Booking && props?.identity > 1 && props.store === props.orders.store_id">
                       <common-button-rounded content="退款" @button-click="returnGoods(index)" />
                     </template>
                   </div>
