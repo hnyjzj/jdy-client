@@ -259,7 +259,7 @@ function GetModelStatusText() {
                             <div class="text-[16px]">
                               {{ role.name }}
                             </div>
-                            <div class="text-[12px] text-[#666666] flex">
+                            <div class="text-[12px] text-color-light flex">
                               {{ role.desc }}
                             </div>
                           </div>
@@ -281,9 +281,9 @@ function GetModelStatusText() {
                             </template>
                           </div>
                           <div class="flex items-center">
-                            <div class="cursor-pointer flex items-center pr-2" @click.stop="copyFun(role)">
-                              <Icon name="i-icon:copy" color="#333333" :size="14" />
-                              <span class="text-[#333333] pl-1">复制</span>
+                            <div class="cursor-pointer flex items-center pr-2 text-color" @click.stop="copyFun(role)">
+                              <Icon name="i-icon:copy" color="" :size="14" />
+                              <span class="pl-1">复制</span>
                             </div>
                             <div class="cursor-pointer flex items-center" @click.stop="edit(role)">
                               <Icon name="i-icon:edit" color="#1A6DD8" :size="16" />
@@ -451,7 +451,7 @@ function GetModelStatusText() {
 }
 
 .select-role {
-  background-color: #f4f9fd;
+  --uno: 'bg-#F4F9FD dark-bg-#0A113C';
 }
 
 :deep(.n-tabs .n-tabs-tab--active) {
