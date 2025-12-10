@@ -13,7 +13,7 @@ const emits = defineEmits<{
 </script>
 
 <template>
-  <div class="fixed bottom-0 left-0 w-full">
+  <div class="fixed z-1 bottom-0 left-0 w-full">
     <div class="flex flex-col">
       <div class="flex-center-row">
         <div class="h-[1px] w-[58px] color-[#9E9E9E] dark:color-[#fff] bg-gradient-linear-[90deg,#CCCCCC00,#CCCCCC]" />

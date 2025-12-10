@@ -58,73 +58,75 @@ const rules = ref<Rules<AccountReq>>({
 </script>
 
 <template>
-  <common-form
-    v-model="form" :rules="rules" @submit="(val:AccountReq) => emits('submit', val)">
-    <template
-      #phone="{
-        error,
-        validate,
-      }">
-      <div class="pb-[32px]">
-        <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
-          <icon name="i-icon:login-user" size="24" />
-          <input
-            v-model="form.phone" class="input " type="text" placeholder="请输入手机号" :maxlength="11" @change="validate()">
-        </div>
-        <div class="error">
-          {{ error }}
-        </div>
-      </div>
-    </template>
-    <template
-      #password="{
-        error,
-        validate }">
-      <div class="pb-[32px]">
-        <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
-          <icon name="i-icon:login-password" size="24" />
-          <input
-            v-model="form.password"
-            class="input "
-            type="password" placeholder="请输入密码" @change="validate()" @blur="validate()">
-        </div>
-        <div class="error">
-          {{ error }}
-        </div>
-      </div>
-    </template>
-    <template
-      v-if="props.imageCaptcha.code"
-      #captcha="{
-        error,
-        validate }">
-      <div class="pb-[32px]">
-        <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
-          <icon name="i-icon:login-code" size="24" />
-          <input
-            v-model="form.captcha"
-            :maxlength="5"
-            class="input"
-            type="text" placeholder="请输入验证码"
-            @change="validate()">
-          <div class="h-full" @click="emits('getCode')">
-            <img :src="props.imageCaptcha.code" class="h-[40px] rounded-r-[8px]">
+  <div class="bg-[#fff] z-3">
+    <common-form
+      v-model="form" :rules="rules" @submit="(val:AccountReq) => emits('submit', val)">
+      <template
+        #phone="{
+          error,
+          validate,
+        }">
+        <div class="pb-[32px]">
+          <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
+            <icon name="i-icon:login-user" size="24" />
+            <input
+              v-model="form.phone" class="input " type="text" placeholder="请输入手机号" :maxlength="11" @change="validate()">
+          </div>
+          <div class="error">
+            {{ error }}
           </div>
         </div>
-        <div class="error">
-          {{ error }}
+      </template>
+      <template
+        #password="{
+          error,
+          validate }">
+        <div class="pb-[32px]">
+          <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
+            <icon name="i-icon:login-password" size="24" />
+            <input
+              v-model="form.password"
+              class="input "
+              type="password" placeholder="请输入密码" @change="validate()" @blur="validate()">
+          </div>
+          <div class="error">
+            {{ error }}
+          </div>
         </div>
-      </div>
-    </template>
-    <template #actions="{ submit }">
-      <div
-        class="text-size-[16px] font-semibold" @click="submit">
-        <div class="ok">
-          登录
+      </template>
+      <template
+        v-if="props.imageCaptcha.code"
+        #captcha="{
+          error,
+          validate }">
+        <div class="pb-[32px]">
+          <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
+            <icon name="i-icon:login-code" size="24" />
+            <input
+              v-model="form.captcha"
+              :maxlength="5"
+              class="input"
+              type="text" placeholder="请输入验证码"
+              @change="validate()">
+            <div class="h-full" @click="emits('getCode')">
+              <img :src="props.imageCaptcha.code" class="h-[40px] rounded-r-[8px]">
+            </div>
+          </div>
+          <div class="error">
+            {{ error }}
+          </div>
         </div>
-      </div>
-    </template>
-  </common-form>
+      </template>
+      <template #actions="{ submit }">
+        <div
+          class="text-size-[16px] font-semibold pb-[40px]" @click="submit">
+          <div class="ok">
+            登录
+          </div>
+        </div>
+      </template>
+    </common-form>
+  </div>
 </template>
 
 <style lang="scss" scoped>
