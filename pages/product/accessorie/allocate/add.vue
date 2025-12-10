@@ -219,7 +219,7 @@ const getStoreFun = useDebounceFn(async (isAlias: boolean) => {
         </div>
       </div>
     </common-layout-center>
-    <div class="fixed bottom-0 left-0 w-full py-4 blur-bgc px-8" uno-sm="px-0">
+    <div class="fixed bottom-0 left-0 w-full py-4 bottom-bgc px-8" uno-sm="px-0">
       <common-layout-center>
         <common-button-rounded content="添加调拨单" @button-click="handleValidateButtonClick" />
       </common-layout-center>
