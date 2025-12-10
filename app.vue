@@ -133,13 +133,14 @@ const darkThemeOverrides: GlobalThemeOverrides = {
     optionColorHover: '#253262',
   },
   Input: {
-    color: '#243F69',
+    color: '#2C4186',
     caretColor: '#0068ff',
     borderHover: '1px solid #0068ff',
     borderFocus: '1px solid #0068ff',
     borderRadius: '20px',
     boxShadowFocus: '0 0 0 2px rgba(0, 104, 255, 0.2)',
     boxShadowActive: '0 0 0 2px rgba(0, 104, 255, 0.2)',
+    // colorDisabled: '#0068ff',
   },
   InternalSelection: {
     borderHover: '1px solid #0068ff',
@@ -170,7 +171,7 @@ const darkThemeOverrides: GlobalThemeOverrides = {
         color: '#0F1E52',
       },
       InternalSelection: {
-        color: '#243F69',
+        color: '#2C4186',
       },
     },
   },
