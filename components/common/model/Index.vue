@@ -25,14 +25,13 @@ function close() {
 }
 
 watch(show, (val) => {
-  const root = document.documentElement
-  root.style.overflow = val ? 'hidden' : ''
+  document.documentElement.style.overflow = val ? 'hidden' : ''
 })
 
 /** 销毁时 */
 onBeforeUnmount (() => {
   show.value = false
-  document.body.style.overflow = ''
+  document.documentElement.style.overflow = ''
 })
 </script>
 
