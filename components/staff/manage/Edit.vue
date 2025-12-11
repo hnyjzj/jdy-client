@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // 搜索门店
-import type { FormRules, SelectOption, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
+import type { FormRules, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 import { pinyin } from 'pinyin-pro'
 
 const emits = defineEmits<{
