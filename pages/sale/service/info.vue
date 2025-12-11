@@ -109,9 +109,7 @@ const payOrder = async () => {
         </template>
       </template>
     </div>
-    <template v-if="repairOrderDetail.store_id">
-      <correspond-store :correspond-ids="[repairOrderDetail.store_id]" />
-    </template>
+    <correspond-store :correspond-ids="[repairOrderDetail.store_id]" />
   </div>
 </template>
 
