@@ -470,7 +470,7 @@ defineExpose({
               <div
                 class="font-semibold pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
                 <div @click="handleValidateButtonClick">
-                  <common-button-rounded content="确定" />
+                  <common-button-rounded content="更新门店" />
                 </div>
               </div>
             </div>

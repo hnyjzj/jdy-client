@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // 搜索门店
-import type { FormRules, SelectOption, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
+import type { FormRules, UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 import { pinyin } from 'pinyin-pro'
 
 const emits = defineEmits<{
@@ -103,20 +103,14 @@ const clearAvatar = () => {
   previewFileList.value = []
   onChangeKey()
 }
-const options = ref<SelectOption[]>([])
 const { useWxWork } = useWxworkStore()
 const selectPer = async () => {
   const wx = await useWxWork()
   wx?.selectDepartment().then((res) => {
     if (res.userList.length) {
       formlist.value.leader_name = res.userList[0].id
-      options.value = res.userList.map(item => ({
-        label: item.name,
-        value: item.id,
-      }))
     }
     else {
-      options.value = []
       formlist.value.leader_name = undefined
     }
   })
@@ -193,7 +187,12 @@ defineExpose({
                 />
               </n-form-item-gi>
               <n-form-item-gi :span="12" label="上级" path="leader_name">
-                <n-select v-model:value="formlist.leader_name" clearable :options="options" placeholder="请选择上级" @click="selectPer" />
+                <n-input
+                  v-model:value="formlist.leader_name"
+                  placeholder="请选择上级"
+                  readonly
+                  @click="selectPer"
+                />
               </n-form-item-gi>
               <n-form-item-gi :span="12" label="性别" path="gender">
                 <n-radio-group v-model:value="formlist.gender">
@@ -217,7 +216,7 @@ defineExpose({
               <div
                 class="font-semibold pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
                 <div @click="handleValidateButtonClick">
-                  <common-button-rounded content="确定" />
+                  <common-button-rounded content="更新信息" />
                 </div>
               </div>
             </div>
