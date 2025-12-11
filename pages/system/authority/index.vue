@@ -281,7 +281,7 @@ function GetModelStatusText() {
                             </template>
                           </div>
                           <div class="flex items-center">
-                            <div class="cursor-pointer flex items-center pr-2 text-color" @click.stop="copyFun(role)">
+                            <div class="cursor-pointer flex items-center pr-3 text-color" @click.stop="copyFun(role)">
                               <Icon name="i-icon:copy" color="" :size="14" />
                               <span class="pl-1">复制</span>
                             </div>
@@ -313,7 +313,7 @@ function GetModelStatusText() {
                   v-for="(item, index) in navItems"
                   :key="index"
                   :class="{ 'select-nav': activeIndex === index }"
-                  class="nav-item"
+                  class="nav-item text-color"
                   @click="setActive(index)"
                 >
                   {{ item }}
@@ -411,7 +411,7 @@ function GetModelStatusText() {
 <style lang="scss" scoped>
 .user-box {
   border: 1px solid #ddd7d7;
-  --uno: 'rounded-[8px] p-2';
+  --uno: 'rounded-[8px] p-2 dark:border-#444D71';
 }
 .label {
   --uno: 'ml-2 px-[2px] rounded-[2px] bg-[rgba(230,230,232,1)] text-[rgba(128,128,137,1)]';
@@ -423,15 +423,15 @@ function GetModelStatusText() {
   justify-content: flex-start;
   gap: 16px;
   padding: 0;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #ddd7d7;
   padding-bottom: 4px;
+  --uno: 'dark:border-#444D71';
 }
 
 .nav-item {
   position: relative;
   padding: 8px 0;
   font-size: 16px;
-  color: #333;
   cursor: pointer;
   line-height: 1.2;
 }
@@ -462,5 +462,8 @@ function GetModelStatusText() {
 }
 :deep(.n-tabs.n-tabs--line-type .n-tabs-tab:hover) {
   color: #1a6dd8 !important;
+}
+:deep(.n-tabs-tab__label) {
+  font-size: 16px;
 }
 </style>
