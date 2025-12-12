@@ -144,7 +144,7 @@ const searchKey = ref('')
                     新增
                   </div>
                 </template>
-                <div class="px-[36px] py-[4px] bg-[#fff] text-[#1890ff] cursor-pointer rounded-[30px] text-center ml-[12px]" @click="editStatus = !editStatus">
+                <div class="px-[36px] py-[4px] bg-[#fff] border-[1px] border-[#1890ff] border border-solid text-[#1890ff] cursor-pointer rounded-[30px] text-center ml-[12px]" @click="editStatus = !editStatus">
                   {{ editStatus ? '取消' : '编辑' }}
                 </div>
               </div>
@@ -159,7 +159,7 @@ const searchKey = ref('')
                   </div>
                 </template>
                 <template v-for="(item, index) in List" :key="index">
-                  <div class="flex justify-between py-[6px] px-[6px] text-color light:bg-[#F1F5FE] dark:bg-[#2C4186] mb-[12px] rounded-[8px] relative cursor-pointer" @click="editText(item)">
+                  <div class="flex justify-between py-[8px] px-[16px] text-color light:bg-[#F1F5FE] dark:bg-[#2C4186] mb-[16px] rounded-[8px] relative cursor-pointer" @click="editText(item)">
                     <div>
                       {{ item.content }}
                     </div>
