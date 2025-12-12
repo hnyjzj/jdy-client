@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<{
 </script>
 
 <template>
-  <div>
+  <div class="flex items-center">
     <template v-if="props.img">
       <n-image
         :src="ImageUrl(props.img)"

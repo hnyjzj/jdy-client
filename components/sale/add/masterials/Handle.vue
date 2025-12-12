@@ -174,7 +174,7 @@ const calcPrice = () => {
 <template>
   <div>
     <common-model v-model="showModal" title="添加旧料" :show-ok="true" :show-cancel="true" @confirm="submitMasterialsForm">
-      <div class="grid-12 h-[300px] overflow-y-scroll">
+      <div class="grid-12 h-[400px] overflow-y-scroll">
         <div class="col-12 px-[12px]">
           <n-form ref="MformRef" :model="nowOldMaster" :rules="rules">
             <n-grid :cols="24" :x-gap="8">

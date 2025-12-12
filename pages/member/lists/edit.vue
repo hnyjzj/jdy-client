@@ -195,171 +195,152 @@ const rules = ref<FormRules>({
 
 <template>
   <div>
-    <div class="grid-12 pb-[80px]">
-      <div class="col-12 px-[16px] py-[16px]" uno-lg="col-8 offset-2">
-        <div class="flex flex-col gap-[16px]">
-          <div class="primary">
-            <common-gradient title="会员归属" theme="gradient" :italic="true">
-              <template #body>
-                <div class="flex flex-col gap-[12px]">
-                  <div class="base flex flex-1 flex-col gap-[12px]">
-                    <n-form ref="formRef" :rules="rules" :model="memberParams" label-placement="top">
-                      <n-form-item label="姓名">
-                        <n-input
-                          v-model:value="memberParams.name"
-                          placeholder="请输入会员姓名"
-                          @keydown.enter.prevent
-                        />
-                      </n-form-item>
+    <common-layout-center>
+      <div class="py-[16px] pb-[100px]">
+        <common-card-info title="会员信息">
+          <template #info>
+            <div class="flex flex-col gap-[12px]">
+              <div class="base flex flex-1 flex-col gap-[12px]">
+                <n-form ref="formRef" :rules="rules" :model="memberParams" label-placement="top">
+                  <n-form-item label="姓名">
+                    <n-input
+                      v-model:value="memberParams.name"
+                      placeholder="请输入会员姓名"
+                      @keydown.enter.prevent
+                    />
+                  </n-form-item>
 
-                      <n-form-item path="phone" label="联系方式">
-                        <n-input
-                          v-model:value="memberParams.phone"
-                          placeholder="请输入会员联系方式"
-                          @keydown.enter.prevent
-                        />
-                      </n-form-item>
+                  <n-form-item path="phone" label="联系方式">
+                    <n-input
+                      v-model:value="memberParams.phone"
+                      placeholder="请输入会员联系方式"
+                      @keydown.enter.prevent
+                    />
+                  </n-form-item>
 
-                      <n-form-item label="昵称">
-                        <n-input
-                          v-model:value="memberParams.nickname"
-                          placeholder="请输入会员昵称"
-                          @keydown.enter.prevent
-                        />
-                      </n-form-item>
+                  <n-form-item label="昵称">
+                    <n-input
+                      v-model:value="memberParams.nickname"
+                      placeholder="请输入会员昵称"
+                      @keydown.enter.prevent
+                    />
+                  </n-form-item>
 
-                      <n-form-item label="性别">
-                        <n-select
-                          v-model:value="showToUser"
-                          placeholder="请选择会员性别"
-                          :options="selectOptions"
-                          menu-size="large"
-                          @focus="focus"
+                  <n-form-item label="性别">
+                    <n-select
+                      v-model:value="showToUser"
+                      placeholder="请选择会员性别"
+                      :options="selectOptions"
+                      menu-size="large"
+                      @focus="focus"
 
-                          @blur="() => {
-                            memberParams.gender = showToUser as any
-                          }"
-                        />
-                      </n-form-item>
+                      @blur="() => {
+                        memberParams.gender = showToUser as any
+                      }"
+                    />
+                  </n-form-item>
 
-                      <n-form-item label="身份证号">
-                        <n-input
-                          v-model:value="memberParams.id_card"
-                          size="large"
-                          round
-                          placeholder="请输入会员身份证号"
-                          @focus="focus"
-                        />
-                      </n-form-item>
+                  <n-form-item label="身份证号">
+                    <n-input
+                      v-model:value="memberParams.id_card"
+                      size="large"
+                      round
+                      placeholder="请输入会员身份证号"
+                      @focus="focus"
+                    />
+                  </n-form-item>
 
-                      <n-form-item path="store_id" label="入会门店">
-                        <n-select
-                          v-model:value="memberParams.store_id"
-                          placeholder="请选择入会门店"
-                          :options="StoresList"
-                          filterable
-                          menu-size="large"
-                          clearable
-                          remote
-                          @update:value="() => {
-                            changeClear()
-                          }"
-                          @search="searchStores"
-                          @focus="() => {
-                            searchStores('')
-                          }"
-                          @blur="() => {
-                            chosenStoreId = memberParams.store_id
-                          }"
-                        />
-                      </n-form-item>
+                  <n-form-item path="store_id" label="入会门店">
+                    <n-select
+                      v-model:value="memberParams.store_id"
+                      placeholder="请选择入会门店"
+                      :options="StoresList"
+                      filterable
+                      menu-size="large"
+                      clearable
+                      remote
+                      @update:value="() => {
+                        changeClear()
+                      }"
+                      @search="searchStores"
+                      @focus="() => {
+                        searchStores('')
+                      }"
+                      @blur="() => {
+                        chosenStoreId = memberParams.store_id
+                      }"
+                    />
+                  </n-form-item>
 
-                      <n-form-item path="consultant_id" label="专属顾问">
-                        <n-select
-                          v-model:value="memberParams.consultant_id"
-                          placeholder="请选择专属顾问"
-                          :options="targerStaffList.map(v => ({
-                            label: v.nickname,
-                            value: v.id,
-                          }))"
-                          menu-size="large"
-                          clearable
-                          remote
-                          @focus="(e) => {
-                            focus(e)
-                            getTargetStaff(chosenStoreId)
-                          }"
-                        />
-                      </n-form-item>
-                    </n-form>
+                  <n-form-item path="consultant_id" label="专属顾问">
+                    <n-select
+                      v-model:value="memberParams.consultant_id"
+                      placeholder="请选择专属顾问"
+                      :options="targerStaffList.map(v => ({
+                        label: v.nickname,
+                        value: v.id,
+                      }))"
+                      menu-size="large"
+                      clearable
+                      remote
+                      @focus="(e) => {
+                        focus(e)
+                        getTargetStaff(chosenStoreId)
+                      }"
+                    />
+                  </n-form-item>
+                </n-form>
+              </div>
+            </div>
+          </template>
+        </common-card-info>
+        <common-card-info title="其他信息">
+          <template #info>
+            <div class="flex flex-col gap-[12px]">
+              <div class="base flex flex-1 flex-col gap-[12px]">
+                <div class="secondary">
+                  <div class="secondary-top">
+                    生日
+                  </div>
+                  <div class="secondary-bottom">
+                    <n-date-picker
+                      v-model:value="birthday"
+                      input-readonly
+                      clearable
+                      :is-date-disabled="dateDisabled"
+                      format="yyyy-MM-dd"
+                      type="date"
+                      @blur="handleDateBlur('birthday')"
+                    />
                   </div>
                 </div>
-              </template>
-            </common-gradient>
-          </div>
-
-          <div class="secondary">
-            <common-gradient title="其他信息" theme="gradient" :italic="true">
-              <template #body>
-                <div class="flex flex-col gap-[12px]">
-                  <div class="base flex flex-1 flex-col gap-[12px]">
-                    <div class="secondary">
-                      <div class="secondary-top">
-                        生日
-                      </div>
-                      <div class="secondary-bottom">
-                        <n-date-picker
-                          v-model:value="birthday"
-                          input-readonly
-                          clearable
-                          :is-date-disabled="dateDisabled"
-                          format="yyyy-MM-dd"
-                          type="date"
-                          @blur="handleDateBlur('birthday')"
-                        />
-                      </div>
-                    </div>
-                    <div class="secondary">
-                      <div class="secondary-top">
-                        纪念日
-                      </div>
-                      <div class="secondary-bottom">
-                        <n-date-picker
-                          v-model:value="anniversary"
-                          :is-date-disabled="dateDisabled"
-                          input-readonly
-                          clearable
-                          format="yyyy-MM-dd"
-                          type="date"
-                          @blur="handleDateBlur('anniversary')"
-                        />
-                      </div>
-                    </div>
+                <div class="secondary">
+                  <div class="secondary-top">
+                    纪念日
+                  </div>
+                  <div class="secondary-bottom">
+                    <n-date-picker
+                      v-model:value="anniversary"
+                      :is-date-disabled="dateDisabled"
+                      input-readonly
+                      clearable
+                      format="yyyy-MM-dd"
+                      type="date"
+                      @blur="handleDateBlur('anniversary')"
+                    />
                   </div>
                 </div>
-              </template>
-            </common-gradient>
-          </div>
-        </div>
+              </div>
+            </div>
+          </template>
+        </common-card-info>
       </div>
-    </div>
+    </common-layout-center>
     <common-button-bottom confirm-text="确认保存" cancel-text="取消" @confirm="execute" @cancel="backtrack" />
   </div>
 </template>
 
 <style>
-.n-base-selection {
-  border-radius: 20px;
-}
-
-.n-base-selection-label {
-  height: 40px !important;
-}
-
-.n-input-wrapper {
-  border-radius: 20px !important;
-}
-
 .n-date-picker {
   border-radius: 20px;
 }

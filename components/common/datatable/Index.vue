@@ -9,27 +9,30 @@ const props = withDefaults(defineProps<{
 }>(), {
   loading: false,
 })
-
 let scrollX = 0
-
 for (let i = 0; i < props.columns.length; ++i) {
   scrollX += 120
 }
+const { $colorMode } = useNuxtApp()
+const tdColor = computed(() => {
+  return $colorMode.value === 'light' ? '#1A6DD8' : '#fff'
+})
 </script>
 
 <template>
-  <common-layout-center>
-    <div class="p-[16px]">
+  <div class="font-[12px]">
+    <div class="p-3 blur-bgc rounded-3">
       <n-data-table
         :loading="props.loading"
-        striped
         :style="{
-          '--n-item-text-color-active': '#4678B9',
-          '--n-item-border-active': '1px solid #2976EF',
-          '--n-item-text-color-hover': '#333',
-          '--n-loading-color': 'orange',
+          '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#1D2C60',
+          '--n-merged-td-text-color': $colorMode.value === 'light' ? '#1A6DD8' : '#fff',
+          '--n-merged-td-color-hover': $colorMode.value === 'light' ? '#DAEAFF' : '#0050B8',
+          '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#0F1E52',
+          '--n-merged-border-color': 'rgba(57,113,243,0.0)',
+          '--td-color': tdColor,
         }"
-        size="large"
+        size="small"
         remote
         :bordered="false"
         :single-line="false"
@@ -40,12 +43,24 @@ for (let i = 0; i < props.columns.length; ++i) {
         :max-height="600"
       />
     </div>
-  </common-layout-center>
+  </div>
 </template>
 
 <style lang="scss" scoped>
-:deep(.n-pagination .n-pagination-item:not(.n-pagination-item--disabled).n-pagination-item--active) {
-  border: 1px solid #2976ef !important;
-  color: #2976ef !important;
+// 移除所有边框
+:deep(.n-data-table) {
+  border: none !important;
+}
+:deep(.n-data-table-th) {
+  border: none !important;
+}
+:deep(.n-data-table-td) {
+  border: none !important;
+}
+:deep(.n-data-table .n-data-table-base-table-header) {
+  border-radius: 8px;
+}
+:deep(.n-data-table-tr:hover .n-data-table-td) {
+  color: var(--td-color);
 }
 </style>

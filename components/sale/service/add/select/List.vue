@@ -48,8 +48,9 @@ const deleteConfirm = () => {
 
               <div class="pb-[16px]">
                 <div class="flex justify-between items-center">
-                  <div class="p-[8px] col-2 flex-center-row cursor-pointer" @click="deleteOld(ix)">
+                  <div class="p-[8px] col-2 flex-center-row cursor-pointer gap-[6px]" @click="deleteOld(ix)">
                     <icon name="i-svg:delete" :size="16" />
+                    <span class="color-[#F82F2F]">删除</span>
                   </div>
                   <div class="color-[#fff] bg-[#3971F3] py-[6px] px-[12px] rounded-[30px] cursor-pointer" @click="emits('edit', obj, ix)">
                     编辑

@@ -353,16 +353,16 @@ onMounted(() => {
         :part-filter="accessorieFilterList"
       />
       <template v-if="!route?.query?.embedded">
-        <div class="bg-[#fff] fixed bottom-0 left-0 z-1 w-full grid-12">
-          <div class="flex col-10 offset-1 gap-[12px]" uno-sm="col-6 offset-3">
+        <div class="fixed bottom-0 left-0 z-1 w-full grid-12 blur-bga" style="box-shadow: 0px -1px 15px 0px #0000001a;">
+          <div class="flex justify-between col-10 offset-1 gap-[12px]" uno-sm="col-4 offset-4">
             <!--  订单状态 为 待付款 -->
             <template v-if="[OrderStatusText.OrderSalesProductStatusWaitPay].includes(OrderDetail.status)">
               <!-- 订单门店 为 当前门店id -->
               <template v-if="[OrderDetail.store_id].includes(myStore.id)">
                 <!-- 订单收银员 为 当前用户id -->
                 <template v-if="[OrderDetail.cashier_id].includes(userinfo.id)">
-                  <common-button-rounded margin="16px 0px" bgc="#374151" content="撤销" @button-click="cancelOrderShow = true" />
-                  <common-button-rounded margin="16px 0px" bgc="#059669" content="支付" @button-click="payOrderShow = true" />
+                  <common-button-rounded :full="true" margin="16px 0px" bgc="transparent" color="#3971F3" border="1px solid #3971F3" content="撤销" @button-click="cancelOrderShow = true" />
+                  <common-button-rounded :full="true" margin="16px 0px" bgc="#059669" content="支付" @button-click="payOrderShow = true" />
                 </template>
               </template>
             </template>
@@ -372,7 +372,7 @@ onMounted(() => {
               <template v-if="[OrderDetail.store_id].includes(myStore.id)">
                 <!-- 订单操作人 或 订单收银员 为 当前用户id -->
                 <template v-if="[OrderDetail.operator_id, OrderDetail.cashier_id].includes(userinfo.id)">
-                  <common-button-rounded margin="16px 0px" bgc="#F24E4D" content="退单" @button-click="ReturnOrderShow = true" />
+                  <common-button-rounded :full="true" margin="16px 0px" bgc="#F24E4D" content="退单" @button-click="ReturnOrderShow = true" />
                 </template>
               </template>
             </template>
@@ -380,7 +380,7 @@ onMounted(() => {
             <template
               v-if="[OrderStatusText.OrderSalesProductStatusComplete, OrderStatusText.OrderSalesProductStatusRefund].includes(OrderDetail.status)">
               <template v-if="!isMobile">
-                <common-button-rounded margin="16px 0px" content="打印" @button-click="printOrder" />
+                <common-button-rounded :full="true" margin="16px 0px" content="打印" @button-click="printOrder" />
               </template>
             </template>
           </div>
@@ -418,7 +418,5 @@ onMounted(() => {
 </template>
 
 <style>
-.n-base-selection {
-  border-radius: 8px;
-}
+
 </style>

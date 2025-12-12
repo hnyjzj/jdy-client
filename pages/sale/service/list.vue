@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useCascaderAreaData } from '@vant/area-data'
-import { NButton } from 'naive-ui'
 // 维修单列表
 useSeoMeta({
   title: '维修单列表',
@@ -208,10 +207,16 @@ const cols = [
   {
     title: '操作',
     key: 'action',
+    fixed: 'right',
     render: (rowData: ServiceOrderInfo) => {
       return h(
-        NButton,
+        'span',
         {
+          style: {
+            color: '#0D6CE4',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           type: 'info',
           size: 'small',
           onClick: () => {
@@ -220,7 +225,7 @@ const cols = [
             navigateTo(`/sale/service/info?id=${rowData.id}`)
           },
         },
-        { default: () => '查看详情' },
+        { default: () => '详情' },
       )
     },
   },
@@ -238,9 +243,9 @@ const cols = [
         <product-manage-company @change="changeStores" />
       </template>
     </product-filter>
-    <template v-if="showtype === 'list'">
+    <div class="p-4">
       <common-layout-center>
-        <div class="p-[16px]">
+        <template v-if="showtype === 'list'">
           <template v-if="repairOrderList.length">
             <sale-service-list
               :list="repairOrderList"
@@ -252,14 +257,14 @@ const cols = [
             <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
           </template>
           <template v-else>
-            <common-emptys text="暂无数据" />
+            <common-empty text="暂无数据" />
           </template>
-        </div>
+        </template>
+        <template v-else>
+          <common-datatable :columns="cols" :list="repairOrderList" :page-option="pageOption" :loading="tableLoading" />
+        </template>
       </common-layout-center>
-    </template>
-    <template v-else>
-      <common-datatable :columns="cols" :list="repairOrderList" :page-option="pageOption" :loading="tableLoading" />
-    </template>
+    </div>
     <!-- filter -->
     <div>
       <common-filter-where v-model:show="filterShow" :data="filterData" :filter="repairFilterListToArray" @submit="submitWhere" @reset="resetWhere">

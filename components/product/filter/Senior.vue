@@ -7,12 +7,12 @@ const filter = () => {
 
 <template>
   <div>
-    <div class="py-[6px] px-[12px] flex-end cursor-pointer cursor-pointer" @click="filter">
+    <div class="py-[6px] px-[12px] flex-end cursor-pointer cursor-pointer text-color" @click="filter">
       <div class="mr-[4px]">
-        <icon name="i-icon:filter" size="12" />
+        <icon name="i-icon:filter" size="14" />
       </div>
-      <div class="text-size-[14px] font-semibold line-height-[20px]">
-        高级筛选
+      <div class="text-size-[14px] font-normal line-height-[20px]">
+        筛选
       </div>
     </div>
   </div>

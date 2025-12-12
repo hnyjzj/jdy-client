@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { NButton } from 'naive-ui'
-
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 const { getAccessorieList, getAccessorieWhere } = useAccessorie()
@@ -174,11 +172,15 @@ const cols = [
     render(row: any) {
       return h(
         'div',
-        { style: 'display: flex; justify-content: flex-end;' },
         [
           h(
-            NButton,
+            'span',
             {
+              style: {
+                color: '#0D6CE4',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+              },
               type: 'info',
               size: 'small',
               onClick: () => jump('/product/accessorie/info', { id: row.id }),
@@ -210,65 +212,77 @@ const cols = [
       </template>
     </product-filter>
     <!-- 列表 -->
-    <div class="pb-20">
-      <template v-if="accessorieList?.length">
-        <template v-if="showtype === 'list'">
-          <product-manage-card :list="accessorieList">
-            <template #status="info">
-              <span>{{ accessorieFilterList.status?.preset[info.info] }}</span>
-            </template>
-            <template #info="{ info }">
-              <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                <template v-for="(item, index) in accessorieFilterListToArray" :key="index">
-                  <template v-if="item.info">
-                    <div class="flex-between">
-                      <div>
-                        {{ item.label }}
-                      </div>
-                      <template v-if="item.name === 'store'">
-                        <div class="text-align-end val">
-                          {{ info[item.name].name }}
-                        </div>
-                      </template>
-                      <template v-else>
-                        <template v-if="item.type === 'date'">
-                          <div class="text-align-end val">
-                            {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
-                          </div>
-                        </template>
-                        <template v-else>
-                          <template v-if="item.input === 'select'">
-                            <div class="text-align-end val">
-                              {{ item.preset[info[item.name] || 0] || '' }}
+    <common-layout-center>
+      <div class="pb-20 px-[16px] pt-4">
+        <template v-if="accessorieList?.length">
+          <template v-if="showtype === 'list'">
+            <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+              <template v-for="(info, index) in accessorieList" :key="index">
+                <common-card-list>
+                  <template #status>
+                    <common-button-status
+                      :bg-color="getStatusStyle(info.status, AllocateStatusColorMap).backgroundColor"
+                      :text="accessorieFilterList.status?.preset[info.status]"
+                    />
+                  </template>
+                  <template #info>
+                    <div class="text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                      <template v-for="(item, i) in accessorieFilterListToArray" :key="i">
+                        <template v-if="item.info">
+                          <div class="flex-between">
+                            <div>
+                              {{ item.label }}
                             </div>
-                          </template>
-                          <template v-else>
-                            {{ info[item.name] }}
-                          </template>
+                            <template v-if="item.name === 'store'">
+                              <div class="text-align-end val">
+                                {{ info[item.name].name }}
+                              </div>
+                            </template>
+                            <template v-else>
+                              <template v-if="item.type === 'date'">
+                                <div class="text-align-end val">
+                                  {{ info[item.name] ? formatTimestampToDateTime(info[item.name] as string || '') : '' }}
+                                </div>
+                              </template>
+                              <template v-else>
+                                <template v-if="item.input === 'select'">
+                                  <div class="text-align-end val">
+                                    {{ item.preset[info[item.name] || 0] || '' }}
+                                  </div>
+                                </template>
+                                <template v-else>
+                                  {{ info[item.name] }}
+                                </template>
+                              </template>
+                            </template>
+                          </div>
                         </template>
                       </template>
                     </div>
                   </template>
-                </template>
-              </div>
-            </template>
-            <template #bottom="{ info }">
-              <div class="flex-end text-size-[14px]">
-                <common-button-irregular text="详情" @click="jump(`/product/accessorie/info`, { id: info.id })" />
-              </div>
-            </template>
-          </product-manage-card>
-          <common-page
-            v-model:page="searchPage" :total="accessorieListTotal" :limit="limits" @update:page="updatePage" />
+                  <template #footer>
+                    <div class="flex-end">
+                      <common-button-rounded
+                        padding="4px 36px"
+                        content="详情" @button-click="jump('/product/accessorie/info', { id: info.id })"
+                      />
+                    </div>
+                  </template>
+                </common-card-list>
+              </template>
+            </div>
+            <common-page
+              v-model:page="searchPage" :total="accessorieListTotal" :limit="limits" @update:page="updatePage" />
+          </template>
+          <template v-else>
+            <common-datatable :columns="cols" :list="accessorieList" :page-option="pageOption" :loading="tableLoading" />
+          </template>
         </template>
         <template v-else>
-          <common-datatable :columns="cols" :list="accessorieList" :page-option="pageOption" :loading="tableLoading" />
+          <common-empty width="100px" />
         </template>
-      </template>
-      <template v-else>
-        <common-empty width="100px" />
-      </template>
-    </div>
+      </div>
+    </common-layout-center>
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['type']" :filter="accessorieFilterListToArray" @reset="resetWhere" @submit="submitWhere" />
   </div>
 </template>

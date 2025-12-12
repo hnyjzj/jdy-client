@@ -164,25 +164,32 @@ async function uploadImg() {
 
 <template>
   <div>
-    <common-layout-center>
-      <div class="p-4">
-        <div class="color-[#fff] py-[12px] flex justify-between">
+    <div class="blur-bgc">
+      <common-layout-center>
+        <div class="pr-4 flex justify-between">
           <product-manage-company />
-          <div class="flex-1 px-2 sm:px-4">
+        </div>
+      </common-layout-center>
+    </div>
+    <common-layout-center>
+      <div class="grid-12">
+        <div class="flex px-4 col-12 pt-4" uno-sm="col-8 offset-2">
+          <div class="flex-1 pr-4 sm:px-4">
             <product-filter-search v-model:search-key="liveCode" placeholder="搜索条码" @submit="searchFun" />
           </div>
           <template v-if="checkEnv()">
             <div
               class="flex items-center justify-end cursor-pointer"
               @click="scanCode()">
-              <icon class="ml-2" name="i-icon:scanit" :size="18" />
+              <icon class="text-[#1A6BEB]" name="i-icon:scanit" :size="24" />
             </div>
           </template>
         </div>
-
+      </div>
+      <div class="p-4">
         <template v-if="finishedInfo && statusCode === 200">
-          <common-gradient theme="theme" title="上传图片">
-            <template #body>
+          <common-card-info title="上传图片">
+            <template #info>
               <div class="flex items-center">
                 <n-upload
                   action="#"
@@ -193,6 +200,9 @@ async function uploadImg() {
                   :on-change="handleFileChange"
                   show-download-button
                   :show-progress="true"
+                  :theme-overrides="{
+                    draggerBorderHover: '1px dashed #0068ff',
+                  }"
                   @remove="(file) => removeImg(file)"
                 />
               </div>
@@ -202,9 +212,12 @@ async function uploadImg() {
                 </button>
               </div>
             </template>
-          </common-gradient>
+          </common-card-info>
           <div class="h-4" />
           <product-manage-info :info="finishedInfo" :filter-list="finishedFilterList" :filter-list-to-array="finishedFilterListToArray" />
+        </template>
+        <template v-else>
+          <common-empty text="暂无数据" />
         </template>
       </div>
     </common-layout-center>

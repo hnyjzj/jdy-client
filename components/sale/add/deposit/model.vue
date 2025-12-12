@@ -108,7 +108,7 @@ const confirmFn = () => {
                 </div>
               </template>
               <template v-if="resultList.length === 0">
-                <common-emptys text="暂无数据" />
+                <common-empty text="暂无数据" />
               </template>
             </div>
           </div>

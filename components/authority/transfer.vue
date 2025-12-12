@@ -82,3 +82,9 @@ function renderSourceList({ onCheck, pattern }: any) {
     />
   </div>
 </template>
+
+<style scoped>
+:deep(.n-input-wrapper) {
+  height: 32px;
+}
+</style>

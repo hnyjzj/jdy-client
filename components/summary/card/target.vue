@@ -97,8 +97,4 @@ onBeforeUnmount(() => {
   /* 隐藏Webkit浏览器的滚动条 */
   display: none;
 }
-.skew-text {
-  display: flex;
-  align-items: flex-start;
-}
 </style>

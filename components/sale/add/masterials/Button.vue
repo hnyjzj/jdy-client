@@ -3,6 +3,8 @@ const emits = defineEmits<{
   handleAdd: []
   searchQl: []
 }>()
+const { $colorMode } = useNuxtApp()
+const theme = computed(() => $colorMode.value === 'light' ? '1px solid #1a6beb' : '1px solid #fff')
 </script>
 
 <template>
@@ -15,12 +17,8 @@ const emits = defineEmits<{
           搜索
         </div>
       </div>
-      <div
-        class="btn-right col-6 cursor-pointer" uno-sm="col-4 offset-6" @click="emits('handleAdd')"
-      >
-        <div class="ml-2">
-          手动添加
-        </div>
+      <div class="col-6 cursor-pointer" uno-sm="col-4 offset-6" @click="emits('handleAdd')">
+        <common-button-rounded content="手动添加" bgc="#F1F5FE" color="#1a6beb" :border="theme" />
       </div>
     </div>
   </div>
@@ -30,8 +28,5 @@ const emits = defineEmits<{
 .btn-left {
   --uno: 'text-[16px] border-none py-[9px] rounded-[36px] text-[#FFFFFF] flex justify-center items-center';
   background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-}
-.btn-right {
-  --uno: 'text-[16px] py-[9px] text-[#1a6beb] dark:color-#fff dark:border-[#fff] rounded-[36px] bg-[transparent] flex justify-center items-center border-[1px] border-solid border-[#1a6beb]';
 }
 </style>

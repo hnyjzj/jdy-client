@@ -188,4 +188,7 @@ const rules = ref<FormRules>({
     --uno: 'font-size-[16px] color-[#333333] dark:color-[#fff]';
   }
 }
+:deep(.n-date-picker) {
+  width: 100%;
+}
 </style>

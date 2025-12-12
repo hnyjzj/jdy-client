@@ -48,18 +48,20 @@ const handleAddProductFn = (value: DepositOrderProduct) => {
 
 <template>
   <div>
-    <common-fold title="货品" :is-collapse="false">
-      <div class="p-[16px]">
-        <div class="btn grid-12 gap-[8px]">
-          <sale-deposit-select-product :search-product-list="props.searchProductList" @add="addProduct" />
-          <sale-deposit-handle-add :filter-list="props.filterList" @add-product="handleAddProductFn" />
-        </div>
+    <common-card-info title="货品">
+      <template #info>
+        <div>
+          <div class="btn grid-12 gap-[8px]">
+            <sale-deposit-select-product :search-product-list="props.searchProductList" @add="addProduct" />
+            <sale-deposit-handle-add :filter-list="props.filterList" @add-product="handleAddProductFn" />
+          </div>
 
-        <div class=" pt-[16px]">
-          <sale-deposit-product-list v-model:list="showProductList" :filter-list="props.filterList" />
+          <div class=" pt-[16px]">
+            <sale-deposit-product-list v-model:list="showProductList" :filter-list="props.filterList" />
+          </div>
         </div>
-      </div>
-    </common-fold>
+      </template>
+    </common-card-info>
     <!-- 选择成品 -->
   </div>
 </template>
@@ -68,8 +70,5 @@ const handleAddProductFn = (value: DepositOrderProduct) => {
 .btn-left {
   --uno: 'text-[16px] border-none rounded-[36px] text-[#FFFFFF] flex justify-center items-center py-[10px]';
   background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-}
-.btn-right {
-  --uno: 'text-[16px] py-[9px]  text-[#1a6beb]  dark:color-#fff dark:border-[#fff] rounded-[36px] bg-[transparent] flex justify-center items-center border-[1px] border-solid border-[#1a6beb]';
 }
 </style>

@@ -162,20 +162,15 @@ const printFn = async () => {
     <product-allocate-access-print v-model="showPrintModel" />
     <div class="grid-12 pt-4">
       <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
-        <div class="rounded-6 bg-white w-auto blur-bga top">
-          <common-gradient title="基础信息">
-            <template #body>
+        <div class="rounded-6 w-auto top">
+          <common-card-info title="基础信息">
+            <template #status>
+              <common-button-status :bg="getStatusStyle(accessorieAllocateInfo.status, AllocateStatusColorMap)" :text="accessorieAllocateFilterList.status?.preset[accessorieAllocateInfo.status]" />
+            </template>
+            <template #info>
               <div class="flex flex-col gap-4">
                 <div class="operation-information flex flex-col gap-1">
                   <div class="other-information flex flex-col gap-1">
-                    <div class="info-row">
-                      <div class="info-title">
-                        状态
-                      </div>
-                      <div class="info-val">
-                        {{ accessorieAllocateFilterList.status?.preset[accessorieAllocateInfo.status] }}
-                      </div>
-                    </div>
                     <template v-for="(item, index) in accessorieAllocateFilterListToArray" :key="index">
                       <template v-if="item.info">
                         <div class="info-row">
@@ -243,7 +238,7 @@ const printFn = async () => {
                 </div>
               </div>
             </template>
-          </common-gradient>
+          </common-card-info>
         </div>
         <template v-if="accessorieAllocateInfo.products?.length">
           <div class="p-4 blur-bgc rounded-6">
@@ -351,12 +346,9 @@ const printFn = async () => {
   overflow: hidden;
 }
 .info-row {
-  --uno: 'flex justify-between mb-2';
-  .info-title {
-    --uno: 'text-color';
-  }
+  --uno: 'flex justify-between mb-2 text-color';
   .info-val {
-    --uno: 'text-color-light w-70% text-right';
+    --uno: 'w-70% text-right';
   }
 }
 .tabel-text {

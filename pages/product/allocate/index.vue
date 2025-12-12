@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { NButton } from 'naive-ui'
-
 const { $toast } = useNuxtApp()
 const { getAllocateList, getAllocateWhere, getAllocateDetails } = useAllocate()
 const { allocateList, allocateFilterListToArray, allocateFilterList, allocateTotal } = storeToRefs(useAllocate())
@@ -258,8 +256,13 @@ const cols = [
         { style: 'display: flex; gap: 8px;' },
         [
           h(
-            NButton,
+            'span',
             {
+              style: {
+                color: '#0D6CE4',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+              },
               type: 'info',
               size: 'small',
               onClick: () => jump('/product/allocate/info', { id: row.id, type: row.type }),
@@ -410,139 +413,149 @@ async function downloadDetails() {
       </template>
     </product-filter>
     <!-- 小卡片组件 -->
-    <div class="pb-20">
-      <template v-if="allocateList?.length">
-        <template v-if="showtype === 'list'">
-          <product-manage-card :list="allocateList">
-            <template #top="{ info }">
-              <div class="status-title" :style="getStatusStyle(info.status, AllocateStatusColorMap)">
-                {{ allocateFilterList.status?.preset[info.status] }}
-              </div>
-            </template>
-            <template #info="{ info }">
-              <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                <div class="flex py-[4px] justify-between">
-                  <div>
-                    调拨方式
-                  </div>
-                  <div class="val">
-                    {{ allocateFilterList.method?.preset[info.method] }}
-                  </div>
-                </div>
-                <div class="flex py-[4px] justify-between">
-                  <div>
-                    仓库类型
-                  </div>
-                  <div class="val">
-                    {{ allocateFilterList.type?.preset[info.type] }}
-                  </div>
-                </div>
-                <div class="flex py-[4px] justify-between">
-                  <div>
-                    调拨原因
-                  </div>
-                  <div class="val">
-                    {{ allocateFilterList.reason?.preset[info.reason] }}
-                  </div>
-                </div>
-                <div class="flex py-[4px] justify-between">
-                  <div>
-                    调拨状态
-                  </div>
-                  <div class="val">
-                    {{ allocateFilterList.status?.preset[info.status] }}
-                  </div>
-                </div>
-                <div class="flex py-[4px] justify-between">
-                  <div>
-                    调拨数量
-                  </div>
-                  <div class="val">
-                    {{ info.product_count }}
-                  </div>
-                </div>
-                <div class="flex py-[4px] justify-between">
-                  <div>
-                    调拨金重
-                  </div>
-                  <div class="val">
-                    {{ info.product_total_weight_metal }}
-                  </div>
-                </div>
-                <div class="flex py-[4px] justify-between">
-                  <div>
-                    调拨标签价
-                  </div>
-                  <div class="val">
-                    {{ info.product_total_label_price }}
-                  </div>
-                </div>
-                <div class="flex py-[4px] justify-between">
-                  <div>
-                    调出门店
-                  </div>
-                  <div class="val">
-                    {{ info?.from_store?.alias }}
-                  </div>
-                </div>
-                <div class="flex py-[4px] justify-between">
-                  <div>
-                    调入门店
-                  </div>
-                  <div class="val">
-                    {{ info?.to_store?.alias }}
-                  </div>
-                </div>
-                <div class="flex py-[4px] justify-between">
-                  <div>
-                    发起人
-                  </div>
-                  <div class="val">
-                    {{ info?.initiator?.nickname || '' }}
-                  </div>
-                </div>
-                <div class="flex py-[4px] justify-between">
-                  <div>
-                    接收人
-                  </div>
-                  <div class="val">
-                    {{ info?.receiver?.nickname || '' }}
-                  </div>
-                </div>
-                <div class="flex py-[4px] justify-between">
-                  <div>
-                    备注
-                  </div>
-                  <div class="val">
-                    {{ info.remark }}
-                  </div>
-                </div>
-                <div class="flex py-[4px] justify-between">
-                  <div>
-                    开始时间
-                  </div>
-                  <div class="val">
-                    {{ formatTimestampToDateTime(info.created_at) }}
-                  </div>
-                </div>
-              </div>
-            </template>
-            <template #bottom="{ info }">
-              <div class="flex-end text-size-[14px]">
-                <common-button-irregular text="详情" @click="jump('/product/allocate/info', { id: info.id, type: info.type })" />
-              </div>
-            </template>
-          </product-manage-card>
-          <common-page
-            v-model:page="searchPage" :total="allocateTotal" :limit="limits" @update:page="updatePage" />
+    <div class="pb-20 px-4 pt-4">
+      <common-layout-center>
+        <template v-if="allocateList?.length">
+          <template v-if="showtype === 'list'">
+            <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+              <template v-for="(info, index) in allocateList" :key="index">
+                <common-card-list>
+                  <template #status>
+                    <common-button-status
+                      :bg-color="getStatusStyle(info.status, AllocateStatusColorMap).backgroundColor"
+                      :text="allocateFilterList.status?.preset[info.status]"
+                    />
+                  </template>
+                  <template #info>
+                    <div class="text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                      <div class="flex py-[4px] justify-between">
+                        <div>
+                          调拨方式
+                        </div>
+                        <div class="val">
+                          {{ allocateFilterList.method?.preset[info.method] }}
+                        </div>
+                      </div>
+                      <div class="flex py-[4px] justify-between">
+                        <div>
+                          仓库类型
+                        </div>
+                        <div class="val">
+                          {{ allocateFilterList.type?.preset[info.type] }}
+                        </div>
+                      </div>
+                      <div class="flex py-[4px] justify-between">
+                        <div>
+                          调拨原因
+                        </div>
+                        <div class="val">
+                          {{ allocateFilterList.reason?.preset[info.reason] }}
+                        </div>
+                      </div>
+                      <div class="flex py-[4px] justify-between">
+                        <div>
+                          调拨状态
+                        </div>
+                        <div class="val">
+                          {{ allocateFilterList.status?.preset[info.status] }}
+                        </div>
+                      </div>
+                      <div class="flex py-[4px] justify-between">
+                        <div>
+                          调拨数量
+                        </div>
+                        <div class="val">
+                          {{ info.product_count }}
+                        </div>
+                      </div>
+                      <div class="flex py-[4px] justify-between">
+                        <div>
+                          调拨金重
+                        </div>
+                        <div class="val">
+                          {{ info.product_total_weight_metal }}
+                        </div>
+                      </div>
+                      <div class="flex py-[4px] justify-between">
+                        <div>
+                          调拨标签价
+                        </div>
+                        <div class="val">
+                          {{ info.product_total_label_price }}
+                        </div>
+                      </div>
+                      <div class="flex py-[4px] justify-between">
+                        <div>
+                          调出门店
+                        </div>
+                        <div class="val">
+                          {{ info?.from_store?.alias }}
+                        </div>
+                      </div>
+                      <div class="flex py-[4px] justify-between">
+                        <div>
+                          调入门店
+                        </div>
+                        <div class="val">
+                          {{ info?.to_store?.alias }}
+                        </div>
+                      </div>
+                      <div class="flex py-[4px] justify-between">
+                        <div>
+                          发起人
+                        </div>
+                        <div class="val">
+                          {{ info?.initiator?.nickname || '' }}
+                        </div>
+                      </div>
+                      <div class="flex py-[4px] justify-between">
+                        <div>
+                          接收人
+                        </div>
+                        <div class="val">
+                          {{ info?.receiver?.nickname || '' }}
+                        </div>
+                      </div>
+                      <div class="flex py-[4px] justify-between">
+                        <div>
+                          备注
+                        </div>
+                        <div class="val">
+                          {{ info.remark }}
+                        </div>
+                      </div>
+                      <div class="flex py-[4px] justify-between">
+                        <div>
+                          开始时间
+                        </div>
+                        <div class="val">
+                          {{ formatTimestampToDateTime(info.created_at) }}
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                  <template #footer>
+                    <div class="flex-end">
+                      <common-button-rounded
+                        padding="4px 36px"
+                        content="详情" @button-click="jump('/product/allocate/info', { id: info.id, type: info.type })"
+                      />
+                    </div>
+                  </template>
+                </common-card-list>
+              </template>
+              <common-page
+                v-model:page="searchPage" :total="allocateTotal" :limit="limits" @update:page="updatePage" />
+            </div>
+          </template>
+          <template v-else>
+            <common-datatable :columns="cols" :list="allocateList" :page-option="pageOption" :loading="tableLoading" />
+          </template>
         </template>
         <template v-else>
-          <common-datatable :columns="cols" :list="allocateList" :page-option="pageOption" :loading="tableLoading" />
+          <common-empty width="100px" />
         </template>
-      </template>
-      <template v-else>
-        <common-empty width="100px" />
-      </template>
+      </common-layout-center>
     </div>
     <common-create @click="jump('/product/allocate/add')" />
     <product-upload-choose v-model:is-model="isExportModel" title="导出" first-text="导出单据" second-text="导出明细" @go-add="downloadDetails" @batch="downloadLocalFile" />

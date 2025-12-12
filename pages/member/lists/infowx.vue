@@ -79,7 +79,7 @@ const exhibition = (id: string) => {
         @go-edit="relyOnId" @show-detail="exhibition" />
     </template>
     <template v-else>
-      <common-emptys text="查询用户中" />
+      <common-empty text="查询用户中" />
     </template>
   </div>
 </template>

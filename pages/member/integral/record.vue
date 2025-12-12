@@ -63,10 +63,10 @@ const updatePage = async (page: number) => {
   <div class="flex flex-col">
     <div class="grid-12 sticky top-0 bg-gradient-linear-[180deg,#3875C5,#467EC9] z-1">
       <div class="flex items-center justify-between px-[16px] py-[24px] col-12" uno-lg="col-8 offset-2">
-        <div class="flex items-center gap-[8px] font-size-[14px] text-color-#fff">
+        <div class="flex items-center gap-[8px] font-size-[14px] text-color-[#fff]">
           <span>
             <span>当前会员</span>
-            <span class="px-[2px] font-600">{{ memberName() }}</span>
+            <span class="px-[2px] font-semibold">{{ memberName() }}</span>
             <span>共</span>
           </span>
           <span>
@@ -78,7 +78,14 @@ const updatePage = async (page: number) => {
         </div>
 
         <div>
-          <product-filter-Senior class="color-[#fff]" @filter="openFilter" />
+          <div class="py-[6px] px-[12px] flex-end cursor-pointer cursor-pointer color-[#fff]" @click="openFilter">
+            <div class="mr-[4px]">
+              <icon name="i-icon:filter" size="14" />
+            </div>
+            <div class="text-size-[14px] font-normal line-height-[20px]">
+              筛选
+            </div>
+          </div>
         </div>
       </div>
     </div>

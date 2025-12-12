@@ -65,16 +65,13 @@ function handleSelect(id: Stores['id']) {
   overflow: hidden;
   word-break: break-all;
 }
-</style>
-
-<style lang="scss">
-.n-dropdown-option:nth-child(odd) {
+:deep(.n-dropdown-option:nth-child(odd)) {
   background-color: #fafafa;
 }
-.n-dropdown-option:nth-child(even) {
+:deep(.n-dropdown-option:nth-child(even)) {
   background-color: #ffffff;
 }
-.n-dropdown-option-body__label {
+:deep(.n-dropdown-option-body__label) {
   display: flex;
   align-items: center;
 }

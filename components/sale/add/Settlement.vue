@@ -148,12 +148,12 @@ const searchRmk = async (query: string) => {
 </script>
 
 <template>
-  <common-fold title="结算信息" :is-collapse="false">
-    <div class="p-[16px]">
+  <common-card-info title="结算信息">
+    <template #info>
       <div>
         <div>
           <n-grid :cols="24">
-            <n-form-item-gi
+            <n-form-item
               :span="16"
               label="积分抵扣" label-placement="left"
             >
@@ -164,7 +164,7 @@ const searchRmk = async (query: string) => {
                 placeholder="抵扣积分值"
                 @focus="focus"
               />
-            </n-form-item-gi>
+            </n-form-item>
           </n-grid>
 
           <div class="text-[12px] color-[#666] dark:color-[#fff]">
@@ -174,7 +174,7 @@ const searchRmk = async (query: string) => {
             2.设置了开单积分抵扣比例的，这里不能填写积分，会根据积分抵扣金额自动算积分
           </div>
         </div>
-        <div class="border-y-[#E6E6E8] border border-b-solid py-[12px] mb-[12px]">
+        <div class="line-color-b py-[12px] mb-[12px]">
           <common-cell label="货品金额" :value="productMoney" />
           <common-cell label="配件礼品" :value="PartsListMoney" />
           <common-cell label="旧料抵扣" :value="masterMoney" />
@@ -187,9 +187,9 @@ const searchRmk = async (query: string) => {
         <div class=" ">
           <template v-for="(item, index) in orderObject.payments" :key="index">
             <div>
-              <n-grid :cols="24" :x-gap="8">
-                <n-form-item-gi
-                  :span="12"
+              <common-layout-form>
+                <n-form-item
+                  class="col-6"
                   label="支付方式" label-placement="top"
                   :path="`payments[${index}].payment_method`"
                   :rule="{
@@ -203,9 +203,9 @@ const searchRmk = async (query: string) => {
                     v-model:value="item.payment_method"
                     :options="payMethods"
                   />
-                </n-form-item-gi>
-                <n-form-item-gi
-                  :span="12"
+                </n-form-item>
+                <n-form-item
+                  class="col-6"
                   label="金额" label-placement="top"
                 >
                   <div class="w-full">
@@ -229,12 +229,12 @@ const searchRmk = async (query: string) => {
                       </div>
                     </template>
                   </div>
-                </n-form-item-gi>
-              </n-grid>
+                </n-form-item>
+              </common-layout-form>
             </div>
           </template>
         </div>
-        <div class="border-t-[#E6E6E8] border border-t-solid py-[12px] mb-[12px]">
+        <div class="line-color-t py-[12px] mb-[12px]">
           <div class="text-[16px] color-[#3971F3] line-height-[24px] text-right font-semibold">
             剩余未支付:{{ unPayMoney }}
           </div>
@@ -264,8 +264,8 @@ const searchRmk = async (query: string) => {
           </div>
         </n-form-item>
       </div>
-    </div>
-  </common-fold>
+    </template>
+  </common-card-info>
 </template>
 
 <style>

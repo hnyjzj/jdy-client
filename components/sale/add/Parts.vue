@@ -16,32 +16,34 @@ const rounding = roundFunction(Props.billingSet.rounding)
 </script>
 
 <template>
-  <div class="pb-[16px]">
-    <common-fold title="配件礼品" :is-collapse="false">
-      <div class="grid-12 p-[16px]">
-        <div
-          class="btn-left col-6 offset-3 cursor-pointer py-[10px]" uno-sm="col-4 offset-4" @click="showModal = true">
-          <icon name="i-icon:search" color="#FFF" :size="16" />
-          <div class="ml-2">
-            搜索
+  <div>
+    <common-card-info title="配件礼品">
+      <template #info>
+        <div class="grid-12 p-[16px]">
+          <div
+            class="btn-left col-6 offset-3 cursor-pointer py-[10px]" uno-sm="col-4 offset-4" @click="showModal = true">
+            <icon name="i-icon:search" color="#FFF" :size="16" />
+            <div class="ml-2">
+              搜索
+            </div>
           </div>
         </div>
-      </div>
 
-      <sale-add-parts-list
-        v-model:list="orderObject"
-        :hold="hold"
-        :rounding="rounding"
-        :is-integral="Props.isIntegral" />
-      <sale-add-parts-search
-        v-model:show="showModal"
-        v-model:list="orderObject"
-        :is-integral="Props.isIntegral"
-        :billing-set="Props.billingSet"
-        :storeid="Props.storeid"
-        :part-filter="Props.partFilter"
-      />
-    </common-fold>
+        <sale-add-parts-list
+          v-model:list="orderObject"
+          :hold="hold"
+          :rounding="rounding"
+          :is-integral="Props.isIntegral" />
+        <sale-add-parts-search
+          v-model:show="showModal"
+          v-model:list="orderObject"
+          :is-integral="Props.isIntegral"
+          :billing-set="Props.billingSet"
+          :storeid="Props.storeid"
+          :part-filter="Props.partFilter"
+        />
+      </template>
+    </common-card-info>
   </div>
 </template>
 

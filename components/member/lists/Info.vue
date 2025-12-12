@@ -67,9 +67,9 @@ const processDate = (date: string) => {
 
 <template>
   <template v-if="props.data.id">
-    <div class="pb-[80px]">
-      <common-gradient title="基础信息" theme="gradient" :italic="true" :foldable="true">
-        <template #body>
+    <div class="pb-[80px] px-4 flex flex-col gap-[16px]">
+      <common-card-info title="基础信息">
+        <template #info>
           <div class="grid grid-cols-1 gap-[12px]" uno-md="grid-cols-2" uno-lg="grid-cols-2">
             <div class="flex flex-row gap-[32px]">
               <div class="base flex flex-1 flex-col gap-[8px]">
@@ -168,10 +168,10 @@ const processDate = (date: string) => {
             </div>
           </div>
         </template>
-      </common-gradient>
+      </common-card-info>
 
-      <common-gradient title="详细信息" theme="gradient" :italic="true" :foldable="true">
-        <template #body>
+      <common-card-info title="详细信息">
+        <template #info>
           <div class="grid grid-cols-1 gap-[8px]" uno-md="grid-cols-2" uno-lg="grid-cols-2">
             <div class="base flex flex-1 flex-col gap-[8px]">
               <div class="item">
@@ -251,10 +251,10 @@ const processDate = (date: string) => {
             </div>
           </div>
         </template>
-      </common-gradient>
+      </common-card-info>
 
-      <common-gradient title="收货地址" theme="gradient" :italic="true" :foldable="true">
-        <template #body>
+      <common-card-info title="收货地址">
+        <template #info>
           <div class="flex flex-col gap-[12px]">
             <div class="base flex flex-1 flex-col gap-[12px]">
               <div class="secondary">
@@ -291,14 +291,14 @@ const processDate = (date: string) => {
             </div>
           </div>
         </template>
-      </common-gradient>
+      </common-card-info>
 
-      <common-gradient title="消费记录" theme="gradient" :italic="true" :foldable="true">
-        <template #body>
+      <common-card-info title="消费记录">
+        <template #info>
           <template v-if="props.consumes.length > 0">
             <div class="flex flex-col gap-[12px]">
               <template v-for="(item, index) in props.consumes" :key="index">
-                <common-gradient :title="`订单号：${item.order_id}`" theme="solid" :foldable="true" font-size="14px">
+                <common-card-info padding="0 24px" :title="`订单号：${item.order_id}`" theme="solid" :foldable="true" font-size="14px">
                   <template #right>
                     <template v-if="props.showDetail">
                       <div class="butt" @click="emits('showDetail', item.order_id)">
@@ -306,7 +306,7 @@ const processDate = (date: string) => {
                       </div>
                     </template>
                   </template>
-                  <template #body>
+                  <template #info>
                     <div class="grid grid-cols-1 gap-[8px]" uno-md="grid-cols-2" uno-lg="grid-cols-2">
                       <div class="base flex flex-1 flex-col gap-[8px]">
                         <div class="item">
@@ -347,21 +347,21 @@ const processDate = (date: string) => {
                       </div>
                     </div>
                   </template>
-                </common-gradient>
+                </common-card-info>
               </template>
             </div>
           </template>
 
           <template v-else>
-            <common-emptys text="暂无消费记录" />
+            <common-empty text="暂无消费记录" />
           </template>
         </template>
-      </common-gradient>
+      </common-card-info>
     </div>
   </template>
   <template v-else>
     <div class="col-12 flex flex-col gap-[16px] pt-[100px] py-[16px]" uno-lg="col-8 offset-2 pt-[200px]">
-      <common-emptys text="该会员信息有缺失！请前往编辑完善" />
+      <common-empty text="该会员信息有缺失！请前往编辑完善" />
     </div>
   </template>
   <template v-if="props.showbottom">

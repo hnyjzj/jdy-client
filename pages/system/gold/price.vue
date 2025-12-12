@@ -102,56 +102,57 @@ function subtract(i: number, id: GoldPrices['id']) {
 
 <template>
   <div>
+    <div class="blur-bgc">
+      <common-layout-center>
+        <div class="grid-12 color-[#fff]">
+          <div class="col-5" uno-sm="col-3" uno-lg="col-2">
+            <product-manage-company />
+          </div>
+        </div>
+      </common-layout-center>
+    </div>
     <common-layout-center>
-      <div class="pt-4 pb-20">
-        <div class="mx-4 mb-4 text-[#fff] max-w-[200px]">
-          <product-manage-company @change="getGoldPrice(myStore.id)" />
-        </div>
-        <div class="blur-bgc rounded-[16px] cursor-pointer mx-4">
-          <div class="grid-12">
-            <div
-              class="skew col-4">
-              <div class="skew-right" />
-              <div class="skew-text history">
-                金价历史
-              </div>
-            </div>
-          </div>
-          <div class="col-8 flex pl-4 pt-4 pb-1">
-            <div class="updata-time">
-              最近更新：
-              {{ formatTimestampToDateTime(goldList[0]?.updated_at ?? '') }}
-            </div>
-          </div>
-          <div class="p-3">
-            <template v-if="goldList.length">
-              <template v-for="item in goldList" :key="item.id">
-                <div class="grid grid-cols-[68px_auto] items-start pb-5">
-                  <div class="text-[rgba(0,104,255,1)] text-[20px] pr-2 flex items-end">
-                    {{ Number(item.price).toFixed(2) }}
-                  </div>
-                  <div>
-                    <div class="pb-1 flex gap-2 text-color">
-                      <div class="font-bold">
-                        {{ productType[item.product_type] ?? '' }}
-                      </div>
-                      <div>{{ finishedFilterList.material?.preset[item.product_material] ?? '' }}</div>
-                    </div>
-                    <div class="gap-1 text-color">
-                      <div>{{ item.product_brand?.map(item => finishedFilterList.brand?.preset[item]).join(' ') ?? '' }}</div>
-                      <div>{{ item.product_quality.map(quality => finishedFilterList.quality?.preset[quality]).join(' ') ?? '' }}</div>
-                    </div>
-                  </div>
+      <div class="mx-4 pt-4 pb-20">
+        <common-card-info title="金价历史">
+          <template #info>
+            <div class="blur-bgc rounded-[16px] cursor-pointer">
+              <div v-if="goldList.length" class="col-8 flex pb-1">
+                <div class="updata-time">
+                  最近更新：
+                  {{ formatTimestampToDateTime(goldList[0]?.updated_at ?? '') }}
                 </div>
-              </template>
-            </template>
-            <template v-else>
-              <div>
-                <common-empty text="暂未设置金价" size="100" />
               </div>
-            </template>
-          </div>
-        </div>
+              <div class="p-3">
+                <template v-if="goldList.length">
+                  <template v-for="item in goldList" :key="item.id">
+                    <div class="grid grid-cols-[100px_auto] items-start pb-5">
+                      <div class="text-[rgba(0,104,255,1)] text-[20px] pr-2 flex items-end">
+                        {{ Number(item.price).toFixed(2) }}
+                      </div>
+                      <div>
+                        <div class="pb-1 flex gap-2 text-color">
+                          <div class="font-bold">
+                            {{ productType[item.product_type] ?? '' }}
+                          </div>
+                          <div>{{ finishedFilterList.material?.preset[item.product_material] ?? '' }}</div>
+                        </div>
+                        <div class="gap-1 text-color">
+                          <div>{{ item.product_brand?.map(item => finishedFilterList.brand?.preset[item]).join(' ') ?? '' }}</div>
+                          <div>{{ item.product_quality.map(quality => finishedFilterList.quality?.preset[quality]).join(' ') ?? '' }}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                </template>
+                <template v-else>
+                  <div>
+                    <common-empty text="暂未设置金价" size="100" />
+                  </div>
+                </template>
+              </div>
+            </div>
+          </template>
+        </common-card-info>
       </div>
     </common-layout-center>
     <common-model v-model="changeShow" title="变更金价">
@@ -211,7 +212,6 @@ function subtract(i: number, id: GoldPrices['id']) {
 </template>
 
 <style>
-.no-radius .n-base-selection,
 .no-radius .n-base-tag {
   border-radius: 16px !important;
 }
@@ -246,17 +246,14 @@ function subtract(i: number, id: GoldPrices['id']) {
   --uno: 'bg-[rgba(199,218,255,1)] py-[4px] px-4 text-[rgba(75,87,109,1)] rounded-full';
 }
 .confirm-btn {
-  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#fff] font-bold ';
+  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#FFF] font-bold';
   background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-  box-shadow: rgba(57, 113, 243, 0.24) 0px 8px 8px 0;
 }
 .cancel-btn {
-  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#1a6beb] font-bold';
-  background: #fff;
-  box-shadow: rgba(82, 130, 241, 0.24) 0px 8px 8px 0;
+  --uno: 'py-[6px] text-center flex-1 border-rd-[36px] text-[16px] text-[#3971F3] font-bold';
+  border: 1px solid #3971f3;
 }
 .bottom-fun {
-  --uno: 'flex-between pt-4';
-  border-top: rgba(230, 230, 232, 1) solid 1px;
+  --uno: 'flex-between';
 }
 </style>

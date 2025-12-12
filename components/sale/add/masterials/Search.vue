@@ -186,7 +186,7 @@ const scanCode = async () => {
         searchShow = false
         searchInput = ''
       }">
-      <div class="grid-12 h-[300px] overflow-y-scroll ">
+      <div class="grid-12 h-[400px] overflow-y-scroll ">
         <div class="col-12">
           <div>
             <div class="flex  py-[12px]">
@@ -352,7 +352,7 @@ const scanCode = async () => {
                 </n-form>
               </template>
               <template v-else>
-                <common-emptys text="暂无数据" />
+                <common-empty text="暂无数据" />
               </template>
             </div>
           </div>

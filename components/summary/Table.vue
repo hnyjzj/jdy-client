@@ -39,7 +39,7 @@ const option = computed(() => {
       itemShape: 'circle',
       itemWidth: 8,
       itemHeight: 8,
-      textStyle: { color: '#666666' },
+      textStyle: { color: '#CBCDD1' },
     },
     grid: {
       left: '3%',
@@ -119,54 +119,57 @@ const option = computed(() => {
     ],
   }
 })
+const tdColor = computed(() => {
+  return $colorMode.value === 'light' ? '#1A6DD8' : '#fff'
+})
 </script>
 
 <template>
   <n-spin :show="props.loading" stroke="#fff" size="large">
-    <div class="bg-[#DEEBFD] dark:bg-[rgba(0,0,0,0.3)]  rounded-[16px]  overflow-hidden mb-[16px]" data-allow-mismatch="style">
-      <div class=" rounded-[4px]">
-        <div class="grid-12 pb-[16px]">
-          <div
-            class="skew col-6 cursor-pointer"
-            uno-md="col-4" @click="emits('clickTitle')">
-            <div class="skew-right" />
-            <div class="skew-text pl-[15px] text-[16px] font-semibold">
-              <div class="flex-center-row h-full">
-                <slot name="header-title" />
-              </div>
-            </div>
+    <div
+      :style="{
+        background: $colorMode.value === 'dark' ? '#1D2C60' : 'linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%)',
+      }"
+      class="bg pb-[16px] rounded-[16px] overflow-hidden mb-[16px]" data-allow-mismatch="style">
+      <div>
+        <div class="flex justify-between items-center pt-[12px] pb-[16px] px-[16px]">
+          <div class="color-[#1A6DD8] flex gap-[6px] text-[16px] font-semibold line-height-[24px]" @click="emits('clickTitle')">
+            <img src="/images/icon/today-sale.png" class="wh-[24px]">
+            <slot name="header-title" />
           </div>
           <div class="col-6 flex-end" uno-md="col-4 offset-8">
             <template v-if="props.isToggle">
               <div
-                class="w-[80px] text-[14px] font-normal text-[#666666]  px-[12px] py-[3px] rounded-[4px] cursor-pointer"
+                class="text-[14px] font-normal text-[#666666]  py-[3px] rounded-[4px] cursor-pointer"
                 @click="toggleChart = toggleChart === 'list' ? 'chart' : 'list'">
                 <template v-if="toggleChart === 'list'">
                   <div class="flex gap-[6px]">
-                    <icon name="i-icon:chart-boss" color="#0068FF" :size="16" />
-                    <span class="text-[12px]">图表</span>
+                    <icon name="i-icon:data-bar-chart" color="#0068FF" :size="16" />
+                    <span class="text-[14px] text-color">图表</span>
                   </div>
                 </template>
                 <template v-else>
                   <div class="flex gap-[6px]">
-                    <icon name="i-icon:table-boss" color="#0068FF" :size="16" />
-                    <span class="text-[12px]">表格</span>
+                    <icon name="i-icon:data-table-chart" color="#0068FF" :size="16" />
+                    <span class="text-[14px] text-color">表格</span>
                   </div>
                 </template>
               </div>
             </template>
           </div>
         </div>
-
         <slot name="select" />
       </div>
 
-      <div v-if="toggleChart === 'list'">
+      <div v-if="toggleChart === 'list'" class="px-[16px]">
         <n-data-table
           :style="{
-            '--n-merged-th-color': $colorMode.value === 'light' ? '#C7DAFF' : '#1A6BEB',
-            '--n-merged-td-color': $colorMode.value === 'light' ? '#DEEBFD' : '#224879',
-            '--n-merged-border-color': 'rgba(57,113,243,0.08)',
+            '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#1D2C60',
+            '--n-merged-td-text-color': $colorMode.value === 'light' ? '#1A6DD8' : '#fff',
+            '--n-merged-td-color-hover': $colorMode.value === 'light' ? '#DAEAFF' : '#0050B8',
+            '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#0F1E52',
+            '--n-merged-border-color': 'rgba(57,113,243,0.0)',
+            '--td-color': tdColor,
           }"
           :columns="props.title"
           :data="props.list"
@@ -179,6 +182,7 @@ const option = computed(() => {
             }
             return value
           }"
+
         />
       </div>
       <div v-if="toggleChart === 'chart'">
@@ -199,12 +203,18 @@ const option = computed(() => {
   /* 隐藏Webkit浏览器的滚动条 */
   display: none;
 }
-.skew-text {
-  display: flex;
-  align-items: flex-start;
-}
+
 .chart {
   width: 100%;
   height: 530px;
+}
+.bg {
+  box-shadow: 0px 5px 20px 0px #0000000a;
+}
+:deep(.n-data-table .n-data-table-base-table-header) {
+  border-radius: 8px;
+}
+:deep(.n-data-table-tr:hover .n-data-table-td) {
+  color: var(--td-color);
 }
 </style>

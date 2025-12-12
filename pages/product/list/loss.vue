@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { NButton } from 'naive-ui'
-
 const { myStore } = storeToRefs(useStores())
 const { getLossList, getLossWhere } = useLoss()
 const { lossList, lossFilterList, lossFilterListToArray, lossListTotal } = storeToRefs(useLoss())
@@ -206,8 +204,13 @@ const cols = [
         { style: 'display: flex; gap: 8px;' },
         [
           h(
-            NButton,
+            'span',
             {
+              style: {
+                color: '#0D6CE4',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+              },
               type: 'info',
               size: 'small',
               onClick: () => jump('/product/manage/loss/info', { code: row.code }),
@@ -240,110 +243,112 @@ const cols = [
       </template>
     </product-filter>
     <!-- 小卡片组件 -->
-    <div class="pb-20">
-      <template v-if="lossList?.length">
-        <template v-if="showtype === 'list'">
-          <product-manage-card :list="lossList">
-            <template #info="{ info }">
-              <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                <div class="flex-between">
-                  <div>
-                    条码
+    <div class="pb-20 px-4 pt-4">
+      <common-layout-center>
+        <template v-if="lossList?.length">
+          <template v-if="showtype === 'list'">
+            <product-manage-card :list="lossList">
+              <template #info="{ info }">
+                <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                  <div class="flex-between">
+                    <div>
+                      条码
+                    </div>
+                    <div class="text-align-end">
+                      {{ info.code }}
+                    </div>
                   </div>
-                  <div class="text-align-end">
-                    {{ info.code }}
+                  <div class="flex-between">
+                    <div>
+                      所属大类
+                    </div>
+                    <div class="text-align-end">
+                      {{ lossFilterList.class?.preset[info.class] }}
+                    </div>
+                  </div>
+                  <div class="flex-between">
+                    <div>
+                      货品名称
+                    </div>
+                    <div class="text-align-end">
+                      {{ info.name }}
+                    </div>
+                  </div>
+                  <div class="flex-between">
+                    <div>
+                      货品品牌
+                    </div>
+                    <div class="text-align-end">
+                      {{ lossFilterList.brand?.preset[info.brand] }}
+                    </div>
+                  </div>
+                  <div class="flex-between">
+                    <div>
+                      供应商
+                    </div>
+                    <div class="text-align-end">
+                      {{ lossFilterList.supplier?.preset[info.supplier] }}
+                    </div>
+                  </div>
+                  <div class="flex-between">
+                    <div>
+                      材质
+                    </div>
+                    <div class="text-align-end">
+                      {{ lossFilterList.material?.preset[info.material] }}
+                    </div>
+                  </div>
+                  <div class="flex-between">
+                    <div>
+                      成色
+                    </div>
+                    <div class="text-align-end">
+                      {{ lossFilterList.quality?.preset[info.quality] }}
+                    </div>
+                  </div>
+                  <div class="flex-between">
+                    <div>
+                      宝石
+                    </div>
+                    <div class="text-align-end">
+                      {{ lossFilterList.gem?.preset[info.gem] }}
+                    </div>
+                  </div>
+                  <div class="flex-between">
+                    <div>
+                      品类
+                    </div>
+                    <div class="text-align-end">
+                      {{ lossFilterList.category?.preset[info.category] }}
+                    </div>
+                  </div>
+                  <div class="flex-between">
+                    <div>
+                      工艺
+                    </div>
+                    <div class="text-align-end">
+                      {{ info.craft }}
+                    </div>
                   </div>
                 </div>
-                <div class="flex-between">
-                  <div>
-                    所属大类
-                  </div>
-                  <div class="text-align-end">
-                    {{ lossFilterList.class?.preset[info.class] }}
-                  </div>
+              </template>
+              <template #bottom="{ info }">
+                <div class="flex-end text-size-[14px]">
+                  <common-button-rounded padding="4px 36px" content="详情" @button-click="jump('/product/manage/loss/info', { code: info.code })" />
                 </div>
-                <div class="flex-between">
-                  <div>
-                    货品名称
-                  </div>
-                  <div class="text-align-end">
-                    {{ info.name }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    货品品牌
-                  </div>
-                  <div class="text-align-end">
-                    {{ lossFilterList.brand?.preset[info.brand] }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    供应商
-                  </div>
-                  <div class="text-align-end">
-                    {{ lossFilterList.supplier?.preset[info.supplier] }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    材质
-                  </div>
-                  <div class="text-align-end">
-                    {{ lossFilterList.material?.preset[info.material] }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    成色
-                  </div>
-                  <div class="text-align-end">
-                    {{ lossFilterList.quality?.preset[info.quality] }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    宝石
-                  </div>
-                  <div class="text-align-end">
-                    {{ lossFilterList.gem?.preset[info.gem] }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    品类
-                  </div>
-                  <div class="text-align-end">
-                    {{ lossFilterList.category?.preset[info.category] }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    工艺
-                  </div>
-                  <div class="text-align-end">
-                    {{ info.craft }}
-                  </div>
-                </div>
-              </div>
-            </template>
-            <template #bottom="{ info }">
-              <div class="flex-end text-size-[14px]">
-                <common-button-irregular text="详情" @click="jump('/product/manage/loss/info', { code: info.code })" />
-              </div>
-            </template>
-          </product-manage-card>
-          <common-page
-            v-model:page="searchPage" :total="lossListTotal" :limit="limits" @update:page="updatePage" />
+              </template>
+            </product-manage-card>
+            <common-page
+              v-model:page="searchPage" :total="lossListTotal" :limit="limits" @update:page="updatePage" />
+          </template>
+          <template v-else>
+            <common-datatable :columns="cols" :list="lossList" :page-option="pageOption" :loading="tableLoading" />
+          </template>
         </template>
         <template v-else>
-          <common-datatable :columns="cols" :list="lossList" :page-option="pageOption" :loading="tableLoading" />
+          <common-empty width="100px" />
         </template>
-      </template>
-      <template v-else>
-        <common-empty width="100px" />
-      </template>
+      </common-layout-center>
     </div>
     <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :disabled="['status']" :filter="lossFilterListToArray" @reset="resetWhere" @submit="submitWhere" />
   </div>

@@ -23,7 +23,7 @@ const toggleChart = ref<'list' | 'chart'>('list')
       </template>
       <template #select>
         <template v-if="props.where">
-          <div class="p-[12px] pt-0">
+          <div class="p-[16px] pt-0">
             <n-radio-group
               v-model:value="radio" name="radiogroup" @update:value="emits('getlist')">
               <n-radio

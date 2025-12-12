@@ -176,18 +176,21 @@ const beforeUpload = (data: any) => {
             @remove="removeImg"
           />
         </div>
-        <div class="py-[8px] color-[#666]">
+        <div class="py-[8px] text-color">
           上传头像
         </div>
       </div>
 
       <div class="pb-[32px] col-12" uno-sm="col-8 offset-2" uno-lg="col-4 offset-4">
-        <div class="bg-[#fff] px-[16px] rounded-[8px] color-[#848484]">
+        <div class="blur-bgc  px-[16px] rounded-[8px] text-color">
           <common-form v-model="userinfoForm" :rules="rules" @submit="submitForm">
             <template #nickname="{ validate, error }">
               <div class="items">
                 <div>昵称</div>
-                <input v-model="userinfoForm.nickname" type="text" class="text-right border-none color-black py-[10px]" placeholder="请输入" @focus="focus" @change="validate()">
+                <input
+                  v-model="userinfoForm.nickname" type="text"
+                  class="text-right border-none text-color py-[10px] blur-bgc "
+                  placeholder="请输入" @focus="focus" @change="validate()">
               </div>
               <template v-if="error">
                 <div class="error">
@@ -198,7 +201,10 @@ const beforeUpload = (data: any) => {
             <template #email="{ error, validate }">
               <div class="items">
                 <div>邮箱</div>
-                <input v-model="userinfoForm.email" type="text" class="text-right border-none color-black py-[10px]" placeholder="请输入" @focus="focus" @change="validate()">
+                <input
+                  v-model="userinfoForm.email" type="text"
+                  class="text-right border-none text-color py-[10px] blur-bgc "
+                  placeholder="请输入" @focus="focus" @change="validate()">
               </div>
               <template v-if="error">
                 <div class="error">
@@ -230,7 +236,7 @@ const beforeUpload = (data: any) => {
             <template #phone>
               <div class="items">
                 <div>手机号</div>
-                <div class="color-black  py-[10px]">
+                <div class="text-color  py-[10px]">
                   {{ userinfoForm.phone }}
                 </div>
               </div>
@@ -255,7 +261,7 @@ const beforeUpload = (data: any) => {
 
 <style lang="scss" scoped>
 .items {
-  --uno: 'flex-between border-b-[1px] border-b-solid border-b-[#F7F7F7]  py-[6px]';
+  --uno: 'flex-between line-color-b py-[6px]';
 }
 .ok {
   --uno: 'bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] line-height-[24px] px-[77px] py-[6px]  text-center rounded-[36px] color-[#fff] shadow-[0_8px_8px_0px_#3971F33D]';

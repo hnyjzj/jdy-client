@@ -10,7 +10,7 @@ const payDialog = ref(false)
 <template>
   <div class="grid-12 gap-[12px] mt-[12px]">
     <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
-      <sale-cards title="支付确认">
+      <common-card-list title="支付确认">
         <template #info>
           <div class="flex justify-around">
             <div
@@ -31,7 +31,7 @@ const payDialog = ref(false)
             </div>
           </div>
         </template>
-      </sale-cards>
+      </common-card-list>
     </div>
   </div>
   <common-confirm

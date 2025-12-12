@@ -25,7 +25,7 @@ const toggleFold = () => {
         </div>
       </div>
       <div
-        class="font-size-[10px] color-[#333]" @click="toggleFold()">
+        class="font-size-[10px] text-color" @click="toggleFold()">
         <template v-if="!folded">
           <icon name="i-icon:arrow" size="12" />
         </template>

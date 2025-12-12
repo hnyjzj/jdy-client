@@ -10,7 +10,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="color-[#fff] flex-between">
+  <div class="flex-between blur-bgc p-[16px] rounded-[8px] text-color">
     <div class="flex-start ">
       <div class="cursor-pointer">
         <template v-if="!porps.userinfo?.avatar">
@@ -30,7 +30,7 @@ const emit = defineEmits<{
       </div>
     </div>
     <div class="cursor-pointer" @click="emit('logout')">
-      <icon name="i-svg:logout" :size="32" />
+      <icon name="i-icon:logout" :size="32" :color="$colorMode.value === 'light' ? '#3875C5' : '#fff'" />
     </div>
   </div>
 </template>

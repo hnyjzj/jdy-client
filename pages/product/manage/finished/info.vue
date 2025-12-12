@@ -54,7 +54,9 @@ async function loss() {
             <div uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
               <div class="px-2 py-2 flex gap-2">
                 <div class="flex-1">
-                  <common-button-rounded content="报损" color="#000" bgc="#FFF" @button-click="goLoss" />
+                  <div class="loss-button" @click="goLoss">
+                    报损
+                  </div>
                 </div>
                 <!-- 身份总部以上有编辑权限 -->
                 <AuthVerify :min="UserLevel.IdentityHeadquarters">
@@ -86,7 +88,7 @@ async function loss() {
         <div class="title">
           原因
         </div>
-        <textarea v-model="reason" resize="none" class="area" rows="4" cols="36" name="" />
+        <n-input v-model:value="reason" type="textarea" round placeholder="输入备注" />
       </div>
     </common-model>
   </div>
@@ -105,5 +107,10 @@ async function loss() {
 
 .bottom {
   --uno: 'fixed bottom-0 left-0 right-0 blur-bgc';
+  box-shadow: 0px -1px 15px 0px #0000001a;
+}
+.loss-button {
+  --uno: 'text-[16px] bg-transparent py-[6px] border-none text-center rounded-[36px] mr-[8px] text-#3971f3';
+  border: 1px solid #3971f3;
 }
 </style>

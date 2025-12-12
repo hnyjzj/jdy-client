@@ -22,35 +22,29 @@ const formatGender = (val: number): string => {
 
 <template>
   <div>
-    <div class="p-[16px] pb-0 flex-between">
-      <div class="text-[16px] font-semibold">
-        {{ props.title }}
-      </div>
-      <div />
-    </div>
-    <div class="grid-12 gap-[16px] py-[16px] ">
+    <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
       <template v-for="(item, index) in props.list" :key="index">
-        <div
-          class=" rounded-[24px] w-full col-12 blur-bgc p-[1px]" @click="navigateTo(`/manage/staffs/staff/info?id=${item.id}`)">
-          <div class="h-full flex-col-between">
-            <div
-              class="py-[8px] pl-[16px]
-               bg-gradient-linear-[90deg,#E9F1FE,#95D5FB]
-               dark:bg-gradient-linear-[90deg,#23324B01,#2A3E5F01,#70B8E8]
-               text-black dark:text-[#FFF]
-                rounded-t-[24px]
-                flex-between">
-              <div class="flex items-center">
+        <div class="">
+          <common-card-info padding="12px" padding-bottom="12px">
+            <template #top>
+              <div class="flex items-center h-full">
                 <common-avatar :size="24" rounded="4px" :img="ImageUrl(item.avatar)" />
-                <div class="ml-[8px] font-semibold line-height-[20px] text-size-[14px]">
+                <div class="ml-[8px] font-semibold text-size-[14px]">
                   {{ item.nickname || '' }}
                 </div>
               </div>
-              <div>
-                <!-- 删除按钮位置  handleDelete(item.id as string) -->
+            </template>
+            <template #footer>
+              <div class="flex-end text-size-[14px]">
+                <div>
+                  <common-button-rounded
+                    padding="4px 36px"
+                    content="详情" @button-click="navigateTo(`/manage/staffs/staff/info?id=${item.id}`)"
+                  />
+                </div>
               </div>
-            </div>
-            <div class=" px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+            </template>
+            <template #info>
               <div class="flex-between p-[4px] grid-12">
                 <div class="col-6">
                   手机号
@@ -77,13 +71,13 @@ const formatGender = (val: number): string => {
                   {{ formatGender(item.gender) }}
                 </div>
               </div>
-            </div>
-          </div>
+            </template>
+          </common-card-info>
         </div>
       </template>
     </div>
     <template v-if="props.list.length === 0">
-      <common-emptys :text="`暂未分配${props.title}`" />
+      <common-empty :text="`暂未分配${props.title}`" />
     </template>
   </div>
 </template>

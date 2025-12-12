@@ -355,7 +355,7 @@ onMounted(() => {
               </template>
 
               <template v-else>
-                <common-emptys text="暂无消费记录" />
+                <common-empty text="暂无消费记录" />
               </template>
             </template>
           </common-gradient>
@@ -363,7 +363,7 @@ onMounted(() => {
       </div>
     </template>
     <template v-else>
-      <common-emptys text="查询用户中" />
+      <common-empty text="查询用户中" />
     </template>
   </div>
 

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { NButton } from 'naive-ui'
-
 useSeoMeta({
   title: '会员列表',
 })
@@ -18,17 +16,6 @@ const getStaff = async () => {
 }
 await getMyStore()
 const tableLoading = ref(false)
-const actions = ref([
-  { key: 1, label: '增加' },
-  { key: 2, label: '减少' },
-])
-
-const items = ref([{
-  id: 1,
-  isPopoverVisible: true,
-  actions: actions.value,
-  selected: '',
-}])
 
 const isFilter = ref(false)
 const filterData = ref({} as Partial<Member>)
@@ -65,7 +52,7 @@ const adjustment = async (id: string) => {
 }
 
 // 调整方式
-const adjustWay = ref(0)
+const adjustWay = ref(1)
 // 变更积分的绝对值
 const fluctuant = ref()
 
@@ -75,10 +62,6 @@ const initPopup = () => {
   adjustWay.value = 0
   fluctuant.value = ''
   integralParams.value.remark = ''
-  items.value.forEach((item) => {
-    item.isPopoverVisible = false
-    item.selected = ''
-  })
 }
 
 const disposeNumerical = () => {
@@ -226,36 +209,52 @@ const cols = [
   } },
   {
     title: '操作',
-    width: 300,
     key: 'action',
+    fixed: 'right',
+    width: 170,
     render: (rowData: Member) => {
       return [h(
-        NButton,
+        'span',
         {
           type: 'primary',
           size: 'small',
           class: 'mr-[4px]',
+          style: {
+            color: '#0D6CE4',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           onClick: () => {
             userJump(rowData.id)
           },
         },
-        { default: () => '查看详情' },
+        { default: () => '详情' },
       ), h(
-        NButton,
+        'span',
         {
           type: 'info',
           size: 'small',
           class: 'mr-[4px]',
+          style: {
+            color: '#41CF84',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           onClick: () => {
             goIntegral(rowData.id)
           },
         },
         { default: () => '查看积分' },
       ), h(
-        NButton,
+        'span',
         {
           type: 'info',
           size: 'small',
+          style: {
+            color: '#DD9200',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           onClick: () => {
             adjustment(rowData.id)
           },
@@ -276,81 +275,36 @@ const cols = [
       @confirm="adjustIntegral"
       @cancel="userCancel"
     >
-      <div class="pb-[16px] flex flex-col gap-[16px]">
-        <div class="flex flex-row justify-between gap-[16px]">
-          <div class="item flex-1">
-            <div class="item-caption">
-              当前积分
-            </div>
-            <div class="item-specific">
-              <div class="disabled">
-                {{ memberParams.integral }}
-              </div>
-            </div>
+      <div class="pb-[16px] flex flex-col gap-[16px] text-color">
+        <div class="flex flex-col ">
+          <div class="text-[14px] font-semibold  pb-[4px]">
+            当前积分
+          </div>
+          <div class="light:bg-[#F5F5F5] dark:bg-[#243F69] h-[34px] line-height-[34px] pl-[16px] rounded-[30px]">
+            {{ memberParams.integral }}
           </div>
         </div>
-        <div class="item">
-          <div class="item-caption">
+
+        <div>
+          <div class="text-[14px] font-semibold text-color pb-[4px]">
             调整类型
           </div>
-          <div class="item-specific">
-            <div>
-              <template v-for="(item, index) in items" :key="index">
-                <div class="flex flex-row justify-between items-center gap-[8px]" style="line-height: initial;">
-                  <n-dropdown
-                    trigger="click"
-                    placement="bottom-start"
-                    :options="item.actions"
-                    @select="(action: any) => {
-                      let select = actions.find((item:any) => item.key === action)
-                      if (select){
-                        item.selected = select.label
-                        adjustWay = select.key
-                      }
-                    }">
-                    <div class="refer">
-                      <div
-                        class="row-left dark:text-white font-size-[14px] whitespace-nowrap"
-                        :style="{ color: item.selected ? '#191919' : '#808089' }"
-                      >
-                        {{ item.selected || '调整方式' }}
-                      </div>
-                      <div class="row-right">
-                        <template v-if="!item.isPopoverVisible">
-                          <icon name="i-icon:arrow" size="14" color="#808089" />
-                        </template>
-                        <template v-else>
-                          <icon name="i-icon:arrow-down" size="7" color="#808089" />
-                        </template>
-                      </div>
-                    </div>
-                  </n-dropdown>
-                  <input
-                    v-model="fluctuant"
-                    placeholder="请输入积分数量"
-                    class="input"
-                    @focus="focus"
-                  >
-                </div>
-              </template>
+          <div class="flex flex-row justify-between items-center gap-[12px]" style="line-height: initial;">
+            <div class="w-[120px]">
+              <n-select v-model:value="adjustWay" :options="[{ label: '增加', value: 1 }, { label: '减少', value: 2 }]" placeholder="请选择调整类型" />
             </div>
+            <n-input-number v-model:value="fluctuant" class="flex-1" min="0" clearable placeholder="请输入积分数量" @focus="focus" />
           </div>
         </div>
-        <div class="item">
-          <div class="item-caption">
+        <div class="">
+          <div class="text-[14px] font-semibold text-color pb-[4px]">
             调整原因
           </div>
-          <div class="item-specific">
-            <textarea
-              v-model="integralParams.remark"
-              name="textarea"
-              rows="5"
-              cols="30"
-              wrap="soft"
-              placeholder="此项为必填项，请填写调整原因"
-              class="area"
-            />
-          </div>
+          <n-input
+            v-model="integralParams.remark"
+            :style="{
+              '--n-border-radius': '8px',
+            }" type="textarea" placeholder="此项为必填项，请填写调整原因" class="area" />
         </div>
       </div>
     </common-model>
@@ -364,22 +318,22 @@ const cols = [
         <product-manage-company @change="changeStores" />
       </template>
     </product-filter>
-    <template v-if="showtype === 'list'">
+    <div class="p-[16px]">
       <common-layout-center>
-        <div class="p-[16px]">
+        <template v-if="showtype === 'list'">
           <template v-if="memberList.length">
             <member-lists-list :info="memberList" @go-info="userJump" @view-integral="goIntegral" @change-integral="adjustment" />
             <common-page v-model:page="searchPage" :total="memberListTotal" :limit="limits" @update:page="updatePage" />
           </template>
           <template v-else>
-            <common-emptys text="暂无数据" />
+            <common-empty text="暂无数据" />
           </template>
-        </div>
+        </template>
+        <template v-else>
+          <common-datatable :columns="cols" :list="memberList" :page-option="pageOption" :loading="tableLoading" />
+        </template>
       </common-layout-center>
-    </template>
-    <template v-else>
-      <common-datatable :columns="cols" :list="memberList" :page-option="pageOption" :loading="tableLoading" />
-    </template>
+    </div>
     <common-filter-where v-model:show="isFilter" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #consultant_id>
         <n-select
@@ -408,35 +362,5 @@ const cols = [
 </template>
 
 <style scoped lang="scss">
-.item {
-  --uno: 'flex flex-col gap-[6px]';
 
-  &-caption {
-    --uno: 'font-size-[14px] color-[#333333] dark:color-[#fff]';
-  }
-
-  &-specific {
-    --uno: 'font-size-[14px] color-[#666] flex-1';
-  }
-}
-
-.disabled {
-  --uno: 'flex flex-row justify-between font-size-[14px] text-[#808089] dark:text-[#CBCDD1] rounded-[60px] bg-[rgba(222,222,222,0.5)] dark:bg-[rgba(222,222,222,0.3)] border-solid border-[1px] border-[rgba(230,230,232,0.7)] dark:border-[rgba(230,230,232,0.4)] px-[10px] py-[8px] flex flex-row justify-items-start cursor-not-allowed';
-
-  .variational {
-    --uno: 'flex-center-row gap-[2px]';
-  }
-}
-
-.refer {
-  --uno: 'flex flex-between h-[34px] min-w-[80px] gap-[4px] px-[12px] border-rd-[60px] text-[14px] bg-[#fff] border-[#e6e6e8] border-[1px] border-solid dark:bg-[rgba(255,255,255,0.2)] dark:border-[rgba(230,230,232,0.2)] cursor-pointer';
-}
-
-.area {
-  --uno: 'rounded-[8px] bg-[rgba(255,255,255,0.5)] dark:bg-[rgba(255,255,255,0.2)] text-[#333] dark:text-[#666] dark:border-[rgba(230,230,232,0.2)] min-w-full max-h-[80px] px-[12px] py-[8px] font-size-[14px] border-solid border-[#E6E6E8] focus:border-[#3971F3] resize-none';
-}
-
-.input {
-  --uno: 'flex-1 w-auto h-[34px] font-size-[14px] px-[12px] rounded-[60px] bg-[#fff] border-[#e6e6e8] border-[1px] border-solid dark:bg-[rgba(255,255,255,0.2)] dark:border-[rgba(230,230,232,0.2)] focus:border-[#3971F3]';
-}
 </style>

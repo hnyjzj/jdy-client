@@ -8,57 +8,61 @@ const checked = ref(1)
 
 <template>
   <div class="flex flex-col gap-[16px]">
-    <common-fold title="基础信息">
-      <div class="grid-cols-[1fr] gap-[16px] px-[16px] py-[16px]" uno-lg="grid-cols-[1fr]" uno-md="grid">
-        <div class="flex flex-col gap-[12px]">
-          <div class="item">
-            <span class="item-left">门店信息</span>
-            <span class="item-right">洛阳XXXXXX店 | 0395-xxxxxxxxx | 千江毕竟东流去</span>
-          </div>
-          <div class="item">
-            <span class="item-left">接待人</span>
-            <span class="item-right">李一一 | 15000000000</span>
-          </div>
-          <div class="item">
-            <span class="item-left">会员信息</span>
-            <span class="item-right">懒羊羊1500xxxxxx</span>
-          </div>
-          <div class="item">
-            <span class="item-left">状态</span>
-            <common-tags text="门店已收货" type="lake" />
-          </div>
-        </div>
-      </div>
-    </common-fold>
-
-    <common-fold title="维修信息">
-      <div class="grid-cols-[1fr] gap-[16px] px-[16px] py-[16px]" uno-lg="grid-cols-[1fr]" uno-md="grid">
-        <div class="flex flex-col gap-[12px]">
-          <template v-for="(item, index) in props.info" :key="index">
-            <div class="flex items-center justify-between">
-              <div class="color-[#333] dark:color-[#FFFFFF] text-[14px] flex-none">
-                {{ item.name }}
-              </div>
-              <common-frame
-                v-model="item.num"
-              />
+    <common-card-info title="基础信息">
+      <template #info>
+        <div class="grid-cols-[1fr] gap-[16px]" uno-lg="grid-cols-[1fr]" uno-md="grid">
+          <div class="flex flex-col gap-[12px]">
+            <div class="item">
+              <span class="item-left">门店信息</span>
+              <span class="item-right">洛阳XXXXXX店 | 0395-xxxxxxxxx | 千江毕竟东流去</span>
             </div>
-          </template>
-          <div class="flex-center-between gap-[8px] py-[6px]">
-            <span class="color-[#333] dark:color-[#FFFFFF] text-[14px] flex-none">取货方式</span>
-            <n-radio-group v-model:value="checked">
-              <n-radio
-                :value="1">
-                自提
-              </n-radio>
-              <n-radio :value="2" class="custom-radio">
-                邮寄
-              </n-radio>
-            </n-radio-group>
+            <div class="item">
+              <span class="item-left">接待人</span>
+              <span class="item-right">李一一 | 15000000000</span>
+            </div>
+            <div class="item">
+              <span class="item-left">会员信息</span>
+              <span class="item-right">懒羊羊1500xxxxxx</span>
+            </div>
+            <div class="item">
+              <span class="item-left">状态</span>
+              <common-tags text="门店已收货" type="lake" />
+            </div>
           </div>
         </div>
-      </div>
-    </common-fold>
+      </template>
+    </common-card-info>
+
+    <common-card-info title="维修信息">
+      <template #info>
+        <div class="grid-cols-[1fr] gap-[16px]" uno-lg="grid-cols-[1fr]" uno-md="grid">
+          <div class="flex flex-col gap-[12px]">
+            <template v-for="(item, index) in props.info" :key="index">
+              <div class="flex items-center justify-between">
+                <div class="color-[#333] dark:color-[#FFFFFF] text-[14px] flex-none">
+                  {{ item.name }}
+                </div>
+                <common-frame
+                  v-model="item.num"
+                />
+              </div>
+            </template>
+            <div class="flex-center-between gap-[8px] py-[6px]">
+              <span class="color-[#333] dark:color-[#FFFFFF] text-[14px] flex-none">取货方式</span>
+              <n-radio-group v-model:value="checked">
+                <n-radio
+                  :value="1">
+                  自提
+                </n-radio>
+                <n-radio :value="2" class="custom-radio">
+                  邮寄
+                </n-radio>
+              </n-radio-group>
+            </div>
+          </div>
+        </div>
+      </template>
+    </common-card-info>
 
     <!-- 产品信息 -->
     <div class="info">

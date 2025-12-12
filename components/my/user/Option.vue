@@ -5,7 +5,7 @@ const props = defineProps<{
 </script>
 
 <template>
-  <div class=" px-[16px] blur-bgc rounded-[16px]">
+  <div class=" px-[16px] blur-bgc rounded-[16px] bg">
     <template v-for="(item, index) in props.optList" :key="index">
       <div class="cursor-pointer">
         <nuxt-link :to="item.link" class="color-[#000] no-underline">
@@ -24,3 +24,9 @@ const props = defineProps<{
     </template>
   </div>
 </template>
+
+<style lang="scss" scoped>
+.bg {
+  box-shadow: 0px 5px 20px 0px #0000000a;
+}
+</style>

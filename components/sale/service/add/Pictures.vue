@@ -41,20 +41,25 @@ const removeFile = (options: { file: UploadFileInfo, fileList: Array<UploadFileI
 
 <template>
   <div>
-    <common-fold title="添加维修相关图片" :is-collapse="false">
-      <div class="p-[16px]">
-        <n-upload
-          action="#"
-          :custom-request="customRequest"
-          :default-file-list="previewFileList"
-          list-type="image-card"
-          :disabled="props.detail?.status === serviceOrderStatus.Completed"
-          @before-upload="beforeUpload"
-          @preview="showModalRef = true"
-          @remove="removeFile"
-        />
-      </div>
-    </common-fold>
+    <common-card-info title="添加维修相关图片">
+      <template #info>
+        <div class="p-[16px] color-[#0068FF] dark:color-[#fff]">
+          <n-upload
+            action="#"
+            :style="{
+              '--n-dragger-border-hover': '#0068FF',
+            }"
+            :custom-request="customRequest"
+            :default-file-list="previewFileList"
+            list-type="image-card"
+            :disabled="props.detail?.status === serviceOrderStatus.Completed"
+            @before-upload="beforeUpload"
+            @preview="showModalRef = true"
+            @remove="removeFile"
+          />
+        </div>
+      </template>
+    </common-card-info>
   </div>
 </template>
 

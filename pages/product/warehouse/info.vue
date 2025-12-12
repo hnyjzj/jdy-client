@@ -227,9 +227,9 @@ async function downloadLocalFile() {
     <common-layout-center>
       <div class="pt-4">
         <div class="flex flex-col gap-4">
-          <div class="rounded-6 bg-white w-auto blur-bga top">
-            <common-gradient title="基础信息">
-              <template #body>
+          <div class="rounded-6 w-auto top">
+            <common-card-info title="基础信息">
+              <template #info>
                 <div class="flex flex-col gap-4">
                   <div class="operation-information flex flex-col gap-1">
                     <div class="flex-start gap-3 text-sm font-normal">
@@ -291,7 +291,7 @@ async function downloadLocalFile() {
                       </div>
                     </div>
                   </div>
-                  <div class="h-0.5 bg-[#E6E6E8]" />
+                  <div class="line-space" />
                   <div class="product-information flex flex-col gap-1">
                     <div class="flex-start gap-3 text-sm font-normal">
                       <div class="info-title">
@@ -333,7 +333,7 @@ async function downloadLocalFile() {
                   </div>
                 </div>
               </template>
-            </common-gradient>
+            </common-card-info>
           </div>
 
           <template v-if="enterInfo.products?.length">

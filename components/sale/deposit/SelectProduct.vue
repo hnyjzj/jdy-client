@@ -160,7 +160,7 @@ const openSearch = () => {
               </div>
             </template>
             <template v-if="searchList.length === 0">
-              <common-emptys text="暂无数据" />
+              <common-empty text="暂无数据" />
             </template>
           </div>
         </div>
@@ -171,10 +171,7 @@ const openSearch = () => {
 
 <style lang="scss" scoped>
 .btn-left {
-  --uno: 'text-[16px] border-none rounded-[36px] text-[#FFFFFF] flex justify-center items-center py-[10px]';
+  --uno: 'text-[16px] border-none rounded-[36px] text-[#FFFFFF] flex justify-center items-center py-[9px]';
   background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-}
-.btn-right {
-  --uno: 'text-[16px] py-[9px]  text-[#1a6beb]  dark:color-#fff dark:border-[#fff] rounded-[36px] bg-[transparent] flex justify-center items-center border-[1px] border-solid border-[#1a6beb]';
 }
 </style>

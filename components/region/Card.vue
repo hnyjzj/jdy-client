@@ -8,20 +8,13 @@ const { regionList } = storeToRefs(useRegion())
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
+  <div class="grid grid-cols-1 gap-x-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in regionList" :key="index">
-      <div
-        class=" rounded-[24px] blur-bgc p-[1px]">
-        <div class="h-full flex-col-between">
-          <div
-            class="py-[8px] py-[2px]  px-[16px] bg-gradient-linear-[90deg,#E9F1FE,#95D5FB] dark:bg-gradient-linear-[90deg,#23324B01,#2A3E5F01,#70B8E8] rounded-t-[24px] flex-start text-black dark:text-[#FFF]">
-            <div class="ml-[8px] font-semibold line-height-[20px] text-size-[14px]">
-              {{ item.name }}
-            </div>
-          </div>
-          <div class="px-[16px] py-[8px]">
-            <common-cell label-color="#000" label="别名" :value="item.alias" />
-            <div class="flex-1 text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+      <common-card-list :title="item.name">
+        <template #info>
+          <div class="py-[8px]">
+            <common-cell label="别名" :value="item.alias" />
+            <div class="flex-1 text-size-[14px] line-height-[20px] light:text-black dark:text-[#FFF]">
               <template v-if="item.stores.length > 0">
                 <div class="flex-between min-h-[28px]">
                   <div>
@@ -138,20 +131,19 @@ const { regionList } = storeToRefs(useRegion())
               </template>
             </div>
           </div>
-          <div class="bg-[#F3F5FE] dark:bg-[#F3F5FE1A] rounded-b-[24px] ">
-            <div class="flex justify-between">
-              <div class="py-[8px] px-[16px] col-2 flex-center-row cursor-pointer" @click="emits('deleteRegion', item.id)">
-                <icon name="i-svg:delete" :size="16" />
-              </div>
-              <div class="flex-between text-size-[14px] ">
-                <div @click="emits('getDetail', item.id)">
-                  <common-button-irregular text="编辑" />
-                </div>
-              </div>
+        </template>
+        <template #footer>
+          <div class="flex-between">
+            <div class="cursor-pointer flex gap-[6px]" @click="emits('deleteRegion', item.id)">
+              <icon name="i-svg:delete" :size="16" />
+              <span class="color-[#F82F2F]">删除</span>
+            </div>
+            <div class="text-size-[14px] col-6 offset-6" uno-sm="col-7 offset-5" uno-xl="col-7 offset-5">
+              <common-button-rounded content="编辑" padding="4px 36px" @button-click="emits('getDetail', item.id)" />
             </div>
           </div>
-        </div>
-      </div>
+        </template>
+      </common-card-list>
     </template>
   </div>
 </template>
