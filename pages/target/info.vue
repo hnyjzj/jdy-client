@@ -186,18 +186,18 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
                     {{ group.name }}
                   </div>
                   <div class="text-xxl mb-2 whitespace-nowrap">
-                    总目标：{{ statistics('purpose', group) }}
+                    总目标：{{ getAuthority(statistics('purpose', group)) }}
                   </div>
                   <div class="text-xxl mb-2 whitespace-nowrap">
-                    总完成：{{ statistics('achieved', group) }}
+                    总完成：{{ getAuthority(statistics('achieved', group)) }}
                   </div>
                   <div class="text-xxl mb-2 whitespace-nowrap">
-                    完成率：{{ percent(statistics('achieved', group), statistics('purpose', group), 2) }}%
+                    完成率：{{ getAuthority(`${percent(statistics('achieved', group), statistics('purpose', group), 2)}%`) }}
                   </div>
                 </div>
                 <!-- 表格 -->
                 <div class="overflow-x-auto text-color-light">
-                  <table class="min-w-full border border-gray-400" style="border:1px solid #eee;border-collapse: collapse;">
+                  <table class="w-full border border-gray-400" style="border:1px solid #eee;border-collapse: collapse;">
                     <thead>
                       <tr class="bg-gray-100">
                         <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
@@ -233,7 +233,7 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
                                 <icon position="start" name="i-svg:third-place" :size="22" />
                               </template>
                               <template v-else>
-                                <div>
+                                <div class="pl-[6px]">
                                   {{ pIndex + 1 }}
                                 </div>
                               </template>
@@ -271,7 +271,7 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
             <template v-if="targetInfo.personals?.length">
               <!-- 表格 -->
               <div class="overflow-x-auto">
-                <table class="min-w-full border border-gray-400" style="border:1px solid #eee;border-collapse: collapse;">
+                <table class="w-full border border-gray-400" style="border:1px solid #eee;border-collapse: collapse;">
                   <thead>
                     <tr class="bg-gray-100">
                       <th class="px-4 py-2 text-left border-b border-gray-200 text-center">
@@ -291,6 +291,7 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
                       </th>
                     </tr>
                   </thead>
+
                   <tbody>
                     <template v-for="(personal, pIndex) in targetInfo.personals" :key="pIndex">
                       <tr>
@@ -305,7 +306,7 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
                             <icon position="start" name="i-svg:third-place" :size="22" />
                           </template>
                           <template v-else>
-                            <div>
+                            <div class="pl-[6px]">
                               {{ pIndex + 1 }}
                             </div>
                           </template>
@@ -359,11 +360,5 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
   .info-val {
     --uno: 'text-color-light w-70% text-right';
   }
-}
-th,
-td {
-  text-align: center;
-  vertical-align: middle;
-  white-space: nowrap;
 }
 </style>
