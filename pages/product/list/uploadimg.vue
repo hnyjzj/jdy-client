@@ -177,11 +177,13 @@ async function uploadImg() {
           <div class="flex-1 pr-4 sm:px-4">
             <product-filter-search v-model:search-key="liveCode" placeholder="搜索条码" @submit="searchFun" />
           </div>
-          <div
-            class="flex items-center justify-end cursor-pointer"
-            @click="scanCode()">
-            <icon class="text-[#1A6BEB]" name="i-icon:scanit" :size="24" />
-          </div>
+          <template v-if="checkEnv()">
+            <div
+              class="flex items-center justify-end cursor-pointer"
+              @click="scanCode()">
+              <icon class="text-[#1A6BEB]" name="i-icon:scanit" :size="24" />
+            </div>
+          </template>
         </div>
       </div>
       <div class="p-4">

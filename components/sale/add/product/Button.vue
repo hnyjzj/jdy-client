@@ -101,7 +101,9 @@ const openSearch = () => {
             </div>
             <div class="pl-[16px] flex gap-[8px]">
               <common-button-rounded content="搜索" @click="search()" />
-              <common-button-rounded content="扫码" bgc="#f1f5fe" color="#1a6dd8" @click="scanCode()" />
+              <template v-if="checkEnv()">
+                <common-button-rounded content="扫码" bgc="#f1f5fe" color="#1a6dd8" @click="scanCode()" />
+              </template>
             </div>
           </div>
           <div class="grid-12 text-color font-semibold !text-[14px]">

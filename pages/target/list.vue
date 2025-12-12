@@ -67,6 +67,13 @@ const submitWhere = async (f: Partial<ExpandPage<Target>>) => {
   listJump()
 }
 
+/** 修改页码 */
+const updatePage = (page: number) => {
+  filterData.value.searchPage = page
+  filterData.value.limits = limits.value
+  listJump()
+}
+
 /** 读取参数并初始化列表 */
 const handleQueryParams = async () => {
   const f = getQueryParams<ExpandPage<Target>>(route.fullPath, targetFilterList.value)

@@ -190,13 +190,12 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
             </div>
           </div>
         </template>
-      </common-card-info>
-      <common-card-info title="销售目标详情">
-        <template #info>
-          <template v-if="targetInfo.object === 1">
-            <template v-if="targetInfo.groups?.length">
+        </common-gradient>
+        <common-gradient title="销售目标详情">
+          <template #body>
+            <template v-if="targetInfo.object === 1">
               <div v-for="(group, gIndex) in targetInfo.groups" :key="gIndex" class="mb-6">
-                <div class="flex items-center gap-2 text-wrap flex-wrap text-color">
+                <div class="flex items-center gap-2 text-wrap flex-wrap">
                   <div class="font-bold text-xxl mb-2 mr-1 whitespace-nowrap">
                     {{ group.name }}
                   </div>
@@ -235,7 +234,7 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
                     </thead>
 
                     <tbody>
-                      <template v-for="(personal, pIndex) in targetInfo.personals" :key="pIndex">
+                      <template v-for="(personal, pIndex) in group.personals" :key="pIndex">
                         <template v-if="personal.group_id === group.id">
                           <tr>
                             <td class="px-4 py-2 border-b border-gray-100">
@@ -255,7 +254,7 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
                               </template>
                             </td>
                             <td class="px-4 py-2 border-b border-gray-100">
-                              {{ personal.staff.nickname }}
+                              {{ personal.staff?.nickname }}
                             </td>
                             <td class="px-4 py-2 border-b border-gray-100">
                               {{ getPersonAuthority(personal.purpose, personal) }}
@@ -350,11 +349,8 @@ function getPersonAuthority(str: any, person: TargetPersonal) {
                 </table>
               </div>
             </template>
-            <template v-else>
-              <common-empty />
-            </template>
           </template>
-        </template>
+        </common-gradient>
       </common-card-info>
     </common-layout-center>
     <template v-if="myStore.id">

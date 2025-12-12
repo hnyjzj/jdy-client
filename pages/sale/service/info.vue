@@ -12,6 +12,7 @@ const { userinfo } = storeToRefs(useUser())
 const { myStore } = storeToRefs(useStores())
 const { $toast } = useNuxtApp()
 const route = useRoute()
+
 const getDetail = async (val?: string) => {
   await getRepairOrderDetail({ id: val || (route.query.id as string) })
 }
@@ -86,7 +87,7 @@ const payOrder = async () => {
 
       <template v-if="OrderStatusText.OrderSalesProductStatusWaitPay === repairOrderDetail.status ">
         <template v-if="repairOrderDetail.cashier_id === userinfo.id">
-          <template v-if="myStore.id === repairOrderDetail.store_id">
+          <template v-if="repairOrderDetail.store_id === myStore.id">
             <common-button-bottom
               confirm-text="支付"
               cancel-text="撤销"

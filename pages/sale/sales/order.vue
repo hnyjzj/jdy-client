@@ -387,7 +387,7 @@ onMounted(() => {
         </div>
       </template>
     </div>
-
+    <correspond-store :correspond-ids="[OrderDetail.store_id]" />
     <common-confirm
       v-model:show="payOrderShow"
       icon="warning"
@@ -414,8 +414,6 @@ onMounted(() => {
       text="是否重新新增订单？"
       @submit="containAdd()"
     />
-
-    <correspond-store :correspond-ids="[OrderDetail.store_id]" />
   </div>
 </template>
 

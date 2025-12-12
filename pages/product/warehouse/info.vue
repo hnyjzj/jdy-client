@@ -438,9 +438,11 @@ async function downloadLocalFile() {
         </template>
       </common-button-bottom>
     </template>
-    <template v-if="enterInfo.status === EnterStatus.Completed && myStore.id === enterInfo.store_id">
+    <template v-if="enterInfo.status === EnterStatus.Completed && enterInfo.store_id === myStore.id">
       <common-button-bottom confirm-text="整单调拨" cancel-text="撤销入库" @cancel="cancelDialog = true" @confirm="jump('/product/allocate/add', { enter_id: enterInfo.id })" />
     </template>
+    <correspond-store :correspond-ids="[enterInfo.store_id]" />
+
     <common-confirm v-model:show="deleteDialog" icon="error" title="删除产品" text="确认要删除此产品吗?" @submit="delProduct" />
     <common-confirm v-model:show="clearDialog" icon="error" title="清空列表" text="确认要清空所有入库的产品吗?" @submit="clearProduct" />
     <common-confirm v-model:show="cancelDialog" icon="error" title="撤销" text="确认要撤销入库单吗? 撤销后将不可进行其他操作" @submit="cancel" />
@@ -521,7 +523,6 @@ async function downloadLocalFile() {
         </template>
       </div>
     </common-model>
-    <correspond-store :correspond-ids="[enterInfo.store_id]" />
   </div>
 </template>
 

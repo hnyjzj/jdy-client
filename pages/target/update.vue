@@ -42,7 +42,7 @@ const delPersonalInfo = ref()
 const getAvailableOptions = () => {
   const staffed = new Set((targetInfo.value.personals ?? []).map(v => v.staff_id))
   return (StoreStaffList.value ?? []).map(v => ({
-    label: v.nickname,
+    label: v?.nickname || '',
     value: v.id,
     disabled: staffed.has(v.id),
   }))
@@ -296,7 +296,7 @@ if (route.query.id) {
                                     <template v-if="find">
                                       <td class="px-1 py-2">
                                         <template v-if="name === 'staff_id'">
-                                          {{ personal.staff.nickname }}
+                                          {{ personal.staff?.nickname }}
                                         </template>
                                         <template v-else>
                                           <template v-if="input === 'text'">
@@ -366,7 +366,7 @@ if (route.query.id) {
                               <template v-if="find && name !== 'is_leader'">
                                 <td class="px-1 py-2">
                                   <template v-if="name === 'staff_id'">
-                                    {{ personal.staff.nickname }}
+                                    {{ personal.staff?.nickname }}
                                   </template>
                                   <template v-else>
                                     <template v-if="input === 'text'">

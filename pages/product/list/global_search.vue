@@ -73,11 +73,13 @@ onMounted(async () => {
           <div class="flex-1 sm:px-4">
             <product-filter-search v-model:search-key="liveCode" placeholder="搜索条码" @submit="searchFun" />
           </div>
-          <div
-            class="flex items-center justify-end cursor-pointer text-[#1A6DD8]"
-            @click="scanCode()">
-            <icon class="ml-2" name="i-icon:scanit" :size="24" />
-          </div>
+          <template v-if="checkEnv()">
+            <div
+              class="flex items-center justify-end cursor-pointer text-[#1A6DD8]"
+              @click="scanCode()">
+              <icon class="ml-2" name="i-icon:scanit" :size="24" />
+            </div>
+          </template>
         </div>
 
         <template v-if="finishedInfo && statusCode === 200">

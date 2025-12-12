@@ -4,6 +4,7 @@ const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
 const { accessorieAllocateInfo, accessorieAllocateFilterList, accessorieAllocateFilterListToArray } = storeToRefs(useAccessorieAllocate())
 const { myStore } = storeToRefs(useStores())
+const { getMyStore } = useStores()
 
 useSeoMeta({
   title: '调拨单详情',
@@ -23,6 +24,7 @@ if (route.query.id) {
   await getInfo()
   await getAccessorieAllocateWhere()
   await getAccessorieWhere()
+  await getMyStore()
 }
 
 async function getInfo() {
@@ -329,9 +331,7 @@ const printFn = async () => {
     </template>
     <product-upload-choose v-model:is-model="isChooseModel" title="调拨" @go-add="jump('/product/accessorie/allocate/addproduct', { id: accessorieAllocateInfo.id })" @batch="isImportModel = true" />
     <accessorie-warehouse-force ref="uploadRef" v-model="isImportModel" @upload="submitGoods" />
-    <template v-if="accessorieAllocateInfo.id">
-      <correspond-store :correspond-ids="[accessorieAllocateInfo.from_store_id, accessorieAllocateInfo.to_store_id]" />
-    </template>
+    <correspond-store :correspond-ids="[accessorieAllocateInfo.from_store_id, accessorieAllocateInfo.to_store_id]" />
   </div>
 </template>
 

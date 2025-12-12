@@ -8,6 +8,7 @@ const { enterInfo, addProductEnterFilterList } = storeToRefs(useAccessorieEnter(
 const { accessorieFilterListToArray } = storeToRefs(useAccessorie())
 const { getAccessorieWhere } = useAccessorie()
 const { myStore } = storeToRefs(useStores())
+
 useSeoMeta({ title: '入库单详情' })
 
 /** 当前入库单 ID 和待删除产品 ID */
@@ -26,7 +27,6 @@ const cancelDialog = ref(false)
 const finishDialog = ref(false)
 const loading = ref(false)
 const page = ref(1)
-
 if (route.query.id) {
   enterId.value = route.query.id as string
   await fetchEnterInfo(true)
@@ -204,7 +204,7 @@ const updatePage = async (e: number) => {
         </template>
       </common-button-bottom>
     </template>
-    <template v-if="enterInfo.status === EnterStatus.Completed && myStore.id === enterInfo.store_id">
+    <template v-if="enterInfo.status === EnterStatus.Completed && enterInfo.store_id === myStore.id">
       <common-button-one text="撤销入库" @confirm="cancelDialog = true" />
     </template>
     <common-loading v-model="loading" title="正在处理中" />

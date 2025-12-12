@@ -76,6 +76,13 @@ export const useStores = defineStore('Store', {
         return []
       }
     },
+    /**
+     * 检查是否有门店 没有就获取
+     */
+    async hasStored() {
+      if (!this.myStoreList?.length)
+        await this.getMyStore()
+    },
 
     // 创建门店
     async createStore(req: Partial<Stores>) {
