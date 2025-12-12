@@ -147,7 +147,7 @@ const confirm = () => {
     >
       <div class="flex flex-col gap-[20px] pb-[32px]">
         <div class="model-name flex flex-col gap-[6px]">
-          <div class="font-[14px] color-[#333]">
+          <div class="font-[14px] text-color">
             模板名称
           </div>
 
@@ -159,7 +159,7 @@ const confirm = () => {
         </div>
 
         <div class="target-loc flex flex-col gap-[6px]">
-          <div class="font-[14px] color-[#333]">
+          <div class="font-[14px] text-color">
             复制到
           </div>
 
