@@ -53,8 +53,8 @@ watch(() => params.value, (newVal) => {
           <div class="w-[120px]">
             <n-select
               v-model:value="params.duration"
+              size="small"
               :style="{
-                '--n-height': '24px',
                 '--n-color': '#DFE9FF',
               }"
               placeholder="请选择时间范围"
