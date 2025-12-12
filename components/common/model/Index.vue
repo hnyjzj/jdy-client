@@ -5,6 +5,10 @@ interface Props {
   confirmText?: string
   cancelText?: string
   showCancel?: boolean
+  /**
+   * 是否点击遮罩层关闭
+   */
+  isMaskClose?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
   title: '',
@@ -12,6 +16,7 @@ const props = withDefaults(defineProps<Props>(), {
   showCancel: true,
   confirmText: '确定',
   cancelText: '取消',
+  isMaskClose: false,
 })
 const emits = defineEmits<{
   confirm: []
@@ -22,6 +27,17 @@ const show = defineModel({ type: Boolean, default: false })
 function close() {
   show.value = false
   emits('cancel')
+}
+
+/**
+ * 点击遮罩层是否关闭
+ */
+function handleClick(event: MouseEvent) {
+  if (!props.isMaskClose)
+    return
+  if (event.target === event.currentTarget) {
+    close()
+  }
 }
 
 watch(show, (val) => {
@@ -36,7 +52,7 @@ onBeforeUnmount (() => {
 </script>
 
 <template>
-  <div v-if="show" class="popup">
+  <div v-if="show" class="popup" @click="handleClick">
     <div class="content border-rd-[12px_12px_0_0] sm:rounded-[12px] blur-bgc">
       <div class="flex justify-between items-center p-4">
         <div class="flex items-center">
