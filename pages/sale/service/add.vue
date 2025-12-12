@@ -180,6 +180,13 @@ const orderObject = ref<Orders>({} as Orders)
 <template>
   <div>
     <div :key="Key" class="pb-[100px]">
+      <div class="blur-bgc mb-4">
+        <common-layout-center>
+          <div class="flex flex-row gap-2">
+            <product-manage-company :confirm="true" @change="changeStore" />
+          </div>
+        </common-layout-center>
+      </div>
       <common-layout-center>
         <n-form
           ref="formRef"
@@ -188,9 +195,6 @@ const orderObject = ref<Orders>({} as Orders)
           label-align="left"
           size="large"
         >
-          <div class="w-fit color-[#fff] pb-[12px]">
-            <product-manage-company :confirm="true" @change="changeStore" />
-          </div>
           <div class="pb-[16px]">
             <sale-service-add-base
               v-model:region="region"

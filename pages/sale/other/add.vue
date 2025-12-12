@@ -150,6 +150,13 @@ const orderObject = ref<Orders>({} as Orders)
 
 <template>
   <div :key="Key">
+    <div class="blur-bgc mb-4">
+      <common-layout-center>
+        <div class="flex flex-row gap-2">
+          <product-manage-company />
+        </div>
+      </common-layout-center>
+    </div>
     <common-layout-center>
       <div class="pb-[100px]">
         <n-form
@@ -159,9 +166,6 @@ const orderObject = ref<Orders>({} as Orders)
           label-align="left"
           size="large"
         >
-          <div class="w-fit color-[#fff] pb-[12px]">
-            <product-manage-company />
-          </div>
           <div>
             <sale-other-add-base
               v-model:form="formData"

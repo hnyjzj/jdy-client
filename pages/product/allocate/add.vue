@@ -139,11 +139,15 @@ function handleValidateButtonClick() {
 
 <template>
   <div>
-    <common-layout-center>
-      <div class="pt-4 pb-20 px-4">
-        <div class="mb-4 w-[40%]">
+    <div class="blur-bgc">
+      <common-layout-center>
+        <div class="flex flex-row gap-2">
           <product-manage-company class="text-[#FFF]" />
         </div>
+      </common-layout-center>
+    </div>
+    <common-layout-center>
+      <div class="pt-4 pb-20 px-4">
         <div class="flex flex-col gap-4">
           <div class="rounded-6 w-auto top">
             <common-card-info title="新增调拨单">

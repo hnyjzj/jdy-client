@@ -246,6 +246,13 @@ onMounted(async () => {
 
 <template>
   <div :key="Key" class="pb-[100px]">
+    <div class="blur-bgc mb-4">
+      <common-layout-center>
+        <div class="flex flex-row gap-2">
+          <product-manage-company :confirm="true" @change="changeStore" />
+        </div>
+      </common-layout-center>
+    </div>
     <template
       v-if="initFinished">
       <common-layout-center>
@@ -256,9 +263,6 @@ onMounted(async () => {
           label-align="left"
           size="large"
         >
-          <div class="w-fit color-[#fff] pb-[12px]">
-            <product-manage-company :confirm="true" @change="changeStore" />
-          </div>
           <sale-add-base
             v-model="orderObject"
             :filter-list="filterList"
