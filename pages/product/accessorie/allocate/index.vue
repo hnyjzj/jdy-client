@@ -303,7 +303,7 @@ async function focus() {
                   <template #top />
                   <template #status>
                     <div class="status-title" :style="getStatusStyle(info.status, AllocateStatusColorMap)">
-                      {{ accessorieAllocateFilterList.status?.preset[info.status] }}
+                      {{ accessorieAllocateFilterList.status?.preset?.[info.status] ?? '' }}
                     </div>
                   </template>
                   <template #info>
@@ -337,7 +337,7 @@ async function focus() {
                               </template>
                               <template v-else-if="item.input === 'select'">
                                 <div class="val">
-                                  {{ accessorieAllocateFilterList[item.name]?.preset[info[item.name] as number] }}
+                                  {{ accessorieAllocateFilterList[item.name]?.preset?.[info[item.name] as number] ?? '' }}
                                 </div>
                               </template>
                               <template v-else-if="item.input === 'search'">

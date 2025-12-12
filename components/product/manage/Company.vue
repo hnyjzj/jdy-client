@@ -100,7 +100,7 @@ const clickChange = async () => {
       </div>
       <icon name="i-icon:product-toggle" :size="18" />
     </div>
-    <common-model v-model="mask" title="切换门店" :show-cancel="false">
+    <common-model v-model="mask" title="切换门店" :is-mask-close="true" :show-cancel="false">
       <div>
         <div class="py-[16px]">
           <n-input

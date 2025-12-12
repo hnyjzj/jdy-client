@@ -334,7 +334,7 @@ function GetModelStatusText() {
     <common-model v-model="isAddModel" :title="GetModelStatusText()" :show-ok="true" @confirm="submitModel">
       <div>
         <div class="mb-3">
-          <div class="mb-1">
+          <div class="mb-1 text-color">
             身份
           </div>
           <n-input
@@ -347,7 +347,7 @@ function GetModelStatusText() {
           />
         </div>
         <div class="mb-3">
-          <div class="mb-1">
+          <div class="mb-1 text-color">
             角色名称
           </div>
           <n-input
@@ -359,7 +359,7 @@ function GetModelStatusText() {
           />
         </div>
         <div class="mb-3">
-          <div class="mb-1">
+          <div class="mb-1 text-color">
             角色描述
           </div>
           <n-input
@@ -372,7 +372,7 @@ function GetModelStatusText() {
         </div>
         <template v-if="modelStatus !== 'copy'">
           <div class="mb-3">
-            <div class="mb-1">
+            <div class="mb-1 text-color">
               是否默认
             </div>
             <n-switch
