@@ -82,7 +82,7 @@ onBeforeUnmount (() => {
 <style lang="scss" scoped>
 .popup {
   --uno: 'fixed left-0 right-0 bottom-0 w-[100vw] h-[100vh] z-999';
-  background: rgba($color: #000, $alpha: 0.3);
+  background: rgba($color: #000, $alpha: 0.5);
   top: calc(0 - var(--navbar-height, 0px));
 
   .content {
