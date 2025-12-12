@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { NButton } from 'naive-ui'
-
 const { $toast } = useNuxtApp()
 const { getProductHistory, getHistoryWhere, getProductHistoryAll } = useProductManage()
 const { getFinishedWhere } = useFinished()

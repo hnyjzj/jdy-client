@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { NButton } from 'naive-ui'
-
 const { $toast } = useNuxtApp()
 const { getAccessorieAllocate, getAccessorieAllocateWhere, getAccessorieAllocateDetaills } = useAccessorieAllocate()
 const { accessorieAllocateList, accessorieAllocateFilterListToArray, accessorieAllocateFilterList, accessorieAllocateTotal } = storeToRefs(useAccessorieAllocate())
@@ -310,7 +308,7 @@ async function focus() {
                   </template>
                   <template #info>
                     <div class="text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                      <template v-for="(item, index) in accessorieAllocateFilterListToArray" :key="index">
+                      <template v-for="(item, i) in accessorieAllocateFilterListToArray" :key="i">
                         <template v-if="item.info">
                           <div class="flex py-[2px] justify-between">
                             <div>

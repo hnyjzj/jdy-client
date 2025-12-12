@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { NButton } from 'naive-ui'
-
 const { myStore } = storeToRefs(useStores())
 const { getLossList, getLossWhere } = useLoss()
 const { lossList, lossFilterList, lossFilterListToArray, lossListTotal } = storeToRefs(useLoss())

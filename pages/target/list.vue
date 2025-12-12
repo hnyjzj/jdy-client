@@ -150,7 +150,7 @@ async function delTarget() {
             </template>
             <template #info>
               <div class="py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                <template v-for="(item, index) in targetFilterListToArray" :key="index">
+                <template v-for="(item, i) in targetFilterListToArray" :key="i">
                   <template v-if="item.list">
                     <div class="flex py-[4px] justify-between">
                       <div class="label">
@@ -213,6 +213,8 @@ async function delTarget() {
         </template>
       </div>
     </common-layout-center>
+    <common-page
+      v-model:page="searchPage" :total="targetListTotal" :limit="limits" @update:page="updatePage" />
     <common-filter-where
       ref="filterRef"
       v-model:show="isFilter"

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { NButton } from 'naive-ui'
-
 const { $toast } = useNuxtApp()
 const { myStore } = storeToRefs(useStores())
 const { getAccessorieList, getAccessorieWhere } = useAccessorie()
@@ -229,7 +227,7 @@ const cols = [
                   </template>
                   <template #info>
                     <div class="text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                      <template v-for="(item, index) in accessorieFilterListToArray" :key="index">
+                      <template v-for="(item, i) in accessorieFilterListToArray" :key="i">
                         <template v-if="item.info">
                           <div class="flex-between">
                             <div>
