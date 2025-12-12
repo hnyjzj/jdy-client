@@ -303,7 +303,7 @@ async function focus() {
                   <template #top />
                   <template #status>
                     <div class="status-title" :style="getStatusStyle(info.status, AllocateStatusColorMap)">
-                      {{ accessorieAllocateFilterList.status?.preset[info.status] }}
+                      {{ accessorieAllocateFilterList.status?.preset?.[info.status] ?? '' }}
                     </div>
                   </template>
                   <template #info>
