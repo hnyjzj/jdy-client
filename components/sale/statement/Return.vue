@@ -9,6 +9,7 @@ const handleClick = (id?: string, type?: StatementRefundInfo['order_type']) => {
   if (!id) {
     return
   }
+
   switch (type) {
     // 普通订单
     case OrderTypeSales.OrderTypeSale:
@@ -52,7 +53,9 @@ const handleClick = (id?: string, type?: StatementRefundInfo['order_type']) => {
         </template>
         <template #footer>
           <div class="flex-end">
-            <common-button-rounded padding="4px 36px" content="详情" @button-click="handleClick(item.order_id)" />
+            <template v-if="item.order_type !== OrderTypeSales.OrderTypeReturn">
+              <common-button-rounded padding="4px 36px" content="详情" @button-click="handleClick(item.order_id, item.order_type)" />
+            </template>
           </div>
         </template>
       </common-card-list>
