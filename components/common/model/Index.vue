@@ -41,13 +41,13 @@ function handleClick(event: MouseEvent) {
 }
 
 watch(show, (val) => {
-  document.documentElement.style.overflow = val ? 'hidden' : ''
+  document.body.style.overflow = val ? 'hidden' : ''
 })
 
 /** 销毁时 */
 onBeforeUnmount (() => {
   show.value = false
-  document.documentElement.style.overflow = ''
+  document.body.style.overflow = ''
 })
 </script>
 
