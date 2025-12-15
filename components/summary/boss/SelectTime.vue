@@ -42,7 +42,7 @@ watch(() => params.value, (newVal) => {
 
 <template>
   <div>
-    <div class="blur-bgc py-[6px] mb-[16px] text-[#FFF] px-[16px]">
+    <div class="blur-bgc py-[6px] mb-[16px] text-[#FFF]">
       <common-layout-center>
         <div class="flex justify-between items-center">
           <div>
@@ -50,7 +50,7 @@ watch(() => params.value, (newVal) => {
               <product-manage-company @change="emits('changeStores')" />
             </template>
           </div>
-          <div class="w-[120px]">
+          <div class="w-[120px] pr-[16px]">
             <n-select
               v-model:value="params.duration"
               size="small"

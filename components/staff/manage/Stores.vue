@@ -316,7 +316,7 @@ defineExpose({
             <n-grid :cols="24" :x-gap="8">
               <template v-if="[UserLevel.IdentityClerk, UserLevel.IdentityShopkeeper].includes(storeForm.identity as number)">
                 <n-form-item-gi :span="12" label="所属门店" path="store_ids">
-                  <div class="absolute z-1 right-0 top-[-24px]">
+                  <div class="absolute z-1 right-0 top-[-27px] flex items-center gap-[4px]">
                     <span class="color-[#4B576D]">全选</span> <n-switch v-model:value="storeAllswitch" @update:value="searchStoresAll" />
                   </div>
                   <n-select
@@ -338,7 +338,7 @@ defineExpose({
               </template>
               <template v-if="[UserLevel.IdentityAreaManager].includes(storeForm.identity as number)">
                 <n-form-item-gi :span="12" label="所属区域" path="region_ids">
-                  <div class="absolute z-1 right-0 top-[-24px]">
+                  <div class="absolute z-1 right-0 top-[-27px] flex items-center gap-[4px]">
                     <span class="color-[#4B576D]">全选 </span> <n-switch v-model:value="RegionAllswitch" @update:value="searchRegionsAll" />
                   </div>
                   <n-select
@@ -360,7 +360,7 @@ defineExpose({
               </template>
               <template v-if="[UserLevel.IdentityShopkeeper].includes(storeForm.identity as number)">
                 <n-form-item-gi :span="12" label="负责门店" path="store_superior_ids">
-                  <div class="absolute z-1 right-0 top-[-24px]">
+                  <div class="absolute z-1 right-0 top-[-27px] flex items-center gap-[4px]">
                     <span class="color-[#4B576D]">全选 </span> <n-switch v-model:value="StoresSupAllswitch" @update:value="searchStoresSupAll" />
                   </div>
                   <n-select
@@ -382,7 +382,7 @@ defineExpose({
               </template>
               <template v-if="[UserLevel.IdentityAreaManager].includes(storeForm.identity as number)">
                 <n-form-item-gi :span="12" label="负责区域" path="region_superior_ids">
-                  <div class="absolute z-1 right-0 top-[-24px]">
+                  <div class="absolute z-1 right-0 top-[-27px] flex items-center gap-[4px]">
                     <span class="color-[#4B576D]">全选 </span>  <n-switch v-model:value="RegionSupAllswitch" @update:value="searchRegionsSupAll" />
                   </div>
                   <n-select
@@ -404,7 +404,7 @@ defineExpose({
               </template>
               <template v-if="[UserLevel.IdentityAreaManager, UserLevel.IdentityAdmin, UserLevel.IdentityHeadquarters, UserLevel.IdentitySuperAdmin].includes(storeForm.identity as number)">
                 <n-form-item-gi :span="12" label="管理门店" path="store_admin_ids">
-                  <div class="absolute z-1 right-0 top-[-24px]">
+                  <div class="absolute z-1 right-0 top-[-27px] flex items-center gap-[4px]">
                     <span class="color-[#4B576D]">全选 </span>
                     <n-switch
                       v-model:value="storeAdminAllswitch"
@@ -429,7 +429,7 @@ defineExpose({
               </template>
               <template v-if="[UserLevel.IdentityAdmin, UserLevel.IdentityHeadquarters, UserLevel.IdentitySuperAdmin].includes(storeForm.identity as number)">
                 <n-form-item-gi :span="12" label="管理区域" path="region_admin_ids">
-                  <div class="absolute z-1 right-0 top-[-24px]">
+                  <div class="absolute z-1 right-0 top-[-27px] flex items-center gap-[4px]">
                     <span class="color-[#4B576D]">全选 </span>
                     <n-switch
                       v-model:value="RegionAllswitchAdmin"
@@ -454,7 +454,7 @@ defineExpose({
               </template>
             </n-grid>
             <template v-if="props.showButton">
-              <div class="grid-12 px-[26px]">
+              <div class="grid-12 px-[27px]">
                 <div
                   class="font-semibold cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
                   <div @click="handleValidateButtonClick">

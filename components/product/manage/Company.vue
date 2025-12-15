@@ -68,6 +68,7 @@ async function changeStoer() {
 function handleSelect(id: Stores['id']) {
   saveStoreId.value = id
   mask.value = false
+  searchKeyword.value = ''
   if (props.confirm) {
     columns.value = []
     useConfirmFunction()
@@ -80,7 +81,6 @@ function handleSelect(id: Stores['id']) {
     initObjForm()
     emits('change')
   }
-  mask.value = false
 }
 
 const clickChange = async () => {
