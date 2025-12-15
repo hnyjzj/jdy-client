@@ -170,7 +170,8 @@ const confirmChange = async () => {
             <common-cell label="门店电话" :value="props.detail.store?.phone" rcol="col-8" lcol="col-4" />
             <common-cell label="维修单编号" :value="props.detail.id" rcol="col-8" lcol="col-4" />
             <common-cell label="维修单状态" :value="props.orderWhere.status?.preset[props.detail.status] " rcol="col-8" lcol="col-4" val-color="#0B57D0" />
-            <common-cell label="接待人" :value="props.detail.operator?.nickname" rcol="col-8" lcol="col-4" />
+            <common-cell label="接待人" :value="props.detail.receptionist?.nickname" rcol="col-8" lcol="col-4" />
+            <common-cell label="收银员" :value="props.detail?.cashier?.nickname" rcol="col-8" lcol="col-4" />
             <common-cell label="会员昵称" :value="props.detail.member?.nickname" rcol="col-8" lcol="col-4" />
             <common-cell label="会员信息" :value="props.detail.member?.phone" rcol="col-8" lcol="col-4" />
             <common-cell label="维修费" :value="props.detail.expense" rcol="col-8" lcol="col-4" />

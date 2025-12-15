@@ -95,7 +95,7 @@ const payOrder = async () => {
               @cancel="cancelOrder"
             >
               <template #cancel>
-                <div class="color-[rgba(255,47,47,1)]">
+                <div class="color-[#0068FF]">
                   <span>撤销</span>
                 </div>
               </template>

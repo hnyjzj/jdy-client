@@ -260,6 +260,9 @@ interface ServiceOrderInfo {
   operator?: Staff
 
   cashier_id?: string
+
+  cashier?: Staff
+  receptionist?: Staff
 }
 
 /**
