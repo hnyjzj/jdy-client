@@ -100,8 +100,7 @@ const judgePerformance_rate = (): boolean => {
 }
 const formRef = ref<FormInst | null>(null)
 // 开单
-const handleValidateButtonClick = async (e: MouseEvent) => {
-  e.preventDefault()
+const handleValidateButtonClick = async () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       if (!orderObject.value.member_id) {

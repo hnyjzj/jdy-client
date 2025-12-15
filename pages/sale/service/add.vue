@@ -95,8 +95,7 @@ const getMember = async (val: string) => {
 }
 const Key = ref()
 // 点击验证表单
-const handleValidateButtonClick = async (e: MouseEvent) => {
-  e.preventDefault()
+const handleValidateButtonClick = async () => {
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
       formData.value.store_id = myStore.value.id
