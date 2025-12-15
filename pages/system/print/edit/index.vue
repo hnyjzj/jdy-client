@@ -369,7 +369,7 @@ onMounted(() => {
 }
 
 .operate-box {
-  --uno: 'gap-[16px] px-[16px] pt-[20px] pb-[8px] rounded-[16px] bg-[#F9F9F9]';
+  --uno: 'gap-[16px] px-[16px] pt-[20px] pb-[8px] rounded-[16px]  bg-[#E2E2E2] dark:bg-[rgba(255,255,255,.3)]';
 }
 
 .refined {
