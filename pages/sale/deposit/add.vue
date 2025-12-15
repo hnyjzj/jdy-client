@@ -71,8 +71,8 @@ const rules = {
 }
 const orderObject = ref<Orders>({} as Orders)
 // 点击验证表单
-const handleValidateButtonClick = async (e: MouseEvent) => {
-  e.preventDefault()
+const handleValidateButtonClick = async (e?: Event) => {
+  e?.preventDefault?.()
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
       // 成功的操作

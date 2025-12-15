@@ -93,7 +93,7 @@ const clickChange = async () => {
   <div>
     <div
       class="py-[6px] px-[16px] border-rd-full h-full flex-center-row cursor-pointer text-color"
-      :style="{ background: 'transparent', color: isWhite ? '#fff' : '' }" @click="clickChange">
+      :style="{ background: 'transparent', color: props.isWhite ? '#fff' : '' }" @click="clickChange">
       <icon name="i-icon:location" :size="24" class="mr-[4px]" />
       <div class="store-name font-bold text-size-[14px] mr-[4px] z-1">
         {{ myStore.alias }}
@@ -107,7 +107,6 @@ const clickChange = async () => {
             v-model:value="searchKeyword"
             placeholder="搜索门店名称"
             clearable
-            :item-style="{ background: '#333' }"
           >
             <template #prefix>
               <icon name="i-icon:search" :size="16" />

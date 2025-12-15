@@ -39,15 +39,24 @@ function handleClick(event: MouseEvent) {
     close()
   }
 }
-
+const prevOverflow = ref<string | null>(null)
 watch(show, (val) => {
-  document.documentElement.style.overflow = val ? 'hidden' : ''
+  if (val) {
+    if (prevOverflow.value === null)
+      prevOverflow.value = document.documentElement.style.overflow
+    document.documentElement.style.overflow = 'hidden'
+  }
+  else if (prevOverflow.value !== null) {
+    document.documentElement.style.overflow = prevOverflow.value
+    prevOverflow.value = null
+  }
 })
 
 /** 销毁时 */
 onBeforeUnmount (() => {
   show.value = false
-  document.documentElement.style.overflow = ''
+  if (prevOverflow.value !== null)
+    document.documentElement.style.overflow = prevOverflow.value
 })
 </script>
 
