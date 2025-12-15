@@ -124,6 +124,7 @@ const clickChange = async () => {
                     light:hover:bg-[#f5f5f5]
                     dark:hover:bg-[#1C3A62]
                     hover:rounded-[4px]"
+                :style="{ color: myStore.id === item.key ? '#0068FF' : '' }"
                 @click="handleSelect(item.key)">
                 {{ item.label }}
               </div>
