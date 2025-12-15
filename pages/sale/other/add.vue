@@ -89,8 +89,8 @@ const loadOrder = async () => {
   }
 }
 loadOrder()
-const handleValidateButtonClick = (e: any) => {
-  e.preventDefault()
+const handleValidateButtonClick = (e?: any) => {
+  e?.preventDefault()
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
       if (otherOrderDetail.value.store_id !== myStore.value.id && route.query.id) {

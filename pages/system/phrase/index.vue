@@ -128,7 +128,7 @@ const searchKey = ref('')
     <product-filter
       v-model:search-key="searchKey"
       :product-list-total="total"
-      placeholder="搜索" @search="searchText" @filter="openFilter()" @clear-search="clearFn">
+      placeholder="搜索" @search="searchText" @filter="openFilter" @clear-search="clearFn">
       <template #company>
         <product-manage-company @change="changeStores" />
       </template>
