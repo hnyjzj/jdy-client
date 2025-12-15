@@ -200,7 +200,7 @@ const confirm = () => {
     </common-layout-center>
     <div class="fixed z-1">
       <common-button-bottom
-        cancel-text="取消"
+        :cancle-show="false"
         confirm-text="新增模板"
         @cancel="cancel"
         @confirm="confirm"
