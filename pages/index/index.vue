@@ -70,10 +70,10 @@ onMounted(async () => {
               <summary-card-sale :today-sale-data="todaySaleData" @click-title="jump('/summary/sale')" />
             </template>
             <template v-if="Payments">
-              <summary-card-payment title="今日收支" :payments="Payments" @click-title="jump('/summary/cashflow')" />
+              <summary-card-inventory title="今日收支" :payments="Payments" @click-title="jump('/summary/cashflow')" />
             </template>
             <template v-if="TodayInventory">
-              <summary-card-inventory :today-inventory="TodayInventory" @click-title="jump('/summary/stock')" />
+              <summary-card-inventory title="今日库存" :payments="TodayInventory" @click-title="jump('/summary/stock')" />
             </template>
             <template v-if="targetStatistic?.target_id">
               <summary-card-target :data="targetStatistic" @click-title="jump('/target/info', { id: targetStatistic.target_id })" />

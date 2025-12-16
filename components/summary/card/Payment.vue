@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
   title?: string
-  goldPrice?: string
   payments: Record<string, string>
 }>(), {
   title: '',
@@ -19,21 +18,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   stop()
 })
-
-const unit = (value: string) => {
-  if (value.includes('件数')) {
-    return '件'
-  }
-  if (value.includes('金额')) {
-    return '元'
-  }
-  if (value.includes('笔数')) {
-    return '笔'
-  }
-  if (value.includes('金重')) {
-    return 'g'
-  }
-}
 </script>
 
 <template>
