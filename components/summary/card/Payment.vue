@@ -44,7 +44,7 @@ const unit = (value: string) => {
           <template v-for="(item, key) in props.payments" :key="key">
             <div class="w-[1/4] col-3">
               <div class="color-[#333] dark:color-[#fff] flex justify-center gap-[6px] font-semibold pb-[6px] line-height-[24px] text-center">
-                <common-tooltip :val="item" placement="top" /> <span class="text-[12px] font-normal">{{ unit(key) }}</span>
+                <common-tooltip :val="item.toString()" placement="top" /> <span class="text-[12px] font-normal">{{ unit(key) }}</span>
               </div>
               <div class="text-center">
                 <div class="color-[#808089] dark:color-[#fff]  text-[12px]  line-height-[24px] ">
