@@ -13,7 +13,6 @@ const props = defineProps<{
   getDetail: () => void
   operation: (req: { id: string, operation: number }) => Promise<boolean>
 }>()
-const router = useRouter()
 const { $toast } = useNuxtApp()
 const previewFileList = ref<UploadFileInfo[]>([])
 const region = ref({} as { province: string, city: string, district: string })
@@ -265,42 +264,25 @@ const confirmChange = async () => {
       </div>
     </common-layout-center>
 
-    <div class="footer">
-      <div class="grid-12 gap-[12px] px-[16px]">
-        <div class="col-6 offset-3" uno-sm="col-4 offset-4">
-          <div class="grid-12 gap-[12px]">
-            <div class="col-6">
-              <common-button-rounded
-                content="更新" bgc="#0068FF" color="#FFF" @button-click="updateButton()" />
-            </div>
-            <div class="col-6">
-              <template
-                v-if="[
-                  serviceOrderStatus.StoreReceived,
-                  serviceOrderStatus.SentForRepair,
-                  serviceOrderStatus.UnderRepair,
-                  serviceOrderStatus.RepairedAndReturned,
-                ].includes(props.detail.status)">
-                <common-button-rounded
-                  content="标记" bgc="#fff" color="#0068FF" @button-click="changeStatusBtn()" />
-              </template>
-              <template
-                v-if="props.detail.status === serviceOrderStatus.ReadyForPickup">
-                <common-button-rounded
-                  content="取货" bgc="#fff" color="#0068FF" @button-click="changeStatusBtn()" />
-              </template>
-              <template
-                v-if="[
-                  serviceOrderStatus.Cancelled,
-                  serviceOrderStatus.Completed,
-                  serviceOrderStatus.PendingPayment,
-                ].includes(props.detail.status)">
-                <common-button-rounded
-                  content="返回" bgc="#fff" color="#0068FF" @button-click="router.back()" />
-              </template>
-            </div>
-          </div>
-        </div>
+    <div class="fixed bottom-0 left-0 z-1 w-full grid-12 blur-bga" style="box-shadow: 0px -1px 15px 0px #0000001a;">
+      <div class="flex justify-between col-10 offset-1 gap-[12px]" uno-sm="col-4 offset-4">
+        <common-button-rounded
+          content="更新" :full="true" margin="16px 0px" bgc="#0068FF" color="#FFF" @button-click="updateButton()" />
+        <template
+          v-if="[
+            serviceOrderStatus.StoreReceived,
+            serviceOrderStatus.SentForRepair,
+            serviceOrderStatus.UnderRepair,
+            serviceOrderStatus.RepairedAndReturned,
+          ].includes(props.detail.status)">
+          <common-button-rounded
+            content="标记" border="1px solid #0068FF" :full="true" margin="16px 0px" bgc="#fff" color="#0068FF" @button-click="changeStatusBtn()" />
+        </template>
+        <template
+          v-if="props.detail.status === serviceOrderStatus.ReadyForPickup">
+          <common-button-rounded
+            content="取货" border="1px solid #0068FF" :full="true" margin="16px 0px" bgc="#fff" color="#0068FF" @button-click="changeStatusBtn()" />
+        </template>
       </div>
     </div>
     <sale-service-info-returnmoney v-model:show="showModel" :detail="props.detail" :return-money="props.refund" :get-detail="props.getDetail" />
