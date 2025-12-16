@@ -26,8 +26,9 @@ const selectDuration = async () => {
 const cofirmTime = async () => {
   if (!startTime.value || !endTime.value)
     return
+
   params.value.startTime = startTime.value
-  params.value.endTime = endTime.value
+  params.value.endTime = `${endTime.value.split('T')[0]}T23:59:59.000+08:00`
   emits('updateTime')
 }
 watch(() => params.value, (newVal) => {
@@ -50,14 +51,14 @@ watch(() => params.value, (newVal) => {
               <product-manage-company @change="emits('changeStores')" />
             </template>
           </div>
-          <div class="w-[120px] pr-[16px]">
+          <div class="w-[124px] pr-[16px]">
             <n-select
               v-model:value="params.duration"
               size="small"
               :style="{
                 '--n-color': '#DFE9FF',
               }"
-              placeholder="请选择时间范围"
+              placeholder="请选择时间"
               clearable
               remote
               :options="optonsToSelect(props.timeWhere?.duration?.preset ?? [])"
@@ -74,21 +75,17 @@ watch(() => params.value, (newVal) => {
             <n-date-picker
               v-model:formatted-value="startTime"
               input-readonly
-              default-time="00:00:00"
-              :is-date-disabled="dateDisabled"
               value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-              type="datetime" placeholder="选择开始时间" round clearable
+              type="date" placeholder="选择开始时间" round clearable
             />
             <n-date-picker
               v-model:formatted-value="endTime"
               input-readonly
-              default-time="23:59:59"
-              :is-date-disabled="dateDisabled"
               value-format="yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-              type="datetime" placeholder="选择结束时间" round clearable
+              type="date" placeholder="选择结束时间" round clearable
             />
           </div>
-          <common-button-rounded content="搜索" @button-click="cofirmTime" />
+          <common-button-rounded content="搜索" padding="7px 16px" @button-click="cofirmTime" />
         </div>
       </template>
     </common-layout-center>
@@ -99,9 +96,5 @@ watch(() => params.value, (newVal) => {
 :deep(.n-date-picker) {
   background-color: transparent;
   width: 100%;
-}
-
-:deep(.n-date-picker-icon svg) {
-  color: #fff;
 }
 </style>

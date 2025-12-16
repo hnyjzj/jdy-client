@@ -1,7 +1,6 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{
   title?: string
-  goldPrice?: string
   payments: Record<string, string>
 }>(), {
   title: '',
@@ -19,35 +18,20 @@ onMounted(() => {
 onBeforeUnmount(() => {
   stop()
 })
-
-const unit = (value: string) => {
-  if (value.includes('件数')) {
-    return '件'
-  }
-  if (value.includes('金额')) {
-    return '元'
-  }
-  if (value.includes('笔数')) {
-    return '笔'
-  }
-  if (value.includes('金重')) {
-    return 'g'
-  }
-}
 </script>
 
 <template>
   <div>
     <summary-card-layout :title="props.title" @title-click="emit('clickTitle')">
       <template #default>
-        <div :id="id" class="grid-12 gap-[12px]">
+        <div :id="id" class="grid-12 gap-[6px]">
           <template v-for="(item, key) in props.payments" :key="key">
-            <div class="w-[1/4] col-3">
-              <div class="color-[#333] dark:color-[#fff] font-semibold pb-[6px] line-height-[24px] text-center">
-                <span class="text-[20px]">{{ item }} <span class="text-[12px] font-normal">{{ unit(key) }}</span> </span>
+            <div class="w-[1/4] col-3 pb-[12px]">
+              <div class="text-[16px] color-[#333] dark:color-[#fff] flex justify-center gap-[2px] font-semibold pb-[6px] line-height-[24px] text-center">
+                <common-tooltip :val="item.toString()" placement="top" /> <span class="text-[12px] font-normal">{{ unitsd(key) }}</span>
               </div>
               <div class="text-center">
-                <div class="color-[#808089] dark:color-[#fff]  text-[12px]  line-height-[24px] ">
+                <div class="color-[#808089] dark:color-[#fff]  text-[13px]  line-height-[24px] ">
                   {{ key }}
                 </div>
               </div>

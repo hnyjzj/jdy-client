@@ -151,31 +151,29 @@ const searchKey = ref('')
             </div>
           </template>
           <template #info>
-            <div class="p-[16px]">
-              <div class="flex-col">
-                <template v-if="editStatus">
-                  <div class="py-[4px] color-[#1890ff] text-[12px] px-[6px]">
-                    点击短语进行修改
+            <div class="flex-col">
+              <template v-if="editStatus">
+                <div class="py-[4px] color-[#1890ff] text-[12px] px-[6px]">
+                  点击短语进行修改
+                </div>
+              </template>
+              <template v-for="(item, index) in List" :key="index">
+                <div class="flex justify-between py-[8px] px-[16px] text-color light:bg-[#F1F5FE] dark:bg-[#2C4186] mb-[16px] rounded-[8px] relative cursor-pointer" @click="editText(item)">
+                  <div>
+                    {{ item.content }}
                   </div>
-                </template>
-                <template v-for="(item, index) in List" :key="index">
-                  <div class="flex justify-between py-[8px] px-[16px] text-color light:bg-[#F1F5FE] dark:bg-[#2C4186] mb-[16px] rounded-[8px] relative cursor-pointer" @click="editText(item)">
-                    <div>
-                      {{ item.content }}
+                  <template v-if="editStatus">
+                    <div class="flex justify-center items-center gap-[6px] cursor-pointer" @click.stop="delProduct(item)">
+                      <icon name="i-svg:delete" :size="16" />
+                      <span class="color-[#F82F2F] whitespace-nowrap">删除</span>
                     </div>
-                    <template v-if="editStatus">
-                      <div class="flex justify-center items-center gap-[6px] cursor-pointer" @click.stop="delProduct(item)">
-                        <icon name="i-svg:delete" :size="16" />
-                        <span class="color-[#F82F2F]">删除</span>
-                      </div>
-                    </template>
-                  </div>
-                </template>
-                <template v-if="List.length === 0">
-                  <common-empty />
-                </template>
-                <common-page v-model:page="page" :total="total" :limit="12" @update:page="updatePage" />
-              </div>
+                  </template>
+                </div>
+              </template>
+              <template v-if="List.length === 0">
+                <common-empty />
+              </template>
+              <common-page v-model:page="page" :total="total" :limit="12" @update:page="updatePage" />
             </div>
           </template>
         </common-card-info>

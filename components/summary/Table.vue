@@ -39,7 +39,7 @@ const option = computed(() => {
       itemShape: 'circle',
       itemWidth: 8,
       itemHeight: 8,
-      textStyle: { color: '#CBCDD1' },
+      textStyle: { color: '#808089' },
     },
     grid: {
       left: '3%',

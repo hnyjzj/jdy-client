@@ -1,11 +1,16 @@
 <script setup lang="ts">
-const props = defineProps<{
+import type { Placement } from 'naive-ui/es/drawer/src/DrawerBodyWrapper'
+
+const props = withDefaults(defineProps<{
   val: any
-}>()
+  placement?: Placement
+}>(), {
+  placement: 'bottom',
+})
 </script>
 
 <template>
-  <n-tooltip v-if="props.val" placement="bottom" trigger="click">
+  <n-tooltip v-if="props.val" :placement="props.placement" trigger="click">
     <template #trigger>
       <div class="ellipsis-value cursor-pointer">
         {{ props.val }}

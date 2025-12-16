@@ -24,7 +24,7 @@ const emits = defineEmits<{
       </div>
       <template v-if="props.status === 'wxwork'">
         <div class="flex-center-col py-[24px] cursor-pointer">
-          <div class="wh-[32px] rounded-full flex-center-row" @click.stop="emits('other', 'phone')">
+          <div class="wh-[32px] rounded-full flex-center-row text-color" @click.stop="emits('other', 'phone')">
             <icon name="i-icon:phone-icon" :size="32" />
           </div>
         </div>

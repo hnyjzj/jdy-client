@@ -21,14 +21,6 @@ const confirmShow = ref(false)
 
 const mask = ref<boolean>(false)
 
-const searchKeyword = ref('') // 搜索关键词
-const filteredColumns = computed(() => {
-  if (!searchKeyword.value)
-    return columns.value || []
-  return (columns.value || []).filter((item: { label: string }) =>
-    item.label.toLowerCase().includes(searchKeyword.value.toLowerCase()),
-  )
-})
 const getList = async () => await getMyStore()
 
 if (!myStore.value || !Object.keys(myStoreList.value).length) {
@@ -68,7 +60,6 @@ async function changeStoer() {
 function handleSelect(id: Stores['id']) {
   saveStoreId.value = id
   mask.value = false
-  searchKeyword.value = ''
   if (props.confirm) {
     columns.value = []
     useConfirmFunction()
@@ -100,42 +91,8 @@ const clickChange = async () => {
       </div>
       <icon name="i-icon:product-toggle" :size="18" />
     </div>
-    <common-model v-model="mask" title="切换门店" :is-mask-close="true" :show-cancel="false">
-      <div>
-        <div class="py-[16px]">
-          <n-input
-            v-model:value="searchKeyword"
-            placeholder="搜索门店名称"
-            clearable
-          >
-            <template #prefix>
-              <icon name="i-icon:search" :size="16" />
-            </template>
-          </n-input>
-        </div>
 
-        <div class="h-[270px] overflow-y-auto">
-          <template v-if="filteredColumns.length">
-            <template v-for="item in filteredColumns" :key="item.key">
-              <div
-                class="py-[12px] px-[16px]
-                    text-color
-                    line-color-b cursor-pointer
-                    light:hover:bg-[#f5f5f5]
-                    dark:hover:bg-[#1C3A62]
-                    hover:rounded-[4px]"
-                :style="{ color: myStore.id === item.key ? '#0068FF' : '' }"
-                @click="handleSelect(item.key)">
-                {{ item.label }}
-              </div>
-            </template>
-          </template>
-          <div v-else class="py-[40px] text-center color-[#999] text-[14px]">
-            暂无匹配的门店
-          </div>
-        </div>
-      </div>
-    </common-model>
+    <correspond-select v-model="mask" :stores="myStoreList" :current-store-id="myStore.id" @select="handleSelect" />
 
     <common-confirm
       v-model:show="confirmShow"
