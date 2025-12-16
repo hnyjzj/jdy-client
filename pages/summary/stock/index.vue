@@ -72,15 +72,15 @@ async function changeStores() {
         <!-- 日期选择 -->
         <div class="flex justify-center my-4 items-center gap-2">
           <div
-            class="px-4 py-1 text-sm rounded-full cursor-pointer text-[#3971F3] dark:text-[#FFF]"
-            :class="dateMode === 'today' ? 'bg-blue-500 text-white' : 'text-[#3971F3]'"
+            class="px-4 py-1 text-sm rounded-full cursor-pointer"
+            :class="dateMode === 'today' ? 'bg-blue-500 color-[#fff]' : 'color-[#3971F3]'"
             @click="dateMode = 'today'"
           >
             今日
           </div>
           <div
-            class="px-4 py-1 text-sm rounded-full cursor-pointer text-[#3971F3] dark:text-[#FFF]"
-            :class="dateMode === 'custom' ? 'bg-blue-500 text-white' : 'text-[#3971F3]'"
+            class="px-4 py-1 text-sm rounded-full cursor-pointer"
+            :class="dateMode === 'custom' ? 'bg-blue-500 color-[#fff]' : 'color-[#3971F3]'"
             @click="dateMode = 'custom'"
           >
             自定义

@@ -50,7 +50,7 @@ watch(() => params.value, (newVal) => {
               <product-manage-company @change="emits('changeStores')" />
             </template>
           </div>
-          <div class="w-[140px] pr-[16px]">
+          <div class="w-[124px] pr-[16px]">
             <n-select
               v-model:value="params.duration"
               size="small"

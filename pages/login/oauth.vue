@@ -68,12 +68,7 @@ const jumpLogin = () => {
         uno-lg="col-4 offset-4"
         uno-sm="col-6 offset-3">
         <div class="flex-center-col ">
-          <common-empty
-            :img="content.loading ? '/images/empty/authorize.png' : '/images/empty/autherror.png'"
-            deg="45deg"
-            size="160px"
-            :is-shadow="false"
-            :show-r-t="false" />
+          <img :src="content.loading ? '/images/empty/authorize.png' : '/images/empty/autherror.png'" class="wh-[160px]" alt="">
           <div class="p-[16px] color-[#333] text-[20px]">
             {{ content.title }}
           </div>

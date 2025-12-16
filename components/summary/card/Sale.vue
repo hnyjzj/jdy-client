@@ -45,7 +45,7 @@ const toTodayPrice = () => {
                   </div>
                 </div>
                 <div class="color-[#333] dark:color-[#fff] font-semibold line-height-[24px] text-center">
-                  <span class="text-[20px]">{{ item }}</span>
+                  <span class="text-[16px]">{{ item }}</span>
                 </div>
               </div>
             </template>
@@ -63,7 +63,7 @@ const toTodayPrice = () => {
               <div class="color-[#808089] text-[14px] line-height-[24px] pb-[4px]">
                 成品金额
               </div>
-              <div class="text-[20px] font-semibold line-height-[24px]  text-color">
+              <div class="text-[16px] font-semibold line-height-[24px]  text-color">
                 {{ props.todaySaleData['成品金额'] || 0 }}
               </div>
             </div>
@@ -78,7 +78,7 @@ const toTodayPrice = () => {
               <div class="color-[#808089] text-[14px] line-height-[24px] pb-[4px]">
                 退货金额
               </div>
-              <div class="text-[20px] font-semibold line-height-[24px] text-color">
+              <div class="text-[16px] font-semibold line-height-[24px] text-color">
                 {{ props.todaySaleData['退货金额'] || 0 }}
               </div>
             </div>

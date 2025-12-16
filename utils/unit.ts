@@ -1,4 +1,4 @@
-export const unit = (value: string) => {
+export const unitsd = (value: string) => {
   if (value.includes('件数')) {
     return '件'
   }
