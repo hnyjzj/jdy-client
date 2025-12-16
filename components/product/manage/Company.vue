@@ -21,8 +21,6 @@ const confirmShow = ref(false)
 
 const mask = ref<boolean>(false)
 
-const searchKeyword = ref('') // 搜索关键词
-
 const getList = async () => await getMyStore()
 
 if (!myStore.value || !Object.keys(myStoreList.value).length) {
@@ -62,7 +60,6 @@ async function changeStoer() {
 function handleSelect(id: Stores['id']) {
   saveStoreId.value = id
   mask.value = false
-  searchKeyword.value = ''
   if (props.confirm) {
     columns.value = []
     useConfirmFunction()
