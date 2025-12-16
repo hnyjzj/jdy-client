@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // 销售明细列表
-import { NButton } from 'naive-ui'
 
 useSeoMeta({
   title: '销售明细',
@@ -297,10 +296,16 @@ const cols = [
   {
     title: '操作',
     key: 'action',
+    fixed: 'right',
     render: (rowData: orderInfoProducts) => {
       return h(
-        NButton,
+        'span',
         {
+          style: {
+            color: '#0D6CE4',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           type: 'info',
           size: 'small',
           onClick: () => {
@@ -309,7 +314,7 @@ const cols = [
             navigateTo(`/sale/sales/order?id=${rowData.order_id}`)
           },
         },
-        { default: () => '查看详情' },
+        { default: () => '详情' },
       )
     },
   },
@@ -343,25 +348,24 @@ const exportExcel = async () => {
         <product-manage-company @change="changeStores" />
       </template>
     </product-filter>
-    <template v-if="showtype === 'list'">
-      <common-layout-center>
-        <div class="p-[16px]">
+    <common-layout-center>
+      <div class="p-4">
+        <template v-if="showtype === 'list'">
           <template v-if="statementList.length">
             <sale-statement-sales :info="statementList" :where="filterList" :old-where="oldFilterList" :finished-where="finishedFilterList" />
             <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
           </template>
           <template v-else>
-            <common-emptys text="暂无数据" />
+            <common-empty text="暂无数据" />
           </template>
-        </div>
-      </common-layout-center>
-    </template>
-    <template v-else>
-      <template v-if="statementList.length">
-        <common-datatable :columns="cols" :list="statementList" :page-option="pageOption" :loading="tableLoading" />
-      </template>
-    </template>
-
+        </template>
+        <template v-else>
+          <template v-if="statementList.length">
+            <common-datatable :columns="cols" :list="statementList" :page-option="pageOption" :loading="tableLoading" />
+          </template>
+        </template>
+      </div>
+    </common-layout-center>
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #order_id>
         <n-input v-model:value="filterData.order_id" placeholder="请输入销售单订单号" clearable size="large" />

@@ -89,61 +89,70 @@ const data = computed(() => {
 
 // 监听数据和维度变化更新图表
 watch([() => props.stockCategoryDate, chartBar, chartMode], updateChart)
+
+const { $colorMode } = useNuxtApp()
+const tdColor = computed(() => {
+  return $colorMode.value === 'light' ? '#1A6DD8' : '#fff'
+})
 </script>
 
 <template>
   <n-spin :show="props.loading" stroke="#fff" size="large">
-    <div class="mt-[16px] overflow-hidden">
-      <common-fold :is-collapse="false" from-color="rgba(71,126,245,0.6)" to-color="rgba(243,245,254,0.6)">
-        <template #title>
-          <div class="w-[100%] flex justify-between items-center">
-            <div class="text-[14px]">
-              {{ props.title }}
+    <div
+      class="mt-[16px] overflow-hidden bg"
+      :style="{
+        background: $colorMode.value === 'dark' ? '#1D2C60' : 'linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%)',
+      }">
+      <div class="w-[100%] flex justify-between items-center pb-[16px]">
+        <div class="flex items-center gap-[6px] color-[#1A6DD8] font-semibold line-height-[24px] text-[16px]">
+          <img src="/images/icon/today-sale.png" class="wh-[24px]">
+          <span>{{ props.title }}</span>
+        </div>
+        <div>
+          <summary-Toggle v-model="chartMode" />
+        </div>
+      </div>
+
+      <!-- 图表模式 -->
+      <template v-if="chartMode === 'chart'">
+        <!-- 饼图维度切换 -->
+        <div class="flex justify-center gap-2 my-4 flex-wrap">
+          <template v-for="(key, idx) in Object.keys(props.stockCategoryDate || {})" :key="idx">
+            <div
+              class="px-4 py-1 text-sm rounded-full cursor-pointer"
+              :class="chartBar === key ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'"
+              @click="chartBar = key"
+            >
+              {{ key }}
             </div>
-            <div>
-              <summary-Toggle v-model="chartMode" />
-            </div>
-          </div>
-        </template>
+          </template>
+        </div>
 
-        <!-- 图表模式 -->
-        <template v-if="chartMode === 'chart'">
-          <!-- 饼图维度切换 -->
-          <div class="flex justify-center gap-2 my-4 flex-wrap">
-            <template v-for="(key, idx) in Object.keys(props.stockCategoryDate || {})" :key="idx">
-              <div
-                class="px-4 py-1 text-sm rounded-full cursor-pointer"
-                :class="chartBar === key ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'"
-                @click="chartBar = key"
-              >
-                {{ key }}
-              </div>
-            </template>
-          </div>
+        <!-- 饼图容器 -->
+        <div class="chart-wrapper p-2">
+          <ClientOnly fallback-tag="div" fallback="加载中...">
+            <VChart class="chart" :option="option" autoresize />
+          </ClientOnly>
+        </div>
+      </template>
 
-          <!-- 饼图容器 -->
-          <div class="chart-wrapper p-2">
-            <ClientOnly fallback-tag="div" fallback="加载中...">
-              <VChart class="chart" :option="option" autoresize />
-            </ClientOnly>
-          </div>
-        </template>
-
-        <!-- 列表模式 -->
-        <template v-else>
-          <n-data-table
-            :style="{
-              '--n-merged-th-color': $colorMode.value === 'light' ? '#C7DAFF' : 'rgba(71, 126, 245, 0.6)',
-              '--n-merged-td-color': $colorMode.value === 'light' ? '#DEEBFD' : '#224879',
-              '--n-merged-border-color': 'rgba(57,113,243,0.08)',
-            }"
-            :max-height="350"
-            :columns="columns"
-            :data="data"
-            bordered
-          />
-        </template>
-      </common-fold>
+      <!-- 列表模式 -->
+      <template v-else>
+        <n-data-table
+          :style="{
+            '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#1D2C60',
+            '--n-merged-td-text-color': $colorMode.value === 'light' ? '#1A6DD8' : '#fff',
+            '--n-merged-td-color-hover': $colorMode.value === 'light' ? '#DAEAFF' : '#0050B8',
+            '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#0F1E52',
+            '--n-merged-border-color': 'rgba(57,113,243,0.0)',
+            '--td-color': tdColor,
+          }"
+          :max-height="350"
+          :columns="columns"
+          :data="data"
+          bordered
+        />
+      </template>
     </div>
   </n-spin>
 </template>
@@ -157,5 +166,17 @@ watch([() => props.stockCategoryDate, chartBar, chartMode], updateChart)
 .chart {
   width: 100%;
   height: 300px;
+}
+.bg {
+  background: linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%);
+  box-shadow: 0px 5px 20px 0px #0000000a;
+  padding: 12px 16px;
+  border-radius: 8px;
+}
+:deep(.n-data-table .n-data-table-base-table-header) {
+  border-radius: 8px;
+}
+:deep(.n-data-table-tr:hover .n-data-table-td) {
+  color: var(--td-color);
 }
 </style>

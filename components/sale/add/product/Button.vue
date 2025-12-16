@@ -84,19 +84,8 @@ const openSearch = () => {
     </div>
     <common-model
       v-model="showModal" title="选择成品" :show-ok="true" :show-cancel="true" @confirm="confirm" @cancel="clearData()">
-      <div class="grid-12 h-[300px] overflow-y-scroll">
+      <div class="grid-12 h-[400px] overflow-y-auto">
         <div class="col-12">
-          <div>
-            <div class="flex justify-start py-[12px]">
-              <div
-                class="flex-center-col pr-[32px]">
-                <div class="text-[16px] pb-[2px] font-semibold line-height-[24px] color-[#333]">
-                  条码搜索
-                </div>
-                <div class="w-[32px] h-[4px] rounded bg-[#2080F0]" />
-              </div>
-            </div>
-          </div>
           <div class="flex items-center pb-[16px]">
             <div class="flex-1">
               <n-input
@@ -110,20 +99,14 @@ const openSearch = () => {
                 @focus="focus"
               />
             </div>
-            <div class="pl-[16px] flex">
-              <n-button type="info" round @click="search()">
-                搜索
-              </n-button>
+            <div class="pl-[16px] flex gap-[8px]">
+              <common-button-rounded content="搜索" @click="search()" />
               <template v-if="checkEnv()">
-                <div class="pl-[8px]">
-                  <n-button strong secondary type="info" round @click="scanCode()">
-                    扫码
-                  </n-button>
-                </div>
+                <common-button-rounded content="扫码" bgc="#f1f5fe" color="#1a6dd8" @click="scanCode()" />
               </template>
             </div>
           </div>
-          <div class="grid-12 color-[#333] font-semibold !text-[14px]">
+          <div class="grid-12 text-color font-semibold !text-[14px]">
             <div class="col-4">
               条码
             </div>
@@ -159,7 +142,7 @@ const openSearch = () => {
               </div>
             </template>
             <template v-if="productList.length === 0">
-              <common-emptys text="暂无数据" />
+              <common-empty text="暂无数据" />
             </template>
           </div>
         </div>

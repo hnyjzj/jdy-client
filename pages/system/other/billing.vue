@@ -78,53 +78,60 @@ const handleValidateButtonClick = async () => {
 </script>
 
 <template>
-  <div class="grid-12 p-[16px]">
-    <div class="col-12" uno-sm="col-6 offset-3" uno-xl="col-4 offset-4">
-      <div class="grid-12 color-[#fff]">
-        <div class="col-5 pb-[16px]">
+  <div>
+    <div class="blur-bgc">
+      <common-layout-center>
+        <div class="w-fit">
           <product-manage-company />
         </div>
-      </div>
-      <common-fold title="开单设置" :is-collapse="false">
-        <div class="p-[16px]">
-          <n-form
-            ref="formRef"
-            :model="model"
-            label-placement="left"
-            label-width="150px"
-            require-mark-placement="right-hanging"
-            :rules="rules"
-          >
-            <template v-for="(item, index) in billingSetFilterListToArray" :key="index">
-              <template v-if="item.create">
-                <n-form-item :label="item.label" :path="item.name">
-                  <template v-if="item.input === 'select' && item.name !== 'store_id'">
-                    <n-select
-                      v-model:value="(model[item.name] as number)"
-                      :options="optonsToSelect(item.preset)"
-                      :placeholder="item.label" @focus="focus" />
-                  </template>
-                  <template v-if="item.input === 'text' && item.name === 'discount_rate'">
-                    <n-input v-model:value="model[item.name]" :placeholder="item.label" @focus="focus">
-                      <template #suffix>
-                        积分 = 1元
-                      </template>
-                    </n-input>
+      </common-layout-center>
+    </div>
+    <div class="p-[16px]">
+      <common-layout-center>
+        <div>
+          <common-card-info title="开单设置">
+            <template #info>
+              <div>
+                <n-form
+                  ref="formRef"
+                  :model="model"
+                  label-width="150px"
+                  require-mark-placement="right-hanging"
+                  :rules="rules"
+                >
+                  <template v-for="(item, index) in billingSetFilterListToArray" :key="index">
+                    <template v-if="item.create">
+                      <n-form-item :label="item.label" :path="item.name">
+                        <template v-if="item.input === 'select' && item.name !== 'store_id'">
+                          <n-select
+                            v-model:value="(model[item.name] as number)"
+                            :options="optonsToSelect(item.preset)"
+                            :placeholder="item.label" />
+                        </template>
+                        <template v-if="item.input === 'text' && item.name === 'discount_rate'">
+                          <n-input v-model:value="model[item.name]" :placeholder="item.label">
+                            <template #suffix>
+                              积分 = 1元
+                            </template>
+                          </n-input>
+                        </template>
+
+                        <template v-if="item.input === 'switch'">
+                          <n-switch v-model:value="model[item.name]" :default-value="false" />
+                        </template>
+                      </n-form-item>
+                    </template>
                   </template>
 
-                  <template v-if="item.input === 'switch'">
-                    <n-switch v-model:value="model[item.name]" :default-value="false" />
-                  </template>
-                </n-form-item>
-              </template>
+                  <div class="flex justify-center">
+                    <common-button-bottom :cancle-show="false" confirm-text="保存" @confirm="handleValidateButtonClick" />
+                  </div>
+                </n-form>
+              </div>
             </template>
-
-            <div class="flex justify-center">
-              <common-button-rounded content="保存" padding="10px 100px" @button-click="handleValidateButtonClick" />
-            </div>
-          </n-form>
+          </common-card-info>
         </div>
-      </common-fold>
+      </common-layout-center>
     </div>
   </div>
 </template>

@@ -1,9 +1,13 @@
 <script lang="ts" setup>
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   timeWhere?: Where<CashflowWhere> | Where<BossWhere>
-}>()
+  hasStore?: boolean
+}>(), {
+  hasStore: true,
+})
 const emits = defineEmits<{
   updateTime: []
+  changeStores: []
 }>()
 
 const params = defineModel<BossWhere>({ default: { } as BossWhere })
@@ -37,20 +41,36 @@ watch(() => params.value, (newVal) => {
 </script>
 
 <template>
-  <div class="grid-12 mb-[12px] gap-[12px]">
-    <div class="col-12" uno-sm="col-4">
-      <n-select
-        v-model:value="params.duration"
-        placeholder="请选择时间范围"
-        clearable
-        remote
-        :options="optonsToSelect(props.timeWhere?.duration?.preset ?? [])"
-        @update:value="selectDuration" />
+  <div>
+    <div class="blur-bgc py-[6px] mb-[16px] text-[#FFF]">
+      <common-layout-center>
+        <div class="flex justify-between items-center">
+          <div>
+            <template v-if="props.hasStore">
+              <product-manage-company @change="emits('changeStores')" />
+            </template>
+          </div>
+          <div class="w-[120px] pr-[16px]">
+            <n-select
+              v-model:value="params.duration"
+              size="small"
+              :style="{
+                '--n-color': '#DFE9FF',
+              }"
+              placeholder="请选择时间范围"
+              clearable
+              remote
+              :options="optonsToSelect(props.timeWhere?.duration?.preset ?? [])"
+              @update:value="selectDuration" />
+          </div>
+        </div>
+        <div />
+      </common-layout-center>
     </div>
-    <div class="col-12" uno-sm="col-8">
+    <common-layout-center>
       <template v-if="params.duration === 11">
-        <div class="grid-12 gap-[6px]">
-          <div class="col-10 flex gap-[12px]">
+        <div class="flex justify-between gap-[6px] pb-[16px] px-[16px]">
+          <div class="flex-1 flex gap-[12px] ">
             <n-date-picker
               v-model:formatted-value="startTime"
               input-readonly
@@ -68,50 +88,17 @@ watch(() => params.value, (newVal) => {
               type="datetime" placeholder="选择结束时间" round clearable
             />
           </div>
-          <div
-            class="px-[8px] py-[6px] flex-center-row bg-[#fff] rounded-[20px] color-[#0068FF] col-2 cursor-pointer text-center"
-            @click="cofirmTime">
-            搜索
-          </div>
+          <common-button-rounded content="搜索" @button-click="cofirmTime" />
         </div>
       </template>
-    </div>
+    </common-layout-center>
   </div>
 </template>
 
 <style lang="scss" scoped>
-:deep(.n-base-selection .n-base-selection-label) {
-  background-color: #ffffff3b;
-}
-:deep(.n-base-selection .n-base-selection-label .n-base-selection-input) {
-  color: #fff;
-}
-:deep(.n-base-selection:not(.n-base-selection--disabled).n-base-selection--active .n-base-selection-label) {
-  background-color: #ffffff3b;
-}
-:deep(.n-base-selection .n-base-selection__border, .n-base-selection .n-base-selection__state-border) {
-  border: 1px solid #ffffff3b;
-}
-:deep(.n-input) {
-  background-color: #ffffff3b;
-  border: 1px solid transparent;
-}
-:deep(.n-input__input-el) {
-  color: #fff;
-}
-:deep(.n-input:not(.n-input--disabled).n-input--focus) {
-  color: #fff;
-  background-color: #ffffff3b;
-}
 :deep(.n-date-picker) {
   background-color: transparent;
   width: 100%;
-}
-:deep(.n-input__state-border) {
-  border: 1px solid transparent !important;
-}
-:deep(.n-input__border) {
-  border: 1px solid transparent !important;
 }
 
 :deep(.n-date-picker-icon svg) {

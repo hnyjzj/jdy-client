@@ -41,112 +41,107 @@ const delStaff = () => {
 </script>
 
 <template>
-  <div class="grid-12 gap-[12px] p-[16px]">
-    <div class="card col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" uno-lg="col-4 offset-4">
-      <div class="p-[1px]">
-        <div class="text-[16px] py-[12px] px-[16px] bg-gradient-linear-[90deg,#FFF,#8AD4FB] rounded-t-[16px] flex-between">
-          员工详情
+  <div class="pt-6 px-4">
+    <common-layout-center>
+      <common-card-info title="员工详情">
+        <template #status>
           <div class="flex items-center gap-[12px]">
-            <div class="cursor-pointer" @click="delStaff()">
+            <div class="cursor-pointer flex gap-[6px]" @click="delStaff()">
               <icon name="i-svg:delete" :size="16" />
+              <span class="color-[#F82F2F]">删除</span>
             </div>
             <div class="px-[12px] py-[6px] bg-[#2B78EF] color-[#fff] rounded-[12px] text-[14px] cursor-pointer" @click="toEdit()">
               编辑
             </div>
           </div>
-        </div>
-      </div>
-      <div class="p-[16px] text-[14px] color-[#666]">
-        <template v-if="staffInfo.avatar">
-          <div class=" pb-[8px]">
-            <img :src="ImageUrl(staffInfo.avatar)" class="shadow-2xl" alt="" style="width: 48px;height: 48px;border-radius: 8px;">
+        </template>
+        <template #info>
+          <div>
+            <template v-if="staffInfo.avatar">
+              <div class="pb-[8px]">
+                <img :src="ImageUrl(staffInfo.avatar)" class="shadow-2xl" alt="" style="width: 48px;height: 48px;border-radius: 8px;">
+              </div>
+            </template>
+            <common-cell label="姓名" :value="staffInfo.nickname" />
+            <common-cell label="用户名" :value="staffInfo.username" />
+            <common-cell label="性别" :value="sex(staffInfo.gender)" />
+            <common-cell label="手机号" :value="staffInfo.phone" />
+            <common-cell label="email" :value="staffInfo.email" />
           </div>
         </template>
-        <common-cell label="姓名" :value="staffInfo.nickname" />
-        <common-cell label="用户名" :value="staffInfo.username" />
-        <common-cell label="性别" :value="sex(staffInfo.gender)" />
-        <common-cell label="手机号" :value="staffInfo.phone" />
-        <common-cell label="email" :value="staffInfo.email" />
-      </div>
-    </div>
-    <div class="card col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" uno-lg="col-4 offset-4">
-      <div class="p-[1px]">
-        <div class="text-[16px] py-[12px] px-[16px] bg-gradient-linear-[90deg,#FFF,#8AD4FB] rounded-t-[16px]">
-          门店
-        </div>
-      </div>
-      <div class="p-[16px] text-[14px] color-[#666]">
-        <n-tabs type="segment" animated>
-          <n-tab-pane name="chap1" tab="所属" :disabled="!staffInfo.stores?.length">
-            <div class="flex flex-wrap flex-start">
-              <template v-for="(item, index) in staffInfo.stores" :key="index">
-                <div class="ml-[12px] model-item">
-                  {{ item.name }}
+      </common-card-info>
+      <common-card-info title="门店">
+        <template #info>
+          <div class="text-[14px] color-[#666]">
+            <n-tabs type="segment" animated>
+              <n-tab-pane name="chap1" tab="所属" :disabled="!staffInfo.stores?.length">
+                <div class="flex flex-wrap flex-start">
+                  <template v-for="(item, index) in staffInfo.stores" :key="index">
+                    <div class="ml-[12px] model-item">
+                      {{ item.name }}
+                    </div>
+                  </template>
                 </div>
-              </template>
-            </div>
-          </n-tab-pane>
+              </n-tab-pane>
 
-          <n-tab-pane name="chap2" tab="负责" :disabled="!staffInfo.store_superiors?.length">
-            <div class="flex flex-wrap flex-start">
-              <template v-for="(item, index) in staffInfo.store_superiors" :key="index">
-                <div class="ml-[12px] model-item">
-                  {{ item.name }}
+              <n-tab-pane name="chap2" tab="负责" :disabled="!staffInfo.store_superiors?.length">
+                <div class="flex flex-wrap flex-start">
+                  <template v-for="(item, index) in staffInfo.store_superiors" :key="index">
+                    <div class="ml-[12px] model-item">
+                      {{ item.name }}
+                    </div>
+                  </template>
                 </div>
-              </template>
-            </div>
-          </n-tab-pane>
-          <n-tab-pane name="chap3" tab="管理" :disabled="!staffInfo.store_admins?.length">
-            <div class="flex flex-wrap flex-start">
-              <template v-for="(item, index) in staffInfo.store_admins" :key="index">
-                <div class="ml-[12px] model-item">
-                  {{ item.name }}
+              </n-tab-pane>
+              <n-tab-pane name="chap3" tab="管理" :disabled="!staffInfo.store_admins?.length">
+                <div class="flex flex-wrap flex-start">
+                  <template v-for="(item, index) in staffInfo.store_admins" :key="index">
+                    <div class="ml-[12px] model-item">
+                      {{ item.name }}
+                    </div>
+                  </template>
                 </div>
-              </template>
-            </div>
-          </n-tab-pane>
-        </n-tabs>
-      </div>
-    </div>
-    <div class="card col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" uno-lg="col-4 offset-4">
-      <div class="p-[1px]">
-        <div class="text-[16px] py-[12px] px-[16px] bg-gradient-linear-[90deg,#FFF,#8AD4FB] rounded-t-[16px]">
-          区域
-        </div>
-      </div>
-      <div class="p-[16px] text-[14px] color-[#666]">
-        <n-tabs type="segment" animated>
-          <n-tab-pane name="chap1" tab="所属" :disabled="!staffInfo.regions?.length">
-            <div class="flex flex-wrap flex-start">
-              <template v-for="(item, index) in staffInfo.regions" :key="index">
-                <div class="ml-[12px] model-item">
-                  {{ item.name }}
+              </n-tab-pane>
+            </n-tabs>
+          </div>
+        </template>
+      </common-card-info>
+      <common-card-info title="区域">
+        <template #info>
+          <div class="text-[14px] color-[#666]">
+            <n-tabs type="segment" animated>
+              <n-tab-pane name="chap1" tab="所属" :disabled="!staffInfo.regions?.length">
+                <div class="flex flex-wrap flex-start">
+                  <template v-for="(item, index) in staffInfo.regions" :key="index">
+                    <div class="ml-[12px] model-item">
+                      {{ item.name }}
+                    </div>
+                  </template>
                 </div>
-              </template>
-            </div>
-          </n-tab-pane>
-          <n-tab-pane name="chap2" tab="负责" :disabled="!staffInfo.region_superiors?.length">
-            <div class="flex flex-wrap flex-start">
-              <template v-for="(item, index) in staffInfo.region_superiors" :key="index">
-                <div class="ml-[12px] model-item">
-                  {{ item.name }}
+              </n-tab-pane>
+              <n-tab-pane name="chap2" tab="负责" :disabled="!staffInfo.region_superiors?.length">
+                <div class="flex flex-wrap flex-start">
+                  <template v-for="(item, index) in staffInfo.region_superiors" :key="index">
+                    <div class="ml-[12px] model-item">
+                      {{ item.name }}
+                    </div>
+                  </template>
                 </div>
-              </template>
-            </div>
-          </n-tab-pane>
-          <n-tab-pane name="chap3" tab="管理" :disabled="!staffInfo.region_admins?.length">
-            <div class="flex flex-wrap flex-start">
-              <template v-for="(item, index) in staffInfo.region_admins" :key="index">
-                <div class="ml-[12px] model-item">
-                  {{ item.name }}
+              </n-tab-pane>
+              <n-tab-pane name="chap3" tab="管理" :disabled="!staffInfo.region_admins?.length">
+                <div class="flex flex-wrap flex-start">
+                  <template v-for="(item, index) in staffInfo.region_admins" :key="index">
+                    <div class="ml-[12px] model-item">
+                      {{ item.name }}
+                    </div>
+                  </template>
                 </div>
-              </template>
-            </div>
-          </n-tab-pane>
-        </n-tabs>
-      </div>
-    </div>
-
+              </n-tab-pane>
+            </n-tabs>
+          </div>
+        </template>
+      </common-card-info>
+    </common-layout-center>
     <common-confirm
       v-model:show="confirmShow"
       title="删除提示"

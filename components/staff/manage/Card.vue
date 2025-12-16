@@ -46,9 +46,9 @@ const deleteConfirm = async () => {
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
+  <div class="grid grid-cols-1 gap-x-[16px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.list" :key="index">
-      <sale-cards>
+      <common-card-list>
         <template #status>
           <div :style="{ color: item.is_disabled ? '#E54133' : '#2775EE' }">
             {{ item.is_disabled ? '禁用' : '正常' }}
@@ -85,25 +85,24 @@ const deleteConfirm = async () => {
           </div>
         </template>
         <template #footer>
-          <div class="flex-between pl-[8px] bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
+          <div class="flex-between pl-[8px]">
             <template v-if="(props.myidentity > (item.identity as number)) || props.myidentity === UserLevel.IdentitySuperAdmin">
-              <div class="cursor-pointer" @click="delTips(item.id as string)">
+              <div class="cursor-pointer flex gap-[6px]" @click="delTips(item.id as string)">
                 <icon name="i-svg:delete" :size="16" />
+                <span class="color-[#F82F2F]">删除</span>
               </div>
             </template>
             <template v-else>
               <div />
             </template>
 
-            <div class="flex-between">
-              <div class="pr-[36px] color-[#1F6FEC] cursor-pointer" @click="router.push(`/manage/staffs/staff/info?id=${item.id}`)">
-                详情
-              </div>
-              <common-button-irregular text="编辑" @click="toEdit(item.id as string, item.identity as number)" />
+            <div class="flex-between gap-[8px]">
+              <common-button-rounded color="#0068FF" border="1px solid #0068FF" content="详情" bgc="#fff" padding="3px 36px" @button-click="router.push(`/manage/staffs/staff/info?id=${item.id}`)" />
+              <common-button-rounded content="编辑" padding="4px 36px" @button-click="toEdit(item.id as string, item.identity as number)" />
             </div>
           </div>
         </template>
-      </sale-cards>
+      </common-card-list>
     </template>
 
     <common-confirm
@@ -119,7 +118,7 @@ const deleteConfirm = async () => {
 
 <style lang="scss" scoped>
   .info {
-  --uno: 'flex flex-col gap-[3px] px-[16px]';
+  --uno: 'flex flex-col gap-[3px]';
 
   .part {
     --uno: 'flex-center-between';

@@ -9,6 +9,7 @@ const handleClick = (id?: string, type?: StatementRefundInfo['order_type']) => {
   if (!id) {
     return
   }
+
   switch (type) {
     // 普通订单
     case OrderTypeSales.OrderTypeSale:
@@ -31,12 +32,9 @@ const handleClick = (id?: string, type?: StatementRefundInfo['order_type']) => {
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
+  <div class="grid grid-cols-1 gap-x-[16px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
-      <sale-cards :title="`退货单号:${item.id}`">
-        <template #avatar>
-          <common-tags :status="item.order_type" :status-map="OrderTypeColorMap" :text="showOrderTypeMap[item.order_type as OrderTypeSales]" :is-oval="true" />
-        </template>
+      <common-card-list :title="`退货单编号:${item.id}`">
         <template #info>
           <div class="info">
             <common-cell label="退货时间" :value="formatTimestampToDateTime(item.created_at) || '--'" />
@@ -54,21 +52,20 @@ const handleClick = (id?: string, type?: StatementRefundInfo['order_type']) => {
           </div>
         </template>
         <template #footer>
-          <div class="flex-between bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
-            <div class="color-[#4287F4] cursor-pointer flex justify-center items-center" />
+          <div class="flex-end">
             <template v-if="item.order_type !== OrderTypeSales.OrderTypeReturn">
-              <common-button-irregular text="查看详情" @click="handleClick(item.order_id, item.order_type)" />
+              <common-button-rounded padding="4px 36px" content="详情" @button-click="handleClick(item.order_id, item.order_type)" />
             </template>
           </div>
         </template>
-      </sale-cards>
+      </common-card-list>
     </template>
   </div>
 </template>
 
 <style scoped lang="scss">
   .info {
-  --uno: 'flex flex-col gap-[3px] px-[16px]';
+  --uno: 'flex flex-col gap-[3px]';
 
   .part {
     --uno: 'flex-center-between';

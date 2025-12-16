@@ -2,6 +2,10 @@
 import type { Rules } from 'common-form'
 import type { UploadCustomRequestOptions, UploadFileInfo } from 'naive-ui'
 
+definePageMeta({
+  layout: 'nav',
+})
+
 const { $toast } = useNuxtApp()
 const { addWorkbench, getWorkbenchList, delWorkbench, updateWorkbench, uploadIcon } = useWorkbenche()
 const { workBenchList } = storeToRefs(useWorkbenche())
@@ -201,16 +205,19 @@ const beforeUpload = (data: any) => {
 
 <template>
   <div class="">
-    <div class="sticky top-0 z-3 bg-[#3875C5]">
+    <div class="sticky top-0 z-4 search-bg bg-[#3875C5] pb-2">
       <common-layout-center>
-        <div class="color-[#fff] py-[12px] flex justify-between px-4">
-          <product-manage-company />
-          <div class="flex-1 px-2 sm:px-4">
+        <div class="flex justify-between pt-2">
+          <product-manage-company :is-white="true" />
+          <div />
+        </div>
+        <div class="color-[#fff] flex justify-between px-4 pt-2 pb-4">
+          <div class="flex-1 pr-3 sm:px-4 z-1">
             <product-filter-search @submit="searchListFn" />
           </div>
           <auth-verify :min="UserLevel.IdentitySuperAdmin">
             <div
-              class="flex items-center justify-end cursor-pointer"
+              class="flex items-center justify-end cursor-pointer z-1"
               @click="set">
               <icon name="i-svg:setup" :size="14" color="#FFF" />
               <div class="text-[#fff] text-[14px] pl-1">
@@ -222,15 +229,15 @@ const beforeUpload = (data: any) => {
       </common-layout-center>
     </div>
     <common-layout-center>
-      <div class="pb-10 px-4">
+      <div class="pb-10 px-2">
         <!-- 工作台入口 -->
-        <div class="mt-2 mb-14 col-12">
+        <div class="mb-14 col-12">
           <work-bench v-model="isSetup" :list="workBenchList" :fold-status="foldStatus" @add="addBench" @del="(id) => { deleteDialog = true;deleteId = id }" @update="updateBench" @fold="fold" @change-page="changePage" />
           <template v-if="isSetup">
             <button style="all: unset;">
-              <div class="flex items-center mb-4 cursor-pointer" @click="resetForm(true);show = true;modelType = 1 ">
-                <icon name="i-icon:addsth" :size="26" color="#000" />
-                <div class="text-[14px] text-[#000] pl-1">
+              <div class="flex items-center mb-4 cursor-pointer text-color" @click="resetForm(true);show = true;modelType = 1 ">
+                <icon name="i-icon:addsth" :size="26" />
+                <div class="text-[14px] pl-1">
                   添加模块
                 </div>
               </div>
@@ -240,13 +247,15 @@ const beforeUpload = (data: any) => {
       </div>
     </common-layout-center>
     <common-model v-model:model-value="show" :title="getModelTitle()" :show-ok="true" @confirm="() => addWorkbenchform?.submit()">
-      <div class="py-[16px] text-color">
+      <div class="py-[16px] text-color min-h-[240px]">
         <common-form ref="addWorkbenchform" v-model="params" :rules="rules" @submit="(val: AddWorkbencheReq) => submit(val)">
           <template #title="{ label, error }">
             <div class="pb-[16px]">
               <div class="add-row-noline">
-                <div>标题</div>
-                <input v-model="params[label]" type="text" class="border-none bg-transparent outline-none focus:ring-0 focus:outline-none text-color" placeholder="输入标题" @focus="focus">
+                <div class="pb-2">
+                  标题
+                </div>
+                <n-input v-model:value="params[label]" type="text" round placeholder="输入标题" />
                 <div class="text-[#FF2F2F] text-[12px] pt-2">
                   {{ error }}
                 </div>
@@ -256,27 +265,29 @@ const beforeUpload = (data: any) => {
           <template v-if="modelType === 3" #icon>
             <div class="pb-[16px]">
               <div class="add-row">
-                <div>图标</div>
-                <div>
-                  <n-upload
-                    action="#"
-                    list-type="image-card"
-                    :default-file-list="previewFileList"
-                    :custom-request="customRequest"
-                    :max="1"
-                    class="circle-upload"
-                    @before-upload="beforeUpload"
-                    @remove="(file) => removeImg(file)"
-                  />
+                <div class="pb-2">
+                  图标
                 </div>
+                <n-upload
+                  action="#"
+                  list-type="image-card"
+                  :default-file-list="previewFileList"
+                  :custom-request="customRequest"
+                  :max="1"
+                  class="circle-upload"
+                  @before-upload="beforeUpload"
+                  @remove="(file) => removeImg(file)"
+                />
               </div>
             </div>
           </template>
           <template v-if="modelType === 3" #path="{ label, error }">
             <div class="pb-[16px]">
               <div class="add-row">
-                <div>跳转地址</div>
-                <input v-model="params[label]" type="text" class="border-none bg-transparent outline-none focus:ring-0 focus:outline-none text-color" placeholder="输入跳转地址" @focus="focus">
+                <div class="pb-2">
+                  跳转地址
+                </div>
+                <n-input v-model:value="params[label]" type="text" round placeholder="输入跳转地址" />
                 <div class="text-[#FF2F2F] text-[12px] pt-2">
                   {{ error }}
                 </div>
@@ -294,9 +305,24 @@ const beforeUpload = (data: any) => {
 
 <style lang="scss" scoped>
 .add-row-noline {
-  --uno: 'grid grid-cols-[1fr_2fr] items-center';
+  --uno: 'gap-2';
 }
 .add-row {
-  --uno: 'grid grid-cols-[1fr_2fr] items-center border-t-[#E6E6E8] border-t-solid border-t-[1px] pt-[16px]';
+  --uno: '';
+}
+
+.search-bg {
+  overflow: hidden;
+  &::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 180px;
+    top: -14px;
+    right: 0;
+    background-image: url('@/assets/icons/index-six.svg');
+    background-repeat: no-repeat;
+    background-position: right;
+  }
 }
 </style>

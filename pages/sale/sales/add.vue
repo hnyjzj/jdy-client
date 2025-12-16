@@ -100,8 +100,7 @@ const judgePerformance_rate = (): boolean => {
 }
 const formRef = ref<FormInst | null>(null)
 // 开单
-const handleValidateButtonClick = async (e: MouseEvent) => {
-  e.preventDefault()
+const handleValidateButtonClick = async () => {
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       if (!orderObject.value.member_id) {
@@ -245,10 +244,17 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div :key="Key" class="grid-12 pb-[16px]">
+  <div :key="Key" class="pb-[100px]">
+    <div class="blur-bgc mb-4">
+      <common-layout-center>
+        <div class="flex flex-row gap-2">
+          <product-manage-company :confirm="true" @change="changeStore" />
+        </div>
+      </common-layout-center>
+    </div>
     <template
       v-if="initFinished">
-      <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] pb-[80px] col-12" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3">
+      <common-layout-center>
         <n-form
           ref="formRef"
           :model="orderObject"
@@ -256,9 +262,6 @@ onMounted(async () => {
           label-align="left"
           size="large"
         >
-          <div class="w-[120px] color-[#fff] pb-[12px]">
-            <product-manage-company :confirm="true" @change="changeStore" />
-          </div>
           <sale-add-base
             v-model="orderObject"
             :filter-list="filterList"
@@ -312,15 +315,9 @@ onMounted(async () => {
             :storeid="myStore.id"
             :billing-set="billingSet"
           />
-          <div class="h-[80px] bg-[#fff] fixed z-1">
-            <div class="btn grid-12 px-[16px]">
-              <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
-                <common-button-rounded content="开单" />
-              </div>
-            </div>
-          </div>
+          <common-button-bottom :cancle-show="false" confirm-text="开单" @confirm="handleValidateButtonClick" />
         </n-form>
-      </div>
+      </common-layout-center>
     </template>
     <common-confirm
       v-model:show="tipForm" icon="warning" title="提醒" text="检测到有未完成的新增订单,是否继续填写?" @cancel="() => {
@@ -335,13 +332,5 @@ onMounted(async () => {
 <style lang="scss" scoped>
 .n-input-number {
   width: 100%;
-}
-.btn {
-  --uno: 'fixed bottom-0 left-0 right-0 blur-bga pt-20px pb-[28px] text-[16px] font-bold border-t-[1px] border-t-solid border-[#E0E0E0]';
-  &-right {
-    background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-    box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
-    --uno: 'text-[16px] py-[8px] border-none flex-1 rounded-[36px] ml-[8px] text-[#FFFFFF]';
-  }
 }
 </style>

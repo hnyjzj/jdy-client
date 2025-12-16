@@ -24,60 +24,55 @@ const showToUser = (type: number) => {
 </script>
 
 <template>
-  <div class="pb-[80px]">
-    <div class="grid grid-cols-2 gap-4" uno-lg="grid-cols-3 gap-4">
-      <template v-for="(item, index) in props.list" :key="index">
-        <template v-if="item.id && item.store_id">
-          <div class="bg">
-            <div class="exhibition p-[16px]">
-              <div class="font-[14px] font-semibold color-[#000] mb-[8px]">
-                {{ item.name }}
-              </div>
-              <div class="font-[14px] color-[#666666]">
+  <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+    <template v-for="(item, index) in props.list" :key="index">
+      <template v-if="item.id && item.store_id">
+        <common-card-list :title="item.name">
+          <template #info>
+            <div class="min-h-[50px]">
+              <div class="font-[14px] text-color">
                 {{ showToUser(Number(item.type)) }}
               </div>
             </div>
-
-            <div class="operating bg-[#EFF0F6] px-[16px] py-[10px]">
-              <div class="flex-center-row gap-[20px]">
-                <div class="ope-but color-[#FF2F2F]" @click="emits('delete', item.id)">
-                  删除
-                </div>
-
-                <div class="ope-but color-[#3971F3]" @click="emits('copy', item.id, item.store_id, index)">
-                  复制
-                </div>
-
-                <div class="ope-but color-[#3971F3]" @click="emits('edit', item.id, Number(item.type), item.store_id)">
-                  编辑
-                </div>
+          </template>
+          <template #footer>
+            <div class="flex justify-between gap-[20px]">
+              <div class="cursor-pointer flex items-center gap-[6px]" @click="emits('delete', item.id)">
+                <icon name="i-svg:delete" :size="16" />
+                <span class="color-[#F82F2F]">删除</span>
+              </div>
+              <div class="flex gap-[12px]">
+                <common-button-rounded content="编辑" @button-click="emits('edit', item.id, Number(item.type), item.store_id)" />
+                <common-button-rounded
+                  color="#1B6BEB" bgc="#fff"
+                  border="1px solid #1B6BEB" padding="7px 12px" content="复制" @button-click="emits('copy', item.id, item.store_id, index)" />
               </div>
             </div>
-          </div>
-        </template>
-
-        <template v-else-if="item.is_default === true">
-          <div class="bg">
-            <div class="exhibition p-[16px]">
-              <div class="font-[14px] font-semibold color-[#000] mb-[8px]">
-                {{ item.name }}
-              </div>
-              <div class="font-[14px] color-[#666666]">
+          </template>
+        </common-card-list>
+      </template>
+      <template v-else-if="item.is_default === true">
+        <common-card-list :title="item.name">
+          <template #info>
+            <div class="min-h-[50px]">
+              <div class="font-[14px] text-color">
                 复制至本门店
               </div>
             </div>
-
-            <div class="operating bg-[#EFF0F6] px-[16px] py-[10px]">
-              <div class="flex-center-row gap-[20px]">
-                <div class="ope-but color-[#3971F3]" @click="emits('copy', item.id, item.store_id, index)">
-                  复制
-                </div>
+          </template>
+          <template #footer>
+            <div class="flex flex-end">
+              <div />
+              <div class="w-fit">
+                <common-button-rounded
+                  color="#1B6BEB" bgc="#fff"
+                  border="1px solid #1B6BEB" padding="7px 12px" content="复制" @button-click="emits('copy', item.id, item.store_id, index)" />
               </div>
             </div>
-          </div>
-        </template>
+          </template>
+        </common-card-list>
       </template>
-    </div>
+    </template>
   </div>
 </template>
 

@@ -170,7 +170,7 @@ const complate = ref(0)
       </div>
     </template>
     <template v-else>
-      <common-emptys text="暂无数据" />
+      <common-empty text="暂无数据" />
     </template>
     <common-page v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
     <!-- 新增或更新门店弹窗 -->
@@ -178,7 +178,7 @@ const complate = ref(0)
       <stores-add-update
         v-model="addorUpdateForm" @submit="newStore" @change-region="getList" />
     </common-model>
-    <common-confirm v-model:show="deleteDialog" text="确认删除此门店吗?" @submit="confirmDelete" />
+    <common-confirm v-model:show="deleteDialog" icon="error" text="确认删除此门店吗?" @submit="confirmDelete" />
 
     <common-create @create="newAdd()" />
 

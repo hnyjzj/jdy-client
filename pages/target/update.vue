@@ -221,11 +221,11 @@ if (route.query.id) {
 <template>
   <div>
     <common-layout-center>
-      <div class="pt-4 pb-22">
+      <div class="pt-4 pb-22 px-4">
         <div class="flex flex-col">
           <div class="gap-2">
-            <common-gradient title="编辑销售目标">
-              <template #body>
+            <common-card-info title="编辑销售目标">
+              <template #info>
                 <common-filter-add
                   ref="formRef"
                   v-model:data="datas"
@@ -234,9 +234,9 @@ if (route.query.id) {
                 />
                 <common-button-rounded content="更新销售目标" @button-click="handleValidateButtonClick" />
               </template>
-            </common-gradient>
-            <common-gradient title="编辑员工目标">
-              <template #body>
+            </common-card-info>
+            <common-card-info title="编辑员工目标">
+              <template #info>
                 <template v-if="targetInfo.object === 1">
                   <div class="flex items-center my-2 gap-4">
                     <div>
@@ -268,12 +268,84 @@ if (route.query.id) {
                         </div>
                       </template>
                     </div>
-
-                    <table class="table-center w-full mt-2" style="border:1px solid #eee;">
+                    <div class="overflow-x-auto">
+                      <table class="table-center w-full mt-2" style="border:1px solid #eee;">
+                        <thead>
+                          <tr class="row bg-gray-200">
+                            <template v-for="({ label, find }, index) in personalFilterListToArray" :key="index">
+                              <template v-if="find">
+                                <th class="px-4 py-2 text-left">
+                                  {{ label }}
+                                </th>
+                              </template>
+                            </template>
+                            <th class="px-4 py-2 text-left">
+                              已完成
+                            </th>
+                            <th class="px-4 py-2 text-left">
+                              操作
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <template v-if="targetInfo.personals">
+                            <template v-for="(personal, pIndex) in targetInfo.personals" :key="pIndex">
+                              <template v-if="personal.group_id === group.id">
+                                <tr>
+                                  <template v-for="({ name, input, find }, index) in personalFilterListToArray" :key="index">
+                                    <template v-if="find">
+                                      <td class="px-1 py-2">
+                                        <template v-if="name === 'staff_id'">
+                                          {{ personal.staff?.nickname }}
+                                        </template>
+                                        <template v-else>
+                                          <template v-if="input === 'text'">
+                                            {{ personal[name] }}
+                                          </template>
+                                          <template v-if="input === 'switch'">
+                                            {{ personal[name] ? '是' : '否' }}
+                                          </template>
+                                        </template>
+                                      </td>
+                                    </template>
+                                  </template>
+                                  <td class="">
+                                    {{ personal.achieved }}
+                                  </td>
+                                  <td class="px-1 py-2 flex justify-center items-center">
+                                    <n-button class="mr-1" type="warning" size="small" @click="updataPersonalFun(personal)">
+                                      编辑
+                                    </n-button>
+                                    <n-button type="error" size="small" @click="delPersonalInfo = personal;delPersonalDialog = true">
+                                      删除
+                                    </n-button>
+                                  </td>
+                                </tr>
+                              </template>
+                            </template>
+                          </template>
+                          <template v-else>
+                            <tr>
+                              <td :colspan="personalFilterListToArray.filter(item => item.find).length + 1" class="text-center py-6">
+                                暂无数据
+                              </td>
+                            </tr>
+                          </template>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </template>
+                <template v-else>
+                  <n-button tertiary type="info" size="small" class="my-2" @click="addOneStaffFun">
+                    添加员工
+                  </n-button>
+                  <div class="overflow-x-auto">
+                    <table class="table-center min-w-full mt-2" style="border:1px solid #eee">
                       <thead>
                         <tr class="row bg-gray-200">
-                          <template v-for="({ label, find }, index) in personalFilterListToArray" :key="index">
-                            <template v-if="find">
+                          <template v-for="({ label, find, name }, index) in personalFilterListToArray" :key="index">
+                            <template v-if="find && name !== 'is_leader'">
                               <th class="px-4 py-2 text-left">
                                 {{ label }}
                               </th>
@@ -288,45 +360,43 @@ if (route.query.id) {
                         </tr>
                       </thead>
                       <tbody>
-                        <template v-if="targetInfo.personals">
-                          <template v-for="(personal, pIndex) in targetInfo.personals" :key="pIndex">
-                            <template v-if="personal.group_id === group.id">
-                              <tr>
-                                <template v-for="({ name, input, find }, index) in personalFilterListToArray" :key="index">
-                                  <template v-if="find">
-                                    <td class="px-1 py-2">
-                                      <template v-if="name === 'staff_id'">
-                                        {{ personal.staff?.nickname }}
-                                      </template>
-                                      <template v-else>
-                                        <template v-if="input === 'text'">
-                                          {{ personal[name] }}
-                                        </template>
-                                        <template v-if="input === 'switch'">
-                                          {{ personal[name] ? '是' : '否' }}
-                                        </template>
-                                      </template>
-                                    </td>
+                        <template v-if="targetInfo.personals?.length">
+                          <tr v-for="(personal, pIndex) in targetInfo.personals" :key="pIndex">
+                            <template v-for="({ name, input, find }, index) in personalFilterListToArray" :key="index">
+                              <template v-if="find && name !== 'is_leader'">
+                                <td class="px-1 py-2">
+                                  <template v-if="name === 'staff_id'">
+                                    {{ personal.staff?.nickname }}
                                   </template>
-                                </template>
-                                <td class="">
-                                  {{ personal.achieved }}
+                                  <template v-else>
+                                    <template v-if="input === 'text'">
+                                      {{ personal[name] }}
+                                    </template>
+                                    <template v-if="input === 'switch'">
+                                      {{ personal[name] ? '是' : '否' }}
+                                    </template>
+                                  </template>
                                 </td>
-                                <td class="px-1 py-2 flex justify-center items-center">
-                                  <n-button class="mr-1" type="warning" size="small" @click="updataPersonalFun(personal)">
-                                    编辑
-                                  </n-button>
-                                  <n-button type="error" size="small" @click="delPersonalInfo = personal;delPersonalDialog = true">
-                                    删除
-                                  </n-button>
-                                </td>
-                              </tr>
+                              </template>
                             </template>
-                          </template>
+                            <td class="">
+                              {{ personal.achieved }}
+                            </td>
+                            <td class="px-4 py-2 flex justify-center items-center">
+                              <div>
+                                <n-button class="mr" type="warning" size="small" @click="updataPersonalFun(personal)">
+                                  编辑
+                                </n-button>
+                                <n-button type="error" size="small" @click="delPersonalInfo = personal;delPersonalDialog = true">
+                                  删除
+                                </n-button>
+                              </div>
+                            </td>
+                          </tr>
                         </template>
                         <template v-else>
                           <tr>
-                            <td :colspan="personalFilterListToArray.filter(item => item.find).length + 1" class="text-center py-6">
+                            <td :colspan="personalFilterListToArray.filter(item => item.find).length + 1" class="py-6">
                               暂无数据
                             </td>
                           </tr>
@@ -335,75 +405,8 @@ if (route.query.id) {
                     </table>
                   </div>
                 </template>
-                <template v-else>
-                  <n-button tertiary type="info" size="small" class="my-2" @click="addOneStaffFun">
-                    添加员工
-                  </n-button>
-                  <table class="table-center w-full mt-2" style="border:1px solid #eee">
-                    <thead>
-                      <tr class="row bg-gray-200">
-                        <template v-for="({ label, find, name }, index) in personalFilterListToArray" :key="index">
-                          <template v-if="find && name !== 'is_leader'">
-                            <th class="px-4 py-2 text-left">
-                              {{ label }}
-                            </th>
-                          </template>
-                        </template>
-                        <th class="px-4 py-2 text-left">
-                          已完成
-                        </th>
-                        <th class="px-4 py-2 text-left">
-                          操作
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <template v-if="targetInfo.personals?.length">
-                        <tr v-for="(personal, pIndex) in targetInfo.personals" :key="pIndex">
-                          <template v-for="({ name, input, find }, index) in personalFilterListToArray" :key="index">
-                            <template v-if="find && name !== 'is_leader'">
-                              <td class="px-1 py-2">
-                                <template v-if="name === 'staff_id'">
-                                  {{ personal.staff?.nickname }}
-                                </template>
-                                <template v-else>
-                                  <template v-if="input === 'text'">
-                                    {{ personal[name] }}
-                                  </template>
-                                  <template v-if="input === 'switch'">
-                                    {{ personal[name] ? '是' : '否' }}
-                                  </template>
-                                </template>
-                              </td>
-                            </template>
-                          </template>
-                          <td class="">
-                            {{ personal.achieved }}
-                          </td>
-                          <td class="px-4 py-2 flex justify-center items-center">
-                            <div>
-                              <n-button class="mr" type="warning" size="small" @click="updataPersonalFun(personal)">
-                                编辑
-                              </n-button>
-                              <n-button type="error" size="small" @click="delPersonalInfo = personal;delPersonalDialog = true">
-                                删除
-                              </n-button>
-                            </div>
-                          </td>
-                        </tr>
-                      </template>
-                      <template v-else>
-                        <tr>
-                          <td :colspan="personalFilterListToArray.filter(item => item.find).length + 1" class="py-6">
-                            暂无数据
-                          </td>
-                        </tr>
-                      </template>
-                    </tbody>
-                  </table>
-                </template>
               </template>
-            </common-gradient>
+            </common-card-info>
           </div>
         </div>
       </div>
@@ -449,6 +452,7 @@ if (route.query.id) {
   td {
     text-align: center;
     vertical-align: middle;
+    white-space: nowrap;
   }
 }
 </style>

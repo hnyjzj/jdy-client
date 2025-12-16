@@ -43,15 +43,10 @@ const deleteConfirm = async () => {
 
 <template>
   <div class="w-full">
-    <div class="w-auto bg-white blur-bga rounded-[24px] border-solid border-[#EFF0F6] col-12 overflow-hidden">
+    <div class="w-auto rounded-[24px] col-12 overflow-hidden">
       <div class="rounded-[24px]">
-        <common-gradient title="基本信息">
-          <template #right>
-            <div class="cursor-pointer" @click="delStore()">
-              <icon name="i-svg:delete" :size="16" />
-            </div>
-          </template>
-          <template #body>
+        <common-card-info title="基本信息">
+          <template #info>
             <n-form ref="formRef" :model="modelRef" :rules="rules">
               <n-form-item path="name" label="门店名称">
                 <n-input v-model:value="modelRef.name" @keydown.enter.prevent />
@@ -62,15 +57,19 @@ const deleteConfirm = async () => {
               <n-form-item path="phone" label="联系电话">
                 <n-input v-model:value="modelRef.phone" @keydown.enter.prevent />
               </n-form-item>
-
-              <div style="display: flex; justify-content: flex-end">
-                <n-button round type="info" @click="handleValidateButtonClick">
+              <div class="flex items-center justify-between">
+                <div class="cursor-pointer flex gap-[6px]" @click="delStore()">
+                  <icon name="i-svg:delete" :size="16" />
+                  <span class="color-[#F82F2F]">删除</span>
+                </div>
+                <div class="cursor-pointer flex gap-[6px] light:color-[#1A6DD8] dark:color-[#fff]" @click="handleValidateButtonClick">
+                  <icon name="i-icon:save-btn" :size="18" class="light:color-[#1A6DD8] dark:color-[#fff]" />
                   保存
-                </n-button>
+                </div>
               </div>
             </n-form>
           </template>
-        </common-gradient>
+        </common-card-info>
       </div>
     </div>
     <common-confirm

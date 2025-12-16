@@ -99,11 +99,11 @@ const presetToSelect = (key: keyof ProductAccessories) => {
 <template>
   <div>
     <common-layout-center>
-      <div class="pt-4 pb-22">
+      <div class="pt-4 pb-22 px-4">
         <div class="flex flex-col gap-4">
           <div class="rounded-6 bg-white w-auto blur-bga">
-            <common-gradient title="新增入库">
-              <template #body>
+            <common-card-info title="新增入库">
+              <template #info>
                 <n-form ref="formRef" :model="params" :rules="rules">
                   <n-grid :cols="24" :x-gap="8">
                     <template v-for="(item, index) in addProductEnterToArray" :key="index">
@@ -136,12 +136,12 @@ const presetToSelect = (key: keyof ProductAccessories) => {
                   </n-grid>
                 </n-form>
               </template>
-            </common-gradient>
+            </common-card-info>
           </div>
         </div>
       </div>
     </common-layout-center>
-    <div class="fixed bottom-0 left-0 w-full py-4 blur-bgc px-8" uno-sm="px-0">
+    <div class="fixed bottom-0 left-0 w-full py-4 bottom-bgc px-8" uno-sm="px-0">
       <common-layout-center>
         <common-button-rounded content="新增入库" @button-click="handleValidateButtonClick" />
       </common-layout-center>
@@ -150,15 +150,7 @@ const presetToSelect = (key: keyof ProductAccessories) => {
 </template>
 
 <style>
-.n-base-selection {
-  border-radius: 20px;
-}
-.n-base-selection-label {
-  height: 40px !important;
-}
-.n-input-wrapper {
-  border-radius: 20px !important;
-}
+
 </style>
 
 <style lang="scss" scoped>

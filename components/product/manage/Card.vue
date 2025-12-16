@@ -5,52 +5,35 @@ const props = defineProps<{
 </script>
 
 <template>
-  <common-layout-center>
-    <div class="px-4" uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
-      <template v-for="(item, index) in props.list" :key="index">
-        <div
-          class="mb-4 rounded-[24px] blur-bgc p-[1px]">
-          <div
-            class="w-auto py-[8px] px-[16px] bg-gradient-linear-[90deg,#E9F1FE,#95D5FB] dark:bg-gradient-linear-[90deg,#23324B01,#2A3E5F01,#70B8E8] rounded-t-[24px] flex-start text-black dark:text-[#FFF]">
-            <slot name="top" :info="item">
-              <div class="flex items-center gap-2">
-                <div v-if="item?.images?.length" class="pr-2">
-                  <common-avatar :size="24" :img="item?.images[0]" />
-                </div>
-                <template v-if="item?.status">
-                  <div class="enter-title" :style="getStatusStyle(item.status, GoodsStatusColorMap)">
-                    <slot name="status" :info="item.status">
-                      {{ GoodsStatusMap[item.status as GoodsStatus] }}
-                    </slot>
-                  </div>
-                </template>
-                <div class="font-semibold line-height-[20px] text-size-[14px]">
-                  {{ item?.name }}
-                </div>
-              </div>
-            </slot>
+  <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+    <template v-for="(item, index) in props.list" :key="index">
+      <common-card-list>
+        <template #top>
+          <div class="flex items-center">
+            <div v-if="item?.images?.length" class="pr-2">
+              <common-avatar :size="24" :img="item?.images[0]" />
+            </div>
+            <div class="font-semibold line-height-[20px] text-size-[14px]">
+              {{ item?.name }}
+            </div>
           </div>
+        </template>
+        <template #status>
+          <template v-if="item?.status">
+            <div class="px-2 rounded-[8px] text-[#FFF]" :style="getStatusStyle(item.status, GoodsStatusColorMap)">
+              <slot name="status" :info="item.status">
+                {{ GoodsStatusMap[item.status as GoodsStatus] }}
+              </slot>
+            </div>
+          </template>
+        </template>
+        <template #info>
           <slot name="info" :info="item" />
-          <div class="bg-[#F3F5FE] dark:bg-[#F3F5FE1A] rounded-b-[24px] ">
-            <slot name="bottom" :info="item" />
-          </div>
-        </div>
-      </template>
-    </div>
-  </common-layout-center>
+        </template>
+        <template #footer>
+          <slot name="bottom" :info="item" />
+        </template>
+      </common-card-list>
+    </template>
+  </div>
 </template>
-
-<style lang="scss" scoped>
-.enter-title {
-  --uno: 'px-2 rounded-[8px] text-#FFF';
-}
-.draft {
-  --uno: 'bg-[rgba(221,146,0,1)]';
-}
-.finish {
-  --uno: 'bg-#1b6ceb';
-}
-.cancel {
-  --uno: 'bg-[#999]';
-}
-</style>

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { NButton } from 'naive-ui'
-
 const { $toast } = useNuxtApp()
 const { getProductHistory, getHistoryWhere, getProductHistoryAll } = useProductManage()
 const { getFinishedWhere } = useFinished()
@@ -243,8 +241,13 @@ const cols = [
         { style: 'display: flex; justify-content: flex-end;' },
         [
           h(
-            NButton,
+            'span',
             {
+              style: {
+                color: '#0D6CE4',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+              },
               type: 'info',
               size: 'small',
               onClick: () => jump('/product/history/info', { id: row?.id }),
@@ -329,203 +332,214 @@ async function downloadLocalFile() {
       </template>
     </product-filter>
     <!-- 列表 -->
-    <div class="pb-10">
-      <template v-if="productRocordList?.length">
-        <template v-if="showtype === 'list'">
-          <product-manage-card :list="productRocordList">
-            <template #top="{ info }">
-              <div class="flex items-center">
-                <template v-if="info?.new_value?.images?.length">
-                  <common-avatar :size="24" :img="info?.new_value?.images[0]" />
-                </template>
-                <div class="pl-2">
-                  {{ historyFilterList.action?.preset[info.action] }}
-                </div>
-              </div>
-            </template>
-            <template #info="{ info }">
-              <div class="px-[16px] py-[8px] text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
-                <div class="flex-between">
-                  <div>
-                    原因
-                  </div>
-                  <div class="text-align-end">
-                    {{ info?.reason }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    操作时间
-                  </div>
-                  <div class="text-align-end">
-                    {{ formatTimestampToDateTime(info?.updated_at) }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    关联单号
-                  </div>
-                  <div class="text-align-end">
-                    {{ info?.source_id }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    所属大类
-                  </div>
-                  <div class="text-align-end">
-                    {{ finishedFilterList.class?.preset[info?.new_value?.class] }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    所属门店
-                  </div>
-                  <div class="text-align-end">
-                    {{ info?.new_value?.store?.name }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    条码
-                  </div>
-                  <div class="text-align-end">
-                    {{ info?.new_value?.code }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    货品名称
-                  </div>
-                  <div class="text-align-end">
-                    {{ info?.new_value?.name }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    入网费
-                  </div>
-                  <div class="text-align-end">
-                    {{ info?.new_value?.access_fee }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    零售方式
-                  </div>
-                  <div class="text-align-end">
-                    {{ finishedFilterList?.retail_type?.preset[info?.new_value?.retail_type] }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    标签价
-                  </div>
-                  <div class="text-align-end">
-                    {{ info?.new_value?.label_price }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    零售工费
-                  </div>
-                  <div class="text-align-end">
-                    {{ info?.new_value?.labor_fee }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    供应商
-                  </div>
-                  <div class="text-align-end">
-                    {{ finishedFilterList.supplier?.preset[info?.new_value?.supplier] }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    品牌
-                  </div>
-                  <div class="text-align-end">
-                    {{ finishedFilterList.brand?.preset[info?.new_value?.brand] }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    材质
-                  </div>
-                  <div class="text-align-end">
-                    {{ finishedFilterList.material?.preset[info?.new_value?.material] }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    成色
-                  </div>
-                  <div class="text-align-end">
-                    {{ finishedFilterList.quality?.preset[info?.new_value?.quality] }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    主石
-                  </div>
-                  <div class="text-align-end">
-                    {{ finishedFilterList.category?.preset[info?.new_value?.category] }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    品类
-                  </div>
-                  <div class="text-align-end">
-                    {{ finishedFilterList.gem?.preset[info?.new_value?.gem] }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    工艺
-                  </div>
-                  <div class="text-align-end">
-                    {{ finishedFilterList.craft?.preset[info?.new_value?.craft] }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    金重
-                  </div>
-                  <div class="text-align-end">
-                    {{ info?.new_value?.weight_metal }}
-                  </div>
-                </div>
-                <div class="flex-between">
-                  <div>
-                    总重
-                  </div>
-                  <div class="text-align-end">
-                    {{ info?.new_value?.weight_total }}
-                  </div>
-                </div>
-              </div>
-            </template>
-            <template #bottom="{ info }">
-              <div class="flex-end text-size-[14px]">
-                <common-button-irregular text="详情" @click="jump('/product/history/info', { id: info?.id })" />
-              </div>
-            </template>
-          </product-manage-card>
-          <common-page
-            v-model:page="searchPage" :total="historyListTotal" :limit="limits" @update:page="updatePage" />
+    <common-layout-center>
+      <div class="px-[16px] pb-10 pt-4">
+        <template v-if="productRocordList?.length">
+          <template v-if="showtype === 'list'">
+            <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-4">
+              <template v-for="(info, index) in productRocordList" :key="index">
+                <common-card-list>
+                  <template #top>
+                    <div class="flex items-center">
+                      <template v-if="info?.new_value?.images?.length">
+                        <div class="pr-2">
+                          <common-avatar :size="24" :img="info?.new_value?.images[0]" />
+                        </div>
+                      </template>
+                      <div>
+                        {{ historyFilterList.action?.preset[info.action] }}
+                      </div>
+                    </div>
+                  </template>
+                  <template #info>
+                    <div class="text-size-[14px] line-height-[20px] text-black dark:text-[#FFF]">
+                      <div class="flex-between">
+                        <div>
+                          原因
+                        </div>
+                        <div class="text-align-end">
+                          {{ info?.reason }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          操作时间
+                        </div>
+                        <div class="text-align-end">
+                          {{ formatTimestampToDateTime(info?.updated_at) }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          关联单号
+                        </div>
+                        <div class="text-align-end">
+                          {{ info?.source_id }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          所属大类
+                        </div>
+                        <div class="text-align-end">
+                          {{ finishedFilterList.class?.preset[info?.new_value?.class] }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          所属门店
+                        </div>
+                        <div class="text-align-end">
+                          {{ info?.new_value?.store?.name }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          条码
+                        </div>
+                        <div class="text-align-end">
+                          {{ info?.new_value?.code }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          货品名称
+                        </div>
+                        <div class="text-align-end">
+                          {{ info?.new_value?.name }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          入网费
+                        </div>
+                        <div class="text-align-end">
+                          {{ info?.new_value?.access_fee }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          零售方式
+                        </div>
+                        <div class="text-align-end">
+                          {{ finishedFilterList?.retail_type?.preset[info?.new_value?.retail_type] }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          标签价
+                        </div>
+                        <div class="text-align-end">
+                          {{ info?.new_value?.label_price }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          零售工费
+                        </div>
+                        <div class="text-align-end">
+                          {{ info?.new_value?.labor_fee }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          供应商
+                        </div>
+                        <div class="text-align-end">
+                          {{ finishedFilterList.supplier?.preset[info?.new_value?.supplier] }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          品牌
+                        </div>
+                        <div class="text-align-end">
+                          {{ finishedFilterList.brand?.preset[info?.new_value?.brand] }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          材质
+                        </div>
+                        <div class="text-align-end">
+                          {{ finishedFilterList.material?.preset[info?.new_value?.material] }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          成色
+                        </div>
+                        <div class="text-align-end">
+                          {{ finishedFilterList.quality?.preset[info?.new_value?.quality] }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          主石
+                        </div>
+                        <div class="text-align-end">
+                          {{ finishedFilterList.gem?.preset[info?.new_value?.gem] }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          品类
+                        </div>
+                        <div class="text-align-end">
+                          {{ finishedFilterList.category?.preset[info?.new_value?.category] }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          工艺
+                        </div>
+                        <div class="text-align-end">
+                          {{ finishedFilterList.craft?.preset[info?.new_value?.craft] }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          金重
+                        </div>
+                        <div class="text-align-end">
+                          {{ info?.new_value?.weight_metal }}
+                        </div>
+                      </div>
+                      <div class="flex-between">
+                        <div>
+                          总重
+                        </div>
+                        <div class="text-align-end">
+                          {{ info?.new_value?.weight_total }}
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                  <template #footer>
+                    <div class="flex-end">
+                      <common-button-rounded
+                        padding="4px 36px"
+                        content="详情" @button-click="jump('/product/history/info', { id: info.id })"
+                      />
+                    </div>
+                  </template>
+                </common-card-list>
+              </template>
+            </div>
+            <common-page
+              v-model:page="searchPage" :total="historyListTotal" :limit="limits" @update:page="updatePage" />
+          </template>
+          <template v-else>
+            <common-datatable :columns="cols" :list="productRocordList" :page-option="pageOption" :loading="tableLoading" />
+          </template>
         </template>
         <template v-else>
-          <common-datatable :columns="cols" :list="productRocordList" :page-option="pageOption" :loading="tableLoading" />
+          <common-empty width="100px" />
         </template>
-      </template>
-      <template v-else>
-        <common-empty width="100px" />
-      </template>
 
-      <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="HistoryFilterListToArray" @reset="resetWhere" @submit="submitWhere" />
-    </div>
+        <common-filter-where ref="filterRef" v-model:show="isFilter" :data="filterData" :filter="HistoryFilterListToArray" @reset="resetWhere" @submit="submitWhere" />
+      </div>
+    </common-layout-center>
     <common-loading v-model="isLoading" />
   </div>
 </template>

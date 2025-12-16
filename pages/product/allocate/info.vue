@@ -348,9 +348,11 @@ const printFun = async () => {
             <div class="flex justify-between mb-4">
               <div class="text-[rgba(57,113,243,1)] flex items-center cursor-pointer" @click="downloadLocalFile">
                 <icon name="i-svg:download" :size="16" color="#666" />
-                导出数据
+                <span class="pl-1">
+                  导出数据
+                </span>
               </div>
-              <div class="text-center bg-[#1b6ceb] color-[#fff] px-[8px] py-[4px] rounded-[8px] cursor-pointer" @click="showPrintModel = true">
+              <div class="text-center bg-[#1b6ceb] color-[#fff] px-[18px] py-[4px] rounded-[16px] cursor-pointer" @click="showPrintModel = true">
                 打印
               </div>
             </div>

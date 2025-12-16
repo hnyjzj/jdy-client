@@ -20,14 +20,16 @@ const props = withDefaults(defineProps<{
 
 <template>
   <div class="part pb-[8px]">
-    <div class="part-left break-words " :class="[props.lcol ? props.lcol : 'col-6']">
+    <div class="part-left break-words" :class="[props.lcol ? props.lcol : 'col-6']">
       <template v-if="props.labelColor">
-        <div :style="{ color: props.labelColor, fontSize: props.font }" class="dark:color-[#fff]">
+        <div
+          :style="{ color: props.labelColor, fontSize: props.font }"
+          class=" dark:color-[#fff]">
           {{ props.label }}
         </div>
       </template>
       <template v-else>
-        <div class="dark:color-[#fff]">
+        <div class="light:color-[#000] dark:color-[#fff]">
           {{ props.label }}
         </div>
       </template>

@@ -143,18 +143,18 @@ async function getStoreStaffListFun() {
 <template>
   <div>
     <common-layout-center>
-      <div class="pt-4 pb-20">
+      <div class="pt-4 px-4 pb-20">
         <div class="flex flex-col gap-4">
           <div :id="Key" :key="Key" class="rounded-6 bg-white w-auto blur-bga">
-            <common-gradient title="新增盘点单">
-              <template #body>
+            <common-card-info title="新增盘点单">
+              <template #info>
                 <n-form ref="formRef" :model="params" :rules="rules">
-                  <div uno-lg="grid grid-cols-[1fr_1fr] gap-x-8">
+                  <div class="gap-x-[8px] sm:grid-12 md:gap-x-[24px]">
                     <template v-for="(item, index) in checkFilterListToArray" :key="index">
                       <!-- 大类 -->
                       <template v-if="item.name === 'class_finished' || item.name === 'class_old'">
                         <template v-if="item.name === isClass()">
-                          <n-form-item v-if="canShowFilter(item)" :path="item.name" :required="true" :label="item.label">
+                          <n-form-item v-if="canShowFilter(item)" class="col-6" :path="item.name" :required="true" :label="item.label">
                             <n-select
                               v-model:value="params[item.name]"
                               multiple
@@ -183,7 +183,7 @@ async function getStoreStaffListFun() {
                         </template>
                       </template>
                       <template v-else>
-                        <n-form-item v-if="canShowFilter(item)" :path="item.name" :required="item.required" :label="item.label">
+                        <n-form-item v-if="canShowFilter(item)" class="col-6" :path="item.name" :required="item.required" :label="item.label">
                           <template v-if="item.input === 'select'">
                             <template v-if="item.name === 'type'">
                               <n-select
@@ -217,7 +217,7 @@ async function getStoreStaffListFun() {
                             </div>
                           </template>
                           <template v-if="item.input === 'textarea'">
-                            <n-input v-model:value="params[item.name] as string" round :placeholder="`输入${item.label}`" @focus="focus" />
+                            <n-input v-model:value="params[item.name]" :autosize="{ minRows: 2, maxRows: 2 }" type="textarea" round :placeholder="`输入${item.label}`" @focus="focus" />
                           </template>
                           <template v-if="item.input === 'search'">
                             <template v-if="item.name === 'inspector_id'">
@@ -293,12 +293,12 @@ async function getStoreStaffListFun() {
                   </div>
                 </n-form>
               </template>
-            </common-gradient>
+            </common-card-info>
           </div>
         </div>
       </div>
     </common-layout-center>
-    <div class="fixed bottom-0 left-0 w-full py-4 blur-bgc px-8" uno-sm="px-0">
+    <div class="fixed bottom-0 left-0 w-full py-4 bottom-bgc px-8" uno-sm="px-0">
       <common-layout-center>
         <common-button-rounded content="新增盘点单" @button-click="handleValidateButtonClick" />
       </common-layout-center>
@@ -306,14 +306,8 @@ async function getStoreStaffListFun() {
   </div>
 </template>
 
-<style>
-.n-base-selection {
-  border-radius: 20px;
-}
-.n-base-selection-label {
-  height: 40px !important;
-}
-.n-input-wrapper {
-  border-radius: 20px !important;
+<style scoped lang="scss">
+.n-form-item {
+  align-items: flex-start !important;
 }
 </style>

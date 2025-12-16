@@ -113,54 +113,56 @@ const submitNewMember = async () => {
 </script>
 
 <template>
-  <div class="pb-[16px]">
-    <common-fold title="会员信息" :is-collapse="false">
-      <div :key="Key" class="p-[16px] pb-0">
-        <n-grid :cols="24" :x-gap="12">
-          <n-form-item-gi
-            :span="18"
-            label="搜索会员手机号"
-            path="searchPhone"
-          >
-            <template #label>
-              <span> 搜索会员手机号</span> <span class="color-[#DE5750]">*</span>
-            </template>
-            <n-input v-model:value="searchPhone" maxlength="11" clearable />
-          </n-form-item-gi>
-          <n-form-item-gi :span="6">
-            <div class="w-full">
-              <common-button-rounded content="搜索" @button-click="searchMember(searchPhone)" />
-            </div>
-          </n-form-item-gi>
-
-          <template v-if="orderObject.member?.id">
-            <n-form-item-gi :span="24" label="会员信息">
-              <div class="mr-[16px]">
-                <template v-if=" orderObject.member?.avatar">
-                  <n-image width="68" :src=" orderObject.member.avatar" />
-                </template>
-                <template v-else>
-                  <icon name="i-svg:avatar" :size="68" />
-                </template>
-              </div>
-              <div class="flex-col">
-                <div>
-                  昵称:{{ orderObject.member?.nickname || '' }}
-                </div>
-                <div>姓名:{{ orderObject.member?.name || '' }}</div>
-                <div>
-                  积分:{{ orderObject.member?.integral || '' }}
-                  <template v-if="canUseScore">
-                    (可抵扣{{ canUseScore }}元)
-                  </template>
-                </div>
-                <div>等级:{{ filterList.level?.preset[orderObject.member?.level] || orderObject.member?.level || '' }}</div>
+  <div>
+    <common-card-info title="会员信息">
+      <template #info>
+        <div :key="Key" class="p-[16px] pb-0">
+          <n-grid :cols="24" :x-gap="12">
+            <n-form-item-gi
+              :span="18"
+              label="搜索会员手机号"
+              path="searchPhone"
+            >
+              <template #label>
+                <span> 搜索会员手机号</span> <span class="color-[#DE5750]">*</span>
+              </template>
+              <n-input v-model:value="searchPhone" maxlength="11" clearable />
+            </n-form-item-gi>
+            <n-form-item-gi :span="6">
+              <div class="w-full">
+                <common-button-rounded content="搜索" size="16px" :is-blod="false" @button-click="searchMember(searchPhone)" />
               </div>
             </n-form-item-gi>
-          </template>
-        </n-grid>
-      </div>
-    </common-fold>
+
+            <template v-if="orderObject.member?.id">
+              <n-form-item-gi :span="24" label="会员信息">
+                <div class="mr-[16px]">
+                  <template v-if=" orderObject.member?.avatar">
+                    <n-image width="68" :src=" orderObject.member.avatar" />
+                  </template>
+                  <template v-else>
+                    <icon name="i-svg:avatar" :size="68" />
+                  </template>
+                </div>
+                <div class="flex-col">
+                  <div>
+                    昵称:{{ orderObject.member?.nickname || '' }}
+                  </div>
+                  <div>姓名:{{ orderObject.member?.name || '' }}</div>
+                  <div>
+                    积分:{{ orderObject.member?.integral || '' }}
+                    <template v-if="canUseScore">
+                      (可抵扣{{ canUseScore }}元)
+                    </template>
+                  </div>
+                  <div>等级:{{ filterList.level?.preset[orderObject.member?.level] || orderObject.member?.level || '' }}</div>
+                </div>
+              </n-form-item-gi>
+            </template>
+          </n-grid>
+        </div>
+      </template>
+    </common-card-info>
 
     <common-model
       v-model="showModel" title="新增会员" :show-ok="true" :show-cancel="true" @confirm="submitNewMember"

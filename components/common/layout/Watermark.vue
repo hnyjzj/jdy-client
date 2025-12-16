@@ -8,7 +8,7 @@ const watermark = ref<WatermarkProps | undefined>(undefined)
 onMounted(async () => {
   await nextTick()
   watermark.value = {
-    content: `${userinfo.value?.nickname}\n${userinfo.value?.phone}` || undefined,
+    content: `${userinfo.value?.nickname || ''}\n${userinfo.value?.phone || ''}`,
     selectable: false,
     fontSize: 14,
     lineHeight: 16,

@@ -28,9 +28,9 @@ const showProductName = (products: DepositOrderInfo['products']) => {
 </script>
 
 <template>
-  <div class="pb-[16px]">
-    <common-fold title="订金单" :is-collapse="false">
-      <div class="p-[16px]">
+  <div>
+    <common-card-info title="订金单">
+      <template #info>
         <div class="p-[16px]">
           <div class="grid-12">
             <div
@@ -64,8 +64,8 @@ const showProductName = (products: DepositOrderInfo['products']) => {
             </template>
           </div>
         </n-checkbox-group>
-      </div>
-    </common-fold>
+      </template>
+    </common-card-info>
     <sale-add-deposit-model
       v-model:show="searchShow"
       v-model:list="showDepositList"

@@ -56,48 +56,50 @@ if (auth.value.identity) {
 
 <template>
   <div class="pb-[12px]">
-    <common-fold title="分配权限" from-color="#9EBAF9" to-color="#fff" :is-collapse="false">
-      <div class="p-[16px] ">
-        <n-form
-          :model="auth"
-          label-placement="top"
-          size="medium"
-        >
-          <n-grid :cols="24" x-gap="8">
-            <n-form-item-gi :span="24" label="角色">
-              <n-radio-group v-model:value="auth.identity" @update:value="updateRole">
-                <n-space>
-                  <template v-for="(item, index) in roleList" :key="index">
-                    <n-radio
-                      :value="item.num" :style="{
-                        '--n-box-shadow-hover': 'inset 0 0 0 1px #0068ff',
-                        '--n-box-shadow-active': 'inset 0 0 0 1px #0068ff',
-                        '--n-dot-color-active': '#0068ff',
-                        '--n-box-shadow-focus': 'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)' }">
-                      {{ item.role }}
-                    </n-radio>
-                  </template>
-                </n-space>
-              </n-radio-group>
-            </n-form-item-gi>
-            <n-form-item-gi :span="24" label="权限">
-              <n-select v-model:value="auth.role_id" :options="array" placeholder="请选择权限" />
-            </n-form-item-gi>
-          </n-grid>
-          <template v-if="props.showbutton">
-            <div class="grid-12 px-[26px]">
-              <div
-                class="font-semibold  cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
-                <div @click="editRole">
-                  <common-button-rounded content="更新权限" />
+    <common-card-info title="分配权限">
+      <template #info>
+        <div>
+          <n-form
+            :model="auth"
+            label-placement="top"
+            size="medium"
+          >
+            <n-grid :cols="24" x-gap="8">
+              <n-form-item-gi :span="24" label="角色">
+                <n-radio-group v-model:value="auth.identity" @update:value="updateRole">
+                  <n-space>
+                    <template v-for="(item, index) in roleList" :key="index">
+                      <n-radio
+                        :value="item.num" :style="{
+                          '--n-box-shadow-hover': 'inset 0 0 0 1px #0068ff',
+                          '--n-box-shadow-active': 'inset 0 0 0 1px #0068ff',
+                          '--n-dot-color-active': '#0068ff',
+                          '--n-box-shadow-focus': 'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)' }">
+                        {{ item.role }}
+                      </n-radio>
+                    </template>
+                  </n-space>
+                </n-radio-group>
+              </n-form-item-gi>
+              <n-form-item-gi :span="24" label="权限">
+                <n-select v-model:value="auth.role_id" :options="array" placeholder="请选择权限" />
+              </n-form-item-gi>
+            </n-grid>
+            <template v-if="props.showbutton">
+              <div class="grid-12 px-[26px]">
+                <div
+                  class="font-semibold  cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
+                  <div @click="editRole">
+                    <common-button-rounded content="更新权限" />
+                  </div>
                 </div>
               </div>
-            </div>
-          </template>
-        </n-form>
-        <n-grid :cols="24" :x-gap="8" />
-      </div>
-    </common-fold>
+            </template>
+          </n-form>
+          <n-grid :cols="24" :x-gap="8" />
+        </div>
+      </template>
+    </common-card-info>
   </div>
 </template>
 

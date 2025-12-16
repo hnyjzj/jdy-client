@@ -70,10 +70,14 @@ export default defineConfig({
     'flex-center-between': 'flex flex-row items-center justify-between',
     'flex-col-between': 'flex flex-col justify-between',
     'grid-12': 'grid grid-cols-12',
-    'blur-bgc': 'light:bg-[rgba(255,255,255,0.7)] dark:bg-[rgba(0,0,0,0.3)] blur-5px', // 毛玻璃背景色
-    'blur-bga': 'light:bg-[rgb(255,255,255)] dark:bg-[rgba(0,0,0,0.3)] blur-5px',
+    'blur-bgc': 'light:bg-[#FDFDFD] dark:bg-[#1D2C60]', // 毛玻璃背景色
+    'blur-bga': 'light:bg-#FDFDFD dark:bg-[#1D2C60]',
+    'bottom-bgc': 'light:bg-[#FDFDFD] dark:bg-[#081A59]', // 底栏背景色
     'text-color': 'text-[rgb(0,0,0)] dark:text-[rgb(255,255,255)]',
     'text-color-light': 'text-[#666666] dark:text-[#CBCDD1]',
+    'line-color-b': 'border-b light:border-b-[#e5e5e5] dark:border-b-[#444D71] border-b-solid',
+    'line-color-t': 'border-t light:border-t-[#e5e5e5] dark:border-t-[#444D71] border-t-solid',
+    'line-space': 'w-full h-[1px] bg-[#e5e5e5] dark:bg-[#444D71]',
     /** 单行超出隐藏 */
     'text-row-hide': 'whitespace-nowrap overflow-hidden text-ellipsis',
   },

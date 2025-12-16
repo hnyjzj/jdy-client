@@ -22,22 +22,6 @@ const showCode = async () => {
     throw error
   }
 }
-// 登录
-const login = async () => {
-  try {
-    form.value.captcha_id = authStore.imageCaptcha.id
-    const res = await authStore.accountLogin(form.value)
-    if (res?.code !== HttpCode.SUCCESS) {
-      $toast.error(res?.message || '登录失败')
-      showCode()
-    }
-  }
-  catch (error) {
-    $toast.error('登录失败,请重试')
-    throw error
-  }
-}
-
 if (authStore.token) {
   authStore.token = ''
   authStore.expires_at = 0
@@ -52,53 +36,89 @@ const QWLogin = async () => {
     $toast.error(res?.message || '登录失败')
   }
 }
+//  显示状态 wxwork  phone 切换
+const status = ref<'wxwork' | 'phone'>('wxwork')
 const otherList = ref([{
   name: 'wxwork',
   title: '企业微信',
   icon: 'i-svg:qwicon',
+}, {
+  name: 'phone',
+  title: '手机号登录',
+  icon: 'i-icon:phone-icon',
 }])
-const otherLogin = (way: string) => {
+const otherLogin = (way: 'wxwork' | 'phone') => {
   switch (way) {
     case 'wxwork':
-      QWLogin()
+      status.value = 'wxwork'
+      break
+    case 'phone':
+      status.value = 'phone'
       break
     default:
       break
   }
 }
-//   密码登录状态,是否显示密码登录
-const status = ref<boolean>(false)
+// 登录
+const login = async () => {
+  if (status.value !== 'phone') {
+    return
+  }
+  try {
+    form.value.captcha_id = authStore.imageCaptcha.id
+    const res = await authStore.accountLogin(form.value)
+    if (res?.code !== HttpCode.SUCCESS) {
+      $toast.error(res?.message || '登录失败')
+      showCode()
+    }
+  }
+  catch (error) {
+    $toast.error('登录失败,请重试')
+    throw error
+  }
+}
+
 const statusLoading = ref<boolean>(true)
+
+const showSwitch = ref<'product' | 'dev'>('dev')
 onMounted(() => {
   if (import.meta.env.DEV === true) {
     // 如果是开发环境, 则显示密码登录
-    status.value = true
+    status.value = 'phone'
+    showSwitch.value = 'dev'
     statusLoading.value = false
   }
   else {
-    status.value = false
+    status.value = 'wxwork'
+    showSwitch.value = 'product'
     statusLoading.value = false
   }
 })
 </script>
 
 <template>
-  <div class="grid-12">
-    <div class="px-[16px] pt-[24px] col-12" uno-sm="col-6 offset-3" uno-lg="offset-4 col-4">
-      <login-tips />
-      <div class="cardbox blur-bgc rounded-[16px]">
-        <template v-if="status">
-          <login-info v-model="form" :image-captcha="authStore.imageCaptcha" @get-code="showCode" @submit="login" />
-        </template>
-        <login-other :list="otherList" @other="otherLogin" />
+  <div class="min-h-[100vh] bg-[#3875C5] flex flex-col items-center justify-center overflow-hidden">
+    <div class="grid-12 w-full">
+      <div class="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" uno-lg="col-4 offset-4">
+        <login-tips />
       </div>
     </div>
+    <div
+      class="py-[48px] px-[16px] bg-[#fff] bottom-0 w-full h-full grid-12 flex-1 rounded-t-[8px]"
+      style="{height:calc(100vh - 157px)}">
+      <div class="col-12 flex flex-col justify-between" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" uno-lg="col-4 offset-4">
+        <template v-if="status === 'phone'">
+          <login-info v-model="form" :image-captcha="authStore.imageCaptcha" @get-code="showCode" @submit="login" />
+        </template>
+        <template v-if="status === 'wxwork'">
+          <login-production @on-wxwork-login="QWLogin" />
+        </template>
+        <template v-if="showSwitch === 'dev'">
+          <login-other :status="status" :list="otherList" @other="otherLogin" />
+        </template>
+      </div>
+    </div>
+
     <common-loading v-model="statusLoading" />
   </div>
 </template>
-
-<style lang="scss" scoped>
-.cardbox {
-  --uno: 'px-[23px] pb-14px sm:px-[24px] sm:pb-33px pt-0 rounded-b-16px  pt-36px';
-}
-</style>

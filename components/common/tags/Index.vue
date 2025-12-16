@@ -49,7 +49,7 @@ const tagStyle: { [key in colors]: Tags } = {
     color: '#FFF',
   },
   green: {
-    backgroundColor: '#baffd6',
+    backgroundColor: '#16e7b5',
     color: '#106633',
   },
   lake: {

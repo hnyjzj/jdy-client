@@ -2,11 +2,11 @@
 const props = withDefaults(defineProps<{
   confirm?: boolean
   maxHeight?: string
-  bg?: boolean
+  isWhite?: boolean
 }>(), {
   confirm: false,
   maxHeight: '400px',
-  bg: true,
+  isWhite: false,
 })
 
 const emits = defineEmits(['change'])
@@ -16,8 +16,19 @@ const { $toast } = useNuxtApp()
 const { getMyStore, switchStore } = useStores()
 const { myStoreList, myStore } = storeToRefs(useStores())
 const { initObjForm } = useOrder()
-const columns = ref()
+const columns = ref<{ label: string, key: string }[]>([])
 const confirmShow = ref(false)
+
+const mask = ref<boolean>(false)
+
+const searchKeyword = ref('') // 搜索关键词
+const filteredColumns = computed(() => {
+  if (!searchKeyword.value)
+    return columns.value || []
+  return (columns.value || []).filter((item: { label: string }) =>
+    item.label.toLowerCase().includes(searchKeyword.value.toLowerCase()),
+  )
+})
 const getList = async () => await getMyStore()
 
 if (!myStore.value || !Object.keys(myStoreList.value).length) {
@@ -56,6 +67,8 @@ async function changeStoer() {
 
 function handleSelect(id: Stores['id']) {
   saveStoreId.value = id
+  mask.value = false
+  searchKeyword.value = ''
   if (props.confirm) {
     columns.value = []
     useConfirmFunction()
@@ -70,26 +83,60 @@ function handleSelect(id: Stores['id']) {
   }
 }
 
-const renderLabel = (option: any) => {
-  return h('span', { style: 'color: #000' }, option.label)
+const clickChange = async () => {
+  await changeStoer()
+  mask.value = true
 }
 </script>
 
 <template>
   <div>
-    <n-dropdown trigger="click" placement="bottom-start" :render-label="renderLabel" :options="columns" :style="{ maxHeight: props.maxHeight, overflowY: 'auto' }" @select="handleSelect">
-      <div
-        class="py-[6px] px-[12px]  border-rd-full h-full flex-center-row  cursor-pointer"
-        :class="{ 'shadow-lg': props.bg }"
-        :style="{ background: props.bg ? '#FFFFFF66' : 'transparent' }" @click="changeStoer">
-        <client-only>
-          <div class="store-name font-bold text-size-[14px] mr-[4px]">
-            {{ myStore.alias }}
-          </div>
-        </client-only>
-        <icon name="i-icon:product-toggle" :size="24" />
+    <div
+      class="py-[6px] px-[16px] border-rd-full h-full flex-center-row cursor-pointer text-color"
+      :style="{ background: 'transparent', color: props.isWhite ? '#fff' : '' }" @click="clickChange">
+      <icon name="i-icon:location" :size="24" class="mr-[4px]" />
+      <div class="store-name font-bold text-size-[14px] mr-[4px] z-1">
+        {{ myStore.alias }}
       </div>
-    </n-dropdown>
+      <icon name="i-icon:product-toggle" :size="18" />
+    </div>
+    <common-model v-model="mask" title="切换门店" :is-mask-close="true" :show-cancel="false">
+      <div>
+        <div class="py-[16px]">
+          <n-input
+            v-model:value="searchKeyword"
+            placeholder="搜索门店名称"
+            clearable
+          >
+            <template #prefix>
+              <icon name="i-icon:search" :size="16" />
+            </template>
+          </n-input>
+        </div>
+
+        <div class="h-[270px] overflow-y-auto">
+          <template v-if="filteredColumns.length">
+            <template v-for="item in filteredColumns" :key="item.key">
+              <div
+                class="py-[12px] px-[16px]
+                    text-color
+                    line-color-b cursor-pointer
+                    light:hover:bg-[#f5f5f5]
+                    dark:hover:bg-[#1C3A62]
+                    hover:rounded-[4px]"
+                :style="{ color: myStore.id === item.key ? '#0068FF' : '' }"
+                @click="handleSelect(item.key)">
+                {{ item.label }}
+              </div>
+            </template>
+          </template>
+          <div v-else class="py-[40px] text-center color-[#999] text-[14px]">
+            暂无匹配的门店
+          </div>
+        </div>
+      </div>
+    </common-model>
+
     <common-confirm
       v-model:show="confirmShow"
       title="提示"
@@ -111,18 +158,5 @@ const renderLabel = (option: any) => {
   text-overflow: ellipsis;
   overflow: hidden;
   word-break: break-all;
-}
-</style>
-
-<style lang="scss">
-.n-dropdown-option:nth-child(odd) {
-  background-color: #fafafa;
-}
-.n-dropdown-option:nth-child(even) {
-  background-color: #ffffff;
-}
-.n-dropdown-option-body__label {
-  display: flex;
-  align-items: center;
 }
 </style>

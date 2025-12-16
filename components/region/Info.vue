@@ -26,10 +26,10 @@ const handleValidateButtonClick = async () => {
 
 <template>
   <div class="w-full">
-    <div class="w-auto bg-white blur-bga rounded-[24px] border-solid border-[#EFF0F6] col-12 overflow-hidden">
+    <div class="w-auto  rounded-[24px]  col-12 overflow-hidden">
       <div class="rounded-[24px]">
-        <common-gradient title="基本信息">
-          <template #body>
+        <common-card-info title="基本信息">
+          <template #info>
             <n-form ref="formRef" :model="modelRef" :rules="rules">
               <n-form-item path="name" label="区域名称">
                 <n-input v-model:value="modelRef.name" @keydown.enter.prevent />
@@ -38,13 +38,14 @@ const handleValidateButtonClick = async () => {
                 <n-input v-model:value="modelRef.alias" @keydown.enter.prevent />
               </n-form-item>
               <div style="display: flex; justify-content: flex-end">
-                <n-button round type="info" @click="handleValidateButtonClick">
+                <div class="cursor-pointer flex gap-[6px] light:color-[#1A6DD8] dark:color-[#fff]" @click="handleValidateButtonClick">
+                  <icon name="i-icon:save-btn" :size="18" class="light:color-[#1A6DD8] dark:color-[#fff]" />
                   保存
-                </n-button>
+                </div>
               </div>
             </n-form>
           </template>
-        </common-gradient>
+        </common-card-info>
       </div>
     </div>
   </div>

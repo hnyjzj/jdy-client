@@ -58,79 +58,75 @@ const rules = ref<Rules<AccountReq>>({
 </script>
 
 <template>
-  <common-form
-    v-model="form" :rules="rules" @submit="(val:AccountReq) => emits('submit', val)">
-    <template
-      #phone="{
-        error,
-        validate,
-      }">
-      <div class="pb-[32px]">
-        <div class="pb-[8px] text-[14px] dark:color-[#fff]">
-          手机号
-        </div>
-        <div class="">
-          <input
-            v-model="form.phone" class="input " type="text" placeholder="请输入手机号" :maxlength="11" @change="validate()" @focus="focus">
+  <div class="bg-[#fff] z-3">
+    <common-form
+      v-model="form" :rules="rules" @submit="(val:AccountReq) => emits('submit', val)">
+      <template
+        #phone="{
+          error,
+          validate,
+        }">
+        <div class="pb-[32px]">
+          <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
+            <icon name="i-icon:login-user" size="24" />
+            <input
+              v-model="form.phone" class="input " type="text" placeholder="请输入手机号" :maxlength="11" @change="validate()">
+          </div>
           <div class="error">
             {{ error }}
           </div>
         </div>
-      </div>
-    </template>
-    <template
-      #password="{
-        error,
-        validate }">
-      <div class="pb-[32px]">
-        <div class="pb-[8px]  text-[14px] dark:color-[#fff]">
-          密码
-        </div>
-        <div class="">
-          <input
-            v-model="form.password"
-            class="input "
-            type="password" placeholder="请输入密码" @change="validate()" @blur="validate()" @focus="focus">
+      </template>
+      <template
+        #password="{
+          error,
+          validate }">
+        <div class="pb-[32px]">
+          <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
+            <icon name="i-icon:login-password" size="24" />
+            <input
+              v-model="form.password"
+              class="input "
+              type="password" placeholder="请输入密码" @change="validate()" @blur="validate()">
+          </div>
           <div class="error">
             {{ error }}
           </div>
         </div>
-      </div>
-    </template>
-    <template
-      v-if="props.imageCaptcha.code"
-      #captcha="{
-        error,
-        validate }">
-      <div class="pb-[32px]">
-        <div class="pb-[8px]  text-[14px] dark:color-[#fff]">
-          验证码
-        </div>
-        <div class="relative">
-          <input
-            v-model="form.captcha"
-            :maxlength="5"
-            class="input"
-            type="text" placeholder="请输入验证码"
-            @change="validate()">
-          <div class="absolute right-0 top-0 h-full" @click="emits('getCode')">
-            <img :src="props.imageCaptcha.code" class="h-[100%] rounded-r-[8px]">
+      </template>
+      <template
+        v-if="props.imageCaptcha.code"
+        #captcha="{
+          error,
+          validate }">
+        <div class="pb-[32px]">
+          <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
+            <icon name="i-icon:login-code" size="24" />
+            <input
+              v-model="form.captcha"
+              :maxlength="5"
+              class="input"
+              type="text" placeholder="请输入验证码"
+              @change="validate()">
+            <div class="h-full" @click="emits('getCode')">
+              <img :src="props.imageCaptcha.code" class="h-[40px] rounded-r-[8px]">
+            </div>
+          </div>
+          <div class="error">
+            {{ error }}
           </div>
         </div>
-        <div class="error">
-          {{ error }}
+      </template>
+      <template #actions="{ submit }">
+        <div
+          class="text-size-[16px] font-semibold pb-[40px]" @click="submit">
+          <div class="ok">
+            登录
+          </div>
         </div>
-      </div>
-    </template>
-    <template #actions="{ submit }">
-      <div
-        class="text-size-[16px] font-semibold pb-[112px]" @click="submit">
-        <div class="ok">
-          登录
-        </div>
-      </div>
-    </template>
-  </common-form>
+      </template>
+    </common-form>
+  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -138,10 +134,11 @@ const rules = ref<Rules<AccountReq>>({
   --uno: 'color-[red] text-size-[14px] line-height-[20px] mt-10px';
 }
 .input {
-  --uno: 'px-[12px] py-[10px] bg-[#fff] rounded-[8px] border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none';
+  background: transparent;
+  --uno: 'px-[12px] py-[10px]  rounded-[8px] border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none';
 }
 
 .ok {
-  --uno: 'bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] line-height-[24px] px-[77px] py-[6px] text-center rounded-[36px] color-[#fff] shadow-[0_8px_8px_0px_#3971F33D]';
+  --uno: 'bg-gradient-linear-[180deg,#1A6BEB,#6EA6FF] line-height-[24px] px-[77px] py-[8px] text-center rounded-[36px] color-[#fff] shadow-[0_8px_8px_0px_#3971F33D]';
 }
 </style>

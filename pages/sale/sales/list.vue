@@ -1,6 +1,5 @@
 <script setup lang="ts">
 // 销售单列表页
-import { NButton } from 'naive-ui'
 
 useSeoMeta({
   title: '销售单列表',
@@ -176,7 +175,6 @@ const cols = [
     title: '所属门店',
     key: 'store.name',
   },
-
   {
     title: '会员手机号',
     key: 'member.phone',
@@ -224,10 +222,16 @@ const cols = [
   {
     title: '操作',
     key: 'action',
+    fixed: 'right',
     render: (rowData: OrderInfo) => {
       return h(
-        NButton,
+        'span',
         {
+          style: {
+            color: '#0D6CE4',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          },
           type: 'info',
           size: 'small',
           onClick: () => {
@@ -246,7 +250,7 @@ const exportExcel = async () => {
   const res = await getOrderListAll({ all: true, where: filterData.value })
   exportSalesOrderListToXlsx(res, [
     ...filterListToArray.value,
-  ], '销售明细报表', [])
+  ], '销售单列表', [])
 }
 </script>
 
@@ -263,29 +267,30 @@ const exportExcel = async () => {
         <product-manage-company @change="changeStores" />
       </template>
     </product-filter>
-    <template v-if="showtype === 'list'">
-      <common-layout-center>
-        <div class="p-[16px]">
+    <common-layout-center>
+      <div class="p-4">
+        <template v-if="showtype === 'list'">
+          <div>
+            <template v-if="OrdersList.length">
+              <sale-sales-list :info="OrdersList" :where="filterList" @cancle="cancelOrder" @pay="payOrderConfirm" />
+              <common-page
+                v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
+            </template>
+            <template v-else>
+              <common-empty text="暂无数据" />
+            </template>
+          </div>
+        </template>
+        <template v-if="showtype === 'table'">
           <template v-if="OrdersList.length">
-            <sale-sales-list :info="OrdersList" :where="filterList" @cancle="cancelOrder" @pay="payOrderConfirm" />
-            <common-page
-              v-model:page="searchPage" :total="total" :limit="limits" @update:page="updatePage" />
+            <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" :loading="tableLoading" />
           </template>
           <template v-else>
-            <common-emptys text="暂无数据" />
+            <common-empty text="暂无数据" />
           </template>
-        </div>
-      </common-layout-center>
-    </template>
-    <template v-if="showtype === 'table'">
-      <template v-if="OrdersList.length">
-        <common-datatable :columns="cols" :list="OrdersList" :page-option="pageOption" :loading="tableLoading" />
-      </template>
-      <template v-else>
-        <common-emptys text="暂无数据" />
-      </template>
-    </template>
-
+        </template>
+      </div>
+    </common-layout-center>
     <!-- filter -->
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #cashier_id>
@@ -334,7 +339,7 @@ const exportExcel = async () => {
         />
       </template>
     </common-filter-where>
-    <common-create @create="newAdd()" />
+    <common-create @create="newAdd" />
   </div>
 </template>
 

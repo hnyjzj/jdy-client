@@ -164,7 +164,7 @@ function removeImg(data: { index: number }) {
 </script>
 
 <template>
-  <div>
+  <div class="pb-20">
     <common-layout-center>
       <div class="px-4 pt-5">
         <div>
@@ -178,22 +178,22 @@ function removeImg(data: { index: number }) {
               @remove="(file) => removeImg(file)"
             />
           </div>
-          <div class="flex-1 grid gap-y-2 text-[#FFF] text-[12px] my-4">
-            <div class="flex justify-between">
+        </div>
+        <div class="mt-4 p-4 rounded-3 blur-bgc text-color">
+          <div class="flex-1 text-[14px]">
+            <div class="flex justify-between pb-2">
               <div>状态</div>
               <common-tags type="orange" :text="finishedFilterList.status?.preset[finishedInfo.status] ?? ''" />
             </div>
-            <div class="flex justify-between">
+            <div class="flex justify-between pb-2">
               <div>所在门店</div>
               <div>{{ finishedInfo?.store?.name }}</div>
             </div>
-            <div class="flex justify-between">
+            <div class="flex justify-between pb-6">
               <div>供应商</div>
               <div>{{ finishedFilterList.supplier?.preset[finishedInfo.supplier] }}</div>
             </div>
           </div>
-        </div>
-        <div class="pb-20 w-[100%]">
           <div uno-sm="grid grid-cols-[1fr_1fr] gap-4">
             <template v-for="(item, index) in finishedFilterListToArray" :key="index">
               <template v-if="item.update && item.name !== 'images'">

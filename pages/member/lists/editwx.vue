@@ -351,18 +351,6 @@ const rules = ref<FormRules>({
 </template>
 
 <style>
-.n-base-selection {
-  border-radius: 20px;
-}
-
-.n-base-selection-label {
-  height: 40px !important;
-}
-
-.n-input-wrapper {
-  border-radius: 20px !important;
-}
-
 .n-date-picker {
   border-radius: 20px;
 }

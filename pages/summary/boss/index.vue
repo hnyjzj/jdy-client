@@ -174,11 +174,10 @@ onMounted(async () => {
 
 <template>
   <div>
+    <!-- 时间选择器 -->
+    <summary-boss-select-time v-model="params" :time-where="timeWhere" :has-store="false" @update-time="updateTimeFn" />
     <common-layout-center>
       <div class="px-[16px]">
-        <div class="flex justify-between items-center py-[12px] text-[#FFF]" />
-        <!-- 时间选择器 -->
-        <summary-boss-select-time v-model="params" :time-where="timeWhere" @update-time="updateTimeFn" />
         <!-- 性能统计 -->
         <summary-boss-card
           card-title="业绩统计"

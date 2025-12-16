@@ -9,22 +9,24 @@ const props = defineProps<{
 </script>
 
 <template>
-  <common-gradient theme="theme" :title="props.info.name ?? ''">
-    <template #right>
-      <common-tags type="orange" :text="filterList.status?.preset[props.info.status] ?? ''" />
+  <common-card-info :title="props.info.name ?? ''">
+    <template #status>
+      <template v-if="info?.status">
+        <common-button-status :bg-color="getStatusStyle(info.status, GoodsStatusColorMap).backgroundColor" :text="GoodsStatusMap[info.status as GoodsStatus]" />
+      </template>
     </template>
-    <template #body>
+    <template #info>
       <div class="whitespace-nowrap overflow-x-auto flex gap-4" style=" ">
         <template v-for="(img, index) in info.images" :key="index">
           <n-image
             :src="ImageUrl(img)"
             width="100"
             height="100"
-            class="shrink-0"
+            class="shrink-0 mb-4"
           />
         </template>
       </div>
-      <div class="flex flex-col gap-3 px-4 py-3" uno-xl="grid grid-cols-[1fr_1fr] gap-x-8">
+      <div class="flex flex-col gap-1" uno-xl="grid grid-cols-[1fr_1fr] gap-x-8">
         <template v-if="productType !== GoodsType.ProductAccessories">
           <div class="flex justify-between text-sm font-normal">
             <div class="text-color-light">
@@ -105,7 +107,7 @@ const props = defineProps<{
         </div>
       </div>
     </template>
-  </common-gradient>
+  </common-card-info>
 </template>
 
 <style scoped>

@@ -50,37 +50,30 @@ const execute = async () => {
 
 <template>
   <div>
-    <div class="grid-12 pb-[80px]">
-      <product-manage-company class="color-[#fff] col-4 px-[16px] pt-[16px]" uno-lg="offset-2" />
-      <div class="col-12 px-[16px] py-[16px]" uno-lg="col-8 offset-2">
-        <div class="flex flex-col gap-[16px]">
-          <div class="primary">
-            <common-gradient title="会员归属" theme="gradient" :italic="true">
-              <template #body>
-                <member-lists-new v-model:rely="memberParams" :staff-list="StoreStaffList" :get-staff-list="getStaff" />
-              </template>
-            </common-gradient>
+    <div class="blur-bgc">
+      <common-layout-center>
+        <div class="grid-12 color-[#fff]">
+          <div class="col-5" uno-sm="col-3" uno-lg="col-2">
+            <product-manage-company />
           </div>
         </div>
-      </div>
+      </common-layout-center>
     </div>
-    <common-button-bottom confirm-text="确认新增" cancel-text="取消" @confirm="execute" @cancel="backtrack" />
+    <div class="p-4">
+      <common-layout-center>
+        <common-card-info title="会员归属">
+          <template #info>
+            <member-lists-new v-model:rely="memberParams" :staff-list="StoreStaffList" :get-staff-list="getStaff" />
+          </template>
+        </common-card-info>
+      </common-layout-center>
+    </div>
+
+    <common-button-bottom confirm-text="提交新增" :cancle-show="false" @confirm="execute" @cancel="backtrack" />
   </div>
 </template>
 
 <style>
-.n-base-selection {
-  border-radius: 20px;
-}
-
-.n-base-selection-label {
-  height: 40px !important;
-}
-
-.n-input-wrapper {
-  border-radius: 20px !important;
-}
-
 .n-date-picker {
   border-radius: 20px;
 }

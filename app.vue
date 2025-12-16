@@ -50,6 +50,7 @@ const themeOverrides: GlobalThemeOverrides = {
     BackgroundColor: 'transparent',
   },
   Input: {
+    color: '#F1F5FE',
     caretColor: '#0068ff',
     borderHover: '1px solid #0068ff',
     borderFocus: '1px solid #0068ff',
@@ -78,6 +79,19 @@ const themeOverrides: GlobalThemeOverrides = {
     railHeightLarge: '36px',
     railWidthLarge: '60px',
   },
+  Select: {
+    peers: {
+      InternalSelectMenu: {
+        optionTextColorActive: '#3971F3',
+        optionCheckColor: '#3971F3',
+        color: '#fff',
+      },
+      InternalSelection: {
+        color: '#F1F5FE',
+      },
+    },
+
+  },
   Checkbox: {
     colorChecked: '#3971F3',
     colorCheckedHover: '#3971F3',
@@ -86,18 +100,114 @@ const themeOverrides: GlobalThemeOverrides = {
     borderChecked: '1px solid #3971F3',
   },
   Tabs: {
-    tabTextColorActiveLine: '#0068ff', // 激活标签颜色
-    barColor: '#0068ff', // 激活标签条颜色
-    tabTextColorHoverLine: '#0068ff', // 悬停标签颜色
+    tabBorderRadius: '26px', // 标签圆角
+    colorSegment: '#E6EDF5', // 标签背景颜色
+    tabTextColorActiveSegment: '#fff', // 激活标签颜色
+    tabTextColorHoverSegment: '#000', // 悬停标签颜色
+    tabColorSegment: '#3F8CFF', // 激活标签颜色
+    tabTextColorActiveBar: '#fff', // 激活标签颜色
+    tabTextColorActiveCard: '#fff', // 悬停标签颜色
+  },
+  Table: {
+    position: 'relative',
+    zIndex: 0,
+  },
+  DataTable: {
+    position: 'relative',
+    zIndex: 0,
   },
 }
+const darkThemeOverrides: GlobalThemeOverrides = {
+  Drawer: {
+    BackgroundColor: 'transparent',
+  },
+  Dropdown: {
+    // 下拉菜单背景色
+    color: '#0F1E52',
+    // 选项文字颜色
+    optionTextColor: '#D8DAE3',
+    optionTextColorHover: '#D8DAE3',
+    // 选项背景色
+    optionColor: '#253262',
+    optionColorActive: '#253262',
+    optionColorHover: '#253262',
+  },
+  Input: {
+    color: '#2C4186',
+    caretColor: '#0068ff',
+    borderHover: '1px solid #0068ff',
+    borderFocus: '1px solid #0068ff',
+    borderRadius: '20px',
+    boxShadowFocus: '0 0 0 2px rgba(0, 104, 255, 0.2)',
+    boxShadowActive: '0 0 0 2px rgba(0, 104, 255, 0.2)',
+    // colorDisabled: '#0068ff',
+  },
+  InternalSelection: {
+    borderHover: '1px solid #0068ff',
+    borderFocus: '1px solid #0068ff',
+    borderActive: '1px solid #0068ff',
+    borderRadius: '60px',
+    boxShadowFocus: '0 0 0 2px rgba(0, 104, 255, 0.2)',
+    boxShadowActive: '0 0 0 2px rgba(0, 104, 255, 0.2)',
+  },
+  DatePicker: {
+    borderRadius: '20px',
+  },
+  Switch: {
+    railColorActive: '#0068ff',
+    borderColor: '#0068ff',
+    caretColor: '#0068ff',
+    borderHover: '1px solid #0068ff',
+    borderFocus: '1px solid #0068ff',
+    boxShadowFocus: '#0068ff',
+    railHeightLarge: '36px',
+    railWidthLarge: '60px',
+  },
+  Select: {
+    peers: {
+      InternalSelectMenu: {
+        optionTextColorActive: '#3971F3',
+        optionCheckColor: '#3971F3',
+        color: '#0F1E52',
+      },
+      InternalSelection: {
+        color: '#2C4186',
+      },
+    },
+  },
+  Checkbox: {
+    colorChecked: '#3971F3',
+    colorCheckedHover: '#3971F3',
+    colorCheckedPressed: '#2f5fd0',
+    border: '1px solid #3971F3',
+    borderChecked: '1px solid #3971F3',
+  },
+  Tabs: {
+    tabBorderRadius: '26px', // 标签圆角
+    colorSegment: '#1D2C60', // 标签背景颜色
+    tabTextColorActiveSegment: '#fff', // 激活标签颜色
+    tabTextColorHoverSegment: '#fff', // 悬停标签颜色
+    tabColorSegment: '#3F8CFF', // 激活标签颜色
+    tabTextColorActiveBar: '#fff', // 激活标签颜色
+    tabTextColorHoverCard: '#fff', // 悬停标签颜色
+  },
+  Table: {
+    position: 'relative',
+    zIndex: 0,
+  },
+  DataTable: {
+    position: 'relative',
+    zIndex: 0,
+  },
+}
+const theme = computed(() => $colorMode.value === 'light' ? themeOverrides : darkThemeOverrides)
 </script>
 
 <template>
   <div>
     <common-loading v-model="isLoading" />
     <n-config-provider
-      :theme-overrides="themeOverrides"
+      :theme-overrides="theme"
       :theme="$colorMode.value === 'light' ? null : darkTheme"
       :locale="locale"
       :date-locale="dateLocale">

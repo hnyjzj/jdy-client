@@ -119,69 +119,68 @@ const clearFn = async () => {
   page.value = 1
   await getList()
 }
+
+const searchKey = ref('')
 </script>
 
 <template>
-  <div class="grid-12 p-[20px]">
-    <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
-      <div class="flex flex-row gap-2">
-        <product-manage-company class="color-[#fff]" @change="changeStores" />
-        <product-filter-search
-          placeholder="搜索常用语" class="color-[#fff] flex-1" @submit="searchText" @clear="clearFn" />
-      </div>
-      <div class="flex-center-between gap-2 py-[16px]">
-        <div class="text-size-[14px] color-[#fff]">
-          共{{ total }}条数据
-        </div>
-        <div @click="openFilter()">
-          <product-filter-senior class="color-[#fff]" />
-        </div>
-      </div>
-    </div>
-    <div class="col-12" uno-sm="col-6 offset-3" uno-md="col-6 offset-3" uno-lg="col-4 offset-4" uno-lt="col-3">
-      <common-fold :is-collapse="false">
-        <template #title>
-          <div class="flex justify-between items-center w-full">
-            <div>常用语管理</div>
-            <div class="flex">
-              <template v-if="!editStatus">
-                <div class="px-[12px] py-[4px] bg-[#1890ff] text-[#fff] cursor-pointer rounded-[30px] text-center" @click="isModel = true">
-                  新增
-                </div>
-              </template>
-              <div class="px-[12px] py-[4px] bg-[#fff] text-[#1890ff] cursor-pointer rounded-[30px] text-center ml-[12px]" @click="editStatus = !editStatus">
-                {{ editStatus ? '取消' : '编辑' }}
-              </div>
-            </div>
-          </div>
-        </template>
-        <div class="p-[16px]">
-          <div class="flex-col">
-            <template v-if="editStatus">
-              <div class="py-[4px] color-[#666] text-[12px] px-[6px]">
-                点击短语进行修改
-              </div>
-            </template>
-            <template v-for="(item, index) in List" :key="index">
-              <div class="py-[6px] px-[6px] bg-[rgb(247,247,247)] mb-[12px] rounded-[8px] relative cursor-pointer" @click="editText(item)">
-                <div>
-                  {{ item.content }}
-                </div>
-                <template v-if="editStatus">
-                  <div class="wh-[30px] flex justify-center items-center cursor-pointer absolute right-0 bottom-0">
-                    <icon name="i-svg:delete" :size="16" @click.stop="delProduct(item)" />
+  <div class="">
+    <product-filter
+      v-model:search-key="searchKey"
+      :product-list-total="total"
+      placeholder="搜索" @search="searchText" @filter="openFilter" @clear-search="clearFn">
+      <template #company>
+        <product-manage-company @change="changeStores" />
+      </template>
+    </product-filter>
+    <common-layout-center>
+      <div class="p-[16px]">
+        <common-card-info title="常用语管理">
+          <template #status>
+            <div class="flex justify-between items-center w-full">
+              <div class="flex">
+                <template v-if="!editStatus">
+                  <div class="px-[36px] py-[4px] bg-[#1890ff] text-[#fff] cursor-pointer rounded-[30px] text-center" @click="isModel = true">
+                    新增
                   </div>
                 </template>
+                <div class="px-[36px] py-[4px] bg-[#fff] border-[1px] border-[#1890ff] border border-solid text-[#1890ff] cursor-pointer rounded-[30px] text-center ml-[12px]" @click="editStatus = !editStatus">
+                  {{ editStatus ? '取消' : '编辑' }}
+                </div>
               </div>
-            </template>
-            <template v-if="List.length === 0">
-              <common-emptys />
-            </template>
-            <common-page v-model:page="page" :total="total" :limit="12" @update:page="updatePage" />
-          </div>
-        </div>
-      </common-fold>
-    </div>
+            </div>
+          </template>
+          <template #info>
+            <div class="p-[16px]">
+              <div class="flex-col">
+                <template v-if="editStatus">
+                  <div class="py-[4px] color-[#1890ff] text-[12px] px-[6px]">
+                    点击短语进行修改
+                  </div>
+                </template>
+                <template v-for="(item, index) in List" :key="index">
+                  <div class="flex justify-between py-[8px] px-[16px] text-color light:bg-[#F1F5FE] dark:bg-[#2C4186] mb-[16px] rounded-[8px] relative cursor-pointer" @click="editText(item)">
+                    <div>
+                      {{ item.content }}
+                    </div>
+                    <template v-if="editStatus">
+                      <div class="flex justify-center items-center gap-[6px] cursor-pointer" @click.stop="delProduct(item)">
+                        <icon name="i-svg:delete" :size="16" />
+                        <span class="color-[#F82F2F]">删除</span>
+                      </div>
+                    </template>
+                  </div>
+                </template>
+                <template v-if="List.length === 0">
+                  <common-empty />
+                </template>
+                <common-page v-model:page="page" :total="total" :limit="12" @update:page="updatePage" />
+              </div>
+            </div>
+          </template>
+        </common-card-info>
+      </div>
+    </common-layout-center>
     <common-model
       v-model="isModel" :title="!editStatus ? '新增常用语' : '编辑常用语'" :show-ok="true" confirm-text="确定" @confirm="confirm" @cancel="() => {
         model = {} as Phrase

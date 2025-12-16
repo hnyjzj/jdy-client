@@ -125,7 +125,7 @@ const confirm = () => {
 </script>
 
 <template>
-  <div class="grid-12">
+  <div class="">
     <common-model
       v-model:model-value="delModel"
       :show-ok="true"
@@ -147,7 +147,7 @@ const confirm = () => {
     >
       <div class="flex flex-col gap-[20px] pb-[32px]">
         <div class="model-name flex flex-col gap-[6px]">
-          <div class="font-[14px] color-[#333]">
+          <div class="font-[14px] text-color">
             模板名称
           </div>
 
@@ -159,7 +159,7 @@ const confirm = () => {
         </div>
 
         <div class="target-loc flex flex-col gap-[6px]">
-          <div class="font-[14px] color-[#333]">
+          <div class="font-[14px] text-color">
             复制到
           </div>
 
@@ -177,30 +177,30 @@ const confirm = () => {
       </div>
     </common-model>
 
-    <div class="py[16px] px-[16px] col-12 color-[#fff] font-size-[14px]" uno-lg="col-8 offset-2">
-      <div class="flex flex-row justify-between items-center">
-        <product-manage-company @change="changeStores" />
-        <div>
-          共 {{ printListTotal }} 条打印模板
+    <div class="blur-bgc">
+      <common-layout-center>
+        <div class="w-full flex justify-between items-center">
+          <product-manage-company @change="changeStores" />
+          <div class="text-color pl-[16px]">
+            共 {{ printListTotal }} 条打印模板
+          </div>
         </div>
-      </div>
+      </common-layout-center>
     </div>
 
-    <div class="col-12" uno-lg="col-8 offset-2">
-      <div class="body">
+    <common-layout-center>
+      <div class="p-[16px]">
         <template v-if="printList.length">
           <print-lists-list :list="printList" @delete="del" @copy="copy" @edit="edit" />
         </template>
-
         <template v-else>
-          <common-emptys />
+          <common-empty />
         </template>
       </div>
-    </div>
-
+    </common-layout-center>
     <div class="fixed z-1">
       <common-button-bottom
-        cancel-text="取消"
+        :cancle-show="false"
         confirm-text="新增模板"
         @cancel="cancel"
         @confirm="confirm"
@@ -208,9 +208,3 @@ const confirm = () => {
     </div>
   </div>
 </template>
-
-<style scoped lang="scss">
-.body {
-  --uno: 'bg-[rgba(255,255,255,.7)] h-100vh p-[16px] rounded-t-[24px] border-solid border-[1px] border-[#EFF0F6]';
-}
-</style>

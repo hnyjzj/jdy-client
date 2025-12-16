@@ -188,7 +188,16 @@ const canShowFilter = (item: FilterWhere<Check>) => {
                   </template>
                   <template v-if="input === 'radio'">
                     <n-radio-group v-model:value="datas[name as string]" name="radiogroup" @focus="focus">
-                      <n-radio v-for="item in presetToSelect(props.filter[i])" :key="item.value" :value="item.value" :label="item.label" />
+                      <n-radio
+                        v-for="item in presetToSelect(props.filter[i])"
+                        :key="item.value"
+                        :style="{
+                          '--n-box-shadow-hover': 'inset 0 0 0 1px #0068ff',
+                          '--n-box-shadow-active': 'inset 0 0 0 1px #0068ff',
+                          '--n-dot-color-active': '#0068ff',
+                          '--n-box-shadow-focus': 'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)' }"
+                        :value="item.value"
+                        :label="item.label" />
                     </n-radio-group>
                   </template>
                 </slot>
@@ -215,23 +224,17 @@ const canShowFilter = (item: FilterWhere<Check>) => {
 .n-base-selection {
   border-radius: 20px;
 }
-
-.n-input-wrapper {
-  border-radius: 20px !important;
-}
 </style>
 
 <style lang="scss" scoped>
 .footer {
   .left {
-    background: #ffffff;
-    box-shadow: 0px 6px 6px rgba(110, 166, 255, 0.3);
-    --uno: 'text-[16px] dark:color-#2D79F0 py-[10px] border-none text-center rounded-[36px] mr-[8px]';
+    --uno: 'text-[16px] bg-transparent py-[6px] border-none text-center rounded-[36px] mr-[8px] text-#3971f3';
+    border: 1px solid #3971f3;
   }
 
   .right {
     background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-    box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
     --uno: 'text-[16px] py-[6px] border-none flex-1 rounded-[36px] ml-[8px] text-[#FFFFFF]';
   }
 }

@@ -434,8 +434,11 @@ function removeImg(data: { index: number }) {
     <div class="grid-12 pb-10">
       <div class="flex flex-col gap-4 col-12" uno-lg="col-8 offset-2" uno-sm="col-12">
         <div class="rounded-6 w-auto top">
-          <common-gradient title="基础信息">
-            <template #body>
+          <common-card-info title="基础信息">
+            <template #status>
+              <common-button-status :bg-color="getStatusStyle(checkInfo.status, CheckStatusColorMap).backgroundColor" :text="getRadioVal('status', checkInfo.status)" />
+            </template>
+            <template #info>
               <div class="flex flex-col gap-4">
                 <div class="operation-information flex flex-col gap-1">
                   <div class="part">
@@ -471,7 +474,7 @@ function removeImg(data: { index: number }) {
                     </div>
                   </div>
                 </div>
-                <div class="h-0.5 bg-[#E6E6E8]" />
+                <div class="line-space" />
                 <div class="other-information flex flex-col gap-1">
                   <div class="part">
                     <div class="left">
@@ -495,14 +498,6 @@ function removeImg(data: { index: number }) {
                     </div>
                     <div class="right">
                       {{ checkInfo.remark || '--' }}
-                    </div>
-                  </div>
-                  <div class="part">
-                    <div class="left">
-                      状态
-                    </div>
-                    <div class="right">
-                      <common-tags :status-map="CheckStatusColorMap" :status="checkInfo.status" :text="getRadioVal('status', checkInfo.status)" />
                     </div>
                   </div>
                   <template v-if="checkInfo.status === CheckStatus.Repair">
@@ -534,7 +529,7 @@ function removeImg(data: { index: number }) {
                     </div>
                   </template>
                 </div>
-                <div class="h-0.5 bg-[#E6E6E8]" />
+                <div class="line-space" />
                 <div class="product-information flex flex-col gap-1">
                   <div class="part">
                     <div class="left">
@@ -614,7 +609,7 @@ function removeImg(data: { index: number }) {
                     </div>
                   </template>
                 </div>
-                <div class="h-0.5 bg-[#E6E6E8]" />
+                <div class="line-space" />
                 <div class="product-information flex flex-col gap-1">
                   <div class="part">
                     <div class="left">
@@ -643,9 +638,9 @@ function removeImg(data: { index: number }) {
                 </div>
               </div>
             </template>
-          </common-gradient>
+          </common-card-info>
         </div>
-        <div class="info flex flex-col gap-4 rounded-6 blur-bga w-auto px-4 py-4 mb-6">
+        <div class="info flex flex-col rounded-6 blur-bga w-auto px-4 py-4 mb-6">
           <div class="flex flex-col gap-3">
             <common-tab-secondary :current-selected="product_status" :options="inventoryOptions" :info="checkInfo" @change-status="changeStatus" />
             <common-step :description="step" :active-index="checkInfo.status" />
@@ -788,14 +783,13 @@ function removeImg(data: { index: number }) {
 }
 
 .btntext:first-child {
-  background: #ffffff;
-  box-shadow: 0px 6px 6px rgba(110, 166, 255, 0.3);
-  --uno: 'text-[16px] py-[8px] border-none text-center rounded-[36px] mr-[8px] col-span-4 offset-1';
+  background: transparent;
+  --uno: 'text-[16px] py-[8px] border-none text-center rounded-[36px] mr-[8px] col-span-4 offset-1 text-#3971F3';
+  border: #3971f3 1px solid;
 }
 
 .btntext:last-child {
   background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-  box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
   --uno: 'text-[16px] py-[8px] border-none flex-1 rounded-[36px] ml-[8px] text-[#FFFFFF] col-span-6';
 }
 </style>

@@ -26,52 +26,54 @@ if (route.query.id) {
 
 <template>
   <div class="py-6 px-4">
-    <div class="rounded-6 bg-white w-auto blur-bga top">
-      <common-gradient title="基础信息">
-        <template #body>
-          <div class="flex flex-col gap-4">
-            <div class="operation-information flex flex-col gap-1">
-              <div class="info-row">
-                <div class="info-title">
-                  操作
+    <common-layout-center>
+      <div class="rounded-6 bg-white w-auto blur-bga top">
+        <common-card-info title="基础信息">
+          <template #info>
+            <div class="flex flex-col gap-4">
+              <div class="operation-information flex flex-col gap-1">
+                <div class="info-row">
+                  <div class="info-title">
+                    操作
+                  </div>
+                  <div class="info-val">
+                    {{ historyFilterList.action?.preset[historyInfo.action] || '' }}
+                  </div>
                 </div>
-                <div class="info-val">
-                  {{ historyFilterList.action?.preset[historyInfo.action] || '' }}
+                <div class="info-row">
+                  <div class="info-title">
+                    原因
+                  </div>
+                  <div class="info-val">
+                    {{ historyInfo?.reason }}
+                  </div>
                 </div>
-              </div>
-              <div class="info-row">
-                <div class="info-title">
-                  原因
+                <div class="info-row">
+                  <div class="info-title">
+                    关联单号
+                  </div>
+                  <div class="info-val">
+                    {{ historyInfo.source_id }}
+                  </div>
                 </div>
-                <div class="info-val">
-                  {{ historyInfo?.reason }}
+                <div class="info-row">
+                  <div class="info-title">
+                    操作时间
+                  </div>
+                  <div class="info-val">
+                    {{ formatTimestampToDateTime(historyInfo.updated_at) }}
+                  </div>
                 </div>
-              </div>
-              <div class="info-row">
-                <div class="info-title">
-                  关联单号
+                <div class="line-space" />
+                <div class="other-information flex flex-col">
+                  <accessorie-record-table :filter-list="accessorieFilterListToArray" :new-accessories="historyInfo?.new_value?.product ? historyInfo.new_value.product : historyInfo.new_value" :old-accessories="historyInfo?.old_value?.product ? historyInfo.old_value.product : historyInfo.old_value" />
                 </div>
-                <div class="info-val">
-                  {{ historyInfo.source_id }}
-                </div>
-              </div>
-              <div class="info-row">
-                <div class="info-title">
-                  操作时间
-                </div>
-                <div class="info-val">
-                  {{ formatTimestampToDateTime(historyInfo.updated_at) }}
-                </div>
-              </div>
-              <div class="h-0.5 bg-[#E6E6E8]" />
-              <div class="other-information flex flex-col" uno-sm="grid grid-cols-[1fr_1fr] gap-x-10">
-                <accessorie-record-table :filter-list="accessorieFilterListToArray" :new-accessories="historyInfo?.new_value?.product ? historyInfo.new_value.product : historyInfo.new_value" :old-accessories="historyInfo?.old_value?.product ? historyInfo.old_value.product : historyInfo.old_value" />
               </div>
             </div>
-          </div>
-        </template>
-      </common-gradient>
-    </div>
+          </template>
+        </common-card-info>
+      </div>
+    </common-layout-center>
   </div>
 </template>
 
@@ -86,10 +88,8 @@ if (route.query.id) {
   overflow: hidden;
 }
 .info-row {
-  --uno: 'flex justify-between mb-2';
-  .info-title {
-    --uno: 'text-color';
-  }
+  --uno: 'flex justify-between mb-2 text-color';
+
   .info-val {
     --uno: 'w-200px text-right';
   }

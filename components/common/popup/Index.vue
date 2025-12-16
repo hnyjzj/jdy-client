@@ -47,18 +47,17 @@ function close() {
     }" :width="props.width" :height="props.height" default-height="400px" resizable :mask-closable="isMaskClose" :placement="props.placement">
     <n-drawer-content header-class="rounded-2">
       <template #header>
-        <template v-if="props.title">
-          <div class="title relative mb-[-36px]">
-            <img class="relative z-2" src="/images/model/title1.png" width="80">
-            <img class="ml--10 mb-1 relative z-1" src="/images/model/title2.png" width="170">
-            <div class="title-content">
-              {{ props.title }}
-            </div>
-          </div>
-        </template>
         <div class="top">
-          <div class="close" @click="close">
-            <icon name="i-icon:error" color="#fff" />
+          <template v-if="props.title">
+            <div class="flex items-center">
+              <div class="w-1 h-4 bg-[#1A6DD8] rounded-[4px] mr-2" />
+              <div class="text-[16px] font-bold text-[#1A6DD8]">
+                {{ props.title }}
+              </div>
+            </div>
+          </template>
+          <div class="text-color" @click="close">
+            <icon name="i-icon:error" />
           </div>
         </div>
       </template>
@@ -78,18 +77,14 @@ function close() {
 
 <style lang="scss" scoped>
 .content {
-  --uno: 'min-h-full  p-[16px] bg-[#F1F5FE] dark:bg-[rgba(0,0,0,0.6)] blur-8px';
+  --uno: 'min-h-full p-[16px] blur-bga';
 }
 .footer {
-  border-top: 1px solid #e6e6e8;
-  --uno: 'block w-full bg-[#F1F5FE] dark:bg-[rgba(0,0,0,0.6)] blur-8px py-3';
+  --uno: 'block w-full blur-bga py-3';
+  box-shadow: 0px -1px 15px 0px #0000001a;
 }
 .top {
-  --uno: 'flex justify-end items-center h-34px border-rd-[20px_20px_0_0]';
-  background: linear-gradient(to right, rgba(147, 211, 245, 1), rgba(56, 101, 252, 1));
-  .close {
-    --uno: 'mr-[20px]';
-  }
+  --uno: 'p-3 flex justify-between items-center  blur-bga';
 }
 .title-content {
   --uno: 'absolute left-24 top-6 z-3 text-#fff font-bold';

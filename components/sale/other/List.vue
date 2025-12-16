@@ -14,9 +14,9 @@ const handleClick = (id?: string) => {
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-[16px] " uno-lg="grid-cols-2" uno-md="grid-cols-2">
+  <div class="grid grid-cols-1 gap-x-[16px]" uno-lg="grid-cols-2" uno-md="grid-cols-2">
     <template v-for="(item, index) in props.info" :key="index">
-      <sale-cards :title="`收支单号:${item.id}`">
+      <common-card-list :title="`收支单号:${item.id}`">
         <template #info>
           <div class="info">
             <common-cell label="所属门店" :value="item.store?.name " />
@@ -30,19 +30,18 @@ const handleClick = (id?: string) => {
           </div>
         </template>
         <template #footer>
-          <div class="flex-between pl-[8px] bg-[#F3F5FE] rounded-b-[24px] dark:bg-[rgba(243,245,254,0.1)]">
-            <div />
-            <common-button-irregular text="查看详情" @click="handleClick(item.id)" />
+          <div class="flex-end">
+            <common-button-rounded padding="4px 36px" content="详情" @button-click="handleClick(item.id)" />
           </div>
         </template>
-      </sale-cards>
+      </common-card-list>
     </template>
   </div>
 </template>
 
 <style scoped lang="scss">
   .info {
-  --uno: 'flex flex-col gap-[3px] px-[16px]';
+  --uno: 'flex flex-col gap-[3px]';
 
   .part {
     --uno: 'flex-center-between';

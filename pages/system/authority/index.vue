@@ -246,12 +246,12 @@ function GetModelStatusText() {
   <div>
     <common-layout-center>
       <div class="px-4 pt-6">
-        <common-gradient :title="`权限组（${roleList.length}）`">
-          <template #body>
-            <n-tabs v-model:value="activeTab" type="line" animated @update:value="handleTabChange">
+        <common-card-info :title="`权限组（${roleList.length}）`">
+          <template #info>
+            <n-tabs v-model:value="activeTab" :theme-overrides="{ barColor: '#1A6DD8' }" type="line" animated @update:value="handleTabChange">
               <template v-for="(item, id, t) in roleWhereList" :key="t">
                 <n-tab-pane :name="id" :tab="item">
-                  <div class="grid grid-cols-2 gap-4">
+                  <div class="grid sm:grid-cols-2 gap-4">
                     <template v-for="(role, index) in roleList" :key="index">
                       <div class="user-box mb-3 flex flex-col justify-between" :class="selectRole === index ? 'select-role' : ''" @click="selectRole = index;getInfo()">
                         <div class="flex justify-between">
@@ -259,32 +259,37 @@ function GetModelStatusText() {
                             <div class="text-[16px]">
                               {{ role.name }}
                             </div>
-                            <div class="text-[12px] text-[#666666] flex">
+                            <div class="text-[12px] text-color-light flex">
                               {{ role.desc }}
                             </div>
                           </div>
                           <template v-if="role.is_default">
                             <div class="shrink-1">
-                              <div class="text-[12px] text-[#666666] bg-[rgba(230,230,232,1)] px-1 rounded-[2px]">
+                              <div class="text-[12px] text-[#FFFFFF] bg-[#979797] px-2 py-[2px] rounded-[8px]">
                                 默认
                               </div>
                             </div>
                           </template>
                         </div>
                         <div class="mt-4 flex justify-between items-center">
+                          <div>
+                            <template v-if="!role.is_default">
+                              <div class="cursor-pointer flex items-center" @click.stop="delRoleFun(role.id, role.name)">
+                                <Icon name="i-icon:delete" color="#FF2F2F" :size="14" />
+                                <span class="text-[#FF2F2F] pl-1">删除</span>
+                              </div>
+                            </template>
+                          </div>
                           <div class="flex items-center">
-                            <div class="text-[12px] text-[#666666] bg-[rgba(230,230,232,1)] px-1 rounded-[2px] mr-2" @click.stop="copyFun(role)">
-                              复制
+                            <div class="cursor-pointer flex items-center pr-3 text-color" @click.stop="copyFun(role)">
+                              <Icon name="i-icon:copy" color="" :size="14" />
+                              <span class="pl-1">复制</span>
                             </div>
-                            <div class="cursor-pointer" @click.stop="edit(role)">
-                              <Icon name="i-icon:edit" color="" :size="16" />
+                            <div class="cursor-pointer flex items-center" @click.stop="edit(role)">
+                              <Icon name="i-icon:edit" color="#1A6DD8" :size="16" />
+                              <span class="text-[#1A6DD8] pl-1">编辑</span>
                             </div>
                           </div>
-                          <template v-if="!role.is_default">
-                            <div class="cursor-pointer" @click.stop="delRoleFun(role.id, role.name)">
-                              <Icon name="i-icon:delete" color="red" :size="14" />
-                            </div>
-                          </template>
                         </div>
                       </div>
                     </template>
@@ -292,21 +297,23 @@ function GetModelStatusText() {
                 </n-tab-pane>
               </template>
             </n-tabs>
-            <div class="text-center cursor-pointer pt-4" @click="oppeAddRole('add')">
-              + 添加用户组
+            <div class="flex justify-center">
+              <div class="w-[120px] sm:w-[240px]">
+                <common-button-rounded content="添加角色" @button-click="oppeAddRole('add')" />
+              </div>
             </div>
           </template>
-        </common-gradient>
+        </common-card-info>
         <div class="h-4" />
         <div class="pb-20">
-          <common-gradient :title="roleList[selectRole]?.name || ''">
-            <template #body>
+          <common-card-info :title="roleList[selectRole]?.name || ''">
+            <template #info>
               <div class="nav mb-4">
                 <div
                   v-for="(item, index) in navItems"
                   :key="index"
                   :class="{ 'select-nav': activeIndex === index }"
-                  class="nav-item"
+                  class="nav-item text-color"
                   @click="setActive(index)"
                 >
                   {{ item }}
@@ -319,7 +326,7 @@ function GetModelStatusText() {
                 <authority-transfer v-model="apiSelectIds" :list="apiList" />
               </template>
             </template>
-          </common-gradient>
+          </common-card-info>
         </div>
         <common-button-one @confirm="updataFun" />
       </div>
@@ -327,7 +334,7 @@ function GetModelStatusText() {
     <common-model v-model="isAddModel" :title="GetModelStatusText()" :show-ok="true" @confirm="submitModel">
       <div>
         <div class="mb-3">
-          <div class="mb-1">
+          <div class="mb-1 text-color">
             身份
           </div>
           <n-input
@@ -340,7 +347,7 @@ function GetModelStatusText() {
           />
         </div>
         <div class="mb-3">
-          <div class="mb-1">
+          <div class="mb-1 text-color">
             角色名称
           </div>
           <n-input
@@ -352,7 +359,7 @@ function GetModelStatusText() {
           />
         </div>
         <div class="mb-3">
-          <div class="mb-1">
+          <div class="mb-1 text-color">
             角色描述
           </div>
           <n-input
@@ -365,7 +372,7 @@ function GetModelStatusText() {
         </div>
         <template v-if="modelStatus !== 'copy'">
           <div class="mb-3">
-            <div class="mb-1">
+            <div class="mb-1 text-color">
               是否默认
             </div>
             <n-switch
@@ -404,7 +411,7 @@ function GetModelStatusText() {
 <style lang="scss" scoped>
 .user-box {
   border: 1px solid #ddd7d7;
-  --uno: 'rounded-[8px] p-2';
+  --uno: 'rounded-[8px] p-2 dark:border-#444D71';
 }
 .label {
   --uno: 'ml-2 px-[2px] rounded-[2px] bg-[rgba(230,230,232,1)] text-[rgba(128,128,137,1)]';
@@ -416,15 +423,15 @@ function GetModelStatusText() {
   justify-content: flex-start;
   gap: 16px;
   padding: 0;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #ddd7d7;
   padding-bottom: 4px;
+  --uno: 'dark:border-#444D71';
 }
 
 .nav-item {
   position: relative;
   padding: 8px 0;
   font-size: 16px;
-  color: #333;
   cursor: pointer;
   line-height: 1.2;
 }
@@ -444,6 +451,19 @@ function GetModelStatusText() {
 }
 
 .select-role {
-  background-color: rgba(243, 245, 254, 1);
+  --uno: 'bg-#F4F9FD dark-bg-#0A113C';
+}
+
+:deep(.n-tabs .n-tabs-tab--active) {
+  color: #1a6dd8 !important;
+}
+:deep(.n-tabs .n-tabs-tab--active .n-tabs-tab__bar) {
+  background-color: #1a6dd8 !important;
+}
+:deep(.n-tabs.n-tabs--line-type .n-tabs-tab:hover) {
+  color: #1a6dd8 !important;
+}
+:deep(.n-tabs-tab__label) {
+  font-size: 16px;
 }
 </style>

@@ -41,17 +41,15 @@ const submitForm = () => {
     }
   })
 }
+const { $colorMode } = useNuxtApp()
+const theme = computed(() => $colorMode.value === 'light' ? '1px solid #1a6beb' : '1px solid #fff')
 </script>
 
 <template>
-  <div class="btn-right  col-6 cursor-pointer" uno-sm="col-4 offset-6">
-    <div
-      @click="handleAddProductPopup = true">
-      <div class="ml-2">
-        手动添加
-      </div>
+  <div class=" col-6 cursor-pointer" uno-sm="col-4 offset-6">
+    <div class="col-6 cursor-pointer" uno-sm="col-4 offset-6" @click="handleAddProductPopup = true">
+      <common-button-rounded content="手动添加" bgc="#F1F5FE" color="#1a6beb" :border="theme" />
     </div>
-
     <common-model v-model="handleAddProductPopup" title="手动添加" :show-ok="true" :show-cancel="true" @confirm="submitForm" @cancel="handleAddProductPopup = false">
       <div class="h-[300px] overflow-y-scroll">
         <n-form

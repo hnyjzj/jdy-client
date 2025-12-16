@@ -67,16 +67,13 @@ await getcashflowListFn()
 
 <template>
   <div>
+    <summary-boss-select-time v-model="params" :time-where="timeWhere" @change-stores="changeStore" @update-time="updateTimeFn" />
+
     <common-layout-center>
       <div class="px-[16px]">
-        <div class="flex justify-between items-center py-[12px] text-[#FFF]" />
-        <div class="w-fit color-[#fff] pb-[12px]">
-          <product-manage-company :bg="false" @change="changeStore" />
-        </div>
         <!-- 时间选择器 -->
-        <summary-boss-select-time v-model="params" :time-where="timeWhere" @update-time="updateTimeFn" />
         <div class="pb-[12px]">
-          <summary-total :data="overview" title="数据总览" />
+          <summary-card-payment title="数据总览" :payments="overview" />
         </div>
         <summary-cashflow-card
           card-title="收支统计"

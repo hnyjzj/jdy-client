@@ -303,181 +303,170 @@ defineExpose({
 </script>
 
 <template>
-  <div class="pb-[12px]">
-    <common-fold title="分配门店" from-color="#9EBAF9" to-color="#fff" :is-collapse="false">
-      <div class="p-[16px]">
-        <n-form
-          ref="formRef"
-          :model="storeForm"
-          label-placement="top"
-          size="medium"
-        >
-          <n-grid :cols="24" :x-gap="8">
-            <template v-if="[UserLevel.IdentityClerk, UserLevel.IdentityShopkeeper].includes(storeForm.identity as number)">
-              <n-form-item-gi :span="12" label="所属门店" path="store_ids">
-                <div class="absolute z-1 right-0 top-[-24px]">
-                  <span class="color-[#4B576D]">全选</span> <n-switch v-model:value="storeAllswitch" @update:value="searchStoresAll" />
-                </div>
-                <n-select
-                  v-model:value="storeForm.store_ids"
-                  multiple
-                  filterable
-                  placeholder="搜索门店选择"
-                  :options="Stores"
-                  :loading="loadingStores"
-                  clearable
-                  remote
-                  :max-tag-count="1"
-                  :clear-filter-after-select="false"
-                  @search="searchStores"
-                  @focus="() => {
-                    loadingStores = true
-                    searchStores('')
-                  }"
-                />
-              </n-form-item-gi>
-            </template>
-            <template v-if="[UserLevel.IdentityAreaManager].includes(storeForm.identity as number)">
-              <n-form-item-gi :span="12" label="所属区域" path="region_ids">
-                <div class="absolute z-1 right-0 top-[-24px]">
-                  <span class="color-[#4B576D]">全选 </span> <n-switch v-model:value="RegionAllswitch" @update:value="searchRegionsAll" />
-                </div>
-                <n-select
-                  v-model:value="storeForm.region_ids"
-                  multiple
-                  filterable
-                  placeholder="搜索区域选择"
-                  :options="Regions"
-                  :loading="loadingRegions"
-                  clearable
-                  remote
-                  :max-tag-count="1"
-                  :clear-filter-after-select="false"
-                  @search="searchRegions"
-                  @focus="() => {
-                    loadingRegions = true
-                    searchRegions('')
-                  }"
-                />
-              </n-form-item-gi>
-            </template>
-            <template v-if="[UserLevel.IdentityShopkeeper].includes(storeForm.identity as number)">
-              <n-form-item-gi :span="12" label="负责门店" path="store_superior_ids">
-                <div class="absolute z-1 right-0 top-[-24px]">
-                  <span class="color-[#4B576D]">全选 </span> <n-switch v-model:value="StoresSupAllswitch" @update:value="searchStoresSupAll" />
-                </div>
-                <n-select
-                  v-model:value="storeForm.store_superior_ids"
-                  multiple
-                  filterable
-                  placeholder="搜索门店选择"
-                  :options="Stores_sup"
-                  :loading="loadingStores_sup"
-                  clearable
-                  remote
-                  :max-tag-count="1"
-                  :clear-filter-after-select="false"
-                  @search="searchStores_sup"
-                  @focus="() => {
-                    loadingStores_sup = true
-                    searchStores_sup('')
-                  }"
-                />
-              </n-form-item-gi>
-            </template>
-            <template v-if="[UserLevel.IdentityAreaManager].includes(storeForm.identity as number)">
-              <n-form-item-gi :span="12" label="负责区域" path="region_superior_ids">
-                <div class="absolute z-1 right-0 top-[-24px]">
-                  <span class="color-[#4B576D]">全选 </span>  <n-switch v-model:value="RegionSupAllswitch" @update:value="searchRegionsSupAll" />
-                </div>
-                <n-select
-                  v-model:value="storeForm.region_superior_ids"
-                  multiple
-                  filterable
-                  placeholder="搜索区域选择"
-                  :options="Regions_sup"
-                  :loading="loadingRegions_sup"
-                  clearable
-                  remote
-                  :max-tag-count="1"
-                  :clear-filter-after-select="false"
-                  @search="searchRegions_sup"
-                  @focus="() => {
-                    loadingRegions_sup = true
-                    searchRegions_sup('')
-                  }"
-                />
-              </n-form-item-gi>
-            </template>
-            <template v-if="[UserLevel.IdentityAreaManager, UserLevel.IdentityAdmin, UserLevel.IdentityHeadquarters, UserLevel.IdentitySuperAdmin].includes(storeForm.identity as number)">
-              <n-form-item-gi :span="12" label="管理门店" path="store_admin_ids">
-                <div class="absolute z-1 right-0 top-[-24px]">
-                  <span class="color-[#4B576D]">全选 </span>
-                  <n-switch
-                    v-model:value="storeAdminAllswitch"
-
-                    @update:value="searchStoresAdminAll" />
-                </div>
-                <n-select
-                  v-model:value="storeForm.store_admin_ids"
-                  multiple
-                  filterable
-                  placeholder="搜索门店选择"
-                  :options="StoresAdmin"
-                  :loading="loadingStoresAdmin"
-                  clearable
-                  remote
-                  :max-tag-count="1"
-                  :clear-filter-after-select="false"
-                  @search="searchStoresAdmin"
-                  @focus="() => {
-                    loadingStoresAdmin = true
-                    searchStoresAdmin('')
-                  }"
-                />
-              </n-form-item-gi>
-            </template>
-            <template v-if="[UserLevel.IdentityAdmin, UserLevel.IdentityHeadquarters, UserLevel.IdentitySuperAdmin].includes(storeForm.identity as number)">
-              <n-form-item-gi :span="12" label="管理区域" path="region_admin_ids">
-                <div class="absolute z-1 right-0 top-[-24px]">
-                  <span class="color-[#4B576D]">全选 </span>
-                  <n-switch
-                    v-model:value="RegionAllswitchAdmin"
-                    @update:value="searchRegionsAllAdmin" />
-                </div>
-                <n-select
-                  v-model:value="storeForm.region_admin_ids"
-                  multiple
-                  filterable
-                  placeholder="搜索区域选择"
-                  :options="RegionsAdmin"
-                  :loading="loadingRegionsAdmin"
-                  clearable
-                  remote
-                  :max-tag-count="1"
-                  :clear-filter-after-select="false"
-                  @search="searchRegionsAdmin"
-                  @focus="() => {
-                    loadingRegionsAdmin = true
-                    searchRegionsAdmin('')
-                  }"
-                />
-              </n-form-item-gi>
-            </template>
-          </n-grid>
-          <template v-if="props.showButton">
-            <div class="grid-12 px-[26px]">
-              <div
-                class="font-semibold pb-[26px] cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
-                <div @click="handleValidateButtonClick">
-                  <common-button-rounded content="更新门店" />
+  <div>
+    <common-card-info title="分配门店">
+      <template #info>
+        <div>
+          <n-form
+            ref="formRef"
+            :model="storeForm"
+            label-placement="top"
+            size="medium"
+          >
+            <n-grid :cols="24" :x-gap="8">
+              <template v-if="[UserLevel.IdentityClerk, UserLevel.IdentityShopkeeper].includes(storeForm.identity as number)">
+                <n-form-item-gi :span="12" label="所属门店" path="store_ids">
+                  <div class="absolute z-1 right-0 top-[-27px] flex items-center gap-[4px]">
+                    <span class="color-[#4B576D]">全选</span> <n-switch v-model:value="storeAllswitch" @update:value="searchStoresAll" />
+                  </div>
+                  <n-select
+                    v-model:value="storeForm.store_ids"
+                    multiple
+                    filterable
+                    placeholder="搜索门店选择"
+                    :options="Stores"
+                    :loading="loadingStores"
+                    clearable
+                    :max-tag-count="1"
+                    :clear-filter-after-select="false"
+                    @focus="() => {
+                      loadingStores = true
+                      searchStores('')
+                    }"
+                  />
+                </n-form-item-gi>
+              </template>
+              <template v-if="[UserLevel.IdentityAreaManager].includes(storeForm.identity as number)">
+                <n-form-item-gi :span="12" label="所属区域" path="region_ids">
+                  <div class="absolute z-1 right-0 top-[-27px] flex items-center gap-[4px]">
+                    <span class="color-[#4B576D]">全选 </span> <n-switch v-model:value="RegionAllswitch" @update:value="searchRegionsAll" />
+                  </div>
+                  <n-select
+                    v-model:value="storeForm.region_ids"
+                    multiple
+                    filterable
+                    placeholder="搜索区域选择"
+                    :options="Regions"
+                    :loading="loadingRegions"
+                    clearable
+                    :max-tag-count="1"
+                    :clear-filter-after-select="false"
+                    @focus="() => {
+                      loadingRegions = true
+                      searchRegions('')
+                    }"
+                  />
+                </n-form-item-gi>
+              </template>
+              <template v-if="[UserLevel.IdentityShopkeeper].includes(storeForm.identity as number)">
+                <n-form-item-gi :span="12" label="负责门店" path="store_superior_ids">
+                  <div class="absolute z-1 right-0 top-[-27px] flex items-center gap-[4px]">
+                    <span class="color-[#4B576D]">全选 </span> <n-switch v-model:value="StoresSupAllswitch" @update:value="searchStoresSupAll" />
+                  </div>
+                  <n-select
+                    v-model:value="storeForm.store_superior_ids"
+                    multiple
+                    filterable
+                    placeholder="搜索门店选择"
+                    :options="Stores_sup"
+                    :loading="loadingStores_sup"
+                    clearable
+                    :max-tag-count="1"
+                    :clear-filter-after-select="false"
+                    @focus="() => {
+                      loadingStores_sup = true
+                      searchStores_sup('')
+                    }"
+                  />
+                </n-form-item-gi>
+              </template>
+              <template v-if="[UserLevel.IdentityAreaManager].includes(storeForm.identity as number)">
+                <n-form-item-gi :span="12" label="负责区域" path="region_superior_ids">
+                  <div class="absolute z-1 right-0 top-[-27px] flex items-center gap-[4px]">
+                    <span class="color-[#4B576D]">全选 </span>  <n-switch v-model:value="RegionSupAllswitch" @update:value="searchRegionsSupAll" />
+                  </div>
+                  <n-select
+                    v-model:value="storeForm.region_superior_ids"
+                    multiple
+                    filterable
+                    placeholder="搜索区域选择"
+                    :options="Regions_sup"
+                    :loading="loadingRegions_sup"
+                    clearable
+                    :max-tag-count="1"
+                    :clear-filter-after-select="false"
+                    @focus="() => {
+                      loadingRegions_sup = true
+                      searchRegions_sup('')
+                    }"
+                  />
+                </n-form-item-gi>
+              </template>
+              <template v-if="[UserLevel.IdentityAreaManager, UserLevel.IdentityAdmin, UserLevel.IdentityHeadquarters, UserLevel.IdentitySuperAdmin].includes(storeForm.identity as number)">
+                <n-form-item-gi :span="12" label="管理门店" path="store_admin_ids">
+                  <div class="absolute z-1 right-0 top-[-27px] flex items-center gap-[4px]">
+                    <span class="color-[#4B576D]">全选 </span>
+                    <n-switch
+                      v-model:value="storeAdminAllswitch"
+                      @update:value="searchStoresAdminAll" />
+                  </div>
+                  <n-select
+                    v-model:value="storeForm.store_admin_ids"
+                    multiple
+                    filterable
+                    placeholder="搜索门店选择"
+                    :options="StoresAdmin"
+                    :loading="loadingStoresAdmin"
+                    clearable
+                    :max-tag-count="1"
+                    :clear-filter-after-select="false"
+                    @focus="() => {
+                      loadingStoresAdmin = true
+                      searchStoresAdmin('')
+                    }"
+                  />
+                </n-form-item-gi>
+              </template>
+              <template v-if="[UserLevel.IdentityAdmin, UserLevel.IdentityHeadquarters, UserLevel.IdentitySuperAdmin].includes(storeForm.identity as number)">
+                <n-form-item-gi :span="12" label="管理区域" path="region_admin_ids">
+                  <div class="absolute z-1 right-0 top-[-27px] flex items-center gap-[4px]">
+                    <span class="color-[#4B576D]">全选 </span>
+                    <n-switch
+                      v-model:value="RegionAllswitchAdmin"
+                      @update:value="searchRegionsAllAdmin" />
+                  </div>
+                  <n-select
+                    v-model:value="storeForm.region_admin_ids"
+                    multiple
+                    filterable
+                    placeholder="搜索区域选择"
+                    :options="RegionsAdmin"
+                    :loading="loadingRegionsAdmin"
+                    clearable
+                    :max-tag-count="1"
+                    :clear-filter-after-select="false"
+                    @focus="() => {
+                      loadingRegionsAdmin = true
+                      searchRegionsAdmin('')
+                    }"
+                  />
+                </n-form-item-gi>
+              </template>
+            </n-grid>
+            <template v-if="props.showButton">
+              <div class="grid-12 px-[27px]">
+                <div
+                  class="font-semibold cursor-pointer col-12" uno-sm="col-8 offset-2" uno-lg="col-6 offset-3">
+                  <div @click="handleValidateButtonClick">
+                    <common-button-rounded content="更新门店" />
+                  </div>
                 </div>
               </div>
-            </div>
-          </template>
-        </n-form>
-      </div>
-    </common-fold>
+            </template>
+          </n-form>
+        </div>
+      </template>
+    </common-card-info>
   </div>
 </template>
 

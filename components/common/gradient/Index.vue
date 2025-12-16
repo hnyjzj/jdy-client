@@ -61,15 +61,6 @@ watchEffect(() => {
 const toggleFold = () => {
   isFold.value = !isFold.value
 }
-
-const themeProcess = () => {
-  const themeMap = {
-    gradient: 'linear-gradient(90deg,#8CADF8,#D8E7FD)',
-    theme: 'linear-gradient(90deg,#477ef500,#82d0faf2)',
-    solid: '#F1F5FE',
-  }
-  return themeMap[props.theme] || themeMap.solid
-}
 </script>
 
 <template>
@@ -78,10 +69,9 @@ const themeProcess = () => {
     :style="{ boxShadow: props.hasShadow ? '0px 8px 16px rgba(0, 0, 0, 0.1)' : 'none' }"
   >
     <div
-      class="flex flex-row items-center justify-between h-[44px] px-4 py-2 bg-gradient-linear-[90deg,#8CADF8,#D8E7FD] gap-[12px]"
-      :style="{ background: themeProcess() }"
+      class="flex flex-row items-center justify-between h-[44px] px-4 py-2 gap-[12px]"
     >
-      <div class="flex flex-row gap-[8px]" :style="{ justifyContent: props.alignDesc }">
+      <div class="flex flex-row gap-[8px]">
         <slot name="before" />
 
         <div
@@ -113,7 +103,7 @@ const themeProcess = () => {
     </div>
 
     <div v-show="isFold">
-      <div class="px-[16px] py-[16px] blur-bga">
+      <div class="px-[40px] py-[16px] blur-bga">
         <slot name="body" />
       </div>
       <slot name="footer" />

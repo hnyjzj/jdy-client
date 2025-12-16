@@ -89,8 +89,8 @@ const loadOrder = async () => {
   }
 }
 loadOrder()
-const handleValidateButtonClick = (e: any) => {
-  e.preventDefault()
+const handleValidateButtonClick = (e?: any) => {
+  e?.preventDefault()
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
       if (otherOrderDetail.value.store_id !== myStore.value.id && route.query.id) {
@@ -150,8 +150,15 @@ const orderObject = ref<Orders>({} as Orders)
 
 <template>
   <div :key="Key">
-    <div class="grid-12 pb-[16px]">
-      <div class="flex flex-col w-auto gap-[16px] px-[16px] py-[16px] pb-[80px] col-12" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3">
+    <div class="blur-bgc mb-4">
+      <common-layout-center>
+        <div class="flex flex-row gap-2">
+          <product-manage-company />
+        </div>
+      </common-layout-center>
+    </div>
+    <common-layout-center>
+      <div class="pb-[100px]">
         <n-form
           ref="formRef"
           :model="formData"
@@ -159,9 +166,6 @@ const orderObject = ref<Orders>({} as Orders)
           label-align="left"
           size="large"
         >
-          <div class="w-[120px] color-[#fff] pb-[12px]">
-            <product-manage-company />
-          </div>
           <div>
             <sale-other-add-base
               v-model:form="formData"
@@ -182,27 +186,14 @@ const orderObject = ref<Orders>({} as Orders)
           />
 
           <sale-other-balance v-model:form="formData" :filter-list="salewhere" />
-          <div class="h-[80px] bg-[#fff] fixed z-1">
-            <div class="btn grid-12 px-[16px]">
-              <div class="col-12 cursor-pointer" uno-xs="col-12" uno-sm="col-8 offset-2" uno-md="col-6 offset-3" @click="handleValidateButtonClick">
-                <common-button-rounded :content="`${!route.query.id ? '新增' : '更新'}`" />
-              </div>
-            </div>
-          </div>
+
+          <common-button-bottom :content="`${!route.query.id ? '新增' : '更新'}`" :cancle-show="false" @click="handleValidateButtonClick" />
         </n-form>
       </div>
-    </div>
+    </common-layout-center>
+    <template v-if="otherOrderDetail.store_id && otherOrderDetail.store_id !== '' && route.query.id">
+      <correspond-store :correspond-ids="[otherOrderDetail.store_id]" />
+    </template>
     <common-loading v-model="layoutLoading" />
   </div>
 </template>
-
-<style lang="scss" scoped>
-.btn {
-  --uno: 'fixed bottom-0 left-0 right-0 blur-bga pt-20px pb-[28px] text-[16px] font-bold border-t-[1px] border-t-solid border-[#E0E0E0]';
-  &-right {
-    background: linear-gradient(to bottom, #1a6beb, #6ea6ff);
-    box-shadow: rgba(110, 166, 255, 0.3) 0px 6px 6px;
-    --uno: 'text-[16px] py-[8px] border-none flex-1 rounded-[36px] ml-[8px] text-[#FFFFFF]';
-  }
-}
-</style>

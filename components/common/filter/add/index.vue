@@ -135,10 +135,10 @@ defineExpose({
 <template>
   <div>
     <NForm ref="formRef" :model="datas" :rules="rules">
-      <n-grid :cols="24" :x-gap="16">
+      <common-layout-form>
         <template v-for="({ name, label, create, find, input, condition, required, update }, i) in props.filter" :key="i">
           <template v-if="canShowFilter({ create, condition } as FilterWhere<T>)">
-            <n-form-item-gi :span="12" :path="name" :label="label" :required="required">
+            <n-form-item class="col-6" :path="name" :label="label" :required="required">
               <slot :name="name" :filter="props.filter[i]">
                 <template v-if="input === 'text'">
                   <n-input v-model:value="datas[name as string]" :disabled="isDisabled({ update, find, create })" size="large" clearable :placeholder="`输入${label}`" round />
@@ -196,15 +196,25 @@ defineExpose({
                 </template>
                 <template v-if="input === 'radio'">
                   <n-radio-group v-model:value="datas[name as string]" name="radiogroup" @focus="focus">
-                    <n-radio v-for="item in presetToSelect(props.filter[i])" :key="item.value" :disabled="isDisabled({ update, find, create })" :value="item.value" :label="item.label" />
+                    <n-radio
+                      v-for="item in presetToSelect(props.filter[i])"
+                      :key="item.value"
+                      :style="{
+                        '--n-box-shadow-hover': 'inset 0 0 0 1px #0068ff',
+                        '--n-box-shadow-active': 'inset 0 0 0 1px #0068ff',
+                        '--n-dot-color-active': '#0068ff',
+                        '--n-box-shadow-focus': 'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)' }"
+                      :disabled="isDisabled({ update, find, create })"
+                      :value="item.value"
+                      :label="item.label" />
                   </n-radio-group>
                 </template>
                 <slot name="info" :info="{ name, label, create, find, input, condition, required, update }" />
               </slot>
-            </n-form-item-gi>
+            </n-form-item>
           </template>
         </template>
-      </n-grid>
+      </common-layout-form>
     </NForm>
   </div>
 </template>
@@ -226,5 +236,11 @@ defineExpose({
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
+}
+</style>
+
+<style lang="scss">
+.n-form-item .n-date-picker {
+  width: 100%;
 }
 </style>
