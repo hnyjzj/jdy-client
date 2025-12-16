@@ -28,7 +28,7 @@ const cofirmTime = async () => {
     return
 
   params.value.startTime = startTime.value
-  params.value.endTime = endTime.value.split('T')[0] += 'T23:59:59.000+08:00'
+  params.value.endTime = `${endTime.value.split('T')[0]}T23:59:59.000+08:00`
   emits('updateTime')
 }
 watch(() => params.value, (newVal) => {
