@@ -26,7 +26,7 @@ const getIconUrl = (title: string): string => {
     }"
   >
     <div class="flex flex-row justify-between items-center pb-[16px] ">
-      <div class="flex gap-[6px]" @click="emit('titleClick')">
+      <div class="flex gap-[6px] items-center" @click="emit('titleClick')">
         <img :src="getIconUrl(props.title)" class="wh-[24px]">
         <div class="font-bold text-[#1A6DD8] text-[16px]">
           {{ props.title }}

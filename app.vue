@@ -124,6 +124,16 @@ const themeOverrides: GlobalThemeOverrides = {
     itemBorderActive: '#0068ff',
     itemTextColorActive: '#0068ff',
   },
+  Radio: {
+    buttonColorActive: '#0068ff',
+    buttonColorHover: '#0068ff',
+    buttonColorFocus: '#0068ff',
+    boxShadowHover: 'inset 0 0 0 1px #0068ff',
+    boxShadowActive: 'inset 0 0 0 1px #0068ff',
+    boxShadowFocus:
+      'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)',
+    dotColorActive: '#0068ff',
+  },
 }
 const darkThemeOverrides: GlobalThemeOverrides = {
   Drawer: {
@@ -214,6 +224,16 @@ const darkThemeOverrides: GlobalThemeOverrides = {
     itemBorderColor: '#0068ff',
     itemBorderActive: '#0068ff',
     itemTextColorActive: '#0068ff',
+  },
+  Radio: {
+    buttonColorActive: '#0068ff',
+    buttonColorHover: '#0068ff',
+    buttonColorFocus: '#0068ff',
+    boxShadowHover: 'inset 0 0 0 1px #0068ff',
+    boxShadowActive: 'inset 0 0 0 1px #0068ff',
+    boxShadowFocus:
+      'inset 0 0 0 1px #0068ff, 0 0 0 2px rgba(24, 65, 160, 0.2)',
+    dotColorActive: '#0068ff',
   },
 }
 const theme = computed(() => $colorMode.value === 'light' ? themeOverrides : darkThemeOverrides)
