@@ -331,7 +331,7 @@ const cols = [
                           {{ info?.store?.name || '' }}
                         </div>
                       </div>
-                      <template v-for="(item, index) in checkFilterListToArray" :key="index">
+                      <template v-for="(item, i) in checkFilterListToArray" :key="i">
                         <template v-if="item.find">
                           <template v-if="item.name === 'class_finished' || item.name === 'class_old'">
                             <template v-if="info.type === GoodsType.ProductFinish && item.name === 'class_finished'">
