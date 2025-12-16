@@ -181,7 +181,7 @@ const confirm = () => {
       <common-layout-center>
         <div class="w-full flex justify-between items-center">
           <product-manage-company @change="changeStores" />
-          <div class="text-color pl-[16px]">
+          <div class="text-color pr-[16px]">
             共 {{ printListTotal }} 条打印模板
           </div>
         </div>

@@ -238,7 +238,7 @@ const cols = [
     render(row: ProductHistories) {
       return h(
         'div',
-        { style: 'display: flex; justify-content: flex-end;' },
+        { style: 'display: flex;' },
         [
           h(
             'span',

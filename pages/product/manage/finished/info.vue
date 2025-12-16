@@ -52,7 +52,7 @@ async function loss() {
         <div class="bottom">
           <div class="sm:grid-12">
             <div uno-sm="col-10 offset-1" uno-lg="col-8 offset-2" uno-xl="col-6 offset-3">
-              <div class="px-2 py-2 flex gap-2">
+              <div class="px-4 py-2 flex gap-2">
                 <div class="flex-1">
                   <div class="loss-button" @click="goLoss">
                     报损

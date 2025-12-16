@@ -116,6 +116,14 @@ const themeOverrides: GlobalThemeOverrides = {
     position: 'relative',
     zIndex: 0,
   },
+  // 表格下页码控件颜色设置
+  Pagination: {
+    itemBorderColorActive: '#0068ff',
+    itemBorderColorActiveHover: '#0068ff',
+    itemBorderColor: '#0068ff',
+    itemBorderActive: '#0068ff',
+    itemTextColorActive: '#0068ff',
+  },
 }
 const darkThemeOverrides: GlobalThemeOverrides = {
   Drawer: {
@@ -198,6 +206,14 @@ const darkThemeOverrides: GlobalThemeOverrides = {
   DataTable: {
     position: 'relative',
     zIndex: 0,
+  },
+  // 表格下页码控件颜色设置
+  Pagination: {
+    itemBorderColorActive: '#0068ff',
+    itemBorderColorActiveHover: '#0068ff',
+    itemBorderColor: '#0068ff',
+    itemBorderActive: '#0068ff',
+    itemTextColorActive: '#0068ff',
   },
 }
 const theme = computed(() => $colorMode.value === 'light' ? themeOverrides : darkThemeOverrides)
