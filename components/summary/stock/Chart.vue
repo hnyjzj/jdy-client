@@ -21,10 +21,14 @@ const option = ref<any>({
     left: 'center',
     bottom: 0,
     itemGap: 12,
-    textStyle: { color: '#666666', fontSize: 12 },
+    textStyle: { color: '#808089', fontSize: 12 },
     type: 'scroll',
+    pageColor: 'red',
     pageIconColor: '#999',
     pageIconSize: 12,
+    pageTextStyle: {
+      color: '808089', // 页码颜色
+    },
   },
   series: [
     {
