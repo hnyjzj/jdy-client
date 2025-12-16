@@ -88,7 +88,7 @@ watch(() => params.value, (newVal) => {
               type="datetime" placeholder="选择结束时间" round clearable
             />
           </div>
-          <common-button-rounded content="搜索" @button-click="cofirmTime" />
+          <common-button-rounded content="搜索" padding="7px 16px" @button-click="cofirmTime" />
         </div>
       </template>
     </common-layout-center>
@@ -99,9 +99,5 @@ watch(() => params.value, (newVal) => {
 :deep(.n-date-picker) {
   background-color: transparent;
   width: 100%;
-}
-
-:deep(.n-date-picker-icon svg) {
-  color: #fff;
 }
 </style>

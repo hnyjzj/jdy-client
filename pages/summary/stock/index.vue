@@ -89,7 +89,7 @@ async function changeStores() {
 
         <!-- 自定义日期选择器 -->
         <div class="flex justify-center mb-4">
-          <div v-if="dateMode === 'custom'" class="w-[40%]">
+          <div v-if="dateMode === 'custom'" class="w-[80%] md:w-[40%]">
             <n-date-picker v-model:value="customDate" type="date" clearable />
           </div>
         </div>
