@@ -50,14 +50,14 @@ watch(() => params.value, (newVal) => {
               <product-manage-company @change="emits('changeStores')" />
             </template>
           </div>
-          <div class="w-[120px] pr-[16px]">
+          <div class="w-[124px] pr-[16px]">
             <n-select
               v-model:value="params.duration"
               size="small"
               :style="{
                 '--n-color': '#DFE9FF',
               }"
-              placeholder="请选择时间范围"
+              placeholder="请选择时间"
               clearable
               remote
               :options="optonsToSelect(props.timeWhere?.duration?.preset ?? [])"

@@ -23,13 +23,13 @@ onBeforeUnmount(() => {
       <template #default>
         <div :id="id" class="flex overflow-x-scroll gap-[20px] ">
           <template v-for="(item, key) in props.payments" :key="key">
-            <div class="flex-grow-1 flex-shrink-0 ">
-              <div class="color-[#333] dark:color-[#fff] flex justify-center gap-[6px] font-semibold pb-[6px] line-height-[24px] text-center">
+            <div class="flex-grow-1 flex-shrink-0">
+              <div class="text-[16px] color-[#333] dark:color-[#fff] flex items-center justify-center gap-[2px] font-semibold pb-[6px] line-height-[24px] text-center">
                 <common-tooltip :val="item.toString()" placement="top" /><span class="text-[12px] font-normal">
-                  {{ unit(key) }}</span>
+                  {{ unitsd(key) }}</span>
               </div>
               <div class="text-center">
-                <div class="color-[#808089] dark:color-[#fff] ml-[4px] text-[12px]  line-height-[24px] ">
+                <div class="color-[#808089] dark:color-[#fff] ml-[4px] text-[13px]  line-height-[24px] ">
                   {{ key }}
                 </div>
               </div>
