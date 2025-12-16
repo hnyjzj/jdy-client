@@ -126,17 +126,14 @@ const confirm = () => {
 
 <template>
   <div class="">
-    <common-model
-      v-model:model-value="delModel"
-      :show-ok="true"
-      title="删除打印模板"
-      @confirm="delConfirm"
-      @cancel="modCancel"
-    >
-      <div class="font-[14px] color-[#333] my-[56px] text-center">
-        打印模板删除后<span class="font-semibold color-[#FF2F2F] px-[4px]">无法恢复</span>，是否确认删除？
-      </div>
-    </common-model>
+    <common-confirm
+      v-model:show="delModel"
+      title="删除提示"
+      text="打印模板删除后无法恢复,是否确认删除?"
+      icon="error"
+      @submit="delConfirm"
+
+    />
 
     <common-model
       v-model:model-value="copyModel"
