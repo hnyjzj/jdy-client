@@ -197,7 +197,7 @@ function toggleCategory(id: string) {
         <div class="flex items-center gap-4">
           <div class="flex-1">
             <n-input
-              v-model:value="searchParams.val" placeholder="请搜索配件名称" @focus="focus" @keydown.enter.prevent="searchAccessorie" />
+              v-model:value="searchParams.val" placeholder="请搜索配件名称" @focus="focus" @keydown.enter.prevent="searchAccessorie" @keydown.tab.prevent />
           </div>
           <div @click="searchAccessorie">
             搜索
