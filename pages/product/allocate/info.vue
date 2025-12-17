@@ -435,7 +435,7 @@ const printFun = async () => {
                   @change="searchParams.val = ''" />
               </div>
               <div>
-                <n-input v-model:value="searchParams.val" placeholder="请搜索" @keydown.enter="searchOldList" @focus="focus" />
+                <n-input v-model:value="searchParams.val" placeholder="请搜索" @keydown.enter.prevent="searchOldList" @keydown.tab.prevent @focus="focus" />
               </div>
               <div @click="searchOldList">
                 搜索
