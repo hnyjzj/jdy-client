@@ -95,7 +95,7 @@ const openSearch = () => {
                 clearable
                 placeholder="请输入商品条码"
                 size="large"
-                @keydown.enter="search"
+                @keydown.enter.prevent="search"
                 @focus="focus"
               />
             </div>
