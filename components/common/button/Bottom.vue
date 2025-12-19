@@ -41,7 +41,7 @@ const confirm = () => {
             </button>
           </template>
 
-          <button class="btn-right cursor-pointer" @click="confirm">
+          <button class="btn-right cursor-pointer" @click.prevent="confirm">
             <slot name="confirm">
               {{ props.confirmText }}
             </slot>

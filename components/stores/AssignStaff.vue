@@ -51,8 +51,7 @@ const searchStaff = (query: string) => {
   getStaff(query)
 }
 
-const handleValidateButtonClick = (e: MouseEvent) => {
-  e.preventDefault()
+const handleValidateButtonClick = () => {
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
       if (!props.nowidStaff) {

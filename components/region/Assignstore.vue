@@ -49,8 +49,7 @@ const searchStores = (query: string) => {
   getStores(query)
 }
 
-const handleValidateButtonClick = (e: MouseEvent) => {
-  e.preventDefault()
+const handleValidateButtonClick = () => {
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
       if (!props.nowid)
