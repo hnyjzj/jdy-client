@@ -4,8 +4,9 @@
 useSeoMeta({
   title: '销售明细',
 })
-const { myStore } = storeToRefs(useStores())
 // 获取销售明细列表
+const { StoreStaffList, myStore } = storeToRefs(useStores())
+const { getStoreStaffList } = useStores()
 const { getStatementList, getStatementWhere, getStatementListAll } = useStatement()
 const { statementList, total, filterListToArray, filterList, showtype } = storeToRefs(useStatement())
 const { searchPage } = storeToRefs(usePages())
@@ -21,6 +22,11 @@ const filterData = ref({} as Partial<StatementWhere>)
 const filterShow = ref(false)
 const limits = ref(50)
 const tableLoading = ref(false)
+const getSaleman = async () => {
+  if (!myStore.value.id)
+    return
+  await getStoreStaffList({ id: myStore.value.id })
+}
 
 await getFinishedWhere()
 await getOldWhere()
@@ -38,6 +44,7 @@ const getList = async (where = {} as Partial<StatementWhere>) => {
 }
 // 打开高级筛选
 const openFilter = () => {
+  getSaleman()
   // 打开筛选
   filterShow.value = true
 }
@@ -369,6 +376,20 @@ const exportExcel = async () => {
     <common-filter-where v-model:show="filterShow" :data="filterData" :filter="filterListToArray" @submit="submitWhere" @reset="resetWhere">
       <template #order_id>
         <n-input v-model:value="filterData.order_id" placeholder="请输入销售单订单号" clearable size="large" />
+      </template>
+      <template #salesman_id>
+        <n-select
+          v-model:value="filterData.salesman_id"
+          placeholder="请选择导购员"
+          :options="StoreStaffList.map(v => ({
+            label: v.nickname,
+            value: v.id,
+          }))"
+          size="large"
+          clearable
+          remote
+          @focus="getSaleman"
+        />
       </template>
     </common-filter-where>
   </div>
