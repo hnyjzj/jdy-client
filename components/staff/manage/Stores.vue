@@ -278,8 +278,7 @@ if (storeForm.value.region_admin_ids?.length) {
   RegionsAdmin.value = defaultform.value.region_admin_ids || []
 }
 const formRef = ref()
-function handleValidateButtonClick(e: MouseEvent) {
-  e.preventDefault()
+function handleValidateButtonClick() {
   formRef.value?.validate((errors: any) => {
     if (!errors) {
       emits('submit')
