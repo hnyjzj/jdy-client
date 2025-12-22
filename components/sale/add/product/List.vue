@@ -6,17 +6,18 @@ const Props = defineProps<{
 }>()
 const emit = defineEmits<{
   updateScoreDeduction: []
-  delPorduct: []
+  delPorduct: [val: string]
 }>()
 const orderObject = defineModel<Orders>({ default: {} as Orders })
 const hasCheck = ref(false)
 
 const deleteDialog = ref(false)
 const dleId = ref(0)
-
+// 删除旧料兑换的的code
+const del_code = ref('')
 const delProduct = () => {
   orderObject.value.showProductList?.splice(dleId.value, 1)
-  emit('delPorduct')
+  emit('delPorduct', del_code.value)
   dleId.value = 0
   // 判断,如果成品列表为空, 设置 整单, 抹零,积分抵扣为undefined
   if (orderObject.value.showProductList?.length === 0) {
@@ -26,7 +27,8 @@ const delProduct = () => {
   }
 }
 // 删除商品
-const deleteProduct = (index: number) => {
+const deleteProduct = (index: number, code?: string) => {
+  del_code.value = code || ''
   dleId.value = index
   deleteDialog.value = true
 }
@@ -325,7 +327,7 @@ const count = (p: OrderProductFinished) => {
                 </n-grid>
                 <div class="flex justify-between items-center">
                   <div>
-                    <div class="p-[8px] col-2 flex-center-row cursor-pointer gap-[6px]" @click="deleteProduct(ix)">
+                    <div class="p-[8px] col-2 flex-center-row cursor-pointer gap-[6px]" @click="deleteProduct(ix, obj.code)">
                       <icon name="i-svg:delete" :size="16" />
                       <span class="color-[#FF2F2F]">删除</span>
                     </div>
