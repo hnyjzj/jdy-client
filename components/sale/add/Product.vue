@@ -164,10 +164,19 @@ const addProduct = async (products: ProductFinisheds[]) => {
   })
 }
 
-const updateDelFn = () => {
+const updateDelFn = (del_code: string) => {
   handleAmountReduceBlur(orderObject.value.round_off || 0)
   handleScoreReduceBlur(orderObject.value.integral_deduction || 0)
   handleDiscountRateBlur(orderObject.value.discount_rate || 0)
+  if (del_code) {
+    // 判断如果存在code ,就删除掉展示旧料列表中的对应的code
+    orderObject.value.showMasterialsList?.forEach((item) => {
+      if (item.exchange_finisheds?.includes(del_code)) {
+        const index = item.exchange_finisheds?.indexOf(del_code)
+        item.exchange_finisheds?.splice(index, 1)
+      }
+    })
+  }
 }
 </script>
 
