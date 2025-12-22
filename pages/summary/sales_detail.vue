@@ -128,7 +128,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <div class="blur-bgc mb-[16px] text-[#FFF]">
+    <div class="blur-bgc mb-[16px]">
       <common-layout-center>
         <div class="w-fit ">
           <product-manage-company @change="changeStore" />

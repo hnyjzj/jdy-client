@@ -68,7 +68,7 @@ const handleDelete = () => {
     <div class="col-12 flex flex-col gap-[20px] px-[16px] py-[16px]" uno-lg="col-8 offset-2">
       <div class="flex flex-row items-center justify-between gap-[32px]">
         <div class="flex flex-row items-center gap-[12px] flex-1">
-          <product-manage-company class="color-[#fff]" />
+          <product-manage-company />
           <product-filter-search class="color-[#fff] flex-1" />
         </div>
         <product-filter-senior class="color-[#fff]" />

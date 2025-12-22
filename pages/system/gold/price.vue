@@ -104,7 +104,7 @@ function subtract(i: number, id: GoldPrices['id']) {
   <div>
     <div class="blur-bgc">
       <common-layout-center>
-        <div class="grid-12 color-[#fff]">
+        <div class="grid-12">
           <div class="col-5" uno-sm="col-3" uno-lg="col-2">
             <product-manage-company />
           </div>

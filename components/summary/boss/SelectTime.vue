@@ -43,7 +43,7 @@ watch(() => params.value, (newVal) => {
 
 <template>
   <div>
-    <div class="blur-bgc py-[6px] mb-[16px] text-[#FFF]">
+    <div class="blur-bgc py-[6px] mb-[16px]">
       <common-layout-center>
         <div class="flex justify-between items-center">
           <div>
