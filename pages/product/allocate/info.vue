@@ -519,7 +519,7 @@ const printFun = async () => {
     </template>
     <!-- 调入门店者操作 调拨方式未调拨入库是没有权限设置 -->
     <template v-if="allocateInfo.status === AllocateStatus.InTransit">
-      <template v-if="allocateInfo.method === 2 || myStore.id === allocateInfo.to_store_id">
+      <template v-if="myStore.id === allocateInfo.to_store_id">
         <common-button-bottom cancel-text="取消调拨" confirm-text="完成调拨" @cancel="cancel" @confirm="finish" />
       </template>
       <template v-if="myStore?.id === allocateInfo.from_store_id">

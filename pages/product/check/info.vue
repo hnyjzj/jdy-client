@@ -427,6 +427,20 @@ function removeImg(data: { index: number }) {
   tempList.splice(data.index, 1)
   previewFileList.value = tempList
 }
+
+/** 修复异常弹窗回显 */
+function exceptions() {
+  repair_reason.value = checkInfo.value?.repair_reason
+  if (checkInfo.value?.repair_images?.length) {
+    previewFileList.value = checkInfo.value.repair_images.map((url, index) => ({
+      id: `${index}`,
+      name: '图片',
+      status: 'finished',
+      url: ImageUrl(url),
+    }))
+  }
+  abnormalModel.value = true
+}
 </script>
 
 <template>
@@ -500,34 +514,6 @@ function removeImg(data: { index: number }) {
                       {{ checkInfo.remark || '--' }}
                     </div>
                   </div>
-                  <template v-if="checkInfo.status === CheckStatus.Repair">
-                    <div class="part">
-                      <div class="left">
-                        原因
-                      </div>
-                      <div class="right">
-                        {{ checkInfo.repair_reason || '--' }}
-                      </div>
-                    </div>
-                    <div class="part items-center">
-                      <div class="left">
-                        凭证
-                      </div>
-                      <div class="right">
-                        <template v-for="(item, index) in checkInfo.repair_images" :key="index">
-                          <n-image
-                            :src="ImageUrl(item)"
-                            class="mr-2"
-                            width="80"
-                            height="80"
-                            :style="{
-                              borderRadius: `${20}px`,
-                            }"
-                          />
-                        </template>
-                      </div>
-                    </div>
-                  </template>
                 </div>
                 <div class="line-space" />
                 <div class="product-information flex flex-col gap-1">
@@ -636,6 +622,45 @@ function removeImg(data: { index: number }) {
                     </div>
                   </div>
                 </div>
+                <template v-if="checkInfo.status === CheckStatus.Repair">
+                  <div class="line-space" />
+                  <div class="part">
+                    <div class="left">
+                      修复原因
+                    </div>
+                    <div class="right">
+                      {{ checkInfo.repair_reason || '--' }}
+                    </div>
+                  </div>
+                  <div class="part items-center">
+                    <div class="left">
+                      修复凭证
+                    </div>
+                    <div class="right">
+                      <template v-if="checkInfo.repair_images?.length">
+                        <template v-for="(item, index) in checkInfo.repair_images" :key="index">
+                          <n-image
+                            :src="ImageUrl(item)"
+                            class="mr-2"
+                            width="80"
+                            height="80"
+                            :style="{
+                              borderRadius: `${20}px`,
+                            }"
+                          />
+                        </template>
+                      </template>
+                    </div>
+                  </div>
+                  <div class="part">
+                    <div class="left" />
+                    <div class="right">
+                      <div class="w-30">
+                        <common-button-rounded bgc="transparent" padding="4px 8px" border="#DC2626 1px solid" color="#DC2626" content="修复异常" @button-click="exceptions" />
+                      </div>
+                    </div>
+                  </div>
+                </template>
               </div>
             </template>
           </common-card-info>
@@ -706,20 +731,20 @@ function removeImg(data: { index: number }) {
       </div>
     </template>
     <template v-if="checkInfo.status === CheckStatus.Abnormal && checkInfo.store_id === myStore.id && checkInfo.inspector_id === userinfo.id">
-      <common-button-one text="处理异常" @confirm="abnormalModel = true" />
+      <common-button-one text="修复异常" @confirm="abnormalModel = true" />
     </template>
 
-    <common-model v-model="abnormalModel" :show-ok="true" title="处理异常" @confirm="submitAbnormal" @cancel="repair_reason = ''">
+    <common-model v-model="abnormalModel" :show-ok="true" title="修复异常" @confirm="submitAbnormal" @cancel="repair_reason = ''">
       <div class="mb-8 relative min-h-[200px]">
         <div class="flex items-center">
           <div class="shrink-0 mr-4">
-            原因
+            修复原因
           </div>
           <n-input v-model:value="repair_reason" type="textarea" placeholder="请输入处理异常原因" />
         </div>
         <div class="flex items-center mt-4">
           <div class="shrink-0 mr-4">
-            凭证
+            修复凭证
           </div>
           <n-upload
             action="#"
