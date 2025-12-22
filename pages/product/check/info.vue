@@ -430,13 +430,15 @@ function removeImg(data: { index: number }) {
 
 /** 修复异常弹窗回显 */
 function exceptions() {
-  repair_reason.value = checkInfo.value.repair_reason
-  previewFileList.value = checkInfo.value.repair_images.map((url, index) => ({
-    id: `${index}`,
-    name: '图片',
-    status: 'finished',
-    url: ImageUrl(url),
-  }))
+  repair_reason.value = checkInfo.value?.repair_reason
+  if (checkInfo.value?.repair_images?.length) {
+    previewFileList.value = checkInfo.value.repair_images.map((url, index) => ({
+      id: `${index}`,
+      name: '图片',
+      status: 'finished',
+      url: ImageUrl(url),
+    }))
+  }
   abnormalModel.value = true
 }
 </script>
@@ -727,7 +729,7 @@ function exceptions() {
       </div>
     </template>
     <template v-if="checkInfo.status === CheckStatus.Abnormal && checkInfo.store_id === myStore.id && checkInfo.inspector_id === userinfo.id">
-      <common-button-one text="处理异常" @confirm="abnormalModel = true" />
+      <common-button-one text="修复异常" @confirm="abnormalModel = true" />
     </template>
 
     <common-model v-model="abnormalModel" :show-ok="true" title="修复异常" @confirm="submitAbnormal" @cancel="repair_reason = ''">
