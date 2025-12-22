@@ -142,7 +142,7 @@ function handleValidateButtonClick() {
     <div class="blur-bgc">
       <common-layout-center>
         <div class="flex flex-row gap-2">
-          <product-manage-company class="text-[#FFF]" />
+          <product-manage-company />
         </div>
       </common-layout-center>
     </div>
