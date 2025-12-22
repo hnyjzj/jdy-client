@@ -637,16 +637,18 @@ function exceptions() {
                       修复凭证
                     </div>
                     <div class="right">
-                      <template v-for="(item, index) in checkInfo.repair_images" :key="index">
-                        <n-image
-                          :src="ImageUrl(item)"
-                          class="mr-2"
-                          width="80"
-                          height="80"
-                          :style="{
-                            borderRadius: `${20}px`,
-                          }"
-                        />
+                      <template v-if="checkInfo.repair_images?.length">
+                        <template v-for="(item, index) in checkInfo.repair_images" :key="index">
+                          <n-image
+                            :src="ImageUrl(item)"
+                            class="mr-2"
+                            width="80"
+                            height="80"
+                            :style="{
+                              borderRadius: `${20}px`,
+                            }"
+                          />
+                        </template>
                       </template>
                     </div>
                   </div>
