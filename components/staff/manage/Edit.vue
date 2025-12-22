@@ -60,8 +60,7 @@ const rules = {
 } as FormRules
 
 const formRef = ref()
-function handleValidateButtonClick(e: MouseEvent) {
-  e.preventDefault()
+function handleValidateButtonClick() {
   formRef.value?.validate((errors: any) => {
     if (!errors) {
       emits('submit')

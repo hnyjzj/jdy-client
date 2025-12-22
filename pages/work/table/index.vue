@@ -215,7 +215,7 @@ const beforeUpload = (data: any) => {
           <div class="flex-1 pr-3 sm:px-4 z-1">
             <product-filter-search @submit="searchListFn" />
           </div>
-          <auth-verify :min="UserLevel.IdentitySuperAdmin">
+          <auth-verify :min="UserLevel.IdentityAdmin">
             <div
               class="flex items-center justify-end cursor-pointer z-1"
               @click="set">
