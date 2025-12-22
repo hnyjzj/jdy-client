@@ -23,8 +23,7 @@ const rules = {
 }
 
 // 表单校验
-const handleValidateButtonClick = (e: MouseEvent) => {
-  e.preventDefault()
+const handleValidateButtonClick = () => {
   formRef.value?.validate((errors: any) => {
     if (!errors) {
       emits('submit')

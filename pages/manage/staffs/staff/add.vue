@@ -104,8 +104,7 @@ const uploadFile = async (file: any, onfinish?: () => void) => {
   }
 }
 const formRef = ref()
-function handleValidateButtonClick(e: MouseEvent) {
-  e.preventDefault()
+function handleValidateButtonClick() {
   formRef.value?.validate(async (errors: any) => {
     if (!errors) {
       const res = await createStaff(formlist.value)

@@ -14,6 +14,7 @@ interface StatementWhere {
   showtype?: 'list' | 'table'
   searchPage?: number
   limits?: number
+  salesman_id?: string
 }
 
 /*
