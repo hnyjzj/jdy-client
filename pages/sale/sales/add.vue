@@ -112,7 +112,7 @@ const handleValidateButtonClick = async () => {
       const isCashierOrGuide = orderObject.value.clerks?.filter(
         item => item.salesman_id === userinfo.value.id,
       )
-      if ((userinfo.value.id !== orderObject.value.cashier_id) || !isCashierOrGuide.length) {
+      if ((userinfo.value.id !== orderObject.value.cashier_id) && !isCashierOrGuide.length) {
         $toast.error('开单人必须是收银员或者导购员')
         return
       }
