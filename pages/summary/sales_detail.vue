@@ -68,7 +68,7 @@ const printFn = () => {
         start: model.value.start_time,
         end: model.value.end_time,
         font: '10px',
-        store: myStore.value.name,
+        store: myStore.value.alias,
         time: checkTime.value,
       })
     },
@@ -189,7 +189,7 @@ onMounted(() => {
               </div>
             </n-form>
           </div>
-          <PrintStatement :store="myStore.name" :time="checkTime" :start="model.start_time" :end="model.end_time" :salesman="salesman" />
+          <PrintStatement :store="myStore.alias" :time="checkTime" :start="model.start_time" :end="model.end_time" :salesman="salesman" />
         </div>
       </div>
     </common-layout-center>
