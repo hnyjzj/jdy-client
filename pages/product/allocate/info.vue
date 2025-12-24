@@ -144,7 +144,6 @@ async function addProduct() {
     $toast.success('添加成功')
     pCode.value = ''
     loading.value = false
-    isAddModel.value = false
   }
   else {
     $toast.error(res?.message ?? '添加失败')
