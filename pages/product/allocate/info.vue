@@ -131,8 +131,27 @@ const delProduct = useThrottleFn(async (code: ProductFinisheds['code'] | Product
   loading.value = false
 }, 200)
 
+const scanit = useDebounceFn(async () => {
+  try {
+    const wx = await useWxWork()
+    const code = await wx?.scanQRCode()
+    if (code) {
+      pCode.value = code.trim()
+      await addProduct(true)
+    }
+    else {
+      $toast.error('扫码失败，请重试')
+    }
+  }
+  catch (error) {
+    throw new Error(`扫码失败: ${error || '未知错误'}`)
+  }
+}, 1000)
+
 /** 添加产品 */
-async function addProduct() {
+async function addProduct(isScanit = false) {
+  if (!pCode.value)
+    return $toast.error('请添加正确条码')
   const params = {
     id: allocateInfo.value?.id,
     /** 旧料搜索时使用 旧料搜索code集合 */
@@ -144,28 +163,13 @@ async function addProduct() {
     $toast.success('添加成功')
     pCode.value = ''
     loading.value = false
-    isAddModel.value = false
+    if (isScanit)
+      await scanit()
   }
   else {
     $toast.error(res?.message ?? '添加失败')
   }
 }
-
-const scanit = useDebounceFn(async () => {
-  try {
-    const wx = await useWxWork()
-    const code = await wx?.scanQRCode()
-    if (code) {
-      pCode.value = code
-    }
-    else {
-      $toast.error('扫码失败，请重试')
-    }
-  }
-  catch (error) {
-    throw new Error(`扫码失败: ${error || '未知错误'}`)
-  }
-}, 1000)
 
 /** 调拨产品列表 */
 const productList = computed(() => {
@@ -399,11 +403,11 @@ const printFun = async () => {
         </template>
       </div>
     </div>
-    <common-model v-model="isAddModel" title="添加" :show-ok="true" cancel-text="取消" confirm-text="确认添加" @confirm="addProduct()">
-      <div class="min-h-[140px]">
+    <common-model v-model="isAddModel" title="添加" :show-ok="true" cancel-text="取消" confirm-text="确认添加" @cancel="pCode = ''" @confirm="addProduct()">
+      <div class="min-h-[200px]">
         <template v-if="type === GoodsTypePure.ProductFinish">
           <div class="flex justify-center items-center mb-6">
-            <n-input v-model:value="pCode" placeholder="输入成品条码" round @focus="focus" />
+            <n-input v-model:value="pCode" placeholder="输入成品条码" clearable round @clear="pCode = ''" @focus="focus" />
             <template v-if="checkEnv()">
               <icon class="ml-2" name="i-icon:scanit" :size="18" @click="scanit" />
             </template>
@@ -420,7 +424,7 @@ const printFun = async () => {
           </div>
           <template v-if="!isOldCodeSearch">
             <div class="flex justify-center items-center mb-6">
-              <n-input v-model:value="pCode" placeholder="输入产品条码" round @focus="focus" />
+              <n-input v-model:value="pCode" placeholder="输入产品条码" clearable round @clear="pCode = ''" @focus="focus" />
               <template v-if="checkEnv()">
                 <icon class="ml-2" name="i-icon:scanit" :size="18" @click="scanit" />
               </template>
