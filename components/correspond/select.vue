@@ -42,7 +42,7 @@ function handleSelect(id: string) {
       </n-input>
     </div>
 
-    <div class="h-[270px] overflow-y-auto">
+    <div class="h-[270px] overflow-y-auto text-color">
       <template v-if="filteredStores.length">
         <div
           v-for="item in filteredStores"

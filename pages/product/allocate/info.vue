@@ -403,11 +403,11 @@ const printFun = async () => {
         </template>
       </div>
     </div>
-    <common-model v-model="isAddModel" title="添加" :show-ok="true" cancel-text="取消" confirm-text="确认添加" @confirm="addProduct()">
+    <common-model v-model="isAddModel" title="添加" :show-ok="true" cancel-text="取消" confirm-text="确认添加" @cancel="pCode = ''" @confirm="addProduct()">
       <div class="min-h-[200px]">
         <template v-if="type === GoodsTypePure.ProductFinish">
           <div class="flex justify-center items-center mb-6">
-            <n-input v-model:value="pCode" placeholder="输入成品条码" round @focus="focus" />
+            <n-input v-model:value="pCode" placeholder="输入成品条码" clearable round @clear="pCode = ''" @focus="focus" />
             <template v-if="checkEnv()">
               <icon class="ml-2" name="i-icon:scanit" :size="18" @click="scanit" />
             </template>
@@ -424,7 +424,7 @@ const printFun = async () => {
           </div>
           <template v-if="!isOldCodeSearch">
             <div class="flex justify-center items-center mb-6">
-              <n-input v-model:value="pCode" placeholder="输入产品条码" round @focus="focus" />
+              <n-input v-model:value="pCode" placeholder="输入产品条码" clearable round @clear="pCode = ''" @focus="focus" />
               <template v-if="checkEnv()">
                 <icon class="ml-2" name="i-icon:scanit" :size="18" @click="scanit" />
               </template>
