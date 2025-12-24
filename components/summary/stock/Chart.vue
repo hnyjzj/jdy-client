@@ -101,7 +101,7 @@ const tdColor = computed(() => {
 </script>
 
 <template>
-  <n-spin :show="props.loading" stroke="#fff" size="large">
+  <n-spin :show="props.loading" stroke="#CBCDD1" size="large">
     <div
       class="mt-[16px] overflow-hidden bg"
       :style="{

@@ -127,7 +127,7 @@ const tdColor = computed(() => {
 </script>
 
 <template>
-  <n-spin :show="props.loading" stroke="#fff" size="large">
+  <n-spin :show="props.loading" stroke="#CBCDD1" size="large">
     <div
       class="mt-[16px] overflow-hidden bg" :style="{
         background: $colorMode.value === 'dark' ? '#1D2C60' : 'linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%)',
