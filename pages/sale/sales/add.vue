@@ -113,7 +113,7 @@ const handleValidateButtonClick = async () => {
         item => item.salesman_id === userinfo.value.id,
       )
       if ((userinfo.value.id !== orderObject.value.cashier_id) && !isCashierOrGuide.length) {
-        $toast.error('仅收银员或导购员开单')
+        $toast.error('仅允许收银员或导购员开单')
         return
       }
 
