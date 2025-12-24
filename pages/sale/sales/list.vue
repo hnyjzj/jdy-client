@@ -262,6 +262,7 @@ const exportExcel = async () => {
       :product-list-total="total"
       placeholder="搜索订单号"
       :is-export="true"
+      :export-level="UserLevel.IdentityShopkeeper"
       @export="exportExcel" @change-card="changeCard" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
       <template #company>
         <product-manage-company @change="changeStores" />

@@ -190,6 +190,7 @@ const cols = [
       v-model:showtype="showtype"
       v-model:search-key="searchKey"
       :product-list-total="total"
+      :export-level="UserLevel.IdentityShopkeeper"
       placeholder="搜索订单号" @change-card="changeCard" @filter="openFilter" @search="searchOrder" @clear-search="clearFn">
       <template #company>
         <product-manage-company @change="changeStores" />
