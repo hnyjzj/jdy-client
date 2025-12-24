@@ -20,6 +20,7 @@ const { OrderDetail } = storeToRefs(useDepositOrder())
 const { getOrderDetail } = useDepositOrder()
 const { getFinishedWhere, getFinishedsClass } = useFinished()
 const { getMemberWhere } = useMemberManage()
+const { userinfo } = storeToRefs(useUser())
 const route = useRoute()
 const Key = ref()
 const addMemberRef = ref()
@@ -107,6 +108,15 @@ const handleValidateButtonClick = async () => {
         $toast.error('请先添加会员')
         return
       }
+      // 判断是否开单人是否是收银员或者导购员,不是则不能开单
+      const isCashierOrGuide = orderObject.value.clerks?.filter(
+        item => item.salesman_id === userinfo.value.id,
+      )
+      if ((userinfo.value.id !== orderObject.value.cashier_id) && !isCashierOrGuide.length) {
+        $toast.error('仅允许收银员或导购员开单')
+        return
+      }
+
       // 判断业绩比例是否等于百分之100
       if (!judgePerformance_rate()) {
         return
