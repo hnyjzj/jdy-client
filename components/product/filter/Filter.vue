@@ -8,11 +8,14 @@ const props = withDefaults(defineProps<{
   /** 是否显示输入搜索框 */
   showInput?: boolean
   isExport?: boolean
+  /** 可导出权限等级 */
+  exportLevel?: UserLevel
 }>(), {
   showCompany: true,
   showInput: true,
   isExport: false,
 })
+
 const emits = defineEmits<{
   search: [e: string]
   clear: []
@@ -21,6 +24,21 @@ const emits = defineEmits<{
   changeCard: []
   export: []
 }>()
+
+const { userinfo } = storeToRefs(useUser())
+
+const canExport = computed(() => {
+  // 父组件没开启导出，直接 false
+  if (!props.isExport)
+    return false
+
+  // 没设置导出等级，默认允许
+  if (!props.exportLevel)
+    return true
+
+  // 根据用户身份判断
+  return userinfo.value.identity >= props.exportLevel
+})
 const showtype = defineModel<'table' | 'list'>('showtype')
 const search = (e: string) => {
   emits('search', e)
@@ -54,7 +72,7 @@ const searchKey = defineModel<string>('searchKey', { required: false, default: '
             </div>
           </div>
         </template>
-        <common-tool-list v-model:showtype="showtype" :is-export="isExport" :total="props.productListTotal" @export="emits('export')" @height="filter" @change-card="emits('changeCard')" />
+        <common-tool-list v-model:showtype="showtype" :is-export="canExport" :total="props.productListTotal" @export="emits('export')" @height="filter" @change-card="emits('changeCard')" />
       </div>
     </common-layout-center>
   </div>
