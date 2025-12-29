@@ -150,8 +150,9 @@ const scanit = useDebounceFn(async () => {
 
 /** 添加产品 */
 async function addProduct(isScanit = false) {
-  if (!pCode.value)
+  if (!isOldCodeSearch.value && !pCode.value)
     return $toast.error('请添加正确条码')
+
   const params = {
     id: allocateInfo.value?.id,
     /** 旧料搜索时使用 旧料搜索code集合 */
