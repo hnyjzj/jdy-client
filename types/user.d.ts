@@ -14,4 +14,5 @@ interface UserOpts {
   iconName: string
   optName: string
   link: string
+  rightText?: string
 }

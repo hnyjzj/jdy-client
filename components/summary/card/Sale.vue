@@ -11,7 +11,7 @@ const props = withDefaults(defineProps<{
 const emit = defineEmits<{
   clickTitle: []
 }>()
-const { $colorMode } = useNuxtApp()
+
 const id = useId()
 const { run, stop } = addMouseEvent(`#${id}`)
 onMounted(() => {
@@ -55,8 +55,8 @@ const toTodayPrice = () => {
           <div
             class="flex-grow-1 flex finished gap-[16px] px-[16px] py-[8px] rounded-[8px] col-12 "
             uno-sm="col-6"
-            :style="{ background: $colorMode.value === 'light'
-              ? 'linear-gradient(92.3deg, #fefbff 49.62%, #f5e0ff 103.48%)' : 'linear-gradient(96.41deg, #0F1E52 76.65%, #672580 102.56%)' }"
+            uno-bg="[linear-gradient(92.3deg,_#fefbff_49.62%,_#f5e0ff_103.48%)] "
+            uno-dark:bg="[linear-gradient(96.41deg,_#0f1e52_76.65%,_#672580_102.56%)]"
           >
             <icon name="i-svg:finished-salesmoney" class="wh-[46px] " />
             <div>
@@ -71,8 +71,9 @@ const toTodayPrice = () => {
           <div
             class="flex-grow-1 flex gap-[16px] return px-[16px] py-[8px] rounded-[8px] col-12"
             uno-sm="col-6"
-            :style="{ background: $colorMode.value === 'light'
-              ? 'linear-gradient(91.88deg, #FFFFFF 5.12%, #FFEFE2 99.55%)' : 'linear-gradient(96deg,  #0F1E52 76.65%, #633A16 101.86%)' }">
+            uno-bg="[linear-gradient(91.88deg,_#FFFFFF_5.12%,_#FFEFE2_99.55%)] "
+            uno-dark:bg="[linear-gradient(96deg,_#0F1E52_76.65%,_#633A16_101.86%)]"
+          >
             <icon name="i-svg:return-goodmoney" class="wh-[46px]" />
             <div>
               <div class="color-[#808089] text-[14px] line-height-[24px] pb-[4px]">

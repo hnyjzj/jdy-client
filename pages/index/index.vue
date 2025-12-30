@@ -10,6 +10,7 @@ const { TodayInventory, todaySaleData, Payments, targetStatistic } = storeToRefs
 const { myStore } = storeToRefs(useStores())
 const { getMyStore } = useStores()
 const { getPerformanceList } = useBoss()
+
 if (!myStore.value.id) {
   await getMyStore()
 }
@@ -53,7 +54,6 @@ onMounted(async () => {
         <div>
           <div class="flex items-center justify-between mb-[16px]">
             <product-manage-company :is-white="true" @change="handleSelectFn" />
-            <common-dark />
           </div>
           <div class="pl-[16px]">
             <home-greet />

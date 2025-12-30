@@ -14,7 +14,7 @@ const emits = defineEmits<{
   update: [val: T]
   updateError: [val: boolean]
 }>()
-const { $colorMode } = useNuxtApp()
+const { isDark } = storeToRefs(useThemeStore())
 // 显示选择器
 const areaShow = ref(false)
 const areaText = ref('')
@@ -79,21 +79,21 @@ const bordercolor = computed(() => {
 
   // 如果没有校验，则根据颜色模式设置透明或默认灰色边框
   if (!props.border) {
-    return $colorMode.value === 'dark'
+    return isDark.value
       ? '1px solid rgba(255, 255, 255, 0)'
       : color
   }
 
   // 如果有校验且文本区域为空，则根据颜色模式设置红色边框
   if (props.border && areaText.value === '') {
-    return $colorMode.value === 'light'
-      ? '1px solid #d03050'
-      : '1px solid #E88080'
+    return isDark.value
+      ? '1px solid #E88080'
+      : '1px solid #d03050'
   }
   else if (props.border && areaText.value !== '') {
-    return $colorMode.value === 'light'
-      ? '1px solid #E0E0E6'
-      : '1px solid transparent'
+    return isDark.value
+      ? '1px solid transparent'
+      : '1px solid #E0E0E6'
   }
 
   return color

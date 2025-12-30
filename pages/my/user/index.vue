@@ -11,15 +11,25 @@ const { getUserInfo } = useUser()
 const { getStaffWhere } = useStaff()
 const { filterList } = storeToRefs(useStaff())
 const { exit } = useAuth()
+const { followSystem } = storeToRefs(useThemeStore())
+const { isDark } = storeToRefs(useThemeStore())
 await getUserInfo()
 await getStaffWhere()
 
 const optionsList = ref<UserOpts[]>([{
+  iconName: 'i-svg:theme-color',
+  optName: '主题设置',
+  rightText: '',
+  link: '/my/user/theme',
+}, {
   iconName: 'i-svg:my-profile',
   optName: '资料管理',
   link: '/my/user/information',
 }])
 
+onMounted(() => {
+  optionsList.value[0].rightText = followSystem.value ? '跟随系统' : isDark.value ? '深色模式' : '浅色模式'
+})
 const Logout = () => {
   exit()
 }

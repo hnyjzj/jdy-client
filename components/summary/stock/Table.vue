@@ -45,18 +45,19 @@ const data = computed(() => {
   })
 })
 
-const { $colorMode } = useNuxtApp()
+const { isDark } = storeToRefs(useThemeStore())
 const tdColor = computed(() => {
-  return $colorMode.value === 'light' ? '#1A6DD8' : '#fff'
+  return isDark.value ? '#fff' : '#1A6DD8'
 })
 </script>
 
 <template>
   <n-spin :show="props.loading" stroke="#CBCDD1" size="large">
     <div
-      class="my-[16px] overflow-hidden bg" :style="{
-        background: $colorMode.value === 'dark' ? '#1D2C60' : 'linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%)',
-      }">
+      class="my-[16px] overflow-hidden bg"
+      uno-bg="[linear-gradient(180deg,_#daeaff_0%,_#ffffff_30.77%,_#ffffff_71.15%)]"
+      uno-dark:bg="[linear-gradient(0deg,_#1D2C60,_#1D2C60)]"
+    >
       <div class="w-[100%] flex justify-between items-center pb-[16px]">
         <div class="flex items-center gap-[6px] color-[#1A6DD8] font-semibold line-height-[24px] text-[16px]">
           <img src="/images/icon/today-sale.png" class="wh-[24px]">
@@ -65,10 +66,10 @@ const tdColor = computed(() => {
       </div>
       <n-data-table
         :style="{
-          '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#1D2C60',
-          '--n-merged-td-text-color': $colorMode.value === 'light' ? '#1A6DD8' : '#fff',
-          '--n-merged-td-color-hover': $colorMode.value === 'light' ? '#DAEAFF' : '#0050B8',
-          '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#0F1E52',
+          '--n-merged-td-color': isDark ? '#1D2C60' : '#fff',
+          '--n-merged-td-text-color': isDark ? '#fff' : '#1A6DD8',
+          '--n-merged-td-color-hover': isDark ? '#0050B8' : '#DAEAFF',
+          '--n-merged-th-color': isDark ? '#0F1E52' : '#F3F3F3',
           '--n-merged-border-color': 'rgba(57,113,243,0.0)',
           '--td-color': tdColor,
         }"
@@ -84,7 +85,6 @@ const tdColor = computed(() => {
 
 <style lang="scss" scoped>
 .bg {
-  background: linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%);
   box-shadow: 0px 5px 20px 0px #0000000a;
   padding: 12px 16px;
   border-radius: 8px;

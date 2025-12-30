@@ -3,8 +3,8 @@ const emits = defineEmits<{
   handleAdd: []
   searchQl: []
 }>()
-const { $colorMode } = useNuxtApp()
-const theme = computed(() => $colorMode.value === 'light' ? '1px solid #1a6beb' : '1px solid #fff')
+const { isDark } = storeToRefs(useThemeStore())
+const theme = computed(() => isDark.value ? '1px solid #fff' : '1px solid #1a6beb')
 </script>
 
 <template>
