@@ -17,18 +17,18 @@ await getUserInfo()
 await getStaffWhere()
 
 const optionsList = ref<UserOpts[]>([{
-  iconName: 'i-svg:my-profile',
-  optName: '资料管理',
-  link: '/my/user/information',
-}, {
   iconName: 'i-svg:theme-color',
   optName: '主题设置',
   rightText: '',
   link: '/my/user/theme',
+}, {
+  iconName: 'i-svg:my-profile',
+  optName: '资料管理',
+  link: '/my/user/information',
 }])
 
 onMounted(() => {
-  optionsList.value[1].rightText = followSystem.value ? '跟随系统' : colorMode.value === 'dark' ? '深色模式' : '浅色模式'
+  optionsList.value[0].rightText = followSystem.value ? '跟随系统' : colorMode.value === 'dark' ? '深色模式' : '浅色模式'
 })
 const Logout = () => {
   exit()

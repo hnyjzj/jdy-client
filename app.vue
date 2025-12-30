@@ -204,7 +204,9 @@ const darkThemeOverrides: GlobalThemeOverrides = {
 
 watchEffect(() => {
   // 监听颜色模式变化
-  colorMode.preference = isDark.value ? 'dark' : 'light'
+  if (followSystem.value) {
+    colorMode.preference = isDark.value ? 'dark' : 'light'
+  }
 })
 onMounted(async () => {
   await nextTick()
