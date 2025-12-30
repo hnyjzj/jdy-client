@@ -94,9 +94,9 @@ const data = computed(() => {
 // 监听数据和维度变化更新图表
 watch([() => props.stockCategoryDate, chartBar, chartMode], updateChart)
 
-const colorMode = useColorMode()
+const { isDark } = storeToRefs(useThemeStore())
 const tdColor = computed(() => {
-  return colorMode.value === 'light' ? '#1A6DD8' : '#fff'
+  return isDark ? '#fff' : '#1A6DD8'
 })
 </script>
 
@@ -144,10 +144,10 @@ const tdColor = computed(() => {
       <template v-else>
         <n-data-table
           :style="{
-            '--n-merged-td-color': colorMode.value === 'light' ? '#fff' : '#1D2C60',
-            '--n-merged-td-text-color': colorMode.value === 'light' ? '#1A6DD8' : '#fff',
-            '--n-merged-td-color-hover': colorMode.value === 'light' ? '#DAEAFF' : '#0050B8',
-            '--n-merged-th-color': colorMode.value === 'light' ? '#F3F3F3' : '#0F1E52',
+            '--n-merged-td-color': isDark ? '#1D2C60' : '#fff',
+            '--n-merged-td-text-color': isDark ? '#fff' : '#1A6DD8',
+            '--n-merged-td-color-hover': isDark ? '#0050B8' : '#DAEAFF',
+            '--n-merged-th-color': isDark ? '#0F1E52' : '#F3F3F3',
             '--n-merged-border-color': 'rgba(57,113,243,0.0)',
             '--td-color': tdColor,
           }"

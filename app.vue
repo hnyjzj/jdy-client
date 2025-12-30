@@ -4,9 +4,8 @@ import { darkTheme, dateZhCN, type GlobalThemeOverrides, zhCN } from 'naive-ui'
 const { wx } = storeToRefs(useWxworkStore())
 const { useWxWork } = useWxworkStore()
 const { isLoading } = storeToRefs(useLoading())
-const { followSystem } = storeToRefs(useThemeStore())
-const colorMode = useColorMode()
-const isDark = usePreferredDark()
+const { followSystem, isDark } = storeToRefs(useThemeStore())
+const { setTheme } = useThemeStore()
 
 const locale = zhCN
 const dateLocale = dateZhCN
@@ -202,10 +201,18 @@ const darkThemeOverrides: GlobalThemeOverrides = {
   },
 }
 
-watchEffect(() => {
-  // 监听颜色模式变化
+const userIsDark = ref(/ColorScheme\/Dark/i.test(navigator?.userAgent))
+watch(userIsDark, (newVal) => {
+  console.log(newVal)
   if (followSystem.value) {
-    colorMode.preference = isDark.value ? 'dark' : 'light'
+    setTheme(newVal)
+  }
+})
+const clentIsDark = usePreferredDark()
+watch(clentIsDark, (newVal) => {
+  if (followSystem.value) {
+    console.log(newVal)
+    setTheme(newVal)
   }
 })
 onMounted(async () => {
@@ -243,11 +250,8 @@ onMounted(async () => {
     params.value.title = document?.title || '其他'
     await UserScreen(params.value)
   })
-  if (followSystem.value) {
-    colorMode.preference = /ColorScheme\/Dark/i.test(navigator?.userAgent) ? 'dark' : 'light'
-  }
 })
-const theme = computed(() => colorMode.value === 'light' ? themeOverrides : darkThemeOverrides)
+const theme = computed(() => isDark ? darkThemeOverrides : themeOverrides)
 </script>
 
 <template>
@@ -255,7 +259,7 @@ const theme = computed(() => colorMode.value === 'light' ? themeOverrides : dark
     <common-loading v-model="isLoading" />
     <n-config-provider
       :theme-overrides="theme"
-      :theme="colorMode.value === 'light' ? null : darkTheme"
+      :theme="isDark ? null : darkTheme"
       :locale="locale"
       :date-locale="dateLocale">
       <n-message-provider>

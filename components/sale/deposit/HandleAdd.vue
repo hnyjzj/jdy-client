@@ -41,8 +41,8 @@ const submitForm = () => {
     }
   })
 }
-const colorMode = useColorMode()
-const theme = computed(() => colorMode.value === 'light' ? '1px solid #1a6beb' : '1px solid #fff')
+const { isDark } = storeToRefs(useThemeStore())
+const theme = computed(() => isDark ? '1px solid #fff' : '1px solid #1a6beb')
 </script>
 
 <template>

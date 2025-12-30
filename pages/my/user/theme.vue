@@ -1,24 +1,6 @@
 <script lang="ts" setup>
-const colorMode = useColorMode()
-const { followSystem } = storeToRefs(useThemeStore())
-const mode = computed({
-  get() {
-    return colorMode.preference === 'dark'
-  },
-  set(newValue) {
-    colorMode.preference = newValue ? 'dark' : 'light'
-  },
-})
-
-function setMode(newValue: boolean) {
-  if (followSystem.value) {
-    return
-  }
-  mode.value = newValue
-}
-function systemSet(newValue: boolean) {
-  colorMode.preference = newValue ? 'dark' : 'light'
-}
+const { followSystem, isDark } = storeToRefs(useThemeStore())
+const { setTheme } = useThemeStore()
 </script>
 
 <template>
@@ -35,7 +17,7 @@ function systemSet(newValue: boolean) {
         </div>
         <div>
           <client-only>
-            <n-switch v-model:value="followSystem" size="medium" @update:value="systemSet" />
+            <n-switch v-model:value="followSystem" size="medium" @update:value="setTheme" />
           </client-only>
         </div>
       </div>
@@ -43,22 +25,22 @@ function systemSet(newValue: boolean) {
         手动选择
       </div>
       <div class="bg-[#fff] dark:bg-[#1D2C60] px-[16px] sm:rounded-[8px]">
-        <div class="py-[12px] line-color-b  flex items-center justify-between" @click="setMode(false)">
+        <div class="py-[12px] line-color-b  flex items-center justify-between" @click="setTheme(false)">
           <div class="text-color ">
             浅色模式
           </div>
           <client-only>
-            <template v-if="!mode">
+            <template v-if="!isDark">
               <icon name="i-svg:check-box" :size="16" />
             </template>
           </client-only>
         </div>
-        <div class="py-[12px] flex items-center justify-between" @click="setMode(true)">
+        <div class="py-[12px] flex items-center justify-between" @click="setTheme(true)">
           <div class="text-color ">
             深色模式
           </div>
           <client-only>
-            <template v-if="mode">
+            <template v-if="isDark">
               <icon name="i-svg:check-box" :size="16" />
             </template>
           </client-only>

@@ -19,7 +19,7 @@ const menuItems: MenuItem[] = [
   { key: 'userinfo', name: '个人中心', route: '/my/user', activeIcon: 'i-svg:userinfo-select', inactiveIcon: 'i-icon:userinfo-not' },
 ]
 
-const colorMode = useColorMode()
+const { isDark } = storeToRefs(useThemeStore())
 </script>
 
 <template>
@@ -36,7 +36,7 @@ const colorMode = useColorMode()
               </div>
               <div
                 class="line-height-[20px] color-[#333] dark:color-[#fff] no-underline "
-                :class="{ 'text-active': props.text === item.key && colorMode.value === 'light' }">
+                :class="{ 'text-active': props.text === item.key && !isDark }">
                 {{ item.name }}
               </div>
             </div>

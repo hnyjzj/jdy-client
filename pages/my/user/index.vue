@@ -12,7 +12,7 @@ const { getStaffWhere } = useStaff()
 const { filterList } = storeToRefs(useStaff())
 const { exit } = useAuth()
 const { followSystem } = storeToRefs(useThemeStore())
-const colorMode = useColorMode()
+const { isDark } = storeToRefs(useThemeStore())
 await getUserInfo()
 await getStaffWhere()
 
@@ -28,7 +28,7 @@ const optionsList = ref<UserOpts[]>([{
 }])
 
 onMounted(() => {
-  optionsList.value[0].rightText = followSystem.value ? '跟随系统' : colorMode.value === 'dark' ? '深色模式' : '浅色模式'
+  optionsList.value[0].rightText = followSystem.value ? '跟随系统' : isDark ? '深色模式' : '浅色模式'
 })
 const Logout = () => {
   exit()

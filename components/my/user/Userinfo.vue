@@ -6,7 +6,7 @@ const porps = defineProps<{
 const emit = defineEmits<{
   logout: []
 }>()
-const colorMode = useColorMode()
+const { isDark } = storeToRefs(useThemeStore())
 </script>
 
 <template>
@@ -30,7 +30,7 @@ const colorMode = useColorMode()
       </div>
     </div>
     <div class="cursor-pointer" @click="emit('logout')">
-      <icon name="i-icon:logout" :size="32" :color="colorMode?.value === 'light' ? '#3875C5' : '#fff'" />
+      <icon name="i-icon:logout" :size="32" :color="isDark ? '#fff' : '#3875C5'" />
     </div>
   </div>
 </template>
