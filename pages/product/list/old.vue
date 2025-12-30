@@ -138,21 +138,22 @@ const pageOption = ref({
     updatePage(page)
   },
 })
-
-try {
-  if (myStore.value.id || myStore.value.id === '') {
-    await getOldWhere()
-    await handleQueryParams()
-    await getMyStore()
-    await initStore()
+onMounted(async () => {
+  try {
+    if (myStore.value.id || myStore.value.id === '') {
+      await getOldWhere()
+      await handleQueryParams()
+      await getMyStore()
+      await initStore()
+    }
+    else {
+      $toast.error('您尚未分配任何门店，请先添加门店')
+    }
   }
-  else {
-    $toast.error('您尚未分配任何门店，请先添加门店')
+  catch (error) {
+    throw new Error(`初始化失败: ${error || '未知错误'}`)
   }
-}
-catch (error) {
-  throw new Error(`初始化失败: ${error || '未知错误'}`)
-}
+})
 
 /** 切换显示 */
 const changeCard = () => {
@@ -292,7 +293,7 @@ async function downloadLocalFile() {
       <common-layout-center>
         <template v-if="oldList?.length">
           <template v-if="showtype === 'list'">
-            <product-list-main :product-list="oldList" :filter-list="oldFilterList" @edit="edit" @go-info="goInfo" />
+            <product-list-main :product-list="oldList" :filter-list="oldFilterList" @edit="(code: any) => edit(code)" @go-info="(info: any) => goInfo(info)" />
             <common-page
               v-model:page="searchPage" :total="oldListTotal" :limit="limits" @update:page="updatePage" />
           </template>
