@@ -87,7 +87,7 @@ const bordercolor = computed(() => {
   // 如果有校验且文本区域为空，则根据颜色模式设置红色边框
   if (props.border && areaText.value === '') {
     return isDark.value
-      ? '1px solid #E0E0E6'
+      ? '1px solid #E88080'
       : '1px solid #d03050'
   }
   else if (props.border && areaText.value !== '') {
