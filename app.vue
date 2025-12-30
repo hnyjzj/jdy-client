@@ -203,7 +203,6 @@ const darkThemeOverrides: GlobalThemeOverrides = {
 
 const userIsDark = ref(/ColorScheme\/Dark/i.test(navigator?.userAgent))
 watch(userIsDark, (newVal) => {
-  console.log(newVal)
   if (followSystem.value) {
     setTheme(newVal)
   }
@@ -211,7 +210,6 @@ watch(userIsDark, (newVal) => {
 const clentIsDark = usePreferredDark()
 watch(clentIsDark, (newVal) => {
   if (followSystem.value) {
-    console.log(newVal)
     setTheme(newVal)
   }
 })
@@ -259,7 +257,7 @@ const theme = computed(() => isDark ? darkThemeOverrides : themeOverrides)
     <common-loading v-model="isLoading" />
     <n-config-provider
       :theme-overrides="theme"
-      :theme="isDark ? null : darkTheme"
+      :theme="isDark ? darkTheme : null"
       :locale="locale"
       :date-locale="dateLocale">
       <n-message-provider>
