@@ -76,18 +76,20 @@ const updatePage = (page: number) => {
 }
 
 // 页面初始化逻辑
-try {
-  if (myStore.value.id || myStore.value.id === '') {
-    await getFinishedEnterWhere()
-    await handleQueryParams()
+onMounted(async () => {
+  try {
+    if (myStore.value.id || myStore.value.id === '') {
+      await getFinishedEnterWhere()
+      await handleQueryParams()
+    }
+    else {
+      $toast.error('您尚未分配任何门店，请先添加门店')
+    }
   }
-  else {
-    $toast.error('您尚未分配任何门店，请先添加门店')
+  catch (error) {
+    throw new Error(`初始化失败: ${error || '未知错误'}`)
   }
-}
-catch (error) {
-  throw new Error(`初始化失败: ${error || '未知错误'}`)
-}
+})
 
 /** 门店选择列表 */
 const storeCol = ref()
