@@ -56,7 +56,7 @@ const tdColor = computed(() => {
     <div
       class="my-[16px] overflow-hidden bg"
       uno-bg="[linear-gradient(180deg,_#daeaff_0%,_#ffffff_30.77%,_#ffffff_71.15%)]"
-      uno-dark:bg="[linear-gradient(_#1D2C60)]"
+      uno-dark:bg="[linear-gradient(0deg,_#1D2C60,_#1D2C60)]"
     >
       <div class="w-[100%] flex justify-between items-center pb-[16px]">
         <div class="flex items-center gap-[6px] color-[#1A6DD8] font-semibold line-height-[24px] text-[16px]">

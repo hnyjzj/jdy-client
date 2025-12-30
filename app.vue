@@ -237,7 +237,9 @@ const darkThemeOverrides: GlobalThemeOverrides = {
 }
 
 const colorMode = useColorMode()
+
 const isDark = usePreferredDark()
+
 watchEffect(() => {
   // 监听颜色模式变化
   colorMode.preference = isDark.value ? 'dark' : 'light'

@@ -18,7 +18,7 @@ const tdColor = computed(() => {
 <template>
   <div
     uno-bg="[linear-gradient(180deg,_#A1C9FF_0%,_#FFFFFF_30.77%,_#FFFFFF_71.15%)]"
-    uno-dark:bg="[linear-gradient(_#1D2C60)]"
+    uno-dark:bg="[linear-gradient(0deg,_#1D2C60,_#1D2C60)]"
     class="bg rounded-[16px]  overflow-hidden mb-[16px]" data-allow-mismatch="style">
     <div class="flex justify-between items-center pt-[12px] pb-[16px] px-[16px]">
       <div class="color-[#1A6DD8] flex gap-[6px] text-[16px] font-semibold line-height-[24px]">
