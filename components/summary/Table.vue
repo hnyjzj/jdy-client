@@ -162,7 +162,6 @@ const tdColor = computed(() => {
       </div>
 
       <div v-if="toggleChart === 'list'" class="px-[16px]">
-        {{ isDark }}
         <n-data-table
           :style="{
             '--n-merged-td-color': isDark ? '#1D2C60' : '#fff',
