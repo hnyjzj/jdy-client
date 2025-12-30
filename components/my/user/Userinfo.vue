@@ -30,7 +30,7 @@ const colorMode = useColorMode()
       </div>
     </div>
     <div class="cursor-pointer" @click="emit('logout')">
-      <icon name="i-icon:logout" :size="32" :color="colorMode.value === 'light' ? '#3875C5' : '#fff'" />
+      <icon name="i-icon:logout" :size="32" :color="colorMode?.value === 'light' ? '#3875C5' : '#fff'" />
     </div>
   </div>
 </template>

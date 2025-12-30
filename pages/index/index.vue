@@ -54,7 +54,6 @@ onMounted(async () => {
         <div>
           <div class="flex items-center justify-between mb-[16px]">
             <product-manage-company :is-white="true" @change="handleSelectFn" />
-            <common-dark />
           </div>
           <div class="pl-[16px]">
             <home-greet />

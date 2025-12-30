@@ -7,7 +7,6 @@ const list = ref(['足金(克)', '足金(件)', '金750', '金916', '铂金', '�
 
 <template>
   <div>
-    <common-dark />
     <summary-stock-list :list="list" />
     <common-button-bottom />
   </div>

@@ -4,43 +4,9 @@ import { darkTheme, dateZhCN, type GlobalThemeOverrides, zhCN } from 'naive-ui'
 const { wx } = storeToRefs(useWxworkStore())
 const { useWxWork } = useWxworkStore()
 const { isLoading } = storeToRefs(useLoading())
-
-onMounted(async () => {
-  await nextTick()
-  if (wx?.value) {
-    await useWxWork()
-  }
-  if (!wx.value?.UserCaptureScreen) {
-    return
-  }
-  wx.value?.UserCaptureScreen(async () => {
-    const params = ref<{ username: string, storename?: string | undefined, url: string, title: string }>({
-      username: '',
-      storename: '',
-      url: '',
-      title: '',
-    })
-    // 判断是否登录
-    const store = useAuth()
-    if (Date.now() > (store.expires_at) * 1000) {
-      return false
-    }
-    const { userinfo } = storeToRefs(useUser())
-    const { UserScreen } = useUser()
-    params.value.username = userinfo.value.nickname
-    // 判断是否有门店
-    const stores = useStores()
-    if (stores.myStore.name) {
-      params.value.storename = stores.myStore.name
-    }
-    else {
-      params.value.storename = undefined
-    }
-    params.value.url = window.location.href
-    params.value.title = document?.title || '其他'
-    await UserScreen(params.value)
-  })
-})
+const { followSystem } = storeToRefs(useThemeStore())
+const colorMode = useColorMode()
+const isDark = usePreferredDark()
 
 const locale = zhCN
 const dateLocale = dateZhCN
@@ -236,16 +202,48 @@ const darkThemeOverrides: GlobalThemeOverrides = {
   },
 }
 
-const colorMode = useColorMode()
-
-const isDark = usePreferredDark()
-
 watchEffect(() => {
   // 监听颜色模式变化
   colorMode.preference = isDark.value ? 'dark' : 'light'
 })
-onMounted(() => {
-  colorMode.preference = /ColorScheme\/Dark/i.test(navigator?.userAgent) ? 'dark' : 'light'
+onMounted(async () => {
+  await nextTick()
+  if (wx?.value) {
+    await useWxWork()
+  }
+  if (!wx.value?.UserCaptureScreen) {
+    return
+  }
+  wx.value?.UserCaptureScreen(async () => {
+    const params = ref<{ username: string, storename?: string | undefined, url: string, title: string }>({
+      username: '',
+      storename: '',
+      url: '',
+      title: '',
+    })
+    // 判断是否登录
+    const store = useAuth()
+    if (Date.now() > (store.expires_at) * 1000) {
+      return false
+    }
+    const { userinfo } = storeToRefs(useUser())
+    const { UserScreen } = useUser()
+    params.value.username = userinfo.value.nickname
+    // 判断是否有门店
+    const stores = useStores()
+    if (stores.myStore.name) {
+      params.value.storename = stores.myStore.name
+    }
+    else {
+      params.value.storename = undefined
+    }
+    params.value.url = window.location.href
+    params.value.title = document?.title || '其他'
+    await UserScreen(params.value)
+  })
+  if (followSystem.value) {
+    colorMode.preference = /ColorScheme\/Dark/i.test(navigator?.userAgent) ? 'dark' : 'light'
+  }
 })
 const theme = computed(() => colorMode.value === 'light' ? themeOverrides : darkThemeOverrides)
 </script>
