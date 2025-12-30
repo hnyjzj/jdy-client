@@ -127,9 +127,10 @@ const tdColor = computed(() => {
 <template>
   <n-spin :show="props.loading" stroke="#CBCDD1" size="large">
     <div
-      uno-dark:bg="#1D2C60"
-      uno-bg="linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%)"
-      class="bg pb-[16px] rounded-[16px] overflow-hidden mb-[16px]" data-allow-mismatch="style">
+      class="bg pb-[16px] rounded-[16px] overflow-hidden mb-[16px]"
+      uno-bg="[linear-gradient(180deg,_#A1C9FF_0%,_#FFFFFF_30.17%,_#FFFFFF_71.15%)]"
+      uno-dark:bg="[linear-gradient(_#1D2C60)]"
+      data-allow-mismatch="style">
       <div>
         <div class="flex justify-between items-center pt-[12px] pb-[16px] px-[16px]">
           <div class="color-[#1A6DD8] flex gap-[6px] text-[16px] font-semibold line-height-[24px]" @click="emits('clickTitle')">

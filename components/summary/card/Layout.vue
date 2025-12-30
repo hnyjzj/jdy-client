@@ -20,8 +20,8 @@ const getIconUrl = (title: string): string => {
 <template>
   <div
     class="rounded-[8px] px-[16px] py-[12px] bg"
-    uno-dark:bg="#1D2C60"
-    uno-bg="linear-gradient(180deg, #A1C9FF 0%, #FFFFFF 33.17%, #FFFFFF 71.15%)"
+    uno-bg="[linear-gradient(180deg,_#A1C9FF_0%,_#FFFFFF_33.17%,_#FFFFFF_71.15%)]"
+    uno-dark:bg="[linear-gradient(_#1D2C60)]"
   >
     <div class="flex flex-row justify-between items-center pb-[16px] ">
       <div class="flex gap-[6px] items-center" @click="emit('titleClick')">
