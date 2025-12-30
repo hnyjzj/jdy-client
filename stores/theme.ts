@@ -13,20 +13,13 @@ export const useThemeStore = defineStore('theme', {
       colorMode.preference = this.theme
     },
     listenTheme() {
-      const userIsDark = ref(/ColorScheme\/Dark/i.test(navigator?.userAgent))
-      if (this.followSystem) {
-        this.setTheme(userIsDark.value)
-      }
-      watch(userIsDark, (newVal) => {
-        if (this.followSystem) {
-          this.setTheme(newVal)
-        }
-      })
       const clentIsDark = usePreferredDark()
+      const userIsDark = ref(/ColorScheme\/Dark/i.test(navigator?.userAgent))
+      const isSame = computed(() => clentIsDark.value || userIsDark.value)
       if (this.followSystem) {
-        this.setTheme(clentIsDark.value)
+        this.setTheme(isSame.value)
       }
-      watch(clentIsDark, (newVal) => {
+      watch(isSame, (newVal) => {
         if (this.followSystem) {
           this.setTheme(newVal)
         }
