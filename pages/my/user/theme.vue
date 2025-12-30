@@ -21,31 +21,33 @@ const { setTheme } = useThemeStore()
           </client-only>
         </div>
       </div>
-      <div class="text-[14px] line-height-[24px] color-[#91929E] font-bold p-[16px]">
-        手动选择
-      </div>
-      <div class="bg-[#fff] dark:bg-[#1D2C60] px-[16px] sm:rounded-[8px]">
-        <div class="py-[12px] line-color-b  flex items-center justify-between" @click="setTheme(false)">
-          <div class="text-color ">
-            浅色模式
-          </div>
-          <client-only>
-            <template v-if="!isDark">
-              <icon name="i-svg:check-box" :size="16" />
-            </template>
-          </client-only>
+      <template v-if="!followSystem">
+        <div class="text-[14px] line-height-[24px] color-[#91929E] font-bold p-[16px]">
+          手动选择
         </div>
-        <div class="py-[12px] flex items-center justify-between" @click="setTheme(true)">
-          <div class="text-color ">
-            深色模式
+        <div class="bg-[#fff] dark:bg-[#1D2C60] px-[16px] sm:rounded-[8px]">
+          <div class="py-[12px] line-color-b  flex items-center justify-between" @click="setTheme(false)">
+            <div class="text-color ">
+              浅色模式
+            </div>
+            <client-only>
+              <template v-if="!isDark">
+                <icon name="i-svg:check-box" :size="16" />
+              </template>
+            </client-only>
           </div>
-          <client-only>
-            <template v-if="isDark">
-              <icon name="i-svg:check-box" :size="16" />
-            </template>
-          </client-only>
+          <div class="py-[12px] flex items-center justify-between" @click="setTheme(true)">
+            <div class="text-color ">
+              深色模式
+            </div>
+            <client-only>
+              <template v-if="isDark">
+                <icon name="i-svg:check-box" :size="16" />
+              </template>
+            </client-only>
+          </div>
         </div>
-      </div>
+      </template>
     </common-layout-center>
   </div>
 </template>
