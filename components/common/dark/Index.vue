@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import type { CSSProperties } from 'vue'
 
-const { $colorMode } = useNuxtApp()
+const colorMode = useColorMode()
 const mode = computed({
   get() {
-    return $colorMode.preference === 'dark'
+    return colorMode.preference === 'dark'
   },
   set(newValue) {
-    $colorMode.preference = newValue ? 'dark' : 'light'
+    colorMode.preference = newValue ? 'dark' : 'light'
   },
 })
 
@@ -29,7 +29,7 @@ function railStyle({
 </script>
 
 <template>
-  <div class="">
+  <client-only>
     <n-switch
       v-model:value="mode"
       size="large"
@@ -54,7 +54,7 @@ function railStyle({
         <span class="ml-1 text-sm select-none color-[#61A2F6]">浅色</span>
       </template>
     </n-switch>
-  </div>
+  </client-only>
 </template>
 
 <style lang="scss" scoped>

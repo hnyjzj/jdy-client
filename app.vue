@@ -42,7 +42,6 @@ onMounted(async () => {
   })
 })
 
-const { $colorMode } = useNuxtApp()
 const locale = zhCN
 const dateLocale = dateZhCN
 const themeOverrides: GlobalThemeOverrides = {
@@ -236,7 +235,16 @@ const darkThemeOverrides: GlobalThemeOverrides = {
     dotColorActive: '#0068ff',
   },
 }
-const theme = computed(() => $colorMode.value === 'light' ? themeOverrides : darkThemeOverrides)
+
+const colorMode = useColorMode()
+const isDark = usePreferredDark()
+watchEffect(() => {
+  colorMode.preference = isDark.value ? 'dark' : 'light'
+})
+onMounted(() => {
+  colorMode.preference = /ColorScheme\/Dark/i.test(navigator?.userAgent) ? 'dark' : 'light'
+})
+const theme = computed(() => colorMode.value === 'light' ? themeOverrides : darkThemeOverrides)
 </script>
 
 <template>
@@ -244,7 +252,7 @@ const theme = computed(() => $colorMode.value === 'light' ? themeOverrides : dar
     <common-loading v-model="isLoading" />
     <n-config-provider
       :theme-overrides="theme"
-      :theme="$colorMode.value === 'light' ? null : darkTheme"
+      :theme="colorMode.value === 'light' ? null : darkTheme"
       :locale="locale"
       :date-locale="dateLocale">
       <n-message-provider>

@@ -5,15 +5,6 @@ const props = withDefaults(defineProps<{
 }>(), {
   text: 'todo',
 })
-const { $colorMode } = useNuxtApp()
-const mode = computed({
-  get() {
-    return $colorMode.preference === 'dark'
-  },
-  set(newValue) {
-    $colorMode.preference = newValue ? 'dark' : 'light'
-  },
-})
 interface MenuItem {
   key: texts
   name: string
@@ -28,9 +19,7 @@ const menuItems: MenuItem[] = [
   { key: 'userinfo', name: '个人中心', route: '/my/user', activeIcon: 'i-svg:userinfo-select', inactiveIcon: 'i-icon:userinfo-not' },
 ]
 
-const modeFun = () => {
-  return mode.value ? '#fff' : '#333'
-}
+const colorMode = useColorMode()
 </script>
 
 <template>
@@ -43,11 +32,11 @@ const modeFun = () => {
           <nuxt-link :to="item.route" class="no-underline">
             <div class="flex-center-col sm:py-[10px]">
               <div class="wh-[24px] mb-[4px]">
-                <icon :name="props.text === item.key ? item.activeIcon : item.inactiveIcon" :size="24" :color="modeFun()" />
+                <icon class="color-[#333] dark:color-[#fff]" :name="props.text === item.key ? item.activeIcon : item.inactiveIcon" :size="24" />
               </div>
               <div
-                class="line-height-[20px] color-[#333] dark:color-[#fff] no-underline"
-                :class="{ 'text-active': props.text === item.key && !mode }">
+                class="line-height-[20px] color-[#333] dark:color-[#fff] no-underline "
+                :class="{ 'text-active': props.text === item.key && colorMode.value === 'light' }">
                 {{ item.name }}
               </div>
             </div>

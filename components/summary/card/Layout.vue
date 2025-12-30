@@ -5,7 +5,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   titleClick: []
 }>()
-const { $colorMode } = useNuxtApp()
 const CARD_CONFIGS = [
   { title: '今日销售', icon: '/images/icon/today-sale.png' },
   { title: '今日收支', icon: '/images/icon/today-receive.png' },
@@ -21,9 +20,8 @@ const getIconUrl = (title: string): string => {
 <template>
   <div
     class="rounded-[8px] px-[16px] py-[12px] bg"
-    :style="{
-      background: $colorMode.value === 'dark' ? '#1D2C60' : 'linear-gradient(180deg, #A1C9FF 0%, #FFFFFF 33.17%, #FFFFFF 71.15%)',
-    }"
+    uno-dark:bg="#1D2C60"
+    uno-bg="linear-gradient(180deg, #A1C9FF 0%, #FFFFFF 33.17%, #FFFFFF 71.15%)"
   >
     <div class="flex flex-row justify-between items-center pb-[16px] ">
       <div class="flex gap-[6px] items-center" @click="emit('titleClick')">

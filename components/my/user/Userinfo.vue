@@ -3,10 +3,10 @@ const porps = defineProps<{
   userinfo: UserInfo
   filterList: Where<Staff>
 }>()
-
 const emit = defineEmits<{
   logout: []
 }>()
+const colorMode = useColorMode()
 </script>
 
 <template>
@@ -30,7 +30,7 @@ const emit = defineEmits<{
       </div>
     </div>
     <div class="cursor-pointer" @click="emit('logout')">
-      <icon name="i-icon:logout" :size="32" :color="$colorMode.value === 'light' ? '#3875C5' : '#fff'" />
+      <icon name="i-icon:logout" :size="32" :color="colorMode.value === 'light' ? '#3875C5' : '#fff'" />
     </div>
   </div>
 </template>

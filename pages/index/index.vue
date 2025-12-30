@@ -10,6 +10,7 @@ const { TodayInventory, todaySaleData, Payments, targetStatistic } = storeToRefs
 const { myStore } = storeToRefs(useStores())
 const { getMyStore } = useStores()
 const { getPerformanceList } = useBoss()
+
 if (!myStore.value.id) {
   await getMyStore()
 }

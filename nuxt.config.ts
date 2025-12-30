@@ -17,7 +17,6 @@ export default defineNuxtConfig({
   devServer: {
     port: 80,
   },
-
   typescript: {
     typeCheck: true,
   },
@@ -56,14 +55,13 @@ export default defineNuxtConfig({
     },
   },
   colorMode: {
-    preference: 'light', // default value of $colorMode.preference
+    preference: 'system', // default value of $colorMode.preference
     fallback: 'light', // fallback value if not system preference found
-    hid: 'nuxt-color-mode-script',
     globalName: '__NUXT_COLOR_MODE__',
     componentName: 'ColorScheme',
     classPrefix: '',
     classSuffix: '',
-    storage: 'cookie', // or 'sessionStorage' or 'cookie'
+    storage: 'sessionStorage', // or 'sessionStorage' or 'cookie'
     storageKey: 'nuxt-color-mode',
   },
   echarts: {

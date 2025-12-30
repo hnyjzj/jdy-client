@@ -48,5 +48,7 @@
   },
   "[typescript]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  }
+  },
+  "unot.switchMagic": true,
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }

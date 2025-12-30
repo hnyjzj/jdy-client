@@ -77,18 +77,17 @@ const data = computed(() => {
 
 // 监听数据 & 维度变化
 watch([() => props.date, trendKey], updateChart, { deep: true, immediate: true })
-const { $colorMode } = useNuxtApp()
+const colorMode = useColorMode()
 const tdColor = computed(() => {
-  return $colorMode.value === 'light' ? '#1A6DD8' : '#fff'
+  return colorMode.value === 'light' ? '#1A6DD8' : '#fff'
 })
 </script>
 
 <template>
   <n-spin :show="props.loading" stroke="#CBCDD1" size="large">
     <div
-      :style="{
-        background: $colorMode.value === 'dark' ? '#1D2C60' : 'linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%)',
-      }"
+      uno-bg="linear-gradient(180deg, #daeaff 0%, #ffffff 30.77%, #ffffff 71.15%)"
+      uno-dark:bg="#1D2C60"
       class="bg py-[12px] px-[16px] rounded-[8px] mt-[16px] overflow-hidden">
       <div class="w-[100%] flex justify-between items-center  pb-[16px]">
         <div class="flex items-center gap-[6px] color-[#1A6DD8] font-semibold line-height-[24px] text-[16px]">
@@ -132,10 +131,10 @@ const tdColor = computed(() => {
       <template v-else>
         <n-data-table
           :style="{
-            '--n-merged-td-color': $colorMode.value === 'light' ? '#fff' : '#1D2C60',
-            '--n-merged-td-text-color': $colorMode.value === 'light' ? '#1A6DD8' : '#fff',
-            '--n-merged-td-color-hover': $colorMode.value === 'light' ? '#DAEAFF' : '#0050B8',
-            '--n-merged-th-color': $colorMode.value === 'light' ? '#F3F3F3' : '#0F1E52',
+            '--n-merged-td-color': colorMode.value === 'light' ? '#fff' : '#1D2C60',
+            '--n-merged-td-text-color': colorMode.value === 'light' ? '#1A6DD8' : '#fff',
+            '--n-merged-td-color-hover': colorMode.value === 'light' ? '#DAEAFF' : '#0050B8',
+            '--n-merged-th-color': colorMode.value === 'light' ? '#F3F3F3' : '#0F1E52',
             '--n-merged-border-color': 'rgba(57,113,243,0.0)',
             '--td-color': tdColor,
           }"

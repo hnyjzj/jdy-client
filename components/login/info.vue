@@ -53,12 +53,10 @@ const rules = ref<Rules<AccountReq>>({
     },
   ],
 })
-
-// 登录
 </script>
 
 <template>
-  <div class="bg-[#fff] z-3">
+  <div class="bg-[#fff] dark:bg-[#263A6D] z-3">
     <common-form
       v-model="form" :rules="rules" @submit="(val:AccountReq) => emits('submit', val)">
       <template
@@ -67,8 +65,8 @@ const rules = ref<Rules<AccountReq>>({
           validate,
         }">
         <div class="pb-[32px]">
-          <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
-            <icon name="i-icon:login-user" size="24" />
+          <div class="flex bg-[#F5F8FD] dark:bg-[#2C4186] pl-[16px] rounded-[24px]">
+            <icon name="i-icon:login-user" size="24" class="dark:color-[#D8DAE3]" />
             <input
               v-model="form.phone" class="input " type="text" placeholder="请输入手机号" :maxlength="11" @change="validate()">
           </div>
@@ -82,8 +80,8 @@ const rules = ref<Rules<AccountReq>>({
           error,
           validate }">
         <div class="pb-[32px]">
-          <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
-            <icon name="i-icon:login-password" size="24" />
+          <div class="flex bg-[#F5F8FD] dark:bg-[#2C4186]  pl-[16px] rounded-[24px]">
+            <icon name="i-icon:login-password" size="24" class="dark:color-[#D8DAE3]" />
             <input
               v-model="form.password"
               class="input "
@@ -100,8 +98,8 @@ const rules = ref<Rules<AccountReq>>({
           error,
           validate }">
         <div class="pb-[32px]">
-          <div class="flex bg-[#F5F8FD] pl-[16px] rounded-[24px]">
-            <icon name="i-icon:login-code" size="24" />
+          <div class="flex bg-[#F5F8FD] dark:bg-[#2C4186]  pl-[16px] rounded-[24px]">
+            <icon name="i-icon:login-code" size="24" class="dark:color-[#D8DAE3]" />
             <input
               v-model="form.captcha"
               :maxlength="5"
@@ -135,7 +133,7 @@ const rules = ref<Rules<AccountReq>>({
 }
 .input {
   background: transparent;
-  --uno: 'px-[12px] py-[10px]  rounded-[8px] border-0 placeholder-text-[#cbcdd1] text-[14px] w-full outline-none';
+  --uno: 'px-[12px] py-[10px]  rounded-[8px] border-0 placeholder-text-[#cbcdd1] dark:placeholder-text-[#D8DAE3] dark:color-[#fff] text-[14px] w-full outline-none';
 }
 
 .ok {
