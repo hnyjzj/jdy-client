@@ -96,7 +96,7 @@ watch([() => props.stockCategoryDate, chartBar, chartMode], updateChart)
 
 const { isDark } = storeToRefs(useThemeStore())
 const tdColor = computed(() => {
-  return isDark ? '#fff' : '#1A6DD8'
+  return isDark.value ? '#fff' : '#1A6DD8'
 })
 </script>
 

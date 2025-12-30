@@ -11,7 +11,7 @@ for (let i = 0; i < props.title.length; ++i) {
 }
 const { isDark } = storeToRefs(useThemeStore())
 const tdColor = computed(() => {
-  return isDark ? '#1A6DD8' : '#fff'
+  return isDark.value ? '#fff' : '#1D2C60'
 })
 </script>
 
@@ -30,10 +30,10 @@ const tdColor = computed(() => {
     <div class="px-[16px]">
       <n-data-table
         :style="{
-          '--n-merged-td-color': isDark ? '#fff' : '#1D2C60',
-          '--n-merged-td-text-color': isDark ? '#1A6DD8' : '#fff',
-          '--n-merged-td-color-hover': isDark ? '#DAEAFF' : '#0050B8',
-          '--n-merged-th-color': isDark ? '#F3F3F3' : '#0F1E52',
+          '--n-merged-td-color': isDark ? '#1D2C60' : '#fff',
+          '--n-merged-td-text-color': isDark ? '#fff' : '#1A6DD8',
+          '--n-merged-td-color-hover': isDark ? '#0050B8' : '#DAEAFF',
+          '--n-merged-th-color': isDark ? '#0F1E52' : '#F3F3F3',
           '--n-merged-border-color': 'rgba(57,113,243,0.0)',
           '--td-color': tdColor,
         }"

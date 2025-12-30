@@ -79,19 +79,19 @@ const bordercolor = computed(() => {
 
   // 如果没有校验，则根据颜色模式设置透明或默认灰色边框
   if (!props.border) {
-    return isDark
+    return isDark.value
       ? '1px solid rgba(255, 255, 255, 0)'
       : color
   }
 
   // 如果有校验且文本区域为空，则根据颜色模式设置红色边框
   if (props.border && areaText.value === '') {
-    return isDark
+    return isDark.value
       ? '1px solid #E0E0E6'
       : '1px solid #d03050'
   }
   else if (props.border && areaText.value !== '') {
-    return isDark
+    return isDark.value
       ? '1px solid transparent'
       : '1px solid #E0E0E6'
   }

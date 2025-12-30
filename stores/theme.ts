@@ -34,6 +34,6 @@ export const useThemeStore = defineStore('theme', {
     },
   },
   persist: {
-    storage: piniaPluginPersistedstate.localStorage(),
+    storage: piniaPluginPersistedstate.cookies(),
   },
 })

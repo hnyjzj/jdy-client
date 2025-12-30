@@ -4,7 +4,7 @@ const emits = defineEmits<{
   searchQl: []
 }>()
 const { isDark } = storeToRefs(useThemeStore())
-const theme = computed(() => isDark ? '1px solid #fff' : '1px solid #1a6beb')
+const theme = computed(() => isDark.value ? '1px solid #fff' : '1px solid #1a6beb')
 </script>
 
 <template>

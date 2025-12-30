@@ -238,7 +238,7 @@ onMounted(async () => {
     await UserScreen(params.value)
   })
 })
-const theme = computed(() => isDark ? darkThemeOverrides : themeOverrides)
+const theme = computed(() => isDark.value ? darkThemeOverrides : themeOverrides)
 </script>
 
 <template>

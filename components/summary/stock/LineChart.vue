@@ -79,7 +79,7 @@ const data = computed(() => {
 watch([() => props.date, trendKey], updateChart, { deep: true, immediate: true })
 const { isDark } = storeToRefs(useThemeStore())
 const tdColor = computed(() => {
-  return isDark ? '#fff' : '#1A6DD8'
+  return isDark.value ? '#fff' : '#1A6DD8'
 })
 </script>
 

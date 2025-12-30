@@ -28,7 +28,7 @@ const optionsList = ref<UserOpts[]>([{
 }])
 
 onMounted(() => {
-  optionsList.value[0].rightText = followSystem.value ? '跟随系统' : isDark ? '深色模式' : '浅色模式'
+  optionsList.value[0].rightText = followSystem.value ? '跟随系统' : isDark.value ? '深色模式' : '浅色模式'
 })
 const Logout = () => {
   exit()
