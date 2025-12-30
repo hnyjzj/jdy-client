@@ -4,8 +4,8 @@ import { darkTheme, dateZhCN, type GlobalThemeOverrides, zhCN } from 'naive-ui'
 const { wx } = storeToRefs(useWxworkStore())
 const { useWxWork } = useWxworkStore()
 const { isLoading } = storeToRefs(useLoading())
-const { followSystem, isDark } = storeToRefs(useThemeStore())
-const { setTheme } = useThemeStore()
+const { isDark } = storeToRefs(useThemeStore())
+const { listenTheme } = useThemeStore()
 
 const locale = zhCN
 const dateLocale = dateZhCN
@@ -201,20 +201,9 @@ const darkThemeOverrides: GlobalThemeOverrides = {
   },
 }
 
-const userIsDark = ref(/ColorScheme\/Dark/i.test(navigator?.userAgent))
-watch(userIsDark, (newVal) => {
-  if (followSystem.value) {
-    setTheme(newVal)
-  }
-})
-const clentIsDark = usePreferredDark()
-watch(clentIsDark, (newVal) => {
-  if (followSystem.value) {
-    setTheme(newVal)
-  }
-})
 onMounted(async () => {
   await nextTick()
+  listenTheme()
   if (wx?.value) {
     await useWxWork()
   }

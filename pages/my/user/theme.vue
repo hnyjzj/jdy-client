@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 const { followSystem, isDark } = storeToRefs(useThemeStore())
-const { setTheme } = useThemeStore()
+const { setTheme, listenTheme } = useThemeStore()
 </script>
 
 <template>
@@ -17,7 +17,7 @@ const { setTheme } = useThemeStore()
         </div>
         <div>
           <client-only>
-            <n-switch v-model:value="followSystem" size="medium" @update:value="setTheme" />
+            <n-switch v-model:value="followSystem" size="medium" @update:value="listenTheme" />
           </client-only>
         </div>
       </div>
