@@ -3,7 +3,7 @@ import type { DataTableColumns } from 'naive-ui'
 
 const props = defineProps<{
   title: DataTableColumns
-  list?: { [key: string]: string }[]
+  list?: { [key: string]: string | number | undefined }[]
 }>()
 const scrollX = ref(0)
 
