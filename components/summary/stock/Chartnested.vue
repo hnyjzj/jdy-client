@@ -120,10 +120,6 @@ watch(chartMode, (val) => {
     nextTick(() => updateChart())
   }
 })
-const { isDark } = storeToRefs(useThemeStore())
-const tdColor = computed(() => {
-  return isDark.value ? '#fff' : '#1A6DD8'
-})
 </script>
 
 <template>
@@ -184,20 +180,7 @@ const tdColor = computed(() => {
 
       <!-- 列表模式 -->
       <template v-else>
-        <!-- 表格 -->
-        <n-data-table
-          :columns="columns"
-          :data="data"
-          :style="{
-            '--n-merged-td-color': isDark ? '#1D2C60' : '#fff',
-            '--n-merged-td-text-color': isDark ? '#fff' : '#1A6DD8',
-            '--n-merged-td-color-hover': isDark ? '#0050B8' : '#DAEAFF',
-            '--n-merged-th-color': isDark ? '#0F1E52' : '#F3F3F3',
-            '--n-merged-border-color': 'rgba(57,113,243,0.0)',
-            '--td-color': tdColor,
-          }"
-          :max-height="350"
-          bordered />
+        <summary-common-table :title="columns" :list="data" />
       </template>
     </div>
   </n-spin>
@@ -218,11 +201,5 @@ const tdColor = computed(() => {
   box-shadow: 0px 5px 20px 0px #0000000a;
   padding: 12px 16px;
   border-radius: 8px;
-}
-:deep(.n-data-table .n-data-table-base-table-header) {
-  border-radius: 8px;
-}
-:deep(.n-data-table-tr:hover .n-data-table-td) {
-  color: var(--td-color);
 }
 </style>
