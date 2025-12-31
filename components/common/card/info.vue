@@ -13,7 +13,7 @@ const props = defineProps<{
 
 <template>
   <div
-    class="p-3 mb-4 md:p-[24px] rounded-2 blur-bgc "
+    class="p-3 mb-4 md:p-[24px] rounded-2 blur-bgc"
     :style="{
       padding: props.padding || '',
       paddingBottom: props.paddingBottom || '',
@@ -22,14 +22,15 @@ const props = defineProps<{
     <div
       class="flex justify-between items-center pb-2"
     >
-      <div>
+      <div class="flex-1">
         <slot name="avatar" />
         <template v-if="props.title">
-          <div class="flex items-center">
+          <div class="flex items-center flex-1">
             <div class="w-1 h-4 bg-[#1A6DD8] rounded-[4px] mr-2" />
             <div class="text-[16px] font-bold text-[#1A6DD8]">
               {{ props.title }}
             </div>
+            <slot name="titleSuffix" />
           </div>
         </template>
         <slot name="top" />

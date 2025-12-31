@@ -16,6 +16,6 @@
 @use '@/assets/css/main';
 
 .body {
-  --uno: 'bg-[#F5F6F9] dark:bg-[#0A113C]';
+  --uno: 'bg-[#F4F9FD] dark:bg-[#0A113C]';
 }
 </style>

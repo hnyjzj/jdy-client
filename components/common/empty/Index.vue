@@ -9,10 +9,15 @@ const props = withDefaults(defineProps<{
 <template>
   <div class="flex flex-col justify-center items-center py-[16px]">
     <div class="empty">
-      <icon
-        name="i-svg:empty-list"
-        size="128"
-      />
+      <template v-if="$slots.icon">
+        <slot name="icon" />
+      </template>
+      <template v-else>
+        <icon
+          name="i-svg:empty-list"
+          size="128"
+        />
+      </template>
     </div>
     <template v-if="props.text">
       <div class="font-size-[14px] color-[#606266] pt-[8px]">
