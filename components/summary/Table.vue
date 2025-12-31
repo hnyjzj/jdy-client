@@ -12,12 +12,7 @@ const props = withDefaults(defineProps<{
 const emits = defineEmits<{
   clickTitle: []
 }>()
-const { isDark } = storeToRefs(useThemeStore())
-const scrollX = ref(0)
 
-for (let i = 0; i < props.title.length; ++i) {
-  scrollX.value += 100
-}
 const toggleChart = defineModel({ default: 'list' })
 const option = computed(() => {
   return {
@@ -119,9 +114,6 @@ const option = computed(() => {
     ],
   }
 })
-const tdColor = computed(() => {
-  return isDark.value ? '#fff' : '#1A6DD8'
-})
 </script>
 
 <template>
@@ -162,28 +154,7 @@ const tdColor = computed(() => {
       </div>
 
       <div v-if="toggleChart === 'list'" class="px-[16px]">
-        <n-data-table
-          :style="{
-            '--n-merged-td-color': isDark ? '#1D2C60' : '#fff',
-            '--n-merged-td-text-color': isDark ? '#fff' : '#1A6DD8',
-            '--n-merged-td-color-hover': isDark ? '#0050B8' : '#DAEAFF',
-            '--n-merged-th-color': isDark ? '#0F1E52' : '#F3F3F3',
-            '--n-merged-border-color': 'rgba(57,113,243,0.0)',
-            '--td-color': tdColor,
-          }"
-          :columns="props.title"
-          :data="props.list"
-          :scroll-x="scrollX"
-          :max-height="350"
-          :bordered="true"
-          :render-cell="(value: any) => {
-            if (!value){
-              return 0
-            }
-            return value
-          }"
-
-        />
+        <summary-common-table :title="props.title" :list="props.list" />
       </div>
       <div v-if="toggleChart === 'chart'">
         <VChart class="chart" :option="option" />
@@ -193,12 +164,6 @@ const tdColor = computed(() => {
 </template>
 
 <style lang="scss" scoped>
-.items-title {
-  --uno: 'col-2 text-center color-#4B576D  flex-grow-1 flex-shrink-0 px-[10px] py-[6px] bg-[rgba(199,218,255,0.8)] ';
-}
-.items {
-  --uno: 'col-2 text-center color-[#3971F3] dark:color-[#fff] flex-grow-1 flex-shrink-0  px-[10px] py-[6px]';
-}
 ::-webkit-scrollbar {
   /* 隐藏Webkit浏览器的滚动条 */
   display: none;
