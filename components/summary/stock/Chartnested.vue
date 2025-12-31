@@ -18,7 +18,19 @@ const chartBar = ref<string>('件数')
 
 // 饼图配置
 const option = ref<any>({
-  tooltip: { trigger: 'item', formatter: '{b}: {c} ({d}%)' },
+  tooltip: {
+    trigger: 'item',
+    confine: true,
+    formatter: (p: any) => {
+      return `
+      <div style="max-width:220px;white-space:normal;">
+        <strong>${p.name}</strong><br/>
+        数值：${p.value}<br/>
+        占比：${p.percent}%
+      </div>
+    `
+    },
+  },
   legend: {
     orient: 'horizontal',
     left: 'center',
