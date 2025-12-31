@@ -29,9 +29,7 @@ export const useWxworkStore = defineStore('Wxwork', {
     },
     // 截屏警告功能
     async UserScreenWarning() {
-      if (this.wx) {
-        await this.useWxWork()
-      }
+      await this.useWxWork()
       if (!this.wx?.UserCaptureScreen) {
         return
       }
