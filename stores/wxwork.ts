@@ -27,6 +27,42 @@ export const useWxworkStore = defineStore('Wxwork', {
         return data.value.data
       }
     },
+    // 截屏警告功能
+    async UserScreenWarning() {
+      if (this.wx) {
+        await this.useWxWork()
+      }
+      if (!this.wx?.UserCaptureScreen) {
+        return
+      }
+      this.wx.UserCaptureScreen(async () => {
+        const params = ref<{ username: string, storename?: string | undefined, url: string, title: string }>({
+          username: '',
+          storename: '',
+          url: '',
+          title: '',
+        })
+        // 判断是否登录
+        const store = useAuth()
+        if (Date.now() > (store.expires_at) * 1000) {
+          return false
+        }
+        const { userinfo } = storeToRefs(useUser())
+        const { UserScreen } = useUser()
+        params.value.username = userinfo.value.nickname
+        // 判断是否有门店
+        const stores = useStores()
+        if (stores.myStore.name) {
+          params.value.storename = stores.myStore.name
+        }
+        else {
+          params.value.storename = undefined
+        }
+        params.value.url = window.location.href
+        params.value.title = document?.title || '其他'
+        await UserScreen(params.value)
+      })
+    },
   },
 
 })
