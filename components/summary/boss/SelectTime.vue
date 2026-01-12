@@ -2,8 +2,10 @@
 const props = withDefaults(defineProps<{
   timeWhere?: Where<CashflowWhere> | Where<BossWhere>
   hasStore?: boolean
+  changeCard?: boolean
 }>(), {
   hasStore: true,
+  changeCard: false,
 })
 const emits = defineEmits<{
   updateTime: []
@@ -39,6 +41,42 @@ watch(() => params.value, (newVal) => {
     endTime.value = newVal.endTime
   }
 }, { immediate: true })
+
+const options = [
+  {
+    label: '业绩统计',
+    key: 'performanceList',
+  },
+  {
+    label: '收支统计',
+    key: 'RevenueList',
+  },
+  {
+    label: '成品销售',
+    key: 'finishedSalesList',
+  },
+  {
+    label: '旧料兑换',
+    key: 'oldSalesList',
+  },
+  {
+    label: '旧料回收',
+    key: 'oldRecycleList',
+  },
+  {
+    label: '成品库存',
+    key: 'finishedList',
+  },
+  {
+    label: '旧料库存',
+    key: 'oldList',
+  },
+]
+
+function handleSelect(key: string) {
+  params.value.selectValue = key
+  emits('updateTime')
+}
 </script>
 
 <template>
@@ -49,6 +87,19 @@ watch(() => params.value, (newVal) => {
           <div>
             <template v-if="props.hasStore">
               <product-manage-company @change="emits('changeStores')" />
+            </template>
+            <template v-if="props.changeCard">
+              <n-dropdown trigger="click" :options="options" placement="bottom-end" @select="handleSelect">
+                <div class="pl-[16px] text-[14px] font-bold color-[#1A6DD8] dark:color-[#fff] flex items-center gap-[6px] cursor-pointer">
+                  <img src="/images/icon/today-sale.png" class="wh-[24px]">
+                  <span>{{ options.find(item => item.key === params.selectValue)?.label || '业绩统计' }}</span>
+                  <icon
+                    name="i-icon:arrow-down"
+                    :size="8"
+                    color="#1A6DD8"
+                  />
+                </div>
+              </n-dropdown>
             </template>
           </div>
           <div class="w-[124px] pr-[16px]">
@@ -91,6 +142,12 @@ watch(() => params.value, (newVal) => {
     </common-layout-center>
   </div>
 </template>
+
+<style lang="scss">
+.n-dropdown-option-body__label {
+  line-height: 34px;
+}
+</style>
 
 <style lang="scss" scoped>
 :deep(.n-date-picker) {

@@ -6,29 +6,11 @@ const { getOldRecycleType, getOldRecycleList, getPerformanceType, getPerformance
 const { oldRecycleFilterWhere, RevenueWhere, finishedSalesWhere, oldfilterWhere, oldSalesFilterWhere, finishedWhere } = storeToRefs(useBoss())
 const { timeWhere } = storeToRefs(useBoss())
 const params = ref({} as BossWhere)
+
 await getPublicWhere()
 // 读取url参数,获取列表
 const route = useRoute()
-const handleQueryParams = async () => {
-  params.value = {} as BossWhere
-  if (route.query?.duration) {
-    params.value.duration = Number(route.query?.duration)
-  }
-  else {
-    params.value.duration = 1
-  }
-  if (route.query?.startTime) {
-    params.value.startTime = route.query?.startTime as string
-  }
-  if (route.query?.endTime) {
-    params.value.endTime = route.query?.endTime as string
-  }
-}
-await handleQueryParams()
-const listJump = () => {
-  const url = UrlAndParams('/summary/boss', params.value)
-  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
-}
+
 // 成品销售
 const radioValueFinishedSale = ref<BossWhere['type']>(1)
 const finishedSalesLoading = ref<boolean>(false)
@@ -156,91 +138,141 @@ const getPerformanceReq = async () => {
   await getPerformanceType()
   await getPerformanceListFn()
 }
-
+const handleQueryParams = async () => {
+  params.value = {} as BossWhere
+  if (route.query?.duration) {
+    params.value.duration = Number(route.query?.duration)
+  }
+  else {
+    params.value.duration = 1
+  }
+  if (route.query?.startTime) {
+    params.value.startTime = route.query?.startTime as string
+  }
+  if (route.query?.endTime) {
+    params.value.endTime = route.query?.endTime as string
+  }
+  if (route.query?.selectValue) {
+    params.value.selectValue = route.query?.selectValue as string
+    switch (params.value.selectValue) {
+      case 'performanceList':
+        getPerformanceReq()
+        break
+      case 'RevenueList':
+        getRevenueReq()
+        break
+      case 'finishedSalesList':
+        getFinishedSaleReq()
+        break
+      case 'oldSalesList':
+        getOldSaleReq()
+        break
+      case 'oldRecycleList':
+        getOldRecycleReq()
+        break
+      case 'finishedList':
+        getFinishedStockReq()
+        break
+      case 'oldList':
+        getOldStockReq()
+        break
+      default:
+        getPerformanceReq()
+        break
+    }
+  }
+}
+await handleQueryParams()
+const listJump = () => {
+  const url = UrlAndParams('/summary/boss', params.value)
+  navigateTo(url, { external: true, replace: true, redirectCode: 200 })
+}
 const updateTimeFn = () => {
   listJump()
 }
-onMounted(async () => {
-  await nextTick()
-  await getOldRecycleReq()
-  await getPerformanceReq()
-  await getFinishedSaleReq()
-  await getRevenueReq()
-  await getOldSaleReq()
-  await getFinishedStockReq()
-  await getOldStockReq()
-})
 </script>
 
 <template>
   <div>
     <!-- 时间选择器 -->
-    <summary-boss-select-time v-model="params" :time-where="timeWhere" :has-store="false" @update-time="updateTimeFn" />
+    <summary-boss-select-time v-model="params" :change-card="true" :time-where="timeWhere" :has-store="false" @update-time="updateTimeFn" />
     <common-layout-center>
       <div class="px-[16px]">
-        <!-- 性能统计 -->
-        <summary-boss-card
-          card-title="业绩统计"
-          :title="performanceTitle"
-          :list="performanceList"
-          :loading="PerformanceLoading"
-          @getlist="getPerformanceListFn" />
+        <!-- 业绩统计 -->
+        <template v-if="params.selectValue === 'performanceList'">
+          <summary-boss-card
+            card-title="业绩统计"
+            :title="performanceTitle"
+            :list="performanceList"
+            :loading="PerformanceLoading"
+            @getlist="getPerformanceListFn" />
+        </template>
         <!-- 收支统计 -->
-        <summary-boss-card
-          v-model="radioValueRevenue"
-          card-title="收支统计"
-          :where="RevenueWhere"
-          :title="RevenueTitle"
-          :list="RevenueList"
-          :loading="RevenueLoading"
-          @getlist="getRevenueListFn" />
+        <template v-if="params.selectValue === 'RevenueList'">
+          <summary-boss-card
+            v-model="radioValueRevenue"
+            card-title="收支统计"
+            :where="RevenueWhere"
+            :title="RevenueTitle"
+            :list="RevenueList"
+            :loading="RevenueLoading"
+            @getlist="getRevenueListFn" />
+        </template>
         <!-- 成品销售 -->
-        <summary-boss-card
-          v-model="radioValueFinishedSale"
-          card-title="成品销售"
-          :where="finishedSalesWhere"
-          :title="finishedSalesTitle"
-          :list="finishedSalesList"
-          :loading="finishedSalesLoading"
-          @getlist="getFinishedSaleListFn" />
-
+        <template v-if="params.selectValue === 'finishedSalesList'">
+          <summary-boss-card
+            v-model="radioValueFinishedSale"
+            card-title="成品销售"
+            :where="finishedSalesWhere"
+            :title="finishedSalesTitle"
+            :list="finishedSalesList"
+            :loading="finishedSalesLoading"
+            @getlist="getFinishedSaleListFn" />
+        </template>
         <!-- 旧料兑换 -->
-        <summary-boss-card
-          v-model="radioValueOldSale"
-          card-title="旧料兑换"
-          :where="oldSalesFilterWhere"
-          :title="oldSalesTitle"
-          :list="oldSalesList"
-          :loading="oldSalesLoading"
-          @getlist="getOldSaleListFn" />
-
+        <template v-if="params.selectValue === 'oldSalesList'">
+          <summary-boss-card
+            v-model="radioValueOldSale"
+            card-title="旧料兑换"
+            :where="oldSalesFilterWhere"
+            :title="oldSalesTitle"
+            :list="oldSalesList"
+            :loading="oldSalesLoading"
+            @getlist="getOldSaleListFn" />
+        </template>
         <!-- 旧料回收 -->
-        <summary-boss-card
-          v-model="radioValueOldRecycle"
-          card-title="旧料回收"
-          :where="oldRecycleFilterWhere"
-          :title="oldRecycleTitle"
-          :list="oldRecycleList"
-          :loading="oldRecycleLoading"
-          @getlist="getOldRecycleListFn" />
+        <template v-if="params.selectValue === 'oldRecycleList'">
+          <summary-boss-card
+            v-model="radioValueOldRecycle"
+            card-title="旧料回收"
+            :where="oldRecycleFilterWhere"
+            :title="oldRecycleTitle"
+            :list="oldRecycleList"
+            :loading="oldRecycleLoading"
+            @getlist="getOldRecycleListFn" />
+        </template>
         <!-- 成品统计 -->
-        <summary-boss-card
-          v-model="radioValueFinsihed"
-          card-title="成品库存"
-          :where="finishedWhere"
-          :title="finishedTitle"
-          :list="finishedList"
-          :loading="finishedLoading"
-          @getlist="getFinishedList" />
+        <template v-if="params.selectValue === 'finishedList'">
+          <summary-boss-card
+            v-model="radioValueFinsihed"
+            card-title="成品库存"
+            :where="finishedWhere"
+            :title="finishedTitle"
+            :list="finishedList"
+            :loading="finishedLoading"
+            @getlist="getFinishedList" />
+        </template>
         <!-- 旧料统计 -->
-        <summary-boss-card
-          v-model="radioValueOld"
-          card-title="旧料库存"
-          :where="oldfilterWhere"
-          :title="oldtitle"
-          :list="oldList"
-          :loading="oldLoading"
-          @getlist="getOldList" />
+        <template v-if="params.selectValue === 'oldList'">
+          <summary-boss-card
+            v-model="radioValueOld"
+            card-title="旧料库存"
+            :where="oldfilterWhere"
+            :title="oldtitle"
+            :list="oldList"
+            :loading="oldLoading"
+            @getlist="getOldList" />
+        </template>
       </div>
     </common-layout-center>
   </div>
