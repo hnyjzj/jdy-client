@@ -91,13 +91,12 @@ function handleSelect(key: string) {
             <template v-if="props.changeCard">
               <n-dropdown trigger="click" :options="options" placement="bottom-end" @select="handleSelect">
                 <div class="pl-[16px] text-[14px] font-bold color-[#1A6DD8] dark:color-[#fff] flex items-center gap-[6px] cursor-pointer">
-                  <img src="/images/icon/today-sale.png" class="wh-[24px]">
-                  <span>{{ options.find(item => item.key === params.selectValue)?.label || '业绩统计' }}</span>
                   <icon
-                    name="i-icon:arrow-down"
-                    :size="8"
+                    name="i-icon:product-toggle"
+                    :size="18"
                     color="#1A6DD8"
                   />
+                  <span>切换模块</span>
                 </div>
               </n-dropdown>
             </template>

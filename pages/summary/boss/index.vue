@@ -208,6 +208,7 @@ onMounted(async () => {
         <!-- 业绩统计 -->
         <template v-if="params.selectValue === 'performanceList'">
           <summary-boss-card
+            :table-height="480"
             card-title="业绩统计"
             :title="performanceTitle"
             :list="performanceList"
@@ -218,6 +219,7 @@ onMounted(async () => {
         <template v-if="params.selectValue === 'RevenueList'">
           <summary-boss-card
             v-model="radioValueRevenue"
+            :table-height="480"
             card-title="收支统计"
             :where="RevenueWhere"
             :title="RevenueTitle"
@@ -229,6 +231,7 @@ onMounted(async () => {
         <template v-if="params.selectValue === 'finishedSalesList'">
           <summary-boss-card
             v-model="radioValueFinishedSale"
+            :table-height="480"
             card-title="成品销售"
             :where="finishedSalesWhere"
             :title="finishedSalesTitle"
@@ -240,6 +243,7 @@ onMounted(async () => {
         <template v-if="params.selectValue === 'oldSalesList'">
           <summary-boss-card
             v-model="radioValueOldSale"
+            :table-height="480"
             card-title="旧料兑换"
             :where="oldSalesFilterWhere"
             :title="oldSalesTitle"
@@ -251,6 +255,7 @@ onMounted(async () => {
         <template v-if="params.selectValue === 'oldRecycleList'">
           <summary-boss-card
             v-model="radioValueOldRecycle"
+            :table-height="480"
             card-title="旧料回收"
             :where="oldRecycleFilterWhere"
             :title="oldRecycleTitle"
@@ -262,6 +267,7 @@ onMounted(async () => {
         <template v-if="params.selectValue === 'finishedList'">
           <summary-boss-card
             v-model="radioValueFinsihed"
+            :table-height="480"
             card-title="成品库存"
             :where="finishedWhere"
             :title="finishedTitle"
@@ -273,6 +279,7 @@ onMounted(async () => {
         <template v-if="params.selectValue === 'oldList'">
           <summary-boss-card
             v-model="radioValueOld"
+            :table-height="480"
             card-title="旧料库存"
             :where="oldfilterWhere"
             :title="oldtitle"
