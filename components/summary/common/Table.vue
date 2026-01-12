@@ -1,10 +1,13 @@
 <script lang="ts" setup>
 import type { DataTableColumns } from 'naive-ui'
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   title: DataTableColumns
   list?: { [key: string]: string | number | undefined }[]
-}>()
+  height?: number
+}>(), {
+  height: 350,
+})
 const scrollX = ref(0)
 
 for (let i = 0; i < props.title.length; ++i) {
@@ -30,7 +33,7 @@ const tdColor = computed(() => {
       :columns="props.title"
       :data="props.list"
       :scroll-x="scrollX"
-      :max-height="350"
+      :max-height="props.height"
       :bordered="true"
       :render-cell="(value: any) => {
         if (!value){

@@ -19,6 +19,7 @@ interface BossWhere {
   duration?: number
   endTime?: string
   startTime?: string
+  selectValue?: string
 }
 
 interface BossSalesList {

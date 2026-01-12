@@ -5,8 +5,10 @@ const props = withDefaults(defineProps<{
   loading?: boolean
   chart?: any
   isToggle?: boolean
+  tableHeight?: number
 }>(), {
   isToggle: true,
+  tableHeight: 350,
 })
 
 const emits = defineEmits<{
@@ -154,7 +156,7 @@ const option = computed(() => {
       </div>
 
       <div v-if="toggleChart === 'list'" class="px-[16px]">
-        <summary-common-table :title="props.title" :list="props.list" />
+        <summary-common-table :title="props.title" :list="props.list" :height="props.tableHeight" />
       </div>
       <div v-if="toggleChart === 'chart'">
         <VChart class="chart" :option="option" />
@@ -171,7 +173,7 @@ const option = computed(() => {
 
 .chart {
   width: 100%;
-  height: 530px;
+  height: 560px;
 }
 .bg {
   box-shadow: 0px 5px 20px 0px #0000000a;
