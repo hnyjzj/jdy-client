@@ -190,6 +190,13 @@ const listJump = () => {
 const updateTimeFn = () => {
   listJump()
 }
+onMounted(async () => {
+  await nextTick()
+  if (!params.value.selectValue) {
+    params.value.selectValue = 'performanceList'
+    await getPerformanceReq()
+  }
+})
 </script>
 
 <template>
